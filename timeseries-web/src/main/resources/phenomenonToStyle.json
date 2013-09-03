@@ -1,0 +1,18 @@
+{
+	"Wasserstand": {
+		"chartType": "line",
+        "properties": {
+            "color": "#0000ff",
+            "lineType": "solid",
+            "width": 2
+        }
+    },
+    "test2": {
+		"chartType": "bar",
+		"properties": {
+			"interval": "byDay",
+			"width": 0.8,
+        	"color": "#0000ff"
+        }
+	}
+}

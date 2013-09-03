@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "${sensorwebclient.webapp.baseurl}/api/v1/schemas/vicinity.json#",
+  "title": "vicinity",
+  "description": "An geographical surrounding defined by a point and a radius.",
+  "type": "object",
+  "properties": {
+    "center": { 
+      "type": "object",
+      "properties": {
+        "type": "string", 
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "description": "A '[ lng,lat ]' ordered coordinate sequence referenced in WGS84 by default."
+        },
+        "crs": {
+          "type": "object",
+          "description": "A named coordinate system.", 
+          "properties": {
+            "type": "string",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "required": ["type","coordinates"]
+    }, 
+    "radius": {
+      "type": "number",
+      "description": "The radius in kilometers."
+    }
+  }
+  "required": ["center","radius"]
+}

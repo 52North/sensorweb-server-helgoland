@@ -1,0 +1,16 @@
+{
+    "type": "object",
+    "properties": {
+        "timespan": {
+            "description": "Which timeseries data to render on the chart.",
+            "type": "string"
+        },
+        "timeseries": {
+            "description": "A list of timeseries ids to get data for.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite failures="0" time="0.019" errors="0" skipped="0" tests="10" name="org.n52.io.crs.WGS84UtilTest">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.6.0_31\jre\bin"/>
+    <property name="java.vm.version" value="20.6-b01"/>
+    <property name="java.vm.vendor" value="Sun Microsystems Inc."/>
+    <property name="java.vendor.url" value="http://java.sun.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="DE"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="Service Pack 1"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="D:\data\coding\timeseries-api"/>
+    <property name="java.runtime.version" value="1.6.0_31-b05"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.6.0_31\jre\lib\endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="C:\Users\henning\AppData\Local\Temp\"/>
+    <property name="line.separator" value="
+"/>
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 7"/>
+    <property name="classworlds.conf" value="D:\data\coding\2013-08-01_wv_event-consulting\.metadata\.plugins\org.eclipse.m2e.launching\launches\m2conf5631766055809910424.tmp"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.6.0_31\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:/Program Files/Java/jdk1.6.0_31/bin/../jre/bin/server;C:/Program Files/Java/jdk1.6.0_31/bin/../jre/bin;C:/Program Files/Java/jdk1.6.0_31/bin/../jre/lib/amd64;C:\Program Files\ImageMagick-6.8.2-Q16;C:\oraclexe\app\oracle\product\11.2.0\server\bin;;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\ThinkPad\Bluetooth Software\;C:\Program Files\ThinkPad\Bluetooth Software\syswow64;C:\Program Files\Broadcom\WHL\;C:\Program Files\Broadcom\WHL\syswow64;C:\Program Files\Broadcom\WHL\SysWow64\;C:\Program Files\Broadcom\WHL\SysWow64\syswow64;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\Program Files (x86)\Common Files\Lenovo;C:\Program Files (x86)\Common Files\Ulead Systems\MPEG;C:\Program Files\Common Files\Lenovo;C:\Program Files (x86)\Intel\Services\IPT\;C:\Program Files (x86)PuTTY;C:\Program Files\Java\jdk1.6.0_31\bin;C:\bin\apache-maven-3.0.4\bin;C:\bin\apache-ant-1.8.4\bin;C:\Ruby193\bin;C:\Program Files (x86)\Git\cmd;C:\Program Files\ArcGIS\ArcSDE\ora11gexe\bin\;C:\bin\apache-jena-2.7.4\\bat;C:\Program Files\nodejs\;C:\Program Files\TortoiseSVN\bin;C:\Program Files\SlikSvn\bin;C:\Program Files (x86)\QuickTime\QTSystem\;C:\bin\git-wt-commit\bin;C:\Program Files\TortoiseGit\bin;C:\bin\Ruby200-x64\bin;C:\texlive\2011\bin\win32;C:\Users\henning\AppData\Roaming\npm\;C:\bin\eclipse-jee-kepler-R-win32-x86_64;;."/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="50.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="6.1"/>
+    <property name="user.home" value="C:\Users\henning"/>
+    <property name="user.timezone" value="Europe/Berlin"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="file.encoding" value="Cp1252"/>
+    <property name="java.specification.version" value="1.6"/>
+    <property name="user.name" value="henning"/>
+    <property name="java.class.path" value="/C:/bin/eclipse-jee-kepler-R-win32-x86_64/configuration/org.eclipse.osgi/bundles/531/1/.cp/jars/plexus-classworlds-2.4.jar"/>
+    <property name="java.vm.specification.version" value="1.0"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk1.6.0_31\jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -B -s C:\Users\henning\.m2\settings.xml install"/>
+    <property name="java.specification.vendor" value="Sun Microsystems Inc."/>
+    <property name="user.language" value="de"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.6.0_31"/>
+    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.6.0_31\jre\lib\ext;C:\Windows\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.6.0_31\jre\lib\resources.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\rt.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\jce.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.6.0_31\jre\lib\modules\jdk.boot.jar;C:\Program Files\Java\jdk1.6.0_31\jre\classes"/>
+    <property name="java.vendor" value="Sun Microsystems Inc."/>
+    <property name="maven.home" value="D:\data\coding\timeseries-api\EMBEDDED"/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi"/>
+    <property name="maven.bootclasspath" value="/C:/bin/eclipse-jee-kepler-R-win32-x86_64/configuration/org.eclipse.osgi/bundles/531/1/.cp/jars/plexus-classworlds-2.4.jar"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase time="0.008" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNormlizeLongitudesSmallerThan180Degrees"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNormlizeLatitudesSmallerThanMinus90Degrees"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldGetLongitudeDelta"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNotChangeZeroLatitudeDegrees"/>
+  <testcase time="0.001" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNormlizeLongitudesBiggerThan180Degrees"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNormlizeLatitudesBiggerThan90Degrees"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldGetLatitudeDelta"/>
+  <testcase time="0" classname="org.n52.io.crs.WGS84UtilTest" name="shouldReturnNearZeroDistanceAtPoles"/>
+  <testcase time="0.001" classname="org.n52.io.crs.WGS84UtilTest" name="shouldCalculateShortestDistanceFromStatueOfLibertyToEiffelTower"/>
+  <testcase time="0.001" classname="org.n52.io.crs.WGS84UtilTest" name="shouldNotChangeZeroLongitudeDegrees"/>
+</testsuite>

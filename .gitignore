@@ -1,0 +1,10 @@
+/.settings
+/target
+/timeseries-web/target
+/timeseries-io/target
+/timeseries-io/.settings
+/timeseries-io/*.project
+/timeseries-io/*.classpath
+/timeseries-web/*.project
+/timeseries-web/*
+/timeseries-web/*.classpath
