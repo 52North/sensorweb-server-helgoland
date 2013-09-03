@@ -7,36 +7,37 @@
 		<artifactId>52-North</artifactId>
 		<version>5.6.6</version>
 	</parent>
-  <groupId>org.n52.sensorweb</groupId>
+	<groupId>org.n52.sensorweb</groupId>
 	<artifactId>timeseries-api</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Sensor Web Timeseries Timeseres API</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<inceptionYear>2013</inceptionYear>
-  
+
 	<modules>
 		<module>timeseries-io</module>
 		<module>timeseries-web</module>
-  </modules>
-  
+	</modules>
+
 	<scm>
 		<connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
 		<url>https://github.com/52North/timeseries-api</url>
 	</scm>
-  
-  <properties>
-    <org.springframework.version>3.2.0.RELEASE</org.springframework.version>
-    <sensorwebclient.version>3.2.0</sensorwebclient.version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.springframework.version>3.2.0.RELEASE</org.springframework.version>
+		<sensorwebclient.version>3.2.0</sensorwebclient.version>
 		<logback.version>1.0.11</logback.version>
 		<jackson.version>2.2.2</jackson.version>
-    <geotools.version>8.2</geotools.version>
-    <slf4j.version>1.7.2</slf4j.version>
-  </properties>
-  
-  <dependencyManagement>
-    <dependencies>
+		<geotools.version>8.2</geotools.version>
+		<slf4j.version>1.7.2</slf4j.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
 			<dependency>
 				<groupId>org.n52.sensorweb</groupId>
 				<artifactId>timeseries-io</artifactId>
@@ -52,8 +53,8 @@
 				<artifactId>xml-pdf-format</artifactId>
 				<version>${sensorwebclient.version}</version>
 			</dependency>
-      
-      
+
+
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
@@ -65,8 +66,8 @@
 				<version>2.5</version>
 				<scope>provided</scope>
 			</dependency>
-      
-      
+
+
 			<dependency>
 				<!-- ensure loading before ealier versions -->
 				<groupId>org.geotools</groupId>
@@ -110,9 +111,9 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-      
-      
-      
+
+
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
@@ -128,15 +129,15 @@
 				<artifactId>spring-oxm</artifactId>
 				<version>${org.springframework.version}</version>
 			</dependency>
-      
-      
-      
+
+
+
 			<dependency>
 				<groupId>jfree</groupId>
 				<artifactId>jfreechart</artifactId>
 				<version>1.0.13</version>
 			</dependency>
-      <dependency>
+			<dependency>
 				<groupId>net.sourceforge.jexcelapi</groupId>
 				<artifactId>jxl</artifactId>
 				<version>2.6</version>
@@ -168,8 +169,8 @@
 				<artifactId>jackson-module-jsonSchema</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
-      
-      
+
+
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-math</artifactId>
@@ -181,9 +182,9 @@
 				<version>2.0.1</version>
 				<scope>provided</scope>
 			</dependency>
-      
-    </dependencies>
-  </dependencyManagement>
+
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<!-- ==================================================== -->
@@ -243,8 +244,8 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
-    <pluginManagement>
-      <plugins>
+		<pluginManagement>
+			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
@@ -277,8 +278,8 @@
 						</execution>
 					</executions>
 				</plugin>
-        
-        
+
+
 				<plugin>
 					<!-- see http://wiki.eclipse.org/M2E_plugin_execution_not_covered -->
 					<groupId>org.eclipse.m2e</groupId>
@@ -304,8 +305,8 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-        
-        <plugin>
+
+				<plugin>
 					<!-- NOTE: We don't need a groupId specification because the group is 
 						org.apache.maven.plugins ...which is assumed by default. -->
 					<artifactId>maven-assembly-plugin</artifactId>
@@ -316,10 +317,10 @@
 						</descriptors>
 					</configuration>
 				</plugin>
-      </plugins>
-    </pluginManagement>
-    
-    <plugins>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
 
 			<!-- ==================================================== -->
 			<!-- =========== PLUGINS ACTIVE BY DEFAULT ============== -->
@@ -387,9 +388,9 @@
 			</plugin>
 		</plugins>
 	</build>
-  
-  <profiles>
-    <profile>
+
+	<profiles>
+		<profile>
 			<id>release</id>
 			<activation>
 				<property>
@@ -410,8 +411,8 @@
 				</plugins>
 			</build>
 		</profile>
-    
-    <profile>
+
+		<profile>
 			<id>env-dev</id>
 			<properties>
 				<env>dev</env>
@@ -424,9 +425,9 @@
 				</filters>
 			</build>
 		</profile>
-  </profiles>
-  
-  <repositories>
+	</profiles>
+
+	<repositories>
 		<repository>
 			<id>n52-releases</id>
 			<name>52n Releases</name>
@@ -480,6 +481,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-  </repositories>
+	</repositories>
 </project>
 
