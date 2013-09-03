@@ -8,3 +8,12 @@
 /timeseries-web/*.project
 /timeseries-web/*
 /timeseries-web/*.classpath
+/.project
+/timeseries-web/.project
+/timeseries-web/.settings
+/timeseries-web/target
+/timeseries-web/.classpath
+/timeseries-io/.project
+/timeseries-io/.settings
+/timeseries-io/target
+/timeseries-io/.classpath
