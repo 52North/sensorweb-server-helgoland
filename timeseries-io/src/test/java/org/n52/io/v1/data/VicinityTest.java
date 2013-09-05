@@ -52,8 +52,8 @@ public class VicinityTest {
     {
         Vicinity vicinity = createRadiusAtNorthPole(circleCenterAtGreenwhichAndEquator);
         BoundingBox bounds = vicinity.calculateBounds();
-        double llLatitudeOfSmallCircle = bounds.getLowerLeftCorner().getNorthing();
-        double urLatitudeOfSmallCircle = bounds.getUpperRightCorner().getNorthing();
+        double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
+        double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
         assertThat(llLatitudeOfSmallCircle, closeTo(-urLatitudeOfSmallCircle, ERROR_DELTA));
     }
 
@@ -63,8 +63,8 @@ public class VicinityTest {
     {
         Vicinity vicinity = createRadiusAtNorthPole(circleCenterAtGreenwhichAndEquator);
         BoundingBox bounds = vicinity.calculateBounds();
-        double llLongitudeOfGreatCircle = bounds.getLowerLeftCorner().getEasting();
-        double urLongitudeOnGreatCircle = bounds.getUpperRightCorner().getEasting();
+        double llLongitudeOfGreatCircle = bounds.getLowerLeft().getX();
+        double urLongitudeOnGreatCircle = bounds.getUpperRight().getX();
         assertThat(llLongitudeOfGreatCircle, closeTo(-urLongitudeOnGreatCircle, ERROR_DELTA));
     }
     
@@ -74,8 +74,8 @@ public class VicinityTest {
     {
         Vicinity vicinity = createRadiusAtNorthPole(circleAroundNorthPole);
         BoundingBox bounds = vicinity.calculateBounds();
-        double llLatitudeOfSmallCircle = bounds.getLowerLeftCorner().getNorthing();
-        double urLatitudeOfSmallCircle = bounds.getUpperRightCorner().getNorthing();
+        double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
+        double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
         assertThat(llLatitudeOfSmallCircle, closeTo(urLatitudeOfSmallCircle, ERROR_DELTA));
     }
 
@@ -85,8 +85,8 @@ public class VicinityTest {
     {
             Vicinity vicinity = createRadiusAtNorthPole(circleAroundSouthPole);
             BoundingBox bounds = vicinity.calculateBounds();
-            double llLatitudeOfSmallCircle = bounds.getLowerLeftCorner().getNorthing();
-            double urLatitudeOfSmallCircle = bounds.getUpperRightCorner().getNorthing();
+            double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
+            double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
             assertThat(llLatitudeOfSmallCircle, closeTo(urLatitudeOfSmallCircle, ERROR_DELTA));
     }
 

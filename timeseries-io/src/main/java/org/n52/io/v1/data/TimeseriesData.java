@@ -24,6 +24,7 @@
 
 package org.n52.io.v1.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +33,9 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TimeseriesData {
+public class TimeseriesData implements Serializable {
+
+    private static final long serialVersionUID = 4717558247670336015L;
 
     private List<TimeseriesValue> values = new ArrayList<TimeseriesValue>();
     

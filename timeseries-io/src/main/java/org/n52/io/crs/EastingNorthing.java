@@ -24,7 +24,7 @@
 
 package org.n52.io.crs;
 
-import static org.n52.io.crs.CRSUtils.EPSG_4326;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.geojson.GeojsonCrs.createNamedCRS;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import java.io.Serializable;
 import org.n52.io.geojson.GeojsonCrs;
 import org.n52.io.geojson.GeojsonPoint;
 
-public class EastingNorthing implements Serializable {
+class EastingNorthing implements Serializable {
 
     private static final long serialVersionUID = 4080241800833286545L;
 
@@ -67,7 +67,7 @@ public class EastingNorthing implements Serializable {
      *        the coordinates in EPSG:4326
      */
     public EastingNorthing(Double[] coordinates) {
-        this(coordinates, createNamedCRS(EPSG_4326));
+        this(coordinates, createNamedCRS(DEFAULT_CRS));
     }
 
     public EastingNorthing(Double[] coordinates, GeojsonCrs crs) {
@@ -77,18 +77,12 @@ public class EastingNorthing implements Serializable {
         if (coordinates.length != 2 && coordinates.length != 3) {
             throw new IllegalArgumentException("Coordinates must be either 2- or 3-dimensional.");
         }
-        this.crs = crs == null ? createNamedCRS(EPSG_4326) : crs;
+        this.crs = crs == null ? createNamedCRS(DEFAULT_CRS) : crs;
         easting = coordinates[0];
         northing = coordinates[1];
         if (coordinates.length == 3) {
             altitude = coordinates[2];
         }
-    }
-
-    public EastingNorthing(double easting, double northing, GeojsonCrs crs) {
-        this.easting = easting;
-        this.northing = northing;
-        this.crs = crs;
     }
 
     public double getEasting() {

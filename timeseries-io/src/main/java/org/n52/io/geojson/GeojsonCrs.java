@@ -34,8 +34,6 @@ public class GeojsonCrs extends GeojsonObject {
 
     private static final String TYPE_NAME = "name";
     
-    private static final String TYPE_LINK = "link";
-    
     private Map<String, String> properties;
 
     private String type = TYPE_NAME;
@@ -70,16 +68,6 @@ public class GeojsonCrs extends GeojsonObject {
         return properties.get("name");
     }
     
-    @JsonIgnore
-    public String getHRef() {
-        return properties.get("href");
-    }
-    
-    @JsonIgnore
-    public String getLinkType() {
-        return properties.get("type");
-    }
-    
     public static GeojsonCrs createNamedCRS(String name) {
         if (name == null) {
             throw new NullPointerException("Argument 'name' must not be null.");
@@ -89,15 +77,5 @@ public class GeojsonCrs extends GeojsonObject {
         namedCrs.setType(TYPE_NAME);
         return namedCrs;
     }
-    
-    public static GeojsonCrs createLinkedCRS(String url, String type) {
-        GeojsonCrs linkedCrs = new GeojsonCrs();
-        linkedCrs.addProperty("type", type);
-        linkedCrs.addProperty("href", url);
-        linkedCrs.setType(TYPE_LINK);
-        return linkedCrs;
-    }
-    
-    
     
 }

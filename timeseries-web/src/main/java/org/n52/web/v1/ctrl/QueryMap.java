@@ -24,7 +24,7 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.crs.CRSUtils.EPSG_4326;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 
 import java.io.IOException;
 
@@ -209,11 +209,6 @@ public class QueryMap {
      * Determines the reference system to be used for input/output coordinates.
      */
     private static final String CRS = "crs";
-
-    /**
-     * The default reference system: CRS84 == EPSG:4326 but lon/lat order
-     */
-    private static final String DEFAULT_CRS = EPSG_4326;
 
     /**
      * Determines the within filter

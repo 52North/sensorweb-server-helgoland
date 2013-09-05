@@ -24,94 +24,85 @@
 
 package org.n52.io.crs;
 
-import static org.n52.io.crs.CRSUtils.EPSG_4326;
-
 import java.io.Serializable;
 
-import org.n52.io.geojson.GeojsonPoint;
+import com.vividsolutions.jts.geom.Point;
 
 public class BoundingBox implements Serializable {
-	
+
     private static final long serialVersionUID = -674668726920006020L;
 
-    private EastingNorthing ll;
+    private Point ll;
 
-    private EastingNorthing ur;
-    
+    private Point ur;
+
     private String srs;
-    
-	@SuppressWarnings("unused")
-	private BoundingBox() {
+
+    @SuppressWarnings("unused")
+    private BoundingBox() {
         // client requires to be default instantiable
     }
-	
-	/**
-     * @param ll the lower left corner
-     * @param ur the upper right corner
-     */
-    public BoundingBox(GeojsonPoint ll, GeojsonPoint ur) {
-        this.srs = ll.getCrs() == null ? EPSG_4326 : ll.getCrs().getName();
-        this.ll = new EastingNorthing(ll.getCoordinates(), ll.getCrs());
-        this.ur = new EastingNorthing(ur.getCoordinates(), ur.getCrs());
-    }
 
     /**
-     * @param ll the lower left corner
-     * @param ur the upper right corner
+     * @param ll
+     *        the lower left corner
+     * @param ur
+     *        the upper right corner
      */
-    public BoundingBox(EastingNorthing ll, EastingNorthing ur) {
-    	this.srs = ll.getCrsDefinition();
-    	this.ll = ll;
+    public BoundingBox(Point ll, Point ur, String srs) {
+        this.ll = ll;
         this.ur = ur;
+        this.srs = srs;
     }
 
-    public String getSrs() {
-        return srs;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("BBOX [ (");
-        sb.append(ll.getEasting()).append(",").append(ll.getNorthing()).append(");(");
-        sb.append(ur.getEasting()).append(",").append(ur.getNorthing()).append(") ");
-        sb.append("srs: ").append(getSrs());
-        return sb.append(" ]").toString();
-    }
-    
     /**
-     * Indicates if the given coordinate pair is contained by this bounding box instance. The coordinates are
-     * assumed to be in the same coordinate reference system as the bounding box instance.
+     * Indicates if the given point is contained by this instance. The point's coordinates are assumed to be
+     * in the same coordinate reference system.
      * 
-     * @param easting
-     *        the 'right' value
-     * @param northing
-     *        the 'up' value
+     * @param point
+     *        the point to check.
      * @return if this instance contains the given coordiantes.
      */
-    public boolean contains(double easting, double northing) {
-        return isWithinHorizontalRange(easting) && isWithinVerticalRange(northing);
+    public boolean contains(Point point) {
+        return isWithinXRange(point.getX()) && isWithinYRange(point.getY());
     }
 
-	private boolean isWithinHorizontalRange(double easting) {
-		return ll.getEasting() <= easting && easting <= ur.getEasting();
-	}
-	
-	private boolean isWithinVerticalRange(double northing) {
-		return ll.getNorthing() <= northing && northing <= ur.getNorthing();
-	}
+    private boolean isWithinXRange(double x) {
+        return ll.getX() <= x && x <= ur.getX();
+    }
+
+    private boolean isWithinYRange(double y) {
+        return ll.getY() <= y && y <= ur.getY();
+    }
 
     /**
      * @return the lower left corner coordinate.
      */
-    public EastingNorthing getLowerLeftCorner() {
+    public Point getLowerLeft() {
         return ll;
     }
 
     /**
      * @return the upper right corner coordinate.
      */
-    public EastingNorthing getUpperRightCorner() {
+    public Point getUpperRight() {
         return ur;
     }
 
+    /**
+     * @return the system this instance is referenced in.
+     */
+    public String getSrs() {
+        return srs;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("BBOX [ (");
+        sb.append(ll.getX()).append(",").append(ll.getY()).append(");(");
+        sb.append(ur.getX()).append(",").append(ur.getY()).append(") ");
+        sb.append("srs: ").append(getSrs());
+        return sb.append(" ]").toString();
+    }
+    
 }

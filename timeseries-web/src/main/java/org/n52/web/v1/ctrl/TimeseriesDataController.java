@@ -302,8 +302,9 @@ public class TimeseriesDataController extends BaseController {
 
     private TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = parameters.isGeneralize() ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
-                                                                    : timeseriesDataService.getTimeseriesData(parameters);
+        TvpDataCollection timeseriesData = parameters.isGeneralize() 
+                ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
+                : timeseriesDataService.getTimeseriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * Copyright (C) 2012
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -24,19 +24,22 @@
 
 package org.n52.io.crs;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.n52.io.crs.CRSUtils.EPSG_4326;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.n52.io.geojson.GeojsonCrs;
 import org.n52.io.geojson.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
+
+import com.vividsolutions.jts.geom.Point;
 
 public class CRSUtilsTest {
 
@@ -47,9 +50,23 @@ public class CRSUtilsTest {
     @Before
     public void setUp() throws Exception {
         referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
-        EastingNorthing ll = new EastingNorthing(6.4, 51.9, EPSG_4326);
-        EastingNorthing ur = new EastingNorthing(8.9, 53.4, EPSG_4326);
-        bbox = new BoundingBox(ll, ur);
+        Point ll = referenceHelper.createPoint(6.4, 51.9, DEFAULT_CRS);
+        Point ur = referenceHelper.createPoint(8.9, 53.4, DEFAULT_CRS);
+//        EastingNorthing ll = new EastingNorthing(6.4, 51.9, DEFAULT_CRS);
+//        EastingNorthing ur = new EastingNorthing(8.9, 53.4, DEFAULT_CRS);
+        bbox = new BoundingBox(ll, ur, DEFAULT_CRS);
+    }
+    
+    @Test
+    public void shouldIndicateLatLonOrder() {
+        referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
+        assertThat(referenceHelper.isLatLonAxesOrder("EPSG:4326"), is(true));
+    }
+    
+    @Test
+    public void shouldIndicateLonLatOrder() {
+        referenceHelper = CRSUtils.createEpsgForcedXYAxisOrder();
+        assertThat(referenceHelper.isLatLonAxesOrder("EPSG:4326"), is(false));
     }
 
     @Test
@@ -58,24 +75,20 @@ public class CRSUtilsTest {
             TransformException {
         GeojsonPoint stationWithin = getStationWithinBBox();
         GeojsonPoint stationOutside = getStationOutsideBBox();
-        assertTrue(referenceHelper.isContainedByBBox(bbox, stationWithin));
-        assertFalse(referenceHelper.isContainedByBBox(bbox, stationOutside));
+        assertTrue(bbox.contains(referenceHelper.convertToPointFrom(stationWithin)));
+        assertFalse(bbox.contains(referenceHelper.convertToPointFrom(stationOutside)));
     }
 
     private GeojsonPoint getStationWithinBBox() {
         // TODO make random station within bbox
         // TODO add different epsg codes!
-        GeojsonPoint point = createWithCoordinates(new Double[]{7.0, 52.0});
-        point.setCrs(GeojsonCrs.createNamedCRS(EPSG_4326));
-        return point;
+        return createWithCoordinates(new Double[]{7.0, 52.0});
     }
 
     private GeojsonPoint getStationOutsideBBox() {
         // TODO make random station within bbox
         // TODO add different epsg codes!
-        GeojsonPoint point = createWithCoordinates(new Double[]{10.4, 52.0});
-        point.setCrs(GeojsonCrs.createNamedCRS(EPSG_4326));
-        return point;
+        return createWithCoordinates(new Double[]{10.4, 52.0});
     }
 
     @Test
@@ -105,11 +118,11 @@ public class CRSUtilsTest {
         assertValidEpsgShortCut("EPSG:4324336", capitalEpsgLink);
         assertValidEpsgShortCut("EPSG:4326", smallCaseEpsgLink);
     }
-
+    
     private void assertValidEpsgShortCut(String expected, String epsgCode) {
         assertEquals("Unexpected EPSG string!", expected, referenceHelper.extractSRSCode(epsgCode));
     }
-
+    
     // TODO add tests for creating coordinates
     // TODO add tests for transform coordinates
 

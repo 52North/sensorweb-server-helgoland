@@ -110,13 +110,13 @@
 
 	<bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController">
 		<property name="serviceParameterService" ref="serviceParameterService" />
-		<property name="timeseriesMetadataService" ref="timeseriesMetadataService" />
+		<property name="timeseriesMetadataService" ref="timeseriesService" />
 	</bean>
 
 	<bean class="org.n52.web.v1.ctrl.TimeseriesDataController">
 		<property name="serviceParameterService" ref="serviceParameterService" />
-		<property name="timeseriesMetadataService" ref="timeseriesMetadataService" />
-		<property name="timeseriesDataService" ref="timeseriesDataService" />
+		<property name="timeseriesMetadataService" ref="timeseriesService" />
+		<property name="timeseriesDataService" ref="timeseriesService" />
 		<property name="preRenderingTask" ref="preRenderingTask" />
 		<property name="requestIntervalRestriction" value="P1Y" />
 	</bean>

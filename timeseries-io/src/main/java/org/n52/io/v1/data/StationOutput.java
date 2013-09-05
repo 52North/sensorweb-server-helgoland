@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * Copyright (C) 2012
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -27,6 +27,8 @@ package org.n52.io.v1.data;
 import org.n52.io.geojson.GeojsonFeature;
 
 public class StationOutput extends GeojsonFeature {
+
+    private static final long serialVersionUID = -2868469756939569521L;
 
     
 }

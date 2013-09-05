@@ -23,8 +23,12 @@
  */
 package org.n52.io.v1.data;
 
+import java.io.Serializable;
 
-public class TimeseriesValue implements Comparable<TimeseriesValue>{
+
+public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializable {
+
+    private static final long serialVersionUID = -7292181682632614697L;
 
     private Long timestamp;
 

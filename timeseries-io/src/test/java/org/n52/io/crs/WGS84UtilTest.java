@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * Copyright (C) 2012
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -37,8 +37,6 @@ import static org.n52.io.crs.WGS84Util.shortestDistanceBetween;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.n52.io.crs.CRSUtils;
-import org.n52.io.crs.WGS84Util;
 import org.opengis.referencing.FactoryException;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -70,7 +68,7 @@ public class WGS84UtilTest {
     }
 
     private Point createXYOrderedWgs84Point(double lon, double lat) throws FactoryException {
-        return factory.createPoint(helper.createCoordinate(EPSG_4326, lon, lat));
+        return helper.createPoint(lon, lat, EPSG_4326);
     }
     
     @Test

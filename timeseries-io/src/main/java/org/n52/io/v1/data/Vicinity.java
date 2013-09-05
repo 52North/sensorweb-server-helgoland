@@ -26,8 +26,8 @@ package org.n52.io.v1.data;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Math.toRadians;
-import static org.n52.io.crs.CRSUtils.EPSG_4326;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import static org.n52.io.crs.WGS84Util.getLatitudeDelta;
 import static org.n52.io.crs.WGS84Util.getLongitudeDelta;
 import static org.n52.io.crs.WGS84Util.normalizeLatitude;
@@ -37,10 +37,7 @@ import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeojsonPoint;
-import org.opengis.referencing.FactoryException;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -50,9 +47,9 @@ import com.vividsolutions.jts.geom.Point;
 public class Vicinity {
 
     /**
-     * The coordinate reference system. Defaults to {@link CRSUtils#EPSG_4326}.
+     * The coordinate reference system. Defaults to {@link CRSUtils#DEFAULT_CRS}.
      */
-    private String crs = EPSG_4326;
+    private String crs = DEFAULT_CRS;
 
     private Double[] coords;
 
@@ -79,10 +76,10 @@ public class Vicinity {
     }
 
     /**
-     * @return calculates bounding box within WGS84 and strict XY axes order context.
+     * @return calculates bounding box within WGS84 and strict EPSG axes order context.
      */
     public BoundingBox calculateBounds() {
-        return calculateBounds(createEpsgForcedXYAxisOrder());
+        return calculateBounds(createEpsgStrictAxisOrder());
     }
 
     /**
@@ -101,9 +98,15 @@ public class Vicinity {
         double llNorthing = normalizeLatitude(center.getY() - getLatitudeDelta(radius));
         double urEasting = normalizeLongitude(center.getX() + getLongitudeDelta(latInRad, radius));
         double urNorthing = normalizeLatitude(center.getY() + getLatitudeDelta(radius));
-        GeojsonPoint ll = createWithCoordinates(new Double[] {llEasting, llNorthing});
-        GeojsonPoint ur = createWithCoordinates(new Double[] {urEasting, urNorthing});
-        return new BoundingBox(ll, ur);
+        
+        if (crsUtils.isLatLonAxesOrder(crs)) {
+            Point ll = crsUtils.createPoint(llNorthing, llEasting, crs);
+            Point ur = crsUtils.createPoint(urNorthing, urEasting, crs);
+            return new BoundingBox(ll, ur, crs);
+        }
+        Point ll = crsUtils.createPoint(llEasting, llNorthing, crs);
+        Point ur = crsUtils.createPoint(urEasting, urNorthing, crs);
+        return new BoundingBox(ll, ur, crs);
     }
 
     /**
@@ -112,23 +115,11 @@ public class Vicinity {
      * @param crsUtils
      *        the reference context.
      * @return the center point.
-     * @throws IllegalStateException
-     *         if creating coordinates fails.
      */
     private Point createCenter(GeojsonPoint center, CRSUtils crsUtils) {
-        try {
-            Double easting = center.getCoordinates()[0];
-            Double northing = center.getCoordinates()[1];
-            Coordinate coordinate = crsUtils.createCoordinate(EPSG_4326, easting, northing);
-            return createGeometryFactory(crsUtils).createPoint(coordinate);
-        }
-        catch (FactoryException e) {
-            throw new IllegalStateException("Could not parse center.");
-        }
-    }
-
-    private GeometryFactory createGeometryFactory(CRSUtils crsUtils) {
-        return crsUtils.createGeometryFactory(crs);
+        Double easting = center.getCoordinates()[0];
+        Double northing = center.getCoordinates()[1];
+        return crsUtils.createPoint(easting, northing, DEFAULT_CRS);
     }
 
     /**
