@@ -76,7 +76,7 @@ public class PhenomenaParameterController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        PhenomenonOutput phenomenon = phenomenonParameterService.getParameter(phenomenonId);
+        PhenomenonOutput phenomenon = phenomenonParameterService.getParameter(phenomenonId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (phenomenon == null) {

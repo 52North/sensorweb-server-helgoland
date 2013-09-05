@@ -30,6 +30,7 @@ import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.TransformingStationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -77,7 +78,7 @@ public class StationsParameterController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        StationOutput procedure = stationParameterService.getParameter(procedureId);
+        StationOutput procedure = stationParameterService.getParameter(procedureId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (procedure == null) {
@@ -92,7 +93,7 @@ public class StationsParameterController extends ParameterController {
     }
 
     public void setStationParameterService(ParameterService<StationOutput> stationParameterService) {
-        this.stationParameterService = stationParameterService;
+        this.stationParameterService = new TransformingStationService(stationParameterService);
     }
 
 }

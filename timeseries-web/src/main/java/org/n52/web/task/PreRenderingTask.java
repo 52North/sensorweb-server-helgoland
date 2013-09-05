@@ -30,6 +30,7 @@ import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
 import org.n52.web.ResourceNotFoundException;
+import org.n52.web.v1.ctrl.QueryMap;
 import org.n52.web.v1.ctrl.Stopwatch;
 import org.n52.web.v1.srv.TimeseriesDataService;
 import org.n52.web.v1.srv.TimeseriesMetadataService;
@@ -288,13 +289,14 @@ public class PreRenderingTask implements ServletConfigAware {
 	    public void run() {
 	        LOGGER.info("Start prerendering task");
 	        try {
+	            QueryMap map = QueryMap.createDefaults();
 	            for (PreRenderingConfiguration config : configurations) {
 	                
 	                String timeseriesId = config.getTimeseriesId();
 	                for (String interval : config.getInterval()) {
 	                    
 	                    String timespan = createTimespanFromInterval(timeseriesId, interval);
-	                    TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+	                    TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
 	                    String phenomenon = metadata.getParameters().getPhenomenon().getLabel();
 	                    StyleProperties style = null;
 	                    if (phenomenaStyles.containsKey(phenomenon)) {

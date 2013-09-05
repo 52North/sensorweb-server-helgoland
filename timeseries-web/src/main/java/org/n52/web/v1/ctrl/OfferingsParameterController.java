@@ -77,7 +77,7 @@ public class OfferingsParameterController extends ParameterController implements
         // TODO add expand check
 
         Stopwatch stopwatch = startStopwatch();
-        OfferingOutput offering = offeringParameterService.getParameter(offeringId);
+        OfferingOutput offering = offeringParameterService.getParameter(offeringId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         return new ModelAndView().addObject(offering);

@@ -147,7 +147,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds);
+        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
 
         IOHandler renderer = IOFactory.create().forMimeType(APPLICATION_PDF).withLocale(map.getLocale()).createIOHandler(context);
@@ -164,7 +164,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         QueryMap map = createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -187,7 +187,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds);
+        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
         IOHandler renderer = IOFactory.create()
                 .withLocale(map.getLocale())
@@ -206,7 +206,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         QueryMap map = createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         context.setDimensions(map.getWidth(), map.getHeight());
 
@@ -237,7 +237,7 @@ public class TimeseriesDataController extends BaseController {
             QueryMap map = createFromQuery(query);
 
             String timespan = preRenderingTask.createTimespanFromInterval(timeseriesId, interval);
-            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
             RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), timespan);
             context.setDimensions(map.getWidth(), map.getHeight());
 

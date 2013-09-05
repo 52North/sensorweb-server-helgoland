@@ -73,7 +73,7 @@ public class FeaturesParameterController extends ParameterController {
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
-        FeatureOutput feature = featureParameterService.getParameter(featureId);
+        FeatureOutput feature = featureParameterService.getParameter(featureId, map);
 
         if (feature == null) {
             throw new ResourceNotFoundException("Found no feature with given id.");

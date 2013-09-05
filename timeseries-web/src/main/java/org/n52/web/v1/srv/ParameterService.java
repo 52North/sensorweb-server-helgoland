@@ -43,6 +43,9 @@ public interface ParameterService<T> {
     T[] getCondensedParameters(QueryMap query);
 
     /**
+     * Gets the requested items with respect to default query settings. Use
+     * {@link #getParameters(String[], QueryMap)} to control the output items.
+     * 
      * @param items
      *        a subset of item ids which are of interest.
      * @return an array of expanded items which are of interest. Not known ids will be ignored.
@@ -50,10 +53,39 @@ public interface ParameterService<T> {
     T[] getParameters(String[] items);
 
     /**
+     * Gets the requested items with respect to the given query parameters. <b>Note</b>, that implementations
+     * may be aware of parameters not specified by the official timeseries API. However, at least all
+     * officially specified query parameters should be considered by all implementations.
+     * 
+     * @param items
+     *        a subset of item ids which are of interest.
+     * @param query
+     *        query parameters to control the output.
+     * @return an array of expanded items which are of interest. Not known ids will be ignored.
+     */
+    T[] getParameters(String[] items, QueryMap query);
+
+    /**
+     * Gets the requested item with respect to default query settings. Use
+     * {@link #getParameter(String, QueryMap)} to control the output item.
+     * 
      * @param item
      *        the item id of interest.
      * @return an expanded items of interest.
      */
     T getParameter(String item);
+
+    /**
+     * Gets the requested item with respect to the given query parameters. <b>Note</b>, that implementations
+     * may be aware of parameters not specified by the official timeseries API. However, at least all
+     * officially specified query parameters should be considered by all implementations.
+     * 
+     * @param item
+     *        the item id of interest.
+     * @param query
+     *        query parameters to control the output.
+     * @return an expanded items of interest.
+     */
+    T getParameter(String item, QueryMap query);
 
 }

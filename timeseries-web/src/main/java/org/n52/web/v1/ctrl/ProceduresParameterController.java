@@ -75,7 +75,7 @@ public class ProceduresParameterController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        ProcedureOutput procedure = procedureParameterService.getParameter(procedureId);
+        ProcedureOutput procedure = procedureParameterService.getParameter(procedureId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (procedure == null) {

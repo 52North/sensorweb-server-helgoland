@@ -24,6 +24,8 @@
 
 package org.n52.io.crs;
 
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+
 import java.io.Serializable;
 
 import com.vividsolutions.jts.geom.Point;
@@ -67,6 +69,27 @@ public class BoundingBox implements Serializable {
         return isWithinXRange(point.getX()) && isWithinYRange(point.getY());
     }
 
+    /**
+     * Extends the bounding box with the given point. If point is contained by this instance nothing is
+     * changed.
+     * 
+     * @param point
+     *        the point in CRS:84 which shall extend the bounding box.
+     */
+    public void extendBy(Point point) {
+        if (this.contains(point)) {
+            return;
+        }
+        double llX = Math.min(point.getX(), ll.getX());
+        double llY = Math.max(point.getX(), ur.getX());
+        double urX = Math.min(point.getY(), ll.getY());
+        double urY = Math.max(point.getY(), ur.getY());
+        
+        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        this.ll = crsUtils.createPoint(llX, llY, srs);
+        this.ur = crsUtils.createPoint(urX, urY, srs);
+    }
+
     private boolean isWithinXRange(double x) {
         return ll.getX() <= x && x <= ur.getX();
     }
@@ -95,7 +118,7 @@ public class BoundingBox implements Serializable {
     public String getSrs() {
         return srs;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("BBOX [ (");
@@ -104,5 +127,5 @@ public class BoundingBox implements Serializable {
         sb.append("srs: ").append(getSrs());
         return sb.append(" ]").toString();
     }
-    
+
 }

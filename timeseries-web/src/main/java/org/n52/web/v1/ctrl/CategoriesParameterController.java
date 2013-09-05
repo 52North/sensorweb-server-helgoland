@@ -47,7 +47,7 @@ public class CategoriesParameterController extends ParameterController {
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
-        CategoryOutput category = categoryParameterService.getParameter(categoryId);
+        CategoryOutput category = categoryParameterService.getParameter(categoryId, map);
 
         if (category == null) {
             throw new ResourceNotFoundException("Found no category with given id.");

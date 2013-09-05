@@ -29,7 +29,6 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.geotools.factory.Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER;
 import static org.geotools.referencing.ReferencingFactoryFinder.getCRSAuthorityFactory;
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.geojson.GeojsonCrs.createNamedCRS;
 import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
 
@@ -37,14 +36,10 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
-import org.n52.io.geojson.GeojsonCrs;
 import org.n52.io.geojson.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -89,9 +84,24 @@ public class CRSUtils {
         }
     }
 
-    public Point convertToPointFrom(GeojsonPoint geometry) throws FactoryException {
+    public Point convertToPointFrom(GeojsonPoint geometry) {
+        return convertToPointFrom(geometry, DEFAULT_CRS);
+    }
+    
+    public Point convertToPointFrom(GeojsonPoint geometry, String crs) {
         Double[] coordinates = geometry.getCoordinates();
-        return createPoint(coordinates[0], coordinates[1], DEFAULT_CRS);
+        return createPoint(coordinates[0], coordinates[1], crs);
+    }
+
+    /**
+     * Creates a GeoJSON representation for the given point.
+     * 
+     * @param point
+     *        the point to convert.
+     * @return a GeoJSON representation of the given point.
+     */
+    public GeojsonPoint convertToGeojsonFrom(Point point) {
+        return createWithCoordinates(new Double[] {point.getX(), point.getY()});
     }
 
     /**

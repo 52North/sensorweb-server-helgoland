@@ -43,6 +43,9 @@ public class GeojsonPoint extends GeojsonGeometry {
         this.coordinates = checkCoordinates(coordinates);
     }
 
+    void setType(String type) {
+        // keep for serialization
+    }
 
     public String getType() {
         return GEOJSON_TYPE_POINT;

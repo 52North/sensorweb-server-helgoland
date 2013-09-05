@@ -25,25 +25,37 @@
 package org.n52.web.v1.ctrl;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.IOException;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
+import org.n52.io.crs.CRSUtils;
+import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.v1.data.BBox;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.Vicinity;
 import org.n52.web.BadRequestException;
 import org.n52.web.InternalServerException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vividsolutions.jts.geom.Point;
 
 public class QueryMap {
+    
+    private final static Logger LOGGER = LoggerFactory.getLogger(QueryMap.class);
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
@@ -209,6 +221,16 @@ public class QueryMap {
      * Determines the reference system to be used for input/output coordinates.
      */
     private static final String CRS = "crs";
+
+    /**
+     * Determines if CRS axes order shall always be XY, i.e. lon/lat.
+     */
+    private static final String FORCE_XY = "forceXY";
+
+    /**
+     * Default axes order respects EPSG axes ordering.
+     */
+    private static final boolean DEFAULT_FORCE_XY = false;
 
     /**
      * Determines the within filter
@@ -402,22 +424,91 @@ public class QueryMap {
     }
 
     public BoundingBox getSpatialFilter() {
+        if ( !query.containsKey(NEAR) && !query.containsKey(BBOX)) {
+            return null;
+        }
+
+        BBox bboxBounds = createBbox();
+        BoundingBox bounds = parseBoundsFromVicinity();
+        return mergeBounds(bounds, bboxBounds);
+    }
+
+    private BoundingBox mergeBounds(BoundingBox bounds, BBox bboxBounds) {
+        if (bboxBounds == null) {
+            // nothing to merge
+            return bounds;
+        }
+        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        Point lowerLeft = crsUtils.convertToPointFrom(bboxBounds.getLl());
+        Point upperRight = crsUtils.convertToPointFrom(bboxBounds.getUr());
+        if (bounds == null) {
+            bounds = new BoundingBox(lowerLeft, upperRight, DEFAULT_CRS);
+            LOGGER.debug("Parsed bbox bounds: {}", bounds.toString());
+        }
+        else {
+            bounds.extendBy(lowerLeft);
+            bounds.extendBy(upperRight);
+            LOGGER.debug("Merged bounds: {}", bounds.toString());
+        }
+        return bounds;
+    }
+
+    private BBox createBbox() {
+        if ( !query.containsKey(BBOX)) {
+            return null;
+        }
+        String bboxValue = query.getFirst(BBOX);
+        BBox bbox = parseJson(bboxValue, BBox.class);
+        bbox.setLl(convertToCrs84(bbox.getLl()));
+        bbox.setUr(convertToCrs84(bbox.getUr()));
+        return bbox;
+    }
+
+    private BoundingBox parseBoundsFromVicinity() {
         if ( !query.containsKey(NEAR)) {
             return null;
         }
-        String value = query.getFirst(NEAR);
-        ObjectMapper mapper = new ObjectMapper();
-        Vicinity vicinity = mapper.convertValue(value, Vicinity.class);
-        vicinity.setCrs(getCrs());
+        String vicinityValue = query.getFirst(NEAR);
+        Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
+        if (query.containsKey(CRS)) {
+            vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
+        }
+        BoundingBox bounds = vicinity.calculateBounds();
+        LOGGER.debug("Parsed vicinity bounds: {}", bounds.toString());
+        return bounds;
+    }
 
-        /*
-         * TODO if 'strictXY=true' set axes ordering to be strict XY ... the default respects EPSG strict axes
-         * ordering
-         */
+    private <T> T parseJson(String jsonString, Class<T> clazz) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(jsonString, clazz);
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
 
-        // TODO if bbox is present, merge bounds!
+    private GeojsonPoint convertToCrs84(GeojsonPoint point) {
+        return isForceXY() // is strict XY axis order?!
+              ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
+              : transformToInnerCrs(point, createEpsgStrictAxisOrder());
+    }
 
-        return vicinity.calculateBounds();
+    private GeojsonPoint transformToInnerCrs(GeojsonPoint center, CRSUtils crsUtils) {
+        try {
+            Point point = crsUtils.convertToPointFrom(center, getCrs());
+            Point crs84Point = crsUtils.transformOuterToInner(point, getCrs());
+            return crsUtils.convertToGeojsonFrom(crs84Point);
+        }
+        catch (TransformException e) {
+            BadRequestException ex = new BadRequestException("Transformation could not be performed.", e);
+            ex.addHint("Check the 'crs' parameter determines a valid EPSG CRS. Was: '" + getCrs() + "'.");
+            ex.addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.");
+            throw ex;
+        }
+        catch (FactoryException e) {
+            throw new InternalServerException("Could not handle CRS.", e);
+        }
     }
 
     /**
@@ -429,6 +520,13 @@ public class QueryMap {
             return DEFAULT_CRS;
         }
         return query.getFirst(CRS);
+    }
+
+    public boolean isForceXY() {
+        if ( !query.containsKey(FORCE_XY)) {
+            return DEFAULT_FORCE_XY;
+        }
+        return parseFirstBooleanOfParameter(FORCE_XY);
     }
 
     /**

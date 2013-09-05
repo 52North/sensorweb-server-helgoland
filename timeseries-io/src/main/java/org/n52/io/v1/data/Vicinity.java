@@ -32,7 +32,6 @@ import static org.n52.io.crs.WGS84Util.getLatitudeDelta;
 import static org.n52.io.crs.WGS84Util.getLongitudeDelta;
 import static org.n52.io.crs.WGS84Util.normalizeLatitude;
 import static org.n52.io.crs.WGS84Util.normalizeLongitude;
-import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
 
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
@@ -51,7 +50,7 @@ public class Vicinity {
      */
     private String crs = DEFAULT_CRS;
 
-    private Double[] coords;
+    private GeojsonPoint center;
 
     private double radius;
 
@@ -61,14 +60,14 @@ public class Vicinity {
 
     /**
      * @param center
-     *        the lon-lat ordered center.
+     *        the center point.
      * @param radius
      *        the distance around the center
      */
-    public Vicinity(Double[] center, String radius) {
+    public Vicinity(GeojsonPoint center, String radius) {
         try {
             this.radius = parseDouble(radius);
-            this.coords = center;
+            this.center = center;
         }
         catch (NumberFormatException e) {
             throw new IllegalArgumentException("Could not parse radius.");
@@ -91,7 +90,7 @@ public class Vicinity {
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
 
-        Point center = createCenter(createWithCoordinates(this.coords), crsUtils);
+        Point center = createCenter(this.center, crsUtils);
 
         double latInRad = toRadians(center.getY());
         double llEasting = normalizeLongitude(center.getX() - getLongitudeDelta(latInRad, radius));
@@ -133,11 +132,15 @@ public class Vicinity {
     }
 
     /**
-     * @param coordinates
+     * @param center
      *        the center coordinates.
      */
-    public void setCenter(Double[] coordinates) {
-        coords = coordinates;
+    public void setCenter(GeojsonPoint center) {
+        this.center = center;
+    }
+    
+    public GeojsonPoint getCenter() {
+        return center;
     }
 
     /**
@@ -154,7 +157,7 @@ public class Vicinity {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [ ");
-        sb.append("Center: ").append(coords).append(", ");
+        sb.append("Center: ").append(center).append(", ");
         sb.append("Radius: ").append(radius).append(" km");
         return sb.append(" ]").toString();
     }

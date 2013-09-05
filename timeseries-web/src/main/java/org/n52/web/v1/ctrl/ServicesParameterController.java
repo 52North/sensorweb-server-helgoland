@@ -74,7 +74,7 @@ public class ServicesParameterController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        ServiceOutput service = serviceParameterService.getParameter(serviceId);
+        ServiceOutput service = serviceParameterService.getParameter(serviceId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (service == null) {

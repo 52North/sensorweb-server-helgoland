@@ -76,7 +76,7 @@ public class TimeseriesMetadataController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (metadata == null) {
