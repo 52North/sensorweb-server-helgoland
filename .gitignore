@@ -6,7 +6,6 @@
 /timeseries-io/*.project
 /timeseries-io/*.classpath
 /timeseries-web/*.project
-/timeseries-web/*
 /timeseries-web/*.classpath
 /.project
 /timeseries-web/.project
