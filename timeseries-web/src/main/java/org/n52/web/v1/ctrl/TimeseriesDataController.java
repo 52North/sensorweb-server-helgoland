@@ -189,11 +189,7 @@ public class TimeseriesDataController extends BaseController {
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
-        IOHandler renderer = IOFactory.create()
-                .withLocale(map.getLocale())
-                .showGrid(map.isGrid())
-                .withLegend(map.isLegend())
-                .createIOHandler(context);
+        IOHandler renderer = IOFactory.create().withLocale(map.getLocale()).showGrid(map.isGrid()).withLegend(map.isLegend()).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
@@ -215,11 +211,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
 
         parameters.setBase64(map.isBase64());
-        IOHandler renderer = IOFactory.create()
-                .withLocale(map.getLocale())
-                .showGrid(map.isGrid())
-                .withLegend(map.isLegend())
-                .createIOHandler(context);
+        IOHandler renderer = IOFactory.create().withLocale(map.getLocale()).showGrid(map.isGrid()).withLegend(map.isLegend()).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -228,26 +220,10 @@ public class TimeseriesDataController extends BaseController {
     String timeseriesId, @PathVariable
     String interval, @RequestParam(required = false)
     MultiValueMap<String, String> query) throws Exception {
-        // use a configurable pre rendering of some images, so the prerendering task delivers the images
-        if (preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
-            preRenderingTask.writeToOS(timeseriesId, interval, response.getOutputStream());
+        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
+            throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
-        else {
-            checkIfUnknownTimeseries(timeseriesId);
-            QueryMap map = createFromQuery(query);
-
-            String timespan = preRenderingTask.createTimespanFromInterval(timeseriesId, interval);
-            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-            RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), timespan);
-            context.setDimensions(map.getWidth(), map.getHeight());
-
-            UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
-            checkAgainstTimespanRestriction(parameters.getTimespan());
-
-            parameters.setBase64(map.isBase64());
-            IOHandler renderer = IOFactory.create().withLocale(map.getLocale()).showGrid(map.isGrid()).createIOHandler(context);
-            handleBinaryResponse(response, parameters, renderer);
-        }
+        preRenderingTask.writeToOS(timeseriesId, interval, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
@@ -302,9 +278,8 @@ public class TimeseriesDataController extends BaseController {
 
     private TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = parameters.isGeneralize() 
-                ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
-                : timeseriesDataService.getTimeseriesData(parameters);
+        TvpDataCollection timeseriesData = parameters.isGeneralize() ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
+                                                                    : timeseriesDataService.getTimeseriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }
