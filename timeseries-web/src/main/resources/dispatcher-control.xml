@@ -133,6 +133,12 @@
 		<property name="periodInMinutes" value="1440" />
 		<property name="enabled" value="false" />
 	</bean>
+	
+	<bean class="org.n52.web.v1.ctrl.SearchController">
+	   <property name="searchService" ref="searchService"/>
+	</bean>
+	
+	<bean id="searchService" class="org.n52.api.v1.srv.SearchAdapter" />
 
 	<bean id="offeringParameterService" class="org.n52.api.v1.srv.OfferingOutputAdapter" />
     

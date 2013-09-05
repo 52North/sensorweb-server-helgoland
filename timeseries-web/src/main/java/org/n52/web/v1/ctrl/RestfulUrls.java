@@ -77,4 +77,8 @@ public interface RestfulUrls {
      */
     static final String COLLECTION_TIMESERIES = "timeseries";
 
+    /**
+     * Subpath identifying the search.
+     */
+    static final String SEARCH = "search";
 }
