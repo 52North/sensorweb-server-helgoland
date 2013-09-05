@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * Copyright (C) 2012
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -29,6 +29,8 @@ public class TimeseriesMetadataOutput {
 
     private String id;
 
+    private String label;
+    
     private String uom;
     
     private StationOutput station;
@@ -47,6 +49,14 @@ public class TimeseriesMetadataOutput {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getUom() {
