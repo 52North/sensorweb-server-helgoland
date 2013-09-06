@@ -252,7 +252,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -299,9 +299,9 @@
 											<goal>add-third-party</goal>
 										</goals>
 									</pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
+									<action>
+										<ignore />
+									</action>
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
@@ -332,6 +332,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>1.5</version>
+				<configuration>
+					<useMissingFile>true</useMissingFile>
+				</configuration>
 				<executions>
 					<execution>
 						<id>download-licenses</id>
@@ -506,16 +509,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>java</id>
-			<url>http://java.net/projects/maven-repository/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>spring-central</id>
 			<name>spring-release-remote</name>
 			<url>http://repo.springsource.org/release</url>
@@ -526,6 +519,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+        <repository>
+            <id>java</id>
+            <url>http://java.net/projects/maven-repository/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 	</repositories>
 </project>
 
