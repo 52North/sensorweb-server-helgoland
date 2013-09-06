@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -51,7 +51,6 @@ public class UndesignedParameterSet extends ParameterSet {
     public String getFormat() {
         return format;
     }
-    
     
     public void setFormat(String format) {
         this.format = format;

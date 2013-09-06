@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -36,9 +36,20 @@ public abstract class ParameterSet {
      */
     private String timespan;
     
+    /**
+     * If image data shall be encoded in Base64 to be easily embedded in HTML by JS clients.
+     */
     private boolean base64;
 
+    /**
+     * If timeseries data shall be generalized or not.
+     */
     private boolean generalize;
+    
+    /**
+     * If reference values shall be appended to the timeseries data.
+     */
+    private boolean expanded;
     
     protected ParameterSet() {
         timespan = createDefaultTimespan();
@@ -79,7 +90,15 @@ public abstract class ParameterSet {
 		this.base64 = base64;
 	}
 
-	private String validateTimespan(String timespan) {
+	public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    private String validateTimespan(String timespan) {
         return Interval.parse(timespan).toString();
     }
 

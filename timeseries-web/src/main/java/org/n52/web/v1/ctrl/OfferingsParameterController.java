@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-
 package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_OFFERINGS;
@@ -50,7 +49,7 @@ public class OfferingsParameterController extends ParameterController implements
     public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
         QueryMap map = QueryMap.createFromQuery(query);
         
-        if (map.shallExpand()) {
+        if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = offeringParameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
