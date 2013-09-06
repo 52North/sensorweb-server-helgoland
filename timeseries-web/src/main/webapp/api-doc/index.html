@@ -254,27 +254,63 @@ Content omitted for brevity.
 					</div>
 					
 					<div id="general-search"> <!-- fuzzy search -->
-						<h3>Search</h3>
-						<p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
-            
-            <table class="table">
-              <thead>
-                <th>Method</th>
-                <th>Path</th>
-                <th>Content-Type</th>
-                <th>Description</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/search?q=my%20search</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Searches globally over available resources.
-                  <div class="n52-callout n52-callout-todo">specify reponse format</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+						<div>
+              <h3>Search</h3>
+              <p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
+              
+              <table class="table">
+                <thead>
+                  <th>Method</th>
+                  <th>Path</th>
+                  <th>Content-Type</th>
+                  <th>Description</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/api/v1/search?q=my+search</code></td>
+                    <td><code>application/json</code></td>
+                    <td>Searches globally over available resources.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h3>Output Example</h3>
+              <p>A search generates a result collection containing all matching resources as items. An item describes a label where search took place on, a resource type hint and a link to the resource itself.</p>
+              <pre>GET /api/v1/search?q=sylt HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+              
+[
+  {
+    "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "station",
+    "href": "./stations/sta_a4bff7499d440d9bb67ad73e048c5a47"
+  },
+  {
+    "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
+    "label": "Wasserstand@List_Auf_Sylt_9570070",
+    "type": "timeseries",
+    "href": "./timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98"
+  },
+  {
+    "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "feature",
+    "href": "./features/foi_25e09ee3155ab0fbf3e4684ad2edffbf"
+  },
+  {
+    "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
+    "label": "Wasserstand-List_Auf_Sylt_9570070",
+    "type": "procedure",
+    "href": "./procedures/pro_e878d48e49ebc2a156e2810470bae9a2"
+  }
+]</pre>
+            </div>
 					</div>
 				
 					<div id="general-#general-common-status-codes"> <!-- Status Codes -->
@@ -820,6 +856,7 @@ Content-Type: application/json;charset=UTF-8
                     </ul>
                   </p>
                   <p>Timeseries can be pre-rendered by a regular task. If a pre-rendering exist for a given timeseries is a configuration issue.</p>
+                  <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
                   </td>
 								</tr>
 							</tbody>
