@@ -484,10 +484,12 @@ public class QueryMap {
             return mapper.readValue(jsonString, clazz);
         }
         catch (IOException e) {
-            return null;
+            BadRequestException ex = new BadRequestException("The given parameter could not been read: " + jsonString, e);
+            ex.addHint("Refer to the API documentation and check the parameter against required syntax!");
+            throw ex;
         }
     }
-
+    
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
         return isForceXY() // is strict XY axis order?!
               ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
