@@ -62,9 +62,9 @@ import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.task.PreRenderingTask;
+import org.n52.web.v1.srv.ParameterService;
 import org.n52.web.v1.srv.ServiceParameterService;
 import org.n52.web.v1.srv.TimeseriesDataService;
-import org.n52.web.v1.srv.TimeseriesMetadataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -83,7 +83,7 @@ public class TimeseriesDataController extends BaseController {
 
     private ServiceParameterService serviceParameterService;
 
-    private TimeseriesMetadataService timeseriesMetadataService;
+    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
 
@@ -109,7 +109,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query);
+        QueryMap map = createFromQuery(query.toSingleValueMap());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
         checkAgainstTimespanRestriction(map.getTimespan());
 
@@ -161,7 +161,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query);
+        QueryMap map = createFromQuery(query.toSingleValueMap());
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
@@ -201,7 +201,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query);
+        QueryMap map = createFromQuery(query.toSingleValueMap());
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         context.setDimensions(map.getWidth(), map.getHeight());
@@ -294,11 +294,11 @@ public class TimeseriesDataController extends BaseController {
         this.serviceParameterService = serviceParameterService;
     }
 
-    public TimeseriesMetadataService getTimeseriesMetadataService() {
+    public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(TimeseriesMetadataService timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 

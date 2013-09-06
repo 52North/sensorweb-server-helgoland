@@ -21,8 +21,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
+import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
@@ -48,7 +50,7 @@ public class StationsParameterController extends ParameterController {
     private ParameterService<StationOutput> stationParameterService;
 
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+        QueryMap map = createFromQuery(query.toSingleValueMap());
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -72,7 +74,7 @@ public class StationsParameterController extends ParameterController {
 
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+        QueryMap map = createFromQuery(query.toSingleValueMap());
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

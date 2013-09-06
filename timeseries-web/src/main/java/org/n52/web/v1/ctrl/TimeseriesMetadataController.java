@@ -21,15 +21,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
+import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.TimeseriesMetadataService;
+import org.n52.web.v1.srv.ParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -40,37 +42,39 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(value = DEFAULT_PATH + "/" + COLLECTION_TIMESERIES, produces = {"application/json"})
 public class TimeseriesMetadataController extends ParameterController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesMetadataController.class);
 
-    private TimeseriesMetadataService timeseriesMetadataService;
+    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     @Override
-    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
-        
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap map = createFromQuery(query.toSingleValueMap());
+
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = timeseriesMetadataService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
-        } else {
+        }
+        else {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = timeseriesMetadataService.getCondensedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
         }
     }
 
     @Override
-    public ModelAndView getItem(@PathVariable("item") String timeseriesId, @RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+    public ModelAndView getItem(@PathVariable("item") String timeseriesId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap map = createFromQuery(query.toSingleValueMap());
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
@@ -85,11 +89,11 @@ public class TimeseriesMetadataController extends ParameterController {
         return new ModelAndView().addObject(metadata);
     }
 
-    public TimeseriesMetadataService getTmeseriesMetadataService() {
+    public ParameterService<TimeseriesMetadataOutput> getTmeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(TimeseriesMetadataService timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 

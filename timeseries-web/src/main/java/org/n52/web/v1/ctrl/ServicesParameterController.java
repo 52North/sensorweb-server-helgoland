@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
@@ -42,33 +43,35 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = DEFAULT_PATH + "/" + COLLECTION_SERVICES, produces = {"application/json"})
 public class ServicesParameterController extends ParameterController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesParameterController.class);
 
-    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query);
-        
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap map = createFromQuery(query.toSingleValueMap());
+
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = serviceParameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
-        } else {
+        }
+        else {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = serviceParameterService.getCondensedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
         }
     }
 
-    public ModelAndView getItem(@PathVariable("item") String serviceId, @RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+    public ModelAndView getItem(@PathVariable("item") String serviceId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap map = createFromQuery(query.toSingleValueMap());
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

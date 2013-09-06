@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
@@ -36,12 +37,16 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Point;
 
+/**
+ * Composes a {@link ParameterService} for {@link StationOutput}s to transform geometries to requested spatial
+ * reference system.
+ */
 public class TransformingStationService implements ParameterService<StationOutput> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformingStationService.class);
-    
+
     private ParameterService<StationOutput> composedService;
-    
+
     public TransformingStationService(ParameterService<StationOutput> toCompose) {
         this.composedService = toCompose;
     }
@@ -68,7 +73,7 @@ public class TransformingStationService implements ParameterService<StationOutpu
         StationOutput[] stations = composedService.getParameters(items, query);
         return transformStations(query, stations);
     }
-    
+
     @Override
     public StationOutput getParameter(String item) {
         return composedService.getParameter(item);
@@ -93,10 +98,11 @@ public class TransformingStationService implements ParameterService<StationOutpu
             return; // no need to transform
         }
         try {
-            CRSUtils crsUtils = createEpsgStrictAxisOrder(); // TODO future: strictXY parameter
+            CRSUtils crsUtils = createEpsgStrictAxisOrder();
             Point point = crsUtils.convertToPointFrom(stationOutput.getGeometry());
             stationOutput.setGeometry(crsUtils.convertToGeojsonFrom(point, targetCrs));
-        } catch(TransformException e) {
+        }
+        catch (TransformException e) {
             LOGGER.warn("Could not transform to requested CRS: {}", targetCrs, e);
         }
         catch (FactoryException e) {

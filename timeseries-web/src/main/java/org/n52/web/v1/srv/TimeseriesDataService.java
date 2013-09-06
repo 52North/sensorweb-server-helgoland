@@ -21,11 +21,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.UndesignedParameterSet;
 
+/**
+ * Provides access to the actual raw timeseries data via {@link UndesignedParameterSet}.
+ */
 public interface TimeseriesDataService {
 
     TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters);
