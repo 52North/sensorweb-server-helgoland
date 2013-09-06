@@ -201,6 +201,11 @@ public class PreRenderingTask implements ServletConfigAware {
 	public void writeToOS(String timeseriesId, String interval, ServletOutputStream outputStream) {
 		try {
 			BufferedImage image = loadImage(timeseriesId, interval);
+			if (image == null) {
+			    ResourceNotFoundException ex = new ResourceNotFoundException("Could not find image on server.");
+			    ex.addHint("Perhaps the image is being rendered at the moment. Try again later.");
+                throw ex;
+            }
 			ImageIO.write(image, "png", outputStream);
 		} catch (IOException e) {
 			LOGGER.error("Error while loading pre rendered image", e);
