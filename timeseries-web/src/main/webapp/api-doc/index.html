@@ -278,36 +278,37 @@ Content omitted for brevity.
             </div>
             <div>
               <h3>Output Example</h3>
+              <p>A search generates a result collection containing all matching resources as items. An item describes a label where search took place on, a resource type hint and a link to the resource itself.</p>
               <pre>GET /api/v1/search?q=sylt HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
-              <pre id="timeseries-examples-simple" class="collapse">HTTP/1.1 200 OK
+              <pre>HTTP/1.1 200 OK
               
-              [
-    {
-        "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
-        "label": "List_Auf_Sylt_9570070",
-        "type": "station",
-        "href": "./stations/sta_a4bff7499d440d9bb67ad73e048c5a47"
-    },
-    {
-        "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
-        "label": "Wasserstand@List_Auf_Sylt_9570070",
-        "type": "timeseries",
-        "href": "./timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98"
-    },
-    {
-        "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
-        "label": "List_Auf_Sylt_9570070",
-        "type": "feature",
-        "href": "./features/foi_25e09ee3155ab0fbf3e4684ad2edffbf"
-    },
-    {
-        "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
-        "label": "Wasserstand-List_Auf_Sylt_9570070",
-        "type": "procedure",
-        "href": "./procedures/pro_e878d48e49ebc2a156e2810470bae9a2"
-    }
+[
+  {
+    "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "station",
+    "href": "./stations/sta_a4bff7499d440d9bb67ad73e048c5a47"
+  },
+  {
+    "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
+    "label": "Wasserstand@List_Auf_Sylt_9570070",
+    "type": "timeseries",
+    "href": "./timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98"
+  },
+  {
+    "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "feature",
+    "href": "./features/foi_25e09ee3155ab0fbf3e4684ad2edffbf"
+  },
+  {
+    "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
+    "label": "Wasserstand-List_Auf_Sylt_9570070",
+    "type": "procedure",
+    "href": "./procedures/pro_e878d48e49ebc2a156e2810470bae9a2"
+  }
 ]</pre>
             </div>
 					</div>
