@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
 /**
@@ -30,7 +31,7 @@ package org.n52.web.v1.ctrl;
  * <b>Note:</b> Do not code against this type.
  */
 public interface RestfulUrls {
-    
+
     /**
      * The base URL to be used as RESTful entry point.
      */
@@ -40,12 +41,12 @@ public interface RestfulUrls {
      * Subpath identifying a collection of services availabe.
      */
     static final String COLLECTION_SERVICES = "services";
-    
+
     /**
      * Subpath identifying a collection of categories availabe.
      */
     static final String COLLECTION_CATEGORIES = "categories";
-    
+
     /**
      * Subpath identifying a collection of offerings available.
      */
@@ -55,7 +56,7 @@ public interface RestfulUrls {
      * Subpath identifying a collection of features available.
      */
     static final String COLLECTION_FEATURES = "features";
-    
+
     /**
      * Subpath identifying a collection of procedures available.
      */
@@ -70,7 +71,7 @@ public interface RestfulUrls {
      * Subpath identifying a collection of stations available.
      */
     static final String COLLECTION_STATIONS = "stations";
-    
+
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */

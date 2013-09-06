@@ -21,10 +21,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import org.n52.web.v1.ctrl.QueryMap;
 
+/**
+ * A generic service to get arbitrary parameters from the underlying data access implementation. In general
+ * the access can result either in compact or detailed outputs. However, each query can be controlled in more
+ * detail by a parameter values hold by a {@link QueryMap}.
+ * 
+ * @param <T>
+ *        the actual parameter type.
+ */
 public interface ParameterService<T> {
 
     /**

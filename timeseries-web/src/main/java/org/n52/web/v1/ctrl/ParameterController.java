@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -40,7 +41,6 @@ public abstract class ParameterController extends BaseController implements Rest
 
     @RequestMapping(value = "/{item}", method = GET)
     public abstract ModelAndView getItem(String item, MultiValueMap<String, String> query);
-
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;

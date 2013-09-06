@@ -103,6 +103,11 @@
                 <td>Review draft</td>
                 <td>2013-08-22</td>
               </tr>
+              <tr>
+                <td>Henning Bredel</td>
+                <td>Pre-Final Candidate</td>
+                <td>2013-09-06</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -150,6 +155,8 @@
                     <pre>expanded=true</pre>
                   </td>
                   <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more detailed information up to a certain point. However, it does not necessarily provide all item information as one may get when request the resource item itself.</p>
+                  
+                  <p>The <code>expanded</code> works almost only for resource collection. However, expceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
                   
                   <p>The default is <code>false</code>.</p></td>
                 </tr>
@@ -921,6 +928,18 @@ Content-Type: application/json;charset=UTF-8
 							<tbody>
                 <tr>
 									<td>
+										<code>expanded</code>
+									</td>
+                  <td>
+                    <pre>expanded=true</pre>
+                  </td>
+                  <td>
+                    <p>The <code>expanded</code> parameter works for collection data and also when requesting raw timeseries data.</p>
+                    <p>Timeseries may provide additional data which changes over time (and therefore is not core metadata anymore). Best example are reference values which can be used to provide better interpretation to actual data values.</p>
+                  </td>
+                </tr>
+                <tr>
+									<td>
 										<code>timespan</code>
 									</td>
                   <td>
@@ -1227,63 +1246,45 @@ Content-Type: application/json;charset=UTF-8
             <div> <!-- Raw Data of a single timeseries -->
               <h4>Raw Data of a single timeseries</h4>
               
-              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed/getData HTTP/1.1
+              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed/getData?expanded=true HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
                 <pre id="timeseries-examples-single-raw" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "values": {
-    [
+  "ts_c8ed5ddbb89c19b2e385de23eecbde98": {
+    "values": [
       {
-        "timestamp": 1375570800000,
-        "value": 230.81
+        "timestamp": 1376563000000,
+        "value": 442.8
       },
       {
-        "timestamp": 1375570860000,
-        "value": 235.12
+        "timestamp": 1376568060000,
+        "value": 441.8
       },
-      {
-        "timestamp": 1375570920000,
-        "value": 235.97
-      }
-    ]
-  },
-  "_metadata": {
-    "referenceValues": [
-      {
-        "Mittleres Niedrigwasser": {
+    ],
+    "extra": {
+      "referenceValues": {
+        "ref_68192ce0f01b2b47821bac2547f9f9c0": {
           "values": [
             {
-              "timestamp": 1375570800000,
-              "value": 24
+              "timestamp": 1376563000000,
+              "value": 408
             },
             {
-              "timestamp": 1375590860000,
-              "value": 26.5
-            }
-          ]
-        },
-        "Mittelwasser": {
-          "values": [
-            {
-              "timestamp": 1375570800000,
-              "value": 34.5
-            },
-            {
-              "timestamp": 1375590860000,
-              "value": 34.5
+              "timestamp": 1376568060000,
+              "value": 408
             }
           ]
         }
       }
-    ]
+    }
   }
 }</pre>
               <button data-toggle="collapse" data-parent="#timeseries-examples" data-target="#timeseries-examples-single-raw" class="btn btn-primary">Show/Hide Response</button>
               <div class="n52-callout n52-callout-info">
-                <p>Timeseries data can be very big! Naive clients can bother data providers when trying to request huge datasets by accident. Therefore data requests may be limited to a maximum timespan (per configuration).</p>
+                <p>Timeseries data can get huge quickly depending on how often new values are measured and how long data is stored in the corresponding data backend! Naive clients can bother data providers when trying to request huge datasets by accident. Therefore data requests may be limited to a maximum timespan (per configuration).</p>
                 <p>However, most probably consuming huge datasets may also not be of client's interest. Have a look <a href="#general-paging">at the paging documentation</a> how to get data in smaller chunks.</p>
               </div>
 						</div>
@@ -1562,6 +1563,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
     ]
   }
 }</pre>
+            <div class="n52-callout n52-callout-info">Please note that adding <code>expanded=true</code> reference values are added as a timeseries on their own. You can track reference values with the corresponding identifiers available from <a href="#timeseries-examples-item">the timeseries metadata</a>.</div>
           </div>
       
 					<div>
