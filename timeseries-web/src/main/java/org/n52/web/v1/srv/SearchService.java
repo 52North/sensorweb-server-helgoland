@@ -21,14 +21,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import java.util.Collection;
 
 import org.n52.io.v1.data.search.SearchResult;
 
+/**
+ * Serves search requests on the underlying data access implementation(s).
+ */
 public interface SearchService {
-	
-	Collection<SearchResult> searchResources(String search);
+
+    /**
+     * @param search
+     *        a search string.
+     * @return a collection of matching results.
+     */
+    Collection<SearchResult> searchResources(String search);
 
 }

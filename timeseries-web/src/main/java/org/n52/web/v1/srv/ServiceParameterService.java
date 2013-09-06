@@ -21,10 +21,15 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import org.n52.io.v1.data.ServiceOutput;
 
+/**
+ * Extends the generic {@link ParameterService} interface to provide quick check if timeseries resources
+ * exist.
+ */
 public interface ServiceParameterService extends ParameterService<ServiceOutput> {
 
     public boolean isKnownTimeseries(String timeseriesId);

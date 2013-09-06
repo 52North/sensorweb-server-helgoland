@@ -21,10 +21,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+/**
+ * Provides access to resource quantities available.
+ */
+public interface CountingMetadataService {
 
-public interface TimeseriesMetadataService extends ParameterService<TimeseriesMetadataOutput> {
+    int getServiceCount();
+
+    int getStationsCount();
+
+    int getTimeseriesCount();
+
+    int getOfferingsCount();
+
+    int getCategoriesCount();
+
+    int getFeaturesCount();
+
+    int getProceduresCount();
+
+    int getPhenomenaCount();
 
 }

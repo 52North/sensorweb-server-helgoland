@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
@@ -28,6 +29,8 @@ import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -44,7 +47,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -53,7 +55,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Point;
 
 public class QueryMap {
-    
+
     private final static Logger LOGGER = LoggerFactory.getLogger(QueryMap.class);
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
@@ -241,7 +243,7 @@ public class QueryMap {
      */
     private static final String BBOX = "bbox";
 
-    private MultiValueMap<String, String> query;
+    private Map<String, String> query;
 
     /**
      * Use static constructor {@link #createFromQuery(MultiValueMap)}.
@@ -250,9 +252,9 @@ public class QueryMap {
      *        containing query parameters. If <code>null</code>, all parameters are returned with default
      *        values.
      */
-    private QueryMap(MultiValueMap<String, String> queryParameters) {
+    private QueryMap(Map<String, String> queryParameters) {
         if (queryParameters == null) {
-            query = new LinkedMultiValueMap<String, String>();
+            query = new HashMap<String, String>();
         }
         query = queryParameters;
     }
@@ -333,7 +335,7 @@ public class QueryMap {
         if ( !query.containsKey(LOCALE)) {
             return DEFAULT_LOCALE;
         }
-        return query.getFirst(LOCALE);
+        return query.get(LOCALE);
     }
 
     /**
@@ -343,13 +345,13 @@ public class QueryMap {
         if ( !query.containsKey(STYLE)) {
             return StyleProperties.createDefaults();
         }
-        return parseStyleProperties(query.getFirst(STYLE));
+        return parseStyleProperties(query.get(STYLE));
     }
 
     private StyleProperties parseStyleProperties(String style) {
         try {
             return style == null ? StyleProperties.createDefaults()
-                                : new ObjectMapper().readValue(style, StyleProperties.class);
+                : new ObjectMapper().readValue(style, StyleProperties.class);
         }
         catch (JsonMappingException e) {
             throw new BadRequestException("Could not read style properties: " + style, e);
@@ -366,7 +368,7 @@ public class QueryMap {
         if ( !query.containsKey(FORMAT)) {
             return DEFAULT_FORMAT;
         }
-        return query.getFirst(FORMAT);
+        return query.get(FORMAT);
     }
 
     /**
@@ -376,7 +378,7 @@ public class QueryMap {
         if ( !query.containsKey(TIMESPAN)) {
             return createDefaultTimespan();
         }
-        return validateTimespan(query.getFirst(TIMESPAN));
+        return validateTimespan(query.get(TIMESPAN));
     }
 
     private String createDefaultTimespan() {
@@ -399,27 +401,27 @@ public class QueryMap {
     }
 
     public String getCategory() {
-        return query.getFirst(CATEGORY);
+        return query.get(CATEGORY);
     }
 
     public String getService() {
-        return query.getFirst(SERVICE);
+        return query.get(SERVICE);
     }
 
     public String getOffering() {
-        return query.getFirst(OFFERING);
+        return query.get(OFFERING);
     }
 
     public String getFeature() {
-        return query.getFirst(FEATURE);
+        return query.get(FEATURE);
     }
 
     public String getProcedure() {
-        return query.getFirst(PROCEDURE);
+        return query.get(PROCEDURE);
     }
 
     public String getPhenomenon() {
-        return query.getFirst(PHENOMENON);
+        return query.get(PHENOMENON);
     }
 
     public BoundingBox getSpatialFilter() {
@@ -456,7 +458,7 @@ public class QueryMap {
         if ( !query.containsKey(BBOX)) {
             return null;
         }
-        String bboxValue = query.getFirst(BBOX);
+        String bboxValue = query.get(BBOX);
         BBox bbox = parseJson(bboxValue, BBox.class);
         bbox.setLl(convertToCrs84(bbox.getLl()));
         bbox.setUr(convertToCrs84(bbox.getUr()));
@@ -467,7 +469,7 @@ public class QueryMap {
         if ( !query.containsKey(NEAR)) {
             return null;
         }
-        String vicinityValue = query.getFirst(NEAR);
+        String vicinityValue = query.get(NEAR);
         Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
         if (query.containsKey(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
@@ -483,16 +485,17 @@ public class QueryMap {
             return mapper.readValue(jsonString, clazz);
         }
         catch (IOException e) {
-            BadRequestException ex = new BadRequestException("The given parameter could not been read: " + jsonString, e);
+            BadRequestException ex = new BadRequestException("The given parameter could not been read: " + jsonString,
+                                                             e);
             ex.addHint("Refer to the API documentation and check the parameter against required syntax!");
             throw ex;
         }
     }
-    
+
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
         return isForceXY() // is strict XY axis order?!
-              ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
-              : transformToInnerCrs(point, createEpsgStrictAxisOrder());
+            ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
+            : transformToInnerCrs(point, createEpsgStrictAxisOrder());
     }
 
     private GeojsonPoint transformToInnerCrs(GeojsonPoint center, CRSUtils crsUtils) {
@@ -520,7 +523,7 @@ public class QueryMap {
         if ( !query.containsKey(CRS)) {
             return DEFAULT_CRS;
         }
-        return query.getFirst(CRS);
+        return query.get(CRS);
     }
 
     public boolean isForceXY() {
@@ -546,13 +549,13 @@ public class QueryMap {
         return query.containsKey(parameter);
     }
 
-    public String[] getOther(String parameter) {
-        return query.get(parameter).toArray(new String[0]);
+    public String getOther(String parameter) {
+        return query.get(parameter);
     }
 
     private int parseFirstIntegerOfParameter(String parameter) {
         try {
-            String value = query.getFirst(parameter);
+            String value = query.get(parameter);
             return Integer.parseInt(value);
         }
         catch (NumberFormatException e) {
@@ -562,7 +565,7 @@ public class QueryMap {
 
     private boolean parseFirstBooleanOfParameter(String parameter) {
         try {
-            String value = query.getFirst(parameter);
+            String value = query.get(parameter);
             return Boolean.parseBoolean(value);
         }
         catch (NumberFormatException e) {
@@ -575,7 +578,7 @@ public class QueryMap {
      *        the parameters sent via GET payload.
      * @return a query map for convenient parameter access plus validation.
      */
-    public static QueryMap createFromQuery(MultiValueMap<String, String> queryParameters) {
+    public static QueryMap createFromQuery(Map<String, String> queryParameters) {
         return new QueryMap(queryParameters);
     }
 
@@ -585,13 +588,13 @@ public class QueryMap {
      * @return a query map for convenient parameter access plus validation.
      */
     public static QueryMap createFromQuery(DesignedParameterSet parameters) {
-        LinkedMultiValueMap<String, String> queryParameters = new LinkedMultiValueMap<String, String>();
-        queryParameters.add(LOCALE, parameters.getLanguage());
-        queryParameters.add(TIMESPAN, parameters.getTimespan());
-        queryParameters.add(WIDTH, parameters.getWidth() + "");
-        queryParameters.add(HEIGHT, parameters.getHeight() + "");
-        queryParameters.add(EXPANDED, parameters.isExpanded() + "");
-        queryParameters.add(GRID, Boolean.toString(parameters.isGrid()));
+        Map<String, String> queryParameters = new HashMap<String, String>();
+        queryParameters.put(LOCALE, parameters.getLanguage());
+        queryParameters.put(TIMESPAN, parameters.getTimespan());
+        queryParameters.put(WIDTH, parameters.getWidth() + "");
+        queryParameters.put(HEIGHT, parameters.getHeight() + "");
+        queryParameters.put(EXPANDED, parameters.isExpanded() + "");
+        queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
 
         // TODO add further parameters
 

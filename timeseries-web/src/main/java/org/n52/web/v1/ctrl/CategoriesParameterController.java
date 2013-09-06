@@ -21,8 +21,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.ctrl;
 
+import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
 import org.n52.io.v1.data.CategoryOutput;
@@ -38,35 +40,38 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = RestfulUrls.DEFAULT_PATH + "/" + RestfulUrls.COLLECTION_CATEGORIES, produces = {"application/json"})
+@RequestMapping(value = RestfulUrls.DEFAULT_PATH + "/" + RestfulUrls.COLLECTION_CATEGORIES,
+    produces = {"application/json"})
 public class CategoriesParameterController extends ParameterController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(CategoriesParameterController.class);
-	
-	private ParameterService<CategoryOutput> categoryParameterService;
-	
-	public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
-		QueryMap queryMap = QueryMap.createFromQuery(query);
-		
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoriesParameterController.class);
+
+    private ParameterService<CategoryOutput> categoryParameterService;
+
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap queryMap = createFromQuery(query.toSingleValueMap());
+
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = categoryParameterService.getExpandedParameters(queryMap);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
-        } else {
+        }
+        else {
             Object[] result = categoryParameterService.getCondensedParameters(queryMap);
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
         }
-	}
+    }
 
-	public ModelAndView getItem(@PathVariable("item") String categoryId, @RequestParam(required=false) MultiValueMap<String, String> query) {
-		QueryMap map = QueryMap.createFromQuery(query);
+    public ModelAndView getItem(@PathVariable("item") String categoryId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        QueryMap map = createFromQuery(query.toSingleValueMap());
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
@@ -77,16 +82,15 @@ public class CategoriesParameterController extends ParameterController {
         }
 
         return new ModelAndView().addObject(category);
-	}
+    }
 
-	public ParameterService<CategoryOutput> getCategoryParameterService() {
-		return categoryParameterService;
-	}
+    public ParameterService<CategoryOutput> getCategoryParameterService() {
+        return categoryParameterService;
+    }
 
-	public void setCategoryParameterService(
-			ParameterService<CategoryOutput> categoryParameterService) {
-		this.categoryParameterService = categoryParameterService;
-	}
-
+    public void setCategoryParameterService(
+                                            ParameterService<CategoryOutput> categoryParameterService) {
+        this.categoryParameterService = categoryParameterService;
+    }
 
 }

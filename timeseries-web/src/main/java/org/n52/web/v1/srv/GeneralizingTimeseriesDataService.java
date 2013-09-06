@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import static org.n52.io.generalize.DouglasPeuckerGeneralizer.createNonConfigGeneralizer;
@@ -33,10 +34,13 @@ import org.n52.io.v1.data.UndesignedParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Composes a {@link TimeseriesDataService} instance to generalize requested timeseries data. 
+ */
 public class GeneralizingTimeseriesDataService implements TimeseriesDataService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingTimeseriesDataService.class);
-    
+
     private TimeseriesDataService composedService;
 
     public GeneralizingTimeseriesDataService(TimeseriesDataService toCompose) {
@@ -53,12 +57,13 @@ public class GeneralizingTimeseriesDataService implements TimeseriesDataService 
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
             return generalizedData;
-        } catch (GeneralizerException e) {
+        }
+        catch (GeneralizerException e) {
             LOGGER.error("Could not generalize timeseries collection. Returning original data.", e);
             return ungeneralizedData;
         }
     }
-    
+
     private void logGeneralizationAmount(TvpDataCollection ungeneralizedData,
                                          TvpDataCollection generalizedData) {
         for (String timeseriesId : ungeneralizedData.getAllTimeseries().keySet()) {

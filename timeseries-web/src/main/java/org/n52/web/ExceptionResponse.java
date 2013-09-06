@@ -21,45 +21,46 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-
+/**
+ * Wraps all {@link WebException}s thrown by controlled workflow. If unexpected Exceptions occur a general
+ * {@link InternalServerException} should be wrapped so that all exceptions interrupting the expected workflow
+ * can be serialized and returned to the requesting user/service. <br/>
+ * <br/>
+ * To ensure all exceptions are handled and communicated to the user all Web bindings shall inherit from
+ * {@link BaseController} which is configured by default to serve as a central {@link ExceptionHandler}.
+ */
 public class ExceptionResponse {
-    
-    // TODO add userMessage
-    
-    // TODO add developerMessage
-    
-    // TODO add url for details
+
+    // TODO add documentation url for details
 
     // TODO make stack tracing configurable
-    
+
     private Throwable exception;
 
     private HttpStatus statusCode;
-    
+
     private String[] hints;
-    
-    public static ExceptionResponse createExceptionResponse(Throwable e, HttpStatus statusCode) {
-        return new ExceptionResponse(e, statusCode);
-    }
-    
+
     public static ExceptionResponse createExceptionResponse(WebException e, HttpStatus statusCode) {
         return new ExceptionResponse(e.getThrowable(), statusCode, e.getHints());
     }
-    
+
     private ExceptionResponse(Throwable e, HttpStatus statusCode) {
         this(e, statusCode, null);
     }
-    
+
     private ExceptionResponse(Throwable e, HttpStatus statusCode, String[] hints) {
         this.statusCode = statusCode;
         this.hints = hints;
         this.exception = e;
     }
-    
+
     public int getStatusCode() {
         return statusCode.value();
     }
@@ -71,7 +72,7 @@ public class ExceptionResponse {
     public String getUserMessage() {
         return exception.getMessage();
     }
-    
+
     public String getDeveloperMessage() {
         Throwable causedBy = exception.getCause();
         return causedBy != null ? formatMessageOutput(causedBy) : null;
@@ -84,5 +85,5 @@ public class ExceptionResponse {
     public String[] getHints() {
         return hints;
     }
-    
+
 }
