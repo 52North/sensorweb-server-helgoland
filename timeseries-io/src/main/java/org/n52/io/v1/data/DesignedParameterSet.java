@@ -29,7 +29,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a parameter object to request data from multiple timeseries.
+ * Represents a parameter object to request a rendered chart output from multiple timeseries.
  */
 public class DesignedParameterSet extends ParameterSet {
     
@@ -51,9 +51,9 @@ public class DesignedParameterSet extends ParameterSet {
     private boolean grid = true;
 
     /**
-     * A language code to determine the requested locale.
+     * A language code to determine the requested locale. "en" is the default.
      */
-    private String language;
+    private String language = "en";
     
     /**
      * Style options for each timeseriesId of interest.

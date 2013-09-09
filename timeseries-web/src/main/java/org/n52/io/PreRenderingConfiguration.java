@@ -23,29 +23,37 @@
  */
 package org.n52.io;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.n52.io.v1.data.StyleProperties;
 
-import org.n52.io.format.TvpDataCollection;
+public class PreRenderingConfiguration {
+	
+	private String timeseriesId;
+	
+	private String[] interval;
+	
+	private StyleProperties style;
 
-public interface IOHandler {
+	public String getTimeseriesId() {
+		return timeseriesId;
+	}
 
-    /**
-     * @param data
-     *        the input data collection to create an output for.
-     * @throws TimeseriesIOException
-     *         if ouput generation fails.
-     */
-    public void generateOutput(TvpDataCollection data) throws TimeseriesIOException;
+	public void setTimeseriesId(String timeseriesId) {
+		this.timeseriesId = timeseriesId;
+	}
 
-    /**
-     * Encodes and writes previously generated output to the given stream. After handling the stream gets
-     * flushed and closed.
-     * 
-     * @param stream
-     *        the stream to write on the generated ouput.
-     * @throws IOException
-     *         if writing output to stream fails.
-     */
-    public void encodeAndWriteTo(OutputStream stream) throws TimeseriesIOException;
+	public String[] getInterval() {
+		return interval;
+	}
+
+	public void setInterval(String[] interval) {
+		this.interval = interval;
+	}
+
+	public StyleProperties getStyle() {
+		return style;
+	}
+
+	public void setStyle(StyleProperties style) {
+		this.style = style;
+	}
 }

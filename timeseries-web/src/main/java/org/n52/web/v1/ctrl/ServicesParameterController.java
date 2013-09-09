@@ -24,11 +24,12 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_SERVICES;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.ServiceOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class ServicesParameterController extends ParameterController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesParameterController.class);
 
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -71,7 +72,7 @@ public class ServicesParameterController extends ParameterController {
 
     public ModelAndView getItem(@PathVariable("item") String serviceId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

@@ -27,9 +27,9 @@ package org.n52.web.v1.srv;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
+import org.n52.io.IoParameters;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.v1.data.StationOutput;
-import org.n52.web.v1.ctrl.QueryMap;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -52,13 +52,13 @@ public class TransformingStationService implements ParameterService<StationOutpu
     }
 
     @Override
-    public StationOutput[] getExpandedParameters(QueryMap query) {
+    public StationOutput[] getExpandedParameters(IoParameters query) {
         StationOutput[] stations = composedService.getExpandedParameters(query);
         return transformStations(query, stations);
     }
 
     @Override
-    public StationOutput[] getCondensedParameters(QueryMap query) {
+    public StationOutput[] getCondensedParameters(IoParameters query) {
         StationOutput[] stations = composedService.getCondensedParameters(query);
         return transformStations(query, stations);
     }
@@ -69,7 +69,7 @@ public class TransformingStationService implements ParameterService<StationOutpu
     }
 
     @Override
-    public StationOutput[] getParameters(String[] items, QueryMap query) {
+    public StationOutput[] getParameters(String[] items, IoParameters query) {
         StationOutput[] stations = composedService.getParameters(items, query);
         return transformStations(query, stations);
     }
@@ -80,13 +80,13 @@ public class TransformingStationService implements ParameterService<StationOutpu
     }
 
     @Override
-    public StationOutput getParameter(String item, QueryMap query) {
+    public StationOutput getParameter(String item, IoParameters query) {
         StationOutput station = composedService.getParameter(item, query);
         transformInline(station, query.getCrs());
         return station;
     }
 
-    private StationOutput[] transformStations(QueryMap query, StationOutput[] stations) {
+    private StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
         for (StationOutput stationOutput : stations) {
             transformInline(stationOutput, query.getCrs());
         }

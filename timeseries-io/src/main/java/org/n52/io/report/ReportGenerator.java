@@ -29,11 +29,11 @@ import static org.n52.io.I18N.getMessageLocalizer;
 import java.util.Locale;
 
 import org.n52.io.I18N;
-import org.n52.io.IOHandler;
+import org.n52.io.IoHandler;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
-public abstract class ReportGenerator implements IOHandler {
+public abstract class ReportGenerator implements IoHandler {
 
     protected I18N i18n = getDefaultLocalizer();
 
