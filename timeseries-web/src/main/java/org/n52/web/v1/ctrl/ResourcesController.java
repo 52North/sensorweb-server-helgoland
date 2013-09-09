@@ -24,7 +24,7 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.ResourcesController.ResourceCollection.createResource;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 
@@ -46,7 +46,7 @@ public class ResourcesController {
 
     @RequestMapping("/")
     public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        return new ModelAndView().addObject(createResources(createFromQuery(query.toSingleValueMap()).isExpanded()));
+        return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }
 
     public ResourceCollection[] createResources(boolean expanded) {

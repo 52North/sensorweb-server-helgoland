@@ -21,12 +21,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-package org.n52.io.v1.data;
+package org.n52.io;
 
-public class ReferenceValue {
+public class IoParseException extends RuntimeException {
 
-    private String reference;
+    private static final long serialVersionUID = -3627963628985404024L;
+
+    public IoParseException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public IoParseException(String message) {
+        super(message);
+    }
     
-    
-    // TODO values: from .. to (not clear if all refValues are determined to have an end date, e.g. current valid refValues
 }
