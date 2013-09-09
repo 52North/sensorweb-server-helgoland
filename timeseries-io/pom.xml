@@ -70,11 +70,6 @@
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>fop</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.github.fge</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
