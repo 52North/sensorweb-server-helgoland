@@ -24,12 +24,13 @@
 
 package org.n52.web.v1.ctrl;
 
+import static org.n52.io.IoParameters.createFromQuery;
 import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
@@ -47,9 +48,11 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
-import org.n52.io.IOFactory;
-import org.n52.io.IOHandler;
-import org.n52.io.TimeseriesIOException;
+import org.n52.io.IoFactory;
+import org.n52.io.IoHandler;
+import org.n52.io.IoParameters;
+import org.n52.io.IoParseException;
+import org.n52.io.PreRenderingTask;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
@@ -61,7 +64,6 @@ import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.task.PreRenderingTask;
 import org.n52.web.v1.srv.ParameterService;
 import org.n52.web.v1.srv.ServiceParameterService;
 import org.n52.web.v1.srv.TimeseriesDataService;
@@ -109,7 +111,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
         checkAgainstTimespanRestriction(map.getTimespan());
 
@@ -138,7 +140,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        QueryMap map = createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         UndesignedParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -148,7 +150,7 @@ public class TimeseriesDataController extends BaseController {
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
 
-        IOHandler renderer = IOFactory.create().forMimeType(APPLICATION_PDF).withLocale(map.getLocale()).createIOHandler(context);
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
 
@@ -161,7 +163,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
@@ -169,7 +171,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IOHandler renderer = IOFactory.create().forMimeType(APPLICATION_PDF).withLocale(map.getLocale()).createIOHandler(context);
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
@@ -180,7 +182,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        QueryMap map = createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         UndesignedParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -189,7 +191,7 @@ public class TimeseriesDataController extends BaseController {
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
-        IOHandler renderer = IOFactory.create().withLocale(map.getLocale()).showGrid(map.isGrid()).withLegend(map.isLegend()).createIOHandler(context);
+        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
@@ -201,18 +203,19 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        context.setDimensions(map.getWidth(), map.getHeight());
+        context.setDimensions(map.getChartDimension());
 
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
         checkAgainstTimespanRestriction(parameters.getTimespan());
+        
         parameters.setGeneralize(map.isGeneralize());
-
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
-        IOHandler renderer = IOFactory.create().withLocale(map.getLocale()).showGrid(map.isGrid()).withLegend(map.isLegend()).createIOHandler(context);
+        
+        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -255,7 +258,7 @@ public class TimeseriesDataController extends BaseController {
      */
     private void handleBinaryResponse(HttpServletResponse response,
                                       UndesignedParameterSet parameters,
-                                      IOHandler renderer) {
+                                      IoHandler renderer) {
         try {
             renderer.generateOutput(getTimeseriesData(parameters));
             if (parameters.isBase64()) {
@@ -272,7 +275,7 @@ public class TimeseriesDataController extends BaseController {
         catch (IOException e) { // handled by BaseController
             throw new InternalServerException("Error handling output stream.", e);
         }
-        catch (TimeseriesIOException e) { // handled by BaseController
+        catch (IoParseException e) { // handled by BaseController
             throw new InternalServerException("Could not write binary to stream.", e);
         }
     }

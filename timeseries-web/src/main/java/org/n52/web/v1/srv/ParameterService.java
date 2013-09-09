@@ -24,12 +24,12 @@
 
 package org.n52.web.v1.srv;
 
-import org.n52.web.v1.ctrl.QueryMap;
+import org.n52.io.IoParameters;
 
 /**
  * A generic service to get arbitrary parameters from the underlying data access implementation. In general
  * the access can result either in compact or detailed outputs. However, each query can be controlled in more
- * detail by a parameter values hold by a {@link QueryMap}.
+ * detail by a parameter values hold by a {@link IoParameters}.
  * 
  * @param <T>
  *        the actual parameter type.
@@ -41,18 +41,18 @@ public interface ParameterService<T> {
      *        query parameters to control the output.
      * @return an array of expanded items.
      */
-    T[] getExpandedParameters(QueryMap query);
+    T[] getExpandedParameters(IoParameters query);
 
     /**
      * @param query
      *        query parameters to control the output.
      * @return an array of compact items.
      */
-    T[] getCondensedParameters(QueryMap query);
+    T[] getCondensedParameters(IoParameters query);
 
     /**
      * Gets the requested items with respect to default query settings. Use
-     * {@link #getParameters(String[], QueryMap)} to control the output items.
+     * {@link #getParameters(String[], IoParameters)} to control the output items.
      * 
      * @param items
      *        a subset of item ids which are of interest.
@@ -71,11 +71,11 @@ public interface ParameterService<T> {
      *        query parameters to control the output.
      * @return an array of expanded items which are of interest. Not known ids will be ignored.
      */
-    T[] getParameters(String[] items, QueryMap query);
+    T[] getParameters(String[] items, IoParameters query);
 
     /**
      * Gets the requested item with respect to default query settings. Use
-     * {@link #getParameter(String, QueryMap)} to control the output item.
+     * {@link #getParameter(String, IoParameters)} to control the output item.
      * 
      * @param item
      *        the item id of interest.
@@ -94,6 +94,6 @@ public interface ParameterService<T> {
      *        query parameters to control the output.
      * @return an expanded items of interest.
      */
-    T getParameter(String item, QueryMap query);
+    T getParameter(String item, IoParameters query);
 
 }

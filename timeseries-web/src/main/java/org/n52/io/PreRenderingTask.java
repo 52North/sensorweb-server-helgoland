@@ -22,7 +22,7 @@
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
 
-package org.n52.web.task;
+package org.n52.io;
 
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
@@ -45,16 +45,13 @@ import javax.servlet.ServletOutputStream;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.io.IOFactory;
-import org.n52.io.IOHandler;
-import org.n52.io.TimeseriesIOException;
 import org.n52.io.format.TvpDataCollection;
+import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.ctrl.QueryMap;
 import org.n52.web.v1.ctrl.Stopwatch;
 import org.n52.web.v1.srv.ParameterService;
 import org.n52.web.v1.srv.TimeseriesDataService;
@@ -86,14 +83,11 @@ public class PreRenderingTask implements ServletConfigAware {
     private int periodInMinutes;
 
     private boolean enabled;
+    
 
-    // image dimensions with default values
     private int width = 800;
     private int height = 500;
-
-    // default language
     private String language = "en";
-
     private boolean showGrid = true;
 
     public PreRenderingTask() {
@@ -326,7 +320,7 @@ public class PreRenderingTask implements ServletConfigAware {
         public void run() {
             LOGGER.info("Start prerendering task");
             try {
-                QueryMap map = QueryMap.createDefaults();
+                IoParameters map = QueryParameters.createDefaults();
                 for (PreRenderingConfiguration config : configurations) {
 
                     String timeseriesId = config.getTimeseriesId();
@@ -344,11 +338,10 @@ public class PreRenderingTask implements ServletConfigAware {
                         }
 
                         RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
-                        context.setDimensions(width, height);
+                        context.setDimensions(new ChartDimension(width, height));
                         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
-                        IOHandler renderer = IOFactory.create()
-                                .withLocale(language)
-                                .showGrid(showGrid)
+                        IoHandler renderer = IoFactory
+                                .createWith(createConfig())
                                 .createIOHandler(context);
 
                         FileOutputStream fos = createFile(timeseriesId, interval);
@@ -356,7 +349,7 @@ public class PreRenderingTask implements ServletConfigAware {
                             renderer.generateOutput(getTimeseriesData(parameters));
                             renderer.encodeAndWriteTo(fos);
                         }
-                        catch (TimeseriesIOException e) {
+                        catch (IoParseException e) {
                             LOGGER.error("Image creation occures error.", e);
                         }
                         finally {
@@ -376,6 +369,14 @@ public class PreRenderingTask implements ServletConfigAware {
             }
         }
 
+    }
+
+    public IoParameters createConfig() {
+        Map<String, String> configuration = new HashMap<String, String>();
+        configuration.put(IoParameters.WIDTH, Integer.toString(width));
+        configuration.put(IoParameters.HEIGHT, Integer.toString(height));
+        configuration.put(IoParameters.GRID, Boolean.toString(showGrid));
+        return IoParameters.createFromQuery(configuration);
     }
 
 }

@@ -45,8 +45,8 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.joda.time.DateTime;
-import org.n52.io.IOHandler;
-import org.n52.io.TimeseriesIOException;
+import org.n52.io.IoHandler;
+import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartRenderer;
 import org.n52.io.v1.data.TimeseriesData;
@@ -63,7 +63,7 @@ import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PDFReportGenerator extends ReportGenerator implements IOHandler {
+public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
 
@@ -90,19 +90,19 @@ public class PDFReportGenerator extends ReportGenerator implements IOHandler {
     }
 
     @Override
-    public void generateOutput(TvpDataCollection data) throws TimeseriesIOException {
+    public void generateOutput(TvpDataCollection data) throws IoParseException {
         generateTimeseriesChart(data);
         generateTimeseriesMetadata();
     }
 
-    private void generateTimeseriesChart(TvpDataCollection data) throws TimeseriesIOException {
+    private void generateTimeseriesChart(TvpDataCollection data) throws IoParseException {
         try {
             renderer.generateOutput(data);
             File tmpFile = createTempFile("52n_swc_", "_chart.png");
             renderer.encodeAndWriteTo(new FileOutputStream(tmpFile));
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
         } catch(IOException e) {
-            throw new TimeseriesIOException("Error handling (temp) file!", e);
+            throw new IoParseException("Error handling (temp) file!", e);
         }
     }
 
@@ -115,7 +115,7 @@ public class PDFReportGenerator extends ReportGenerator implements IOHandler {
     }
 
     @Override
-    public void encodeAndWriteTo(OutputStream stream) throws TimeseriesIOException {
+    public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
             FopFactory fopFactory = FopFactory.newInstance();
             Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
@@ -130,13 +130,13 @@ public class PDFReportGenerator extends ReportGenerator implements IOHandler {
             transformer.transform(source, result);
         }
         catch (FOPException e) {
-            throw new TimeseriesIOException("Failed to create Formatting Object Processor (FOP)", e);
+            throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
         }
         catch (TransformerConfigurationException e) {
-            throw new TimeseriesIOException("Invalid transform configuration. Inspect xslt!", e);
+            throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
         }
         catch (TransformerException e) {
-            throw new TimeseriesIOException("Could not generate PDF report!", e);
+            throw new IoParseException("Could not generate PDF report!", e);
         } finally {
             try {
                 stream.flush();

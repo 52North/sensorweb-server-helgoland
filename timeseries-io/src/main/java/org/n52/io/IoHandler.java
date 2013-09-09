@@ -23,16 +23,29 @@
  */
 package org.n52.io;
 
-public class TimeseriesIOException extends Exception {
+import java.io.IOException;
+import java.io.OutputStream;
 
-    private static final long serialVersionUID = -3627963628985404024L;
+import org.n52.io.format.TvpDataCollection;
 
-    public TimeseriesIOException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface IoHandler {
 
-    public TimeseriesIOException(String message) {
-        super(message);
-    }
-    
+    /**
+     * @param data
+     *        the input data collection to create an output for.
+     * @throws IoParseException
+     *         if ouput generation fails.
+     */
+    public void generateOutput(TvpDataCollection data) throws IoParseException;
+
+    /**
+     * Encodes and writes previously generated output to the given stream. After handling the stream gets
+     * flushed and closed.
+     * 
+     * @param stream
+     *        the stream to write on the generated ouput.
+     * @throws IOException
+     *         if writing output to stream fails.
+     */
+    public void encodeAndWriteTo(OutputStream stream) throws IoParseException;
 }

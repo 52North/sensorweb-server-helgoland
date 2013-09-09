@@ -24,11 +24,12 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
@@ -49,7 +50,7 @@ public class TimeseriesMetadataController extends ParameterController {
 
     @Override
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -74,7 +75,7 @@ public class TimeseriesMetadataController extends ParameterController {
     @Override
     public ModelAndView getItem(@PathVariable("item") String timeseriesId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

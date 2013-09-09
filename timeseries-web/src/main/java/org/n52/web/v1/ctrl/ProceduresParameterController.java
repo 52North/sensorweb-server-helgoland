@@ -24,10 +24,11 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.ProcedureOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
@@ -49,7 +50,7 @@ public class ProceduresParameterController extends ParameterController {
     private ParameterService<ProcedureOutput> procedureParameterService;
 
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -73,7 +74,7 @@ public class ProceduresParameterController extends ParameterController {
 
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

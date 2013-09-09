@@ -24,9 +24,10 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.CategoryOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
@@ -49,7 +50,7 @@ public class CategoriesParameterController extends ParameterController {
     private ParameterService<CategoryOutput> categoryParameterService;
 
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap queryMap = createFromQuery(query.toSingleValueMap());
+        IoParameters queryMap = createFromQuery(query);
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -71,11 +72,11 @@ public class CategoriesParameterController extends ParameterController {
 
     public ModelAndView getItem(@PathVariable("item") String categoryId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = createFromQuery(query.toSingleValueMap());
+        IoParameters queryMap = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
-        CategoryOutput category = categoryParameterService.getParameter(categoryId, map);
+        CategoryOutput category = categoryParameterService.getParameter(categoryId, queryMap);
 
         if (category == null) {
             throw new ResourceNotFoundException("Found no category with given id.");
