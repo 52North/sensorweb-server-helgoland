@@ -1,3 +1,26 @@
+/**
+ * ﻿Copyright (C) 2013
+ * by 52 North Initiative for Geospatial Open Source Software GmbH
+ *
+ * Contact: Andreas Wytzisk
+ * 52 North Initiative for Geospatial Open Source Software GmbH
+ * Martin-Luther-King-Weg 24
+ * 48155 Muenster, Germany
+ * info@52north.org
+ *
+ * This program is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public License version 2 as published by the
+ * Free Software Foundation.
+ *
+ * This program is distributed WITHOUT ANY WARRANTY; even without the implied
+ * WARRANTY OF MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program (see gnu-gpl v2.txt). If not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
+ * visit the Free Software Foundation web page, http://www.fsf.org.
+ */
 
 package org.n52.io;
 
@@ -15,8 +38,6 @@ import org.springframework.util.MultiValueMap;
  * exception handling.
  */
 public class QueryParameters extends IoParameters {
-
-    private IoParameters composedParameterAccess;
 
     /**
      * Creates an simple view on given query. The {@link MultiValueMap} is flattened to a single value map.
@@ -48,7 +69,7 @@ public class QueryParameters extends IoParameters {
 
     public int getOffset() {
         try {
-            return composedParameterAccess.getOffset();
+            return super.getOffset();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + OFFSET + "' parameter.", e);
@@ -57,7 +78,7 @@ public class QueryParameters extends IoParameters {
 
     public int getLimit() {
         try {
-            return composedParameterAccess.getLimit();
+            return super.getLimit();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + LIMIT + "' parameter.", e);
@@ -66,7 +87,7 @@ public class QueryParameters extends IoParameters {
 
     public ChartDimension getChartDimension() {
         try {
-            return composedParameterAccess.getChartDimension();
+            return super.getChartDimension();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + WIDTH + "' or '" + HEIGHT + "' parameter(s).", e);
@@ -75,7 +96,7 @@ public class QueryParameters extends IoParameters {
 
     public boolean isBase64() {
         try {
-            return composedParameterAccess.isBase64();
+            return super.isBase64();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + BASE_64 + "' parameter.", e);
@@ -84,7 +105,7 @@ public class QueryParameters extends IoParameters {
 
     public boolean isGrid() {
         try {
-            return composedParameterAccess.isGrid();
+            return super.isGrid();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + GRID + "' parameter.", e);
@@ -93,7 +114,7 @@ public class QueryParameters extends IoParameters {
 
     public boolean isGeneralize() {
         try {
-            return composedParameterAccess.isGeneralize();
+            return super.isGeneralize();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + GENERALIZE + "' parameter.", e);
@@ -102,7 +123,7 @@ public class QueryParameters extends IoParameters {
 
     public boolean isLegend() {
         try {
-            return composedParameterAccess.isLegend();
+            return super.isLegend();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + LEGEND + "' parameter.", e);
@@ -110,12 +131,12 @@ public class QueryParameters extends IoParameters {
     }
 
     public String getLocale() {
-        return composedParameterAccess.getLocale();
+        return super.getLocale();
     }
 
     public StyleProperties getStyle() {
         try {
-            return composedParameterAccess.getStyle();
+            return super.getStyle();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Could not read '" + STYLE + "' property.", e);
@@ -123,12 +144,12 @@ public class QueryParameters extends IoParameters {
     }
 
     public String getFormat() {
-        return composedParameterAccess.getFormat();
+        return super.getFormat();
     }
 
     public String getTimespan() {
         try {
-            return composedParameterAccess.getTimespan();
+            return super.getTimespan();
         }
         catch (IoParseException e) {
             BadRequestException badRequest = new BadRequestException("Invalid timespan.", e);
@@ -138,33 +159,9 @@ public class QueryParameters extends IoParameters {
         }
     }
 
-    public String getCategory() {
-        return composedParameterAccess.getCategory();
-    }
-
-    public String getService() {
-        return composedParameterAccess.getService();
-    }
-
-    public String getOffering() {
-        return composedParameterAccess.getOffering();
-    }
-
-    public String getFeature() {
-        return composedParameterAccess.getFeature();
-    }
-
-    public String getProcedure() {
-        return composedParameterAccess.getProcedure();
-    }
-
-    public String getPhenomenon() {
-        return composedParameterAccess.getPhenomenon();
-    }
-
     public BoundingBox getSpatialFilter() {
         try {
-            return composedParameterAccess.getSpatialFilter();
+            return super.getSpatialFilter();
         }
         catch (IoParseException e) {
             BadRequestException ex = new BadRequestException("Spatial filter could not be determined.");
@@ -174,13 +171,9 @@ public class QueryParameters extends IoParameters {
         }
     }
 
-    public String getCrs() {
-        return composedParameterAccess.getCrs();
-    }
-
     public boolean isForceXY() {
         try {
-            return composedParameterAccess.isForceXY();
+            return super.isForceXY();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + FORCE_XY + "' parameter.", e);
@@ -189,19 +182,11 @@ public class QueryParameters extends IoParameters {
 
     public boolean isExpanded() {
         try {
-            return composedParameterAccess.isExpanded();
+            return super.isExpanded();
         }
         catch (IoParseException e) {
             throw new BadRequestException("Bad '" + EXPANDED + "' parameter.", e);
         }
-    }
-
-    public boolean containsParameter(String parameter) {
-        return composedParameterAccess.containsParameter(parameter);
-    }
-
-    public String getOther(String parameter) {
-        return composedParameterAccess.getOther(parameter);
     }
 
 }

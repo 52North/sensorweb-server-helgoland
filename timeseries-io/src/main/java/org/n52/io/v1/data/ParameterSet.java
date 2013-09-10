@@ -50,6 +50,11 @@ public abstract class ParameterSet {
      * If reference values shall be appended to the timeseries data.
      */
     private boolean expanded;
+
+    /**
+     * A language code to determine the requested locale. "en" is the default.
+     */
+    private String language = "en";
     
     protected ParameterSet() {
         timespan = createDefaultTimespan();
@@ -96,6 +101,14 @@ public abstract class ParameterSet {
 
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     private String validateTimespan(String timespan) {
