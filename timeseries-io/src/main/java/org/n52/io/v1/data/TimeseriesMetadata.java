@@ -41,8 +41,4 @@ public class TimeseriesMetadata implements Serializable {
         this.referenceValues = referenceValues;
     }
     
-    // TODO handle metadata
-    
-    
-    
 }

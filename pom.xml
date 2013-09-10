@@ -27,11 +27,12 @@
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-			<comments>A business-friendly OSS license</comments>
+			<name>GNU General Public License, Version 2.0</name>
+			<url>http://www.gnu.de/documents/gpl-2.0.en.html</url>
 		</license>
+		<!-- <license> <name>The Apache Software License, Version 2.0</name> <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> 
+			<distribution>repo</distribution> <comments>A business-friendly OSS license</comments> 
+			</license> -->
 	</licenses>
 
 	<scm>
@@ -190,12 +191,6 @@
 				<artifactId>commons-math</artifactId>
 				<version>2.1</version>
 			</dependency>
-			<dependency>
-				<groupId>com.github.fge</groupId>
-				<artifactId>json-schema-validator</artifactId>
-				<version>2.0.1</version>
-				<scope>provided</scope>
-			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -295,6 +290,7 @@
 										<artifactId>license-maven-plugin</artifactId>
 										<versionRange>[1.5,)</versionRange>
 										<goals>
+											<goal>aggregate-add-third-party</goal>
 											<goal>download-licenses</goal>
 											<goal>add-third-party</goal>
 										</goals>
@@ -319,6 +315,29 @@
 						</descriptors>
 					</configuration>
 				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.5</version>
+					<configuration>
+						<useMissingFile>true</useMissingFile>
+						<licensesConfigFile>${project.basedir}/src/license/licenses.xml</licensesConfigFile>
+						<excludedGroups>
+							org.n52.sensorweb
+						</excludedGroups>
+					</configuration>
+					<executions>
+						<execution>
+							<id>download-licenses</id>
+							<goals>
+								<goal>download-licenses</goal>
+								<goal>aggregate-add-third-party</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 
@@ -327,24 +346,6 @@
 			<!-- ==================================================== -->
 			<!-- =========== PLUGINS ACTIVE BY DEFAULT ============== -->
 			<!-- ==================================================== -->
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>1.5</version>
-				<configuration>
-					<useMissingFile>true</useMissingFile>
-				</configuration>
-				<executions>
-					<execution>
-						<id>download-licenses</id>
-						<goals>
-							<goal>download-licenses</goal>
-							<goal>add-third-party</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
@@ -519,16 +520,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-        <repository>
-            <id>java</id>
-            <url>http://java.net/projects/maven-repository/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
+		<repository>
+			<id>java</id>
+			<url>http://java.net/projects/maven-repository/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 </project>
 
