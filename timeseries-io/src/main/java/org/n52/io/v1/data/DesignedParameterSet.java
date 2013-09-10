@@ -49,11 +49,6 @@ public class DesignedParameterSet extends ParameterSet {
      * Indicates a grid as rendering background. <code>true</code> is the default.
      */
     private boolean grid = true;
-
-    /**
-     * A language code to determine the requested locale. "en" is the default.
-     */
-    private String language = "en";
     
     /**
      * Style options for each timeseriesId of interest.
@@ -106,14 +101,6 @@ public class DesignedParameterSet extends ParameterSet {
      */
     public boolean isGrid() {
         return this.grid;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
