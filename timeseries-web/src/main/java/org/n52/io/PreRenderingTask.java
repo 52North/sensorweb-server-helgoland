@@ -175,16 +175,16 @@ public class PreRenderingTask implements ServletConfigAware {
         return new FileOutputStream(file);
     }
 
-    public String createTimespanFromInterval(String timeseriesId, String interval) {
+    public Interval createTimespanFromInterval(String timeseriesId, String interval) {
         DateTime now = new DateTime();
         if (interval.equals("lastDay")) {
-            return new Interval(now.minusDays(1), now).toString();
+            return new Interval(now.minusDays(1), now);
         }
         else if (interval.equals("lastWeek")) {
-            return new Interval(now.minusWeeks(1), now).toString();
+            return new Interval(now.minusWeeks(1), now);
         }
         else if (interval.equals("lastMonth")) {
-            return new Interval(now.minusMonths(1), now).toString();
+            return new Interval(now.minusMonths(1), now);
         }
         else {
             throw new ResourceNotFoundException("Unknown interval definition '" + interval + "' for timeseriesId "
@@ -326,7 +326,7 @@ public class PreRenderingTask implements ServletConfigAware {
                     String timeseriesId = config.getTimeseriesId();
                     for (String interval : config.getInterval()) {
 
-                        String timespan = createTimespanFromInterval(timeseriesId, interval);
+                        Interval timespan = createTimespanFromInterval(timeseriesId, interval);
                         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
                         String phenomenon = metadata.getParameters().getPhenomenon().getLabel();
                         StyleProperties style = null;
