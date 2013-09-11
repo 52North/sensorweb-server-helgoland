@@ -23,6 +23,8 @@
  */
 package org.n52.io.v1.data;
 
+import org.joda.time.Interval;
+
 
 
 public class UndesignedParameterSet extends ParameterSet {
@@ -56,10 +58,10 @@ public class UndesignedParameterSet extends ParameterSet {
         this.format = format;
     }
     
-    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, String timespan) {
+    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, Interval timespan) {
         UndesignedParameterSet parameters = new UndesignedParameterSet();
         parameters.setTimeseries(new String[] { timeseriesId });
-        parameters.setTimespan(timespan);
+        parameters.setTimespan(timespan.toString());
         return parameters;
     }
 

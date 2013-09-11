@@ -21,8 +21,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.img;
 
+import org.joda.time.Interval;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.v1.data.DesignedParameterSet;
@@ -73,14 +75,16 @@ public class RenderingContext {
         }
         return new RenderingContext(timeseriesStyles, timeseriesMetadatas);
     }
-    
-    public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata, StyleProperties style, String timespan) {
+
+    public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
+                                                                    StyleProperties style,
+                                                                    Interval timespan) {
         DesignedParameterSet parameters = new DesignedParameterSet();
         parameters.addTimeseriesWithStyleOptions(metadata.getId(), style);
-        parameters.setTimespan(timespan);
+        parameters.setTimespan(timespan.toString());
         return createContextWith(parameters, metadata);
     }
-    
+
     public void setDimensions(ChartDimension dimension) {
         chartStyleDefinitions.setWidth(dimension.getWidth());
         chartStyleDefinitions.setHeight(dimension.getHeight());
