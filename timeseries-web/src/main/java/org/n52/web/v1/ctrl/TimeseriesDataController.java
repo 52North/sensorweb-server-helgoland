@@ -112,8 +112,9 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
-        checkAgainstTimespanRestriction(map.getTimespan());
+        Interval timespan = map.getTimespan();
+        checkAgainstTimespanRestriction(timespan.toString());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
 
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());

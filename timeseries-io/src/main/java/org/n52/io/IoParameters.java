@@ -42,6 +42,7 @@ import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.n52.io.v1.data.BBox;
 import org.n52.io.v1.data.DesignedParameterSet;
+import org.n52.io.v1.data.ParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.Vicinity;
 import org.opengis.referencing.FactoryException;
@@ -83,7 +84,7 @@ public class IoParameters {
      * 
      * @see #OFFSET
      */
-    private static final int DEFAULT_OFFSET = 0;
+    private static final int DEFAULT_OFFSET = -1;
 
     /**
      * Determines the limit of the page to be returned.
@@ -95,7 +96,7 @@ public class IoParameters {
      * 
      * @see #LIMIT
      */
-    private static final int DEFAULT_LIMIT = 100;
+    private static final int DEFAULT_LIMIT = -1;
 
     /**
      * Determines the locale the output shall have.
@@ -437,22 +438,22 @@ public class IoParameters {
      * @throws IoParseException
      *         if timespan could not be parsed.
      */
-    public String getTimespan() {
+    public Interval getTimespan() {
         if ( !query.containsKey(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(query.get(TIMESPAN));
     }
 
-    private String createDefaultTimespan() {
+    private Interval createDefaultTimespan() {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
-        return new Interval(lastWeek, now).toString();
+        return new Interval(lastWeek, now);
     }
 
-    private String validateTimespan(String timespan) {
+    private Interval validateTimespan(String timespan) {
         try {
-            return Interval.parse(timespan).toString();
+            return Interval.parse(timespan);
         }
         catch (IllegalArgumentException e) {
             String message = "Could not parse timespan parameter." + timespan;
@@ -703,15 +704,34 @@ public class IoParameters {
 
         // TODO consolidate undesigned/desigend paramter sets
         
+        return createFromQuery(createQueryParametersFrom(parameters));
+    }
+    
+    /**
+     * @param parameters
+     *        the parameters sent via POST payload.
+     * @return a query map for convenient parameter access plus validation.
+     */
+    public static IoParameters createFromQuery(ParameterSet parameters) {
+
+        // TODO consolidate undesigned/desigend paramter sets
+        
+        return createFromQuery(createQueryParametersFrom(parameters));
+    }
+    
+    private static Map<String, String> createQueryParametersFrom(DesignedParameterSet parameters) {
+        Map<String, String> queryParameters = createQueryParametersFrom(parameters);
+        queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
+        queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
+        return queryParameters;
+    }
+    
+    private static Map<String, String> createQueryParametersFrom(ParameterSet parameters) {
         Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put(LOCALE, parameters.getLanguage());
         queryParameters.put(TIMESPAN, parameters.getTimespan());
-        queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
         queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
-        queryParameters.put(HEIGHT, Integer.toString(parameters.getHeight()));
-        queryParameters.put(WIDTH, Integer.toString(parameters.getWidth()));
-
-        return createFromQuery(queryParameters);
+        return queryParameters;
     }
     
 }
