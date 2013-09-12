@@ -33,6 +33,7 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.TransformingTimeseriesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -95,7 +96,7 @@ public class TimeseriesMetadataController extends ParameterController {
     }
 
     public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = timeseriesMetadataService;
+        this.timeseriesMetadataService = new TransformingTimeseriesService(timeseriesMetadataService);
     }
 
 }
