@@ -121,7 +121,7 @@
 		<property name="requestIntervalRestriction" value="P1Y" />
 	</bean>
 
-	<bean id="preRenderingTask" class="org.n52.web.task.PreRenderingTask"
+	<bean id="preRenderingTask" class="org.n52.io.PreRenderingTask"
 		destroy-method="shutdownTask" factory-method="createTask">
 		<property name="timeseriesMetadataService" ref="timeseriesService" />
 		<property name="timeseriesDataService" ref="timeseriesService" />

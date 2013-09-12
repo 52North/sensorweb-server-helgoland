@@ -20,6 +20,21 @@
 		<module>timeseries-web</module>
 	</modules>
 
+	<organization>
+		<name>52&deg;North Initiative for Geospatial Open Source Software GmbH</name>
+		<url>http://52north.org</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 2.0</name>
+			<url>http://www.gnu.de/documents/gpl-2.0.en.html</url>
+		</license>
+		<!-- <license> <name>The Apache Software License, Version 2.0</name> <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url> 
+			<distribution>repo</distribution> <comments>A business-friendly OSS license</comments> 
+			</license> -->
+	</licenses>
+
 	<scm>
 		<connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
@@ -176,17 +191,12 @@
 				<artifactId>commons-math</artifactId>
 				<version>2.1</version>
 			</dependency>
-			<dependency>
-				<groupId>com.github.fge</groupId>
-				<artifactId>json-schema-validator</artifactId>
-				<version>2.0.1</version>
-				<scope>provided</scope>
-			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
+
 		<!-- ==================================================== -->
 		<!-- ======== DEBENDENCIES ACTIVE BY DEFAULT ============ -->
 		<!-- ==================================================== -->
@@ -237,6 +247,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<resources>
 			<resource>
@@ -251,34 +262,6 @@
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.8</version>
 				</plugin>
-				<plugin>
-					<groupId>com.mycila.maven-license-plugin</groupId>
-					<artifactId>maven-license-plugin</artifactId>
-					<version>1.9.0</version>
-					<configuration>
-						<header>misc/52N_license-header.txt</header>
-						<aggregate>true</aggregate>
-						<includes>
-							<include>**/*.java</include>
-						</includes>
-						<excludes>
-							<exclude>**/generated-sources/xml-pdf-format</exclude>
-						</excludes>
-						<strictCheck>true</strictCheck>
-						<properties>
-							<year>${project.inceptionYear}</year>
-						</properties>
-					</configuration>
-					<executions>
-						<execution>
-							<phase>test</phase>
-							<goals>
-								<goal>format</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-
 
 				<plugin>
 					<!-- see http://wiki.eclipse.org/M2E_plugin_execution_not_covered -->
@@ -301,6 +284,21 @@
 										<ignore />
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>license-maven-plugin</artifactId>
+										<versionRange>[1.5,)</versionRange>
+										<goals>
+											<goal>aggregate-add-third-party</goal>
+											<goal>download-licenses</goal>
+											<goal>add-third-party</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -317,6 +315,29 @@
 						</descriptors>
 					</configuration>
 				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>1.5</version>
+					<configuration>
+						<useMissingFile>true</useMissingFile>
+						<licensesConfigFile>${project.basedir}/src/license/licenses.xml</licensesConfigFile>
+						<excludedGroups>
+							org.n52.sensorweb
+						</excludedGroups>
+					</configuration>
+					<executions>
+						<execution>
+							<id>download-licenses</id>
+							<goals>
+								<goal>download-licenses</goal>
+								<goal>aggregate-add-third-party</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 
@@ -325,6 +346,34 @@
 			<!-- ==================================================== -->
 			<!-- =========== PLUGINS ACTIVE BY DEFAULT ============== -->
 			<!-- ==================================================== -->
+
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<header>misc/52N_license-header.txt</header>
+					<aggregate>true</aggregate>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/generated-sources/xml-pdf-format</exclude>
+					</excludes>
+					<strictCheck>true</strictCheck>
+					<properties>
+						<year>${project.inceptionYear}</year>
+					</properties>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -461,8 +510,9 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>java</id>
-			<url>http://java.net/projects/maven-repository/</url>
+			<id>spring-central</id>
+			<name>spring-release-remote</name>
+			<url>http://repo.springsource.org/release</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -471,11 +521,10 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>spring-central</id>
-			<name>spring-release-remote</name>
-			<url>http://repo.springsource.org/release</url>
+			<id>java</id>
+			<url>http://java.net/projects/maven-repository/</url>
 			<releases>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>

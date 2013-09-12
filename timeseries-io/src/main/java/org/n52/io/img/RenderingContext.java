@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -24,8 +24,9 @@
 
 package org.n52.io.img;
 
-import org.n52.io.IOFactory;
-import org.n52.io.IOHandler;
+import org.joda.time.Interval;
+import org.n52.io.IoFactory;
+import org.n52.io.IoHandler;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
@@ -55,7 +56,7 @@ public class RenderingContext {
      *         if any of the given arguments is <code>null</code>.
      * @throws IllegalStateException
      *         if amount of timeseries described by the given arguments is not in sync.
-     * @return a rendering context to be used by {@link IOFactory} to create an {@link IOHandler}.
+     * @return a rendering context to be used by {@link IoFactory} to create an {@link IoHandler}.
      */
     public static RenderingContext createContextWith(DesignedParameterSet timeseriesStyles,
                                                      TimeseriesMetadataOutput... timeseriesMetadatas) {
@@ -74,17 +75,19 @@ public class RenderingContext {
         }
         return new RenderingContext(timeseriesStyles, timeseriesMetadatas);
     }
-    
-    public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata, StyleProperties style, String timespan) {
+
+    public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
+                                                                    StyleProperties style,
+                                                                    Interval timespan) {
         DesignedParameterSet parameters = new DesignedParameterSet();
         parameters.addTimeseriesWithStyleOptions(metadata.getId(), style);
-        parameters.setTimespan(timespan);
+        parameters.setTimespan(timespan.toString());
         return createContextWith(parameters, metadata);
     }
-    
-    public void setDimensions(int width, int height) {
-        chartStyleDefinitions.setWidth(width);
-        chartStyleDefinitions.setHeight(height);
+
+    public void setDimensions(ChartDimension dimension) {
+        chartStyleDefinitions.setWidth(dimension.getWidth());
+        chartStyleDefinitions.setHeight(dimension.getHeight());
     }
 
     public DesignedParameterSet getChartStyleDefinitions() {

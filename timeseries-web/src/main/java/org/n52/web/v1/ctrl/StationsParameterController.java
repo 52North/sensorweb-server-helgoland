@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -24,9 +24,11 @@
 
 package org.n52.web.v1.ctrl;
 
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
@@ -49,9 +51,9 @@ public class StationsParameterController extends ParameterController {
     private ParameterService<StationOutput> stationParameterService;
 
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
 
-        if (map.shallExpand()) {
+        if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = stationParameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
@@ -73,7 +75,7 @@ public class StationsParameterController extends ParameterController {
 
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

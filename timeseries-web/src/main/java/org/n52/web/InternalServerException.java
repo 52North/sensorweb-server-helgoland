@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -36,21 +37,21 @@ public class InternalServerException extends RuntimeException implements WebExce
     private static final long serialVersionUID = -299285770822168789L;
 
     private List<String> details;
-    
+
     @Deprecated
-	public InternalServerException() {
-    	super();
-	}
+    public InternalServerException() {
+        super();
+    }
 
-	public InternalServerException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public InternalServerException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public InternalServerException(String message) {
-		super(message);
-	}
+    public InternalServerException(String message) {
+        super(message);
+    }
 
-	@Override
+    @Override
     public void addHint(String details) {
         if (details == null) {
             return;

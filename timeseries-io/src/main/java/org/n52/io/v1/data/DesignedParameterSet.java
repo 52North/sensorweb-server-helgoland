@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-
 package org.n52.io.v1.data;
 
 import java.util.HashMap;
@@ -30,7 +29,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a parameter object to request data from multiple timeseries.
+ * Represents a parameter object to request a rendered chart output from multiple timeseries.
  */
 public class DesignedParameterSet extends ParameterSet {
     
@@ -50,11 +49,6 @@ public class DesignedParameterSet extends ParameterSet {
      * Indicates a grid as rendering background. <code>true</code> is the default.
      */
     private boolean grid = true;
-
-    /**
-     * A language code to determine the requested locale.
-     */
-    private String language;
     
     /**
      * Style options for each timeseriesId of interest.
@@ -107,14 +101,6 @@ public class DesignedParameterSet extends ParameterSet {
      */
     public boolean isGrid() {
         return this.grid;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {

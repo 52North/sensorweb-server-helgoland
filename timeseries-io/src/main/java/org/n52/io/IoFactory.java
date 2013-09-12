@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -32,69 +32,30 @@ import org.n52.io.img.RenderingContext;
 import org.n52.io.report.PDFReportGenerator;
 import org.n52.io.report.ReportGenerator;
 
-public class IOFactory {
-
-    private String locale = "en";
-
-    private boolean tooltips = false;
-
-    private boolean drawLegend = false;
-    
-    private boolean showGrid = true;
+public class IoFactory {
 
     private MimeType mimeType = IMAGE_PNG;
-
-    private IOFactory() {
-        // use static constructor
-    }
-
-    /**
-     * @return An {@link IOFactory} instance with default values set. Configure factory by chaining parameter
-     *         methods. After configuring the factory a <code>create*</code> method creates appropriate IO
-     *         generators.
-     */
-    public static IOFactory create() {
-        return new IOFactory();
-    }
-
-    /**
-     * @param locale
-     *        the locale (default is <code>en</code>).
-     * @return this instance for parameter chaining.
-     */
-    public IOFactory withLocale(String locale) {
-        this.locale = locale;
-        return this;
-    }
-
-    /**
-     * @param tooltips
-     *        <code>true</code> if tooltips shall be shown (default is <code>false</code>).
-     * @return this instance for parameter chaining.
-     */
-    public IOFactory showTooltips(boolean tooltips) {
-        this.tooltips = tooltips;
-        return this;
-    }
-
-    /**
-     * @param showGrid
-     *        <code>true</code> if grid shall be shown (default is <code>true</code>).
-     * @return this instance for parameter chaining.
-     */
-    public IOFactory showGrid(boolean showGrid) {
-        this.showGrid = showGrid;
-        return this;
-    }
     
+    private IoParameters config;
+
+    private IoFactory(IoParameters parameters) {
+        this.config = parameters;
+    }
+
     /**
-     * @param drawLegend
-     *        <code>true</code> if a legend shall be drawn (default is <code>false</code>).
-     * @return this instance for parameter chaining.
+     * @return An {@link IoFactory} instance with default values set. Configure factory by passing an
+     *         {@link IoParameters} instance. After creating the factory an apropriately configured
+     *         {@link IoHandler} is returned when calling {@link #createIOHandler(RenderingContext)}.
      */
-    public IOFactory withLegend(boolean drawLegend) {
-        this.drawLegend = drawLegend;
-        return this;
+    public static IoFactory create() {
+        return createWith(null);
+    }
+
+    public static IoFactory createWith(IoParameters parameters) {
+        if (parameters == null) {
+            parameters = IoParameters.createDefaults();
+        }
+        return new IoFactory(parameters);
     }
 
     /**
@@ -102,35 +63,36 @@ public class IOFactory {
      *        the MIME-Type of the image to be rendered (default is {@link MimeType#IMAGE_PNG}).
      * @return this instance for parameter chaining.
      */
-    public IOFactory forMimeType(MimeType mimeType) {
+    public IoFactory forMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
         return this;
     }
 
-    public IOHandler createIOHandler(RenderingContext context) {
+    public IoHandler createIOHandler(RenderingContext context) {
 
         if (mimeType == APPLICATION_PDF) {
             MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);
-            ReportGenerator reportGenerator = new PDFReportGenerator(imgRenderer, locale);
+            ReportGenerator reportGenerator = new PDFReportGenerator(imgRenderer, config.getLocale());
 
             // TODO
 
             return reportGenerator;
-        } else if (mimeType == IMAGE_PNG) {
+        }
+        else if (mimeType == IMAGE_PNG) {
 
             /*
-             * Depending on the parameters set, we can choose at this point which ChartRenderer might be the best
-             * for doing the work.
+             * Depending on the parameters set, we can choose at this point which ChartRenderer might be the
+             * best for doing the work.
              * 
              * However, for now we only support a Default one ...
              */
-    
+
             // TODO create an OverviewChartRenderer
-    
+
             MultipleChartsRenderer chartRenderer = createMultiChartRenderer(context);
-    
+
             // TODO do further settings?!
-    
+
             return chartRenderer;
         }
 
@@ -140,11 +102,10 @@ public class IOFactory {
     }
 
     private MultipleChartsRenderer createMultiChartRenderer(RenderingContext context) {
-        MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, locale);
-        chartRenderer.setShowTooltips(tooltips);
-        chartRenderer.setDrawLegend(drawLegend);
+        MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, config.getLocale());
+        chartRenderer.setDrawLegend(config.isLegend());
+        chartRenderer.setShowGrid(config.isGrid());
         chartRenderer.setMimeType(mimeType);
-        chartRenderer.setShowGrid(showGrid);
         return chartRenderer;
     }
 

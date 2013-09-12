@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,7 +21,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-
 package org.n52.io.img;
 
 import static java.awt.Color.BLACK;
@@ -59,9 +58,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.ui.RectangleInsets;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
-import org.n52.io.IOHandler;
+import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
-import org.n52.io.TimeseriesIOException;
+import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
@@ -71,7 +70,7 @@ import org.n52.io.v1.data.TimeseriesOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ChartRenderer implements IOHandler {
+public abstract class ChartRenderer implements IoHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartRenderer.class);
 
@@ -100,16 +99,16 @@ public abstract class ChartRenderer implements IOHandler {
         this.context = context;
     }
 
-    public abstract void generateOutput(TvpDataCollection data) throws TimeseriesIOException;
+    public abstract void generateOutput(TvpDataCollection data) throws IoParseException;
 
-    public void encodeAndWriteTo(OutputStream stream) throws TimeseriesIOException {
+    public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
             p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
         	write(drawChartToImage(), mimeType.getFormatName(), stream);
         }
         catch (IOException e) {
-            throw new TimeseriesIOException("Could not write image to output stream.", e);
+            throw new IoParseException("Could not write image to output stream.", e);
         }
         finally {
             try {

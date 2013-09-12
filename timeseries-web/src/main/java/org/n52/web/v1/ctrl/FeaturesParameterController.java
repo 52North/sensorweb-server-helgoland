@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -24,10 +24,12 @@
 
 package org.n52.web.v1.ctrl;
 
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_FEATURES;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.FeatureOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
@@ -43,33 +45,35 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = DEFAULT_PATH + "/" + COLLECTION_FEATURES, produces = {"application/json"})
 public class FeaturesParameterController extends ParameterController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FeaturesParameterController.class);
 
     private ParameterService<FeatureOutput> featureParameterService;
 
-    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap queryMap = QueryMap.createFromQuery(query);
-        
-        if (queryMap.shallExpand()) {
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters map = createFromQuery(query);
+
+        if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            Object[] result = featureParameterService.getExpandedParameters(queryMap);
+            Object[] result = featureParameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
-        } else {
-            Object[] result = featureParameterService.getCondensedParameters(queryMap);
+        }
+        else {
+            Object[] result = featureParameterService.getCondensedParameters(map);
 
             // TODO add paging
-            
+
             return new ModelAndView().addObject(result);
         }
     }
 
-    public ModelAndView getItem(@PathVariable("item") String featureId, @RequestParam(required=false) MultiValueMap<String, String> query) {
-        QueryMap map = QueryMap.createFromQuery(query);
+    public ModelAndView getItem(@PathVariable("item") String featureId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 

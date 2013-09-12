@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -41,7 +41,6 @@ public abstract class ParameterController extends BaseController implements Rest
 
     @RequestMapping(value = "/{item}", method = GET)
     public abstract ModelAndView getItem(String item, MultiValueMap<String, String> query);
-
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
