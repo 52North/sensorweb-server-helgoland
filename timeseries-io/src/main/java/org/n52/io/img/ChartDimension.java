@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,18 +21,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-package org.n52.io;
+package org.n52.io.img;
 
-public class TimeseriesIOException extends Exception {
+public class ChartDimension {
 
-    private static final long serialVersionUID = -3627963628985404024L;
-
-    public TimeseriesIOException(String message, Throwable cause) {
-        super(message, cause);
+    private int height;
+    
+    private int width;
+    
+    public ChartDimension(int width, int height) {
+        this.height = height;
+        this.width = width;
     }
 
-    public TimeseriesIOException(String message) {
-        super(message);
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
     
 }

@@ -103,6 +103,11 @@
                 <td>Review draft</td>
                 <td>2013-08-22</td>
               </tr>
+              <tr>
+                <td>Henning Bredel</td>
+                <td>Pre-Final Candidate</td>
+                <td>2013-09-06</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -150,6 +155,8 @@
                     <pre>expanded=true</pre>
                   </td>
                   <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more detailed information up to a certain point. However, it does not necessarily provide all item information as one may get when request the resource item itself.</p>
+                  
+                  <p>The <code>expanded</code> works almost only for resource collection. However, expceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
                   
                   <p>The default is <code>false</code>.</p></td>
                 </tr>
@@ -254,27 +261,63 @@ Content omitted for brevity.
 					</div>
 					
 					<div id="general-search"> <!-- fuzzy search -->
-						<h3>Search</h3>
-						<p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
-            
-            <table class="table">
-              <thead>
-                <th>Method</th>
-                <th>Path</th>
-                <th>Content-Type</th>
-                <th>Description</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/search?q=my%20search</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Searches globally over available resources.
-                  <div class="n52-callout n52-callout-todo">specify reponse format</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+						<div>
+              <h3>Search</h3>
+              <p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
+              
+              <table class="table">
+                <thead>
+                  <th>Method</th>
+                  <th>Path</th>
+                  <th>Content-Type</th>
+                  <th>Description</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/api/v1/search?q=my+search</code></td>
+                    <td><code>application/json</code></td>
+                    <td>Searches globally over available resources.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h3>Output Example</h3>
+              <p>A search generates a result collection containing all matching resources as items. An item describes a label where search took place on, a resource type hint and a link to the resource itself.</p>
+              <pre>GET /api/v1/search?q=sylt HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+              
+[
+  {
+    "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "station",
+    "href": "./stations/sta_a4bff7499d440d9bb67ad73e048c5a47"
+  },
+  {
+    "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
+    "label": "Wasserstand@List_Auf_Sylt_9570070",
+    "type": "timeseries",
+    "href": "./timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98"
+  },
+  {
+    "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
+    "label": "List_Auf_Sylt_9570070",
+    "type": "feature",
+    "href": "./features/foi_25e09ee3155ab0fbf3e4684ad2edffbf"
+  },
+  {
+    "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
+    "label": "Wasserstand-List_Auf_Sylt_9570070",
+    "type": "procedure",
+    "href": "./procedures/pro_e878d48e49ebc2a156e2810470bae9a2"
+  }
+]</pre>
+            </div>
 					</div>
 				
 					<div id="general-#general-common-status-codes"> <!-- Status Codes -->
@@ -820,6 +863,7 @@ Content-Type: application/json;charset=UTF-8
                     </ul>
                   </p>
                   <p>Timeseries can be pre-rendered by a regular task. If a pre-rendering exist for a given timeseries is a configuration issue.</p>
+                  <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
                   </td>
 								</tr>
 							</tbody>
@@ -882,6 +926,18 @@ Content-Type: application/json;charset=UTF-8
 								<th>Description</th>
 							</thead>
 							<tbody>
+                <tr>
+									<td>
+										<code>expanded</code>
+									</td>
+                  <td>
+                    <pre>expanded=true</pre>
+                  </td>
+                  <td>
+                    <p>The <code>expanded</code> parameter works for collection data and also when requesting raw timeseries data.</p>
+                    <p>Timeseries may provide additional data which changes over time (and therefore is not core metadata anymore). Best example are reference values which can be used to provide better interpretation to actual data values.</p>
+                  </td>
+                </tr>
                 <tr>
 									<td>
 										<code>timespan</code>
@@ -1190,63 +1246,45 @@ Content-Type: application/json;charset=UTF-8
             <div> <!-- Raw Data of a single timeseries -->
               <h4>Raw Data of a single timeseries</h4>
               
-              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed/getData HTTP/1.1
+              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed/getData?expanded=true HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
                 <pre id="timeseries-examples-single-raw" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "values": {
-    [
+  "ts_c8ed5ddbb89c19b2e385de23eecbde98": {
+    "values": [
       {
-        "timestamp": 1375570800000,
-        "value": 230.81
+        "timestamp": 1376563000000,
+        "value": 442.8
       },
       {
-        "timestamp": 1375570860000,
-        "value": 235.12
+        "timestamp": 1376568060000,
+        "value": 441.8
       },
-      {
-        "timestamp": 1375570920000,
-        "value": 235.97
-      }
-    ]
-  },
-  "_metadata": {
-    "referenceValues": [
-      {
-        "Mittleres Niedrigwasser": {
+    ],
+    "extra": {
+      "referenceValues": {
+        "ref_68192ce0f01b2b47821bac2547f9f9c0": {
           "values": [
             {
-              "timestamp": 1375570800000,
-              "value": 24
+              "timestamp": 1376563000000,
+              "value": 408
             },
             {
-              "timestamp": 1375590860000,
-              "value": 26.5
-            }
-          ]
-        },
-        "Mittelwasser": {
-          "values": [
-            {
-              "timestamp": 1375570800000,
-              "value": 34.5
-            },
-            {
-              "timestamp": 1375590860000,
-              "value": 34.5
+              "timestamp": 1376568060000,
+              "value": 408
             }
           ]
         }
       }
-    ]
+    }
   }
 }</pre>
               <button data-toggle="collapse" data-parent="#timeseries-examples" data-target="#timeseries-examples-single-raw" class="btn btn-primary">Show/Hide Response</button>
               <div class="n52-callout n52-callout-info">
-                <p>Timeseries data can be very big! Naive clients can bother data providers when trying to request huge datasets by accident. Therefore data requests may be limited to a maximum timespan (per configuration).</p>
+                <p>Timeseries data can get huge quickly depending on how often new values are measured and how long data is stored in the corresponding data backend! Naive clients can bother data providers when trying to request huge datasets by accident. Therefore data requests may be limited to a maximum timespan (per configuration).</p>
                 <p>However, most probably consuming huge datasets may also not be of client's interest. Have a look <a href="#general-paging">at the paging documentation</a> how to get data in smaller chunks.</p>
               </div>
 						</div>
@@ -1525,6 +1563,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
     ]
   }
 }</pre>
+            <div class="n52-callout n52-callout-info">Please note that adding <code>expanded=true</code> reference values are added as a timeseries on their own. You can track reference values with the corresponding identifiers available from <a href="#timeseries-examples-item">the timeseries metadata</a>.</div>
           </div>
       
 					<div>

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web;
 
 import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
@@ -38,20 +39,19 @@ public class UnsupportedMediaTypeException extends RuntimeException implements W
     private List<String> details;
 
     @Deprecated
-	public UnsupportedMediaTypeException() {
-		super();
-	}
+    public UnsupportedMediaTypeException() {
+        super();
+    }
 
-	public UnsupportedMediaTypeException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public UnsupportedMediaTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public UnsupportedMediaTypeException(String message) {
-		super(message);
-	}
+    public UnsupportedMediaTypeException(String message) {
+        super(message);
+    }
 
-
-	@Override
+    @Override
     public void addHint(String details) {
         if (details == null) {
             return;
@@ -71,5 +71,5 @@ public class UnsupportedMediaTypeException extends RuntimeException implements W
     public Throwable getThrowable() {
         return this;
     }
-    
+
 }

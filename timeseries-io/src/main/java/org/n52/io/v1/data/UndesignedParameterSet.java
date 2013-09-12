@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -22,6 +22,8 @@
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
 package org.n52.io.v1.data;
+
+import org.joda.time.Interval;
 
 
 
@@ -52,15 +54,14 @@ public class UndesignedParameterSet extends ParameterSet {
         return format;
     }
     
-    
     public void setFormat(String format) {
         this.format = format;
     }
     
-    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, String timespan) {
+    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, Interval timespan) {
         UndesignedParameterSet parameters = new UndesignedParameterSet();
         parameters.setTimeseries(new String[] { timeseriesId });
-        parameters.setTimespan(timespan);
+        parameters.setTimespan(timespan.toString());
         return parameters;
     }
 

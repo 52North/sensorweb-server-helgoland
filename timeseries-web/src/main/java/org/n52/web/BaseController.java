@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -49,6 +49,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+/**
+ * Serves as central {@link ExceptionHandler} for all Web bindings inheriting from this class.
+ * {@link WebException}s indicate an expected workflows while unexpected exceptions are automatically wrapped
+ * to {@link InternalServerException}s as fallback.<br/>
+ * <br/>
+ * Developers should consider to add hints via {@link WebException#addHint(String)} so that as much
+ * information is communicated to the caller as possible.
+ */
 @Controller
 public abstract class BaseController {
 
@@ -66,7 +74,7 @@ public abstract class BaseController {
         return IMAGE_PNG.getMimeType().equals(request.getHeader("Accept"));
     }
 
-    @ExceptionHandler(value = { BadRequestException.class })
+    @ExceptionHandler(value = {BadRequestException.class})
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
         writeExceptionResponse((WebException) e, response, BAD_REQUEST);
     }
@@ -87,7 +95,8 @@ public abstract class BaseController {
             WebException wrappedException = new BadRequestException("The request could not been read.", e);
             wrappedException.addHint("Check the message which has been sent to the server. Probably it is not valid.");
             writeExceptionResponse(wrappedException, response, BAD_REQUEST);
-        } else {
+        }
+        else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
             writeExceptionResponse(wrappedException, response, INTERNAL_SERVER_ERROR);
         }

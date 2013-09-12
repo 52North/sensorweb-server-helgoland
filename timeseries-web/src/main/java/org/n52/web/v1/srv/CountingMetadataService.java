@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -22,31 +22,27 @@
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
 
-package org.n52.io;
+package org.n52.web.v1.srv;
 
-import java.io.IOException;
-import java.io.OutputStream;
+/**
+ * Provides access to resource quantities available.
+ */
+public interface CountingMetadataService {
 
-import org.n52.io.format.TvpDataCollection;
+    int getServiceCount();
 
-public interface IOHandler {
+    int getStationsCount();
 
-    /**
-     * @param data
-     *        the input data collection to create an output for.
-     * @throws TimeseriesIOException
-     *         if ouput generation fails.
-     */
-    public void generateOutput(TvpDataCollection data) throws TimeseriesIOException;
+    int getTimeseriesCount();
 
-    /**
-     * Encodes and writes previously generated output to the given stream. After handling the stream gets
-     * flushed and closed.
-     * 
-     * @param stream
-     *        the stream to write on the generated ouput.
-     * @throws IOException
-     *         if writing output to stream fails.
-     */
-    public void encodeAndWriteTo(OutputStream stream) throws TimeseriesIOException;
+    int getOfferingsCount();
+
+    int getCategoriesCount();
+
+    int getFeaturesCount();
+
+    int getProceduresCount();
+
+    int getPhenomenaCount();
+
 }

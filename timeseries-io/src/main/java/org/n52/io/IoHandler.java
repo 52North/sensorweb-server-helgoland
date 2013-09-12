@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -21,10 +21,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-package org.n52.web.v1.srv;
+package org.n52.io;
 
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 
-public interface TimeseriesMetadataService extends ParameterService<TimeseriesMetadataOutput> {
+import org.n52.io.format.TvpDataCollection;
 
+public interface IoHandler {
+
+    /**
+     * @param data
+     *        the input data collection to create an output for.
+     * @throws IoParseException
+     *         if ouput generation fails.
+     */
+    public void generateOutput(TvpDataCollection data) throws IoParseException;
+
+    /**
+     * Encodes and writes previously generated output to the given stream. After handling the stream gets
+     * flushed and closed.
+     * 
+     * @param stream
+     *        the stream to write on the generated ouput.
+     * @throws IOException
+     *         if writing output to stream fails.
+     */
+    public void encodeAndWriteTo(OutputStream stream) throws IoParseException;
 }

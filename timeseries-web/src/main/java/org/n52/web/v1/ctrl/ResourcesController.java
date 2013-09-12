@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -24,14 +24,14 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.QueryMap.createFromQuery;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.ResourcesController.ResourceCollection.createResource;
 import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.web.v1.srv.MetadataService;
+import org.n52.web.v1.srv.CountingMetadataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,34 +41,34 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = DEFAULT_PATH, produces = {"application/json"})
 public class ResourcesController {
-	
-	private MetadataService metadataService;
+
+    private CountingMetadataService metadataService;
 
     @RequestMapping("/")
-    public ModelAndView getResources(@RequestParam(required=false) MultiValueMap<String, String> query) {
-    	return new ModelAndView().addObject(createResources(createFromQuery(query).shallExpand()));
+    public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }
-    
+
     public ResourceCollection[] createResources(boolean expanded) {
-    	List<ResourceCollection> resources = new ArrayList<ResourceCollection>();
-    	ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
-    	ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");
-    	ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription("Represents a sequence of data values measured over time.");
-    	ResourceCollection categories = createResource("categories").withLabel("Category").withDescription("A category group available timeseries.");
-    	ResourceCollection offerings = createResource("offerings").withLabel("Offering").withDescription("An organizing unit to filter resources.");
-    	ResourceCollection features = createResource("features").withLabel("Feature").withDescription("An organizing unit to filter resources.");
-    	ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription("An organizing unit to filter resources.");
-    	ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription("An organizing unit to filter resources.");
-    	if (expanded) {
-    		services.setSize(metadataService.getServiceCount());
-    		stations.setSize(metadataService.getStationsCount());
-    		timeseries.setSize(metadataService.getTimeseriesCount());
-    		categories.setSize(metadataService.getCategoriesCount());
-    		offerings.setSize(metadataService.getOfferingsCount());
-    		features.setSize(metadataService.getFeaturesCount());
-    		procedures.setSize(metadataService.getProceduresCount());
-    		phenomena.setSize(metadataService.getPhenomenaCount());
-		}
+        List<ResourceCollection> resources = new ArrayList<ResourceCollection>();
+        ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
+        ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");
+        ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription("Represents a sequence of data values measured over time.");
+        ResourceCollection categories = createResource("categories").withLabel("Category").withDescription("A category group available timeseries.");
+        ResourceCollection offerings = createResource("offerings").withLabel("Offering").withDescription("An organizing unit to filter resources.");
+        ResourceCollection features = createResource("features").withLabel("Feature").withDescription("An organizing unit to filter resources.");
+        ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription("An organizing unit to filter resources.");
+        ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription("An organizing unit to filter resources.");
+        if (expanded) {
+            services.setSize(metadataService.getServiceCount());
+            stations.setSize(metadataService.getStationsCount());
+            timeseries.setSize(metadataService.getTimeseriesCount());
+            categories.setSize(metadataService.getCategoriesCount());
+            offerings.setSize(metadataService.getOfferingsCount());
+            features.setSize(metadataService.getFeaturesCount());
+            procedures.setSize(metadataService.getProceduresCount());
+            phenomena.setSize(metadataService.getPhenomenaCount());
+        }
         resources.add(services);
         resources.add(stations);
         resources.add(timeseries);
@@ -79,16 +79,16 @@ public class ResourcesController {
         resources.add(phenomena);
         return resources.toArray(new ResourceCollection[0]);
     }
-    
-	public MetadataService getMetadataService() {
-		return metadataService;
-	}
 
-	public void setMetadataService(MetadataService metadataService) {
-		this.metadataService = metadataService;
-	}
+    public CountingMetadataService getMetadataService() {
+        return metadataService;
+    }
 
-	static class ResourceCollection {
+    public void setMetadataService(CountingMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
+
+    static class ResourceCollection {
 
         private String id;
         private String label;
@@ -124,14 +124,14 @@ public class ResourcesController {
         }
 
         public Integer getSize() {
-			return size;
-		}
+            return size;
+        }
 
-		public void setSize(Integer size) {
-			this.size = size;
-		}
+        public void setSize(Integer size) {
+            this.size = size;
+        }
 
-		public ResourceCollection withLabel(String label) {
+        public ResourceCollection withLabel(String label) {
             this.label = label;
             return this;
         }
@@ -140,10 +140,10 @@ public class ResourcesController {
             this.description = description;
             return this;
         }
-        
+
         public ResourceCollection withCount(Integer count) {
-        	this.size = count;
-        	return this;
+            this.size = count;
+            return this;
         }
 
         public static ResourceCollection createResource(String id) {

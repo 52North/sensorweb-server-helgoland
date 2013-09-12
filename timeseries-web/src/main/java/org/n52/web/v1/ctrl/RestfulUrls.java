@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2012
+ * ﻿Copyright (C) 2013
  * by 52 North Initiative for Geospatial Open Source Software GmbH
  *
  * Contact: Andreas Wytzisk
@@ -31,7 +31,7 @@ package org.n52.web.v1.ctrl;
  * <b>Note:</b> Do not code against this type.
  */
 public interface RestfulUrls {
-    
+
     /**
      * The base URL to be used as RESTful entry point.
      */
@@ -41,12 +41,12 @@ public interface RestfulUrls {
      * Subpath identifying a collection of services availabe.
      */
     static final String COLLECTION_SERVICES = "services";
-    
+
     /**
      * Subpath identifying a collection of categories availabe.
      */
     static final String COLLECTION_CATEGORIES = "categories";
-    
+
     /**
      * Subpath identifying a collection of offerings available.
      */
@@ -56,7 +56,7 @@ public interface RestfulUrls {
      * Subpath identifying a collection of features available.
      */
     static final String COLLECTION_FEATURES = "features";
-    
+
     /**
      * Subpath identifying a collection of procedures available.
      */
@@ -71,7 +71,7 @@ public interface RestfulUrls {
      * Subpath identifying a collection of stations available.
      */
     static final String COLLECTION_STATIONS = "stations";
-    
+
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
