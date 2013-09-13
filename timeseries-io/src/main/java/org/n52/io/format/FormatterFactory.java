@@ -23,7 +23,7 @@
  */
 package org.n52.io.format;
 
-public class FormatterFactory {
+public final class FormatterFactory {
     
     private String format;
     

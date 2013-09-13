@@ -40,7 +40,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value = DEFAULT_PATH, produces = {"application/json"})
-public class ResourcesController {
+public final class ResourcesController {
 
     private CountingMetadataService metadataService;
 

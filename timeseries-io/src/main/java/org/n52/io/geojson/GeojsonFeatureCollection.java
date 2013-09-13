@@ -25,7 +25,7 @@ package org.n52.io.geojson;
 
 import java.util.Collection;
 
-public class GeojsonFeatureCollection {
+public final class GeojsonFeatureCollection {
 
     private GeojsonFeature[] features;
     
