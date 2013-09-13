@@ -32,7 +32,7 @@ import org.n52.io.img.RenderingContext;
 import org.n52.io.report.PDFReportGenerator;
 import org.n52.io.report.ReportGenerator;
 
-public class IoFactory {
+public final class IoFactory {
 
     private MimeType mimeType = IMAGE_PNG;
     

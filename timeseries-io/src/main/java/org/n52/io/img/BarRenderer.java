@@ -29,7 +29,7 @@ import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.n52.io.style.BarStyle;
 
-class BarRenderer implements Renderer {
+final class BarRenderer implements Renderer {
     
     static final String BAR_CHART_TYPE = "bar";
     

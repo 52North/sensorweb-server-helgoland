@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * Characteristic measurement values are picked depending on a given tolerance value. Values that differ less
  * than this tolerance value from an ideal line between some minima and maxima will be dropped.
  */
-public class DouglasPeuckerGeneralizer implements Generalizer {
+public final class DouglasPeuckerGeneralizer implements Generalizer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
