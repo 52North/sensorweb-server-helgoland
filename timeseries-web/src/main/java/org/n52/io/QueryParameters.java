@@ -38,7 +38,7 @@ import org.springframework.util.MultiValueMap;
  * Delegates IO parameters to an {@link IoParameters} instance by composing parameter access with Web
  * exception handling.
  */
-public class QueryParameters extends IoParameters {
+public final class QueryParameters extends IoParameters {
 
     /**
      * Creates an simple view on given query. The {@link MultiValueMap} is flattened to a single value map.

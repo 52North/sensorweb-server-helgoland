@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * To ensure all exceptions are handled and communicated to the user all Web bindings shall inherit from
  * {@link BaseController} which is configured by default to serve as a central {@link ExceptionHandler}.
  */
-public class ExceptionResponse {
+public final class ExceptionResponse {
 
     // TODO add documentation url for details
 
