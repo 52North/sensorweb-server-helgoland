@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.crs;
 
 import static com.vividsolutions.jts.geom.PrecisionModel.FLOATING;
@@ -45,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
@@ -86,7 +88,7 @@ public final class CRSUtils {
     public Point convertToPointFrom(GeojsonPoint geometry) {
         return convertToPointFrom(geometry, DEFAULT_CRS);
     }
-    
+
     public Point convertToPointFrom(GeojsonPoint geometry, String crs) {
         Double[] coordinates = geometry.getCoordinates();
         return createPoint(coordinates[0], coordinates[1], crs);
@@ -118,7 +120,7 @@ public final class CRSUtils {
      *         if creating the target CRS fails.
      */
     public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs) throws TransformException, FactoryException {
-        Point transformedPoint = transformInnerToOuter(point, getCrsFor(targetCrs));
+        Point transformedPoint = transformInnerToOuter(point, targetCrs);
         double x = transformedPoint.getX();
         double y = transformedPoint.getY();
         GeojsonPoint asGeoJSON = createWithCoordinates(new Double[] {x, y});
@@ -230,9 +232,9 @@ public final class CRSUtils {
      *         if transformation fails for any other reason.
      */
     public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
-        return transform(point, getCrsFor(srcFrame), internCrs);
+        return (Point) transform(point, getCrsFor(srcFrame), internCrs);
     }
-
+    
     /**
      * Transforms a given point from its inner reference (which is WGS84 (CRS:84)) to a given reference.
      * 
@@ -247,11 +249,11 @@ public final class CRSUtils {
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Point transformInnerToOuter(Point point, CoordinateReferenceSystem destFrame) throws FactoryException,
-            TransformException {
-        return transform(point, internCrs, destFrame);
+    public Point transformInnerToOuter(Point point, String destFrame) throws FactoryException, TransformException {
+        return (Point) transform(point, internCrs, getCrsFor(destFrame));
     }
 
+    
     /**
      * Transforms a given point from a given reference to a destinated reference.
      * 
@@ -269,12 +271,32 @@ public final class CRSUtils {
      *         if transformation fails for any other reason.
      */
     public Point transform(Point point, String srcFrame, String destFrame) throws FactoryException, TransformException {
-        return transform(point, getCrsFor(srcFrame), getCrsFor(destFrame));
+        return (Point) transform(point, getCrsFor(srcFrame), getCrsFor(destFrame));
+    }
+    
+    /**
+     * Transforms a given geometry from a given reference to a destinated reference.
+     * 
+     * @param geometry
+     *        the geometry to transform.
+     * @param srcFrame
+     *        the reference the given point is in.
+     * @param destFrame
+     *        the reference frame the point shall be transformed to.
+     * @return a transformed point.
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created.
+     * @throws TransformException
+     *         if transformation fails for any other reason.
+     */
+    public Geometry transform(Geometry geometry, String srcFrame, String destFrame) throws FactoryException, TransformException {
+        return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
-    private Point transform(Point point, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
+    private Geometry transform(Geometry point, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
             TransformException {
-        return (Point) JTS.transform(point, CRS.findMathTransform(srs, dest));
+        return JTS.transform(point, CRS.findMathTransform(srs, dest));
     }
 
     /**
