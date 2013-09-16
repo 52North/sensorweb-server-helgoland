@@ -57,13 +57,13 @@ public class CRSUtilsTest {
     }
     
     @Test
-    public void shouldIndicateLatLonOrder() {
+    public void shouldIndicateLatLonOrder() throws FactoryException {
         referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
         assertThat(referenceHelper.isLatLonAxesOrder("EPSG:4326"), is(true));
     }
     
     @Test
-    public void shouldIndicateLonLatOrder() {
+    public void shouldIndicateLonLatOrder() throws FactoryException {
         referenceHelper = CRSUtils.createEpsgForcedXYAxisOrder();
         assertThat(referenceHelper.isLatLonAxesOrder("EPSG:4326"), is(false));
     }

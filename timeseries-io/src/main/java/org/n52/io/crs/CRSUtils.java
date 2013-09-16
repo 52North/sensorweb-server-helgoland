@@ -38,6 +38,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
 import org.n52.io.geojson.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -234,7 +235,7 @@ public final class CRSUtils {
     public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
         return (Point) transform(point, getCrsFor(srcFrame), internCrs);
     }
-    
+
     /**
      * Transforms a given point from its inner reference (which is WGS84 (CRS:84)) to a given reference.
      * 
@@ -253,7 +254,6 @@ public final class CRSUtils {
         return (Point) transform(point, internCrs, getCrsFor(destFrame));
     }
 
-    
     /**
      * Transforms a given point from a given reference to a destinated reference.
      * 
@@ -273,7 +273,7 @@ public final class CRSUtils {
     public Point transform(Point point, String srcFrame, String destFrame) throws FactoryException, TransformException {
         return (Point) transform(point, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
-    
+
     /**
      * Transforms a given geometry from a given reference to a destinated reference.
      * 
@@ -290,7 +290,8 @@ public final class CRSUtils {
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Geometry transform(Geometry geometry, String srcFrame, String destFrame) throws FactoryException, TransformException {
+    public Geometry transform(Geometry geometry, String srcFrame, String destFrame) throws FactoryException,
+            TransformException {
         return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
@@ -305,8 +306,10 @@ public final class CRSUtils {
      * @param outer
      *        the given reference frame code to check.
      * @return <code>true</code> if axes order is switched compared to the inner default.
+     * @throws FactoryException
+     *         if no proper CRS could be created.
      */
-    public boolean isLatLonAxesOrder(String outer) {
+    public boolean isLatLonAxesOrder(String outer) throws FactoryException {
         return isAxesSwitched(internCrs, getCrsFor(outer));
     }
 
@@ -318,18 +321,14 @@ public final class CRSUtils {
      *        the CRS code, like <code>EPSG:4326</code> or <code>CRS:84</code>.
      * @return the CRS instance for the given code or {@link #internCrs} if either no matching CRS could be
      *         found or an error occured during resolving code.
+     * @throws FactoryException
+     *         if creating CRS failed.
      */
-    private CoordinateReferenceSystem getCrsFor(String authorityCode) {
+    private CoordinateReferenceSystem getCrsFor(String authorityCode) throws FactoryException {
         if (authorityCode == null || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
             return internCrs;
         }
-        try {
-            return crsFactory.createCoordinateReferenceSystem(authorityCode);
-        }
-        catch (FactoryException e) {
-            LOGGER.warn("Could not create CRS from authority code {}. Using default.", authorityCode);
-            return internCrs;
-        }
+        return crsFactory.createCoordinateReferenceSystem(authorityCode);
     }
 
     /**
