@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
@@ -30,6 +31,8 @@ import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.IoParameters;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.v1.data.StationOutput;
+import org.n52.web.BadRequestException;
+import org.n52.web.InternalServerException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -38,9 +41,9 @@ import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public abstract class TransformationService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
-    
+
     protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
         for (StationOutput stationOutput : stations) {
             transformInline(stationOutput, query);
@@ -48,7 +51,17 @@ public abstract class TransformationService {
         return stations;
     }
 
-    protected void transformInline(StationOutput stationOutput, IoParameters query) {
+    /**
+     * @param station
+     *        the station to transform.
+     * @param query
+     *        the query containing CRS and how to handle axes order.
+     * @throws InternalServerException
+     *         if transformation failed.
+     * @throws BadRequestException
+     *         if an invalid CRS has been passed in.
+     */
+    protected void transformInline(StationOutput station, IoParameters query) {
         String crs = query.getCrs();
         if (DEFAULT_CRS.equals(crs)) {
             return; // no need to transform
@@ -57,14 +70,14 @@ public abstract class TransformationService {
             CRSUtils crsUtils = query.isForceXY()
                 ? createEpsgForcedXYAxisOrder()
                 : createEpsgStrictAxisOrder();
-            Point point = crsUtils.convertToPointFrom(stationOutput.getGeometry());
-            stationOutput.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+            Point point = crsUtils.convertToPointFrom(station.getGeometry());
+            station.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
         }
         catch (TransformException e) {
-            LOGGER.warn("Could not transform to requested CRS: {}", crs, e);
+            throw new InternalServerException("Could not transform to requested CRS: " + crs, e);
         }
         catch (FactoryException e) {
-            LOGGER.error("Could not create CRS {}.", crs, e);
+            throw new BadRequestException("Could not create CRS " + crs + ".", e);
         }
     }
 
