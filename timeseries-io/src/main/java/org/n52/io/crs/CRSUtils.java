@@ -38,7 +38,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
 import org.n52.io.geojson.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
