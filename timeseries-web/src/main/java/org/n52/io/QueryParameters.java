@@ -165,7 +165,7 @@ public final class QueryParameters extends IoParameters {
             return super.getSpatialFilter();
         }
         catch (IoParseException e) {
-            BadRequestException ex = new BadRequestException("Spatial filter could not be determined.");
+            BadRequestException ex = new BadRequestException("Spatial filter could not be determined.", e);
             ex.addHint("Refer to the API documentation and check the parameter against required syntax!");
             ex.addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.");
             throw ex;

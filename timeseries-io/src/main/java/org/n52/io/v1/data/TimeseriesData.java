@@ -41,7 +41,7 @@ public class TimeseriesData implements Serializable {
     private TimeseriesMetadata metadata;
     
     public void addValues(TimeseriesValue... values) {
-        if (values != null) {
+        if (values != null && values.length > 0) {
             this.values.addAll(Arrays.asList(values));
         }
     }

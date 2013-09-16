@@ -21,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.v1.data;
 
 import static java.lang.Double.parseDouble;
@@ -35,6 +36,7 @@ import static org.n52.io.crs.WGS84Util.normalizeLongitude;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeojsonPoint;
+import org.opengis.referencing.FactoryException;
 
 import com.vividsolutions.jts.geom.Point;
 
@@ -86,9 +88,10 @@ public class Vicinity {
      * @param crsUtils
      *        the reference context.
      * @return a bounding rectangle.
+     * @throws IllegalStateException
+     *         if invalid crs was set.
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
-
         Point center = createCenter(this.center, crsUtils);
 
         double latInRad = toRadians(center.getY());
@@ -96,15 +99,19 @@ public class Vicinity {
         double llNorthing = normalizeLatitude(center.getY() - getLatitudeDelta(radius));
         double urEasting = normalizeLongitude(center.getX() + getLongitudeDelta(latInRad, radius));
         double urNorthing = normalizeLatitude(center.getY() + getLatitudeDelta(radius));
-        
-        if (crsUtils.isLatLonAxesOrder(crs)) {
-            Point ll = crsUtils.createPoint(llNorthing, llEasting, crs);
-            Point ur = crsUtils.createPoint(urNorthing, urEasting, crs);
+        try {
+            if (crsUtils.isLatLonAxesOrder(crs)) {
+                Point ll = crsUtils.createPoint(llNorthing, llEasting, crs);
+                Point ur = crsUtils.createPoint(urNorthing, urEasting, crs);
+                return new BoundingBox(ll, ur, crs);
+            }
+            Point ll = crsUtils.createPoint(llEasting, llNorthing, crs);
+            Point ur = crsUtils.createPoint(urEasting, urNorthing, crs);
             return new BoundingBox(ll, ur, crs);
         }
-        Point ll = crsUtils.createPoint(llEasting, llNorthing, crs);
-        Point ur = crsUtils.createPoint(urEasting, urNorthing, crs);
-        return new BoundingBox(ll, ur, crs);
+        catch (FactoryException e) {
+            throw new IllegalStateException("Illegal CRS parameter: " + crs, e);
+        }
     }
 
     /**
@@ -137,7 +144,7 @@ public class Vicinity {
     public void setCenter(GeojsonPoint center) {
         this.center = center;
     }
-    
+
     public GeojsonPoint getCenter() {
         return center;
     }

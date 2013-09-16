@@ -46,39 +46,39 @@ import org.slf4j.LoggerFactory;
  */
 public final class DouglasPeuckerGeneralizer implements Generalizer {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
     /**
      * Config-key for {@link #maxEntries} of entries.
      */
-    public static final String MAX_ENTRIES = "MAX_ENTRIES";
+    private static final String MAX_ENTRIES = "MAX_ENTRIES";
 
     /**
      * Config-key for {@link #reductionRate}.
      */
-    public static final String REDUCTION_RATE = "REDUCTION_RATE";
+    private static final String REDUCTION_RATE = "REDUCTION_RATE";
 
     /**
      * Config-key for the {@link #toleranceValue}.
      */
-    public static String TOLERANCE_VALUE = "TOLERANCE_VALUE";
+    private static final String TOLERANCE_VALUE = "TOLERANCE_VALUE";
 
     /**
      * {@link #maxEntries} is the value for the maximum points the generalizer will handle, otherwise an
      * exception will be thrown; -1 is unlimited
      */
-    protected int maxEntries = -1; // fallback default
+    private int maxEntries = -1; // fallback default
 
     /**
      * estimated reduction rate for this use case, where {@link #reductionRate} = 3 means the time series is
      * reduced to 1/3 of it's size; -1 means there is no proper empirical value
      */
-    protected int reductionRate = -1; // fallback default
+    private int reductionRate = -1; // fallback default
 
     /**
      * Absolute tolerance value.
      */
-    protected double toleranceValue = 0.1; // fallback default
+    private double toleranceValue = 0.1; // fallback default
 
     private TvpDataCollection dataToGeneralize;
 
@@ -105,11 +105,15 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
 
     private void configure(Properties configuration) {
         try {
-            maxEntries = configuration.containsKey(MAX_ENTRIES) ? parseInt(configuration.getProperty(MAX_ENTRIES)) : -1;
-            reductionRate = configuration.containsKey(REDUCTION_RATE) ? parseInt(configuration.getProperty(REDUCTION_RATE))
-                                                                     : -1;
-            toleranceValue = configuration.containsKey(TOLERANCE_VALUE) ? parseDouble(configuration.getProperty(TOLERANCE_VALUE))
-                                                                       : 0.1;
+            maxEntries = configuration.containsKey(MAX_ENTRIES)
+                ? parseInt(configuration.getProperty(MAX_ENTRIES))
+                : -1;
+            reductionRate = configuration.containsKey(REDUCTION_RATE)
+                ? parseInt(configuration.getProperty(REDUCTION_RATE))
+                : -1;
+            toleranceValue = configuration.containsKey(TOLERANCE_VALUE)
+                ? parseDouble(configuration.getProperty(TOLERANCE_VALUE))
+                : 0.1;
         }
         catch (NumberFormatException ne) {
             LOGGER.error("Error while reading properties!  Using fallback defaults.", ne);
@@ -134,7 +138,8 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
         }
 
         if (maxEntries != -1 && originalValues.length > maxEntries) {
-            throw new GeneralizerException("Maximum number of entries exceeded (" + originalValues.length + ">" + maxEntries + ")!");
+            throw new GeneralizerException("Maximum number of entries exceeded (" + originalValues.length + ">"
+                    + maxEntries + ")!");
         }
 
         TimeseriesData generalizedTimeseries = new TimeseriesData();
@@ -167,7 +172,7 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
         int index = 0;
         double maxDist = 0;
         double distance;
-        
+
         // start and end value are not mentioned
         for (int i = 1; i < values.length - 1; i++) {
             TimeseriesValue timeseriesValue = values[i];
@@ -180,7 +185,8 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
 
         if (maxDist < toleranceValue) {
             return timeseries.getValues();
-        } else {
+        }
+        else {
             // split and handle both parts separately
             TimeseriesData generalizedData = new TimeseriesData();
             TimeseriesData firstPartToBeGeneralized = new TimeseriesData();
