@@ -35,7 +35,6 @@ import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
 import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_DOMAIN;
 import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
 import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 
@@ -53,14 +52,15 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.ui.RectangleInsets;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
-import org.n52.io.MimeType;
 import org.n52.io.IoParseException;
+import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
@@ -134,7 +134,7 @@ public abstract class ChartRenderer implements IoHandler {
     
     public XYPlot getXYPlot() {
         if (xyPlot == null) {
-            this.xyPlot = createChart(context);
+            xyPlot = createChart(context);
         }
         return xyPlot;
     }
@@ -202,17 +202,8 @@ public abstract class ChartRenderer implements IoHandler {
         xyPlot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
         showCrosshairsOnAxes(xyPlot);
         showGridlinesOnChart(xyPlot);
-        configureDomainAxis(xyPlot);
         configureTimeAxis(xyPlot);
         return xyPlot;
-    }
-
-    private void configureDomainAxis(XYPlot xyPlot) {
-        ValueAxis domainAxis = xyPlot.getDomainAxis();
-        domainAxis.setTickLabelFont(FONT_DOMAIN);
-        domainAxis.setLabelFont(FONT_LABEL);
-        domainAxis.setTickLabelPaint(COLOR);
-        domainAxis.setLabelPaint(COLOR);
     }
 
     private void showCrosshairsOnAxes(XYPlot xyPlot) {
@@ -232,23 +223,23 @@ public abstract class ChartRenderer implements IoHandler {
         timeAxis.setDateFormatOverride(new SimpleDateFormat());
     }
 
-    public void configureRangeAxis(TimeseriesMetadataOutput timeseries, int seriesIndex) {
-        ValueAxis rangeAxis = xyPlot.getRangeAxisForDataset(seriesIndex);
-        rangeAxis.setLabel(createRangeLabel(timeseries));
-        rangeAxis.setTickLabelFont(FONT_LABEL);
-        rangeAxis.setLabelFont(FONT_LABEL);
-        rangeAxis.setTickLabelPaint(COLOR);
-        rangeAxis.setLabelPaint(COLOR);
+    public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
+        NumberAxis axis = new NumberAxis(createRangeLabel(metadata));
+        axis.setTickLabelFont(FONT_LABEL);
+        axis.setLabelFont(FONT_LABEL);
+        axis.setTickLabelPaint(COLOR);
+        axis.setLabelPaint(COLOR);
+        return axis;
     }
 
-    private String createRangeLabel(TimeseriesMetadataOutput timeseriesMetadata) {
+    protected String createRangeLabel(TimeseriesMetadataOutput timeseriesMetadata) {
         TimeseriesOutput parameters = timeseriesMetadata.getParameters();
         PhenomenonOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
         uom.append(phenomenon.getLabel());
         String uomLabel = timeseriesMetadata.getUom();
         if (uomLabel != null && !uomLabel.isEmpty()) {
-            uom.append(" (").append(uomLabel).append(")");
+            uom.append(" [").append(uomLabel).append("]");
         }
         return uom.toString();
     }
@@ -260,6 +251,10 @@ public abstract class ChartRenderer implements IoHandler {
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId) {
         return getChartStyleDefinitions().getStyleOptions(timeseriesId);
     }
+    
+    protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
+        return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
+    }
 
     protected DesignedParameterSet getChartStyleDefinitions() {
         return context.getChartStyleDefinitions();
@@ -270,7 +265,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     protected boolean isBarStyle(StyleProperties properties) {
-        return !isLineStyleDefault(properties) || BAR_CHART_TYPE.equals(properties.getChartType());
+        return !isLineStyleDefault(properties) && BAR_CHART_TYPE.equals(properties.getChartType());
     }
 
     private boolean isLineStyleDefault(StyleProperties properties) {
