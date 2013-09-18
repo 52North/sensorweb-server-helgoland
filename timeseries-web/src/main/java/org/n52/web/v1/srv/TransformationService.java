@@ -35,14 +35,10 @@ import org.n52.web.BadRequestException;
 import org.n52.web.InternalServerException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Point;
 
 public abstract class TransformationService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
 
     protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
         for (StationOutput stationOutput : stations) {

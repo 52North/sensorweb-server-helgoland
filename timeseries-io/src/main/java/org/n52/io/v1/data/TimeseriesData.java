@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TimeseriesData implements Serializable {
@@ -89,6 +90,13 @@ public class TimeseriesData implements Serializable {
     
     public void setMetadata(TimeseriesMetadata metadata) {
         this.metadata = metadata;
+    }
+    
+    @JsonIgnore
+    public boolean hasReferenceValues() {
+        return metadata != null 
+                && metadata.getReferenceValues() != null
+                && !metadata.getReferenceValues().isEmpty();
     }
     
 }

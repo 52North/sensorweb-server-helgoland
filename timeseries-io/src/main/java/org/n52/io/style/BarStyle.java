@@ -51,10 +51,17 @@ public class BarStyle extends Style {
 		return DEFAULT_BAR_WIDTH;
 	}
     
-    public static BarStyle createFrom(StyleProperties options) {
+    public static BarStyle createBarStyle(StyleProperties options) {
+        if (options == null || options.getProperties().isEmpty()) {
+            return createDefaultBarStyle();
+        }
         BarStyle barStyleOptions = new BarStyle();
         barStyleOptions.setProperties(options.getProperties());
         return barStyleOptions;
+    }
+
+    public static BarStyle createDefaultBarStyle() {
+        return new BarStyle();
     }
     
 }
