@@ -719,8 +719,9 @@ public class IoParameters {
     }
 
     private static Map<String, String> createQueryParametersFrom(DesignedParameterSet parameters) {
-        Map<String, String> queryParameters = createQueryParametersFrom(parameters);
+        Map<String, String> queryParameters = createQueryParametersFrom((ParameterSet) parameters);
         queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
+        queryParameters.put(LEGEND, Boolean.toString(parameters.isLegend()));
         queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
         return queryParameters;
     }
