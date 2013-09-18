@@ -27,6 +27,7 @@ import static java.lang.Boolean.parseBoolean;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.lang.Integer.toHexString;
+import static java.lang.System.currentTimeMillis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +60,8 @@ public abstract class Style {
     }
 
     private String getNextFormattedRandomNumber() {
-        String randomHex = toHexString(new Random().nextInt(256));
+        Random random = new Random(currentTimeMillis());
+        String randomHex = toHexString(random.nextInt(256));
         if (randomHex.length() == 1) {
             // ensure two digits
             randomHex = "0" + randomHex;

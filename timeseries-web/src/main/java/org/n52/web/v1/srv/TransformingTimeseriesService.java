@@ -25,6 +25,7 @@ package org.n52.web.v1.srv;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.web.ResourceNotFoundException;
 
 public class TransformingTimeseriesService extends TransformationService implements ParameterService<TimeseriesMetadataOutput> {
 
@@ -66,8 +67,11 @@ public class TransformingTimeseriesService extends TransformationService impleme
     }
 
     @Override
-    public TimeseriesMetadataOutput getParameter(String item, IoParameters query) {
-        TimeseriesMetadataOutput metadata = composedService.getParameter(item, query);
+    public TimeseriesMetadataOutput getParameter(String timeseriesId, IoParameters query) {
+        TimeseriesMetadataOutput metadata = composedService.getParameter(timeseriesId, query);
+        if (metadata == null) {
+            throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
+        }
         transformInline(metadata.getStation(), query);
         return metadata;
     }

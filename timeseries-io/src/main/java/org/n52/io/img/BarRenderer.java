@@ -50,7 +50,6 @@ final class BarRenderer implements Renderer {
     @Override
     public XYItemRenderer getXYRenderer() {
         return renderer;
-        
     }
 
     @Override
