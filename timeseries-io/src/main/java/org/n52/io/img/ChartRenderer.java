@@ -201,9 +201,18 @@ public abstract class ChartRenderer implements IoHandler {
         xyPlot.setRangeGridlinePaint(LIGHT_GRAY);
         xyPlot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
         showCrosshairsOnAxes(xyPlot);
+        configureDomainAxis(xyPlot);
         showGridlinesOnChart(xyPlot);
         configureTimeAxis(xyPlot);
         return xyPlot;
+    }
+
+    private void configureDomainAxis(XYPlot xyPlot) {
+        ValueAxis domainAxis = xyPlot.getDomainAxis();
+        domainAxis.setTickLabelFont(FONT_LABEL);
+        domainAxis.setLabelFont(FONT_LABEL);
+        domainAxis.setTickLabelPaint(COLOR);
+        domainAxis.setLabelPaint(COLOR);
     }
 
     private void showCrosshairsOnAxes(XYPlot xyPlot) {

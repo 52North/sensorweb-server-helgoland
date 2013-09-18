@@ -32,6 +32,7 @@ import static org.n52.io.style.LineStyle.createLineStyle;
 import java.util.Date;
 import java.util.Map;
 
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.Hour;
@@ -165,7 +166,9 @@ public class MultipleChartsRenderer extends ChartRenderer {
 
         public void setData(TimeseriesData data, TimeseriesMetadataOutput timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
-            getXYPlot().setRangeAxis(timeseriesIndex, createRangeAxis(timeMetadata));
+            ValueAxis rangeAxis = createRangeAxis(timeMetadata);
+            getXYPlot().setRangeAxis(timeseriesIndex, rangeAxis);
+            getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
         public void setReferenceData(TimeseriesData data, TimeseriesMetadataOutput timeMetadata, StyleProperties style) {
