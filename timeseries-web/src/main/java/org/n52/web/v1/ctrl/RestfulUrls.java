@@ -40,45 +40,45 @@ public interface RestfulUrls {
     /**
      * Subpath identifying a collection of services availabe.
      */
-    static final String COLLECTION_SERVICES = "services";
+    static final String COLLECTION_SERVICES = DEFAULT_PATH + "/services";
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    static final String COLLECTION_CATEGORIES = "categories";
+    static final String COLLECTION_CATEGORIES = DEFAULT_PATH + "/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    static final String COLLECTION_OFFERINGS = "offerings";
+    static final String COLLECTION_OFFERINGS = DEFAULT_PATH + "/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    static final String COLLECTION_FEATURES = "features";
+    static final String COLLECTION_FEATURES = DEFAULT_PATH + "/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    static final String COLLECTION_PROCEDURES = "procedures";
+    static final String COLLECTION_PROCEDURES = DEFAULT_PATH + "/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    static final String COLLECTION_PHENOMENA = "phenomena";
+    static final String COLLECTION_PHENOMENA = DEFAULT_PATH + "/phenomena";
 
     /**
      * Subpath identifying a collection of stations available.
      */
-    static final String COLLECTION_STATIONS = "stations";
+    static final String COLLECTION_STATIONS = DEFAULT_PATH + "/stations";
 
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
-    static final String COLLECTION_TIMESERIES = "timeseries";
+    static final String COLLECTION_TIMESERIES = DEFAULT_PATH + "/timeseries";
 
     /**
      * Subpath identifying the search.
      */
-    static final String SEARCH = "search";
+    static final String SEARCH = DEFAULT_PATH + "/search";
 }
