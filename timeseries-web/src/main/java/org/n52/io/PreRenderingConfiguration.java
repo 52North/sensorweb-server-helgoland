@@ -46,7 +46,7 @@ public class PreRenderingConfiguration {
 	}
 
 	public void setInterval(String[] interval) {
-		this.interval = interval;
+		this.interval = interval.clone();
 	}
 
 	public StyleProperties getStyle() {

@@ -50,7 +50,7 @@ public final class GeojsonFeatureCollection {
     }
 
     public void setFeatures(GeojsonFeature[] features) {
-        this.features = features;
+        this.features = features.clone();
     }
     
 }

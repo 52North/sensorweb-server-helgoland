@@ -11,7 +11,7 @@
 	<artifactId>timeseries-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Sensor Web Timeseries Timeseres API</name>
+	<name>Sensor Web Timeseries API</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<inceptionYear>2013</inceptionYear>
 
