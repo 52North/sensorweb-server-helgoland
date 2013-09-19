@@ -79,7 +79,7 @@ public class TimeseriesMetadataOutput {
     }
 
     public void setRefValues(ReferenceValueOutput[] referenceValues) {
-        this.referenceValues = referenceValues;
+        this.referenceValues = referenceValues.clone();
     }
 
     public TimeseriesValue getFirstValue() {

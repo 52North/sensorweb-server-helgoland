@@ -57,7 +57,7 @@ public final class ExceptionResponse {
 
     private ExceptionResponse(Throwable e, HttpStatus statusCode, String[] hints) {
         this.statusCode = statusCode;
-        this.hints = hints;
+        this.hints = hints.clone();
         this.exception = e;
     }
 
