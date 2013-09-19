@@ -26,7 +26,6 @@ package org.n52.web.v1.ctrl;
 
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_SERVICES;
-import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
 import org.n52.io.IoParameters;
@@ -42,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = DEFAULT_PATH + "/" + COLLECTION_SERVICES, produces = {"application/json"})
+@RequestMapping(value = COLLECTION_SERVICES, produces = {"application/json"})
 public class ServicesParameterController extends ParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServicesParameterController.class);

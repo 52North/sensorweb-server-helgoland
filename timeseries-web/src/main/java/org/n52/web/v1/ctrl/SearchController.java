@@ -24,7 +24,6 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.RestfulUrls.SEARCH;
 
 import java.util.Collection;
@@ -42,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = DEFAULT_PATH + "/" + SEARCH, produces = {"application/json"})
+@RequestMapping(value = SEARCH, produces = {"application/json"})
 public class SearchController extends BaseController {
 
     private SearchService searchService;
@@ -55,7 +54,7 @@ public class SearchController extends BaseController {
         }
 
         Collection<SearchResult> resultedResources = searchService.searchResources(q);
-
+        
         return new ModelAndView().addObject(resultedResources);
     }
 
