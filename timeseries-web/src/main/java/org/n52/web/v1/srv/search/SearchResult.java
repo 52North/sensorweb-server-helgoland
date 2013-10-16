@@ -21,22 +21,37 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-package org.n52.io.v1.data.search;
+package org.n52.web.v1.srv.search;
 
-public class FeatureSearchResult extends SearchResult {
-
-	public FeatureSearchResult(String id, String label) {
-		super(id, label);
+public abstract class SearchResult {
+	
+	private String id;
+	
+	private String label;
+	
+	public SearchResult(String id, String label) {
+		this.id = id;
+		this.label = label;
 	}
 
-	@Override
-	public String getHref() {
-		return "./features/" + getId();
+	public String getId() {
+		return id;
 	}
 
-	@Override
-	public String getType() {
-		return "feature";
-	} 
+	public void setId(String id) {
+		this.id = id;
+	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	public abstract String getHref();
+	
+	public abstract String getType();
+	
 }
