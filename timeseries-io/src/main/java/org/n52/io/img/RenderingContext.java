@@ -31,7 +31,7 @@ import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
-public class RenderingContext {
+public final class RenderingContext {
 
     private DesignedParameterSet chartStyleDefinitions;
 

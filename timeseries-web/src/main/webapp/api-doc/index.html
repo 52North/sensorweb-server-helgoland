@@ -263,7 +263,7 @@ Content omitted for brevity.
 					<div id="general-search"> <!-- fuzzy search -->
 						<div>
               <h3>Search</h3>
-              <p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
+              <p>The query parameter <code>q</code> allows simple search over resources. Note that the searching respects the current locale being selected.</p>
               
               <table class="table">
                 <thead>
@@ -651,41 +651,37 @@ Content-Type: application/json;charset=UTF-8
 [
   {
     "properties": {
-      "id": "sta_3b1495e8b789501dbe3296ac3d849c09",
-      "timeseries": [
-        {
+      "id": "sta_a1164b01586abf442ad312211d9f18e",
+      "timeseries": {
+        "ts_e6a9b2f10f2ff6a47da6ffeab747dc5a": {
+          "phenomenon": {
+            "id": "phe_4af57a13bb7fb9af7618fc6d74af3523",
+            "label": "Abfluss"
+          },
           "service": {
             "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-            "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
-          },
-          "offering": {
-            "id": "off_c599e9b089385d08aa00b7c9c4c6f3ef",
-            "label": "WASSERSTAND_ROHDATEN"
+            "label": "PEGELONLINE SOS"
           },
           "feature": {
-            "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
-            "label": "List_Auf_Sylt_9570070"
+            "id": "foi_c0ac9e8284131ef14094dcc3795925ae",
+            "label": "Hattingen_2769510000100"
+          },
+          "offering": {
+            "id": "off_5ba539e42edf995faaf923414760b9a5",
+            "label": "ABFLUSS_ROHDATEN"
           },
           "procedure": {
-            "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
-            "label": "Wasserstand-List_Auf_Sylt_9570070"
-          },
-          "phenomenon": {
-            "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
-            "label": "Wasserstand"
+            "id": "pro_89fc01ce9c37de1b787a3f75082a0632",
+            "label": "Abfluss-Hattingen_2769510000100"
           }
         }
-      ],
-      "service": {
-        "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-        "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
       },
-      "label": "List_Auf_Sylt_9570070"
+      "label": "Hattingen_2769510000100"
     },
     "geometry": {
       "coordinates": [
-        8.440430928792344,
-        55.016536566762
+        7.161047770931211,
+        51.39975938475634
       ],
       "type": "Point"
     },
@@ -693,65 +689,61 @@ Content-Type: application/json;charset=UTF-8
   },
   {
     "properties": {
-      "id": "sta_316a8a47dd628e37c93a9fced3292afd",
-      "timeseries": [
-        {
+      "id": "sta_98a0659ad84f3cfe14e0497b887dacfe",
+      "timeseries": {
+        "ts_7e0faa5796eabd3f0afddbf6112947f9": {
+          "phenomenon": {
+            "id": "phe_4af57a13bb7fb9af7618fc6d74af3523",
+            "label": "Abfluss"
+          },
           "service": {
             "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-            "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
+            "label": "PEGELONLINE SOS"
+          },
+          "feature": {
+            "id": "foi_215db512cff2862ac8b2c1e0e345de0c",
+            "label": "Ruhrort_2770010"
+          },
+          "offering": {
+            "id": "off_5ba539e42edf995faaf923414760b9a5",
+            "label": "ABFLUSS_ROHDATEN"
+          },
+          "procedure": {
+            "id": "pro_a61248f63725cacc648f1ca3706048fd",
+            "label": "Abfluss-Ruhrort_2770010"
+          }
+        },
+        "ts_795f67d458d00de0f2686afa796a898b": {
+          "phenomenon": {
+            "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
+            "label": "Wasserstand"
+          },
+          "service": {
+            "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
+            "label": "PEGELONLINE SOS"
+          },
+          "feature": {
+            "id": "foi_215db512cff2862ac8b2c1e0e345de0c",
+            "label": "Ruhrort_2770010"
           },
           "offering": {
             "id": "off_c599e9b089385d08aa00b7c9c4c6f3ef",
             "label": "WASSERSTAND_ROHDATEN"
           },
-          "feature": {
-            "id": "foi_cbd82e6d033d328a27744abf4bf70f4b",
-            "label": "Deggendorf_10081004"
-          },
           "procedure": {
-            "id": "pro_d79573760f6fda13e3ec2ea435078187",
-            "label": "Wasserstand-Deggendorf_10081004"
-          },
-          "phenomenon": {
-            "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
-            "label": "Wasserstand"
-          }
-        },
-        {
-          "service": {
-            "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-            "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
-          },
-          "offering": {
-            "id": "off_1679b79442254630787758c0b188944f",
-            "label": "WASSERTEMPERATUR"
-          },
-          "feature": {
-            "id": "foi_cbd82e6d033d328a27744abf4bf70f4b",
-            "label": "Deggendorf_10081004"
-          },
-          "procedure": {
-            "id": "pro_785310b12f480e0693b86798dcbbc339",
-            "label": "Wassertemperatur-Deggendorf_10081004"
-          },
-          "phenomenon": {
-            "id": "phe_7bd06bee08fa94fca98e37abb166c8b1",
-            "label": "Wassertemperatur"
+            "id": "pro_1f466baf90e7b1fb87d42a68274c13bf",
+            "label": "Wasserstand-Ruhrort_2770010"
           }
         }
-      ],
-      "service": {
-        "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-        "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
       },
-      "label": "Deggendorf_10081004"
+      "label": "Ruhrort_2770010"
     },
     "geometry": {
-      "coordinates": [
-          12.962332950717089,
-          48.82494511292501
-      ],
-      "type": "Point"
+        "coordinates": [
+            6.7279422870428505,
+            51.455354763381585
+        ],
+        "type": "Point"
     },
     "type": "Feature"
   }
@@ -762,55 +754,51 @@ Content-Type: application/json;charset=UTF-8
               </div>
             </div>
             <div>
-              <h4>Item</h4>
-              <pre>GET /api/v1/stations/sta_3b1495e8b789501dbe3296ac3d849c09/ HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-              <pre id="stations-examples-item" class="collapse">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
+                <h4>Item</h4>
+                <pre>GET /api/v1/stations/sta_a1164b01586abf442ad312211d9f18e/ HTTP/1.1
+  Host: sensorweb.demo.52north.org
+  Accept: application/json</pre>
+                <pre id="stations-examples-item" class="collapse">HTTP/1.1 200 OK
+  Content-Type: application/json;charset=UTF-8
 
-{
-  "properties": {
-    "id": "sta_3b1495e8b789501dbe3296ac3d849c09",
-    "timeseries": [
-      {
-        "service": {
-          "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-          "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
-        },
-        "offering": {
-          "id": "off_c599e9b089385d08aa00b7c9c4c6f3ef",
-          "label": "WASSERSTAND_ROHDATEN"
-        },
-        "feature": {
-          "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
-          "label": "List_Auf_Sylt_9570070"
-        },
-        "procedure": {
-          "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
-          "label": "Wasserstand-List_Auf_Sylt_9570070"
-        },
-        "phenomenon": {
-          "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
-          "label": "Wasserstand"
+  {
+    "properties": {
+      "id": "sta_a1164b01586abf442ad312211d9f18e",
+      "timeseries": {
+        "ts_e6a9b2f10f2ff6a47da6ffeab747dc5a": {
+          "phenomenon": {
+            "id": "phe_4af57a13bb7fb9af7618fc6d74af3523",
+            "label": "Abfluss"
+          },
+          "service": {
+            "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
+            "label": "PEGELONLINE SOS"
+          },
+          "feature": {
+            "id": "foi_c0ac9e8284131ef14094dcc3795925ae",
+            "label": "Hattingen_2769510000100"
+          },
+          "offering": {
+            "id": "off_5ba539e42edf995faaf923414760b9a5",
+            "label": "ABFLUSS_ROHDATEN"
+          },
+          "procedure": {
+            "id": "pro_89fc01ce9c37de1b787a3f75082a0632",
+            "label": "Abfluss-Hattingen_2769510000100"
+          }
         }
-      }
-    ],
-    "service": {
-      "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
-      "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
+      },
+      "label": "Hattingen_2769510000100"
     },
-    "label": "List_Auf_Sylt_9570070"
-  },
-  "geometry": {
-    "coordinates": [
-      8.440430928792344,
-      55.016536566762
-    ],
-    "type": "Point"
-  },
-  "type": "Feature"
-}</pre>
+    "geometry": {
+      "coordinates": [
+        7.161047770931211,
+        51.39975938475634
+      ],
+      "type": "Point"
+    },
+    "type": "Feature"
+  }</pre>
               <button data-toggle="collapse" data-parent="#stations-examples" data-target="#stations-examples-item" class="btn btn-primary">Show/Hide Response</button>
             </div>
 					
@@ -969,6 +957,17 @@ Content-Type: application/json;charset=UTF-8
 									</td>
 								</tr>
                 <tr>
+                  <td>
+                    <code>legend</code>
+                  </td>
+                  <td>
+                    <pre>legend=true</pre>
+                  </td>
+                  <td>
+                    Indicates if a legend shall be rendered directly on the image output (if <code>image/png</code> shall be the output).
+                  </td>
+                </tr>
+                <tr>
 									<td>
 										<code>generalize</code>
 									</td>
@@ -1028,16 +1027,17 @@ Content-Type: application/json;charset=UTF-8
 
 [
   {
-    "id": "ts_3f1dfdc820f5e5247cc902f04c76c781",
-    "uom": "cm",
+    "id": "ts_69a0a0df67ef791cd655f0a8bab9b62c",
+    "label": "Snow_patchiness@1550",
     "station": {
       "properties": {
-        "label": "1479"
+        "id": "sta_22bbc8df377555caf3a4d48fc56ce09c",
+        "label": "1550"
       },
       "geometry": {
         "coordinates": [
-          30.34848961700004,
-          62.23512502400007
+          23.233991038000056,
+          63.88340191100008
         ],
         "type": "Point"
       },
@@ -1045,29 +1045,22 @@ Content-Type: application/json;charset=UTF-8
     }
   },
   {
-    "id": "ts_eeb8e39dd0e8b4284e04d8a485a36cea",
-    "uom": "cm",
+    "id": "ts_3a4086d952d52f5aa37cda266487ceb2",
+    "label": "Snow_water_equivalent@1501",
     "station": {
       "properties": {
-        "label": "1479"
+        "id": "sta_209f40d2931eabd2c31fd856ce40e1e1",
+        "label": "1501"
       },
       "geometry": {
         "coordinates": [
-          30.34848961700004,
-          62.23512502400007
+          31.06271994100007,
+          63.06610459800004
         ],
         "type": "Point"
       },
       "type": "Feature"
-    }, 
-    "firstValue": {
-      "timestamp": 1375599900000,
-      "value": 23.4
-    },
-    "lastValue": {
-      "timestamp": 1375599900000,
-      "value": 43.4
-    },
+    }
   }
 ]</pre>
               <button data-toggle="collapse" data-parent="#timeseries-simple" data-target="#timeseries-examples-simple" class="btn btn-primary">Show/Hide Response</button>
@@ -1086,87 +1079,89 @@ Content-Type: application/json;charset=UTF-8
 
 [
   {
-    "id": "ts_3f1dfdc820f5e5247cc902f04c76c781",
-    "uom": "cm",
+    "id": "ts_5fe646c5a8f99bf4e267bba9c2b9df2c",
+    "label": "Snow_patchiness@1499",
     "station": {
       "properties": {
-        "label": "1479"
+        "id": "sta_d950ac5e991045386221942560a04678",
+        "label": "1499"
       },
       "geometry": {
         "coordinates": [
-          30.34848961700004,
-          62.23512502400007
+          30.426456999000038,
+          62.79975521500006
         ],
         "type": "Point"
       },
       "type": "Feature"
     },
-    "referenceValues": [ 
-      {
-        "label": "Mittleres Niedrigwasser",
-        "lastValue": 34.0
-      },
-      {
-        "label": "Mittelwasser",
-        "lastValue": 36.0
-      }
-    ],
     "parameters": {
+      "service": {
+        "id": "srv_1121a9ada17a3e77dffcebdac5b31d50",
+        "serviceUrl": "http://paikkatieto.ymparisto.fi/arcgis/rest/services/InSitu/SYKE_SnowCoursesInSitu/MapServer/exts/SOSExtension/"
+      },
       "offering": {
-        "id": "Patchiness -Offering",
+        "id": "off_1e5d8b26d6aeca8edda62827f005de14",
         "label": "Patchiness -Offering"
       },
       "feature": {
-        "id": "1479",
-        "label": "1479"
+        "id": "foi_e88d7dbbfba57d60aecdd3e09340ced1",
+        "label": "1499"
       },
       "procedure": {
-        "id": "2",
+        "id": "pro_d24427415643fd7ac6d3d5bc5c9cf6ea",
         "label": "2"
       },
       "phenomenon": {
-        "id": "Snow_patchiness",
+        "id": "phe_6639a8b1c9240706a20257573fdf108",
+        "label": "Snow_patchiness"
+      },
+      "category": {
+        "id": "cat_6639a8b1c9240706a20257573fdf108",
         "label": "Snow_patchiness"
       }
     }
   },
   {
-    "id": "ts_eeb8e39dd0e8b4284e04d8a485a36cea",
-    "uom": "cm",
+    "id": "ts_2c3687d6ec86c85e36943a49c6a09ca7",
+    "label": "Snow_depth@1537",
     "station": {
       "properties": {
-        "label": "1479"
+        "id": "sta_e340eb0c274f5f6e1e33fcbbae769d35",
+        "label": "1537"
       },
       "geometry": {
         "coordinates": [
-          30.34848961700004,
-          62.23512502400007
+          24.593801936000034,
+          61.10789034100003
         ],
         "type": "Point"
       },
       "type": "Feature"
     },
-    "referenceValues": [ 
-      {
-        "label": "Mittleres Niedrigwasser",
-        "lastValue": 30.0
-      }
-    ],
     "parameters": {
+      "service": {
+        "id": "srv_1121a9ada17a3e77dffcebdac5b31d50",
+        "serviceUrl": "http://paikkatieto.ymparisto.fi/arcgis/rest/services/InSitu/SYKE_SnowCoursesInSitu/MapServer/exts/SOSExtension/"
+      },
       "offering": {
-        "id": "Snow Depth -Offering",
+        "id": "off_a19e342c3787f923452d58d70bd46b0e",
         "label": "Snow Depth -Offering"
       },
       "feature": {
-        "id": "1479",
-        "label": "1479"
+        "id": "foi_8391ce65de5246a4b35401c55ae6cd53",
+        "label": "1537"
       },
       "procedure": {
-        "id": "1",
+        "id": "pro_9847ec590cc768cfe311ab65b7ad7873",
         "label": "1"
       },
       "phenomenon": {
-        "id": "Snow_depth",
+        "id": "phe_c787cc873ab395055d0d4841cb43b0f0",
+        "label": "Snow_depth"
+      },
+      "category": {
+        "id": "cat_c787cc873ab395055d0d4841cb43b0f0",
         "label": "Snow_depth"
       }
     }
@@ -1177,45 +1172,33 @@ Content-Type: application/json;charset=UTF-8
 						
             <div> <!-- Simple Item -->
               <h4>Simple Item</h4>
-              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed HTTP/1.1
+              <pre>GET /api/v1/timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98 HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
               <pre id="timeseries-examples-item" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "id": "ts_35559ca6b2248629e6dcdc65ceead0ed",
+  "id": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
+  "label": "Wasserstand@List_Auf_Sylt_9570070",
   "uom": "cm",
-  "referenceValues": [ 
-    {
-      "label": "Mittleres Niedrigwasser",
-      "lastValue": 34.0
-    },
-    {
-      "label": "Mittelwasser",
-      "lastValue": 36.0
-    }
-  ],
   "station": {
     "properties": {
-      "label": "1479"
+      "id": "sta_a4bff7499d440d9bb67ad73e048c5a47",
+      "label": "List_Auf_Sylt_9570070"
     },
     "geometry": {
       "coordinates": [
-        30.34848961700004,
-        62.23512502400007
+        8.440430928792344,
+        55.016536566762
       ],
       "type": "Point"
     },
     "type": "Feature"
   },
-  "firstValue": {
-    "timestamp": 1375599900000,
-    "value": 23.4
-  },
   "lastValue": {
-    "timestamp": 1375599900000,
-    "value": 43.4
+    "timestamp": 1379635200000,
+    "value": 532.7
   },
   "parameters": {
     "service": {
@@ -1223,22 +1206,44 @@ Content-Type: application/json;charset=UTF-8
       "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos"
     },
     "offering": {
-      "id": "off_36a01a7359cb2667bcf5d21e7f8d9c98",
-      "label": "LUFTTEMPERATUR_ROHDATEN"
+      "id": "off_c599e9b089385d08aa00b7c9c4c6f3ef",
+      "label": "WASSERSTAND_ROHDATEN"
     },
     "feature": {
-      "id": "foi_7060e496c7e8d74d136db5de66a0eac9",
-      "label": "Bramsche_31010020"
+      "id": "foi_25e09ee3155ab0fbf3e4684ad2edffbf",
+      "label": "List_Auf_Sylt_9570070"
     },
     "procedure": {
-      "id": "pro_da9466214132711d4e3696d0b0922ee5",
-      "label": "Lufttemperatur-Bramsche_31010020"
+      "id": "pro_e878d48e49ebc2a156e2810470bae9a2",
+      "label": "Wasserstand-List_Auf_Sylt_9570070"
     },
     "phenomenon": {
-      "id": "phe_2a71ebb813ed5c1ad408f7370019d0cc",
-      "label": "Lufttemperatur"
+      "id": "phe_f60bcfb1f6ac3d37210b5d757a1bf48e",
+      "label": "Wasserstand"
+    },
+    "category": {
+      "id": "cat_f60bcfb1f6ac3d37210b5d757a1bf48e",
+      "label": "Wasserstand"
     }
-  }
+  },
+  "refValues": [
+    {
+      "referenceValueId": "ref_2adf9285e96f72c441a6344e151eb630",
+      "label": "Pegelnullpunkt über NN",
+      "lastValue": {
+        "timestamp": 1379667208477,
+        "value": -5
+      }
+    },
+    {
+      "referenceValueId": "ref_c99577da99e17df8b93731886e35578a",
+      "label": "Niedrigstes Tideniedrigwasser",
+      "lastValue": {
+        "timestamp": 1379667208477,
+        "value": 242
+      }
+    }
+  ]
 }</pre>
               <button data-toggle="collapse" data-parent="#timeseries-examples" data-target="#timeseries-examples-item" class="btn btn-primary">Show/Hide Response</button>
 						</div>
@@ -1246,7 +1251,7 @@ Content-Type: application/json;charset=UTF-8
             <div> <!-- Raw Data of a single timeseries -->
               <h4>Raw Data of a single timeseries</h4>
               
-              <pre>GET /api/v1/timeseries/ts_35559ca6b2248629e6dcdc65ceead0ed/getData?expanded=true HTTP/1.1
+              <pre>GET /api/v1/timeseries/ts_c8ed5ddbb89c19b2e385de23eecbde98/getData?expanded=true HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
                 <pre id="timeseries-examples-single-raw" class="collapse">HTTP/1.1 200 OK
@@ -1346,43 +1351,46 @@ Content-Type: application/json;charset=UTF-8
               </div>
 						
             <div id="timeseries-example-post-image"> <!-- Image Data of multiple timeseries -->
-              <h4>Image Data of multiple timeseries</h4>
-              <pre>POST /api/v1/timeseries/getData HTTP/1.1
+              <h4>Image Data of combined timeseries</h4>
+              
+              <div class="col-lg-5">
+                <pre>POST /api/v1/timeseries/getData HTTP/1.1
 Host: sensorweb.demo.52north.org
 Content-Type: applicattion/json
 Accept: image/png
 
 {
-    "timespan": "PT10H/2013-08-16TZ",
-    "width": 300,
-    "height": 200,
-    "language": "de",
-    "grid": false,
-    "styleOptions": {
-        "ts_d7f63d679a98a78e0cb8e96c1fd8ea02": {
-            "type": "line",
-            "properties": {
-                "color": "#DDDDDD",
-                "lineType": "dashed",
-                "width": 2
-            }
-        },
-        "ts_c8ed5ddbb89c19b2e385de23eecbde98": {
-            "type": "line",
-            "properties": {
-                "color": "#2f2f2f",
-                "lineType": "solid",
-                "width": 2
-            }
-        }
+  "legend": true,
+  "timespan": "P0Y3M0D/2013-07-16TZ",
+  "width": 800,
+  "height": 400,
+  "language": "de",
+  "grid": false,
+  "styleOptions": {
+    "ts_eafa3af4e61db76b367746980d149b7e": {
+      "chartType": "line",
+      "properties": {
+        "color": "#0000FF",
+        "lineType": "solid",
+        "width": 1
+      }
+    },
+    "ts_92385cd6fb670e886cab8e542185e847": {
+      "chartType": "bar",
+      "properties": {
+        "color": "#2f2f2f",
+        "interval": "byWeek",
+        "width": 0.7
+      }
     }
+  }
 }</pre>
-<pre>HTTP/1.1 200 OK
-Content-Type: image/png
-
-~~ binary data omitted ~~
-</pre>
-            <div class="n52-callout n52-callout-info"><p>If you are interested in the PNG output you can either parse it from your favorite programming language. For a quick review you can use Curl from command line (adapt parameters as needed, e.g. if you want a PDF report instead): </p>
+            </div>
+            <div class="col-lg-7 pull-right">
+              <img alt="combinedCharts" src="img/combined-charts.png" title="Example of combined charts."/>
+            </div>
+            
+            <div class="n52-callout n52-callout-info" style="clear:both"><p>If you are interested in the PNG output you can either parse it from your favorite programming language. For a quick review you can use Curl from command line (adapt parameters as needed, e.g. if you want a PDF report instead): </p>
             <pre>
 curl -X POST -d 'PASTE IN HERE YOUR POST REQUEST' \
 -H "content-type:application/json" -H "accept:image/png" \ 
@@ -1511,13 +1519,13 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 							<li><code>tvp</code> (the default)</li>
 							<li><code>highchart</code></li>
 						</ul>
+             To retrieve extra reference values (if available for that timeseries) valid for the requested timespan just add <code>expand=true</code>.
 					</p>
           <div class="n52-callout n52-callout-info">Serving arbitrary formats is limited. Most probably you have to combine timeseries metadata and the actual data differently within the used API. Please refer to the actual data output so that it can be used as intended by the 3rd party API.</div>
       
           <div>
 						<h2 id="formats-default">Default Format</h2>
-            The format returns timeseries data a time-value tuple.
-            <div class="n52-callout n52-callout-todo">add _metadata element</div>
+            The format returns timeseries data as time-value tuples.
             <div>
               <h3>Example (Single Timeseries)</h3>
                 <pre>{
@@ -1563,7 +1571,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
     ]
   }
 }</pre>
-            <div class="n52-callout n52-callout-info">Please note that adding <code>expanded=true</code> reference values are added as a timeseries on their own. You can track reference values with the corresponding identifiers available from <a href="#timeseries-examples-item">the timeseries metadata</a>.</div>
+            <div class="n52-callout n52-callout-info">Please note that when adding <code>expanded=true</code>, reference values will be added as a timeseries on their own. You can track reference values with the corresponding identifiers available from <a href="#timeseries-examples-item">the timeseries metadata</a>.</div>
           </div>
       
 					<div>

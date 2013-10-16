@@ -103,8 +103,13 @@ public abstract class BaseController {
     }
 
     private void writeExceptionResponse(WebException e, HttpServletResponse response, HttpStatus status) {
-        LOGGER.error("An exception occured.", e);
 
+        if (status == INTERNAL_SERVER_ERROR) {
+            LOGGER.error("An exception occured.", e);
+        } else {
+            LOGGER.debug("An exception occured.", e);
+        }
+        
         // TODO consider using a 'suppress_response_codes=true' parameter and always return 200 OK
 
         response.setStatus(status.value());

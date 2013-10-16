@@ -38,7 +38,7 @@ import org.springframework.util.MultiValueMap;
  * Delegates IO parameters to an {@link IoParameters} instance by composing parameter access with Web
  * exception handling.
  */
-public class QueryParameters extends IoParameters {
+public final class QueryParameters extends IoParameters {
 
     /**
      * Creates an simple view on given query. The {@link MultiValueMap} is flattened to a single value map.
@@ -165,7 +165,7 @@ public class QueryParameters extends IoParameters {
             return super.getSpatialFilter();
         }
         catch (IoParseException e) {
-            BadRequestException ex = new BadRequestException("Spatial filter could not be determined.");
+            BadRequestException ex = new BadRequestException("Spatial filter could not be determined.", e);
             ex.addHint("Refer to the API documentation and check the parameter against required syntax!");
             ex.addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.");
             throw ex;

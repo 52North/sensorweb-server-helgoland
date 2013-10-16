@@ -255,10 +255,9 @@ public class IoParameters {
      *        values.
      */
     protected IoParameters(Map<String, String> queryParameters) {
-        if (queryParameters == null) {
-            query = new HashMap<String, String>();
-        }
-        query = queryParameters;
+        query = queryParameters == null
+            ? new HashMap<String, String>()
+            : queryParameters;
     }
 
     /**
@@ -694,7 +693,7 @@ public class IoParameters {
     public static IoParameters createFromQuery(Map<String, String> queryParameters) {
         return new IoParameters(queryParameters);
     }
-    
+
     /**
      * @param parameters
      *        the parameters sent via POST payload.
@@ -703,10 +702,10 @@ public class IoParameters {
     public static IoParameters createFromQuery(DesignedParameterSet parameters) {
 
         // TODO consolidate undesigned/desigend paramter sets
-        
+
         return createFromQuery(createQueryParametersFrom(parameters));
     }
-    
+
     /**
      * @param parameters
      *        the parameters sent via POST payload.
@@ -715,17 +714,18 @@ public class IoParameters {
     public static IoParameters createFromQuery(ParameterSet parameters) {
 
         // TODO consolidate undesigned/desigend paramter sets
-        
+
         return createFromQuery(createQueryParametersFrom(parameters));
     }
-    
+
     private static Map<String, String> createQueryParametersFrom(DesignedParameterSet parameters) {
-        Map<String, String> queryParameters = createQueryParametersFrom(parameters);
+        Map<String, String> queryParameters = createQueryParametersFrom((ParameterSet) parameters);
         queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
+        queryParameters.put(LEGEND, Boolean.toString(parameters.isLegend()));
         queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
         return queryParameters;
     }
-    
+
     private static Map<String, String> createQueryParametersFrom(ParameterSet parameters) {
         Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put(LOCALE, parameters.getLanguage());
@@ -733,5 +733,5 @@ public class IoParameters {
         queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
         return queryParameters;
     }
-    
+
 }
