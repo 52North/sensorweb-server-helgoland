@@ -137,7 +137,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
     }
 
     private ReferenceValueOutput getReferenceValue(String id, TimeseriesMetadataOutput timeseriesMetadata) {
-        for (ReferenceValueOutput referenceOutput : timeseriesMetadata.getRefValues()) {
+        for (ReferenceValueOutput referenceOutput : timeseriesMetadata.getReferenceValues()) {
             if (referenceOutput.getReferenceValueId().equals(id)) {
                 return referenceOutput;
             }
