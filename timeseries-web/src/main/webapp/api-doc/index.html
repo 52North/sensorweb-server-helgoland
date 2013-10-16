@@ -263,7 +263,7 @@ Content omitted for brevity.
 					<div id="general-search"> <!-- fuzzy search -->
 						<div>
               <h3>Search</h3>
-              <p>The query parameter <code>q</code> allows simple search over resources. Both global and scoped searches are possible:</p>
+              <p>The query parameter <code>q</code> allows simple search over resources. Note that the searching respects the current locale being selected.</p>
               
               <table class="table">
                 <thead>
@@ -956,6 +956,17 @@ Content-Type: application/json;charset=UTF-8
 									<p>A more detailed explanation about styling can be found under the <a href="#styles">styles section</a>.</p>
 									</td>
 								</tr>
+                <tr>
+                  <td>
+                    <code>legend</code>
+                  </td>
+                  <td>
+                    <pre>legend=true</pre>
+                  </td>
+                  <td>
+                    Indicates if a legend shall be rendered directly on the image output (if <code>image/png</code> shall be the output).
+                  </td>
+                </tr>
                 <tr>
 									<td>
 										<code>generalize</code>
