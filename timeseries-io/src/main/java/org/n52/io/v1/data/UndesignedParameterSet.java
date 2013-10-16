@@ -47,7 +47,7 @@ public class UndesignedParameterSet extends ParameterSet {
     }
 
     void setTimeseries(String[] timeseries) {
-        this.timeseriesIds = timeseries;
+        this.timeseriesIds = timeseries.clone();
     }
     
     public String getFormat() {

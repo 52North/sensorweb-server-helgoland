@@ -28,7 +28,7 @@ import static java.util.ResourceBundle.getBundle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class I18N {
+public final class I18N {
 
     private static final String MESSAGES = "locales/messages";
 

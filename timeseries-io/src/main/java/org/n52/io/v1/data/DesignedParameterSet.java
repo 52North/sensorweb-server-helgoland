@@ -21,20 +21,27 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.v1.data;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.n52.io.IoParseException;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Represents a parameter object to request a rendered chart output from multiple timeseries.
  */
 public class DesignedParameterSet extends ParameterSet {
-    
+
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-    
+
     /**
      * The width of the chart image to render.
      */
@@ -50,6 +57,11 @@ public class DesignedParameterSet extends ParameterSet {
      */
     private boolean grid = true;
     
+    /**
+     * Indicates if a legend shall be drawn on the chart.
+     */
+    private boolean legend = false;
+
     /**
      * Style options for each timeseriesId of interest.
      */
@@ -88,9 +100,10 @@ public class DesignedParameterSet extends ParameterSet {
     public String[] getTimeseries() {
         return styleOptions.keySet().toArray(new String[0]);
     }
-    
+
     /**
-     * @param grid <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
+     * @param grid
+     *        <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
         this.grid = grid;
@@ -102,6 +115,14 @@ public class DesignedParameterSet extends ParameterSet {
     public boolean isGrid() {
         return this.grid;
     }
+    
+    public boolean isLegend() {
+        return legend;
+    }
+
+    public void setLegend(boolean legend) {
+        this.legend = legend;
+    }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
         this.styleOptions = renderingOptions;
@@ -109,6 +130,28 @@ public class DesignedParameterSet extends ParameterSet {
 
     public StyleProperties getStyleOptions(String timeseriesId) {
         return styleOptions.get(timeseriesId);
+    }
+
+    public StyleProperties getReferenceSeriesStyleOptions(String timeseriesId, String referenceSeriesId) {
+        try {
+            if ( !styleOptions.containsKey(timeseriesId)) {
+                return null;
+            }
+            StyleProperties styleProperties = styleOptions.get(timeseriesId);
+            Map<String, String> properties = styleProperties.getProperties();
+            return properties.containsKey(referenceSeriesId)
+                ? new ObjectMapper().readValue(properties.get(referenceSeriesId), StyleProperties.class)
+                : null;
+        }
+        catch (JsonMappingException e) {
+            throw new IoParseException("Unable to read style properties for reference series: " + referenceSeriesId, e);
+        }
+        catch (JsonParseException e) {
+            throw new IoParseException("Could not parse style properties.", e);
+        }
+        catch (IOException e) {
+            throw new IoParseException("Could handle I/O operations while parsing JSON properties.", e);
+        }
     }
 
     public void addTimeseriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {

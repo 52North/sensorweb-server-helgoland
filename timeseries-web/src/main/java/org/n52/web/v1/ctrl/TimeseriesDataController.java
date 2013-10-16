@@ -29,10 +29,10 @@ import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createContextWith;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import static org.n52.web.v1.srv.GeneralizingTimeseriesDataService.composeDataService;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -78,7 +78,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = DEFAULT_PATH + "/" + COLLECTION_TIMESERIES, produces = {"application/json"})
+@RequestMapping(value = COLLECTION_TIMESERIES, produces = {"application/json"})
 public class TimeseriesDataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
@@ -149,7 +149,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
+        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
@@ -191,7 +191,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas);
+        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);

@@ -45,7 +45,7 @@ import org.n52.io.style.LineStyle;
  * <li><code>dotted</code></li>
  * </ul>
  */
-class LineRenderer implements Renderer {
+final class LineRenderer implements Renderer {
 
     static final String LINE_CHART_TYPE = "line";
 

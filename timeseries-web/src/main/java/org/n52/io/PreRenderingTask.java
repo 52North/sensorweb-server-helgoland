@@ -84,7 +84,6 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private boolean enabled;
     
-
     private int width = 800;
     private int height = 500;
     private String language = "en";

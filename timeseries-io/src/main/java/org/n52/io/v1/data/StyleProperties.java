@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * The chart style options for a timeseries.
  */
-public class StyleProperties {
+public final class StyleProperties {
     
     /**
      * The chart type, e.g. <code>line</code>, <code>bar</code>, ...

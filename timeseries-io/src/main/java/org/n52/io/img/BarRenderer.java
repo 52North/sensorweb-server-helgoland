@@ -25,11 +25,13 @@ package org.n52.io.img;
 
 import java.awt.Color;
 
+import org.jfree.chart.renderer.category.StandardBarPainter;
+import org.jfree.chart.renderer.xy.XYBarPainter;
 import org.jfree.chart.renderer.xy.XYBarRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.n52.io.style.BarStyle;
 
-class BarRenderer implements Renderer {
+final class BarRenderer implements Renderer {
     
     static final String BAR_CHART_TYPE = "bar";
     
@@ -40,6 +42,7 @@ class BarRenderer implements Renderer {
     private BarRenderer(BarStyle style) {
     	this.style = style;
     	this.renderer = new XYBarRenderer(style.getBarMargin());
+    	this.renderer.setBarPainter((XYBarPainter) new StandardBarPainter());
     }
 
     @Override
@@ -50,7 +53,6 @@ class BarRenderer implements Renderer {
     @Override
     public XYItemRenderer getXYRenderer() {
         return renderer;
-        
     }
 
     @Override

@@ -74,12 +74,12 @@ public class TimeseriesMetadataOutput {
         this.station = station;
     }
 
-    public ReferenceValueOutput[] getRefValues() {
+    public ReferenceValueOutput[] getReferenceValues() {
         return referenceValues;
     }
 
-    public void setRefValues(ReferenceValueOutput[] referenceValues) {
-        this.referenceValues = referenceValues;
+    public void setReferenceValues(ReferenceValueOutput[] referenceValues) {
+        this.referenceValues = referenceValues.clone();
     }
 
     public TimeseriesValue getFirstValue() {
