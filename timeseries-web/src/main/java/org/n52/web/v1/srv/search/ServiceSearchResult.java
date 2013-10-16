@@ -21,22 +21,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
-package org.n52.io.v1.data.search;
+package org.n52.web.v1.srv.search;
 
-public class ProcedureSearchResult extends SearchResult {
 
-	public ProcedureSearchResult(String id, String label) {
+public class ServiceSearchResult extends SearchResult {
+
+	public ServiceSearchResult(String id, String label) {
 		super(id, label);
 	}
 
 	@Override
 	public String getHref() {
-		return "./procedures/" + getId();
+		return "./services/" + getId();
 	}
 
 	@Override
 	public String getType() {
-		return "procedure";
+		return "service";
 	}
 
 }

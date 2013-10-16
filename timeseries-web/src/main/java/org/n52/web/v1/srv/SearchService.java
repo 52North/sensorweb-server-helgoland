@@ -26,7 +26,7 @@ package org.n52.web.v1.srv;
 
 import java.util.Collection;
 
-import org.n52.io.v1.data.search.SearchResult;
+import org.n52.web.v1.srv.search.SearchResult;
 
 /**
  * Serves search requests on the underlying data access implementation(s).
@@ -36,8 +36,10 @@ public interface SearchService {
     /**
      * @param search
      *        a search string.
+     * @param locale
+     *        a locale indicating the expected language.
      * @return a collection of matching results.
      */
-    Collection<SearchResult> searchResources(String search);
+    Collection<SearchResult> searchResources(String search, String locale);
 
 }
