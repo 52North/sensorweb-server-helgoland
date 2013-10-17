@@ -228,7 +228,7 @@ public class TimeseriesDataController extends BaseController {
         if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
-        preRenderingTask.writeToOS(timeseriesId, interval, response.getOutputStream());
+        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, interval, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {

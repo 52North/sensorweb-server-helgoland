@@ -31,54 +31,54 @@ package org.n52.web.v1.ctrl;
  * <b>Note:</b> Do not code against this type.
  */
 public interface RestfulUrls {
-
+    
     /**
      * The base URL to be used as RESTful entry point.
      */
-    static final String DEFAULT_PATH = "/v1";
+    static final String API_VERSION_PATH = "/v1";
 
     /**
      * Subpath identifying a collection of services availabe.
      */
-    static final String COLLECTION_SERVICES = DEFAULT_PATH + "/services";
+    static final String COLLECTION_SERVICES = API_VERSION_PATH + "/services";
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    static final String COLLECTION_CATEGORIES = DEFAULT_PATH + "/categories";
+    static final String COLLECTION_CATEGORIES = API_VERSION_PATH + "/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    static final String COLLECTION_OFFERINGS = DEFAULT_PATH + "/offerings";
+    static final String COLLECTION_OFFERINGS = API_VERSION_PATH + "/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    static final String COLLECTION_FEATURES = DEFAULT_PATH + "/features";
+    static final String COLLECTION_FEATURES = API_VERSION_PATH + "/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    static final String COLLECTION_PROCEDURES = DEFAULT_PATH + "/procedures";
+    static final String COLLECTION_PROCEDURES = API_VERSION_PATH + "/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    static final String COLLECTION_PHENOMENA = DEFAULT_PATH + "/phenomena";
+    static final String COLLECTION_PHENOMENA = API_VERSION_PATH + "/phenomena";
 
     /**
      * Subpath identifying a collection of stations available.
      */
-    static final String COLLECTION_STATIONS = DEFAULT_PATH + "/stations";
+    static final String COLLECTION_STATIONS = API_VERSION_PATH + "/stations";
 
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
-    static final String COLLECTION_TIMESERIES = DEFAULT_PATH + "/timeseries";
+    static final String COLLECTION_TIMESERIES = API_VERSION_PATH + "/timeseries";
 
     /**
      * Subpath identifying the search.
      */
-    static final String SEARCH = DEFAULT_PATH + "/search";
+    static final String SEARCH = API_VERSION_PATH + "/search";
 }
