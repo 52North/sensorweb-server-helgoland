@@ -61,7 +61,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 public abstract class BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
-
+    
     protected boolean isRequestingJsonData(HttpServletRequest request) {
         return APPLICATION_JSON.getMimeType().equals(request.getHeader("Accept"));
     }
