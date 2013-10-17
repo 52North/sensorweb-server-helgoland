@@ -51,7 +51,7 @@ public class SearchController extends BaseController {
         if (q == null) {
             throw new BadRequestException("Use parameter 'q' with search string to define your search term.");
         }
-
+        
         Collection<SearchResult> result = searchService.searchResources(q, locale);
         return new ModelAndView().addObject(result);
     }

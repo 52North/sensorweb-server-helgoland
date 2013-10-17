@@ -26,7 +26,7 @@ package org.n52.web.v1.ctrl;
 
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.ResourcesController.ResourceCollection.createResource;
-import static org.n52.web.v1.ctrl.RestfulUrls.DEFAULT_PATH;
+import static org.n52.web.v1.ctrl.RestfulUrls.API_VERSION_PATH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = DEFAULT_PATH, produces = {"application/json"})
+@RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
 public final class ResourcesController {
 
     private CountingMetadataService metadataService;
