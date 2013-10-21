@@ -31,7 +31,7 @@ public class ServiceOutput extends OutputValue {
 	
 	private String type;
 	
-	private boolean supportsFirstLatest;
+	private Boolean supportsFirstLatest;
 	
 	private ParameterCount quantities;
 	
@@ -59,12 +59,12 @@ public class ServiceOutput extends OutputValue {
 		this.type = type;
 	}
 	
-	public boolean isSupportsFirstLatest() {
+	public Boolean isSupportsFirstLatest() {
         return supportsFirstLatest;
     }
 
     public void setSupportsFirstLatest(boolean supportsFirstLatest) {
-        this.supportsFirstLatest = supportsFirstLatest;
+        this.supportsFirstLatest = new Boolean(supportsFirstLatest);
     }
 
     public ParameterCount getQuantities() {
