@@ -75,6 +75,16 @@ public class IoParameters {
     private static final boolean DEFAULT_EXPANDED = false;
 
     /**
+     * If latest values shall be requested in a bulk timeseries request.
+     */
+    static final String FORCE_LATEST_VALUE = "force_latest_values";
+
+    /**
+     * The default behaviour if latest value requests shall be invoked during a timeseries collection request.
+     */
+    private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
+
+    /**
      * Determines the index of the first member of the response page (a.k.a. page offset).
      */
     static final String OFFSET = "offset";
@@ -637,6 +647,13 @@ public class IoParameters {
             return DEFAULT_EXPANDED;
         }
         return parseBoolean(EXPANDED);
+    }
+
+    public boolean isForceLatestValueRequests() {
+        if ( !query.containsKey(FORCE_LATEST_VALUE)) {
+            return DEFAULT_FORCE_LATEST_VALUE;
+        }
+        return parseBoolean(FORCE_LATEST_VALUE);
     }
 
     public boolean containsParameter(String parameter) {
