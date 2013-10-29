@@ -114,8 +114,6 @@
       
         <div class="n52-callout n52-callout-todo">
           <ul>
-            <li>Create and link JSONSchemas for responses</li>
-            <li>error code review</li>
             <li>CRUD API for eventing</li>
           </ul>
         </div>
@@ -238,6 +236,9 @@
 				
 					<div id="general-paging"> <!-- paging -->
 						<h3>Paging</h3>
+            <div class="n52-callout n52-callout-todo">
+              <p>Paging has to be reviewed and is subject to change. Do not rely on paging parameters, format and paging method like HTTP header links.</p>
+            </div>
 						<p>Resource collections can optionally been paged by the <code>offset</code> and <code>limit</code> parameters.</p>
             
 						<p>Considering the <a href="http://tools.ietf.org/html/rfc5988">Web Linking (RFC5988)</a> approach the exact location of a page within a collection can be retrieved from response header information.</p> 
@@ -275,13 +276,15 @@ Content omitted for brevity.
                 <tbody>
                   <tr>
                     <td><code>GET</code></td>
-                    <td><code>/api/v1/search?q=my+search</code></td>
+                    <td><code>/api/v1/search?q=mySearch</code></td>
                     <td><code>application/json</code></td>
                     <td>Searches globally over available resources.
                     </td>
                   </tr>
                 </tbody>
               </table>
+              
+              Combined search terms are not supported with this API version.
             </div>
             <div>
               <h3>Output Example</h3>
@@ -976,6 +979,20 @@ Content-Type: application/json;charset=UTF-8
                   </td>
                   <td>
                     Indicates that timeseries data shall be generalized. Default is <code>false</code>. For generalization <a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">the Douglas-Peucker algorithm</a> is used.
+                  </td>
+                </tr>
+                <tr>
+									<td>
+										<code>force_last_values</code>
+									</td>
+                  <td>
+                    <pre>force_last_values=true</pre>
+                  </td>
+                  <td>
+                    <p>The <code>force_last_values</code> parameter can be used to force last value requests on a collection of timeseries.</p>
+                    <div class="n52-callout n52-callout-info">
+                      <p>Please note that the this enforcement (in combination with <code>expanded=true</code>) may result is long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -1708,12 +1725,23 @@ Accept: application/json</pre>
 Content-Type: application/json;charset=UTF-8
 
 {
-  "id": "srv_823sd",
-  "label": "PEGELONLINE",
+  "id": "srv_1a5bde0a6d702f193f7be463402ec12f",
+  "label": "PEGELONLINE SOS",
   "serviceUrl": "http://pegelonline.wsv.de/webservices/gis/gdi-sos",
+  "version": "1.0.0",
   "type": "SOS",
-  "version": "1.0.0"
+  "supportsFirstLatest": true,
+  "quantities": {
+    "categories": 10,
+    "features": 551,
+    "phenomena": 10,
+    "procedures": 735,
+    "offerings": 13,
+    "stations": 551,
+    "timeseries": 740
+  }
 }</pre>
+              <p>An expanded view gives you a bit more metadata about a service instance. It counts the amount of available resources and gives you information about the serivce's capabilities, e.g. if first and latest value requests are supported.</p>
             </div>
           </div>
 
