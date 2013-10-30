@@ -189,5 +189,13 @@ public final class QueryParameters extends IoParameters {
             throw new BadRequestException("Bad '" + EXPANDED + "' parameter.", e);
         }
     }
+    
+    public boolean isForceLatestValueRequests() {
+        try {
+            return super.isForceLatestValueRequests();
+        } catch (IoParseException e) {
+            throw new BadRequestException("Bad '" + FORCE_LATEST_VALUE + "' parameter", e);
+        }
+    }
 
 }

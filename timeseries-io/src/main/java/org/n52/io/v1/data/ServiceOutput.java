@@ -31,6 +31,8 @@ public class ServiceOutput extends OutputValue {
 	
 	private String type;
 	
+	private Boolean supportsFirstLatest;
+	
 	private ParameterCount quantities;
 	
 	public String getServiceUrl() {
@@ -57,7 +59,15 @@ public class ServiceOutput extends OutputValue {
 		this.type = type;
 	}
 	
-	public ParameterCount getQuantities() {
+	public Boolean isSupportsFirstLatest() {
+        return supportsFirstLatest;
+    }
+
+    public void setSupportsFirstLatest(boolean supportsFirstLatest) {
+        this.supportsFirstLatest = new Boolean(supportsFirstLatest);
+    }
+
+    public ParameterCount getQuantities() {
         return quantities;
     }
 

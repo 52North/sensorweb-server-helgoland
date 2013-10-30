@@ -23,7 +23,7 @@
  */
 package org.n52.io.v1.data;
 
-public class OutputValue {
+public class OutputValue implements Comparable<OutputValue> {
 
 	private String id;
 	
@@ -44,6 +44,11 @@ public class OutputValue {
 	public void setLabel(String label) {
 		this.label = label;
 	}
+	
+    @Override
+    public int compareTo(OutputValue o) {
+        return label.compareTo(o.getLabel());
+    }
 
     @Override
     public int hashCode() {
