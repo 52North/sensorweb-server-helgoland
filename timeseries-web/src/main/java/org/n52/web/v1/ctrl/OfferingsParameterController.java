@@ -31,6 +31,7 @@ import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.OfferingOutput;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.SortingParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -90,8 +91,8 @@ public class OfferingsParameterController extends ParameterController implements
         return offeringParameterService;
     }
 
-    public void setOfferingParameterService(ParameterService<OfferingOutput> offeringParameterService) {
-        this.offeringParameterService = offeringParameterService;
+    public void setOfferingParameterService(ParameterService<OfferingOutput> service) {
+        this.offeringParameterService = new SortingParameterService<OfferingOutput>(service);
     }
 
 }

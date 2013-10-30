@@ -32,6 +32,7 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.ProcedureOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.SortingParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -93,8 +94,8 @@ public class ProceduresParameterController extends ParameterController {
         return procedureParameterService;
     }
 
-    public void setProcedureParameterService(ParameterService<ProcedureOutput> procedureParameterService) {
-        this.procedureParameterService = procedureParameterService;
+    public void setProcedureParameterService(ParameterService<ProcedureOutput> service) {
+        this.procedureParameterService = new SortingParameterService<ProcedureOutput>(service);
     }
 
 }

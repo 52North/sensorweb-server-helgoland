@@ -32,6 +32,7 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.CategoryOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.SortingParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -89,9 +90,8 @@ public class CategoriesParameterController extends ParameterController {
         return categoryParameterService;
     }
 
-    public void setCategoryParameterService(
-                                            ParameterService<CategoryOutput> categoryParameterService) {
-        this.categoryParameterService = categoryParameterService;
+    public void setCategoryParameterService(ParameterService<CategoryOutput> service) {
+        this.categoryParameterService = new SortingParameterService<CategoryOutput>(service);
     }
 
 }

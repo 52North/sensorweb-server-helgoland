@@ -32,6 +32,7 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.srv.ParameterService;
+import org.n52.web.v1.srv.SortingParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -93,8 +94,8 @@ public class PhenomenaParameterController extends ParameterController {
         return phenomenonParameterService;
     }
 
-    public void setPhenomenonParameterService(ParameterService<PhenomenonOutput> phenomenonParameterService) {
-        this.phenomenonParameterService = phenomenonParameterService;
+    public void setPhenomenonParameterService(ParameterService<PhenomenonOutput> service) {
+        this.phenomenonParameterService = new SortingParameterService<PhenomenonOutput>(service);
     }
 
 }
