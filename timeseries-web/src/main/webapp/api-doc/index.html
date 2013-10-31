@@ -22,6 +22,7 @@
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org/communities/sensorweb/">Sensor Web</a></li>
             <li><a href="https://github.com/52north/timeseries-api/">Sources</a></li>
+            <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -117,30 +118,14 @@
         <div class="n52-callout n52-callout-info">
           <table class="table">
             <thead>
-              <th>Who</th>
               <th>What</th>
               <th>When</th>
             </thead>
             <tbody>
               <tr>
-                <td>Henning Bredel</td>
-                <td>Init first draft</td>
-                <td>2013-08-06</td>
-              </tr>
               <tr>
-                <td>Henning Bredel</td>
-                <td>Review draft</td>
-                <td>2013-08-22</td>
-              </tr>
-              <tr>
-                <td>Henning Bredel</td>
-                <td>Pre-Final Candidate</td>
-                <td>2013-09-06</td>
-              </tr>
-              <tr>
-                <td>Henning Bredel</td>
                 <td>Review Final Candidate</td>
-                <td>2013-10-29</td>
+                <td>2013-10-31</td>
               </tr>
             </tbody>
           </table>
@@ -357,7 +342,7 @@ Accept: application/json</pre>
             </div>
 					</div>
 				
-					<div id="general-#general-common-status-codes"> <!-- Status Codes -->
+					<div id="general-common-status-codes"> <!-- Status Codes -->
             <h3>Common Status Codes</h3>
             <p>A client shall expect the following HTTP status codes returned by the API.</p>
             <table class="table">
@@ -598,8 +583,8 @@ Content-Type: application/json;charset=UTF-8
                   </td>
                 </tr>
                 <tr>
-                  <td><code>within</code></td>
-                  <td><pre>within={
+                  <td><code>bbox</code></td>
+                  <td><pre>bbox={
   'll': { 
     "type": "Point", 
     "coordinates": [&lt;x>,&lt;y>]
@@ -887,7 +872,7 @@ Content-Type: application/json;charset=UTF-8
                     <li><code>lastMonth</code></li>
                     </ul>
                   </p>
-                  <p>Timeseries can be pre-rendered by a regular task. If a pre-rendering exist for a given timeseries is a configuration issue.</p>
+                  <p>Timeseries can be pre-rendered by a regular task. If pre-rendering is enabled for a given timeseries depends on the API provider as it is a configuration issue.</p>
                   <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
                   </td>
 								</tr>
@@ -926,10 +911,8 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <code>image/png</code><br/>
                     <code>application/pdf</code><br/>
-                    <code>application/vnd.ms-excel</code><br/>
-                    <code>text/csv</code>
                   </td>
-									<td><p>Exports the given stack of timeseries to the given output format. The requested timeseries ids have to be contained in the POST request. Note that Excel and CSV export are optional.</p>
+									<td><p>Exports the given stack of timeseries to the given output format. The requested timeseries ids have to be contained in the POST request.</p>
                   
                   <p>
                   Each timeseries can be styled (chart type, color, widths, etc) by passing style options. Have a look at <a href="#timeseries-example-post-image">the POST request example</a> or check out <a href="schemas/v1/renderChartForMultipleTimeseries.json">the request schema</a> how a POST request shall look like to render multiple timeseries.
@@ -1404,7 +1387,7 @@ Content-Type: application/json;charset=UTF-8
             <div id="timeseries-example-post-image"> <!-- Image Data of multiple timeseries -->
               <h4>Image Data of combined timeseries</h4>
               
-              <div class="col-lg-5">
+              <div class="col-lg-6">
                 <pre>POST /api/v1/timeseries/getData HTTP/1.1
 Host: sensorweb.demo.52north.org
 Content-Type: applicattion/json
@@ -1412,11 +1395,11 @@ Accept: image/png
 
 {
   "legend": true,
-  "timespan": "P0Y3M0D/2013-07-16TZ",
-  "width": 800,
-  "height": 400,
+  "timespan": "P0Y0M3D/2013-01-31TZ",
+  "width": 400,
+  "height": 300,
   "language": "de",
-  "grid": false,
+  "grid": true,
   "styleOptions": {
     "ts_eafa3af4e61db76b367746980d149b7e": {
       "chartType": "line",
@@ -1430,14 +1413,14 @@ Accept: image/png
       "chartType": "bar",
       "properties": {
         "color": "#2f2f2f",
-        "interval": "byWeek",
+        "interval": "byHour",
         "width": 0.7
       }
     }
   }
 }</pre>
             </div>
-            <div class="col-lg-7 pull-right">
+            <div class="col-lg-6 pull-right">
               <img alt="combinedCharts" src="img/combined-charts.png" title="Example of combined charts."/>
             </div>
             
@@ -1695,7 +1678,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 				</div>
 					
 				<div id="parameter-services">
-					<h2>Services</h2>
+					<h2>Services</h2> <!-- Services -->
           <div> <!-- URLs -->
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
@@ -1778,35 +1761,9 @@ Content-Type: application/json;charset=UTF-8
               <p>An expanded view gives you a bit more metadata about a service instance. It counts the amount of available resources and gives you information about the serivce's capabilities, e.g. if first and latest value requests are supported.</p>
             </div>
           </div>
-
-          <div> <!-- Status Codes -->
-            <h3>Status Codes</h3>
-            <p>HTTP Status codes indicate the following states.</p>
-            <table class="table">
-              <thead>
-                <th>Code</th>
-                <th>When</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>200</code></td>
-                  <td>Status <code>OK</code>. All went fine.</td>
-                </tr>
-                <tr>
-                  <td><code>404</code></td>
-                  <td>Status <code>Not Found</code>. The resource is not available.</td>
-                </tr>
-                <tr>
-                  <td><code>500</code></td>
-                  <td>Status <code>Internal Server Error</code>. Please contact the service provider. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-				</div>
 				
 				<div id="parameter-categories">
-					<h2>Categories</h2>
+					<h2>Categories</h2> <!-- Categories -->
           <div> <!-- URLs -->
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
@@ -1878,37 +1835,11 @@ Content-Type: application/json;charset=UTF-8
 }</pre>
               </div>
             </div>
-				
-          <div> <!-- Status Codes -->
-            <h3>Status Codes</h3>
-            
-            <p>HTTP Status codes indicate the following states.</p>
-            <table class="table">
-              <thead>
-                <th>Code</th>
-                <th>When</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>200</code></td>
-                  <td>Status <code>OK</code>. All went fine.</td>
-                </tr>
-                <tr>
-                  <td><code>404</code></td>
-                  <td>Status <code>Not Found</code>. The resource is not available.</td>
-                </tr>
-                <tr>
-                  <td><code>500</code></td>
-                  <td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
           
         </div>
 				
 				<div id="parameter-offerings">
-					<h2>Offerings</h2>
+					<h2>Offerings</h2> <!-- Offerings -->
           <div> <!-- URLs -->
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
@@ -1977,37 +1908,11 @@ Content-Type: application/json;charset=UTF-8
 }</pre>
               </div>
             </div>
-				
-          <div> <!-- Status Codes -->
-            <h3>Status Codes</h3>
-            
-            <p>HTTP Status codes indicate the following states.</p>
-            <table class="table">
-              <thead>
-                <th>Code</th>
-                <th>When</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>200</code></td>
-                  <td>Status <code>OK</code>. All went fine.</td>
-                </tr>
-                <tr>
-                  <td><code>404</code></td>
-                  <td>Status <code>Not Found</code>. The resource is not available.</td>
-                </tr>
-                <tr>
-                  <td><code>500</code></td>
-                  <td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
           
         </div>
 				
 				<div id="parameter-features">
-					<h2>Features</h2>
+					<h2>Features</h2> <!-- Features -->
           <div> <!-- URLs -->
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
@@ -2080,36 +1985,10 @@ Content-Type: application/json;charset=UTF-8
             </div>
           </div>
 				
-          <div> <!-- Status Codes -->
-              <h3>Status Codes</h3>
-              
-              <p>HTTP Status codes indicate the following states.</p>
-              <table class="table">
-                <thead>
-                  <th>Code</th>
-                  <th>When</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>200</code></td>
-                    <td>Status <code>OK</code>. All went fine.</td>
-                  </tr>
-                  <tr>
-                    <td><code>404</code></td>
-                    <td>Status <code>Not Found</code>. The resource is not available.</td>
-                  </tr>
-                  <tr>
-                    <td><code>500</code></td>
-                    <td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          
         </div>
 				
 				<div id="parameter-procedures">
-					<h2>Procedures</h2>
+					<h2>Procedures</h2> <!-- Procedures -->
 					<div> <!-- URLs -->
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
@@ -2155,11 +2034,11 @@ Content-Type: application/json;charset=UTF-8
 [
   {
     "id": "pro_h7234u",
-    "label": "Wasserstand-Ruwer"
+    "label": "Year.Cmd.MHQ"
   },
   {
     "id": "pro_adsf221",
-    "label": "Wasserstand-Krotzenburg"
+    "label": "Bad Hersfeld 1_Q#TagMittel"
   }
 ]</pre>
             </div>
@@ -2173,7 +2052,7 @@ Content-Type: application/json;charset=UTF-8
 
 {
   "id": "pro_h7234u",
-  "label": "Wasserstand-Krotzenburg",
+  "label": "Wasserstand-Berlin-Ploetzensee_Op_586640",
   "service": {
     "id": "../services/srv_823sd",
     "label": "PEGELONLINE"
@@ -2182,36 +2061,10 @@ Content-Type: application/json;charset=UTF-8
             </div>
           </div>
 				
-          <div> <!-- Status Codes -->
-						<h3>Status Codes</h3>
-						
-						<p>HTTP Status codes indicate the following states.</p>
-						<table class="table">
-							<thead>
-								<th>Code</th>
-								<th>When</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>200</code></td>
-									<td>Status <code>OK</code>. All went fine.</td>
-								</tr>
-								<tr>
-									<td><code>404</code></td>
-									<td>Status <code>Not Found</code>. The resource is not available.</td>
-								</tr>
-								<tr>
-									<td><code>500</code></td>
-									<td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-								</tr>
-							</tbody>
-						</table>
-          </div>
-          
         </div>
 				
 				<div id="parameter-phenomena">
-					<h2>Phenomena</h2>
+					<h2>Phenomena</h2> <!-- Phenomena -->
 					<div> <!-- URLs -->
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
@@ -2275,7 +2128,7 @@ Content-Type: application/json;charset=UTF-8
 
 {
   "id": "phe_adsf221",
-  "label": "Wasserstand-Krotzenburg",
+  "label": "Wasserstand",
   "service": {
     "id": "../services/srv_823sd",
     "label": "PEGELONLINE"
@@ -2284,31 +2137,6 @@ Content-Type: application/json;charset=UTF-8
             </div>
           </div>
 				
-          <div> <!-- Status Codes -->
-						<h3>Status Codes</h3>
-						<p>HTTP Status codes indicate the following states.</p>
-						<table class="table">
-							<thead>
-								<th>Code</th>
-								<th>When</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>200</code></td>
-									<td>Status <code>OK</code>. All went fine.</td>
-								</tr>
-								<tr>
-									<td><code>404</code></td>
-									<td>Status <code>Not Found</code>. The resource is not available.</td>
-								</tr>
-								<tr>
-									<td><code>500</code></td>
-									<td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
-								</tr>
-							</tbody>
-						</table>
-          </div>
-
         </div>
 				
 			</section>
@@ -2333,14 +2161,15 @@ Content-Type: application/json;charset=UTF-8
             
             <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
                 href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-                
+               
             <p>
               <ul class="footer-links">
-                <li><a href="http://blog.52north.org">Blog</a></li>
-                <li class="muted">&middot;</li>
                 <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+                <li class="muted">&middot;</li>
+                <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
               </ul>
             </p>
+            
           </div>
       </footer>
     </div>

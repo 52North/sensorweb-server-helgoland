@@ -21,33 +21,38 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.v1.data;
 
 public class OutputValue implements Comparable<OutputValue> {
 
-	private String id;
-	
-	private String label;
+    private String id;
 
-	public String getId() {
-		return id;
-	}
+    private String label;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	
+    /**
+     * @return the label or the id if label is not set.
+     */
+    public String getLabel() {
+        // ensure that label is never null
+        return label == null ? id : label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @Override
     public int compareTo(OutputValue o) {
-        return label.compareTo(o.getLabel());
+        return getLabel().compareTo(o.getLabel());
     }
 
     @Override
@@ -89,5 +94,5 @@ public class OutputValue implements Comparable<OutputValue> {
         }
         return true;
     }
-	
+
 }
