@@ -124,12 +124,18 @@
  */
 
 .footer {
-  padding: 70px 0;
+  padding: 30px 0;
+  margin: 10px 0;
   margin-top: 70px;
   border-top: 1px solid #e5e5e5;
   background-color: #f5f5f5;
 }
+.footer div {
+  margin-left: 10px;
+  margin-right: 10px;
+}
 .footer p {
+  margin-left: 10px;
   margin-bottom: 0;
   color: #777;
 }

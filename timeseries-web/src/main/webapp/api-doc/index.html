@@ -22,6 +22,7 @@
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org/communities/sensorweb/">Sensor Web</a></li>
             <li><a href="https://github.com/52north/timeseries-api/">Sources</a></li>
+            <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -117,30 +118,14 @@
         <div class="n52-callout n52-callout-info">
           <table class="table">
             <thead>
-              <th>Who</th>
               <th>What</th>
               <th>When</th>
             </thead>
             <tbody>
               <tr>
-                <td>Henning Bredel</td>
-                <td>Init first draft</td>
-                <td>2013-08-06</td>
-              </tr>
               <tr>
-                <td>Henning Bredel</td>
-                <td>Review draft</td>
-                <td>2013-08-22</td>
-              </tr>
-              <tr>
-                <td>Henning Bredel</td>
-                <td>Pre-Final Candidate</td>
-                <td>2013-09-06</td>
-              </tr>
-              <tr>
-                <td>Henning Bredel</td>
                 <td>Review Final Candidate</td>
-                <td>2013-10-29</td>
+                <td>2013-10-31</td>
               </tr>
             </tbody>
           </table>
@@ -1402,7 +1387,7 @@ Content-Type: application/json;charset=UTF-8
             <div id="timeseries-example-post-image"> <!-- Image Data of multiple timeseries -->
               <h4>Image Data of combined timeseries</h4>
               
-              <div class="col-lg-5">
+              <div class="col-lg-6">
                 <pre>POST /api/v1/timeseries/getData HTTP/1.1
 Host: sensorweb.demo.52north.org
 Content-Type: applicattion/json
@@ -1410,11 +1395,11 @@ Accept: image/png
 
 {
   "legend": true,
-  "timespan": "P0Y3M0D/2013-07-16TZ",
-  "width": 800,
-  "height": 400,
+  "timespan": "P0Y0M3D/2013-01-31TZ",
+  "width": 400,
+  "height": 300,
   "language": "de",
-  "grid": false,
+  "grid": true,
   "styleOptions": {
     "ts_eafa3af4e61db76b367746980d149b7e": {
       "chartType": "line",
@@ -1428,14 +1413,14 @@ Accept: image/png
       "chartType": "bar",
       "properties": {
         "color": "#2f2f2f",
-        "interval": "byWeek",
+        "interval": "byHour",
         "width": 0.7
       }
     }
   }
 }</pre>
             </div>
-            <div class="col-lg-7 pull-right">
+            <div class="col-lg-6 pull-right">
               <img alt="combinedCharts" src="img/combined-charts.png" title="Example of combined charts."/>
             </div>
             
@@ -2176,14 +2161,15 @@ Content-Type: application/json;charset=UTF-8
             
             <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
                 href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-                
+               
             <p>
               <ul class="footer-links">
-                <li><a href="http://blog.52north.org">Blog</a></li>
-                <li class="muted">&middot;</li>
                 <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+                <li class="muted">&middot;</li>
+                <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
               </ul>
             </p>
+            
           </div>
       </footer>
     </div>
