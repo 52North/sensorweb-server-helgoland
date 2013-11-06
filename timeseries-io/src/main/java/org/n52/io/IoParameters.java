@@ -747,7 +747,10 @@ public class IoParameters {
         Map<String, String> queryParameters = new HashMap<String, String>();
         queryParameters.put(LOCALE, parameters.getLanguage());
         queryParameters.put(TIMESPAN, parameters.getTimespan());
+        queryParameters.put(BASE_64, Boolean.toString(parameters.isBase64()));
         queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
+        queryParameters.put(GENERALIZE, Boolean.toString(parameters.isGeneralize()));
+        queryParameters.put(LOCALE, parameters.getLanguage());
         return queryParameters;
     }
 
