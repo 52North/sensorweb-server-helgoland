@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Documentation REST-API, Version 1</title>
 	
     <!-- Bootstrap -->
@@ -28,12 +29,12 @@
       </div>
     </div>
 		
-    <div class="n52-content">
+    
     <!-- Content nav
     ================================================== -->
-    <div class="col-lg-2">
+    <div class="col-lg-2 n52-sidebar">
       <div id="contents" class="bs-sidebar hidden-print">
-        <a style="position:fixed" href="http://52north.org"><img src="http://52north.org/templates/52n-2012/images/52n-logo.gif"/></a>
+        <a href="http://52north.org"><img alt="52&deg;North logo" src="http://52north.org/templates/52n-2012/images/52n-logo.gif"/></a>
         <ul class="nav bs-sidenav" data-spy="affix">
         
           <li> <!-- General -->
@@ -99,15 +100,17 @@
       </div>
     </div>
 	
-    <div class="col-lg-9">
+    <div class="col-lg-9 n52-content">
     
       <!-- About
       ================================================== -->
       <section id="about">
         <h2>About</h2>
-        <p>The <a href="http://52north.org">52&deg;North</a> Timeseries API provides a thin access layer to timeseries data via RESTful Web binding. It provides different output formats like json, pdf or png.</p>
-        
-        <p>This API development intends to make near realtime sensor data (provided by <a href="http://opengeospatial.org">OGC</a> <a href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Services</a>) better accessible for leightweight clients like mobile devices. However, in addition to the actual Web access layer the Timeseries API offers a Service Provider Interface (SPI) which can be implemented to adapt arbitrary data sources.</p>
+        <div>
+          <p>The <a href="http://52north.org">52&deg;North</a> Timeseries API provides a thin access layer to timeseries data via RESTful Web binding. It provides different output formats like json, pdf or png.</p>
+          
+          <p>This API development intends to make near realtime sensor data (provided by <a href="http://opengeospatial.org">OGC</a> <a href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Services</a>) better accessible for leightweight clients like mobile devices. However, in addition to the actual Web access layer the Timeseries API offers a Service Provider Interface (SPI) which can be implemented to adapt arbitrary data sources.</p>
+        </div>
         
         <h3>Overview</h3>
         <div>
@@ -117,17 +120,14 @@
         <h3>Document status</h3>
         <div class="n52-callout n52-callout-info">
           <table class="table">
-            <thead>
+            <tr>
               <th>What</th>
               <th>When</th>
-            </thead>
-            <tbody>
-              <tr>
-              <tr>
-                <td>Review Final Candidate</td>
-                <td>2013-10-31</td>
-              </tr>
-            </tbody>
+            </tr>
+            <tr>
+              <td>Review Final Candidate</td>
+              <td>2013-10-31</td>
+            </tr>
           </table>
         </div>
       
@@ -136,8 +136,8 @@
             <li>CRUD API for eventing</li>
           </ul>
         </div>
-    </section>
-		
+      </section>
+
 			<!-- General
 			================================================== -->
 			<section id="general">
@@ -147,7 +147,7 @@
 						<a href="#"><i class="icon-chevron-up"></i> top</a>
 					</p>
 				</div>
-				<div>
+        <div>
 					<div id="general-content-types"> <!-- Content-Types -->
 						<h3>Content-Types</h3>
 						<p>The API provides different content types which can be used to retrieve different types of representation of a requested resource. The actual content types differ for each resource so the ones supported are documented in the appropriate section.</p>
@@ -158,12 +158,11 @@
             <h3>Common Query Parameters</h3>
             <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only be contain one value. Multiple paramters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Parameter</th>
                 <th style="width:25%">Example</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
                 <tr>
                   <td>
                     <code>expanded</code><br/>
@@ -244,10 +243,9 @@
                     <li>User-agent (e.g. header information)</li>
                     <li><code>locale</code> parameter</li>
                   </ul>
-                  A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                    <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
                   </td>
                 </tr>
-              </tbody>
             </table>
             
 						<div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
@@ -264,16 +262,16 @@
 						
 						<h4>Paging Example</h4>
 						<div class="n52-request-example">
-							<pre>GET /api/v1/stations?offset=4&limit=2 HTTP/1.1
+							<pre>GET /api/v1/stations?offset=4&amp;limit=2 HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
             <pre>HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Link: &lt;/api/v1/stations?offset=4&limit=2>; rel="self"
-Link: &lt;/api/v1/stations?offset=0&limit=2>; rel="first"; title="first page"
-Link: &lt;/api/v1/stations?offset=2349&limit=2>; rel="last"; title="last page"
-Link: &lt;/api/v1/stations?offset=2&limit=2>; rel="prev"; title="previous page"
-Link: &lt;/api/v1/stations?offset=6&limit=2>; rel="next"; title="next page"
+Link: &lt;/api/v1/stations?offset=4&amp;limit=2>; rel="self"
+Link: &lt;/api/v1/stations?offset=0&amp;limit=2>; rel="first"; title="first page"
+Link: &lt;/api/v1/stations?offset=2349&amp;limit=2>; rel="last"; title="last page"
+Link: &lt;/api/v1/stations?offset=2&amp;limit=2>; rel="prev"; title="previous page"
+Link: &lt;/api/v1/stations?offset=6&amp;limit=2>; rel="next"; title="next page"
 
 Content omitted for brevity.
 </pre>
@@ -286,13 +284,13 @@ Content omitted for brevity.
               <p>The query parameter <code>q</code> allows simple search over resources. Note that the searching respects the current locale being selected.</p>
               
               <table class="table">
-                <thead>
+                <tr>
                   <th>Method</th>
                   <th>Path</th>
                   <th>Content-Type</th>
                   <th>Description</th>
-                </thead>
-                <tbody>
+                </tr>
+                
                   <tr>
                     <td><code>GET</code></td>
                     <td><code>/api/v1/search?q=mySearch</code></td>
@@ -300,7 +298,7 @@ Content omitted for brevity.
                     <td>Searches globally over available resources.
                     </td>
                   </tr>
-                </tbody>
+                
               </table>
               
               Combined search terms are not supported with this API version.
@@ -346,11 +344,11 @@ Accept: application/json</pre>
             <h3>Common Status Codes</h3>
             <p>A client shall expect the following HTTP status codes returned by the API.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Code</th>
                 <th>When</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>200</code></td>
                   <td>Status <code>OK</code>. All went fine.</td>
@@ -367,7 +365,7 @@ Accept: application/json</pre>
                   <td><code>500</code></td>
                   <td>Status <code>Internal Server Error</code>. Please contact the webadmin. In some cases an error message will be shown. But in general the server logs will help to trace the problem.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
 					
@@ -388,20 +386,20 @@ Accept: application/json</pre>
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/</code></td>
                   <td><code>application/json</code></td>
                   <td>Lists all resource collections available.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
 					
@@ -539,13 +537,13 @@ Content-Type: application/json;charset=UTF-8
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/stations</code></td>
@@ -558,7 +556,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
                   <td>Lists the measured stations with id <code>{id}</code>.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
 					
@@ -567,12 +565,12 @@ Content-Type: application/json;charset=UTF-8
             <p>The collection can be queried by optional filter parameters.</p>
             
             <table class="table" style="table-layout:fixed">
-              <thead>
+              <tr>
                 <th style="width:15%">Parameter</th>
                 <th>Example</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>crs</code> <br/></td>
                   <td><pre>crs=EPSG:25832</pre></td>
@@ -609,7 +607,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><p>Stations around a given point (in WGS84 by default). The radius unit is in kilometers (km). Refer to the <code>crs</code> parameter if a non-default CRS shall be used.</p>
                   </td>
                 </tr>
-              </tbody>
+              
             </table>
             
             <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
@@ -842,13 +840,13 @@ Content-Type: application/json;charset=UTF-8
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
 						<table class="table">
-							<thead>
+							<tr>
 								<th>Method</th>
 								<th>Path</th>
                 <th style="width: 21%">Content-Type</th>
 								<th>Description</th>
-							</thead>
-							<tbody>
+							</tr>
+							
 								<tr>
 									<td><code>GET</code></td>
 									<td><code>/api/v1/timeseries</code></td>
@@ -865,18 +863,17 @@ Content-Type: application/json;charset=UTF-8
 									<td><code>GET</code></td>
 									<td><code>/api/v1/timeseries/{id}/{interval}</code></td>
                   <td><code>image/png</code></td>
-									<td><p>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
+									<td>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
                   <ul>
                     <li><code>lastDay</code></li>
                     <li><code>lastWeek</code></li>
                     <li><code>lastMonth</code></li>
-                    </ul>
-                  </p>
+                  </ul>
                   <p>Timeseries can be pre-rendered by a regular task. If pre-rendering is enabled for a given timeseries depends on the API provider as it is a configuration issue.</p>
                   <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
                   </td>
 								</tr>
-							</tbody>
+							
 						</table>
 					</div>
 					
@@ -884,13 +881,13 @@ Content-Type: application/json;charset=UTF-8
 						<h3>Request Data</h3>
 						<p>Timeseries data is actually not modelled as a resource itself. Data requests can be  triggered by appending the <code>getData</code> verb.</p>
 						<table class="table">
-							<thead>
+							<tr>
 								<th>Method</th>
 								<th>Path</th>
                 <th style="width: 21%">Content-Type</th>
 								<th>Description</th>
-							</thead>
-							<tbody>
+							</tr>
+							
 								<tr>
 									<td><code>GET</code></td>
 									<td><code>/api/v1/timeseries/{id}/getData</code></td>
@@ -919,7 +916,7 @@ Content-Type: application/json;charset=UTF-8
                   </p>
                   </td>
 								</tr>
-							</tbody>
+							
 						</table>
 					</div>
 					
@@ -928,12 +925,12 @@ Content-Type: application/json;charset=UTF-8
 						<p>Timeseries data can be queried with the following filter parameters. </p>
             
 						<table class="table" style="table-layout:fixed">
-							<thead>
+							<tr>
 								<th style="width:15%">Parameter</th>
 								<th>Example</th>
 								<th>Description</th>
-							</thead>
-							<tbody>
+							</tr>
+							
                 <tr>
 									<td>
 										<code>expanded</code>
@@ -1019,13 +1016,12 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <pre>format=highcharts</pre>
                   </td>
-                  <td>
-                    <p>Controls the output format of raw timeseries data. This avoids converting between different data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats:
+                  <td>Controls the output format of raw timeseries data. This avoids converting between different data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats:
                     <ul>
                       <li><code>tvp</code>: Time value pairs (the default)</li>
                       <li><code>highcharts</code>: <a href="http://www.highcharts.com/">Highcharts</a> series data format.</li>
                     </ul>
-                    Refer to the <a href="#formats">Format section</a> for detailed information how the formats will look like.</p>
+                    Refer to the <a href="#formats">Format section</a> for detailed information how the formats will look like.
                   </td>
                 </tr>
                 <tr>
@@ -1036,12 +1032,10 @@ Content-Type: application/json;charset=UTF-8
                     <pre>base64=true</pre>
                   </td>
                   <td><p>Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library otherwise).</p>
-                  <p>Here is an example how to embed encoded base64 string:
-                    <pre>&lt;img src='data:image/png;base64," + encodedString + "' /></pre>
-                  </p>
+                  <p>Here is an example how to embed encoded base64 string:</p><pre>&lt;img src='data:image/png;base64," + encodedString + "' /></pre>
                   </td>
                 </tr>
-							</tbody>
+							
 						</table>
             
             <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
@@ -1263,7 +1257,7 @@ Content-Type: application/json;charset=UTF-8
   "refValues": [
     {
       "referenceValueId": "ref_2adf9285e96f72c441a6344e151eb630",
-      "label": "Pegelnullpunkt über NN",
+      "label": "Pegelnullpunkt Ã¼ber NN",
       "lastValue": {
         "timestamp": 1379667208477,
         "value": -5
@@ -1447,33 +1441,33 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 				</div>
 				<div>
 					<p>The following diagram types are available and can be set via <code>style</code> options:
+					</p>
 						<ul>
 							<li>line charts</li>
 							<li>bar charts</li>
 						</ul>
-					</p>
           <p>Styles can be used whereever a chart is rendered. It does not matter if you request an image or a report (which embeds the timeseries chart).</p>
 					<div>
 						<h3 id="styles-line-chart">Line Charts</h3>
 						<p>The following style properties can be set.</p>
 						<table class="table">
-							<thead>
+							<tr>
 								<th>Property</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>lineType</code></td>
-									<td><p>The line style. Possible values are <code>solid</code>, <code>dotted</code> or <code>dashed</code></p></td>
-								</tr>
-								<tr>
-									<td><code>width</code></td>
-									<td>The thickness of a line as integer, dash gap, point size (dependend on the chart type to be rendered).</td>
-								</tr>
-                <tr>
-									<td><code>color</code></td>
-									<td>A 6-digit hex color value, e.g. <code>#5f5f5f</code>.</td>
-								</tr>
-							</tbody>
+                <th>Description</th>
+							</tr>
+              <tr>
+                <td><code>lineType</code></td>
+                <td><p>The line style. Possible values are <code>solid</code>, <code>dotted</code> or <code>dashed</code></p></td>
+              </tr>
+              <tr>
+                <td><code>width</code></td>
+                <td>The thickness of a line as integer, dash gap, point size (dependend on the chart type to be rendered).</td>
+              </tr>
+              <tr>
+                <td><code>color</code></td>
+                <td>A 6-digit hex color value, e.g. <code>#5f5f5f</code>.</td>
+              </tr>
+							
 						</table>
             
             <div class="row">
@@ -1498,23 +1492,22 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 						<h3>Bar Charts</h3>
 							
             <table class="table">
-							<thead>
+							<tr>
 								<th>Property</th>
-							</thead>
-							<tbody>
-								<tr>
-									<td><code>interval</code></td>
-									<td>The time period a bar shall represent. Possible values are <code>byDay</code>, <code>byWeek</code>, <code>byMonth</code>.</td>
-								</tr>
-								<tr>
-									<td><code>width</code></td>
-									<td>Value between 0 and 1, which defines the bar width in percent (<code>width=1</code> means maximum width, i.e. bar next to bar).</td>
-								</tr>
-                <tr>
-									<td><code>color</code></td>
-									<td>A 6-digit hex color value, e.g. <code>#5f5f5f</code>.</td>
-								</tr>
-							</tbody>
+                <th>Description</th>
+							</tr>
+              <tr>
+                <td><code>interval</code></td>
+                <td>The time period a bar shall represent. Possible values are <code>byDay</code>, <code>byWeek</code>, <code>byMonth</code>.</td>
+              </tr>
+              <tr>
+                <td><code>width</code></td>
+                <td>Value between 0 and 1, which defines the bar width in percent (<code>width=1</code> means maximum width, i.e. bar next to bar).</td>
+              </tr>
+              <tr>
+                <td><code>color</code></td>
+                <td>A 6-digit hex color value, e.g. <code>#5f5f5f</code>.</td>
+              </tr>
 						</table>
             
             <div class="row">
@@ -1537,7 +1530,6 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 				</div>
 			</section>
 			
-      
       <!-- Formats
 			================================================== -->
 			<section id="formats">
@@ -1548,13 +1540,13 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 					</p>
 				</div>
 				<div>
-					<p>Raw data can be requested in a specific format. This can be useful if you work with a specific chart API and want to avoid to convert data outout from one format to another. Possible formats are:
+					<p>Raw data can be requested in a specific format. This can be useful if you work with a specific chart API and want to avoid to convert data outout from one format to another. Possible formats are:</p>
 						<ul>
 							<li><code>tvp</code> (the default)</li>
 							<li><code>highchart</code></li>
 						</ul>
-             To retrieve extra reference values (if available for that timeseries) valid for the requested timespan just add <code>expand=true</code>.
-					</p>
+            <p>To retrieve extra reference values (if available for that timeseries) valid for the requested timespan just add <code>expand=true</code>.</p>
+					
           <div class="n52-callout n52-callout-info">Serving arbitrary formats is limited. Most probably you have to combine timeseries metadata and the actual data differently within the used API. Please refer to the actual data output so that it can be used as intended by the 3rd party API.</div>
       
           <div>
@@ -1663,10 +1655,6 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
         </div>
 			</section>
       
-      
-      
-      
-      
 			<!-- Parameters
 			================================================== -->
 			<section id="parameters">
@@ -1683,13 +1671,13 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/services</code></td>
@@ -1702,7 +1690,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
                   <td><code>application/json</code></td>
                   <td>Lists the service with id <code>{id}</code>.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
           
@@ -1761,6 +1749,7 @@ Content-Type: application/json;charset=UTF-8
               <p>An expanded view gives you a bit more metadata about a service instance. It counts the amount of available resources and gives you information about the serivce's capabilities, e.g. if first and latest value requests are supported.</p>
             </div>
           </div>
+        </div>
 				
 				<div id="parameter-categories">
 					<h2>Categories</h2> <!-- Categories -->
@@ -1768,13 +1757,13 @@ Content-Type: application/json;charset=UTF-8
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/categories</code></td>
@@ -1787,7 +1776,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
                   <td>Lists the measured categories with id <code>{id}</code>.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
           
@@ -1844,13 +1833,13 @@ Content-Type: application/json;charset=UTF-8
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/offerings</code></td>
@@ -1863,7 +1852,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
                   <td>Lists the offering with id <code>{id}</code>.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
           
@@ -1917,13 +1906,13 @@ Content-Type: application/json;charset=UTF-8
             <h3>URLs</h3>
             <p>API calls are triggered by using the following URLs.</p>
             <table class="table">
-              <thead>
+              <tr>
                 <th>Method</th>
                 <th>Path</th>
                 <th>Content-Type</th>
                 <th>Description</th>
-              </thead>
-              <tbody>
+              </tr>
+              
                 <tr>
                   <td><code>GET</code></td>
                   <td><code>/api/v1/features</code></td>
@@ -1936,7 +1925,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
                   <td>Lists the feature with id <code>{id}</code>.</td>
                 </tr>
-              </tbody>
+              
             </table>
           </div>
         
@@ -1993,13 +1982,13 @@ Content-Type: application/json;charset=UTF-8
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
 						<table class="table">
-							<thead>
+							<tr>
 								<th>Method</th>
 								<th>Path</th>
                 <th>Content-Type</th>
 								<th>Description</th>
-							</thead>
-							<tbody>
+							</tr>
+							
 								<tr>
 									<td><code>GET</code></td>
 									<td><code>/api/v1/procedures</code></td>
@@ -2012,7 +2001,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
 									<td>Lists the procedure with id <code>{id}</code>.</td>
 								</tr>
-							</tbody>
+							
 						</table>
           </div>
 						
@@ -2069,13 +2058,13 @@ Content-Type: application/json;charset=UTF-8
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
 						<table class="table">
-							<thead>
+							<tr>
 								<th>Method</th>
 								<th>Path</th>
                 <th>Conetnet-Type</th>
 								<th>Description</th>
-							</thead>
-							<tbody>
+							</tr>
+							
 								<tr>
 									<td><code>GET</code></td>
 									<td><code>/api/v1/phenomena</code></td>
@@ -2088,7 +2077,7 @@ Content-Type: application/json;charset=UTF-8
                   <td><code>application/json</code></td>
 									<td>Lists the measured phenomenon with id <code>{id}</code>.</td>
 								</tr>
-							</tbody>
+							
 						</table>
           </div>
           
@@ -2142,8 +2131,8 @@ Content-Type: application/json;charset=UTF-8
 			</section>
 			
 		</div>
-    
     </div>
+    
     
     <!-- Footer
     ================================================== -->
@@ -2162,19 +2151,15 @@ Content-Type: application/json;charset=UTF-8
             <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
                 href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
                
-            <p>
-              <ul class="footer-links">
-                <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
-                <li class="muted">&middot;</li>
-                <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
-              </ul>
-            </p>
+            <ul class="footer-links">
+              <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+              <li class="muted">&middot;</li>
+              <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+            </ul>
             
           </div>
       </footer>
     </div>
-	
-	</div>
 	
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="js/bootstrap-3.0.0-rc1/bootstrap.min.js"></script>

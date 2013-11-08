@@ -1,7 +1,13 @@
 
-.n52-content {
+.n52-sidebar {
   padding-top: 60px;
 }
+
+.n52-content {
+  padding-top: 60px;
+  padding-left: 60px
+}
+
 /* Base styles (regardless of theme) */
 .n52-callout {
   margin: 20px 0;
@@ -47,7 +53,7 @@
 
 /* First level of nav */
 .bs-sidenav {
-  margin-top: 80px;
+  margin-top: 20px;
   margin-bottom: 30px;
   padding-top:    10px;
   padding-bottom: 10px;
