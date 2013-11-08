@@ -52,7 +52,7 @@ public class OutputValue implements Comparable<OutputValue> {
 
     @Override
     public int compareTo(OutputValue o) {
-        return getLabel().compareTo(o.getLabel());
+        return getLabel().toLowerCase().compareTo(o.getLabel().toLowerCase());
     }
 
     @Override
