@@ -107,7 +107,7 @@
         <h2>About</h2>
         <p>The <a href="http://52north.org">52&deg;North</a> Timeseries API provides a thin access layer to timeseries data via RESTful Web binding. It provides different output formats like json, pdf or png.</p>
         
-        <p>This API development intends to make near realtime sensor data (provided by <a href="http://opengeospatial.org">OGC</a> <a href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Services</a>) better accessible for leightweight clients like mobile devices. However, in addition to the actual Web access layer the Timeseries API offers a Service Provider Interface (SPI) which can be implemented to adapt arbitrary data sources.</p>
+        <p>This API development intends to make near realtime sensor data (provided by <a href="http://opengeospatial.org">OGC</a> <a href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Services</a>) better accessible for lightweight clients like mobile devices. However, in addition to the actual Web access layer the Timeseries API offers a Service Provider Interface (SPI) which can be implemented to adapt arbitrary data sources.</p>
         
         <h3>Overview</h3>
         <div>
@@ -156,7 +156,7 @@
           
           <div id="general-common-query-parameters"> <!-- Common Query Parameters -->
             <h3>Common Query Parameters</h3>
-            <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only be contain one value. Multiple paramters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
+            <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
             <table class="table">
               <thead>
                 <th>Parameter</th>
@@ -173,7 +173,7 @@
                   </td>
                   <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more detailed information up to a certain point. However, it does not necessarily provide all item information as one may get when request the resource item itself.</p>
                   
-                  <p>The <code>expanded</code> works almost only for resource collection. However, expceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
+                  <p>The <code>expanded</code> works almost only for resource collection. However, exceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
                   
                   <p>The default is <code>false</code>.</p></td>
                 </tr>
@@ -238,7 +238,7 @@
                   <td>
                     <pre>locale=de</pre>
                   </td>
-                  <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are respected by an <code>_</code>, e.g. <code>en_US</code> for American english.</p>
+                  <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are respected by an <code>_</code>, e.g. <code>en_US</code> for American English.</p>
                   <p>The REST-API should consider the following order to detect a locale:
                   <ul>
                     <li>User-agent (e.g. header information)</li>
@@ -1263,7 +1263,7 @@ Content-Type: application/json;charset=UTF-8
   "refValues": [
     {
       "referenceValueId": "ref_2adf9285e96f72c441a6344e151eb630",
-      "label": "Pegelnullpunkt über NN",
+      "label": "Pegelnullpunkt ï¿½ber NN",
       "lastValue": {
         "timestamp": 1379667208477,
         "value": -5
