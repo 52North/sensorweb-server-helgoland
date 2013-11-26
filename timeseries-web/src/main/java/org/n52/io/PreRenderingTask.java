@@ -24,7 +24,9 @@
 
 package org.n52.io;
 
+import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
@@ -346,7 +348,7 @@ public class PreRenderingTask implements ServletConfigAware {
         }
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IoParameters map = QueryParameters.createDefaults();
+            IoParameters map = createQueryMap();
             Interval timespan = createTimespanFromInterval(timeseriesId, interval);
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
             RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
@@ -358,6 +360,12 @@ public class PreRenderingTask implements ServletConfigAware {
 
             FileOutputStream fos = createFile(timeseriesId, interval);
             renderChartFile(renderer, parameters, fos);
+        }
+
+        private IoParameters createQueryMap() {
+            Map<String, String> query = new HashMap<String, String>();
+            query.put(LOCALE, language);
+            return createFromQuery(query);
         }
 
         private void renderChartFile(IoHandler renderer, UndesignedParameterSet parameters, FileOutputStream fos) {
