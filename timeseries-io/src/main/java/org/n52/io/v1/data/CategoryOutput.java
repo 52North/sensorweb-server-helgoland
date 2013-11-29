@@ -23,7 +23,7 @@
  */
 package org.n52.io.v1.data;
 
-public class CategoryOutput extends OutputValue {
+public class CategoryOutput extends ParameterOutput {
 
 	private ServiceOutput service;
 

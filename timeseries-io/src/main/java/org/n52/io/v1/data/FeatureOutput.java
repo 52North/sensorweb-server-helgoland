@@ -24,7 +24,7 @@
 package org.n52.io.v1.data;
 
 
-public class FeatureOutput extends OutputValue {
+public class FeatureOutput extends ParameterOutput {
 
 	private ServiceOutput service;
 

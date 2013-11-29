@@ -21,19 +21,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.v1.data;
 
 
-public class TimeseriesMetadataOutput {
+public class TimeseriesMetadataOutput extends ParameterOutput {
 
-    private String id;
-
-    private String label;
-    
     private String uom;
-    
+
     private StationOutput station;
-    
+
     private ReferenceValueOutput[] referenceValues;
 
     private TimeseriesValue firstValue;
@@ -41,22 +38,6 @@ public class TimeseriesMetadataOutput {
     private TimeseriesValue lastValue;
 
     private TimeseriesOutput parameters;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public String getUom() {
         return uom;
@@ -105,5 +86,5 @@ public class TimeseriesMetadataOutput {
     public void setParameters(TimeseriesOutput timeseries) {
         this.parameters = timeseries;
     }
-    
+
 }
