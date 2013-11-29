@@ -22,17 +22,24 @@
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
 
-package org.n52.web.v1.ctrl;
+package org.n52.io.v1.data;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_CATEGORIES;
+import java.text.Collator;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+public interface CollatorComparable<T> {
 
-@Controller
-@RequestMapping(value = COLLECTION_CATEGORIES)
-public class CategoriesParameterController extends ParameterController {
-
-    // resource controller for categories
-    
+    /**
+     * Compares natural ordering of this instance to another. Reuses concept of {@link Comparable} interface
+     * but indicates ordering locale dependend by means of a {@link Collator}.
+     * 
+     * @param collator
+     *        a collator used to compare. If <code>null</code> a collator is created dependend on the default
+     *        locale.
+     * @param o
+     *        the object to compared.
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or
+     *         greater than the specified object.
+     * @see Collator
+     */
+    public int compare(Collator collator, T o);
 }
