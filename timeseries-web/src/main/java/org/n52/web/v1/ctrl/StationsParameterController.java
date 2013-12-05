@@ -27,10 +27,12 @@ package org.n52.web.v1.ctrl;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_STATIONS;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.web.ResourceNotFoundException;
+import org.n52.web.v1.srv.LocaleAwareSortService;
 import org.n52.web.v1.srv.ParameterService;
 import org.n52.web.v1.srv.TransformingStationService;
 import org.slf4j.Logger;
@@ -44,18 +46,19 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
-public class StationsParameterController extends ParameterController {
+public class StationsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<StationOutput> stationParameterService;
+    private ParameterService<StationOutput> parameterService;
 
+    @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            Object[] result = stationParameterService.getExpandedParameters(map);
+            Object[] result = parameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -64,7 +67,7 @@ public class StationsParameterController extends ParameterController {
         }
         else {
             Stopwatch stopwatch = startStopwatch();
-            Object[] result = stationParameterService.getCondensedParameters(map);
+            Object[] result = parameterService.getCondensedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -73,6 +76,7 @@ public class StationsParameterController extends ParameterController {
         }
     }
 
+    @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = createFromQuery(query);
@@ -80,7 +84,7 @@ public class StationsParameterController extends ParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        StationOutput procedure = stationParameterService.getParameter(procedureId, map);
+        StationOutput procedure = parameterService.getParameter(procedureId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (procedure == null) {
@@ -90,12 +94,12 @@ public class StationsParameterController extends ParameterController {
         return new ModelAndView().addObject(procedure);
     }
 
-    public ParameterService<StationOutput> getStationParameterService() {
-        return stationParameterService;
+    public ParameterService<StationOutput> getParameterService() {
+        return parameterService;
     }
 
-    public void setStationParameterService(ParameterService<StationOutput> stationParameterService) {
-        this.stationParameterService = new TransformingStationService(stationParameterService);
+    public void setParameterService(ParameterService<StationOutput> stationParameterService) {
+        this.parameterService = new LocaleAwareSortService<StationOutput>(new TransformingStationService(stationParameterService));
     }
 
 }

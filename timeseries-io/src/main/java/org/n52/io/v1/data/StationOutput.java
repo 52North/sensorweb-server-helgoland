@@ -21,13 +21,25 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.io.v1.data;
+
+import java.text.Collator;
 
 import org.n52.io.geojson.GeojsonFeature;
 
-public class StationOutput extends GeojsonFeature {
+public class StationOutput extends GeojsonFeature implements CollatorComparable<StationOutput> {
 
     private static final long serialVersionUID = -2868469756939569521L;
 
-    
+    @Override
+    public int compare(Collator collator, StationOutput o) {
+        if (collator == null) {
+            collator = Collator.getInstance();
+        }
+        String thisLabel = (String) getProperties().get("label");
+        String otherLabel = (String) o.getProperties().get("label");
+        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
+    }
+
 }

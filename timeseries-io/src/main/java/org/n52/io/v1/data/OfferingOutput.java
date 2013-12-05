@@ -23,7 +23,7 @@
  */
 package org.n52.io.v1.data;
 
-public class OfferingOutput extends OutputValue {
+public class OfferingOutput extends ParameterOutput {
 
 	private ServiceOutput service;
 

@@ -23,7 +23,7 @@
  */
 package org.n52.io.v1.data;
 
-public class PhenomenonOutput extends OutputValue {
+public class PhenomenonOutput extends ParameterOutput {
 
 	private ServiceOutput service;
 
