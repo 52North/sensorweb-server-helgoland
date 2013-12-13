@@ -24,8 +24,11 @@
 
 package org.n52.io;
 
+import static org.n52.io.IoParameters.GRID;
+import static org.n52.io.IoParameters.HEIGHT;
 import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
+import static org.n52.io.IoParameters.WIDTH;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
@@ -135,7 +138,7 @@ public class PreRenderingTask implements ServletConfigAware {
     public void startTask() {
         if (taskToRun != null) {
             this.enabled = true;
-            Timer timer = new Timer();
+            Timer timer = new Timer("Prerender charts timer task");
             timer.schedule(taskToRun, 10000, getPeriodInMilliseconds());
         }
     }
@@ -290,9 +293,10 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private IoParameters createConfig() {
         Map<String, String> configuration = new HashMap<String, String>();
-        configuration.put(IoParameters.WIDTH, Integer.toString(width));
-        configuration.put(IoParameters.HEIGHT, Integer.toString(height));
-        configuration.put(IoParameters.GRID, Boolean.toString(showGrid));
+        configuration.put(WIDTH, Integer.toString(width));
+        configuration.put(HEIGHT, Integer.toString(height));
+        configuration.put(GRID, Boolean.toString(showGrid));
+        configuration.put(LOCALE, language);
         return IoParameters.createFromQuery(configuration);
     }
 
@@ -304,7 +308,7 @@ public class PreRenderingTask implements ServletConfigAware {
     }
 
     private final class RenderTask extends TimerTask {
-
+        
         @Override
         public void run() {
             LOGGER.info("Start prerendering task");
@@ -348,24 +352,17 @@ public class PreRenderingTask implements ServletConfigAware {
         }
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IoParameters map = createQueryMap();
+            IoParameters config = createConfig();
             Interval timespan = createTimespanFromInterval(timeseriesId, interval);
-            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
             RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
             context.setDimensions(new ChartDimension(width, height));
             UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
             IoHandler renderer = IoFactory
-                    .createWith(createConfig())
+                    .createWith(config)
                     .createIOHandler(context);
-
             FileOutputStream fos = createFile(timeseriesId, interval);
             renderChartFile(renderer, parameters, fos);
-        }
-
-        private IoParameters createQueryMap() {
-            Map<String, String> query = new HashMap<String, String>();
-            query.put(LOCALE, language);
-            return createFromQuery(query);
         }
 
         private void renderChartFile(IoHandler renderer, UndesignedParameterSet parameters, FileOutputStream fos) {
