@@ -29,7 +29,6 @@ import static org.n52.io.IoParameters.HEIGHT;
 import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
 import static org.n52.io.IoParameters.WIDTH;
-import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
