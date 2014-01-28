@@ -12,7 +12,7 @@
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<dependency>
-			<!-- ensure loading before ealier versions -->
+			<!-- ensure loading before earlier versions -->
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-opengis</artifactId>
 		</dependency>
