@@ -21,45 +21,53 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
  * visit the Free Software Foundation web page, http://www.fsf.org.
  */
+
 package org.n52.web.v1.srv;
 
+import java.text.Collator;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.n52.io.IoParameters;
+import org.n52.io.v1.data.CollatorComparable;
 
-public class SortingParameterService<T> implements ParameterService<T> {
+public class LocaleAwareSortService<T> implements ParameterService<T> {
 
     private ParameterService<T> composedService;
 
-    public SortingParameterService(ParameterService<T> toCompose) {
+    public LocaleAwareSortService(ParameterService<T> toCompose) {
         this.composedService = toCompose;
+    }
+
+    protected Collator createCollator(String locale) {
+        return Collator.getInstance(new Locale(locale));
     }
 
     @Override
     public T[] getExpandedParameters(IoParameters query) {
         T[] result = composedService.getExpandedParameters(query);
-        Arrays.sort(result);
+        sort(createCollator(query.getLocale()), result);
         return result;
     }
 
     @Override
     public T[] getCondensedParameters(IoParameters query) {
         T[] result = composedService.getCondensedParameters(query);
-        Arrays.sort(result);
+        sort(createCollator(query.getLocale()), result);
         return result;
     }
 
     @Override
     public T[] getParameters(String[] items) {
         T[] result = composedService.getParameters(items);
-        Arrays.sort(result);
+        Arrays.sort(result); // TODO sort locale dependend
         return result;
     }
 
     @Override
     public T[] getParameters(String[] items, IoParameters query) {
         T[] result = composedService.getParameters(items, query);
-        Arrays.sort(result);
+        sort(createCollator(query.getLocale()), result);
         return result;
     }
 
@@ -73,5 +81,35 @@ public class SortingParameterService<T> implements ParameterService<T> {
         return composedService.getParameter(item, query);
     }
 
-    
+    private void sort(Collator collator, T[] toSort) {
+        if (toSort == null || toSort.length == 0) {
+            return;
+        }
+        
+        if ( !isCollatorComparable(toSort)) {
+            Arrays.sort(toSort);
+            return;
+        }
+        
+        for (int i = 0; i < toSort.length; i++) {
+            for (int j = i + 1; j < toSort.length; j++) {
+                CollatorComparable<T> first = (CollatorComparable<T>) toSort[i];
+                T second = toSort[j];
+                if (first.compare(collator, second) > 0) {
+                    swap(toSort, i, j);
+                }
+            }
+        }
+    }
+
+    private boolean isCollatorComparable(T[] toSort) {
+        return CollatorComparable.class.isAssignableFrom(toSort[0].getClass());
+    }
+
+    private void swap(T[] container, int i, int j) {
+        T tmp = container[i];
+        container[i] = container[j];
+        container[j] = tmp;;
+    }
+
 }

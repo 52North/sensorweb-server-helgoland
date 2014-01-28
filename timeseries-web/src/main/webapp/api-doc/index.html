@@ -34,7 +34,7 @@
     ================================================== -->
     <div class="col-lg-2 n52-sidebar">
       <div id="contents" class="bs-sidebar hidden-print">
-        <a href="http://52north.org"><img alt="52&deg;North logo" src="http://52north.org/templates/52n-2012/images/52n-logo.gif"/></a>
+        <a href="http://52north.org" style="position:fixed"><img alt="52&deg;North logo" src="http://52north.org/templates/52n-2012/images/52n-logo.gif"/></a>
         <ul class="nav bs-sidenav" data-spy="affix">
         
           <li> <!-- General -->
@@ -90,10 +90,15 @@
             <ul id="parameters-subitems" class="nav collapse">
               <li><a href="#parameter-services">Services</a></li>
               <li><a href="#parameter-categories">Categories</a></li>
-              <li><a href="#parameter-offerings">Offerings</a></li>
-              <li><a href="#parameter-features">Features</a></li>
-              <li><a href="#parameter-procedures">Procedures</a></li>
               <li><a href="#parameter-phenomena">Phenomena</a></li>
+            </ul>
+          </li>
+          <li> <!-- Legacy/Unstable -->
+            <a data-toggle="collapse" data-parent="#contents" data-target="#nonpublic-subitems"  href="#nonpublic">Unstable/Legacy</a>
+            <ul id="nonpublic-subitems" class="nav collapse">
+              <li><a href="#nonpublic-offerings">Offerings</a></li>
+              <li><a href="#nonpublic-features">Features</a></li>
+              <li><a href="#nonpublic-procedures">Procedures</a></li>
             </ul>
           </li>
         </ul>
@@ -112,6 +117,7 @@
           <p>This API development intends to make near realtime sensor data (provided by <a href="http://opengeospatial.org">OGC</a> <a href="http://52north.org/communities/sensorweb/sos/">Sensor Observation Services</a>) better accessible for leightweight clients like mobile devices. However, in addition to the actual Web access layer the Timeseries API offers a Service Provider Interface (SPI) which can be implemented to adapt arbitrary data sources.</p>
         </div>
         
+                
         <h3>Overview</h3>
         <div>
           <img alt="bigPicture" src="img/big-picture.png" title="Timeseries API within the big picture."/>
@@ -125,17 +131,12 @@
               <th>When</th>
             </tr>
             <tr>
-              <td>Review Final Candidate</td>
-              <td>2013-10-31</td>
+              <td>Create <a href="#nonpublic">legacy section</a> and add low-level SOS concepts.</td>
+              <td>2013-12-16</td>
             </tr>
           </table>
         </div>
       
-        <div class="n52-callout n52-callout-todo">
-          <ul>
-            <li>CRUD API for eventing</li>
-          </ul>
-        </div>
       </section>
 
 			<!-- General
@@ -156,7 +157,7 @@
           
           <div id="general-common-query-parameters"> <!-- Common Query Parameters -->
             <h3>Common Query Parameters</h3>
-            <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only be contain one value. Multiple paramters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
+            <p>Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
             <table class="table">
               <tr>
                 <th>Parameter</th>
@@ -172,7 +173,7 @@
                   </td>
                   <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more detailed information up to a certain point. However, it does not necessarily provide all item information as one may get when request the resource item itself.</p>
                   
-                  <p>The <code>expanded</code> works almost only for resource collection. However, expceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
+                  <p>The <code>expanded</code> works almost only for resource collection. However, exceptions may exist (e.g. for timeseries raw data). Exceptions are explicitly documented.</p>
                   
                   <p>The default is <code>false</code>.</p></td>
                 </tr>
@@ -196,33 +197,6 @@
                 </tr>
                 <tr>
                   <td>
-                    <code>offering</code><br/>
-                  </td>
-                  <td>
-                    <pre>offering=off_fdoi23</pre>
-                  </td>
-                  <td>All resources where the given <a href="#parameter-offerings">offering</a> id does match.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>feature</code><br/>
-                  </td>
-                  <td>
-                    <pre>feature=foi_adf092e</pre>
-                  </td>
-                  <td>All resources where the given <a href="#parameter-features">feature</a> id does match.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>procedure</code><br/>
-                  </td>
-                  <td>
-                    <pre>procedure=pro_asd23</pre>
-                  </td>
-                  <td>All resources where the given <a href="#parameter-procedures">procedure</a> id does match.</td>
-                </tr>
-                <tr>
-                  <td>
                     <code>phenomenon</code>
                   </td>
                   <td>
@@ -237,12 +211,12 @@
                   <td>
                     <pre>locale=de</pre>
                   </td>
-                  <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are respected by an <code>_</code>, e.g. <code>en_US</code> for American english.</p>
+                  <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are respected by an <code>_</code>, e.g. <code>en_US</code> for American English.</p>
                   <p>The REST-API should consider the following order to detect a locale:
-                  <ul>
+                  <ol>
                     <li>User-agent (e.g. header information)</li>
                     <li><code>locale</code> parameter</li>
-                  </ul>
+                  </ol>
                     <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
                   </td>
                 </tr>
@@ -571,18 +545,18 @@ Content-Type: application/json;charset=UTF-8
                 <th>Description</th>
               </tr>
               
-                <tr>
-                  <td><code>crs</code> <br/></td>
-                  <td><pre>crs=EPSG:25832</pre></td>
-                  <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (in this case to 'EPSG:25832' (ETRS89 / UTM zone 32N)).</p>
-                  <p>Per default geometries are referenced by the WGS84 CRS (precisely: CRS84, lon/lat order). If <code>crs</code> value differs from default, all output geometries are transformed to match the asked CRS.</p>
-                  <p>Please note that some CRS switch coordinate axes. Double check axes ordering before interpreting coordinates!</p>
-                  <div class="n52-callout n52-callout-info">Future versions of the API may provide kind of a <code>strictXY</code> parameter or similar to give clients more control on this.</div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><code>bbox</code></td>
-                  <td><pre>bbox={
+              <tr>
+                <td><code>crs</code> <br/></td>
+                <td><pre>crs=EPSG:25832</pre></td>
+                <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (in this case to 'EPSG:25832' (ETRS89 / UTM zone 32N)).</p>
+                <p>Per default geometries are referenced by the WGS84 CRS (precisely: CRS84, lon/lat order). If <code>crs</code> value differs from default, all output geometries are transformed to match the asked CRS.</p>
+                <p>Please note that some CRS switch coordinate axes. Double check axes ordering before interpreting coordinates!</p>
+                <div class="n52-callout n52-callout-info">Future versions of the API may provide kind of a <code>strictXY</code> parameter or similar to give clients more control on this.</div>
+                </td>
+              </tr>
+              <tr>
+                <td><code>bbox</code></td>
+                <td><pre>bbox={
   'll': { 
     "type": "Point", 
     "coordinates": [&lt;x>,&lt;y>]
@@ -592,22 +566,48 @@ Content-Type: application/json;charset=UTF-8
     "coordinates": [&lt;x>,&lt;y>]
   } 
 }</pre></td>
-                  <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code>crs</code> parameter if a non-default CRS shall be used.</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td><code>near</code></td>
-                  <td><pre>near={
+                <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code>crs</code> parameter if a non-default CRS shall be used.</p>
+                </td>
+              </tr>
+              <tr>
+                <td><code>near</code></td>
+                <td><pre>near={
   "center": { 
     "type": "Point", 
     "coordinates": [&lt;x>,&lt;y>]
   }, 
   "radius":500
 }</pre></td>
-                  <td><p>Stations around a given point (in WGS84 by default). The radius unit is in kilometers (km). Refer to the <code>crs</code> parameter if a non-default CRS shall be used.</p>
-                  </td>
-                </tr>
-              
+                <td><p>Stations around a given point (in WGS84 by default). The radius unit is in kilometers (km). Refer to the <code>crs</code> parameter if a non-default CRS shall be used.</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>service</code><br/>
+                </td>
+                <td>
+                  <pre>service=srv_sdlfj2</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-services">service</a> id does match.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>category</code><br/>
+                </td>
+                <td>
+                  <pre>category=cat_sadf2d</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-categories">category</a> id does match.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>phenomenon</code>
+                </td>
+                <td>
+                  <pre>phenomenon=phe_sdjf210</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-phenomena">phenomenon</a> id does match.</td>
+              </tr>
             </table>
             
             <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
@@ -847,33 +847,34 @@ Content-Type: application/json;charset=UTF-8
 								<th>Description</th>
 							</tr>
 							
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/timeseries</code></td>
-                  <td><code>application/json</code></td>
-									<td>Lists all timeseries available.</td>
-								</tr>
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/timeseries/{id}</code></td>
-                  <td><code>application/json</code></td>
-									<td><p>Lists the metadata of timeseries with id <code>{id}</code>.</p></td>
-                </tr>
-                <tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/timeseries/{id}/{interval}</code></td>
-                  <td><code>image/png</code></td>
-									<td>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
-                  <ul>
-                    <li><code>lastDay</code></li>
-                    <li><code>lastWeek</code></li>
-                    <li><code>lastMonth</code></li>
-                  </ul>
-                  <p>Timeseries can be pre-rendered by a regular task. If pre-rendering is enabled for a given timeseries depends on the API provider as it is a configuration issue.</p>
-                  <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
-                  </td>
-								</tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries</code></td>
+                <td><code>application/json</code></td>
+                <td>Lists all timeseries available.</td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}</code></td>
+                <td><code>application/json</code></td>
+                <td><p>Lists the metadata of timeseries with id <code>{id}</code>.</p></td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/{interval}</code></td>
+                <td><code>image/png</code></td>
+                <td>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
+                <ul>
+                  <li><code>lastDay</code></li>
+                  <li><code>lastWeek</code></li>
+                  <li><code>lastMonth</code></li>
+                </ul>
+                <p>Timeseries can be pre-rendered by a regular task. If pre-rendering is enabled for a given timeseries depends on the API provider as it is a configuration issue.</p>
+                <p>If a timeseries has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
+                </td>
+              </tr>
 							
+              
 						</table>
 					</div>
 					
@@ -888,34 +889,34 @@ Content-Type: application/json;charset=UTF-8
 								<th>Description</th>
 							</tr>
 							
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/timeseries/{id}/getData</code></td>
-                  <td><code>application/json</code></td>
-									<td><p>Lists the raw data of timeseries with id <code>{id}</code>.</p></td>
-								</tr>
-								<tr>
-									<td><code>POST</code></td>
-									<td><code>/api/v1/timeseries/getData</code></td>
-                  <td><code>application/json</code></td>
-									<td><p>Request the metadata for multiple timeseries. The requested timeseries ids have to be contained in the POST request.</p>
-                  
-                  <p>Have a look at <a href="#timeseries-example-post-data">the POST request example</a> or check out <a href="schemas/v1/getDataForMultipleTimeseries.json">the request schema</a> how a POST request shall look like to get raw data for multiple timeseries.</p></td>
-								</tr>
-								<tr>
-									<td><code>POST</code></td>
-									<td><code>/api/v1/timeseries/getData</code></td>
-                  <td>
-                    <code>image/png</code><br/>
-                    <code>application/pdf</code><br/>
-                  </td>
-									<td><p>Exports the given stack of timeseries to the given output format. The requested timeseries ids have to be contained in the POST request.</p>
-                  
-                  <p>
-                  Each timeseries can be styled (chart type, color, widths, etc) by passing style options. Have a look at <a href="#timeseries-example-post-image">the POST request example</a> or check out <a href="schemas/v1/renderChartForMultipleTimeseries.json">the request schema</a> how a POST request shall look like to render multiple timeseries.
-                  </p>
-                  </td>
-								</tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/getData</code></td>
+                <td><code>application/json</code></td>
+                <td><p>Lists the raw data of timeseries with id <code>{id}</code>.</p></td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/v1/timeseries/getData</code></td>
+                <td><code>application/json</code></td>
+                <td><p>Request the metadata for multiple timeseries. The requested timeseries ids have to be contained in the POST request.</p>
+                
+                <p>Have a look at <a href="#timeseries-example-post-data">the POST request example</a> or check out <a href="schemas/v1/getDataForMultipleTimeseries.json">the request schema</a> how a POST request shall look like to get raw data for multiple timeseries.</p></td>
+              </tr>
+              <tr>
+                <td><code>POST</code></td>
+                <td><code>/api/v1/timeseries/getData</code></td>
+                <td>
+                  <code>image/png</code><br/>
+                  <code>application/pdf</code><br/>
+                </td>
+                <td><p>Exports the given stack of timeseries to the given output format. The requested timeseries ids have to be contained in the POST request.</p>
+                
+                <p>
+                Each timeseries can be styled (chart type, color, widths, etc) by passing style options. Have a look at <a href="#timeseries-example-post-image">the POST request example</a> or check out <a href="schemas/v1/renderChartForMultipleTimeseries.json">the request schema</a> how a POST request shall look like to render multiple timeseries.
+                </p>
+                </td>
+              </tr>
 							
 						</table>
 					</div>
@@ -931,35 +932,35 @@ Content-Type: application/json;charset=UTF-8
 								<th>Description</th>
 							</tr>
 							
-                <tr>
-									<td>
-										<code>expanded</code>
-									</td>
-                  <td>
-                    <pre>expanded=true</pre>
-                  </td>
-                  <td>
-                    <p>The <code>expanded</code> parameter works for collection data and also when requesting raw timeseries data.</p>
-                    <p>Timeseries may provide additional data which changes over time (and therefore is not core metadata anymore). Best example are reference values which can be used to provide better interpretation to actual data values.</p>
-                  </td>
-                </tr>
-                <tr>
-									<td>
-										<code>timespan</code>
-									</td>
-                  <td>
-                    <pre>timespan=PT12H/2013-08-06</pre>
-                  </td>
-                  <td>
-                    An <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 formatted period</a>. Only backslash formatted values are supported.
-                  </td>
-                </tr>
-								<tr>
-									<td>
-										<code>style</code>
-									</td>
-									<td>
-										<pre>style={
+              <tr>
+                <td>
+                  <code>expanded</code>
+                </td>
+                <td>
+                  <pre>expanded=true</pre>
+                </td>
+                <td>
+                  <p>The <code>expanded</code> parameter works for collection data and also when requesting raw timeseries data.</p>
+                  <p>Timeseries may provide additional data which changes over time (and therefore is not core metadata anymore). Best example are reference values which can be used to provide better interpretation to actual data values.</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>timespan</code>
+                </td>
+                <td>
+                  <pre>timespan=PT12H/2013-08-06</pre>
+                </td>
+                <td>
+                  An <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 formatted period</a>. Only backslash formatted values are supported.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>style</code>
+                </td>
+                <td>
+                  <pre>style={
   "chartType": "line",
   "properties": {
     "color": "#2f2f2f",
@@ -967,75 +968,102 @@ Content-Type: application/json;charset=UTF-8
     "width": 2
   }
 }</pre>
-									</td>
-									<td><p>Style options how the timeseries shall be rendered if an <code>image/png</code> shall be the output.</p>
-									
-									<p>A more detailed explanation about styling can be found under the <a href="#styles">styles section</a>.</p>
-									</td>
-								</tr>
-                <tr>
-                  <td>
-                    <code>legend</code>
-                  </td>
-                  <td>
-                    <pre>legend=true</pre>
-                  </td>
-                  <td>
-                    Indicates if a legend shall be rendered directly on the image output (if <code>image/png</code> shall be the output).
-                  </td>
-                </tr>
-                <tr>
-									<td>
-										<code>generalize</code>
-									</td>
-                  <td>
-                    <pre>generalize=true</pre>
-                  </td>
-                  <td>
-                    Indicates that timeseries data shall be generalized. Default is <code>false</code>. For generalization <a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">the Douglas-Peucker algorithm</a> is used.
-                  </td>
-                </tr>
-                <tr>
-									<td>
-										<code>force_last_values</code>
-									</td>
-                  <td>
-                    <pre>force_last_values=true</pre>
-                  </td>
-                  <td>
-                    <p>The <code>force_last_values</code> parameter can be used to force last value requests on a collection of timeseries.</p>
-                    <div class="n52-callout n52-callout-info">
-                      <p>Please note that the this enforcement (in combination with <code>expanded=true</code>) may result is long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-									<td>
-										<code>format</code>
-									</td>
-                  <td>
-                    <pre>format=highcharts</pre>
-                  </td>
-                  <td>Controls the output format of raw timeseries data. This avoids converting between different data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats:
-                    <ul>
-                      <li><code>tvp</code>: Time value pairs (the default)</li>
-                      <li><code>highcharts</code>: <a href="http://www.highcharts.com/">Highcharts</a> series data format.</li>
-                    </ul>
-                    Refer to the <a href="#formats">Format section</a> for detailed information how the formats will look like.
-                  </td>
-                </tr>
-                <tr>
-									<td>
-										<code>base64</code>
-									</td>
-                  <td>
-                    <pre>base64=true</pre>
-                  </td>
-                  <td><p>Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library otherwise).</p>
-                  <p>Here is an example how to embed encoded base64 string:</p><pre>&lt;img src='data:image/png;base64," + encodedString + "' /></pre>
-                  </td>
-                </tr>
+                </td>
+                <td><p>Style options how the timeseries shall be rendered if an <code>image/png</code> shall be the output.</p>
+                
+                <p>A more detailed explanation about styling can be found under the <a href="#styles">styles section</a>.</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>legend</code>
+                </td>
+                <td>
+                  <pre>legend=true</pre>
+                </td>
+                <td>
+                  Indicates if a legend shall be rendered directly on the image output (if <code>image/png</code> shall be the output).
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>generalize</code>
+                </td>
+                <td>
+                  <pre>generalize=true</pre>
+                </td>
+                <td>
+                  Indicates that timeseries data shall be generalized. Default is <code>false</code>. For generalization <a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">the Douglas-Peucker algorithm</a> is used.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>force_last_values</code>
+                </td>
+                <td>
+                  <pre>force_last_values=true</pre>
+                </td>
+                <td>
+                  <p>The <code>force_last_values</code> parameter can be used to force last value requests on a collection of timeseries.</p>
+                  <div class="n52-callout n52-callout-info">
+                    <p>Please note that this enforcement (in combination with <code>expanded=true</code>) may result is long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>format</code>
+                </td>
+                <td>
+                  <pre>format=highcharts</pre>
+                </td>
+                <td>Controls the output format of raw timeseries data. This avoids converting between different data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats:
+                  <ul>
+                    <li><code>tvp</code>: Time value pairs (the default)</li>
+                    <li><code>highcharts</code>: <a href="http://www.highcharts.com/">Highcharts</a> series data format.</li>
+                  </ul>
+                  Refer to the <a href="#formats">Format section</a> for detailed information how the formats will look like.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>base64</code>
+                </td>
+                <td>
+                  <pre>base64=true</pre>
+                </td>
+                <td><p>Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library otherwise).</p>
+                <p>Here is an example how to embed encoded base64 string:</p><pre>&lt;img src='data:image/png;base64," + encodedString + "' /></pre>
+                </td>
+              </tr>
 							
+              <tr>
+                <td>
+                  <code>service</code><br/>
+                </td>
+                <td>
+                  <pre>service=srv_sdlfj2</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-services">service</a> id does match.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>category</code><br/>
+                </td>
+                <td>
+                  <pre>category=cat_sadf2d</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-categories">category</a> id does match.</td>
+              </tr>
+              <tr>
+                <td>
+                  <code>phenomenon</code>
+                </td>
+                <td>
+                  <pre>phenomenon=phe_sdjf210</pre>
+                </td>
+                <td>All resources where the given <a href="#parameter-phenomena">phenomenon</a> id does match.</td>
+              </tr>
 						</table>
             
             <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
@@ -1257,7 +1285,7 @@ Content-Type: application/json;charset=UTF-8
   "refValues": [
     {
       "referenceValueId": "ref_2adf9285e96f72c441a6344e151eb630",
-      "label": "Pegelnullpunkt über NN",
+      "label": "Pegelnullpunkt &uuml;ber NN",
       "lastValue": {
         "timestamp": 1379667208477,
         "value": -5
@@ -1738,10 +1766,7 @@ Content-Type: application/json;charset=UTF-8
   "supportsFirstLatest": true,
   "quantities": {
     "categories": 10,
-    "features": 551,
     "phenomena": 10,
-    "procedures": 735,
-    "offerings": 13,
     "stations": 551,
     "timeseries": 740
   }
@@ -1827,231 +1852,6 @@ Content-Type: application/json;charset=UTF-8
           
         </div>
 				
-				<div id="parameter-offerings">
-					<h2>Offerings</h2> <!-- Offerings -->
-          <div> <!-- URLs -->
-            <h3>URLs</h3>
-            <p>API calls are triggered by using the following URLs.</p>
-            <table class="table">
-              <tr>
-                <th>Method</th>
-                <th>Path</th>
-                <th>Content-Type</th>
-                <th>Description</th>
-              </tr>
-              
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/offerings</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Lists all offerings available.</td>
-                </tr>
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/offerings/{id}</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Lists the offering with id <code>{id}</code>.</td>
-                </tr>
-              
-            </table>
-          </div>
-          
-          <div> <!-- Query Parameters -->
-              <h3>Query Parameters</h3>
-              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
-          </div>
-          
-          <div> <!-- Examples -->
-              <h3>Examples</h3>
-              <div>
-                <h4>Collection</h4>
-                <pre>GET /api/v1/offerings HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-                <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-[
-  {
-    "id": "off_h7234u",
-    "label": "ABFLUSS_ROHDATEN"
-  },
-  {
-    "id": "off_eddfnq",
-    "label": "WINDGESCHWINDIGKEIT"
-  }
-]</pre>
-              </div>
-              <div>
-                <h4>Item</h4>
-                <pre>GET /api/v1/offerings/off_h7234u HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-                <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "id": "off_h7234u",
-  "label": "ABFLUSS_ROHDATEN"
-  "service": "../services/srv_823sd"
-}</pre>
-              </div>
-            </div>
-          
-        </div>
-				
-				<div id="parameter-features">
-					<h2>Features</h2> <!-- Features -->
-          <div> <!-- URLs -->
-            <h3>URLs</h3>
-            <p>API calls are triggered by using the following URLs.</p>
-            <table class="table">
-              <tr>
-                <th>Method</th>
-                <th>Path</th>
-                <th>Content-Type</th>
-                <th>Description</th>
-              </tr>
-              
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/features</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Lists all features available.</td>
-                </tr>
-                <tr>
-                  <td><code>GET</code></td>
-                  <td><code>/api/v1/features/{id}</code></td>
-                  <td><code>application/json</code></td>
-                  <td>Lists the feature with id <code>{id}</code>.</td>
-                </tr>
-              
-            </table>
-          </div>
-        
-          <div> <!-- Query Parameters -->
-              <h3>Query Parameters</h3>
-              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
-          </div>
-          
-          <div> <!-- Examples -->
-            <h3>Examples</h3>
-            <div>
-              <h4>Collection</h4>
-              <pre>GET /api/v1/features HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-[
-  {
-    "id": "foi_h7234u",
-    "label": "Bramsche"
-  },
-  {
-    "id": "foi_adsf221",
-    "label": "Suelfeld"
-  }
-]</pre>
-            </div>
-            <div>
-              <h4>Item</h4>
-              <pre>GET /api/v1/features/foi_h7234u HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "id": "foi_h7234u",
-  "label": "Bramsche",
-  "service": {
-    "id": "../services/srv_823sd",
-    "label": "PEGELONLINE"
-  }
-}</pre>
-            </div>
-          </div>
-				
-        </div>
-				
-				<div id="parameter-procedures">
-					<h2>Procedures</h2> <!-- Procedures -->
-					<div> <!-- URLs -->
-						<h3>URLs</h3>
-						<p>API calls are triggered by using the following URLs.</p>
-						<table class="table">
-							<tr>
-								<th>Method</th>
-								<th>Path</th>
-                <th>Content-Type</th>
-								<th>Description</th>
-							</tr>
-							
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/procedures</code></td>
-                  <td><code>application/json</code></td>
-									<td>Lists all procedures available.</td>
-								</tr>
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/procedures/{id}</code></td>
-                  <td><code>application/json</code></td>
-									<td>Lists the procedure with id <code>{id}</code>.</td>
-								</tr>
-							
-						</table>
-          </div>
-						
-          <div> <!-- Query Parameters -->
-            <h3>Query Parameters</h3>
-            <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
-          </div>
-          
-          <div> <!-- Examples -->
-            <h3>Examples</h3>
-            <div>
-              <h4>Collection</h4>
-              <pre>GET /api/v1/procedures HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-[
-  {
-    "id": "pro_h7234u",
-    "label": "Year.Cmd.MHQ"
-  },
-  {
-    "id": "pro_adsf221",
-    "label": "Bad Hersfeld 1_Q#TagMittel"
-  }
-]</pre>
-            </div>
-            <div>
-              <h4>Item</h4>
-              <pre>GET /api/v1/procedures/pro_adsf221 HTTP/1.1
-Host: sensorweb.demo.52north.org
-Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-
-{
-  "id": "pro_h7234u",
-  "label": "Wasserstand-Berlin-Ploetzensee_Op_586640",
-  "service": {
-    "id": "../services/srv_823sd",
-    "label": "PEGELONLINE"
-  }
-}</pre>
-            </div>
-          </div>
-				
-        </div>
-				
 				<div id="parameter-phenomena">
 					<h2>Phenomena</h2> <!-- Phenomena -->
 					<div> <!-- URLs -->
@@ -2128,6 +1928,344 @@ Content-Type: application/json;charset=UTF-8
 				
         </div>
 				
+			</section>
+      
+      
+      
+      
+      
+      
+      
+      
+      <!-- Unstable/Legacy
+			================================================== -->
+			<section id="nonpublic">
+				<div class="page-header">
+					<h1>Unstable/Legacy</h1>
+					<p class="pull-right up-link">
+						<a href="#"><i class="icon-chevron-up"></i> top</a>
+					</p>
+				</div>
+        
+        <div class="n52-callout n52-callout-info">
+          This section describe non public functionlity which may be either unstable or legacy to be kept for backward compatibility.
+        </div>
+					
+				
+				<div id="nonpublic-offerings">
+					<h2>Offerings</h2> <!-- Offerings -->
+          <div> <!-- URLs -->
+            <h3>URLs</h3>
+            <p>API calls are triggered by using the following URLs.</p>
+            <table class="table">
+              <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Content-Type</th>
+                <th>Description</th>
+              </tr>
+              
+                <tr>
+                  <td><code>GET</code></td>
+                  <td><code>/api/v1/offerings</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Lists all offerings available.</td>
+                </tr>
+                <tr>
+                  <td><code>GET</code></td>
+                  <td><code>/api/v1/offerings/{id}</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Lists the offering with id <code>{id}</code>.</td>
+                </tr>
+              
+            </table>
+          </div>
+          
+          <div> <!-- Query Parameters -->
+              <h3>Query Parameters</h3>
+              
+              <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
+              <table class="table">
+                <tr>
+                  <th>Parameter</th>
+                  <th style="width:25%">Example</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>
+                    <code>feature</code><br/>
+                  </td>
+                  <td>
+                    <pre>feature=foi_adf092e</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-features">feature</a> id does match.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>procedure</code><br/>
+                  </td>
+                  <td>
+                    <pre>procedure=pro_asd23</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-procedures">procedure</a> id does match.</td>
+                </tr>
+              </table>
+              
+              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
+              
+              <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
+          </div>
+          
+          <div> <!-- Examples -->
+              <h3>Examples</h3>
+              <div>
+                <h4>Collection</h4>
+                <pre>GET /api/v1/offerings HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+                <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+[
+  {
+    "id": "off_h7234u",
+    "label": "ABFLUSS_ROHDATEN"
+  },
+  {
+    "id": "off_eddfnq",
+    "label": "WINDGESCHWINDIGKEIT"
+  }
+]</pre>
+              </div>
+              <div>
+                <h4>Item</h4>
+                <pre>GET /api/v1/offerings/off_h7234u HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+                <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "off_h7234u",
+  "label": "ABFLUSS_ROHDATEN"
+  "service": "../services/srv_823sd"
+}</pre>
+              </div>
+            </div>
+          
+        </div>
+				
+				<div id="nonpublic-features">
+					<h2>Features</h2> <!-- Features -->
+          <div> <!-- URLs -->
+            <h3>URLs</h3>
+            <p>API calls are triggered by using the following URLs.</p>
+            <table class="table">
+              <tr>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Content-Type</th>
+                <th>Description</th>
+              </tr>
+              
+                <tr>
+                  <td><code>GET</code></td>
+                  <td><code>/api/v1/features</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Lists all features available.</td>
+                </tr>
+                <tr>
+                  <td><code>GET</code></td>
+                  <td><code>/api/v1/features/{id}</code></td>
+                  <td><code>application/json</code></td>
+                  <td>Lists the feature with id <code>{id}</code>.</td>
+                </tr>
+              
+            </table>
+          </div>
+        
+          <div> <!-- Query Parameters -->
+              <h3>Query Parameters</h3>
+              <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
+              <table class="table">
+                <tr>
+                  <th>Parameter</th>
+                  <th style="width:25%">Example</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>
+                    <code>offering</code><br/>
+                  </td>
+                  <td>
+                    <pre>offering=off_fdoi23</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-offerings">offering</a> id does match.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>procedure</code><br/>
+                  </td>
+                  <td>
+                    <pre>procedure=pro_asd23</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-procedures">procedure</a> id does match.</td>
+                </tr>
+              </table>
+              
+              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
+              
+              <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
+          </div>
+          
+          <div> <!-- Examples -->
+            <h3>Examples</h3>
+            <div>
+              <h4>Collection</h4>
+              <pre>GET /api/v1/features HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+[
+  {
+    "id": "foi_h7234u",
+    "label": "Bramsche"
+  },
+  {
+    "id": "foi_adsf221",
+    "label": "Suelfeld"
+  }
+]</pre>
+            </div>
+            <div>
+              <h4>Item</h4>
+              <pre>GET /api/v1/features/foi_h7234u HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "foi_h7234u",
+  "label": "Bramsche",
+  "service": {
+    "id": "../services/srv_823sd",
+    "label": "PEGELONLINE"
+  }
+}</pre>
+            </div>
+          </div>
+				
+        </div>
+				
+				<div id="nonpublic-procedures">
+					<h2>Procedures</h2> <!-- Procedures -->
+					<div> <!-- URLs -->
+						<h3>URLs</h3>
+						<p>API calls are triggered by using the following URLs.</p>
+						<table class="table">
+							<tr>
+								<th>Method</th>
+								<th>Path</th>
+                <th>Content-Type</th>
+								<th>Description</th>
+							</tr>
+							
+								<tr>
+									<td><code>GET</code></td>
+									<td><code>/api/v1/procedures</code></td>
+                  <td><code>application/json</code></td>
+									<td>Lists all procedures available.</td>
+								</tr>
+								<tr>
+									<td><code>GET</code></td>
+									<td><code>/api/v1/procedures/{id}</code></td>
+                  <td><code>application/json</code></td>
+									<td>Lists the procedure with id <code>{id}</code>.</td>
+								</tr>
+							
+						</table>
+          </div>
+						
+          <div> <!-- Query Parameters -->
+            <h3>Query Parameters</h3>
+            <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
+              <table class="table">
+                <tr>
+                  <th>Parameter</th>
+                  <th style="width:25%">Example</th>
+                  <th>Description</th>
+                </tr>
+                <tr>
+                  <td>
+                    <code>offering</code><br/>
+                  </td>
+                  <td>
+                    <pre>offering=off_fdoi23</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-offerings">offering</a> id does match.</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code>feature</code><br/>
+                  </td>
+                  <td>
+                    <pre>feature=foi_adf092e</pre>
+                  </td>
+                  <td>All resources where the given <a href="#parameter-features">feature</a> id does match.</td>
+                </tr>
+              </table>
+              
+              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
+              
+              <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
+          </div>
+          
+          <div> <!-- Examples -->
+            <h3>Examples</h3>
+            <div>
+              <h4>Collection</h4>
+              <pre>GET /api/v1/procedures HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+[
+  {
+    "id": "pro_h7234u",
+    "label": "Year.Cmd.MHQ"
+  },
+  {
+    "id": "pro_adsf221",
+    "label": "Bad Hersfeld 1_Q#TagMittel"
+  }
+]</pre>
+            </div>
+            <div>
+              <h4>Item</h4>
+              <pre>GET /api/v1/procedures/pro_adsf221 HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+              <pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "id": "pro_h7234u",
+  "label": "Wasserstand-Berlin-Ploetzensee_Op_586640",
+  "service": {
+    "id": "../services/srv_823sd",
+    "label": "PEGELONLINE"
+  }
+}</pre>
+            </div>
+          </div>
+				
+        </div>
+				
+        
 			</section>
 			
 		</div>

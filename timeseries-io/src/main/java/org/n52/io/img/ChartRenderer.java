@@ -128,6 +128,9 @@ public abstract class ChartRenderer implements IoHandler {
         Graphics2D chartGraphics = chartImage.createGraphics();
         chartGraphics.fillRect(0, 0, width, height);
         chartGraphics.setColor(WHITE);
+        
+        chart.setTextAntiAlias(true);
+        chart.setAntiAlias(true);
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
@@ -293,11 +296,11 @@ public abstract class ChartRenderer implements IoHandler {
 
     static class LabelConstants {
         static final Color COLOR = BLACK;
-        static final String ARIAL = "Arial";
         static final int FONT_SIZE = 12;
-        static final int FONT_SIZE_TICK = 10;
-        static final Font FONT_LABEL = new Font(ARIAL, BOLD, FONT_SIZE);
-        static final Font FONT_DOMAIN = new Font(ARIAL, PLAIN, FONT_SIZE_TICK);
+        static final int FONT_SIZE_TICKS = 10;
+        static final String LOGICAL_FONT = "Sans-serif";
+        static final Font FONT_LABEL = new Font(LOGICAL_FONT, BOLD, FONT_SIZE);
+        static final Font FONT_DOMAIN = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_TICKS);
     }
 
 }

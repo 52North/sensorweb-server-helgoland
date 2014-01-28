@@ -24,7 +24,9 @@
 
 package org.n52.io.v1.data;
 
-public class OutputValue implements Comparable<OutputValue> {
+import java.text.Collator;
+
+public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     private String id;
 
@@ -50,9 +52,12 @@ public class OutputValue implements Comparable<OutputValue> {
         this.label = label;
     }
 
-    @Override
-    public int compareTo(OutputValue o) {
-        return getLabel().toLowerCase().compareTo(o.getLabel().toLowerCase());
+    
+    public int compare(Collator collator, ParameterOutput o) {
+        if (collator == null) {
+            collator = Collator.getInstance();
+        }
+        return collator.compare(getLabel().toLowerCase(), o.getLabel().toLowerCase());
     }
 
     @Override
@@ -72,10 +77,10 @@ public class OutputValue implements Comparable<OutputValue> {
         if (obj == null) {
             return false;
         }
-        if ( ! (obj instanceof OutputValue)) {
+        if ( ! (obj instanceof ParameterOutput)) {
             return false;
         }
-        OutputValue other = (OutputValue) obj;
+        ParameterOutput other = (ParameterOutput) obj;
         if (id == null) {
             if (other.id != null) {
                 return false;

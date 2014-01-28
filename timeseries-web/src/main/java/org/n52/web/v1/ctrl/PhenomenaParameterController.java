@@ -24,78 +24,15 @@
 
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_PHENOMENA;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
-import org.n52.io.IoParameters;
-import org.n52.io.v1.data.PhenomenonOutput;
-import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.SortingParameterService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value = COLLECTION_PHENOMENA, produces = {"application/json"})
+@RequestMapping(value = COLLECTION_PHENOMENA)
 public class PhenomenaParameterController extends ParameterController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PhenomenaParameterController.class);
-
-    private ParameterService<PhenomenonOutput> phenomenonParameterService;
-
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
-
-        if (map.isExpanded()) {
-            Stopwatch stopwatch = startStopwatch();
-            Object[] result = phenomenonParameterService.getExpandedParameters(map);
-            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-            // TODO add paging
-
-            return new ModelAndView().addObject(result);
-        }
-        else {
-            Stopwatch stopwatch = startStopwatch();
-            Object[] result = phenomenonParameterService.getCondensedParameters(map);
-            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-            // TODO add paging
-
-            return new ModelAndView().addObject(result);
-        }
-    }
-
-    public ModelAndView getItem(@PathVariable("item") String phenomenonId,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
-
-        // TODO check parameters and throw BAD_REQUEST if invalid
-
-        Stopwatch stopwatch = startStopwatch();
-        PhenomenonOutput phenomenon = phenomenonParameterService.getParameter(phenomenonId, map);
-        LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-        if (phenomenon == null) {
-            throw new ResourceNotFoundException("Found no feature with given id.");
-        }
-
-        return new ModelAndView().addObject(phenomenon);
-    }
-
-    public ParameterService<PhenomenonOutput> getPhenomenonParameterService() {
-        return phenomenonParameterService;
-    }
-
-    public void setPhenomenonParameterService(ParameterService<PhenomenonOutput> service) {
-        this.phenomenonParameterService = new SortingParameterService<PhenomenonOutput>(service);
-    }
+    
+    // resource controller for phenomena
 
 }

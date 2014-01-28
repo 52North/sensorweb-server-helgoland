@@ -23,7 +23,7 @@
  */
 package org.n52.io.v1.data;
 
-public class ProcedureOutput extends OutputValue {
+public class ProcedureOutput extends ParameterOutput {
 
 	private ServiceOutput service;
 
