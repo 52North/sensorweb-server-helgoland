@@ -56,7 +56,7 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     }
 
     public ReferenceValueOutput[] getReferenceValues() {
-        return referenceValues;
+        return referenceValues.clone();
     }
 
     public void setReferenceValues(ReferenceValueOutput[] referenceValues) {

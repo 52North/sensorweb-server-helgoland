@@ -46,7 +46,7 @@ public final class GeojsonFeatureCollection {
     }
 
     public GeojsonFeature[] getFeatures() {
-        return features;
+        return features.clone();
     }
 
     public void setFeatures(GeojsonFeature[] features) {

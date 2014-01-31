@@ -31,6 +31,7 @@ import static org.n52.io.style.LineStyle.createLineStyle;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.general.DatasetGroup;
@@ -94,7 +95,8 @@ public class MultipleChartsRenderer extends ChartRenderer {
 
                 TimeseriesMetadata metadata = timeseriesData.getMetadata();
                 Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
-                for (String referenceTimeseriesId : referenceValues.keySet()) {
+                for (Entry<String, TimeseriesData> referencedTimeseries : referenceValues.entrySet()) {
+                    String referenceTimeseriesId = referencedTimeseries.getKey();
                     ReferenceValueOutput referenceOutput = getReferenceValue(referenceTimeseriesId, timeseriesMetadata);
                     String referenceChartId = createChartId(timeseriesMetadata, referenceOutput.getLabel());
 

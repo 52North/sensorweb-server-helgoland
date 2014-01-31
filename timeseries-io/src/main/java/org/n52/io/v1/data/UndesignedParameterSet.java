@@ -43,7 +43,7 @@ public class UndesignedParameterSet extends ParameterSet {
 
     @Override
     public String[] getTimeseries() {
-        return timeseriesIds;
+        return timeseriesIds.clone();
     }
 
     void setTimeseries(String[] timeseries) {

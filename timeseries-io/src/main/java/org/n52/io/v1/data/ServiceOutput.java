@@ -64,7 +64,7 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void setSupportsFirstLatest(boolean supportsFirstLatest) {
-        this.supportsFirstLatest = new Boolean(supportsFirstLatest);
+        this.supportsFirstLatest = Boolean.valueOf(supportsFirstLatest);
     }
 
     public ParameterCount getQuantities() {
@@ -124,7 +124,7 @@ public class ServiceOutput extends ParameterOutput {
         return true;
     }
     
-    public class ParameterCount {
+    public static class ParameterCount {
 
         private int amountOfferings;
         

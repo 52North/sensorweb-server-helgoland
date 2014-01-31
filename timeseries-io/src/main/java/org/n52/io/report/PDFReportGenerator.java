@@ -91,18 +91,26 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
 
     @Override
     public void generateOutput(TvpDataCollection data) throws IoParseException {
-        generateTimeseriesChart(data);
-        generateTimeseriesMetadata();
+        try {
+            generateTimeseriesChart(data);
+            generateTimeseriesMetadata();
+        } catch(IOException e) {
+            throw new IoParseException("Error handling (temp) file!", e);
+        }
     }
 
-    private void generateTimeseriesChart(TvpDataCollection data) throws IoParseException {
+    private void generateTimeseriesChart(TvpDataCollection data) throws IOException {
+        FileOutputStream stream = null;
         try {
             renderer.generateOutput(data);
             File tmpFile = createTempFile("52n_swc_", "_chart.png");
-            renderer.encodeAndWriteTo(new FileOutputStream(tmpFile));
+            stream = new FileOutputStream(tmpFile);
+            renderer.encodeAndWriteTo(stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-        } catch(IOException e) {
-            throw new IoParseException("Error handling (temp) file!", e);
+        }  finally {
+            if (stream != null) {
+                stream.close();
+            }
         }
     }
 

@@ -95,7 +95,7 @@ public final class RenderingContext {
     }
 
     public TimeseriesMetadataOutput[] getTimeseriesMetadatas() {
-        return timeseriesMetadatas;
+        return timeseriesMetadatas.clone();
     }
 
 }

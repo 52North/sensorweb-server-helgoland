@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,9 +55,8 @@ public class TimeseriesData implements Serializable {
      */
     public static TimeseriesData newTimeseriesData(Map<Long, Double> values) {
         TimeseriesData timeseries = new TimeseriesData();
-        for (Long timestamp : values.keySet()) {
-            Double value = values.get(timestamp);
-            timeseries.addNewValue(timestamp, value);
+        for (Entry<Long, Double> data : values.entrySet()) {
+            timeseries.addNewValue(data.getKey(), data.getValue());
         }
         return timeseries;
     }

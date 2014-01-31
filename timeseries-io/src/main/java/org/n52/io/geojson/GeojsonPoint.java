@@ -34,12 +34,12 @@ public class GeojsonPoint extends GeojsonGeometry {
     
     public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
         GeojsonPoint sfGeometry = new GeojsonPoint();
-        sfGeometry.setCoordinates(coordinates);
+        sfGeometry.setCoordinates(coordinates.clone());
         return sfGeometry;
     }
     
     public void setCoordinates(Double[] coordinates) {
-        this.coordinates = checkCoordinates(coordinates);
+        this.coordinates = checkCoordinates(coordinates.clone());
     }
 
     void setType(String type) {
@@ -51,7 +51,7 @@ public class GeojsonPoint extends GeojsonGeometry {
     }
     
     public Double[] getCoordinates() {
-        return coordinates;
+        return coordinates.clone();
     }
 
 }
