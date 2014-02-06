@@ -227,6 +227,11 @@ public class IoParameters {
      * Determines the phenomenon filter
      */
     static final String PHENOMENON = "phenomenon";
+    
+    /**
+     * Determines the station filter
+     */
+    static final String STATION = "station";
 
     /**
      * Determines the category filter
@@ -495,6 +500,10 @@ public class IoParameters {
 
     public String getPhenomenon() {
         return query.get(PHENOMENON);
+    }
+    
+    public String getStation() {
+        return query.get(STATION);
     }
 
     /**
