@@ -29,6 +29,8 @@ package org.n52.io.geojson;
 
 import java.util.Collection;
 
+import org.n52.io.Utils;
+
 public final class GeojsonFeatureCollection {
 
     private GeojsonFeature[] features;
@@ -50,11 +52,11 @@ public final class GeojsonFeatureCollection {
     }
 
     public GeojsonFeature[] getFeatures() {
-        return features.clone();
+        return Utils.copy(features);
     }
 
     public void setFeatures(GeojsonFeature[] features) {
-        this.features = features.clone();
+        this.features = Utils.copy(features);
     }
     
 }

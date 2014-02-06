@@ -28,6 +28,7 @@
 package org.n52.io.v1.data;
 
 import org.joda.time.Interval;
+import org.n52.io.Utils;
 
 
 
@@ -47,11 +48,11 @@ public class UndesignedParameterSet extends ParameterSet {
 
     @Override
     public String[] getTimeseries() {
-        return timeseriesIds.clone();
+        return Utils.copy(timeseriesIds);
     }
 
     void setTimeseries(String[] timeseries) {
-        this.timeseriesIds = timeseries.clone();
+        this.timeseriesIds = Utils.copy(timeseries);
     }
     
     public String getFormat() {

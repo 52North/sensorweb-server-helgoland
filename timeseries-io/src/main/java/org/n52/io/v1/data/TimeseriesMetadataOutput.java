@@ -27,6 +27,8 @@
  */
 package org.n52.io.v1.data;
 
+import org.n52.io.Utils;
+
 
 public class TimeseriesMetadataOutput extends ParameterOutput {
 
@@ -59,11 +61,11 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     }
 
     public ReferenceValueOutput[] getReferenceValues() {
-        return referenceValues.clone();
+        return Utils.copy(referenceValues);
     }
 
     public void setReferenceValues(ReferenceValueOutput[] referenceValues) {
-        this.referenceValues = referenceValues.clone();
+        this.referenceValues = Utils.copy(referenceValues);
     }
 
     public TimeseriesValue getFirstValue() {
