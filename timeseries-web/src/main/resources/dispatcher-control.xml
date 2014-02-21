@@ -118,7 +118,7 @@
 		<property name="timeseriesMetadataService" ref="timeseriesService" />
 		<property name="timeseriesDataService" ref="timeseriesService" />
 		<property name="preRenderingTask" ref="preRenderingTask" />
-		<property name="requestIntervalRestriction" value="P1Y" />
+		<property name="requestIntervalRestriction" value="P1Y1D" />
 	</bean>
 
 	<bean id="preRenderingTask" class="org.n52.io.PreRenderingTask"
@@ -132,6 +132,9 @@
 		<property name="showGrid" value="true" />
 		<property name="periodInMinutes" value="1440" />
 		<property name="enabled" value="false" />
+	</bean>
+	
+	<bean id="renderingHints" class="org.n52.io.RenderingHintsService">
 	</bean>
 	
 	<bean class="org.n52.web.v1.ctrl.SearchController">
@@ -164,6 +167,7 @@
 				</property>
 			</bean>
 		</property>
+		<property name="renderingHintsService" ref="renderingHints"/>
 	</bean>
 
 </beans>
