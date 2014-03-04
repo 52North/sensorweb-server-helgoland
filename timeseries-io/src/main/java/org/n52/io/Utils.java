@@ -47,9 +47,13 @@ public final class Utils {
      */
     @SuppressWarnings("unchecked")
     public static final <T> T[] copy(T[] source) {
-        Class< ? > type = source.getClass().getComponentType();
-        T[] target = (T[]) Array.newInstance(type, source.length);
-        System.arraycopy(source, 0, target, 0, source.length);
-        return target;
+    	if(source != null) {
+    		Class< ? > type = source.getClass().getComponentType();
+            T[] target = (T[]) Array.newInstance(type, source.length);
+            System.arraycopy(source, 0, target, 0, source.length);
+            return target;
+    	} else {
+    		return null;
+    	}
     }
 }
