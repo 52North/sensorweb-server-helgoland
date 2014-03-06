@@ -25,35 +25,50 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
 package org.n52.io;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
 
-public final class Utils {
+import org.n52.io.v1.data.StatusInterval;
 
-    private Utils() {
-        // hide construction
-    }
+public class IntervalConfig {
 
-    /**
-     * Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
-     * encapsulating arrays from being externally modified.<br/>
-     * <br/>
-     * <b>Note:</b> No deep copy is made.
-     * 
-     * @param source the array to copy.
-     * @return a copied instance of the array.
-     */
-    @SuppressWarnings("unchecked")
-    public static final <T> T[] copy(T[] source) {
-    	if(source != null) {
-    		Class< ? > type = source.getClass().getComponentType();
-            T[] target = (T[]) Array.newInstance(type, source.length);
-            System.arraycopy(source, 0, target, 0, source.length);
-            return target;
-    	} else {
-    		return null;
-    	}
-    }
+	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
+	
+	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<String, ConfigInterval>();
+	
+	public IntervalConfig() {
+	}
+	
+	public Map<String, ConfigInterval> getPhenomenonIntervals() {
+		return phenomenonIntervals;
+	}
+
+	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
+		this.phenomenonIntervals = phenomenonIntervals;
+	}
+
+	public Map<String, ConfigInterval> getTimeseriesIntervals() {
+		return timeseriesIntervals;
+	}
+
+	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
+		this.timeseriesIntervals = timeseriesIntervals;
+	}
+
+	public static class ConfigInterval {
+		
+		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+
+		public Map<String, StatusInterval> getStatusIntervals() {
+			return statusIntervals;
+		}
+
+		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
+			this.statusIntervals = statusIntervals;
+		}
+
+		
+	}
 }

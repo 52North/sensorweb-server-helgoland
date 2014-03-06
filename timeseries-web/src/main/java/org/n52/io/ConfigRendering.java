@@ -25,35 +25,51 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
 package org.n52.io;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
 
-public final class Utils {
+import org.n52.io.v1.data.StyleProperties;
 
-    private Utils() {
-        // hide construction
-    }
+public class ConfigRendering {
 
-    /**
-     * Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
-     * encapsulating arrays from being externally modified.<br/>
-     * <br/>
-     * <b>Note:</b> No deep copy is made.
-     * 
-     * @param source the array to copy.
-     * @return a copied instance of the array.
-     */
-    @SuppressWarnings("unchecked")
-    public static final <T> T[] copy(T[] source) {
-    	if(source != null) {
-    		Class< ? > type = source.getClass().getComponentType();
-            T[] target = (T[]) Array.newInstance(type, source.length);
-            System.arraycopy(source, 0, target, 0, source.length);
-            return target;
-    	} else {
-    		return null;
-    	}
-    }
+	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
+
+	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
+
+	public ConfigRendering() {
+		
+	}
+	
+	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+		return phenomenonStyles;
+	}
+
+	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+		this.phenomenonStyles = phenomenonStyles;
+	}
+
+	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+		return timeseriesStyles;
+	}
+
+	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+		this.timeseriesStyles = timeseriesStyles;
+	}
+
+	public static class ConfiguredStyle {
+
+		private StyleProperties style;
+
+		public StyleProperties getStyle() {
+			return style;
+		}
+
+		public void setStyle(StyleProperties style) {
+			this.style = style;
+		}
+
+	}
+
 }

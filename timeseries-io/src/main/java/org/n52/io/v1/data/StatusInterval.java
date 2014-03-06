@@ -25,35 +25,48 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+package org.n52.io.v1.data;
 
-package org.n52.io;
+public class StatusInterval {
+	
+	private String lower;
+	
+	private String upper;
+	
+	private String name;
+	
+	private String color;
 
-import java.lang.reflect.Array;
+	public String getLower() {
+		return lower;
+	}
 
-public final class Utils {
+	public void setLower(String lower) {
+		this.lower = lower;
+	}
 
-    private Utils() {
-        // hide construction
-    }
+	public String getUpper() {
+		return upper;
+	}
 
-    /**
-     * Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
-     * encapsulating arrays from being externally modified.<br/>
-     * <br/>
-     * <b>Note:</b> No deep copy is made.
-     * 
-     * @param source the array to copy.
-     * @return a copied instance of the array.
-     */
-    @SuppressWarnings("unchecked")
-    public static final <T> T[] copy(T[] source) {
-    	if(source != null) {
-    		Class< ? > type = source.getClass().getComponentType();
-            T[] target = (T[]) Array.newInstance(type, source.length);
-            System.arraycopy(source, 0, target, 0, source.length);
-            return target;
-    	} else {
-    		return null;
-    	}
-    }
+	public void setUpper(String upper) {
+		this.upper = upper;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+	
 }
