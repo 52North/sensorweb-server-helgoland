@@ -55,7 +55,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
         this.timestamp = timestamp;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
