@@ -45,6 +45,8 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     private TimeseriesOutput parameters;
     
     private StyleProperties renderingHints;
+    
+    private StatusInterval[] statusIntervals;
 
     public String getUom() {
         return uom;
@@ -101,5 +103,13 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     public void setRenderingHints(StyleProperties renderingHints) {
     	this.renderingHints = renderingHints;
     }
+
+	public StatusInterval[] getStatusIntervals() {
+		return statusIntervals;
+	}
+
+	public void setStatusIntervals(StatusInterval[] statusIntervals) {
+		this.statusIntervals = statusIntervals;
+	}
 
 }

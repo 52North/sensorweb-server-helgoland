@@ -25,51 +25,48 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.v1.data;
 
-import java.util.HashMap;
-import java.util.Map;
+public class StatusInterval {
+	
+	private String lower;
+	
+	private String upper;
+	
+	private String name;
+	
+	private String color;
 
-import org.n52.io.v1.data.StyleProperties;
+	public String getLower() {
+		return lower;
+	}
 
-public class ConfigRendering {
+	public void setLower(String lower) {
+		this.lower = lower;
+	}
 
-	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
+	public String getUpper() {
+		return upper;
+	}
 
-	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
+	public void setUpper(String upper) {
+		this.upper = upper;
+	}
 
-	public ConfigRendering() {
-		
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 	
-	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
-		return phenomenonStyles;
-	}
-
-	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
-		this.phenomenonStyles = phenomenonStyles;
-	}
-
-	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-		return timeseriesStyles;
-	}
-
-	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-		this.timeseriesStyles = timeseriesStyles;
-	}
-
-	public static class ConfiguredStyle {
-
-		private StyleProperties style;
-
-		public StyleProperties getStyle() {
-			return style;
-		}
-
-		public void setStyle(StyleProperties style) {
-			this.style = style;
-		}
-
-	}
-
 }

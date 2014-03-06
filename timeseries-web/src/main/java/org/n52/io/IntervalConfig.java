@@ -30,46 +30,45 @@ package org.n52.io;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.v1.data.StyleProperties;
+import org.n52.io.v1.data.StatusInterval;
 
-public class ConfigRendering {
+public class IntervalConfig {
 
-	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
-
-	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
-
-	public ConfigRendering() {
-		
+	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
+	
+	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<String, ConfigInterval>();
+	
+	public IntervalConfig() {
 	}
 	
-	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
-		return phenomenonStyles;
+	public Map<String, ConfigInterval> getPhenomenonIntervals() {
+		return phenomenonIntervals;
 	}
 
-	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
-		this.phenomenonStyles = phenomenonStyles;
+	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
+		this.phenomenonIntervals = phenomenonIntervals;
 	}
 
-	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-		return timeseriesStyles;
+	public Map<String, ConfigInterval> getTimeseriesIntervals() {
+		return timeseriesIntervals;
 	}
 
-	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-		this.timeseriesStyles = timeseriesStyles;
+	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
+		this.timeseriesIntervals = timeseriesIntervals;
 	}
 
-	public static class ConfiguredStyle {
+	public static class ConfigInterval {
+		
+		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
 
-		private StyleProperties style;
-
-		public StyleProperties getStyle() {
-			return style;
+		public Map<String, StatusInterval> getStatusIntervals() {
+			return statusIntervals;
 		}
 
-		public void setStyle(StyleProperties style) {
-			this.style = style;
+		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
+			this.statusIntervals = statusIntervals;
 		}
 
+		
 	}
-
 }

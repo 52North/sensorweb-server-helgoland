@@ -137,6 +137,9 @@
 	<bean id="renderingHints" class="org.n52.io.RenderingHintsService">
 	</bean>
 	
+	<bean id="statusIntervals" class="org.n52.io.StatusIntervalsService">
+	</bean>
+	
 	<bean class="org.n52.web.v1.ctrl.SearchController">
 	   <property name="searchService" ref="searchService"/>
 	</bean>
@@ -168,6 +171,7 @@
 			</bean>
 		</property>
 		<property name="renderingHintsService" ref="renderingHints"/>
+		<property name="statusIntervalsService" ref="statusIntervals"/>
 	</bean>
 
 </beans>

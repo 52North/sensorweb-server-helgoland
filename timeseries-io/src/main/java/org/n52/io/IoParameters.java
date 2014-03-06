@@ -86,6 +86,26 @@ public class IoParameters {
      * The default behaviour if latest value requests shall be invoked during a timeseries collection request.
      */
     private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
+    
+    /**
+     * If status intervals section is requested.
+     */
+    static final String STATUS_INTERVALS = "status_intervals";
+
+    /**
+     * The default behaviour for status intervals.
+     */
+    private static final boolean DEFAULT_STATUS_INTERVALS = false;
+
+    /**
+     * If rendering hints are requested for a timeseries
+     */
+    static final String RENDERING_HINTS = "rendering_hints";
+
+    /**
+     * The default behaviour for rendering hints.
+     */
+    private static final boolean DEFAULT_RENDERING_HINTS = false;
 
     /**
      * Determines the index of the first member of the response page (a.k.a. page offset).
@@ -666,6 +686,20 @@ public class IoParameters {
             return DEFAULT_FORCE_LATEST_VALUE;
         }
         return parseBoolean(FORCE_LATEST_VALUE);
+    }
+    
+    public boolean isStatusIntervalsRequests() {
+    	if ( !query.containsKey(STATUS_INTERVALS)) {
+    		return DEFAULT_STATUS_INTERVALS;
+    	}
+    	return parseBoolean(STATUS_INTERVALS);
+    }
+    
+    public boolean isRenderingHintsRequests() {
+    	if ( !query.containsKey(RENDERING_HINTS)) {
+    		return DEFAULT_RENDERING_HINTS;
+    	}
+    	return parseBoolean(RENDERING_HINTS);
     }
 
     public boolean containsParameter(String parameter) {
