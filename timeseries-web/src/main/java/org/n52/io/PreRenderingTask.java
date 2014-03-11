@@ -53,7 +53,7 @@ import javax.servlet.ServletOutputStream;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.io.TaskConfigPrerendering.ConfiguredStyle;
+import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
@@ -75,13 +75,13 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingTask.class);
 
-    private static final String TASK_CONFIG_FILE = "/task-config-prerendering.json";
+    private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
 
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
 
-    private TaskConfigPrerendering taskConfigPrerendering;
+    private ConfigTaskPrerendering taskConfigPrerendering;
 
     private RenderTask taskToRun;
 
@@ -115,15 +115,15 @@ public class PreRenderingTask implements ServletConfigAware {
         this.taskConfigPrerendering = readTaskConfig();
     }
 
-    private TaskConfigPrerendering readTaskConfig() {
+    private ConfigTaskPrerendering readTaskConfig() {
         InputStream taskConfig = getClass().getResourceAsStream(TASK_CONFIG_FILE);
         try {
             ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, TaskConfigPrerendering.class);
+            return om.readValue(taskConfig, ConfigTaskPrerendering.class);
         }
         catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", TASK_CONFIG_FILE, e);
-            return new TaskConfigPrerendering();
+            return new ConfigTaskPrerendering();
         }
         finally {
             if (taskConfig != null) {

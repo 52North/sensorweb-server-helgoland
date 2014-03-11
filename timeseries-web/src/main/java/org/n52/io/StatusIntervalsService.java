@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.n52.io.IntervalConfig.ConfigInterval;
+import org.n52.io.ConfigStatusIntervals.ConfigInterval;
 import org.n52.io.v1.data.StatusInterval;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
@@ -46,21 +46,21 @@ public class StatusIntervalsService {
 	
 	private static final String CONFIG_FILE = "/config-status-intervals.json";
 
-	private IntervalConfig intervalConfig;
+	private ConfigStatusIntervals intervalConfig;
 	
 	public StatusIntervalsService() {
 		this.intervalConfig = readConfig();
 	}
 
-	private IntervalConfig readConfig() {
+	private ConfigStatusIntervals readConfig() {
 		InputStream config = getClass().getResourceAsStream(CONFIG_FILE);
 		try {
 			ObjectMapper om = new ObjectMapper();
-			return om.readValue(config, IntervalConfig.class);
+			return om.readValue(config, ConfigStatusIntervals.class);
 		} catch (Exception e) {
 			LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE);
 			LOGGER.error(e.getMessage());
-			return new IntervalConfig();
+			return new ConfigStatusIntervals();
 		}
 		finally {
 			if (config != null) {

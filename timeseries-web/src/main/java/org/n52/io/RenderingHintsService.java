@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.n52.io.ConfigRendering.ConfiguredStyle;
+import org.n52.io.ConfigRenderingHints.ConfiguredStyle;
 import org.n52.io.v1.data.StyleProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class RenderingHintsService {
 	
 	private static final String CONFIG_FILE = "/config-rendering-hints.json";
 	
-	private ConfigRendering configRendering;
+	private ConfigRenderingHints configRendering;
 
 	public RenderingHintsService() {
 		this.configRendering = readConfig();
@@ -65,14 +65,14 @@ public class RenderingHintsService {
 		return configuredStyle.getStyle();
 	}
 
-	private ConfigRendering readConfig() {
+	private ConfigRenderingHints readConfig() {
 		InputStream config = getClass().getResourceAsStream(CONFIG_FILE);
 		try {
 			ObjectMapper om = new ObjectMapper();
-			return om.readValue(config, ConfigRendering.class);
+			return om.readValue(config, ConfigRenderingHints.class);
 		} catch (IOException e) {
 			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE);
-			return new ConfigRendering();
+			return new ConfigRenderingHints();
 		}
 		finally {
 			if(config != null) {

@@ -32,13 +32,13 @@ import java.util.Map;
 
 import org.n52.io.v1.data.StatusInterval;
 
-public class IntervalConfig {
+public class ConfigStatusIntervals {
 
 	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
 	
 	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<String, ConfigInterval>();
 	
-	public IntervalConfig() {
+	public ConfigStatusIntervals() {
 	}
 	
 	public Map<String, ConfigInterval> getPhenomenonIntervals() {

@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.n52.io.v1.data.StyleProperties;
 
-public class TaskConfigPrerendering {
+public class ConfigTaskPrerendering {
     
     private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
     

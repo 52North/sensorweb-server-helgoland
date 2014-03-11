@@ -32,13 +32,13 @@ import java.util.Map;
 
 import org.n52.io.v1.data.StyleProperties;
 
-public class ConfigRendering {
+public class ConfigRenderingHints {
 
 	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
 
 	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
 
-	public ConfigRendering() {
+	public ConfigRenderingHints() {
 		
 	}
 	
