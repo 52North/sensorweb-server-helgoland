@@ -27,12 +27,11 @@
  */
 package org.n52.web.v1.srv;
 
-import static org.n52.io.generalize.DouglasPeuckerGeneralizer.createNonConfigGeneralizer;
+import static org.n52.io.generalize.LargestTriangleThreeBucketsGeneralizer.createNonConfigGeneralizer;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.generalize.Generalizer;
 import org.n52.io.generalize.GeneralizerException;
-import org.n52.io.generalize.LargestTriangleThreeBucketsGeneralizer;
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.UndesignedParameterSet;
 import org.slf4j.Logger;
@@ -55,8 +54,7 @@ public class GeneralizingTimeseriesDataService implements TimeseriesDataService 
     public TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters) {
         TvpDataCollection ungeneralizedData = composedService.getTimeseriesData(parameters);
         try {
-//            Generalizer generalizer = createNonConfigGeneralizer(ungeneralizedData);
-            Generalizer generalizer = LargestTriangleThreeBucketsGeneralizer.createNonConfigGeneralizer(ungeneralizedData);
+            Generalizer generalizer = createNonConfigGeneralizer(ungeneralizedData);
             TvpDataCollection generalizedData = generalizer.generalize();
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
