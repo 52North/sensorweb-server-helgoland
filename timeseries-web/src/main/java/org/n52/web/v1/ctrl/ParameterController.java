@@ -61,7 +61,7 @@ public abstract class ParameterController extends BaseController implements Rest
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = parameterService.getExpandedParameters(queryMap);
+            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -81,7 +81,7 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = parameterService.getParameter(id, queryMap);
+        ParameterOutput parameter = doPostProcessOn(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -90,6 +90,14 @@ public abstract class ParameterController extends BaseController implements Rest
         return new ModelAndView().addObject(parameter);
     }
 
+    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
+        return toBeProcessed; // return unprocessed
+    }
+
+    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
+        return toBeProcessed; // return unprocessed
+    }
+    
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
     }

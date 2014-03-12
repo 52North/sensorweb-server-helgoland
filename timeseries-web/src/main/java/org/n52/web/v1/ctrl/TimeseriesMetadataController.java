@@ -29,10 +29,50 @@ package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.n52.io.ConfigApplier;
+import org.n52.io.v1.data.ParameterOutput;
+import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping(value = COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterController {
+    
+    private List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers = new ArrayList<ConfigApplier<TimeseriesMetadataOutput>>();
 
     // resource controller for timeseries metadata
+    
+    @Override
+    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
+        
+        for (ParameterOutput parameterOutput : toBeProcessed) {
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput)parameterOutput;
+            for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
+                applier.applyConfigOn(output);
+            }
+        }
+        
+        return toBeProcessed;
+    }
+
+    @Override
+    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
+        
+        TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) toBeProcessed;
+        for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
+            applier.applyConfigOn(output);
+        }
+        return toBeProcessed;
+    }
+
+    public List<ConfigApplier<TimeseriesMetadataOutput>> getConfigAppliers() {
+        return configAppliers;
+    }
+
+    public void setConfigAppliers(List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers) {
+        this.configAppliers = configAppliers;
+    }
+    
 }

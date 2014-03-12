@@ -30,40 +30,39 @@ package org.n52.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.n52.io.ConfigStatusIntervals.ConfigInterval;
-import org.n52.io.v1.data.StatusInterval;
+import org.n52.io.ConfigRenderingHints.ConfiguredStyle;
+import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class StatusIntervalsService {
+public class RenderingHintsConfigApplier extends ConfigApplier<TimeseriesMetadataOutput> {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsService.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(RenderingHintsConfigApplier.class);
 	
-	private static final String CONFIG_FILE = "/config-status-intervals.json";
+	private static final String CONFIG_FILE = "/config-rendering-hints.json";
+	
+	private ConfigRenderingHints configRendering;
 
-	private ConfigStatusIntervals intervalConfig;
-	
-	public StatusIntervalsService() {
-		this.intervalConfig = readConfig();
+	public RenderingHintsConfigApplier() {
+		this.configRendering = readConfig();
 	}
-
-	private ConfigStatusIntervals readConfig() {
+	
+	private ConfigRenderingHints readConfig() {
 		InputStream config = getClass().getResourceAsStream(CONFIG_FILE);
 		try {
 			ObjectMapper om = new ObjectMapper();
-			return om.readValue(config, ConfigStatusIntervals.class);
-		} catch (Exception e) {
-			LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE);
-			LOGGER.error(e.getMessage());
-			return new ConfigStatusIntervals();
+			return om.readValue(config, ConfigRenderingHints.class);
+		} catch (IOException e) {
+			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE);
+			return new ConfigRenderingHints();
 		}
 		finally {
-			if (config != null) {
+			if(config != null) {
 				try {
 					config.close();
 				} catch (IOException e) {
@@ -72,28 +71,22 @@ public class StatusIntervalsService {
 			}
 		}
 	}
+	
+    @Override
+    public void applyConfigOn(TimeseriesMetadataOutput toApplyConfigOn) {
+        String timeseriesId = toApplyConfigOn.getId();
+        PhenomenonOutput phenomenon = toApplyConfigOn.getParameters().getPhenomenon();
+        Map<String, ConfiguredStyle> timeseriesStyles = this.configRendering.getTimeseriesStyles();
+        Map<String, ConfiguredStyle> phenomenonStyles = this.configRendering.getPhenomenonStyles();
+        if (timeseriesStyles.containsKey(timeseriesId)) {
+            toApplyConfigOn.setRenderingHints(createStyle(timeseriesStyles.get(timeseriesId)));
+        } else if (phenomenonStyles.containsKey(phenomenon.getId())) {
+            toApplyConfigOn.setRenderingHints(createStyle(phenomenonStyles.get(phenomenon.getId())));
+        }
+    }
 
-	public void setIntervals(TimeseriesMetadataOutput converted) {
-		// check timeseries id matching
-		Map<String, ConfigInterval> timeseriesIntervals = this.intervalConfig.getTimeseriesIntervals();
-		if(timeseriesIntervals.containsKey(converted.getId())) {
-			converted.setStatusIntervals(createIntervals(timeseriesIntervals.get(converted.getId())));
-			return; 
-		}
-		Map<String, ConfigInterval> phenomenonIntervals = this.intervalConfig.getPhenomenonIntervals();
-		String phenomId = converted.getParameters().getPhenomenon().getId();
-		if(phenomenonIntervals.containsKey(phenomId)) {
-			converted.setStatusIntervals(createIntervals(phenomenonIntervals.get(phenomId)));
-		}
-	}
-
-	private StatusInterval[] createIntervals(ConfigInterval configInterval) {
-		Map<String, StatusInterval> statusIntervals = configInterval.getStatusIntervals();
-		for (Entry<String, StatusInterval> entry : statusIntervals.entrySet()) {
-			StatusInterval value = entry.getValue();
-			value.setName(entry.getKey());
-		}
-		return statusIntervals.values().toArray(new StatusInterval[0]);
-	}
+    private StyleProperties createStyle(ConfiguredStyle configuredStyle) {
+        return configuredStyle.getStyle();
+    }
 
 }
