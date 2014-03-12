@@ -99,6 +99,7 @@
               <li><a href="#nonpublic-offerings">Offerings</a></li>
               <li><a href="#nonpublic-features">Features</a></li>
               <li><a href="#nonpublic-procedures">Procedures</a></li>
+              <li><a href="#nonpublic-timeseries">Timeseries</a></li>
             </ul>
           </li>
         </ul>
@@ -1011,13 +1012,13 @@ Content-Type: application/json;charset=UTF-8
               </tr>
               <tr>
                 <td>
-                  <code>force_last_values</code>
+                  <code>force_latest_values</code>
                 </td>
                 <td>
-                  <pre>force_last_values=true</pre>
+                  <pre>force_latest_values=true</pre>
                 </td>
                 <td>
-                  <p>The <code>force_last_values</code> parameter can be used to force last value requests on a collection of timeseries.</p>
+                  <p>The <code>force_latest_values</code> parameter can be used to force last value requests on a collection of timeseries.</p>
                   <div class="n52-callout n52-callout-info">
                     <p>Please note that this enforcement (in combination with <code>expanded=true</code>) may result is long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
                   </div>
@@ -2172,78 +2173,96 @@ Content-Type: application/json;charset=UTF-8
           </div>
 				
         </div>
-				
+
 				<div id="nonpublic-procedures">
-					<h2>Procedures</h2> <!-- Procedures -->
-					<div> <!-- URLs -->
+					<h2>Procedures</h2>
+					<!-- Procedures -->
+					<div>
+						<!-- URLs -->
 						<h3>URLs</h3>
 						<p>API calls are triggered by using the following URLs.</p>
 						<table class="table">
 							<tr>
 								<th>Method</th>
 								<th>Path</th>
-                <th>Content-Type</th>
+								<th>Content-Type</th>
 								<th>Description</th>
 							</tr>
-							
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/procedures</code></td>
-                  <td><code>application/json</code></td>
-									<td>Lists all procedures available.</td>
-								</tr>
-								<tr>
-									<td><code>GET</code></td>
-									<td><code>/api/v1/procedures/{id}</code></td>
-                  <td><code>application/json</code></td>
-									<td>Lists the procedure with id <code>{id}</code>.</td>
-								</tr>
-							
+
+							<tr>
+								<td><code>GET</code></td>
+								<td><code>/api/v1/procedures</code></td>
+								<td><code>application/json</code></td>
+								<td>Lists all procedures available.</td>
+							</tr>
+							<tr>
+								<td><code>GET</code></td>
+								<td><code>/api/v1/procedures/{id}</code></td>
+								<td><code>application/json</code></td>
+								<td>Lists the procedure with id <code>{id}</code>.
+								</td>
+							</tr>
+
 						</table>
-          </div>
-						
-          <div> <!-- Query Parameters -->
-            <h3>Query Parameters</h3>
-            <p>Except the <a href="#resource-collections"><code>Resources</code> collection</a> all other collections can be queried/filtered by using the following query parameters. Each parameter is optional and can only contain one value. Multiple parameters are combined to an <code>AND</code> query. A resource may specify further query parameters to control/filter output. Special query parameters are described in each section.</p>
-              <table class="table">
-                <tr>
-                  <th>Parameter</th>
-                  <th style="width:25%">Example</th>
-                  <th>Description</th>
-                </tr>
-                <tr>
-                  <td>
-                    <code>offering</code><br/>
-                  </td>
-                  <td>
-                    <pre>offering=off_fdoi23</pre>
-                  </td>
-                  <td>All resources where the given <a href="#parameter-offerings">offering</a> id does match.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>feature</code><br/>
-                  </td>
-                  <td>
-                    <pre>feature=foi_adf092e</pre>
-                  </td>
-                  <td>All resources where the given <a href="#parameter-features">feature</a> id does match.</td>
-                </tr>
-              </table>
-              
-              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
-              
-              <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
-          </div>
-          
-          <div> <!-- Examples -->
-            <h3>Examples</h3>
-            <div>
-              <h4>Collection</h4>
-              <pre>GET /api/v1/procedures HTTP/1.1
+					</div>
+
+					<div>
+						<!-- Query Parameters -->
+						<h3>Query Parameters</h3>
+						<p>
+							Except the <a href="#resource-collections"><code>Resources</code>
+								collection</a> all other collections can be queried/filtered by
+							using the following query parameters. Each parameter is optional
+							and can only contain one value. Multiple parameters are combined
+							to an
+							<code>AND</code>
+							query. A resource may specify further query parameters to
+							control/filter output. Special query parameters are described in
+							each section.
+						</p>
+						<table class="table">
+							<tr>
+								<th>Parameter</th>
+								<th style="width: 25%">Example</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td><code>offering</code><br /></td>
+								<td><pre>offering=off_fdoi23</pre></td>
+								<td>All resources where the given <a
+									href="#parameter-offerings">offering</a> id does match.
+								</td>
+							</tr>
+							<tr>
+								<td><code>feature</code><br /></td>
+								<td><pre>feature=foi_adf092e</pre></td>
+								<td>All resources where the given <a
+									href="#parameter-features">feature</a> id does match.
+								</td>
+							</tr>
+						</table>
+
+						<div class="n52-callout n52-callout-info">
+							For this resource <a href="#general-common-query-parameters">common
+								query parameters</a> can be used.
+						</div>
+
+						<div class="n52-callout n52-callout-info">
+							Note that for
+							<code>GET</code>
+							requests the options have to be <b>URL-encoded</b> appropriately!
+						</div>
+					</div>
+
+					<div>
+						<!-- Examples -->
+						<h3>Examples</h3>
+						<div>
+							<h4>Collection</h4>
+							<pre>GET /api/v1/procedures HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
+							<pre>HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 [
@@ -2256,13 +2275,13 @@ Content-Type: application/json;charset=UTF-8
     "label": "Bad Hersfeld 1_Q#TagMittel"
   }
 ]</pre>
-            </div>
-            <div>
-              <h4>Item</h4>
-              <pre>GET /api/v1/procedures/pro_adsf221 HTTP/1.1
+						</div>
+						<div>
+							<h4>Item</h4>
+							<pre>GET /api/v1/procedures/pro_adsf221 HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
-              <pre>HTTP/1.1 200 OK
+							<pre>HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
@@ -2273,12 +2292,215 @@ Content-Type: application/json;charset=UTF-8
     "label": "PEGELONLINE"
   }
 }</pre>
-            </div>
-          </div>
-				
-        </div>
-				
-        
+						</div>
+					</div>
+				</div>
+
+<div id="nonpublic-timeseries">
+					<h2>Timeseries</h2>
+					<!-- Timeseries -->
+
+					<div>
+						<!-- Query Parameters -->
+						<h3>Query Parameters</h3>
+						<p>
+							Two new parameter are implemented:
+						</p>
+						<table class="table">
+							<tr>
+								<th>Parameter</th>
+								<th style="width: 25%">Example</th>
+								<th>Description</th>
+							</tr>
+							<tr>
+								<td><code>status_intervals</code><br /></td>
+								<td><pre>status_intervals=true</pre></td>
+								<td>Information about the current status of a timeseries. A client should receive metadata how the last measured value can be interpreted by means of defined status "scales".
+								</td>
+							</tr>
+							<tr>
+								<td><code>rendering_hints</code><br /></td>
+								<td><pre>rendering_hints=true</pre></td>
+								<td>Responds the timeseries resource with a rendering hing, which describes how the
+									timeseries can look like. The styling options are similar to
+									the previous descripted <a href="#styles">Styles</a>.
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div>
+						<!-- Examples -->
+						<h3>Examples</h3>
+						<div>
+							<h4>Item</h4>
+							<pre>GET api/v1/timeseries/ts_2395d0548435a7ab701f63e2032eaaeb?status_intervals=true HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+							<pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  id: "ts_2395d0548435a7ab701f63e2032eaaeb",
+  label: "Lufttemperatur@Barmen_Wupperverband",
+  uom: "Grad Celsius",
+  station: {
+    properties: {
+      id: "sta_254b3e34bbefac4119acd69ec76e647f",
+      label: "Barmen_Wupperverband"
+    },
+    geometry: {
+      coordinates: [
+        7.204441970508681,
+        51.266086785330224
+      ],
+      type: "Point"
+    },
+    type: "Feature"
+  },
+  referenceValues: [ ],
+  firstValue: {
+    timestamp: 1053934200000,
+    value: 15.4
+  },
+  lastValue: {
+    timestamp: 1371057750000,
+    value: 20.3
+  },
+  parameters: {
+    service: {
+      id: "srv_738111ed219f738cfc85be0c8d87843c",
+      label: "Wupperverband SOS"
+    },
+    offering: {
+      id: "off_4f4c3d989f9cee86eb36abadaec6fcba",
+      label: "Luft"
+    },
+    feature: {
+      id: "foi_d6bea596d0a9b87cf8f7813acd480080",
+      label: "Barmen_Wupperverband"
+    },
+    procedure: {
+      id: "pro_3eb970971e126124ad0a731c2ddd4f30",
+      label: "Lufttemperatur_Barmen_Wupperverband"
+    },
+    phenomenon: {
+      id: "phe_1965ee24af8af96270002b4a434a4250",
+      label: "Lufttemperatur"
+    },
+    category: {
+      id: "cat_b43c06883f4f439241b59f28033830ad",
+      label: "Lufttemperatur"
+    }
+  },
+  statusIntervals: [
+    {
+      lower: "20.0",
+      name: "over 20",
+      color: "#FF0000"
+    },
+    { 
+      lower: "15.0",
+      upper: "20.0",
+      name: "15 - 20",
+      color: "#BF003F"
+    },
+    {
+      lower: "10.0",
+      upper: "15.0",
+      name: "10 - 15",
+      color: "#7F007F"
+    },
+    {
+      lower: "5.0",
+      upper: "10.0",
+      name: "5 - 10",
+      color: "#3F00BF"
+    },
+    {
+      lower: "0.0",
+      upper: "5.0",
+      name: "0 - 5",
+      color: "#0000FF"
+    } 
+  ]
+}</pre>
+						</div>
+						<div>
+							<h4>Item</h4>
+							<pre>GET api/v1/timeseries/ts_5c305e686027a27b5c09b0e4d7397bdd?rendering_hints=true HTTP/1.1
+Host: sensorweb.demo.52north.org
+Accept: application/json</pre>
+							<pre>HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  id: "ts_5c305e686027a27b5c09b0e4d7397bdd",
+  label: "Niederschlagshoehe@RS-Herrmannsmuehle",
+  uom: "mm/h",
+  station: {
+    properties: {
+      id: "sta_a6b8ef2480c7363d440fc299dc8841eb",
+      label: "RS-Herrmannsmuehle"
+    },
+    geometry: {
+      coordinates: [
+        7.226317896922862,
+        51.19657532705112
+      ],
+      type: "Point"
+    },
+    type: "Feature"
+  },
+  referenceValues: [ ],
+  firstValue: {
+    timestamp: 1149595200000,
+    value: 0
+  },
+  lastValue: {
+    timestamp: 1372892400000,
+    value: 0
+  },
+  parameters: {
+    service: {
+      id: "srv_738111ed219f738cfc85be0c8d87843c",
+      label: "Wupperverband SOS"
+    },
+    offering: {
+      id: "off_f1f50366e5af4c86d57628adc67064a6",
+      label: "Niederschlag"
+    },
+    feature: {
+      id: "foi_abaac0b717c43a395b547fb9c70029d2",
+      label: "RS-Herrmannsmuehle"
+    },
+    procedure: {
+      id: "pro_40aaea656ee27e215eb6b150525875fb",
+      label: "Niederschlagshoehe_RS-Herrmannsmuehle__Stundensumme"
+    },
+    phenomenon: {
+      id: "phe_39b6c8bd9f50fc1892b407c9268cf557",
+      label: "Niederschlagshoehe"
+    },
+    category: {
+      id: "cat_dc4c2df7e0450c33a5477c6b8dafab4d",
+      label: "Niederschlagshoehe"
+    }
+  },
+  renderingHints: {
+    chartType: "bar",
+    properties: {
+      interval: "byHour",
+      width: "0.8",
+      color: "#0000ff"
+    }
+  }
+}</pre>
+						</div>
+					</div>
+				</div>
+
+
 			</section>
 			
 		</div>
