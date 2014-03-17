@@ -170,8 +170,6 @@
 				</property>
 			</bean>
 		</property>
-		<property name="renderingHintsService" ref="renderingHints"/>
-		<property name="statusIntervalsService" ref="statusIntervals"/>
 	</bean>
 
 </beans>
