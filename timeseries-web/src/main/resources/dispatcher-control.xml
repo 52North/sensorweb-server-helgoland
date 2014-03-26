@@ -111,6 +111,12 @@
 	<bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController">
 		<property name="serviceParameterService" ref="serviceParameterService" />
 		<property name="parameterService" ref="timeseriesService" />
+		<property name="configAppliers">
+		  <list>
+		      <bean class="org.n52.io.RenderingHintsConfigApplier" />
+		      <bean class="org.n52.io.StatusIntervalsConfigApplier" />
+		  </list>
+		</property>
 	</bean>
 
 	<bean class="org.n52.web.v1.ctrl.TimeseriesDataController">
@@ -118,7 +124,7 @@
 		<property name="timeseriesMetadataService" ref="timeseriesService" />
 		<property name="timeseriesDataService" ref="timeseriesService" />
 		<property name="preRenderingTask" ref="preRenderingTask" />
-		<property name="requestIntervalRestriction" value="P1Y" />
+		<property name="requestIntervalRestriction" value="P1Y1D" />
 	</bean>
 
 	<bean id="preRenderingTask" class="org.n52.io.PreRenderingTask"
@@ -133,7 +139,7 @@
 		<property name="periodInMinutes" value="1440" />
 		<property name="enabled" value="false" />
 	</bean>
-	
+		
 	<bean class="org.n52.web.v1.ctrl.SearchController">
 	   <property name="searchService" ref="searchService"/>
 	</bean>

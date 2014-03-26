@@ -1,26 +1,18 @@
 {
     "phenomenonStyles": {
-        "1": {
-            "interval": [
-                "lastWeek",
-                "lastMonth"
-            ],
+        "phe_39b6c8bd9f50fc1892b407c9268cf557": {
             "style": {
-                "chartType": "line",
+                "chartType": "bar",
                 "properties": {
-                    "color": "#0000ff",
-                    "lineType": "solid",
-                    "width": 2
+                    "interval": "byHour",
+                    "width": 0.8,
+                    "color": "#0000ff"
                 }
             }
         }
     },
     "timeseriesStyles": {
-        "56": {
-            "interval": [
-                "lastWeek",
-                "lastMonth"
-            ],
+        "ts_20775c426a66cbd01ca662fcdfd28d44": {
             "style": {
                 "chartType": "bar",
                 "properties": {

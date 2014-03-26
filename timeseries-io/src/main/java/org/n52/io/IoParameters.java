@@ -1,27 +1,30 @@
 /**
- * ﻿Copyright (C) 2013
- * by 52 North Initiative for Geospatial Open Source Software GmbH
+ * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Software GmbH
  *
- * Contact: Andreas Wytzisk
- * 52 North Initiative for Geospatial Open Source Software GmbH
- * Martin-Luther-King-Weg 24
- * 48155 Muenster, Germany
- * info@52north.org
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License version 2 as publishedby the Free
+ * Software Foundation.
  *
- * This program is free software; you can redistribute and/or modify it under
- * the terms of the GNU General Public License version 2 as published by the
- * Free Software Foundation.
+ * If the program is linked with libraries which are licensed under one of the
+ * following licenses, the combination of the program with the linked library is
+ * not considered a "derivative work" of the program:
  *
- * This program is distributed WITHOUT ANY WARRANTY; even without the implied
- * WARRANTY OF MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
+ *     - Apache License, version 2.0
+ *     - Apache Software License, version 1.0
+ *     - GNU Lesser General Public License, version 3
+ *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * You should have received a copy of the GNU General Public License along with
- * this program (see gnu-gpl v2.txt). If not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA or
- * visit the Free Software Foundation web page, http://www.fsf.org.
+ * Therefore the distribution of the program linked with libraries licensed under
+ * the aforementioned licenses, is permitted by the copyright holders if the
+ * distribution is compliant with both the GNU General Public License version 2
+ * and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
 package org.n52.io;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
@@ -83,6 +86,26 @@ public class IoParameters {
      * The default behaviour if latest value requests shall be invoked during a timeseries collection request.
      */
     private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
+    
+    /**
+     * If status intervals section is requested.
+     */
+    static final String STATUS_INTERVALS = "status_intervals";
+
+    /**
+     * The default behaviour for status intervals.
+     */
+    private static final boolean DEFAULT_STATUS_INTERVALS = false;
+
+    /**
+     * If rendering hints are requested for a timeseries
+     */
+    static final String RENDERING_HINTS = "rendering_hints";
+
+    /**
+     * The default behaviour for rendering hints.
+     */
+    private static final boolean DEFAULT_RENDERING_HINTS = false;
 
     /**
      * Determines the index of the first member of the response page (a.k.a. page offset).
@@ -224,6 +247,11 @@ public class IoParameters {
      * Determines the phenomenon filter
      */
     static final String PHENOMENON = "phenomenon";
+    
+    /**
+     * Determines the station filter
+     */
+    static final String STATION = "station";
 
     /**
      * Determines the category filter
@@ -493,6 +521,10 @@ public class IoParameters {
     public String getPhenomenon() {
         return query.get(PHENOMENON);
     }
+    
+    public String getStation() {
+        return query.get(STATION);
+    }
 
     /**
      * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting bounding
@@ -654,6 +686,20 @@ public class IoParameters {
             return DEFAULT_FORCE_LATEST_VALUE;
         }
         return parseBoolean(FORCE_LATEST_VALUE);
+    }
+    
+    public boolean isStatusIntervalsRequests() {
+    	if ( !query.containsKey(STATUS_INTERVALS)) {
+    		return DEFAULT_STATUS_INTERVALS;
+    	}
+    	return parseBoolean(STATUS_INTERVALS);
+    }
+    
+    public boolean isRenderingHintsRequests() {
+    	if ( !query.containsKey(RENDERING_HINTS)) {
+    		return DEFAULT_RENDERING_HINTS;
+    	}
+    	return parseBoolean(RENDERING_HINTS);
     }
 
     public boolean containsParameter(String parameter) {

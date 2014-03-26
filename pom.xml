@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.n52</groupId>
 		<artifactId>52-North</artifactId>
-		<version>5.6.6</version>
+		<version>5.6.10</version>
 	</parent>
 	<groupId>org.n52.sensorweb</groupId>
 	<artifactId>timeseries-api</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Sensor Web Timeseries API</name>
 	<url>http://52north.org/communities/sensorweb/</url>
@@ -24,6 +25,14 @@
 		<url>http://52north.org</url>
 	</organization>
 
+	<developers>
+		<developer>
+			<id>bredel</id>
+			<name>Henning Bredel</name>
+			<email>h.bredel@52north.org</email>
+		</developer>
+	</developers>
+
 	<licenses>
 		<license>
 			<name>GNU General Public License, Version 2.0</name>
@@ -38,8 +47,8 @@
 		<connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
 		<url>https://github.com/52North/timeseries-api</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,6 +58,10 @@
 		<jackson.version>2.2.2</jackson.version>
 		<geotools.version>8.2</geotools.version>
 		<slf4j.version>1.7.2</slf4j.version>
+
+		<currentYear>2014</currentYear> <!-- manual setting -->
+		<!-- <maven.build.timestamp.format>yyyy</maven.build.timestamp.format> 
+			<currentYearDynamic>${maven.build.timestamp}</currentYearDynamic> -->
 	</properties>
 
 	<dependencyManagement>
@@ -88,31 +101,91 @@
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-opengis</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-api</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-main</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-referencing</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-metadata</artifactId>
 				<version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.vividsolutions</groupId>
@@ -361,7 +434,9 @@
 				<configuration>
 					<header>misc/52N_license-header.txt</header>
 					<properties>
-						<year>${project.inceptionYear}</year>
+						<inceptionYear>${project.inceptionYear}</inceptionYear>
+						<latestYearOfContribution>${currentYear}</latestYearOfContribution>
+						<!-- <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution> -->
 					</properties>
 					<aggregate>true</aggregate>
 					<includes>
@@ -373,8 +448,8 @@
 						<exclude>**/logback-test.xml</exclude>
 						<exclude>**/src/test/resources/**</exclude>
 						<exclude>**/generated-sources/xml-pdf-format</exclude>
-						<exclude>**/src/main/resources/dispatcher-control.xml</exclude>
-						<exclude>**/src/main/resources/spring-view-config.xml</exclude>
+						<exclude>**/src/main/resources/*</exclude>
+						<exclude>**/src/main/assembly/*</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 				</configuration>
@@ -521,6 +596,15 @@
 						<version>1.5</version>
 						<configuration>
 							<useMissingFile>true</useMissingFile>
+							<fileTemplate>misc/license-as-csv.ftl</fileTemplate>
+							<licenseMerges>
+                                <licenseMerge>The Apache Software License, Version 2.0|Apache 2|Apache License, Version 2.0|Apache Public License 2.0</licenseMerge>
+                                <licenseMerge>Apache Software Licenses|Apache Software License|Apache License</licenseMerge>
+                                <licenseMerge>GNU General Public License, v2.0|GNU GENERAL PUBLIC LICENSE Version 2, June 1991|GNU General Public License, Version 2.0</licenseMerge>
+                                <licenseMerge>Common Development and Distribution License (CDDL), version 1.0| Common Development and Distribution License (CDDL) v1.0</licenseMerge>
+                                <licenseMerge>GNU Lesser General Public License, version 2.1|LGPL 2.1</licenseMerge>
+                                <licenseMerge>Mozilla Public License version 1.1|MPL 1.1</licenseMerge>
+							</licenseMerges>
 						</configuration>
 						<executions>
 							<execution>
@@ -534,6 +618,30 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+
+
+		<profile>
+			<id>check</id>
+			<build>
+				<plugins>
+					<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>cobertura-maven-plugin</artifactId> 
+						<executions> <execution> <goals> <goal>clean</goal> <goal>check</goal> </goals> 
+						</execution> </executions> </plugin> -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>findbugs-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
 		</profile>
 	</profiles>
 
@@ -592,5 +700,6 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
 </project>
 
