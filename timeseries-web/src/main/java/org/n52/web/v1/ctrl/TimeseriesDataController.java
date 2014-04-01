@@ -229,6 +229,9 @@ public class TimeseriesDataController extends BaseController {
                                              @PathVariable String timeseriesId,
                                              @PathVariable String interval,
                                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        if (preRenderingTask == null) {
+            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
+        }
         if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
