@@ -31,7 +31,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimeseriesMetadata implements Serializable {
+public class TimeseriesDataMetadata implements Serializable {
 
     private static final long serialVersionUID = 7422416308386483575L;
     

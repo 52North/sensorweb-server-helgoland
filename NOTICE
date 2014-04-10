@@ -42,7 +42,7 @@ This project includes:
   jcommon under GNU Lesser General Public Licence
   jdom under JDOM license, https://github.com/hunterhacker/jdom/blob/master/LICENSE.txt
   jfreechart under GNU Lesser General Public Licence
-  jgridshift:jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
+  jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
   Joda time under Apache 2
   jsr-275 under BSD License
   JTS Topology Suite under Lesser General Public License (LGPL)

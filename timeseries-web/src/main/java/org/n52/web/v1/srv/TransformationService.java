@@ -44,8 +44,10 @@ import com.vividsolutions.jts.geom.Point;
 public abstract class TransformationService {
 
     protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
-        for (StationOutput stationOutput : stations) {
-            transformInline(stationOutput, query);
+        if (stations != null) {
+            for (StationOutput stationOutput : stations) {
+                transformInline(stationOutput, query);
+            }
         }
         return stations;
     }
