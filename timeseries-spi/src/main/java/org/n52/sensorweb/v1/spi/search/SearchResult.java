@@ -25,24 +25,37 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv;
+package org.n52.sensorweb.v1.spi.search;
 
-import java.util.Collection;
+public abstract class SearchResult {
+	
+	private String id;
+	
+	private String label;
+	
+	public SearchResult(String id, String label) {
+		this.id = id;
+		this.label = label;
+	}
 
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+	public String getId() {
+		return id;
+	}
 
-/**
- * Serves search requests on the underlying data access implementation(s).
- */
-public interface SearchService {
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    /**
-     * @param search
-     *        a search string.
-     * @param locale
-     *        a locale indicating the expected language.
-     * @return a collection of matching results.
-     */
-    Collection<SearchResult> searchResources(String search, String locale);
+	public String getLabel() {
+		return label;
+	}
 
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	public abstract String getHref();
+	
+	public abstract String getType();
+	
 }

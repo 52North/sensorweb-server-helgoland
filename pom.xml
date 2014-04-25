@@ -17,9 +17,9 @@
 
 	<modules>
 		<module>timeseries-io</module>
+        <module>timeseries-spi</module>
 		<module>timeseries-web</module>
         <module>timeseries-webapp</module>
-        <module>timeseries-spi</module>
 	</modules>
 
 	<organization>
@@ -68,6 +68,11 @@
 			<dependency>
 				<groupId>org.n52.sensorweb</groupId>
 				<artifactId>timeseries-io</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.n52.sensorweb</groupId>
+				<artifactId>timeseries-spi</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

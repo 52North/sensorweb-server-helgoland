@@ -25,23 +25,24 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv.search;
+package org.n52.web.v1.srv;
 
+import java.util.Collection;
 
-public class FeatureSearchResult extends SearchResult {
+import org.n52.web.v1.srv.search.SearchResult;
 
-	public FeatureSearchResult(String id, String label) {
-		super(id, label);
-	}
+/**
+ * Serves search requests on the underlying data access implementation(s).
+ */
+public interface SearchService {
 
-	@Override
-	public String getHref() {
-		return "./features/" + getId();
-	}
-
-	@Override
-	public String getType() {
-		return "feature";
-	} 
+    /**
+     * @param search
+     *        a search string.
+     * @param locale
+     *        a locale indicating the expected language.
+     * @return a collection of matching results.
+     */
+    Collection<SearchResult> searchResources(String search, String locale);
 
 }

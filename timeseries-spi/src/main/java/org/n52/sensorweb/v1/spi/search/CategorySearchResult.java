@@ -25,24 +25,23 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv;
+package org.n52.sensorweb.v1.spi.search;
 
-import java.util.Collection;
 
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+public class CategorySearchResult extends SearchResult {
 
-/**
- * Serves search requests on the underlying data access implementation(s).
- */
-public interface SearchService {
+	public CategorySearchResult(String id, String label) {
+		super(id, label);
+	}
 
-    /**
-     * @param search
-     *        a search string.
-     * @param locale
-     *        a locale indicating the expected language.
-     * @return a collection of matching results.
-     */
-    Collection<SearchResult> searchResources(String search, String locale);
+	@Override
+	public String getHref() {
+		return "./categories/" + getId();
+	}
+
+	@Override
+	public String getType() {
+		return "category";
+	}
 
 }

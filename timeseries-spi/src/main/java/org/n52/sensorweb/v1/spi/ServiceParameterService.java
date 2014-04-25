@@ -27,22 +27,13 @@
  */
 package org.n52.web.v1.srv;
 
-import java.util.Collection;
-
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.io.v1.data.ServiceOutput;
 
 /**
- * Serves search requests on the underlying data access implementation(s).
+ * Extends the generic {@link ParameterService} interface to provide quick check if timeseries resources
+ * exist.
  */
-public interface SearchService {
+public interface ServiceParameterService extends ParameterService<ServiceOutput> {
 
-    /**
-     * @param search
-     *        a search string.
-     * @param locale
-     *        a locale indicating the expected language.
-     * @return a collection of matching results.
-     */
-    Collection<SearchResult> searchResources(String search, String locale);
-
+    public boolean isKnownTimeseries(String timeseriesId);
 }

@@ -25,22 +25,23 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv.search;
+package org.n52.sensorweb.v1.spi.search;
 
-public class PhenomenonSearchResult extends SearchResult {
 
-	public PhenomenonSearchResult(String id, String label) {
+public class ServiceSearchResult extends SearchResult {
+
+	public ServiceSearchResult(String id, String label) {
 		super(id, label);
 	}
 
 	@Override
 	public String getHref() {
-		return "./phenomena/" + getId();
+		return "./services/" + getId();
 	}
 
 	@Override
 	public String getType() {
-		return "phenomenon";
+		return "service";
 	}
 
 }

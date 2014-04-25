@@ -25,23 +25,16 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv.search;
+package org.n52.web.v1.srv;
 
+import org.n52.io.format.TvpDataCollection;
+import org.n52.io.v1.data.UndesignedParameterSet;
 
-public class ServiceSearchResult extends SearchResult {
+/**
+ * Provides access to the actual raw timeseries data via {@link UndesignedParameterSet}.
+ */
+public interface TimeseriesDataService {
 
-	public ServiceSearchResult(String id, String label) {
-		super(id, label);
-	}
-
-	@Override
-	public String getHref() {
-		return "./services/" + getId();
-	}
-
-	@Override
-	public String getType() {
-		return "service";
-	}
+    TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters);
 
 }
