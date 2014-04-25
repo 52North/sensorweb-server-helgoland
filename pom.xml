@@ -19,6 +19,7 @@
 		<module>timeseries-io</module>
 		<module>timeseries-web</module>
         <module>timeseries-webapp</module>
+        <module>timeseries-spi</module>
 	</modules>
 
 	<organization>
