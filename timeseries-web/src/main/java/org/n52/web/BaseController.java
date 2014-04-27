@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.n52.sensorweb.v1.spi.BadQueryParameterException;
 
 /**
  * Serves as central {@link ExceptionHandler} for all Web bindings inheriting from this class.
@@ -64,7 +65,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 public abstract class BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
-    
+
     protected boolean isRequestingJsonData(HttpServletRequest request) {
         return APPLICATION_JSON.getMimeType().equals(request.getHeader("Accept"));
     }
@@ -77,7 +78,7 @@ public abstract class BaseController {
         return IMAGE_PNG.getMimeType().equals(request.getHeader("Accept"));
     }
 
-    @ExceptionHandler(value = {BadRequestException.class})
+    @ExceptionHandler(value = {BadRequestException.class, BadQueryParameterException.class})
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
         writeExceptionResponse((WebException) e, response, BAD_REQUEST);
     }
@@ -112,7 +113,7 @@ public abstract class BaseController {
         } else {
             LOGGER.debug("An exception occured.", e);
         }
-        
+
         // TODO consider using a 'suppress_response_codes=true' parameter and always return 200 OK
 
         response.setStatus(status.value());

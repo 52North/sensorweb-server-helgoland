@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv;
+package org.n52.sensorweb.v1.spi;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
@@ -34,8 +34,6 @@ import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.IoParameters;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.v1.data.StationOutput;
-import org.n52.web.BadRequestException;
-import org.n52.web.InternalServerException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
@@ -43,6 +41,13 @@ import com.vividsolutions.jts.geom.Point;
 
 public abstract class TransformationService {
 
+    /**
+     *
+     * @param query the query parameters.
+     * @param stations the stations to transform.
+     * @return all transformed stations matching the query.
+     * @throws BadQueryParameterException if an invalid CRS has been passed in.
+     */
     protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
         if (stations != null) {
             for (StationOutput stationOutput : stations) {
@@ -53,14 +58,9 @@ public abstract class TransformationService {
     }
 
     /**
-     * @param station
-     *        the station to transform.
-     * @param query
-     *        the query containing CRS and how to handle axes order.
-     * @throws InternalServerException
-     *         if transformation failed.
-     * @throws BadRequestException
-     *         if an invalid CRS has been passed in.
+     * @param station the station to transform.
+     * @param query the query containing CRS and how to handle axes order.
+     * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
     protected void transformInline(StationOutput station, IoParameters query) {
         String crs = query.getCrs();
@@ -69,16 +69,14 @@ public abstract class TransformationService {
         }
         try {
             CRSUtils crsUtils = query.isForceXY()
-                ? createEpsgForcedXYAxisOrder()
-                : createEpsgStrictAxisOrder();
+                    ? createEpsgForcedXYAxisOrder()
+                    : createEpsgStrictAxisOrder();
             Point point = crsUtils.convertToPointFrom(station.getGeometry());
             station.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
-        }
-        catch (TransformException e) {
-            throw new InternalServerException("Could not transform to requested CRS: " + crs, e);
-        }
-        catch (FactoryException e) {
-            throw new BadRequestException("Could not create CRS " + crs + ".", e);
+        } catch (TransformException e) {
+            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
+        } catch (FactoryException e) {
+            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
         }
     }
 

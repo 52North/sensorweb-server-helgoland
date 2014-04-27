@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv;
+package org.n52.sensorweb.v1.spi;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.UndesignedParameterSet;

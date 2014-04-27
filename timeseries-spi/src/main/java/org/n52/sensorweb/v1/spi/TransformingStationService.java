@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.srv;
+package org.n52.sensorweb.v1.spi;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
@@ -36,7 +36,7 @@ import org.n52.io.v1.data.StationOutput;
  */
 public class TransformingStationService extends TransformationService implements ParameterService<StationOutput> {
 
-    private ParameterService<StationOutput> composedService;
+    private final ParameterService<StationOutput> composedService;
 
     public TransformingStationService(ParameterService<StationOutput> toCompose) {
         this.composedService = toCompose;
@@ -79,5 +79,5 @@ public class TransformingStationService extends TransformationService implements
         transformInline(station, query);
         return station;
     }
-    
+
 }

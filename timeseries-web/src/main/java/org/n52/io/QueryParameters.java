@@ -45,7 +45,7 @@ public final class QueryParameters extends IoParameters {
 
     /**
      * Creates an simple view on given query. The {@link MultiValueMap} is flattened to a single value map.
-     * 
+     *
      * @param query
      *        the incoming query parameters.
      * @return a query parameters instance handling Web exceptions.
@@ -54,10 +54,10 @@ public final class QueryParameters extends IoParameters {
     public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
         return createFromQuery(query.toSingleValueMap());
     }
-    
+
     /**
      * Creates an simple view on given query.
-     * 
+     *
      * @param query
      *        the incoming query parameters.
      * @return a query parameters instance handling Web exceptions.
@@ -71,6 +71,7 @@ public final class QueryParameters extends IoParameters {
         super(query);
     }
 
+    @Override
     public int getOffset() {
         try {
             return super.getOffset();
@@ -80,6 +81,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public int getLimit() {
         try {
             return super.getLimit();
@@ -89,6 +91,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public ChartDimension getChartDimension() {
         try {
             return super.getChartDimension();
@@ -98,6 +101,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isBase64() {
         try {
             return super.isBase64();
@@ -107,6 +111,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isGrid() {
         try {
             return super.isGrid();
@@ -116,6 +121,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isGeneralize() {
         try {
             return super.isGeneralize();
@@ -125,6 +131,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isLegend() {
         try {
             return super.isLegend();
@@ -134,10 +141,12 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public String getLocale() {
         return super.getLocale();
     }
 
+    @Override
     public StyleProperties getStyle() {
         try {
             return super.getStyle();
@@ -147,6 +156,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public String getFormat() {
         return super.getFormat();
     }
@@ -163,6 +173,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public BoundingBox getSpatialFilter() {
         try {
             return super.getSpatialFilter();
@@ -175,6 +186,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isForceXY() {
         try {
             return super.isForceXY();
@@ -184,6 +196,7 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
+    @Override
     public boolean isExpanded() {
         try {
             return super.isExpanded();
@@ -192,7 +205,8 @@ public final class QueryParameters extends IoParameters {
             throw new BadRequestException("Bad '" + EXPANDED + "' parameter.", e);
         }
     }
-    
+
+    @Override
     public boolean isForceLatestValueRequests() {
         try {
             return super.isForceLatestValueRequests();

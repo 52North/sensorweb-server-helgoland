@@ -33,7 +33,7 @@ import java.util.Collection;
 
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
-import org.n52.web.v1.srv.SearchService;
+import org.n52.sensorweb.v1.spi.SearchService;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
