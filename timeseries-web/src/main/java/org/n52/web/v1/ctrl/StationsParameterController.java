@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,9 +35,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.LocaleAwareSortService;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.TransformingStationService;
+import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.TransformingStationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

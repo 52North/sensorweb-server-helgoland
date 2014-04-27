@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,15 +27,7 @@
  */
 package org.n52.io;
 
-import static org.n52.io.IoParameters.GRID;
-import static org.n52.io.IoParameters.HEIGHT;
-import static org.n52.io.IoParameters.LOCALE;
-import static org.n52.io.IoParameters.PHENOMENON;
-import static org.n52.io.IoParameters.WIDTH;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,30 +38,34 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletOutputStream;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
+import static org.n52.io.IoParameters.GRID;
+import static org.n52.io.IoParameters.HEIGHT;
+import static org.n52.io.IoParameters.LOCALE;
+import static org.n52.io.IoParameters.PHENOMENON;
+import static org.n52.io.IoParameters.WIDTH;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
+import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.v1.ctrl.Stopwatch;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.TimeseriesDataService;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletConfigAware;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PreRenderingTask implements ServletConfigAware {
 
@@ -81,9 +77,9 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private TimeseriesDataService timeseriesDataService;
 
-    private ConfigTaskPrerendering taskConfigPrerendering;
+    private final ConfigTaskPrerendering taskConfigPrerendering;
 
-    private RenderTask taskToRun;
+    private final RenderTask taskToRun;
 
     private String webappFolder;
 
@@ -310,7 +306,7 @@ public class PreRenderingTask implements ServletConfigAware {
     }
 
     private final class RenderTask extends TimerTask {
-        
+
         @Override
         public void run() {
             LOGGER.info("Start prerendering task");
@@ -331,7 +327,7 @@ public class PreRenderingTask implements ServletConfigAware {
                         renderConfiguredIntervals(timeseriesId, style);
                     }
                 }
-                
+
                 for (String timeseriesId : timeseriesStyles.keySet()) {
                     TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
                     PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
@@ -343,7 +339,7 @@ public class PreRenderingTask implements ServletConfigAware {
                 }
             }
             catch (IOException e) {
-                LOGGER.error("Error while reading prerendering configuration file", e);
+                LOGGER.error("Error while reading prerendering configuration file!", e);
             }
         }
 

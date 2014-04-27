@@ -8,13 +8,17 @@
 	</parent>
 	<artifactId>timeseries-web</artifactId>
 	<packaging>jar</packaging>
-	<name>Sensor Web Timeseries WEB Binding</name>
+	<name>Sensor Web Timeseries API - REST Binding</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<!-- ### 52n DEPENDENCIES ### -->
 		<dependency>
 			<groupId>org.n52.sensorweb</groupId>
 			<artifactId>timeseries-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.n52.sensorweb</groupId>
+			<artifactId>timeseries-spi</artifactId>
 		</dependency>
 		<!-- ### EXTERNAL DEPENDENCIES ### -->
 		<dependency>

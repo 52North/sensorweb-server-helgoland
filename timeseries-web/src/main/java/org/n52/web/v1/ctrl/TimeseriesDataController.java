@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,25 +27,9 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.IoParameters.createFromQuery;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.QueryParameters.createFromQuery;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
-import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
-import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-import static org.n52.web.v1.srv.GeneralizingTimeseriesDataService.composeDataService;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -55,21 +39,31 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
+import static org.n52.io.MimeType.APPLICATION_PDF;
 import org.n52.io.PreRenderingTask;
+import static org.n52.io.QueryParameters.createFromQuery;
+import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.TimeseriesDataCollection;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
+import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
+import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.ServiceParameterService;
-import org.n52.web.v1.srv.TimeseriesDataService;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.composeDataService;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.ServiceParameterService;
+import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -77,6 +71,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -215,11 +211,11 @@ public class TimeseriesDataController extends BaseController {
 
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        
+
         parameters.setGeneralize(map.isGeneralize());
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
-        
+
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,9 +35,9 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.LocaleAwareSortService;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.ServiceParameterService;
+import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -50,9 +50,9 @@ import org.springframework.web.servlet.ModelAndView;
 public abstract class ParameterController extends BaseController implements RestfulUrls {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
-    
+
     private ServiceParameterService serviceParameterService;
-    
+
     private ParameterService<ParameterOutput> parameterService;
 
     @RequestMapping(method = GET)
@@ -97,7 +97,7 @@ public abstract class ParameterController extends BaseController implements Rest
     protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
         return toBeProcessed; // return unprocessed
     }
-    
+
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
     }
