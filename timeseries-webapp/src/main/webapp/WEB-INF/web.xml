@@ -47,7 +47,7 @@
 	</listener>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/spring-*-dispatcher.xml</param-value>
+        <param-value>/WEB-INF/spring/api-dispatcher.xml</param-value>
     </context-param>
 
 	<!-- Spring dispatcher servlet -->
@@ -57,7 +57,7 @@
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/spring/spring-api-view-config.xml</param-value>>
+			<param-value>/WEB-INF/spring/api-view-config.xml</param-value>>
         </init-param>
     </servlet>
 
