@@ -38,6 +38,7 @@ import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
+import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -111,7 +112,8 @@ public abstract class ParameterController extends BaseController implements Rest
     }
 
     public void setParameterService(ParameterService<ParameterOutput> parameterService) {
-        this.parameterService = new LocaleAwareSortService<ParameterOutput>(parameterService);
+        ParameterService<ParameterOutput> service = new WebExceptionAdapter<ParameterOutput>(parameterService);
+        this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
     }
 
 }

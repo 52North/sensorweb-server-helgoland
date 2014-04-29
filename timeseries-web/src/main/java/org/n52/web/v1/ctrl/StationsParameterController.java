@@ -38,6 +38,7 @@ import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.TransformingStationService;
+import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -102,7 +103,8 @@ public class StationsParameterController {
     }
 
     public void setParameterService(ParameterService<StationOutput> stationParameterService) {
-        this.parameterService = new LocaleAwareSortService<StationOutput>(new TransformingStationService(stationParameterService));
+        ParameterService<StationOutput> service = new TransformingStationService(stationParameterService);
+        this.parameterService = new LocaleAwareSortService<StationOutput>(new WebExceptionAdapter<StationOutput>(service));
     }
 
 }

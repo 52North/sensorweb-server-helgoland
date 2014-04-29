@@ -64,6 +64,7 @@ import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.compose
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.sensorweb.v1.spi.TimeseriesDataService;
+import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -306,7 +307,7 @@ public class TimeseriesDataController extends BaseController {
     }
 
     public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = timeseriesMetadataService;
+        this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
     }
 
     public TimeseriesDataService getTimeseriesDataService() {
