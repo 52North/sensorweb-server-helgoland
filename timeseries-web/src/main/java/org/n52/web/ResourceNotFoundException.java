@@ -41,11 +41,6 @@ public final class ResourceNotFoundException extends RuntimeException implements
 
     private List<String> details;
 
-    @Deprecated
-    public ResourceNotFoundException() {
-        super();
-    }
-
     public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }

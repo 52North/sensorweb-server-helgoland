@@ -41,11 +41,6 @@ public class BadRequestException extends RuntimeException implements WebExceptio
 
     private List<String> details;
 
-    @Deprecated
-    public BadRequestException() {
-        super();
-    }
-
     public BadRequestException(String message, Throwable cause) {
         super(message, cause);
     }

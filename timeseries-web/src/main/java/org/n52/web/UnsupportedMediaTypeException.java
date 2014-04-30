@@ -41,11 +41,6 @@ public class UnsupportedMediaTypeException extends RuntimeException implements W
 
     private List<String> details;
 
-    @Deprecated
-    public UnsupportedMediaTypeException() {
-        super();
-    }
-
     public UnsupportedMediaTypeException(String message, Throwable cause) {
         super(message, cause);
     }

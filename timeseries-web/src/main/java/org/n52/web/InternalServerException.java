@@ -41,11 +41,6 @@ public class InternalServerException extends RuntimeException implements WebExce
 
     private List<String> details;
 
-    @Deprecated
-    public InternalServerException() {
-        super();
-    }
-
     public InternalServerException(String message, Throwable cause) {
         super(message, cause);
     }
