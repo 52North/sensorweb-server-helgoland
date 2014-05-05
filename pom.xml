@@ -20,6 +20,7 @@
         <module>timeseries-spi</module>
 		<module>timeseries-web</module>
         <module>timeseries-webapp</module>
+        <module>timeseries-spi-impl</module>
 	</modules>
 
 	<organization>
@@ -85,7 +86,6 @@
 				<artifactId>xml-pdf-format</artifactId>
 				<version>${sensorwebclient.version}</version>
 			</dependency>
-
 
 			<dependency>
 				<groupId>joda-time</groupId>
