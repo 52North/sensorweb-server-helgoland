@@ -10,8 +10,18 @@
     <name>Sensor Web Timeseries API - SPI Implementations</name>
     <packaging>pom</packaging>
 
-	<modules>
+    <modules>
         <module>sos-series-dao</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>timeseries-series-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

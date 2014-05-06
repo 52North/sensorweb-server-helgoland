@@ -47,12 +47,12 @@ public final class ResourcesController {
 
     private CountingMetadataService metadataService;
 
-    @RequestMapping("/")
+//    @RequestMapping("/")
     public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
         return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }
 
-    public ResourceCollection[] createResources(boolean expanded) {
+    private ResourceCollection[] createResources(boolean expanded) {
         List<ResourceCollection> resources = new ArrayList<ResourceCollection>();
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");

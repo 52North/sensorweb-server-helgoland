@@ -1,62 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.n52.sensorweb</groupId>
-		<artifactId>timeseries-spi-impl</artifactId>
-		<version>1.2.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>timeseries-series-dao</artifactId>
-	<packaging>jar</packaging>
-	<name>Sensor Web Timeseries API - SPI Impl DAO</name>
-  <description>REST SPI Implementation for SOS Series Database.</description>
-	<url>http://52north.org/communities/sensorweb/</url>
-	<dependencies>
-		<dependency>
-			<groupId>org.n52.sensorweb</groupId>
-			<artifactId>timeseries-spi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.n52.sensorweb</groupId>
-			<artifactId>timeseries-web</artifactId>
-		</dependency>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.n52.sensorweb</groupId>
+        <artifactId>timeseries-spi-impl</artifactId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>timeseries-series-dao</artifactId>
+    <packaging>jar</packaging>
+    <name>Sensor Web Timeseries API - SPI Impl DAO</name>
+    <description>REST SPI Implementation for SOS Series Database.</description>
+    <url>http://52north.org/communities/sensorweb/</url>
+    <dependencies>
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>timeseries-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>timeseries-web</artifactId>
+        </dependency>
 
+
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-datasource-postgres</artifactId>
+            <version>4.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <!--
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>hibernate-session-factory</artifactId>
             <version>4.0.2-SNAPSHOT</version>
         </dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<!-- here the phase you need -->
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/webapp</directory>
-									<includes>
-										<include>**</include>
-									</includes>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-c3p0</artifactId>
+            <version>4.1.12.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>-->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/webapp</directory>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 

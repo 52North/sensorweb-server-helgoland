@@ -17,10 +17,43 @@
     </properties>
 
     <dependencies>
-		<!-- REST API Dependencies -->
 		<dependency>
 			<groupId>org.n52.sensorweb</groupId>
 			<artifactId>timeseries-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>timeseries-series-dao</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.thetransactioncompany</groupId>
+            <artifactId>cors-filter</artifactId>
+            <version>1.8</version>
+            <scope>runtime</scope>
+        </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 
@@ -44,11 +77,24 @@
 									<groupId>org.n52.sensorweb</groupId>
 									<artifactId>timeseries-web</artifactId>
 									<includes>api-doc/**</includes>
-									<outputDirectory>${project.build.directory}</outputDirectory>
+									<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+									<overWrite>false</overWrite>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.n52.sensorweb</groupId>
+									<artifactId>timeseries-series-dao</artifactId>
+									<includes>hbm/sos/series/**.hbm.xml</includes>
+									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+									<overWrite>false</overWrite>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.n52.sensorweb</groupId>
+									<artifactId>timeseries-series-dao</artifactId>
+									<includes>datasource.properties</includes>
+									<outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF</outputDirectory>
 									<overWrite>false</overWrite>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 						</configuration>
 					</execution>

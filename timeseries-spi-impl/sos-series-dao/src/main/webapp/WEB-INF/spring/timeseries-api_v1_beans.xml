@@ -25,7 +25,6 @@
     <bean id="categoryParameterService" class="org.n52.series.api.v1.db.srv.CategoriesAccessService" parent="serviceInfoAccess" />
     <bean id="featureParameterService" class="org.n52.series.api.v1.db.srv.FeaturesAccessService" parent="serviceInfoAccess" />
     <bean id="procedureParameterService" class="org.n52.series.api.v1.db.srv.ProceduresAccessService" parent="serviceInfoAccess" />
-    <bean id="procedureParameterService" class="org.n52.series.api. ... .v1.spi.impl.ProcedureOutputAdapter" />
     <bean id="stationParameterService" class="org.n52.series.api.v1.db.srv.StationsAccessService" parent="serviceInfoAccess" >
        <constructor-arg name="dbSrid" value="EPSG:4326" />
     </bean>

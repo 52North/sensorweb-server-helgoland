@@ -9,7 +9,7 @@
     <mvc:annotation-driven />
 
     <!-- timeseries api web controller bindings -->
-    <import resource="spring/timeseries-api_v1_web.xml"/>
-    <import resource="spring/timeseries-api_v1_beans.xml"/>
+    <import resource="timeseries-api_v1_web.xml"/>
+    <import resource="timeseries-api_v1_beans.xml"/>
 
 </beans>

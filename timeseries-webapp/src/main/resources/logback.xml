@@ -3,7 +3,7 @@
 	<!-- refer to http://logback.qos.ch/manual/appenders.html -->
 
 	<property name="logFile"
-		value="${config.logger.fileappender.filepath}/${pom.artifactId}-${project.version}" />
+		value="${config.logger.fileappender.filepath}/timeseries-webapp" />
 
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -30,14 +30,11 @@
 		</encoder>
 	</appender>
 
-	<logger name="org.n52" level="${config.logger.level}" />
-	<logger name="org.n52.oxf" level="${config.logger.level.oxf}" />
-	<logger name="org.n52.client" level="${config.logger.level.client}" />
-	<logger name="org.n52.server" level="${config.logger.level.server}" />
-	
+	<logger name="org.n52" level="DEBUG" />
+
 	<logger name="org.geotools" level="WARN" />
 	<logger name="org.apache" level="WARN" />
-	
+
 	<logger name="com.sun.xml" level="ERROR" />
 	<logger name="org.geotools" level="WARN" />
 	<logger name="org.springframework.web.servlet.mvc.method.annotation" level="WARN" />
