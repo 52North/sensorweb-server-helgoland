@@ -22,29 +22,11 @@
             <artifactId>timeseries-web</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>hibernate-datasource-postgres</artifactId>
             <version>4.0.2-SNAPSHOT</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.n52.sensorweb.sos</groupId>
-            <artifactId>hibernate-session-factory</artifactId>
-            <version>4.0.2-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>4.1.12.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>9.1-901.jdbc4</version>
-        </dependency>-->
     </dependencies>
     <build>
         <plugins>
