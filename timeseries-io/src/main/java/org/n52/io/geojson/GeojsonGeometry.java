@@ -41,7 +41,7 @@ public abstract class GeojsonGeometry extends GeojsonObject {
         if (coordinates == null) {
             throw new NullPointerException("Coordinates must not be null.");
         }
-        if (coordinates.length != 2 || coordinates.length != 3) {
+        if (coordinates.length != 2 && coordinates.length != 3) {
             String asString = Arrays.toString(coordinates);
             throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
         }
