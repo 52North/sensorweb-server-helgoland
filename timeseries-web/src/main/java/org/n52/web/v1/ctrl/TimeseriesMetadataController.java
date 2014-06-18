@@ -27,39 +27,43 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Map;
 import org.n52.io.ConfigApplier;
+import org.n52.io.IoParameters;
+import static org.n52.io.QueryParameters.createFromQuery;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.web.ResourceNotFoundException;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping(value = COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterController {
-    
+
     private List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers = new ArrayList<ConfigApplier<TimeseriesMetadataOutput>>();
 
-    // resource controller for timeseries metadata
-    
     @Override
     protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
-        
+
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput)parameterOutput;
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) parameterOutput;
             for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
                 applier.applyConfigOn(output);
             }
         }
-        
+
         return toBeProcessed;
     }
 
     @Override
     protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        
+
         TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) toBeProcessed;
         for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
             applier.applyConfigOn(output);
@@ -74,5 +78,5 @@ public class TimeseriesMetadataController extends ParameterController {
     public void setConfigAppliers(List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers) {
         this.configAppliers = configAppliers;
     }
-    
+
 }
