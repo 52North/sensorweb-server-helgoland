@@ -72,7 +72,7 @@ public final class CRSUtils {
 
     /**
      * use static constructors to create an instance.
-     * 
+     *
      * @param crsFactory
      *        a factory used to create authorized reference systems.
      * @throws IllegalStateException
@@ -99,19 +99,25 @@ public final class CRSUtils {
 
     /**
      * Creates a GeoJSON representation for the given point.
-     * 
+     *
      * @param point
      *        the point to convert.
      * @return a GeoJSON representation of the given point.
      */
     public GeojsonPoint convertToGeojsonFrom(Point point) {
-        return createWithCoordinates(new Double[] {point.getX(), point.getY()});
+        Coordinate coords = point.getCoordinate();
+        if (point.getDimension() == 2) {
+            return createWithCoordinates(new Double[] {coords.x, coords.y});
+        }
+        else {
+            return createWithCoordinates(new Double[] {coords.x, coords.y, coords.z});
+        }
     }
 
     /**
      * Creates a GeoJSON representation of the given point. Adds a named <code>crs</code> member if it is
      * different to the internally used CRS:84.
-     * 
+     *
      * @param point
      *        the point to be converted to GeoJSON.
      * @param targetCrs
@@ -124,9 +130,7 @@ public final class CRSUtils {
      */
     public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs) throws TransformException, FactoryException {
         Point transformedPoint = transformInnerToOuter(point, targetCrs);
-        double x = transformedPoint.getX();
-        double y = transformedPoint.getY();
-        GeojsonPoint asGeoJSON = createWithCoordinates(new Double[] {x, y});
+        GeojsonPoint asGeoJSON = convertToGeojsonFrom(transformedPoint);
         if ( !DEFAULT_CRS.equalsIgnoreCase(targetCrs)) {
             asGeoJSON.setCrs(createNamedCRS(targetCrs));
         }
@@ -135,7 +139,7 @@ public final class CRSUtils {
 
     /**
      * Creates a 2D point geometry within the given reference system.
-     * 
+     *
      * @param x
      *        the coordinate's x value.
      * @param y
@@ -151,7 +155,7 @@ public final class CRSUtils {
 
     /**
      * Creates a 2D point geometry with respect to its height and given reference system.
-     * 
+     *
      * @param x
      *        the point's x value.
      * @param y
@@ -182,7 +186,7 @@ public final class CRSUtils {
      * Extracts the SRS number of the incoming SRS definition string. This can be either an HTTP URL (like
      * <code>http://www.opengis.net/def/crs/EPSG/0/4326</code>) or a URN (like
      * <code>urn:ogc:def:crs:EPSG::31466</code>).
-     * 
+     *
      * @param srs
      *        the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN ('<code>:</code>
      *        '-separated).
@@ -222,7 +226,7 @@ public final class CRSUtils {
 
     /**
      * Transforms a given point from a given reference to inner reference, which is WGS84 (CRS:84).
-     * 
+     *
      * @param point
      *        the point to transform.
      * @param srcFrame
@@ -240,7 +244,7 @@ public final class CRSUtils {
 
     /**
      * Transforms a given point from its inner reference (which is WGS84 (CRS:84)) to a given reference.
-     * 
+     *
      * @param point
      *        the point to transform.
      * @param destFrame
@@ -258,7 +262,7 @@ public final class CRSUtils {
 
     /**
      * Transforms a given point from a given reference to a destinated reference.
-     * 
+     *
      * @param point
      *        the point to transform.
      * @param srcFrame
@@ -278,7 +282,7 @@ public final class CRSUtils {
 
     /**
      * Transforms a given geometry from a given reference to a destinated reference.
-     * 
+     *
      * @param geometry
      *        the geometry to transform.
      * @param srcFrame
@@ -304,7 +308,7 @@ public final class CRSUtils {
 
     /**
      * Indicates if the given reference frame has switched axes compared to the inner default (lon/lat).
-     * 
+     *
      * @param outer
      *        the given reference frame code to check.
      * @return <code>true</code> if axes order is switched compared to the inner default.
@@ -318,7 +322,7 @@ public final class CRSUtils {
     /**
      * Gets the propert coordinate reference system defined for the given authority code. If no matching CRS
      * could be found the default {@link #internCrs} is being returned.
-     * 
+     *
      * @param authorityCode
      *        the CRS code, like <code>EPSG:4326</code> or <code>CRS:84</code>.
      * @return the CRS instance for the given code or {@link #internCrs} if either no matching CRS could be
@@ -359,7 +363,7 @@ public final class CRSUtils {
     /**
      * Creates an {@link CRSUtils} which offers assistance when doing spatial opererations. Strict means that
      * all CRS defined with lat/lon axis ordering will be handled as defined.
-     * 
+     *
      * @return creates a reference helper which (strictly) handles referencing operations.
      * @throws IllegalStateException
      *         if decoding default CRS fails.
@@ -370,7 +374,7 @@ public final class CRSUtils {
          * default value for this. It becomes necessary, when property org.geotools.referencing.forceXY was
          * set as System property which silently switches axis order when running in the same JVM environment
          * (as within an Apache Tomcat).
-         * 
+         *
          * FORCE_LONGITUDE_FIRST_AXIS_ORDER parameter is preferred to org.geotools.referencing.forceXY so we
          * have to set it explicitly to find the correct CRS factory.
          */
@@ -381,7 +385,7 @@ public final class CRSUtils {
     /**
      * Creates a {@link CRSUtils} which offers assistance when doing spatial opererations. Forcing XY means
      * that CRS axis ordering is considered lon/lat ordering, even if defined lat/lon.
-     * 
+     *
      * @return creates a reference helper which (strictly) handles referencing operations.
      * @throws IllegalStateException
      *         if decoding default CRS fails.
@@ -393,7 +397,7 @@ public final class CRSUtils {
 
     /**
      * Creates a {@link CRSUtils} which offers assistance when doing spatial opererations.
-     * 
+     *
      * @param hints
      *        Some Geotools {@link Hints} which set behavior and special considerations regarding to the
      *        spatial operations.
