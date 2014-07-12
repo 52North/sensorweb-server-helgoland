@@ -28,6 +28,8 @@
 package org.n52.series.api.v1.db.da;
 
 import static java.math.RoundingMode.HALF_UP;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
+import org.n52.io.crs.CRSUtils;
+import org.n52.io.geojson.GeojsonPoint;
 import org.joda.time.Interval;
 import org.n52.io.v1.data.ReferenceValueOutput;
 import org.n52.io.v1.data.StationOutput;
@@ -301,10 +305,30 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, SeriesEntity series) {
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
+        if (observation.getValue() == null){
+        	value.setValue(createPoint(observation));
+        } else {
         value.setValue(formatDecimal(observation.getValue(), series));
+        }
         return value;
     }
 
+    private GeojsonPoint createPoint(ObservationEntity observationEntity) {
+        try {
+            Geometry geometry = observationEntity.getGeomvalue();
+            String fromCrs = "EPSG:" +geometry.getSRID();
+            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+        }
+        catch (FactoryException e) {
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
+        }
+        catch (TransformException e) {
+            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
+        }
+        return null;
+    }
+    
     private Double formatDecimal(Double value, SeriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)

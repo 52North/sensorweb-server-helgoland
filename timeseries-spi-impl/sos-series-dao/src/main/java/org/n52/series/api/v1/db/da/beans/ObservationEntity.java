@@ -28,7 +28,7 @@
 package org.n52.series.api.v1.db.da.beans;
 
 import java.util.Date;
-
+import com.vividsolutions.jts.geom.Geometry;
 
 public class ObservationEntity {
 
@@ -38,7 +38,17 @@ public class ObservationEntity {
     
     private Double value;
     
+    private Geometry geomvalue;
+    
     private long seriesPkid;
+    
+    public getGeomvalue(){
+    	return geomvalue;
+    }
+    
+    public setGeomvalue(Geometry geomvalue){
+    	this.geomvalue = geomvalue;
+    }
 
     public Long getPkid() {
         return pkid;
