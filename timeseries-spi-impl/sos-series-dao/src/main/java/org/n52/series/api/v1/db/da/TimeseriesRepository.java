@@ -62,6 +62,9 @@ import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     public TimeseriesRepository(ServiceInfo serviceInfo) {
@@ -316,15 +319,15 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private GeojsonPoint createPoint(ObservationEntity observationEntity) {
         try {
             Geometry geometry = observationEntity.getGeomvalue();
-            String fromCrs = "EPSG:" +geometry.getSRID();
+            String fromCrs = "EPSG:" + geometry.getSRID();
             Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
             return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
         }
         catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + observationEntity.getPkid());
         }
         catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to transform station/feature: {}" + observationEntity.getPkid());
         }
         return null;
     }
