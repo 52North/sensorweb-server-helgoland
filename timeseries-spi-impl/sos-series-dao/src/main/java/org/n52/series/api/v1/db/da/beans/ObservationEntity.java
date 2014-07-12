@@ -42,7 +42,7 @@ public class ObservationEntity {
     
     private long seriesPkid;
     
-    public getGeomvalue(){
+    public Geometry getGeomvalue(){
     	return geomvalue;
     }
     
