@@ -46,7 +46,7 @@ public class ObservationEntity {
     	return geomvalue;
     }
     
-    public setGeomvalue(Geometry geomvalue){
+    public void setGeomvalue(Geometry geomvalue){
     	this.geomvalue = geomvalue;
     }
 
