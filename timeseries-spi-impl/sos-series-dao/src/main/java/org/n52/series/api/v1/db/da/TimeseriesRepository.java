@@ -66,7 +66,11 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
-
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
+	
+	private CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
+	
     public TimeseriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
     }
@@ -320,14 +324,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             Geometry geometry = observationEntity.getGeomvalue();
             String fromCrs = "EPSG:" + geometry.getSRID();
-            Point location = crsUtils.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtils.convertToGeojsonFrom(location, DEFAULT_CRS);
+            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
         }
         catch (Exception e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" /*+ observationEntity.getPkid()*/);
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + observationEntity.getPkid());
         }
         catch (Exception e) {
-            LOGGER.info("Unable to transform station/feature: {}" /*+ observationEntity.getPkid()*/);
+            LOGGER.info("Unable to transform station/feature: {}" + observationEntity.getPkid());
         }
         return null;
     }
