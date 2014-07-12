@@ -320,14 +320,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             Geometry geometry = observationEntity.getGeomvalue();
             String fromCrs = "EPSG:" + geometry.getSRID();
-            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            Point location = crsUtils.transformOuterToInner((Point) geometry, fromCrs);
+            return crsUtils.convertToGeojsonFrom(location, DEFAULT_CRS);
         }
-        catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + observationEntity.getPkid());
+        catch (Exception e) {
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" /*+ observationEntity.getPkid()*/);
         }
-        catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + observationEntity.getPkid());
+        catch (Exception e) {
+            LOGGER.info("Unable to transform station/feature: {}" /*+ observationEntity.getPkid()*/);
         }
         return null;
     }
