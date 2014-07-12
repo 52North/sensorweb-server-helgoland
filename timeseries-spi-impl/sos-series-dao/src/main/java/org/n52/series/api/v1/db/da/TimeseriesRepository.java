@@ -61,6 +61,8 @@ import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
