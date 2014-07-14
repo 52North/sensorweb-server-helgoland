@@ -315,7 +315,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         if (observation.getValue() == null){
-        value.setValue(createPoint(observation));
+        value.setGeomvalue(createPoint(observation));
         } else {
         value.setValue(formatDecimal(observation.getValue(), series));
         }
