@@ -29,6 +29,8 @@ package org.n52.io.v1.data;
 
 import java.io.Serializable;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializable {
 
@@ -37,6 +39,8 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     private Long timestamp;
 
     private Double value;
+    
+    private Geometry geomvalue;
 
     public TimeseriesValue() {
         // for serialization
@@ -45,6 +49,11 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     public TimeseriesValue(long timestamp, Double value) {
         this.timestamp = timestamp;
         this.value = value;
+    }
+    
+    public TimeseriesValue(long timestamp, Geometry geomvalue) {
+        this.timestamp = timestamp;
+        this.geomvalue = geomvalue;
     }
 
     public Long getTimestamp() {
@@ -62,6 +71,15 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     public void setValue(Double value) {
         this.value = value;
     }
+    
+    public void setGeomvalue(Geometry geomvalue){
+    	this.geomvalue = geomvalue;
+    }
+    
+    public Geometry getGeomvalue(){
+    	return geomvalue;
+    }
+    
     
     @Override
     public String toString() {
