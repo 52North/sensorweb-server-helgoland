@@ -335,7 +335,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + observationEntity.getPkid());
         }
-        catch (TransformException e) {
+        catch (Exception e) {
             LOGGER.info("Unable to transform station/feature: {}" + observationEntity.getPkid());
         }
         return null;
