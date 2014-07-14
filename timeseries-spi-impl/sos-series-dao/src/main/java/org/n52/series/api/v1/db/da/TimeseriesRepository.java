@@ -45,6 +45,7 @@ import org.n52.io.geojson.GeojsonPoint;
 import org.joda.time.Interval;
 import org.n52.io.v1.data.ReferenceValueOutput;
 import org.n52.io.v1.data.StationOutput;
+import org.n52.io.v1.data.TimeseriesOutput;
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesDataMetadata;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
@@ -61,6 +62,8 @@ import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -329,10 +332,10 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
             return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
         }
-        catch (Exception e) {
+        catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + observationEntity.getPkid());
         }
-        catch (Exception e) {
+        catch (TransformException e) {
             LOGGER.info("Unable to transform station/feature: {}" + observationEntity.getPkid());
         }
         return null;
