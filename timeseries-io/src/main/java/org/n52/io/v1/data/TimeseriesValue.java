@@ -28,7 +28,7 @@
 package org.n52.io.v1.data;
 
 import java.io.Serializable;
-
+import org.n52.io.geojson.GeojsonPoint;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
