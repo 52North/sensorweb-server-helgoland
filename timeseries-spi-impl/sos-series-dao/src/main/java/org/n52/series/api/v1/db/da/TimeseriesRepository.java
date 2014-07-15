@@ -321,8 +321,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         geom.setTimestamp(observation.getTimestamp().getTime());
         geom.setGeom(createPoint(observation));
         value.setValue(formatDecimal(observation.getValue(), series));
-        return value;
-        return geom;
+        return value, geom;
     }
 
     private GeojsonPoint createPoint(ObservationEntity observationEntity) {
