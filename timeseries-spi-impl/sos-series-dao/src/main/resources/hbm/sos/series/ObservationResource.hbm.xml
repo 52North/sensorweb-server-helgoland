@@ -14,7 +14,7 @@
 		  <property name="value" type="double" />
 		</join>
 		<join table="spatialfilteringprofile" fetch="join">
-		  <key column="observation" foreign-key="observationid" />
+		  <key column="observation" />
 		  <property name="geom" type="org.hibernate.spatial.GeometryType" />
 		</join>
 	</class>
