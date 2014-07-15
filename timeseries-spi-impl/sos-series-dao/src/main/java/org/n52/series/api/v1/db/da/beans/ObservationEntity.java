@@ -38,16 +38,16 @@ public class ObservationEntity {
     
     private Double value;
     
-    private Geometry geomvalue;
+    private Geometry geom;
     
     private long seriesPkid;
     
-    public Geometry getGeomvalue(){
-    	return geomvalue;
+    public Geometry getGeom(){
+    	return geom;
     }
     
-    public void setGeomvalue(Geometry geomvalue){
-    	this.geomvalue = geomvalue;
+    public void setGeom(Geometry geom){
+    	this.geom = geom;
     }
 
     public Long getPkid() {

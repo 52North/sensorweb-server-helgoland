@@ -15,7 +15,7 @@
 		</join>
 		<join table="geometryvalue" fetch="join">
 		  <key column="observationid" foreign-key="observationid" />
-		  <property name="value" type="org.hibernate.spatial.GeometryType" />
+		  <property name="geom" type="org.hibernate.spatial.GeometryType" />
 		</join>
 	</class>
 </hibernate-mapping>

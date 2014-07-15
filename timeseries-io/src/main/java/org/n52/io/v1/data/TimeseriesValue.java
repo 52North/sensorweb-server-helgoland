@@ -40,7 +40,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
 
     private Double value;
     
-    private GeojsonPoint geomvalue;
+    private GeojsonPoint geom;
 
     public TimeseriesValue() {
         // for serialization
@@ -51,9 +51,9 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
         this.value = value;
     }
     
-    public TimeseriesValue(long timestamp, GeojsonPoint geomvalue) {
+    public TimeseriesValue(long timestamp, GeojsonPoint geom) {
         this.timestamp = timestamp;
-        this.geomvalue = geomvalue;
+        this.geom = geom;
     }
 
     public Long getTimestamp() {
@@ -72,12 +72,12 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
         this.value = value;
     }
     
-    public void setGeomvalue(GeojsonPoint geomvalue){
-    	this.geomvalue = geomvalue;
+    public void setGeom(GeojsonPoint geom){
+    	this.geom = geom;
     }
     
-    public GeojsonPoint getGeomvalue(){
-    	return geomvalue;
+    public GeojsonPoint getGeom(){
+    	return geom;
     }
     
     
