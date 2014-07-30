@@ -160,7 +160,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     private StreamSource getTransforamtionRule() {
-        String rules = PDF_TRANSORMATION_RULES.replace(LOCALE_REPLACER, i18n.getLocale());
+        String rules = PDF_TRANSORMATION_RULES.replace(LOCALE_REPLACER, i18n.getTwoDigitsLanguageCode());
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 

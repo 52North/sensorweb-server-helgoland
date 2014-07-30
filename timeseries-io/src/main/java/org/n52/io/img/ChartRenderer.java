@@ -27,47 +27,51 @@
  */
 package org.n52.io.img;
 
+import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
+import java.awt.Font;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
-import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
-
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
+import static javax.imageio.ImageIO.write;
+import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.time.TimePeriod;
 import org.jfree.ui.RectangleInsets;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import org.joda.time.Period;
 import org.n52.io.I18N;
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
+import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
+import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.io.v1.data.StyleProperties;
@@ -193,8 +197,14 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
+        Date end = getEndTime(getTimespan());
+        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
+
+//        String zoneName = zone.getShortName(end.getTime(), i18n.getLocale());
+        StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
+        domainAxisLabel.append(" (").append(zoneName).append(")");
         this.chart = createTimeSeriesChart(null,
-                                           i18n.get("time"),
+                                           domainAxisLabel.toString(),
                                            i18n.get("value"),
                                            null,
                                            drawLegend,
@@ -235,11 +245,18 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private void configureTimeAxis(XYPlot xyPlot) {
-        String timespan = getChartStyleDefinitions().getTimespan();
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
-        timeAxis.setRange(getStartTime(timespan), getEndTime(timespan));
-        timeAxis.setTimeZone(DateTime.parse(timespan).getZone().toTimeZone());
+        timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
         timeAxis.setDateFormatOverride(new SimpleDateFormat());
+        timeAxis.setTimeZone(getTimezone().toTimeZone());
+    }
+
+    private String getTimespan() {
+        return getChartStyleDefinitions().getTimespan();
+    }
+
+    private DateTimeZone getTimezone() {
+        return Interval.parse(getTimespan()).getEnd().getZone();
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {

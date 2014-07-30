@@ -61,8 +61,15 @@ public final class I18N {
      * @return the 2-char language code.
      * @see Locale#getLanguage()
      */
-    public String getLocale() {
+    public String getTwoDigitsLanguageCode() {
         return locale.getLanguage();
+    }
+
+    /**
+     * @return a copy of the configured locale
+     */
+    public Locale getLocale() {
+        return new Locale(locale.getLanguage(), locale.getCountry(), locale.getVariant());
     }
 
     public static I18N getDefaultLocalizer() {
@@ -98,7 +105,7 @@ public final class I18N {
      * {@link Control}'s JavaDoc example to handle UTF-8 localization bundles.
      */
     private static class UTF8Control extends Control {
-        
+
         @Override
         public List<String> getFormats(String baseName) {
             return FORMAT_PROPERTIES;
@@ -106,9 +113,9 @@ public final class I18N {
 
         /*
          * Implementation taken from Control JavaDoc example.
-         * 
+         *
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.ResourceBundle.Control#newBundle(java.lang.String, java.util.Locale,
          * java.lang.String, java.lang.ClassLoader, boolean)
          */
