@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
@@ -60,6 +61,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.ui.RectangleInsets;
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
@@ -87,11 +89,11 @@ public abstract class ChartRenderer implements IoHandler {
     private MimeType mimeType;
 
     private boolean drawLegend;
-    
+
     private boolean generalize;
 
     private boolean showGrid;
-    
+
     private JFreeChart chart;
 
     private XYPlot xyPlot;
@@ -132,13 +134,13 @@ public abstract class ChartRenderer implements IoHandler {
         Graphics2D chartGraphics = chartImage.createGraphics();
         chartGraphics.fillRect(0, 0, width, height);
         chartGraphics.setColor(WHITE);
-        
+
         chart.setTextAntiAlias(true);
         chart.setAntiAlias(true);
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
-    
+
     public XYPlot getXYPlot() {
         if (xyPlot == null) {
             xyPlot = createChart(context);
@@ -165,11 +167,11 @@ public abstract class ChartRenderer implements IoHandler {
     public void setDrawLegend(boolean drawLegend) {
         this.drawLegend = drawLegend;
     }
-    
+
     public boolean isGeneralize() {
         return generalize;
     }
-    
+
     public void setGeneralize(boolean generalize) {
         this.generalize = generalize;
     }
@@ -236,6 +238,7 @@ public abstract class ChartRenderer implements IoHandler {
         String timespan = getChartStyleDefinitions().getTimespan();
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(timespan), getEndTime(timespan));
+        timeAxis.setTimeZone(DateTime.parse(timespan).getZone().toTimeZone());
         timeAxis.setDateFormatOverride(new SimpleDateFormat());
     }
 
@@ -267,7 +270,7 @@ public abstract class ChartRenderer implements IoHandler {
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId) {
         return getChartStyleDefinitions().getStyleOptions(timeseriesId);
     }
-    
+
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
         return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
     }

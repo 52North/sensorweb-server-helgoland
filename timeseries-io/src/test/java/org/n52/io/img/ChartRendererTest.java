@@ -40,29 +40,39 @@ import org.n52.io.format.TvpDataCollection;
 
 
 public class ChartRendererTest {
-    
+
     private static final String VALID_ISO8601_RELATIVE_START = "PT6H/2013-08-13TZ";
-    
+
     private static final String VALID_ISO8601_ABSOLUTE_START = "2013-07-13TZ/2013-08-13TZ";
-    
+
+    private static final String VALID_ISO8601_DAYLIGHT_SAVING_SWITCH = "2013-10-28T02:00:00+02:00/2013-10-28T02:00:00+01:00";
+
     private MyChartRenderer chartRenderer;
 
     @Before public void
     setUp() {
         this.chartRenderer = new MyChartRenderer(RenderingContext.createEmpty());
     }
-    
-    
+
+
     @Test public void
     shouldParseBeginFromIso8601PeriodWithRelativeStart() {
         Date start = chartRenderer.getStartTime(VALID_ISO8601_RELATIVE_START);
         assertThat(start, is(DateTime.parse("2013-08-13TZ").minusHours(6).toDate()));
     }
-    
+
     @Test public void
     shouldParseBeginFromIso8601PeriodWithAbsoluteStart() {
         Date start = chartRenderer.getStartTime(VALID_ISO8601_ABSOLUTE_START);
         assertThat(start, is(DateTime.parse("2013-08-13TZ").minusMonths(1).toDate()));
+    }
+
+    @Test public void
+    shouldParseBeginAndEndFromIso8601PeriodContainingDaylightSavingTimezoneSwith() {
+        Date start = chartRenderer.getStartTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
+        Date end = chartRenderer.getEndTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
+        assertThat(start, is(DateTime.parse("2013-10-28T00:00:00Z").toDate()));
+        assertThat(end, is(DateTime.parse("2013-10-28T01:00:00Z").toDate()));
     }
 
     static class MyChartRenderer extends ChartRenderer {
