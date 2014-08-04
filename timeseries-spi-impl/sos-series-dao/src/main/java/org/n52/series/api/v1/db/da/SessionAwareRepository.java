@@ -43,6 +43,7 @@ import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.io.v1.data.ProcedureOutput;
 import org.n52.io.v1.data.ServiceOutput;
 import org.n52.io.v1.data.TimeseriesOutput;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nCategoryEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
@@ -55,42 +56,41 @@ import org.n52.sos.ds.hibernate.HibernateSessionHolder;
 import org.n52.sos.ds.hibernate.SessionFactoryProvider;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.service.Configurator;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class SessionAwareRepository {
 
+    // TODO tackle issue #71
     private static final String DATASOURCE_PROPERTIES = "/datasource.properties";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
 
-    private static HibernateSessionHolder sessionHolder;
+    private static final HibernateSessionHolder sessionHolder = createSessionHolderIfNeccessary();
 
     private final ServiceInfo serviceInfo;
 
     protected SessionAwareRepository(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
-        createSessionHolderIfNeccessary();
     }
 
     public abstract Collection<SearchResult> searchFor(String queryString, String locale);
 
     protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
 
-    private void createSessionHolderIfNeccessary() {
+    private static HibernateSessionHolder createSessionHolderIfNeccessary() {
         try {
             if (Configurator.getInstance() == null) {
                 Properties connectionProviderConfig = new Properties();
-                connectionProviderConfig.load(getClass().getResourceAsStream(DATASOURCE_PROPERTIES));
+                connectionProviderConfig.load(SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES));
                 SessionFactoryProvider provider = new SessionFactoryProvider();
                 provider.initialize(connectionProviderConfig);
 
                 // TODO configure hbm.xml mapping path
 
-                sessionHolder = new HibernateSessionHolder(provider);
+                return new HibernateSessionHolder(provider);
             } else {
-                sessionHolder = new HibernateSessionHolder();
+                return new HibernateSessionHolder();
             }
         } catch (IOException e) {
             LOGGER.error("Could not establish database connection. Check {}", DATASOURCE_PROPERTIES, e);
