@@ -34,6 +34,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import static org.hibernate.criterion.Restrictions.eq;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
@@ -42,6 +43,8 @@ import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
 import org.n52.series.api.v1.db.da.beans.ProcedureEntity;
 
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
+
+    private static final String COLUMN_REFERENCE = "reference";
 
     public ProcedureDao(Session session) {
         super(session);
@@ -77,7 +80,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = session.createCriteria(ProcedureEntity.class, "p")
-                .add(Restrictions.eq("reference", Boolean.FALSE));
+                .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
