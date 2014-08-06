@@ -42,6 +42,11 @@ public class UndesignedParameterSet extends ParameterSet {
     private String[] timeseriesIds;
     
     /**
+     * Optional parameter, to define a result time in the request
+     */
+    private String resultTime;
+
+    /**
      * Which output format the raw data shall have.
      */
     private String format;
@@ -53,6 +58,14 @@ public class UndesignedParameterSet extends ParameterSet {
 
     void setTimeseries(String[] timeseries) {
         this.timeseriesIds = Utils.copy(timeseries);
+    }
+    
+    public String getResultTime() {
+        return resultTime;
+    }
+
+    public void setResultTime(String resultTime) {
+        this.resultTime = resultTime;
     }
     
     public String getFormat() {

@@ -54,7 +54,7 @@ public abstract class ParameterSet {
      * If reference values shall be appended to the timeseries data.
      */
     private boolean expanded;
-
+    
     /**
      * A language code to determine the requested locale. "en" is the default.
      */
