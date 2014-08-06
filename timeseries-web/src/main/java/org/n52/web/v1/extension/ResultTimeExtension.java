@@ -25,26 +25,34 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.web.v1.extension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.io.v1.data.TimeseriesOutput;
 import org.n52.sensorweb.v1.spi.ResultTimeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadataOutput> {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ResultTimeExtension.class);
+
     private static final String TYPE = "resultTime";
+
+    private static final String CONFIG_FILE = "/config-extension-resultTime.json";
+
+    private final ConfigResultTime config;
 
     private ResultTimeService resultTimeService;
 
-    @Override
-    public String getExtensionName() {
-        return TYPE;
+    public ResultTimeExtension() {
+        config = readConfig();
     }
 
     @Override
@@ -61,18 +69,13 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
 
     @Override
     public void applyExtensionOn(TimeseriesMetadataOutput output) {
-        if (enabled(output.getParameters())) {
-            output.addExtra(getExtensionName());
+        if (enabled(output.getParameters().getService().getId())) {
+            output.addExtra(TYPE);
         }
     }
 
-    private boolean enabled(TimeseriesOutput timeseriesOutput) {
-        return timeseriesOutput.getService().getId().equals("srv_5447754640fd3a7f04c094b54a9e9bf6"); // TODO zu config
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
+    private boolean enabled(String serviceId) {
+        return config.getServices().contains(serviceId);
     }
 
     public ResultTimeService getResultTimeService() {
@@ -81,6 +84,25 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
 
     public void setResultTimeService(ResultTimeService resultTimeService) {
         this.resultTimeService = resultTimeService;
+    }
+
+    private ConfigResultTime readConfig() {
+        InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);
+        try {
+            ObjectMapper om = new ObjectMapper();
+            return om.readValue(taskConfig, ConfigResultTime.class);
+        } catch (IOException e) {
+            LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
+            return new ConfigResultTime();
+        } finally {
+            if (taskConfig != null) {
+                try {
+                    taskConfig.close();
+                } catch (IOException e) {
+                    LOGGER.debug("Stream already closed.");
+                }
+            }
+        }
     }
 
 }

@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.web.v1.extension;
 
 import java.util.Map;
 
@@ -33,12 +33,8 @@ import org.n52.io.IoParameters;
 
 public interface MetadataExtension<T> {
 
-    public String getExtensionName();
-
     public void applyExtensionOn(T toApplyExtensionOn);
 
     public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
 
-    public boolean isEnabled();
-    
 }

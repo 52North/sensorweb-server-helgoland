@@ -27,6 +27,7 @@
  */
 package org.n52.web.v1.ctrl;
 
+import org.n52.web.v1.extension.MetadataExtension;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -65,10 +66,7 @@ public class TimeseriesMetadataController extends ParameterController {
     protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
 
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) parameterOutput;
-            for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
-                applier.applyConfigOn(output);
-            }
+            doPostProcessOn(parameterOutput);
         }
 
         return toBeProcessed;
