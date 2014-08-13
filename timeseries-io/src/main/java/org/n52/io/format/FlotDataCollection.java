@@ -27,25 +27,13 @@
  */
 package org.n52.io.format;
 
-public final class FormatterFactory {
-    
-    private final String format;
-    
-    private FormatterFactory(String format) {
-        this.format = format;
+import org.n52.io.v1.data.TimeseriesDataCollection;
+
+public class FlotDataCollection extends TimeseriesDataCollection<FlotSeries>{
+
+    @Override
+    public Object getTimeseriesOutput() {
+        return getAllTimeseries();
     }
     
-    public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
-            return new HighchartFormatter();
-        } else if("flot".equals(format)) {
-            return new FlotFormatter();
-        } else {
-            return new TvpFormatter();
-        }
-    }
-    
-    public static FormatterFactory createFormatterFactory(String format) {
-        return new FormatterFactory(format);
-    }
 }

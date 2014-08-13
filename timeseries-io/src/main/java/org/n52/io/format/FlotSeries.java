@@ -25,27 +25,41 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.format;
 
-public final class FormatterFactory {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class FlotSeries {
     
-    private final String format;
+    private List<Number[]> values;
     
-    private FormatterFactory(String format) {
-        this.format = format;
+    private Map<String, List<Number[]>> referenceValues;
+
+    public FlotSeries() {
+        referenceValues = new HashMap<String, List<Number[]>>();
+    }
+
+    public List<Number[]> getValues() {
+        return values;
+    }
+
+    public void setValues(List<Number[]> values) {
+        this.values = values;
+    }
+
+    public Map<String, List<Number[]>> getReferenceValues() {
+        return referenceValues;
+    }
+
+    public void setReferenceValues(Map<String, List<Number[]>> referenceValues) {
+        this.referenceValues = referenceValues;
     }
     
-    public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
-            return new HighchartFormatter();
-        } else if("flot".equals(format)) {
-            return new FlotFormatter();
-        } else {
-            return new TvpFormatter();
-        }
+    public void addReferenceValues(String id, List<Number[]> values) {
+        this.referenceValues.put(id, values);
     }
     
-    public static FormatterFactory createFormatterFactory(String format) {
-        return new FormatterFactory(format);
-    }
 }
