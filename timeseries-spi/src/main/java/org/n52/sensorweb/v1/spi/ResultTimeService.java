@@ -25,27 +25,14 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.format;
 
-public final class FormatterFactory {
+package org.n52.sensorweb.v1.spi;
+
+import java.util.ArrayList;
+import org.n52.io.IoParameters;
+
+public interface ResultTimeService {
     
-    private final String format;
+    ArrayList<String> getResultTimeList(IoParameters parameters, String timeseriesId);
     
-    private FormatterFactory(String format) {
-        this.format = format;
-    }
-    
-    public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
-            return new HighchartFormatter();
-        } else if("flot".equals(format)) {
-            return new FlotFormatter();
-        } else {
-            return new TvpFormatter();
-        }
-    }
-    
-    public static FormatterFactory createFormatterFactory(String format) {
-        return new FormatterFactory(format);
-    }
 }

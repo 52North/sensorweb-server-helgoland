@@ -25,27 +25,24 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.format;
+package org.n52.web.v1.extension;
 
-public final class FormatterFactory {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConfigResultTime {
     
-    private final String format;
-    
-    private FormatterFactory(String format) {
-        this.format = format;
+    private List<String> services = new ArrayList<String>();
+
+    public ConfigResultTime() {
+    }
+
+    public List<String> getServices() {
+        return services;
+    }
+
+    public void setServices(List<String> services) {
+        this.services = services;
     }
     
-    public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
-            return new HighchartFormatter();
-        } else if("flot".equals(format)) {
-            return new FlotFormatter();
-        } else {
-            return new TvpFormatter();
-        }
-    }
-    
-    public static FormatterFactory createFormatterFactory(String format) {
-        return new FormatterFactory(format);
-    }
 }

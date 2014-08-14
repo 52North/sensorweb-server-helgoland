@@ -47,7 +47,7 @@ public final class ResourcesController {
 
     private CountingMetadataService metadataService;
 
-//    @RequestMapping("/")
+    @RequestMapping("/")
     public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
         return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }

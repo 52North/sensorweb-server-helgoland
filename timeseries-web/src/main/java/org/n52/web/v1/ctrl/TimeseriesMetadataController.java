@@ -27,20 +27,22 @@
  */
 package org.n52.web.v1.ctrl;
 
+import org.n52.web.v1.extension.MetadataExtension;
+import static org.n52.io.QueryParameters.createFromQuery;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.n52.io.ConfigApplier;
 import org.n52.io.IoParameters;
-import static org.n52.io.QueryParameters.createFromQuery;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.web.ResourceNotFoundException;
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping(value = COLLECTION_TIMESERIES)
@@ -48,14 +50,23 @@ public class TimeseriesMetadataController extends ParameterController {
 
     private List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers = new ArrayList<ConfigApplier<TimeseriesMetadataOutput>>();
 
+    private List<MetadataExtension<TimeseriesMetadataOutput>> metadataExtensions = new ArrayList<MetadataExtension<TimeseriesMetadataOutput>>();
+
+    @RequestMapping(value = "/{item}/extras", method = GET)
+    public Map<String, Object> getExtras(@PathVariable("item") String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters queryMap = createFromQuery(query);
+        for (MetadataExtension<TimeseriesMetadataOutput> extension : metadataExtensions) {
+            return extension.getData(queryMap, timeseriesId);
+        }
+        return null;
+    }
+
     @Override
     protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
 
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) parameterOutput;
-            for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
-                applier.applyConfigOn(output);
-            }
+            doPostProcessOn(parameterOutput);
         }
 
         return toBeProcessed;
@@ -68,6 +79,10 @@ public class TimeseriesMetadataController extends ParameterController {
         for (ConfigApplier<TimeseriesMetadataOutput> applier : configAppliers) {
             applier.applyConfigOn(output);
         }
+
+        for (MetadataExtension<TimeseriesMetadataOutput> extension : metadataExtensions) {
+            extension.applyExtensionOn(output);
+        }
         return toBeProcessed;
     }
 
@@ -77,6 +92,14 @@ public class TimeseriesMetadataController extends ParameterController {
 
     public void setConfigAppliers(List<ConfigApplier<TimeseriesMetadataOutput>> configAppliers) {
         this.configAppliers = configAppliers;
+    }
+
+    public List<MetadataExtension<TimeseriesMetadataOutput>> getMetadataExtensions() {
+        return metadataExtensions;
+    }
+
+    public void setMetadataExtensions(List<MetadataExtension<TimeseriesMetadataOutput>> metadataExtensions) {
+        this.metadataExtensions = metadataExtensions;
     }
 
 }
