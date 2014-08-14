@@ -27,8 +27,10 @@
  */
 package org.n52.io.v1.data;
 
-import org.n52.io.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.n52.io.Utils;
 
 public class TimeseriesMetadataOutput extends ParameterOutput {
 
@@ -43,10 +45,12 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     private TimeseriesValue lastValue;
 
     private TimeseriesOutput parameters;
-    
+
     private StyleProperties renderingHints;
-    
+
     private StatusInterval[] statusIntervals;
+
+    private List<Object> extras;
 
     public String getUom() {
         return uom;
@@ -58,6 +62,20 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
 
     public StationOutput getStation() {
         return station;
+    }
+
+    public Object[] getExtras() {
+        if (extras != null) {
+            return extras.toArray();
+        }
+        return null;
+    }
+
+    public void addExtra(Object extra) {
+        if (extras == null) {
+            extras = new ArrayList<Object>();
+        }
+        extras.add(extra);
     }
 
     public void setStation(StationOutput station) {
@@ -95,21 +113,21 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     public void setParameters(TimeseriesOutput timeseries) {
         this.parameters = timeseries;
     }
-    
+
     public StyleProperties getRenderingHints() {
-    	return this.renderingHints;
+        return this.renderingHints;
     }
-    
+
     public void setRenderingHints(StyleProperties renderingHints) {
-    	this.renderingHints = renderingHints;
+        this.renderingHints = renderingHints;
     }
 
-	public StatusInterval[] getStatusIntervals() {
-		return statusIntervals;
-	}
+    public StatusInterval[] getStatusIntervals() {
+        return statusIntervals;
+    }
 
-	public void setStatusIntervals(StatusInterval[] statusIntervals) {
-		this.statusIntervals = statusIntervals;
-	}
+    public void setStatusIntervals(StatusInterval[] statusIntervals) {
+        this.statusIntervals = statusIntervals;
+    }
 
 }

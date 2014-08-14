@@ -88,7 +88,7 @@ public class TimeseriesDataController extends BaseController {
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
-
+    
     private PreRenderingTask preRenderingTask;
 
     private String requestIntervalRestriction;
@@ -115,6 +115,9 @@ public class TimeseriesDataController extends BaseController {
         Interval timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+        if (map.getResultTime() != null) {
+            parameters.setResultTime(map.getResultTime().toString());
+        }
 
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());

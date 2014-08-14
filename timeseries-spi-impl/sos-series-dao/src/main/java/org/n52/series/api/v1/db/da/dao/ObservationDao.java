@@ -46,6 +46,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
+    private static final String COLUMN_DELETED = "deleted";
+
     public ObservationDao(Session session) {
         super(session);
     }
@@ -95,7 +97,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ObservationEntity.class);
+        Criteria criteria = session.createCriteria(ObservationEntity.class)
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<ObservationEntity>) criteria.list();
@@ -103,7 +106,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
 
     /**
      * Retrieves all available observation instances belonging to a particular series.
-     * 
+     *
      * @param series
      *        the series the observations belongs to.
      * @param parameters
@@ -115,7 +118,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, DbQuery parameters) throws DataAccessException {
         Criteria criteria = session.createCriteria(ObservationEntity.class)
-                .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()));
+                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<ObservationEntity>) criteria.list();
@@ -125,7 +129,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     public List<ObservationEntity> getObservationsFor(SeriesEntity series, DbQuery query) {
         Criteria criteria = query.addTimespanTo(session
                 .createCriteria(ObservationEntity.class))
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
+                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
         return criteria.list();
     }
 
@@ -133,6 +138,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     public int getCount() throws DataAccessException {
         Criteria criteria = session
                 .createCriteria(ObservationEntity.class)
+                .add(eq(COLUMN_DELETED, Boolean.FALSE))
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }

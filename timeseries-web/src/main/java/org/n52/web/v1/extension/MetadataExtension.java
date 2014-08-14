@@ -25,27 +25,16 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.format;
+package org.n52.web.v1.extension;
 
-public final class FormatterFactory {
-    
-    private final String format;
-    
-    private FormatterFactory(String format) {
-        this.format = format;
-    }
-    
-    public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
-            return new HighchartFormatter();
-        } else if("flot".equals(format)) {
-            return new FlotFormatter();
-        } else {
-            return new TvpFormatter();
-        }
-    }
-    
-    public static FormatterFactory createFormatterFactory(String format) {
-        return new FormatterFactory(format);
-    }
+import java.util.Map;
+
+import org.n52.io.IoParameters;
+
+public interface MetadataExtension<T> {
+
+    public void applyExtensionOn(T toApplyExtensionOn);
+
+    public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
+
 }
