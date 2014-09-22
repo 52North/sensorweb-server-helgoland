@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesMetadata;
+import org.n52.io.v1.data.TimeseriesDataMetadata;
 import org.n52.io.v1.data.TimeseriesValue;
 
 
@@ -46,7 +46,7 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
             HighchartSeries series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewTimeseries(timeseriesId, series);
             
-            TimeseriesMetadata metadata = seriesToFormat.getMetadata();
+            TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
             if (metadata != null) {
                 Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
                 for (String referenceValueId : referenceValues.keySet()) {

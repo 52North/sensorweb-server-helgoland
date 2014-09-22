@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,7 +44,7 @@ public class TimeseriesData implements Serializable {
 
     private List<TimeseriesValue> values = new ArrayList<TimeseriesValue>();
     
-    private TimeseriesMetadata metadata;
+    private TimeseriesDataMetadata metadata;
     
     public void addValues(TimeseriesValue... values) {
         if (values != null && values.length > 0) {
@@ -88,11 +88,11 @@ public class TimeseriesData implements Serializable {
     }
     
     @JsonProperty("extra")
-    public TimeseriesMetadata getMetadata() {
+    public TimeseriesDataMetadata getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(TimeseriesMetadata metadata) {
+    public void setMetadata(TimeseriesDataMetadata metadata) {
         this.metadata = metadata;
     }
     

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.Instant;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeojsonPoint;
@@ -147,6 +148,11 @@ public class IoParameters {
      * Determines the timespan parameter
      */
     static final String TIMESPAN = "timespan";
+    
+    /**
+     * Parameter to specify the timeseries data with a result time
+     */
+    static final String RESULTTIME = "resultTime";
 
     /**
      * The width in px of the image to be rendered.
@@ -481,7 +487,7 @@ public class IoParameters {
         }
         return validateTimespan(query.get(TIMESPAN));
     }
-
+    
     private Interval createDefaultTimespan() {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
@@ -498,6 +504,22 @@ public class IoParameters {
         }
     }
 
+    public Instant getResultTime() {
+        if (!query.containsKey(RESULTTIME)) {
+            return null;
+        }
+        return validateTimestamp(query.get(RESULTTIME));
+    }
+    
+    private Instant validateTimestamp(String timestamp) {
+        try {
+            return Instant.parse(timestamp);
+        } catch (Exception e) {
+            String message = "Could not parse result time parameter." + timestamp;
+            throw new IoParseException(message, e);
+        }
+    }
+    
     public String getCategory() {
         return query.get(CATEGORY);
     }

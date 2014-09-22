@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,6 +33,8 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     private String id;
 
+    private String domainId;
+
     private String label;
 
     public String getId() {
@@ -41,6 +43,26 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * Returns the domain id of the parameter, e.g. a natural id (not arbitrarily generated) or the original id actually
+     * being used by proxied data sources.
+     *
+     * @return the domain id.
+     */
+    public String getDomainId() {
+        return domainId;
+    }
+
+    /**
+     * Sets the domain id of the parameter, e.g. a natural (not arbitrarily generated) id or the original id actually
+     * being used by proxied data sources.
+     *
+     * @param domainId the domain id of the parameter.
+     */
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
     }
 
     /**
@@ -55,7 +77,7 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
         this.label = label;
     }
 
-    
+    @Override
     public int compare(Collator collator, ParameterOutput o) {
         if (collator == null) {
             collator = Collator.getInstance();
@@ -67,37 +89,28 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ( (id == null) ? 0 : id.hashCode());
-        result = prime * result + ( (label == null) ? 0 : label.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((domainId == null) ? 0 : domainId.hashCode());
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (obj == null) {
             return false;
         }
-        if ( ! (obj instanceof ParameterOutput)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        ParameterOutput other = (ParameterOutput) obj;
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        }
-        else if ( !id.equals(other.id)) {
+        final ParameterOutput other = (ParameterOutput) obj;
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }
-        if (label == null) {
-            if (other.label != null) {
-                return false;
-            }
+        if ((this.domainId == null) ? (other.domainId != null) : !this.domainId.equals(other.domainId)) {
+            return false;
         }
-        else if ( !label.equals(other.label)) {
+        if ((this.label == null) ? (other.label != null) : !this.label.equals(other.label)) {
             return false;
         }
         return true;

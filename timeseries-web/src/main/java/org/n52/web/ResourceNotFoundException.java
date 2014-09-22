@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,11 +40,6 @@ public final class ResourceNotFoundException extends RuntimeException implements
     private static final long serialVersionUID = 7127133546245639752L;
 
     private List<String> details;
-
-    @Deprecated
-    public ResourceNotFoundException() {
-        super();
-    }
 
     public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);

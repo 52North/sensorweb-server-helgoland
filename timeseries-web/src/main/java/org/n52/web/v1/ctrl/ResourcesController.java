@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,7 @@ import static org.n52.web.v1.ctrl.RestfulUrls.API_VERSION_PATH;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.web.v1.srv.CountingMetadataService;
+import org.n52.sensorweb.v1.spi.CountingMetadataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +52,7 @@ public final class ResourcesController {
         return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }
 
-    public ResourceCollection[] createResources(boolean expanded) {
+    private ResourceCollection[] createResources(boolean expanded) {
         List<ResourceCollection> resources = new ArrayList<ResourceCollection>();
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");

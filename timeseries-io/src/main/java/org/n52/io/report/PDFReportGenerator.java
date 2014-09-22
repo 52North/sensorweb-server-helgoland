@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -160,7 +160,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     private StreamSource getTransforamtionRule() {
-        String rules = PDF_TRANSORMATION_RULES.replace(LOCALE_REPLACER, i18n.getLocale());
+        String rules = PDF_TRANSORMATION_RULES.replace(LOCALE_REPLACER, i18n.getTwoDigitsLanguageCode());
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 
