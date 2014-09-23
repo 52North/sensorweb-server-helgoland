@@ -47,7 +47,6 @@
 		<connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
 		<url>https://github.com/52North/timeseries-api</url>
-		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
@@ -55,7 +54,7 @@
 		<sensorwebclient.version>3.2.0</sensorwebclient.version>
 		<logback.version>1.0.11</logback.version>
 		<jackson.version>2.2.2</jackson.version>
-		<geotools.version>8.2</geotools.version>
+		<geotools.version>8.5</geotools.version>
 		<slf4j.version>1.7.2</slf4j.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
