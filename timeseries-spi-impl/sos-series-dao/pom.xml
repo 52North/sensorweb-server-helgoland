@@ -12,6 +12,10 @@
     <name>Sensor Web Timeseries API - SPI Impl DAO</name>
     <description>REST SPI Implementation for SOS Series Database.</description>
     <url>http://52north.org/communities/sensorweb/</url>
+
+    <properties>
+        <sos.version>4.1.0</sos.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.n52.sensorweb</groupId>
@@ -25,7 +29,32 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>hibernate-datasource-postgres</artifactId>
-            <version>4.1.0</version>
+            <version>${sos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-session-factory</artifactId>
+            <version>${sos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-common</artifactId>
+            <version>${sos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-dao</artifactId>
+            <version>${sos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-feature</artifactId>
+            <version>${sos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb.sos</groupId>
+            <artifactId>hibernate-datasource-common</artifactId>
+            <version>${sos.version}</version>
         </dependency>
     </dependencies>
     <build>

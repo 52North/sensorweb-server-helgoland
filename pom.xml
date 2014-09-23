@@ -47,7 +47,6 @@
 		<connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
 		<url>https://github.com/52North/timeseries-api</url>
-		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
