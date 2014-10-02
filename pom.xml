@@ -83,7 +83,7 @@
 			<dependency>
 				<groupId>org.n52.sensorweb</groupId>
 				<artifactId>xml-pdf-format</artifactId>
-				<version>${sensorwebclient.version}</version>
+				<version>3.2.0</version>
 			</dependency>
 
 			<dependency>
