@@ -57,9 +57,9 @@
         </property>
         <property name="metadataExtensions">
             <list>
-                <bean class="org.n52.web.v1.extension.ResultTimeExtension">
+<!--                <bean class="org.n52.web.v1.extension.ResultTimeExtension">
                     <property name="resultTimeService" ref="resultTimeService"/>
-                </bean>
+                </bean>-->
             </list>
         </property>
     </bean>
