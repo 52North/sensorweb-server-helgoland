@@ -39,6 +39,8 @@ public class ObservationEntity {
     private Double value;
     
     private long seriesPkid;
+    
+    private boolean deleted;
 
     public Long getPkid() {
         return pkid;
@@ -72,6 +74,14 @@ public class ObservationEntity {
         this.seriesPkid = seriesPkid;
     }
 
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
