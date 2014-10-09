@@ -1,15 +1,10 @@
 General Infos:
 ==============
-project = 52North Timeseriese API Web Application Template
-product = ${project.artifactid}
-version = ${project.version}
-builddate = ${timestamp}
+project = ${artifactId}
+version = ${version}
 
-Subversion Infos:
-=================
-repository = ${svn.info.repository}
-path = ${svn.info.path}
-revision = ${svn.info.revision}
-mixedRevisions = ${svn.info.mixedRevisions}
-committedRevision = ${svn.info.committedRevision}
-committedDate = ${svn.info.committedDate}
+Details:
+========
+branch=${git.branch}
+commit=${git.commit.id}
+builtAt=${git.build.time}
