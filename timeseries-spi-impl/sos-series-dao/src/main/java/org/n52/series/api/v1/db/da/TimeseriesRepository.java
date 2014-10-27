@@ -299,6 +299,10 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, SeriesEntity series) {
+        if (observation == null) {
+            // do not fail on empty observations
+            return null;
+        }
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(formatDecimal(observation.getValue(), series));

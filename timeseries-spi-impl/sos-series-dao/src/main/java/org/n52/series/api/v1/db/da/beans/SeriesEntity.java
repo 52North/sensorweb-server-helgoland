@@ -28,14 +28,15 @@
 package org.n52.series.api.v1.db.da.beans;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class SeriesEntity {
-    
+
     private Long pkid;
-    
+
     private CategoryEntity category;
 
     private PhenomenonEntity phenomenon;
@@ -49,13 +50,13 @@ public class SeriesEntity {
     private UnitEntity unit;
 
     private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
-    
+
     private Set<SeriesEntity> referenceValues = new HashSet<SeriesEntity>();
-    
+
     private ObservationEntity firstValue;
-    
+
     private ObservationEntity lastValue;
-    
+
     public Long getPkid() {
         return pkid;
     }
@@ -129,6 +130,11 @@ public class SeriesEntity {
     }
 
     public ObservationEntity getFirstValue() {
+        Date when = firstValue.getTimestamp();
+        Double value = firstValue.getValue();
+        if (when == null || value == null) {
+            return null; // empty component
+        }
         return firstValue;
     }
 
@@ -137,6 +143,11 @@ public class SeriesEntity {
     }
 
     public ObservationEntity getLastValue() {
+        Date when = lastValue.getTimestamp();
+        Double value = lastValue.getValue();
+        if (when == null || value == null) {
+            return null; // empty component
+        }
         return lastValue;
     }
 
@@ -156,5 +167,5 @@ public class SeriesEntity {
         sb.append(" , #observations: ").append(observations.size());
         return sb.append(" ]").toString();
     }
-    
+
 }
