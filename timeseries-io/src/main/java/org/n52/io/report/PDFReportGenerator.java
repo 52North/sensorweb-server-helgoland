@@ -68,16 +68,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PDFReportGenerator extends ReportGenerator implements IoHandler {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
 
     private static final String LOCALE_REPLACER = "{locale}";
 
     private static final String PDF_TRANSORMATION_RULES = "pdf/Document_2_PDF_" + LOCALE_REPLACER + ".xslt";
 
-    private DocumentStructureDocument document;
+    private final DocumentStructureDocument document;
 
-    private ChartRenderer renderer;
+    private final ChartRenderer renderer;
 
     public PDFReportGenerator(ChartRenderer renderer, String locale) {
         super(renderer.getRenderingContext(), locale);
