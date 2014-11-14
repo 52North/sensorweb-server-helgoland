@@ -28,23 +28,24 @@
 package org.n52.io.format;
 
 public final class FormatterFactory {
-    
+
     private final String format;
-    
+
     private FormatterFactory(String format) {
         this.format = format;
     }
-    
+
     public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
+        if ("highcharts".equalsIgnoreCase(format)) {
             return new HighchartFormatter();
-        } else if("flot".equals(format)) {
+        } else if("flotcharts".equalsIgnoreCase(format)
+                || "flot".equalsIgnoreCase(format)) {
             return new FlotFormatter();
         } else {
             return new TvpFormatter();
         }
     }
-    
+
     public static FormatterFactory createFormatterFactory(String format) {
         return new FormatterFactory(format);
     }
