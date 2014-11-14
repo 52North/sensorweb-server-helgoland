@@ -57,7 +57,8 @@
         </property>
         <property name="metadataExtensions">
             <list>
-<!--                <bean class="org.n52.web.v1.extension.ResultTimeExtension">
+                <!--
+                <bean class="org.n52.web.v1.extension.ResultTimeExtension">
                     <property name="resultTimeService" ref="resultTimeService"/>
                 </bean>-->
             </list>
@@ -69,7 +70,11 @@
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
         <property name="preRenderingTask" ref="preRenderingTask" />
-        <property name="requestIntervalRestriction" value="P1Y1D" />
+        <!-- NOTE:
+            - P1Y means always 356 days (leap years do have 366 days)
+            - clients may extend the timespan a bit so allow a buffer
+        -->
+        <property name="requestIntervalRestriction" value="P367D" />
     </bean>
 
     <bean id="preRenderingTask" class="org.n52.io.PreRenderingTask"
