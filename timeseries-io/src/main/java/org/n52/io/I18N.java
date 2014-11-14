@@ -46,7 +46,7 @@ public final class I18N {
 
     private final ResourceBundle bundle;
 
-    private Locale locale;
+    private final Locale locale;
 
     private I18N(ResourceBundle bundle, Locale locale) {
         this.locale = locale;

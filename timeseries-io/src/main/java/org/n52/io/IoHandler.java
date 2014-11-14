@@ -27,7 +27,6 @@
  */
 package org.n52.io;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 import org.n52.io.format.TvpDataCollection;
@@ -45,10 +44,10 @@ public interface IoHandler {
     /**
      * Encodes and writes previously generated output to the given stream. After handling the stream gets
      * flushed and closed.
-     * 
+     *
      * @param stream
      *        the stream to write on the generated ouput.
-     * @throws IOException
+     * @throws IoParseException
      *         if writing output to stream fails.
      */
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException;
