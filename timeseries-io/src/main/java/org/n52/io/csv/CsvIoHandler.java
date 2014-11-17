@@ -54,11 +54,16 @@ public class CsvIoHandler implements IoHandler {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
+    // needed by some clients to detect UTF-8 encoding (e.g. excel)
+    private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
+
     private RenderingContext context = RenderingContext.createEmpty();
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
     private TvpDataCollection data = new TvpDataCollection();
+
+    private boolean useByteOrderMark = false;
 
     private String tokenSeparator = ";";
 
@@ -73,6 +78,10 @@ public class CsvIoHandler implements IoHandler {
         this.tokenSeparator = tokenSeparator == null
                 ? this.tokenSeparator
                 : tokenSeparator;
+    }
+
+    public void setIncludeByteOrderMark(String byteOrderMark) {
+        this.useByteOrderMark = Boolean.parseBoolean(byteOrderMark);
     }
 
     @Override
@@ -99,7 +108,11 @@ public class CsvIoHandler implements IoHandler {
     }
 
     private void writeHeader(OutputStream stream) throws IOException {
-        writeCsvLine("\uFEFF" + csvEncode(HEADER), stream);
+        String csvLine = csvEncode(HEADER);
+        if (useByteOrderMark) {
+            csvLine = UTF8_BYTE_ORDER_MARK + csvLine;
+        }
+        writeCsvLine(csvLine, stream);
     }
 
     private void writeData(OutputStream stream) throws IOException {
