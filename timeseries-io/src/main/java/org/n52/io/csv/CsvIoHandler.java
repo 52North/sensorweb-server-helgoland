@@ -63,7 +63,7 @@ public class CsvIoHandler implements IoHandler {
 
     private TvpDataCollection data = new TvpDataCollection();
 
-    private boolean useByteOrderMark = false;
+    private boolean useByteOrderMark = true;
 
     private String tokenSeparator = ";";
 
