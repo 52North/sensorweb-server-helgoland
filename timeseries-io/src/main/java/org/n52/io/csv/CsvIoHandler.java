@@ -27,6 +27,9 @@
  */
 package org.n52.io.csv;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -34,6 +37,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.hsqldb.util.CSVWriter;
 import org.joda.time.DateTime;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
@@ -65,6 +71,8 @@ public class CsvIoHandler implements IoHandler {
 
     private boolean useByteOrderMark = true;
 
+    private boolean zipOutput = false;
+
     private String tokenSeparator = ";";
 
 
@@ -80,8 +88,12 @@ public class CsvIoHandler implements IoHandler {
                 : tokenSeparator;
     }
 
-    public void setIncludeByteOrderMark(String byteOrderMark) {
-        this.useByteOrderMark = Boolean.parseBoolean(byteOrderMark);
+    public void setIncludeByteOrderMark(boolean byteOrderMark) {
+        this.useByteOrderMark = byteOrderMark;
+    }
+
+    public void setZipOutput(boolean zipOutput) {
+        this.zipOutput = zipOutput;
     }
 
     @Override
@@ -92,15 +104,29 @@ public class CsvIoHandler implements IoHandler {
 
     @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
+        BufferedOutputStream bos = new BufferedOutputStream(stream);
+        ZipOutputStream zipStream = null;
         try {
-            writeHeader(stream);
-            writeData(stream);
+            if (zipOutput) {
+                zipStream = new ZipOutputStream(stream);
+                zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
+                writeHeader(zipStream);
+                writeData(zipStream);
+            } else {
+                writeHeader(bos);
+                writeData(bos);
+            }
         } catch (IOException e) {
             throw new IoParseException("Could not write CSV to output stream.", e);
         } finally {
             try {
-                stream.flush();
-                stream.close();
+                if (zipStream != null) {
+                    zipStream.flush();
+                    zipStream.close();
+                } else {
+                    stream.flush();
+                    stream.close();
+                }
             } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
             }

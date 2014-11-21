@@ -101,7 +101,11 @@ public final class IoFactory {
         } else if (mimeType == TEXT_CSV) {
             CsvIoHandler handler = new CsvIoHandler(context, config.getLocale());
             handler.setTokenSeparator(config.getOther("tokenSeparator"));
-            handler.setIncludeByteOrderMark(config.getOther("bom"));
+
+            boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
+            boolean zipOutput = Boolean.parseBoolean(config.getOther("zip"));
+            handler.setIncludeByteOrderMark(byteOderMark);
+            handler.setZipOutput(zipOutput);
             return handler;
         }
 
