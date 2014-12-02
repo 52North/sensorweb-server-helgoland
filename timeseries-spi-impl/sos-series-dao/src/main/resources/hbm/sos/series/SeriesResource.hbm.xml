@@ -13,13 +13,15 @@
         <many-to-one name="unit" class="org.n52.series.api.v1.db.da.beans.UnitEntity" column="unitid" />
 	    <!-- defines a fixed number of decimal places -->
         <property name="numberOfDecimals" formula="3" type="int" />
+
+        <!-- TODO remove formula when SOS adds published_flag to data model -->
+        <property name="published" column="published_flag" formula="1" type="org.hibernate.type.NumericBooleanType" />
+
         <component name="firstValue" class="org.n52.series.api.v1.db.da.beans.ObservationEntity">
-	        <property name="seriesPkid" column="seriesid"  type="long" insert="false" update="false"/>
 	        <property name="timestamp" column="firsttimestamp" type="timestamp" />
 	        <property name="value" column="firstnumericvalue" type="double" />
         </component>
         <component name="lastValue" class="org.n52.series.api.v1.db.da.beans.ObservationEntity">
-            <property name="seriesPkid" column="seriesid"  type="long" insert="false" update="false"/>
             <property name="timestamp" column="lasttimestamp" type="timestamp" />
             <property name="value" column="lastnumericvalue" type="double" />
         </component>

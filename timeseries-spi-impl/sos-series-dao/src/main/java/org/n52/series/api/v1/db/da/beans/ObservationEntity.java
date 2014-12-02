@@ -33,14 +33,14 @@ import java.util.Date;
 public class ObservationEntity {
 
     private Long pkid;
-    
+
     private Date timestamp;
-    
+
     private Double value;
-    
-    private long seriesPkid;
-    
-    private boolean deleted;
+
+    private Long seriesPkid;
+
+    private Boolean deleted;
 
     public Long getPkid() {
         return pkid;
@@ -65,7 +65,7 @@ public class ObservationEntity {
     public void setValue(Double value) {
         this.value = value;
     }
-    
+
     public Long getSeriesPkid() {
         return seriesPkid;
     }
@@ -78,10 +78,10 @@ public class ObservationEntity {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
