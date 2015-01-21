@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -29,7 +29,8 @@ package org.n52.io;
 
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
-
+import static org.n52.io.MimeType.TEXT_CSV;
+import org.n52.io.csv.CsvIoHandler;
 import org.n52.io.img.MultipleChartsRenderer;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.report.PDFReportGenerator;
@@ -38,8 +39,8 @@ import org.n52.io.report.ReportGenerator;
 public final class IoFactory {
 
     private MimeType mimeType = IMAGE_PNG;
-    
-    private IoParameters config;
+
+    private final IoParameters config;
 
     private IoFactory(IoParameters parameters) {
         this.config = parameters;
@@ -86,7 +87,7 @@ public final class IoFactory {
             /*
              * Depending on the parameters set, we can choose at this point which ChartRenderer might be the
              * best for doing the work.
-             * 
+             *
              * However, for now we only support a Default one ...
              */
 
@@ -97,6 +98,15 @@ public final class IoFactory {
             // TODO do further settings?!
 
             return chartRenderer;
+        } else if (mimeType == TEXT_CSV) {
+            CsvIoHandler handler = new CsvIoHandler(context, config.getLocale());
+            handler.setTokenSeparator(config.getOther("tokenSeparator"));
+
+            boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
+            boolean zipOutput = Boolean.parseBoolean(config.getOther("zip"));
+            handler.setIncludeByteOrderMark(byteOderMark);
+            handler.setZipOutput(zipOutput);
+            return handler;
         }
 
         String msg = "The requested media type '" + mimeType.getMimeType() + "' is not supported.";

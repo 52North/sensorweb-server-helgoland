@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,18 +27,19 @@
  */
 package org.n52.io;
 
-/**
- * @author henning
- *
- */
 public enum MimeType {
 
-    APPLICATION_JSON("application/json", "json"), IMAGE_PNG("image/png", "png"), APPLICATION_PDF("application/pdf","pdf");
-    
-    private String mimeType;
-    
-    private String formatName;
-    
+    APPLICATION_JSON("application/json", "json"),
+    APPLICATION_PDF("application/pdf","pdf"),
+    APPLICATION_ZIP("application/zip", "zip"),
+    IMAGE_PNG("image/png", "png"),
+    TEXT_CSV("text/csv", "csv");
+
+
+    private final String mimeType;
+
+    private final String formatName;
+
     private MimeType(String mimeType, String formatName) {
         this.mimeType = mimeType;
         this.formatName = formatName;
@@ -47,7 +48,7 @@ public enum MimeType {
     public String getMimeType() {
         return mimeType;
     }
-    
+
     public String getFormatName() {
         return formatName;
     }
@@ -56,5 +57,5 @@ public enum MimeType {
     public String toString() {
         return getMimeType();
     }
-    
+
 }

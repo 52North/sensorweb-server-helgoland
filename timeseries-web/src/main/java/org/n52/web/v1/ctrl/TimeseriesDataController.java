@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -29,6 +29,8 @@ package org.n52.web.v1.ctrl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
@@ -39,7 +41,10 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
+import org.n52.io.MimeType;
 import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.APPLICATION_ZIP;
+import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.PreRenderingTask;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
@@ -88,7 +93,7 @@ public class TimeseriesDataController extends BaseController {
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
-    
+
     private PreRenderingTask preRenderingTask;
 
     private String requestIntervalRestriction;
@@ -177,6 +182,40 @@ public class TimeseriesDataController extends BaseController {
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
+        handleBinaryResponse(response, parameters, renderer);
+    }
+
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/zip"}, method = GET)
+    public void getTimeseriesAsZippedCsv(HttpServletResponse response,
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        query.put("zip", Arrays.asList(new String[] { Boolean.TRUE.toString() }));
+        getTimeseriesAsCsv(response, timeseriesId, query);
+    }
+
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = {"text/csv"}, method = GET)
+    public void getTimeseriesAsCsv(HttpServletResponse response,
+                                    @PathVariable String timeseriesId,
+                                    @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+
+        checkIfUnknownTimeseries(timeseriesId);
+
+        IoParameters map = createFromQuery(query);
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        parameters.setGeneralize(map.isGeneralize());
+        parameters.setExpanded(map.isExpanded());
+
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
+
+        response.setCharacterEncoding("UTF-8");
+        if (Boolean.parseBoolean(map.getOther("zip"))) {
+            response.setContentType(APPLICATION_ZIP.toString());
+        } else {
+            response.setContentType(TEXT_CSV.toString());
+        }
         handleBinaryResponse(response, parameters, renderer);
     }
 

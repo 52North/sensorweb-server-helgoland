@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -46,7 +46,7 @@ public final class I18N {
 
     private final ResourceBundle bundle;
 
-    private Locale locale;
+    private final Locale locale;
 
     private I18N(ResourceBundle bundle, Locale locale) {
         this.locale = locale;
@@ -85,7 +85,13 @@ public final class I18N {
         if (language == null) {
             return new Locale("en");
         }
-        String[] localeParts = language.split("_");
+        String[] localeParts;
+        if (language.contains("_")) {
+            localeParts  = language.split("_");
+        } else {
+            localeParts = language.split("-");
+        }
+
         if (localeParts.length == 0 || localeParts.length > 3) {
             throw new IllegalArgumentException("Unparsable language parameter: " + language);
         }
