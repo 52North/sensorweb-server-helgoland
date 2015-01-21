@@ -49,6 +49,8 @@ public class SeriesEntity {
 
     private UnitEntity unit;
 
+    private boolean published;
+
     private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
 
     private Set<SeriesEntity> referenceValues = new HashSet<SeriesEntity>();
@@ -129,11 +131,21 @@ public class SeriesEntity {
         this.unit = unit;
     }
 
+    public Boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
+    }
+
     public ObservationEntity getFirstValue() {
-        Date when = firstValue.getTimestamp();
-        Double value = firstValue.getValue();
-        if (when == null || value == null) {
-            return null; // empty component
+        if (firstValue != null) {
+           Date when = firstValue.getTimestamp();
+            Double value = firstValue.getValue();
+            if (when == null || value == null) {
+                return null; // empty component
+            }
         }
         return firstValue;
     }
@@ -143,10 +155,12 @@ public class SeriesEntity {
     }
 
     public ObservationEntity getLastValue() {
-        Date when = lastValue.getTimestamp();
-        Double value = lastValue.getValue();
-        if (when == null || value == null) {
-            return null; // empty component
+        if (lastValue != null) {
+            Date when = lastValue.getTimestamp();
+            Double value = lastValue.getValue();
+            if (when == null || value == null) {
+                return null; // empty component
+            }
         }
         return lastValue;
     }
