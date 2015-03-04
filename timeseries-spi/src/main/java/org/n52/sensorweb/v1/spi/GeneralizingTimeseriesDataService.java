@@ -27,18 +27,20 @@
  */
 package org.n52.sensorweb.v1.spi;
 
-import static org.n52.io.generalize.LargestTriangleThreeBucketsGeneralizer.createNonConfigGeneralizer;
-
+import org.n52.io.IoParameters;
+import static org.n52.io.IoParameters.createFromQuery;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.generalize.Generalizer;
 import org.n52.io.generalize.GeneralizerException;
+import org.n52.io.generalize.GeneralizerFactory;
+import static org.n52.io.generalize.GeneralizerFactory.createGeneralizer;
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.UndesignedParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Composes a {@link TimeseriesDataService} instance to generalize requested timeseries data. 
+ * Composes a {@link TimeseriesDataService} instance to generalize requested timeseries data.
  */
 public class GeneralizingTimeseriesDataService implements TimeseriesDataService {
 
@@ -54,8 +56,8 @@ public class GeneralizingTimeseriesDataService implements TimeseriesDataService 
     public TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters) {
         TvpDataCollection ungeneralizedData = composedService.getTimeseriesData(parameters);
         try {
-            Generalizer generalizer = createNonConfigGeneralizer(ungeneralizedData);
-            TvpDataCollection generalizedData = generalizer.generalize();
+            Generalizer generalizer = createGeneralizer(createFromQuery(parameters));
+            TvpDataCollection generalizedData = generalizer.generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }

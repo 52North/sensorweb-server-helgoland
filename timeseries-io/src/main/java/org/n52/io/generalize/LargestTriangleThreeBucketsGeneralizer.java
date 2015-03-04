@@ -30,6 +30,7 @@ package org.n52.io.generalize;
 import static java.lang.Integer.parseInt;
 
 import java.util.Properties;
+import org.n52.io.IoParameters;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.TimeseriesData;
@@ -42,127 +43,108 @@ import org.slf4j.LoggerFactory;
  *
  * https://github.com/sveinn-steinarsson/flot-downsample/
  */
-public class LargestTriangleThreeBucketsGeneralizer implements Generalizer {
+public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
-	private final TvpDataCollection dataToGeneralize;
+    private static final String THRESHOLD = "THRESHOLD";
 
-	/**
-     * Config-key for {@link #reductionRate}.
-     */
-    private static final String REDUCTION_RATE = "REDUCTION_RATE";
+    private int threshold = 0; // fallback default
 
-    /**
-     * estimated reduction rate for this use case, where {@link #reductionRate} = 3 means the time series is
-     * reduced to 1/3 of it's size; -1 means there is no proper empirical value
-     */
-    private int reductionRate = -1; // fallback default
-
-	private LargestTriangleThreeBucketsGeneralizer(TvpDataCollection data,
-			Properties configuration) {
-		this.dataToGeneralize = data;
-		configure(configuration);
-	}
-
-	private void configure(Properties configuration) {
-		try {
-            if (configuration.containsKey(REDUCTION_RATE)) {
-                reductionRate = parseInt(configuration.getProperty(REDUCTION_RATE));
-            }
-        }
-        catch (NumberFormatException ne) {
-            LOGGER.error("Error while reading properties!  Using fallback defaults.", ne);
+    public LargestTriangleThreeBucketsGeneralizer(IoParameters parameters) {
+        super(parameters);
+        try {
+            threshold = parameters.containsParameter(THRESHOLD)
+                    ? parseInt(parameters.getOther(THRESHOLD))
+                    : threshold;
+        } catch (NumberFormatException ne) {
+            LOGGER.error("Error while reading properties! Using fallback defaults.", ne);
             throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
         }
-	}
+    }
 
-	public static Generalizer createNonConfigGeneralizer(TvpDataCollection data) {
-		return new LargestTriangleThreeBucketsGeneralizer(data, new Properties());
-	}
-
-	@Override
-	public TvpDataCollection generalize() throws GeneralizerException {
-		TvpDataCollection generalizedDataCollection = new TvpDataCollection();
-        for (String timeseriesId : dataToGeneralize.getAllTimeseries().keySet()) {
-            TimeseriesData timeseries = dataToGeneralize.getTimeseries(timeseriesId);
+    @Override
+    public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
+        TvpDataCollection generalizedDataCollection = new TvpDataCollection();
+        for (String timeseriesId : data.getAllTimeseries().keySet()) {
+            TimeseriesData timeseries = data.getTimeseries(timeseriesId);
             TimeseriesData generalizedTimeseries = generalize(timeseries);
             generalizedTimeseries.setMetadata(timeseries.getMetadata());
             generalizedDataCollection.addNewTimeseries(timeseriesId, generalizedTimeseries);
         }
         return generalizedDataCollection;
-	}
+    }
 
-	private TimeseriesData generalize(TimeseriesData timeseries) {
-		TimeseriesValue[] data = timeseries.getValues();
+    private TimeseriesData generalize(TimeseriesData timeseries) {
+        TimeseriesValue[] data = timeseries.getValues();
 
-		int dataLength = data.length;
+        int dataLength = data.length;
 
-		if (dataLength > 200) {
-			int threshold = data.length / 10; // TODO define the threshold
+        if (threshold >= dataLength || threshold == 0) {
+            return timeseries; // nothing to do
+        }
 
-			TimeseriesData sampled = new TimeseriesData();
+        //int threshold = data.length / 10; // TODO define the threshold
 
-			// Bucket size. Leave room for start and end data points
-			double every = ((double) dataLength - 2) / (threshold - 2);
+        TimeseriesData sampled = new TimeseriesData();
 
-			int pointIndex = 0;
-			sampled.addValues(data[pointIndex]);
+        // Bucket size. Leave room for start and end data points
+        double every = ((double) dataLength - 2) / (threshold - 2);
 
-			for (int i = 0; i < threshold - 2; i++) {
-				// Calculate point average for next bucket (containing c)
-				int avgRangeStart = (int) Math.floor((i + 1) * every) + 1;
-				int avgRangeEnd = (int) Math.floor((i + 2) * every) + 1;
-				double avgTimestamp = 0;
-				double avgValue = 0;
-				avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
+        int pointIndex = 0;
+        sampled.addValues(data[pointIndex]);
 
-				double avgRangeLength = avgRangeEnd - avgRangeStart;
+        for (int i = 0; i < threshold - 2; i++) {
+            // Calculate point average for next bucket (containing c)
+            int avgRangeStart = (int) Math.floor((i + 1) * every) + 1;
+            int avgRangeEnd = (int) Math.floor((i + 2) * every) + 1;
+            double avgTimestamp = 0;
+            double avgValue = 0;
+            avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
 
-				for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
-					avgTimestamp += data[avgRangeStart].getTimestamp();
-					if(data[avgRangeStart].getValue() != null) {
-						avgValue += data[avgRangeStart].getValue();
-					}
-				}
+            double avgRangeLength = avgRangeEnd - avgRangeStart;
 
-				avgTimestamp /= avgRangeLength;
-				avgValue /= avgRangeLength;
+            for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
+                avgTimestamp += data[avgRangeStart].getTimestamp();
+                if (data[avgRangeStart].getValue() != null) {
+                    avgValue += data[avgRangeStart].getValue();
+                }
+            }
 
-				// get the range for this bucket
-				int rangeOffs = (int) Math.floor((i+0)* every) + 1;
-				int rangeTo = (int) Math.floor((i+1)* every) + 1;
+            avgTimestamp /= avgRangeLength;
+            avgValue /= avgRangeLength;
 
-				// Point a
-				double tempTimestamp = data[pointIndex].getTimestamp();
-				double tempValue = data[pointIndex].getValue();
+            // get the range for this bucket
+            int rangeOffs = (int) Math.floor((i + 0) * every) + 1;
+            int rangeTo = (int) Math.floor((i + 1) * every) + 1;
 
-				double area;
-				TimeseriesValue maxAreaPoint = null;
-				int nextPointIndex = 0;
-				double maxArea = area = -1;
+            // Point a
+            double tempTimestamp = data[pointIndex].getTimestamp();
+            double tempValue = data[pointIndex].getValue();
 
-				for (; rangeOffs < rangeTo; rangeOffs++) {
-					// calculate triangle area over three buckets
-					if (data[rangeOffs].getValue() != null) {
-						area = Math.abs((tempTimestamp - avgTimestamp) * (data[rangeOffs].getValue() - tempValue) - (tempTimestamp - data[rangeOffs].getTimestamp()) * (avgValue - tempValue)) * 0.5;
-						if (area > maxArea){
-							maxArea = area;
-							maxAreaPoint = data[rangeOffs];
-							nextPointIndex = rangeOffs;
-						}
-					}
-				}
+            double area;
+            TimeseriesValue maxAreaPoint = null;
+            int nextPointIndex = 0;
+            double maxArea = area = -1;
 
-				sampled.addValues(maxAreaPoint); // Pick this point from the Bucket
-				pointIndex = nextPointIndex; // This a is the next a
-			}
+            for (; rangeOffs < rangeTo; rangeOffs++) {
+                // calculate triangle area over three buckets
+                if (data[rangeOffs].getValue() != null) {
+                    area = Math.abs((tempTimestamp - avgTimestamp) * (data[rangeOffs].getValue() - tempValue) - (tempTimestamp - data[rangeOffs].getTimestamp()) * (avgValue - tempValue)) * 0.5;
+                    if (area > maxArea) {
+                        maxArea = area;
+                        maxAreaPoint = data[rangeOffs];
+                        nextPointIndex = rangeOffs;
+                    }
+                }
+            }
 
-			sampled.addValues(data[dataLength - 1]); // Allways add last value
-			return sampled;
-		} else {
-			return timeseries;
-		}
-	}
+            sampled.addValues(maxAreaPoint); // Pick this point from the Bucket
+            pointIndex = nextPointIndex; // This a is the next a
+        }
+
+        sampled.addValues(data[dataLength - 1]); // Allways add last value
+        return sampled;
+    }
 
 }

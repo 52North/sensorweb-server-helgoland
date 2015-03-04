@@ -25,25 +25,30 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package org.n52.io.generalize;
 
 import org.n52.io.IoParameters;
 import org.n52.io.format.TvpDataCollection;
 
-public abstract class Generalizer {
+/**
+ *
+ * @author Henning Bredel <h.bredel@52north.org>
+ */
+public class NoActionGeneralizer extends Generalizer {
 
-    private IoParameters parameters;
-
-    public Generalizer(IoParameters parameters) {
-        this.parameters = parameters;
+    public NoActionGeneralizer(IoParameters parameters) {
+        super(parameters);
     }
 
-    public abstract TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException;
-
-    public IoParameters getParameters() {
-        return parameters == null
-                ? IoParameters.createDefaults()
-                : parameters;
+    @Override
+    public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
+        return data;
     }
 
 }
