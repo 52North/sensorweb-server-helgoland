@@ -119,7 +119,7 @@ public class TimeseriesDataController extends BaseController {
         IoParameters map = createFromQuery(query);
         Interval timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (map.getResultTime() != null) {
             parameters.setResultTime(map.getResultTime().toString());
         }
@@ -175,7 +175,7 @@ public class TimeseriesDataController extends BaseController {
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
@@ -203,7 +203,7 @@ public class TimeseriesDataController extends BaseController {
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
@@ -252,7 +252,7 @@ public class TimeseriesDataController extends BaseController {
         RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         context.setDimensions(map.getChartDimension());
 
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());

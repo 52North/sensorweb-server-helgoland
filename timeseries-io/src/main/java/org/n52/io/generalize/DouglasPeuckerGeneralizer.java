@@ -110,6 +110,11 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
     }
 
     @Override
+    public String getName() {
+        return "Douglas-Peucker";
+    }
+
+    @Override
     public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
         TvpDataCollection generalizedDataCollection = new TvpDataCollection();
         for (String timeseriesId : data.getAllTimeseries().keySet()) {

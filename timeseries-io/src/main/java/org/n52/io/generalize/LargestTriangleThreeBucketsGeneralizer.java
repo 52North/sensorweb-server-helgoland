@@ -27,6 +27,7 @@
  */
 package org.n52.io.generalize;
 
+import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 import java.util.Properties;
@@ -47,21 +48,28 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
-    private static final String THRESHOLD = "THRESHOLD";
+    private static final String THRESHOLD = "threshold";
 
-    private int threshold = 0; // fallback default
+    private double threshold = 200; // fallback default
 
     public LargestTriangleThreeBucketsGeneralizer(IoParameters parameters) {
         super(parameters);
         try {
             threshold = parameters.containsParameter(THRESHOLD)
-                    ? parseInt(parameters.getOther(THRESHOLD))
+                    ? parseDouble(parameters.getOther(THRESHOLD))
                     : threshold;
         } catch (NumberFormatException ne) {
             LOGGER.error("Error while reading properties! Using fallback defaults.", ne);
             throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
         }
     }
+
+    @Override
+    public String getName() {
+        return "LargestTriangleThreeBuckets";
+    }
+
+
 
     @Override
     public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {

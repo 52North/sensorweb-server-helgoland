@@ -46,4 +46,6 @@ public abstract class Generalizer {
                 : parameters;
     }
 
+    public abstract String getName();
+
 }

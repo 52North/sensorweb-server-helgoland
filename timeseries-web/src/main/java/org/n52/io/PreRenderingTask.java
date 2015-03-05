@@ -46,6 +46,7 @@ import org.joda.time.Interval;
 import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
 import static org.n52.io.IoParameters.GRID;
 import static org.n52.io.IoParameters.HEIGHT;
+import static org.n52.io.IoParameters.TIMESPAN;
 import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
 import static org.n52.io.IoParameters.WIDTH;
@@ -289,11 +290,12 @@ public class PreRenderingTask implements ServletConfigAware {
         return outputDirectory;
     }
 
-    private IoParameters createConfig() {
+    private IoParameters createConfig(String interval) {
         Map<String, String> configuration = new HashMap<String, String>();
         configuration.put(WIDTH, Integer.toString(width));
         configuration.put(HEIGHT, Integer.toString(height));
         configuration.put(GRID, Boolean.toString(showGrid));
+        configuration.put(TIMESPAN, interval);
         configuration.put(LOCALE, language);
         return IoParameters.createFromQuery(configuration);
     }
@@ -350,12 +352,12 @@ public class PreRenderingTask implements ServletConfigAware {
         }
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IoParameters config = createConfig();
+            IoParameters config = createConfig(interval);
             Interval timespan = createTimespanFromInterval(timeseriesId, interval);
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
             RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
             context.setDimensions(new ChartDimension(width, height));
-            UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+            UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
             IoHandler renderer = IoFactory
                     .createWith(config)
                     .createIOHandler(context);

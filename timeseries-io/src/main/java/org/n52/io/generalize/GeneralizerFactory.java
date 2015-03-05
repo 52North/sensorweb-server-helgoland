@@ -42,6 +42,7 @@ public class GeneralizerFactory {
     private static final String DOUGLAS_PEUCKER = "DP";
 
     public static final Generalizer createGeneralizer(IoParameters parameters) {
+
         if ( !parameters.isGeneralize()) {
             return new NoActionGeneralizer(parameters);
         }
@@ -50,14 +51,18 @@ public class GeneralizerFactory {
                 ? parameters.getOther(GENERALIZING_ALGORITHM)
                 : "LTTB";
 
+        Generalizer generalizer;
         if (LARGEST_TRIANGLE_THREE_BUCKETS.equalsIgnoreCase(algorithm)) {
-            return new LargestTriangleThreeBucketsGeneralizer(parameters);
+            generalizer = new LargestTriangleThreeBucketsGeneralizer(parameters);
         } else if (DOUGLAS_PEUCKER.equalsIgnoreCase(algorithm)) {
-            return new DouglasPeuckerGeneralizer(parameters);
+            generalizer = new DouglasPeuckerGeneralizer(parameters);
         } else {
             LOG.info("No generalizing algorithm found for code: {}.", algorithm);
-            return new NoActionGeneralizer(parameters);
+            generalizer = new NoActionGeneralizer(parameters);
         }
+
+        LOG.info("Selected {} algorithm.", generalizer.getName());
+        return generalizer;
     }
 
 }

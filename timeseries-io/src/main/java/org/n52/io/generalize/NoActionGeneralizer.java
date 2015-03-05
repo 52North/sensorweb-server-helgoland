@@ -47,6 +47,11 @@ public class NoActionGeneralizer extends Generalizer {
     }
 
     @Override
+    public String getName() {
+        return "NotGeneralizing";
+    }
+
+    @Override
     public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
         return data;
     }
