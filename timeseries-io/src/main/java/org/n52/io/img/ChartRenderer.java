@@ -40,6 +40,7 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -61,9 +62,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.n52.io.I18N;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
@@ -197,8 +201,11 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        Date end = getEndTime(getTimespan());
-        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
+//        Date end = getEndTime(getTimespan());
+//        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
+
+        DateTime end = DateTime.parse(getTimespan().split("/")[1]);
+        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
 
 //        String zoneName = zone.getShortName(end.getTime(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
@@ -247,7 +254,9 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
-        timeAxis.setDateFormatOverride(new SimpleDateFormat());
+        DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
+        requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
+        timeAxis.setDateFormatOverride(requestTimeFormat);
         timeAxis.setTimeZone(getTimezone().toTimeZone());
     }
 
@@ -256,7 +265,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private DateTimeZone getTimezone() {
-        return Interval.parse(getTimespan()).getEnd().getZone();
+        return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {

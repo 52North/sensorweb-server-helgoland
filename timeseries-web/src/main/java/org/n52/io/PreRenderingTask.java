@@ -252,19 +252,22 @@ public class PreRenderingTask implements ServletConfigAware {
         return ImageIO.read(new FileInputStream(createFileName(timeseriesId, interval)));
     }
 
-    public Interval createTimespanFromInterval(String timeseriesId, String interval) {
+    public IntervalWithTimeZone createTimespanFromInterval(String timeseriesId, String period) {
         DateTime now = new DateTime();
-        if (interval.equals("lastDay")) {
-            return new Interval(now.minusDays(1), now);
+        if (period.equals("lastDay")) {
+            Interval interval = new Interval(now.minusDays(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
-        else if (interval.equals("lastWeek")) {
-            return new Interval(now.minusWeeks(1), now);
+        else if (period.equals("lastWeek")) {
+            Interval interval = new Interval(now.minusWeeks(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
-        else if (interval.equals("lastMonth")) {
-            return new Interval(now.minusMonths(1), now);
+        else if (period.equals("lastMonth")) {
+            Interval interval = new Interval(now.minusMonths(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
         else {
-            throw new ResourceNotFoundException("Unknown interval definition '" + interval + "' for timeseriesId "
+            throw new ResourceNotFoundException("Unknown interval definition '" + period + "' for timeseriesId "
                     + timeseriesId);
         }
     }
@@ -353,7 +356,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
             IoParameters config = createConfig(interval);
-            Interval timespan = createTimespanFromInterval(timeseriesId, interval);
+            IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
             RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
             context.setDimensions(new ChartDimension(width, height));

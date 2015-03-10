@@ -88,7 +88,7 @@ public class ChartRendererTest {
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-        assertThat(label, is("Time (CET)"));
+        assertThat(label, is("Time (+01:00)"));
     }
 
     @Test
@@ -98,11 +98,8 @@ public class ChartRendererTest {
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-
         ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseDateTime(VALID_ISO8601_ABSOLUTE_START.split("/")[1]);
-
-
-//        assertThat(label, is("Time (UTC)"));
+        assertThat(label, is("Time (UTC)"));
     }
 
     static class MyChartRenderer extends ChartRenderer {
