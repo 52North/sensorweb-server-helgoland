@@ -34,21 +34,21 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletOutputStream;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
 import static org.n52.io.IoParameters.GRID;
 import static org.n52.io.IoParameters.HEIGHT;
-import static org.n52.io.IoParameters.TIMESPAN;
 import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
+import static org.n52.io.IoParameters.TIMESPAN;
 import static org.n52.io.IoParameters.WIDTH;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
@@ -233,7 +233,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
     public void writePrerenderedGraphToOutputStream(String timeseriesId,
                                                     String interval,
-                                                    ServletOutputStream outputStream) {
+                                                    OutputStream outputStream) {
         try {
             BufferedImage image = loadImage(timeseriesId, interval);
             if (image == null) {
@@ -271,7 +271,9 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private FileOutputStream createFile(String timeseriesId, String interval) throws IOException {
         File file = createFileName(timeseriesId, interval);
-        file.createNewFile();
+        if ( !file.createNewFile()) {
+            file.setLastModified(new DateTime().getMillis());
+        }
         return new FileOutputStream(file);
     }
 
