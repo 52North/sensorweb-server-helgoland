@@ -44,6 +44,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static javax.imageio.ImageIO.write;
+import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
@@ -56,10 +57,9 @@ import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.VerticalAlignment;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.n52.io.I18N;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
@@ -198,13 +198,9 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-//        Date end = getEndTime(getTimespan());
-//        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
-
         DateTime end = DateTime.parse(getTimespan().split("/")[1]);
         String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
 
-//        String zoneName = zone.getShortName(end.getTime(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
         this.chart = createTimeSeriesChart(null,
