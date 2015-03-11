@@ -50,6 +50,7 @@ import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.Timeline;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.block.BlockFrame;
@@ -265,6 +266,9 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
+
+        // TODO make date format configurable
+
         DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
         requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
         timeAxis.setDateFormatOverride(requestTimeFormat);

@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -274,8 +275,10 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private FileOutputStream createFile(String timeseriesId, String interval) throws IOException {
         File file = createFileName(timeseriesId, interval);
-        if ( !file.createNewFile()) {
-            file.setLastModified(new DateTime().getMillis());
+        if (file.exists()) {
+            file.setLastModified(new Date().getTime());
+        } else {
+            file.createNewFile();
         }
         return new FileOutputStream(file);
     }
@@ -297,11 +300,21 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private IoParameters createConfig(String interval) {
         Map<String, String> configuration = new HashMap<String, String>();
+
+        // for backward compatibility (from xml config)
         configuration.put(WIDTH, Integer.toString(width));
         configuration.put(HEIGHT, Integer.toString(height));
         configuration.put(GRID, Boolean.toString(showGrid));
         configuration.put(TIMESPAN, interval);
         configuration.put(LOCALE, language);
+
+        // overrides the above parameters (from json config)
+        configuration.putAll(taskConfigPrerendering.getGeneralConfig());
+        this.width = Integer.parseInt(configuration.get(WIDTH));
+        this.height = Integer.parseInt(configuration.get(HEIGHT));
+        this.showGrid = Boolean.parseBoolean(configuration.get(GRID));
+        this.language = configuration.get(LOCALE);
+
         return IoParameters.createFromQuery(configuration);
     }
 
@@ -357,8 +370,9 @@ public class PreRenderingTask implements ServletConfigAware {
         }
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IoParameters config = createConfig(interval);
             IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
+            IoParameters config = createConfig(timespan.toString());
+
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
             RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
             context.setDimensions(new ChartDimension(width, height));
