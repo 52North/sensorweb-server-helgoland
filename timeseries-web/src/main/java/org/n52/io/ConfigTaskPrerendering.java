@@ -33,11 +33,21 @@ import java.util.Map;
 import org.n52.io.v1.data.StyleProperties;
 
 public class ConfigTaskPrerendering {
-    
+
+    private Map<String, String> generalConfig = new HashMap<String, String>();
+
     private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
-    
+
     private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
-    
+
+    public Map<String, String> getGeneralConfig() {
+        return generalConfig;
+    }
+
+    public void setGeneralConfig(Map<String, String> generalConfig) {
+        this.generalConfig = generalConfig;
+    }
+
     public Map<String, ConfiguredStyle> getPhenomenonStyles() {
         return phenomenonStyles;
     }
@@ -55,11 +65,11 @@ public class ConfigTaskPrerendering {
     }
 
     public static class ConfiguredStyle {
-        
+
         private String[] interval;
-        
+
         private StyleProperties style;
-        
+
         public String[] getInterval() {
             return interval;
         }
@@ -75,7 +85,7 @@ public class ConfigTaskPrerendering {
         public void setStyle(StyleProperties style) {
             this.style = style;
         }
-        
+
     }
 
 }

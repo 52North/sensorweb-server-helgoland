@@ -50,7 +50,10 @@ import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.Timeline;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.block.BlockFrame;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.HorizontalAlignment;
@@ -116,17 +119,14 @@ public abstract class ChartRenderer implements IoHandler {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
             p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
-        	write(drawChartToImage(), mimeType.getFormatName(), stream);
-        }
-        catch (IOException e) {
+            write(drawChartToImage(), mimeType.getFormatName(), stream);
+        } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
-        }
-        finally {
+        } finally {
             try {
                 stream.flush();
                 stream.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
             }
         }
@@ -142,6 +142,9 @@ public abstract class ChartRenderer implements IoHandler {
 
         chart.setTextAntiAlias(true);
         chart.setAntiAlias(true);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setFrame(BlockBorder.NONE);
+        }
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
@@ -203,13 +206,13 @@ public abstract class ChartRenderer implements IoHandler {
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
-        this.chart = createTimeSeriesChart(null,
-                                           domainAxisLabel.toString(),
-                                           i18n.get("value"),
-                                           null,
-                                           drawLegend,
-                                           showTooltips,
-                                           true);
+        chart = createTimeSeriesChart(null,
+                domainAxisLabel.toString(),
+                i18n.get("value"),
+                null,
+                drawLegend,
+                showTooltips,
+                true);
         return createPlotArea(chart);
     }
 
@@ -263,6 +266,9 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
+
+        // TODO make date format configurable
+
         DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
         requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
         timeAxis.setDateFormatOverride(requestTimeFormat);
@@ -337,6 +343,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     static class LabelConstants {
+
         static final Color COLOR = BLACK;
         static final int FONT_SIZE = 12;
         static final int FONT_SIZE_SMALL = 9;
