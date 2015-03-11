@@ -481,27 +481,25 @@ public class IoParameters {
      * @throws IoParseException
      *         if timespan could not be parsed.
      */
-    public Interval getTimespan() {
+    public IntervalWithTimeZone getTimespan() {
         if ( !query.containsKey(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(query.get(TIMESPAN));
     }
 
-    private Interval createDefaultTimespan() {
+    private IntervalWithTimeZone createDefaultTimespan() {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
-        return new Interval(lastWeek, now);
+        String interval = lastWeek
+                .toString()
+                .concat("/")
+                .concat(now.toString());
+        return new IntervalWithTimeZone(interval);
     }
 
-    private Interval validateTimespan(String timespan) {
-        try {
-            return Interval.parse(timespan);
-        }
-        catch (IllegalArgumentException e) {
-            String message = "Could not parse timespan parameter." + timespan;
-            throw new IoParseException(message, e);
-        }
+    private IntervalWithTimeZone validateTimespan(String timespan) {
+        return new IntervalWithTimeZone(timespan);
     }
 
     public Instant getResultTime() {
@@ -766,13 +764,13 @@ public class IoParameters {
         }
     }
 
-    public UndesignedParameterSet createUndesignedParameterSet() {
+    public UndesignedParameterSet toUndesignedParameterSet() {
         UndesignedParameterSet parameterSet = new UndesignedParameterSet();
         addValuesToParameterSet(parameterSet);
         return parameterSet;
     }
 
-    public DesignedParameterSet createDesignedParameterSetFrom() {
+    public DesignedParameterSet toDesignedParameterSet() {
         DesignedParameterSet parameterSet = new DesignedParameterSet();
         addValuesToParameterSet(parameterSet);
         return parameterSet;

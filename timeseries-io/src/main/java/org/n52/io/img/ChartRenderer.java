@@ -40,8 +40,10 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import static javax.imageio.ImageIO.write;
 import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
@@ -49,17 +51,21 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.block.BlockFrame;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.VerticalAlignment;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
@@ -112,17 +118,14 @@ public abstract class ChartRenderer implements IoHandler {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
             p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
-        	write(drawChartToImage(), mimeType.getFormatName(), stream);
-        }
-        catch (IOException e) {
+            write(drawChartToImage(), mimeType.getFormatName(), stream);
+        } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
-        }
-        finally {
+        } finally {
             try {
                 stream.flush();
                 stream.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
             }
         }
@@ -138,6 +141,9 @@ public abstract class ChartRenderer implements IoHandler {
 
         chart.setTextAntiAlias(true);
         chart.setAntiAlias(true);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setFrame(BlockBorder.NONE);
+        }
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
@@ -194,19 +200,18 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        Date end = getEndTime(getTimespan());
-        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
+        DateTime end = DateTime.parse(getTimespan().split("/")[1]);
+        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
 
-//        String zoneName = zone.getShortName(end.getTime(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
-        this.chart = createTimeSeriesChart(null,
-                                           domainAxisLabel.toString(),
-                                           i18n.get("value"),
-                                           null,
-                                           drawLegend,
-                                           showTooltips,
-                                           true);
+        chart = createTimeSeriesChart(null,
+                domainAxisLabel.toString(),
+                i18n.get("value"),
+                null,
+                drawLegend,
+                showTooltips,
+                true);
         return createPlotArea(chart);
     }
 
@@ -260,7 +265,9 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
-        timeAxis.setDateFormatOverride(new SimpleDateFormat());
+        DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
+        requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
+        timeAxis.setDateFormatOverride(requestTimeFormat);
         timeAxis.setTimeZone(getTimezone().toTimeZone());
     }
 
@@ -269,7 +276,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private DateTimeZone getTimezone() {
-        return Interval.parse(getTimespan()).getEnd().getZone();
+        return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
@@ -332,6 +339,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     static class LabelConstants {
+
         static final Color COLOR = BLACK;
         static final int FONT_SIZE = 12;
         static final int FONT_SIZE_SMALL = 9;

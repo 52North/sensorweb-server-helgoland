@@ -84,7 +84,7 @@ public class DbQuery {
     }
 
     public Interval getTimespan() {
-        return parameters.getTimespan();
+        return parameters.getTimespan().toInterval();
     }
 
     public BoundingBox getSpatialFilter() {
@@ -120,8 +120,9 @@ public class DbQuery {
 
     public Criteria addTimespanTo(Criteria criteria) {
         if (parameters.getTimespan() != null) {
-            Date start = parameters.getTimespan().getStart().toDate();
-            Date end = parameters.getTimespan().getEnd().toDate();
+            Interval interval = parameters.getTimespan().toInterval();
+            Date start = interval.getStart().toDate();
+            Date end = interval.getEnd().toDate();
             criteria.add(between(COLUMN_TIMESTAMP, start, end));
         }
         return criteria;

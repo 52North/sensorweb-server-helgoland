@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
@@ -117,7 +118,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        Interval timespan = map.getTimespan();
+        IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (map.getResultTime() != null) {

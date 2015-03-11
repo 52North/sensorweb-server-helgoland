@@ -27,7 +27,8 @@
  */
 package org.n52.io.img;
 
-import org.joda.time.Interval;
+import java.text.SimpleDateFormat;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.v1.data.DesignedParameterSet;
@@ -81,7 +82,7 @@ public final class RenderingContext {
 
     public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
                                                                     StyleProperties style,
-                                                                    Interval timespan) {
+                                                                    IntervalWithTimeZone timespan) {
         DesignedParameterSet parameters = new DesignedParameterSet();
         parameters.addTimeseriesWithStyleOptions(metadata.getId(), style);
         parameters.setTimespan(timespan.toString());
@@ -99,6 +100,14 @@ public final class RenderingContext {
 
     public TimeseriesMetadataOutput[] getTimeseriesMetadatas() {
         return timeseriesMetadatas.clone();
+    }
+
+    public String getTimeAxisFormat() {
+        if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
+            return chartStyleDefinitions.getAsString("timeaxis.format");
+        } else {
+            return "yyyy-MM-dd, HH:mm";
+        }
     }
 
 }
