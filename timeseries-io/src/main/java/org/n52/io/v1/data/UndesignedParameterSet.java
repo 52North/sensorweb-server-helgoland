@@ -28,6 +28,7 @@
 package org.n52.io.v1.data;
 
 import org.joda.time.Interval;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParameters;
 import org.n52.io.Utils;
 
@@ -38,7 +39,7 @@ public class UndesignedParameterSet extends ParameterSet {
     private String[] timeseries;
 
     private String resultTime;
-    
+
     private String format;
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
@@ -87,9 +88,9 @@ public class UndesignedParameterSet extends ParameterSet {
     }
 
     public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
-        UndesignedParameterSet parameterSet = parameters.createUndesignedParameterSet();
+        UndesignedParameterSet parameterSet = parameters.toUndesignedParameterSet();
         parameterSet.setTimeseries(new String[] { timeseriesId });
-        Interval timespan = parameters.getTimespan();
+        IntervalWithTimeZone timespan = parameters.getTimespan();
         parameterSet.setTimespan(timespan.toString());
         return parameterSet;
     }

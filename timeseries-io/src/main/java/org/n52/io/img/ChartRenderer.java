@@ -40,12 +40,9 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import static javax.imageio.ImageIO.write;
 import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
@@ -55,15 +52,18 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.TimePeriod;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.VerticalAlignment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.joda.time.Period;
 import org.n52.io.I18N;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
@@ -71,6 +71,7 @@ import org.n52.io.format.TvpDataCollection;
 import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
 import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
 import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
 import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
@@ -197,10 +198,9 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        Date end = getEndTime(getTimespan());
-        String zoneName = Interval.parse(getTimespan()).getEnd().getZone().getShortName(end.getTime(), i18n.getLocale());
+        DateTime end = DateTime.parse(getTimespan().split("/")[1]);
+        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
 
-//        String zoneName = zone.getShortName(end.getTime(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
         this.chart = createTimeSeriesChart(null,
@@ -214,16 +214,32 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createPlotArea(JFreeChart chart) {
-        XYPlot xyPlot = chart.getXYPlot();
-        xyPlot.setBackgroundPaint(WHITE);
-        xyPlot.setDomainGridlinePaint(LIGHT_GRAY);
-        xyPlot.setRangeGridlinePaint(LIGHT_GRAY);
-        xyPlot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
-        showCrosshairsOnAxes(xyPlot);
-        configureDomainAxis(xyPlot);
-        showGridlinesOnChart(xyPlot);
-        configureTimeAxis(xyPlot);
-        return xyPlot;
+        XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(WHITE);
+        plot.setDomainGridlinePaint(LIGHT_GRAY);
+        plot.setRangeGridlinePaint(LIGHT_GRAY);
+        plot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
+        showCrosshairsOnAxes(plot);
+        configureDomainAxis(plot);
+        showGridlinesOnChart(plot);
+        configureTimeAxis(plot);
+        addNotice(chart);
+        return plot;
+    }
+
+    private void addNotice(JFreeChart chart) {
+        TextTitle notice = new TextTitle();
+        String msg = i18n.get("notice");
+        if (msg != null && !msg.isEmpty()) {
+            notice.setText(msg);
+            notice.setPaint(BLACK);
+            notice.setFont(FONT_LABEL_SMALL);
+            notice.setPosition(RectangleEdge.BOTTOM);
+            notice.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+            notice.setVerticalAlignment(VerticalAlignment.BOTTOM);
+            notice.setPadding(new RectangleInsets(0, 0, 20, 20));
+            chart.addSubtitle(notice);
+        }
     }
 
     private void configureDomainAxis(XYPlot xyPlot) {
@@ -247,7 +263,9 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
-        timeAxis.setDateFormatOverride(new SimpleDateFormat());
+        DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
+        requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
+        timeAxis.setDateFormatOverride(requestTimeFormat);
         timeAxis.setTimeZone(getTimezone().toTimeZone());
     }
 
@@ -256,7 +274,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private DateTimeZone getTimezone() {
-        return Interval.parse(getTimespan()).getEnd().getZone();
+        return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
@@ -321,10 +339,12 @@ public abstract class ChartRenderer implements IoHandler {
     static class LabelConstants {
         static final Color COLOR = BLACK;
         static final int FONT_SIZE = 12;
+        static final int FONT_SIZE_SMALL = 9;
         static final int FONT_SIZE_TICKS = 10;
         static final String LOGICAL_FONT = "Sans-serif";
         static final Font FONT_LABEL = new Font(LOGICAL_FONT, BOLD, FONT_SIZE);
         static final Font FONT_DOMAIN = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_TICKS);
+        static final Font FONT_LABEL_SMALL = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_SMALL);
     }
 
 }

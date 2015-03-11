@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.n52.io.IntervalWithTimeZone;
 
 public abstract class ParameterSet {
 
@@ -58,7 +59,11 @@ public abstract class ParameterSet {
     private String createDefaultTimespan() {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
-        return new Interval(lastWeek, now).toString();
+        String interval = lastWeek
+                .toString()
+                .concat("/")
+                .concat(now.toString());
+        return new IntervalWithTimeZone(interval).toString();
     }
 
     /**
@@ -141,7 +146,7 @@ public abstract class ParameterSet {
     }
 
     private String validateTimespan(String timespan) {
-        return Interval.parse(timespan).toString();
+        return new IntervalWithTimeZone(timespan).toString();
     }
 
     public Set<String> availableParameters() {
