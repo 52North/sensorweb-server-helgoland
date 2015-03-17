@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,6 +64,8 @@ import org.springframework.util.MultiValueMap;
 public class IoParameters {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
+
+    private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
@@ -299,9 +302,33 @@ public class IoParameters {
      *        values.
      */
     protected IoParameters(Map<String, String> queryParameters) {
-        query = queryParameters == null
-            ? new HashMap<String, String>()
-            : queryParameters;
+        query = readDefaultConfig();
+        if (queryParameters != null) {
+            // override defaults
+            query.putAll(queryParameters);
+        }
+    }
+
+    private Map<String, String> readDefaultConfig() {
+        InputStream taskConfig = getClass().getResourceAsStream(DEFAULT_CONFIG_FILE);
+        try {
+            ObjectMapper om = new ObjectMapper();
+            return om.readValue(taskConfig, HashMap.class);
+        }
+        catch (IOException e) {
+            LOGGER.error("Could not load {}. Using empty config.", DEFAULT_CONFIG_FILE, e);
+            return new HashMap<String, String>();
+        }
+        finally {
+            if (taskConfig != null) {
+                try {
+                    taskConfig.close();
+                }
+                catch (IOException e) {
+                    LOGGER.debug("Stream already closed.");
+                }
+            }
+        }
     }
 
     /**
