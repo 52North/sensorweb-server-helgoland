@@ -266,10 +266,12 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
-
-        // TODO make date format configurable
-
-        DateFormat requestTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", i18n.getLocale());
+        
+        String timeformat = "yyyy-MM-dd, HH:mm";
+        if (getChartStyleDefinitions().containsParameter("timeformat")) {
+            timeformat = getChartStyleDefinitions().getAsString("timeformat");
+        }
+        DateFormat requestTimeFormat = new SimpleDateFormat(timeformat, i18n.getLocale());
         requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
         timeAxis.setDateFormatOverride(requestTimeFormat);
         timeAxis.setTimeZone(getTimezone().toTimeZone());

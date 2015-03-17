@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
@@ -81,11 +82,9 @@ public final class RenderingContext {
     }
 
     public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
-                                                                    StyleProperties style,
-                                                                    IntervalWithTimeZone timespan) {
-        DesignedParameterSet parameters = new DesignedParameterSet();
-        parameters.addTimeseriesWithStyleOptions(metadata.getId(), style);
-        parameters.setTimespan(timespan.toString());
+                                                                    IoParameters ioConfig) {
+        DesignedParameterSet parameters = ioConfig.toDesignedParameterSet();
+        parameters.addTimeseriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, metadata);
     }
 

@@ -175,12 +175,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
@@ -203,12 +203,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
 
         response.setCharacterEncoding("UTF-8");
@@ -250,7 +250,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);

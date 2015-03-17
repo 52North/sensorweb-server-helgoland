@@ -34,6 +34,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.IntervalWithTimeZone;
+import org.n52.io.IoParameters;
 
 public abstract class ParameterSet {
 
@@ -87,16 +88,16 @@ public abstract class ParameterSet {
      * @return the timespan in ISO-8601
      */
     public String getTimespan() {
-        return timespan;
+        return getAsString("timespan");
     }
 
     /**
      * @param timespan the timespan to set.
      */
     public void setTimespan(String timespan) {
-        this.timespan = timespan != null
+        parameters.put("timespan", timespan != null
                 ? validateTimespan(timespan)
-                : createDefaultTimespan();
+                : createDefaultTimespan());
     }
 
     /**

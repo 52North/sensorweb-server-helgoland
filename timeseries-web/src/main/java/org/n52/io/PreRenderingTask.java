@@ -27,7 +27,10 @@
  */
 package org.n52.io;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -298,7 +301,7 @@ public class PreRenderingTask implements ServletConfigAware {
         return outputDirectory;
     }
 
-    private IoParameters createConfig(String interval) {
+    private IoParameters createConfig(String interval, StyleProperties style) {
         Map<String, String> configuration = new HashMap<String, String>();
 
         // for backward compatibility (from xml config)
@@ -314,6 +317,13 @@ public class PreRenderingTask implements ServletConfigAware {
         this.height = Integer.parseInt(configuration.get(HEIGHT));
         this.showGrid = Boolean.parseBoolean(configuration.get(GRID));
         this.language = configuration.get(LOCALE);
+
+        try {
+            ObjectMapper om = new ObjectMapper();
+            configuration.put(IoParameters.STYLE, om.writeValueAsString(style));
+        } catch (JsonProcessingException e) {
+            LOGGER.warn("Invalid rendering style.", e);
+        }
 
         return IoParameters.createFromQuery(configuration);
     }
@@ -371,10 +381,10 @@ public class PreRenderingTask implements ServletConfigAware {
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
             IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
-            IoParameters config = createConfig(timespan.toString());
+            IoParameters config = createConfig(timespan.toString(), style);
 
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-            RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
+            RenderingContext context = createContextForSingleTimeseries(metadata, config);
             context.setDimensions(new ChartDimension(width, height));
             UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
             IoHandler renderer = IoFactory
