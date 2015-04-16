@@ -34,6 +34,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Properties;
+import org.n52.io.IoParameters;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.TimeseriesData;
@@ -43,11 +44,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm
- * 
+ *
  * Characteristic measurement values are picked depending on a given tolerance value. Values that differ less
  * than this tolerance value from an ideal line between some minima and maxima will be dropped.
  */
-public final class DouglasPeuckerGeneralizer implements Generalizer {
+public final class DouglasPeuckerGeneralizer extends Generalizer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
@@ -83,40 +84,24 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
      */
     private double toleranceValue = 0.1; // fallback default
 
-    private TvpDataCollection dataToGeneralize;
-
-    public static Generalizer createNonConfigGeneralizer(TvpDataCollection data) {
-        return new DouglasPeuckerGeneralizer(data, new Properties());
-    }
-
-    public static Generalizer createGeneralizer(TvpDataCollection data, Properties configuration) {
-        return new DouglasPeuckerGeneralizer(data, configuration);
-    }
-
     /**
      * Creates a new instance. Use static constructors for instantiation.
-     * 
-     * @param data
-     *        timeseries data collection to generalize.
-     * @param configuration
-     *        Configuration properties. If <code>null</code> a fallback configuration will be used.
+     *
+     * @param parameters
+     *        Configuration parameters. If <code>null</code> a fallback configuration will be used.
      */
-    private DouglasPeuckerGeneralizer(TvpDataCollection data, Properties configuration) {
-        this.dataToGeneralize = data;
-        configure(configuration);
-    }
-
-    private void configure(Properties configuration) {
+    public DouglasPeuckerGeneralizer(IoParameters parameters) {
+        super(parameters);
         try {
-            maxEntries = configuration.containsKey(MAX_ENTRIES)
-                ? parseInt(configuration.getProperty(MAX_ENTRIES))
-                : -1;
-            reductionRate = configuration.containsKey(REDUCTION_RATE)
-                ? parseInt(configuration.getProperty(REDUCTION_RATE))
-                : -1;
-            toleranceValue = configuration.containsKey(TOLERANCE_VALUE)
-                ? parseDouble(configuration.getProperty(TOLERANCE_VALUE))
-                : 0.1;
+            maxEntries = parameters.containsParameter(MAX_ENTRIES)
+                ? parseInt(parameters.getOther(MAX_ENTRIES))
+                : maxEntries;
+            reductionRate = parameters.containsParameter(REDUCTION_RATE)
+                ? parseInt(parameters.getOther(REDUCTION_RATE))
+                : reductionRate;
+            toleranceValue = parameters.containsParameter(TOLERANCE_VALUE)
+                ? parseDouble(parameters.getOther(TOLERANCE_VALUE))
+                : toleranceValue;
         }
         catch (NumberFormatException ne) {
             LOGGER.error("Error while reading properties!  Using fallback defaults.", ne);
@@ -125,10 +110,15 @@ public final class DouglasPeuckerGeneralizer implements Generalizer {
     }
 
     @Override
-    public TvpDataCollection generalize() throws GeneralizerException {
+    public String getName() {
+        return "Douglas-Peucker";
+    }
+
+    @Override
+    public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
         TvpDataCollection generalizedDataCollection = new TvpDataCollection();
-        for (String timeseriesId : dataToGeneralize.getAllTimeseries().keySet()) {
-            TimeseriesData timeseries = dataToGeneralize.getTimeseries(timeseriesId);
+        for (String timeseriesId : data.getAllTimeseries().keySet()) {
+            TimeseriesData timeseries = data.getTimeseries(timeseriesId);
             generalizedDataCollection.addNewTimeseries(timeseriesId, generalize(timeseries));
         }
         return generalizedDataCollection;

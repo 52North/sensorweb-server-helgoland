@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
@@ -117,9 +118,9 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        Interval timespan = map.getTimespan();
+        IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (map.getResultTime() != null) {
             parameters.setResultTime(map.getResultTime().toString());
         }
@@ -174,12 +175,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
@@ -202,12 +203,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
 
         response.setCharacterEncoding("UTF-8");
@@ -249,10 +250,10 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());

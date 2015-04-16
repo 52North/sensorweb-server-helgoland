@@ -46,30 +46,18 @@ public class DesignedParameterSet extends ParameterSet {
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     /**
-     * The width of the chart image to render.
-     */
-    private int width = 800;
-
-    /**
-     * The height of the chart image to render.
-     */
-    private int height = 500;
-
-    /**
-     * Indicates a grid as rendering background. <code>true</code> is the default.
-     */
-    private boolean grid = true;
-    
-    /**
-     * Indicates if a legend shall be drawn on the chart.
-     */
-    private boolean legend = false;
-
-    /**
      * Style options for each timeseriesId of interest.
      */
     @JsonProperty(required = true)
     private Map<String, StyleProperties> styleOptions;
+
+    private int width = 800;
+
+    private int height = 500;
+
+    private boolean grid = true;
+
+    private boolean legend = false;
 
     /**
      * Creates an instance with non-null default values.
@@ -85,6 +73,9 @@ public class DesignedParameterSet extends ParameterSet {
         return width;
     }
 
+    /**
+     * @param width the image width to set.
+     */
     public void setWidth(int width) {
         this.width = width;
     }
@@ -116,9 +107,9 @@ public class DesignedParameterSet extends ParameterSet {
      * @return <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public boolean isGrid() {
-        return this.grid;
+        return grid;
     }
-    
+
     public boolean isLegend() {
         return legend;
     }

@@ -28,24 +28,41 @@
 package org.n52.io.generalize;
 
 import org.n52.io.IoParameters;
-import org.n52.io.format.TvpDataCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class Generalizer {
+public class GeneralizerFactory {
 
-    private IoParameters parameters;
+    private static final Logger LOG = LoggerFactory.getLogger(GeneralizerFactory.class);
 
-    public Generalizer(IoParameters parameters) {
-        this.parameters = parameters;
+    private static final String GENERALIZING_ALGORITHM = "generalizing_algorithm";
+
+    private static final String LARGEST_TRIANGLE_THREE_BUCKETS = "LTTB";
+
+    private static final String DOUGLAS_PEUCKER = "DP";
+
+    public static final Generalizer createGeneralizer(IoParameters parameters) {
+
+        if ( !parameters.isGeneralize()) {
+            return new NoActionGeneralizer(parameters);
+        }
+
+        String algorithm = parameters.containsParameter(GENERALIZING_ALGORITHM)
+                ? parameters.getOther(GENERALIZING_ALGORITHM)
+                : "LTTB";
+
+        Generalizer generalizer;
+        if (LARGEST_TRIANGLE_THREE_BUCKETS.equalsIgnoreCase(algorithm)) {
+            generalizer = new LargestTriangleThreeBucketsGeneralizer(parameters);
+        } else if (DOUGLAS_PEUCKER.equalsIgnoreCase(algorithm)) {
+            generalizer = new DouglasPeuckerGeneralizer(parameters);
+        } else {
+            LOG.info("No generalizing algorithm found for code: {}.", algorithm);
+            generalizer = new NoActionGeneralizer(parameters);
+        }
+
+        LOG.info("Selected {} algorithm.", generalizer.getName());
+        return generalizer;
     }
-
-    public abstract TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException;
-
-    public IoParameters getParameters() {
-        return parameters == null
-                ? IoParameters.createDefaults()
-                : parameters;
-    }
-
-    public abstract String getName();
 
 }

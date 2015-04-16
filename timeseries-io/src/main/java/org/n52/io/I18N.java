@@ -53,8 +53,16 @@ public final class I18N {
         this.bundle = bundle;
     }
 
+    public boolean has(String string) {
+        return bundle.containsKey(string);
+    }
+
     public String get(String string) {
-        return bundle.getString(string);
+        if (has(string)) {
+            return bundle.getString(string);
+        } else {
+            return "<" + string + ">";
+        }
     }
 
     /**

@@ -161,7 +161,7 @@ public final class QueryParameters extends IoParameters {
         return super.getFormat();
     }
 
-    public Interval getTimespan() {
+    public IntervalWithTimeZone getTimespan() {
         try {
             return super.getTimespan();
         }

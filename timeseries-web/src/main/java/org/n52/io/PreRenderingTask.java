@@ -27,20 +27,24 @@
  */
 package org.n52.io;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletOutputStream;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
@@ -48,6 +52,7 @@ import static org.n52.io.IoParameters.GRID;
 import static org.n52.io.IoParameters.HEIGHT;
 import static org.n52.io.IoParameters.LOCALE;
 import static org.n52.io.IoParameters.PHENOMENON;
+import static org.n52.io.IoParameters.TIMESPAN;
 import static org.n52.io.IoParameters.WIDTH;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
@@ -232,7 +237,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
     public void writePrerenderedGraphToOutputStream(String timeseriesId,
                                                     String interval,
-                                                    ServletOutputStream outputStream) {
+                                                    OutputStream outputStream) {
         try {
             BufferedImage image = loadImage(timeseriesId, interval);
             if (image == null) {
@@ -251,26 +256,33 @@ public class PreRenderingTask implements ServletConfigAware {
         return ImageIO.read(new FileInputStream(createFileName(timeseriesId, interval)));
     }
 
-    public Interval createTimespanFromInterval(String timeseriesId, String interval) {
+    public IntervalWithTimeZone createTimespanFromInterval(String timeseriesId, String period) {
         DateTime now = new DateTime();
-        if (interval.equals("lastDay")) {
-            return new Interval(now.minusDays(1), now);
+        if (period.equals("lastDay")) {
+            Interval interval = new Interval(now.minusDays(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
-        else if (interval.equals("lastWeek")) {
-            return new Interval(now.minusWeeks(1), now);
+        else if (period.equals("lastWeek")) {
+            Interval interval = new Interval(now.minusWeeks(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
-        else if (interval.equals("lastMonth")) {
-            return new Interval(now.minusMonths(1), now);
+        else if (period.equals("lastMonth")) {
+            Interval interval = new Interval(now.minusMonths(1), now);
+            return new IntervalWithTimeZone(interval.toString());
         }
         else {
-            throw new ResourceNotFoundException("Unknown interval definition '" + interval + "' for timeseriesId "
+            throw new ResourceNotFoundException("Unknown interval definition '" + period + "' for timeseriesId "
                     + timeseriesId);
         }
     }
 
     private FileOutputStream createFile(String timeseriesId, String interval) throws IOException {
         File file = createFileName(timeseriesId, interval);
-        file.createNewFile();
+        if (file.exists()) {
+            file.setLastModified(new Date().getTime());
+        } else {
+            file.createNewFile();
+        }
         return new FileOutputStream(file);
     }
 
@@ -289,12 +301,30 @@ public class PreRenderingTask implements ServletConfigAware {
         return outputDirectory;
     }
 
-    private IoParameters createConfig() {
+    private IoParameters createConfig(String interval, StyleProperties style) {
         Map<String, String> configuration = new HashMap<String, String>();
+
+        // for backward compatibility (from xml config)
         configuration.put(WIDTH, Integer.toString(width));
         configuration.put(HEIGHT, Integer.toString(height));
         configuration.put(GRID, Boolean.toString(showGrid));
+        configuration.put(TIMESPAN, interval);
         configuration.put(LOCALE, language);
+
+        // overrides the above parameters (from json config)
+        configuration.putAll(taskConfigPrerendering.getGeneralConfig());
+        this.width = Integer.parseInt(configuration.get(WIDTH));
+        this.height = Integer.parseInt(configuration.get(HEIGHT));
+        this.showGrid = Boolean.parseBoolean(configuration.get(GRID));
+        this.language = configuration.get(LOCALE);
+
+        try {
+            ObjectMapper om = new ObjectMapper();
+            configuration.put(IoParameters.STYLE, om.writeValueAsString(style));
+        } catch (JsonProcessingException e) {
+            LOGGER.warn("Invalid rendering style.", e);
+        }
+
         return IoParameters.createFromQuery(configuration);
     }
 
@@ -350,12 +380,13 @@ public class PreRenderingTask implements ServletConfigAware {
         }
 
         private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IoParameters config = createConfig();
-            Interval timespan = createTimespanFromInterval(timeseriesId, interval);
+            IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
+            IoParameters config = createConfig(timespan.toString(), style);
+
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-            RenderingContext context = createContextForSingleTimeseries(metadata, style, timespan);
+            RenderingContext context = createContextForSingleTimeseries(metadata, config);
             context.setDimensions(new ChartDimension(width, height));
-            UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+            UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
             IoHandler renderer = IoFactory
                     .createWith(config)
                     .createIOHandler(context);

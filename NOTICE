@@ -68,7 +68,7 @@ This project includes:
   JBoss Logging I18n Annotations under Public Domain
   JCL 1.1.1 implemented over SLF4J under MIT License
   jcommon under GNU Lesser General Public Licence
-  jdom under JDOM license, https://github.com/hunterhacker/jdom/blob/master/LICENSE.txt
+  jdom under JDOM license (Apache style), https://github.com/hunterhacker/jdom/blob/master/LICENSE.txt
   jfreechart under GNU Lesser General Public Licence
   jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
   Joda time under Apache 2
