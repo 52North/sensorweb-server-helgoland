@@ -93,6 +93,16 @@ public class ChartRendererTest {
 
     @Test
     public void
+            shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
+        RenderingContext context = RenderingContext.createEmpty();
+        context.getChartStyleDefinitions().setTimespan(null);
+        this.chartRenderer = new MyChartRenderer(context);
+        String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
+        //assertThat(label, is("Time (+01:00)"));
+    }
+
+    @Test
+    public void
             shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
         RenderingContext context = RenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);

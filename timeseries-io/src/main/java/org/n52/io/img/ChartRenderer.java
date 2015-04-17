@@ -201,7 +201,10 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        DateTime end = DateTime.parse(getTimespan().split("/")[1]);
+        DateTime end = getTimespan() != null
+                ? DateTime.parse(getTimespan().split("/")[1])
+                : new DateTime();
+        //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
         String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
@@ -266,7 +269,7 @@ public abstract class ChartRenderer implements IoHandler {
     private void configureTimeAxis(XYPlot xyPlot) {
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
         timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
-        
+
         String timeformat = "yyyy-MM-dd, HH:mm";
         if (getChartStyleDefinitions().containsParameter("timeformat")) {
             timeformat = getChartStyleDefinitions().getAsString("timeformat");
