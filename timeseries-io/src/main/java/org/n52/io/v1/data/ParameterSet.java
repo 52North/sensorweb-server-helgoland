@@ -27,6 +27,7 @@
  */
 package org.n52.io.v1.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +41,6 @@ public abstract class ParameterSet {
 
     private Map<String, Object> parameters = new HashMap<String, Object>();
 
-    private String timespan;
-
     private boolean generalize; // TODO add generelaize algorithm + extra parameters ??
 
     private boolean base64;
@@ -54,7 +53,7 @@ public abstract class ParameterSet {
 
     protected ParameterSet() {
         parameters = new HashMap<String, Object>();
-        timespan = createDefaultTimespan();
+        parameters.put("timespan", createDefaultTimespan());
     }
 
     private String createDefaultTimespan() {
@@ -87,6 +86,7 @@ public abstract class ParameterSet {
      *
      * @return the timespan in ISO-8601
      */
+    @JsonProperty
     public String getTimespan() {
         return getAsString("timespan");
     }
