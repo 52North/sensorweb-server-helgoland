@@ -211,8 +211,29 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
         String locale = query.getLocale();
         String stationLabel = entity.getFeature().getNameI18n(locale);
+        if (stationLabel == null || stationLabel.isEmpty()) {
+        	if (entity.getFeature().getName() != null && !entity.getFeature().getName().isEmpty()) {
+        		stationLabel = entity.getFeature().getName();
+        	} else if (entity.getFeature().getCanonicalId() != null && !entity.getFeature().getCanonicalId().isEmpty()) {
+        		stationLabel = entity.getFeature().getCanonicalId();
+        	}
+        }
         String procedureLabel = entity.getProcedure().getNameI18n(locale);
+        if (procedureLabel == null || procedureLabel.isEmpty()) {
+        	if (entity.getProcedure().getName() != null && !entity.getProcedure().getName().isEmpty()) {
+        		procedureLabel = entity.getProcedure().getName();
+        	} else if (entity.getProcedure().getCanonicalId() != null && !entity.getProcedure().getCanonicalId().isEmpty()) {
+        		procedureLabel = entity.getProcedure().getCanonicalId();
+        	}
+        }
         String phenomenonLabel = entity.getPhenomenon().getNameI18n(locale);
+        if (phenomenonLabel == null || phenomenonLabel.isEmpty()) {
+        	if (entity.getPhenomenon().getName() != null && !entity.getPhenomenon().getName().isEmpty()) {
+        		phenomenonLabel = entity.getPhenomenon().getName();
+        	} else if (entity.getPhenomenon().getCanonicalId() != null && !entity.getPhenomenon().getCanonicalId().isEmpty()) {
+        		phenomenonLabel = entity.getPhenomenon().getCanonicalId();
+        	}
+        }
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
