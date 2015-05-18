@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -28,46 +28,71 @@
 package org.n52.io.v1.data;
 
 import org.joda.time.Interval;
+import org.n52.io.IntervalWithTimeZone;
+import org.n52.io.IoParameters;
 import org.n52.io.Utils;
 
 
 
 public class UndesignedParameterSet extends ParameterSet {
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-    
-    /**
-     * The timeseriesIds of interest.
-     */
-    private String[] timeseriesIds;
-    
-    /**
-     * Which output format the raw data shall have.
-     */
+    private String[] timeseries;
+
+    private String resultTime;
+
     private String format;
 
+    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
+
+    /**
+     * @return the timeseries ids
+     */
     @Override
     public String[] getTimeseries() {
-        return Utils.copy(timeseriesIds);
+        return Utils.copy(timeseries);
     }
 
+    /**
+     * @param timeseries The timeseriesIds of interest.
+     */
     void setTimeseries(String[] timeseries) {
-        this.timeseriesIds = Utils.copy(timeseries);
+        this.timeseries = Utils.copy(timeseries);
     }
-    
+
+    /**
+     * @return the result time.
+     */
+    public String getResultTime() {
+        return resultTime;
+    }
+
+    /**
+     * @param resultTime Optional parameter, to define a result time in the request.
+     */
+    public void setResultTime(String resultTime) {
+        this.resultTime = resultTime;
+    }
+
+    /**
+     * @return the output format the raw data shall have.
+     */
     public String getFormat() {
         return format;
     }
-    
+
+    /**
+     * @param format Which output format the raw data shall have.
+     */
     public void setFormat(String format) {
         this.format = format;
     }
-    
-    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, Interval timespan) {
-        UndesignedParameterSet parameters = new UndesignedParameterSet();
-        parameters.setTimeseries(new String[] { timeseriesId });
-        parameters.setTimespan(timespan.toString());
-        return parameters;
+
+    public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
+        UndesignedParameterSet parameterSet = parameters.toUndesignedParameterSet();
+        parameterSet.setTimeseries(new String[] { timeseriesId });
+        IntervalWithTimeZone timespan = parameters.getTimespan();
+        parameterSet.setTimespan(timespan.toString());
+        return parameterSet;
     }
 
     public static UndesignedParameterSet createFromDesignedParameters(DesignedParameterSet designedSet) {

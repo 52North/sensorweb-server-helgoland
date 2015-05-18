@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,8 +33,8 @@ import java.util.Collection;
 
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
-import org.n52.web.v1.srv.SearchService;
-import org.n52.web.v1.srv.search.SearchResult;
+import org.n52.sensorweb.v1.spi.SearchService;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,7 +54,7 @@ public class SearchController extends BaseController {
         if (q == null) {
             throw new BadRequestException("Use parameter 'q' with search string to define your search term.");
         }
-        
+
         Collection<SearchResult> result = searchService.searchResources(q, locale);
         return new ModelAndView().addObject(result);
     }

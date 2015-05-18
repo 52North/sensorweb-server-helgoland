@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,18 +27,24 @@
  */
 package org.n52.io;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Map.Entry;
+import org.geotools.util.MapEntry;
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.geojson.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
@@ -47,6 +53,7 @@ import org.n52.io.v1.data.BBox;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.ParameterSet;
 import org.n52.io.v1.data.StyleProperties;
+import org.n52.io.v1.data.UndesignedParameterSet;
 import org.n52.io.v1.data.Vicinity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -54,14 +61,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.Point;
-
 public class IoParameters {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
+
+    private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
@@ -72,7 +76,7 @@ public class IoParameters {
 
     /**
      * The default expansion of collection items.
-     * 
+     *
      * @see #EXPANDED
      */
     private static final boolean DEFAULT_EXPANDED = false;
@@ -86,7 +90,7 @@ public class IoParameters {
      * The default behaviour if latest value requests shall be invoked during a timeseries collection request.
      */
     private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
-    
+
     /**
      * If status intervals section is requested.
      */
@@ -114,7 +118,7 @@ public class IoParameters {
 
     /**
      * The default page offset.
-     * 
+     *
      * @see #OFFSET
      */
     private static final int DEFAULT_OFFSET = -1;
@@ -126,7 +130,7 @@ public class IoParameters {
 
     /**
      * The default page size limit.
-     * 
+     *
      * @see #LIMIT
      */
     private static final int DEFAULT_LIMIT = -1;
@@ -138,7 +142,7 @@ public class IoParameters {
 
     /**
      * The default locale.
-     * 
+     *
      * @see #LOCALE
      */
     private static final String DEFAULT_LOCALE = "en";
@@ -147,6 +151,11 @@ public class IoParameters {
      * Determines the timespan parameter
      */
     static final String TIMESPAN = "timespan";
+
+    /**
+     * Parameter to specify the timeseries data with a result time
+     */
+    static final String RESULTTIME = "resultTime";
 
     /**
      * The width in px of the image to be rendered.
@@ -247,7 +256,7 @@ public class IoParameters {
      * Determines the phenomenon filter
      */
     static final String PHENOMENON = "phenomenon";
-    
+
     /**
      * Determines the station filter
      */
@@ -287,15 +296,39 @@ public class IoParameters {
 
     /**
      * Use static constructor {@link #createFromQuery(MultiValueMap)}.
-     * 
+     *
      * @param queryParameters
      *        containing query parameters. If <code>null</code>, all parameters are returned with default
      *        values.
      */
     protected IoParameters(Map<String, String> queryParameters) {
-        query = queryParameters == null
-            ? new HashMap<String, String>()
-            : queryParameters;
+        query = readDefaultConfig();
+        if (queryParameters != null) {
+            // override defaults
+            query.putAll(queryParameters);
+        }
+    }
+
+    private Map<String, String> readDefaultConfig() {
+        InputStream taskConfig = getClass().getResourceAsStream(DEFAULT_CONFIG_FILE);
+        try {
+            ObjectMapper om = new ObjectMapper();
+            return om.readValue(taskConfig, HashMap.class);
+        }
+        catch (IOException e) {
+            LOGGER.error("Could not load {}. Using empty config.", DEFAULT_CONFIG_FILE, e);
+            return new HashMap<String, String>();
+        }
+        finally {
+            if (taskConfig != null) {
+                try {
+                    taskConfig.close();
+                }
+                catch (IOException e) {
+                    LOGGER.debug("Stream already closed.");
+                }
+            }
+        }
     }
 
     /**
@@ -349,7 +382,7 @@ public class IoParameters {
 
     /**
      * Returns the requested chart height in pixels.
-     * 
+     *
      * @return the requested chart height in pixels or the default {@value #DEFAULT_HEIGHT}.
      * @throws IoParseException
      *         if parsing parameter fails.
@@ -363,7 +396,7 @@ public class IoParameters {
 
     /**
      * Indicates if rendered chart shall be returned as Base64 encoded string.
-     * 
+     *
      * @return the value of parameter {@value #BASE_64} or the default {@value #DEFAULT_BASE_64}.
      * @throws IoParseException
      *         if parsing parameter fails.
@@ -439,7 +472,7 @@ public class IoParameters {
      * Creates a generic {@link StyleProperties} instance which can be used to create more concrete
      * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
      * style view which can be used for lines.
-     * 
+     *
      * @param style
      *        the JSON style parameter to parse.
      * @return a parsed {@link StyleProperties} instance.
@@ -475,25 +508,39 @@ public class IoParameters {
      * @throws IoParseException
      *         if timespan could not be parsed.
      */
-    public Interval getTimespan() {
+    public IntervalWithTimeZone getTimespan() {
         if ( !query.containsKey(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(query.get(TIMESPAN));
     }
 
-    private Interval createDefaultTimespan() {
+    private IntervalWithTimeZone createDefaultTimespan() {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
-        return new Interval(lastWeek, now);
+        String interval = lastWeek
+                .toString()
+                .concat("/")
+                .concat(now.toString());
+        return new IntervalWithTimeZone(interval);
     }
 
-    private Interval validateTimespan(String timespan) {
-        try {
-            return Interval.parse(timespan);
+    private IntervalWithTimeZone validateTimespan(String timespan) {
+        return new IntervalWithTimeZone(timespan);
+    }
+
+    public Instant getResultTime() {
+        if (!query.containsKey(RESULTTIME)) {
+            return null;
         }
-        catch (IllegalArgumentException e) {
-            String message = "Could not parse timespan parameter." + timespan;
+        return validateTimestamp(query.get(RESULTTIME));
+    }
+
+    private Instant validateTimestamp(String timestamp) {
+        try {
+            return Instant.parse(timestamp);
+        } catch (Exception e) {
+            String message = "Could not parse result time parameter." + timestamp;
             throw new IoParseException(message, e);
         }
     }
@@ -521,7 +568,7 @@ public class IoParameters {
     public String getPhenomenon() {
         return query.get(PHENOMENON);
     }
-    
+
     public String getStation() {
         return query.get(STATION);
     }
@@ -530,7 +577,7 @@ public class IoParameters {
      * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting bounding
      * box is the merged extent of all spatial filters given. For example if {@value #NEAR} and {@value #BBOX}
      * exist, the returned bounding box includes both extents.
-     * 
+     *
      * @return a spatial filter created from given spatial parameters.
      * @throws IoParseException
      *         if parsing parameters fails, or if a requested {@value #CRS} object could not be created.
@@ -687,14 +734,14 @@ public class IoParameters {
         }
         return parseBoolean(FORCE_LATEST_VALUE);
     }
-    
+
     public boolean isStatusIntervalsRequests() {
     	if ( !query.containsKey(STATUS_INTERVALS)) {
     		return DEFAULT_STATUS_INTERVALS;
     	}
     	return parseBoolean(STATUS_INTERVALS);
     }
-    
+
     public boolean isRenderingHintsRequests() {
     	if ( !query.containsKey(RENDERING_HINTS)) {
     		return DEFAULT_RENDERING_HINTS;
@@ -723,7 +770,7 @@ public class IoParameters {
             return Integer.parseInt(value);
         }
         catch (NumberFormatException e) {
-            throw new IoParseException("Parameter '" + parameter + "' has to be an integer!");
+            throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
         }
     }
 
@@ -740,9 +787,29 @@ public class IoParameters {
             return Boolean.parseBoolean(value);
         }
         catch (NumberFormatException e) {
-            throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!");
+            throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
         }
     }
+
+    public UndesignedParameterSet toUndesignedParameterSet() {
+        UndesignedParameterSet parameterSet = new UndesignedParameterSet();
+        addValuesToParameterSet(parameterSet);
+        return parameterSet;
+    }
+
+    public DesignedParameterSet toDesignedParameterSet() {
+        DesignedParameterSet parameterSet = new DesignedParameterSet();
+        addValuesToParameterSet(parameterSet);
+        return parameterSet;
+    }
+
+    private ParameterSet addValuesToParameterSet(ParameterSet parameterSet) {
+        for (Entry<String, String> entry : query.entrySet()) {
+            parameterSet.addParameter(entry.getKey().toLowerCase(), entry.getValue());
+        }
+        return parameterSet;
+    }
+
 
     public static IoParameters createDefaults() {
         return new IoParameters(null);
@@ -762,41 +829,16 @@ public class IoParameters {
      *        the parameters sent via POST payload.
      * @return a query map for convenient parameter access plus validation.
      */
-    public static IoParameters createFromQuery(DesignedParameterSet parameters) {
-
-        // TODO consolidate undesigned/desigend paramter sets
-
-        return createFromQuery(createQueryParametersFrom(parameters));
-    }
-
-    /**
-     * @param parameters
-     *        the parameters sent via POST payload.
-     * @return a query map for convenient parameter access plus validation.
-     */
     public static IoParameters createFromQuery(ParameterSet parameters) {
-
-        // TODO consolidate undesigned/desigend paramter sets
-
         return createFromQuery(createQueryParametersFrom(parameters));
-    }
-
-    private static Map<String, String> createQueryParametersFrom(DesignedParameterSet parameters) {
-        Map<String, String> queryParameters = createQueryParametersFrom((ParameterSet) parameters);
-        queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
-        queryParameters.put(LEGEND, Boolean.toString(parameters.isLegend()));
-        queryParameters.put(GRID, Boolean.toString(parameters.isGrid()));
-        return queryParameters;
     }
 
     private static Map<String, String> createQueryParametersFrom(ParameterSet parameters) {
         Map<String, String> queryParameters = new HashMap<String, String>();
-        queryParameters.put(LOCALE, parameters.getLanguage());
-        queryParameters.put(TIMESPAN, parameters.getTimespan());
-        queryParameters.put(BASE_64, Boolean.toString(parameters.isBase64()));
-        queryParameters.put(EXPANDED, Boolean.toString(parameters.isExpanded()));
-        queryParameters.put(GENERALIZE, Boolean.toString(parameters.isGeneralize()));
-        queryParameters.put(LOCALE, parameters.getLanguage());
+        for (String parameter : parameters.availableParameters()) {
+            Object value = parameters.getAsObject(parameter);
+            queryParameters.put(parameter.toLowerCase(), String.valueOf(value));
+        }
         return queryParameters;
     }
 

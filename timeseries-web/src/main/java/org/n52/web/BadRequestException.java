@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,11 +40,6 @@ public class BadRequestException extends RuntimeException implements WebExceptio
     private static final long serialVersionUID = -299285770822168789L;
 
     private List<String> details;
-
-    @Deprecated
-    public BadRequestException() {
-        super();
-    }
 
     public BadRequestException(String message, Throwable cause) {
         super(message, cause);

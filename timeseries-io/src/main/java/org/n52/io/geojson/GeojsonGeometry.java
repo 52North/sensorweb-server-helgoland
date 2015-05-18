@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,7 +32,7 @@ import java.util.Arrays;
 public abstract class GeojsonGeometry extends GeojsonObject {
 
     private static final long serialVersionUID = -2611259809054586079L;
-    
+
     /**
      * @throws IllegalArgumentException
      *         if coordinates are <code>null</code> or do not contain two dimensional point.
@@ -41,11 +41,11 @@ public abstract class GeojsonGeometry extends GeojsonObject {
         if (coordinates == null) {
             throw new NullPointerException("Coordinates must not be null.");
         }
-        if (coordinates.length != 2) {
+        if (coordinates.length != 2 && coordinates.length != 3) {
             String asString = Arrays.toString(coordinates);
             throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
         }
         return coordinates;
     }
-    
+
 }

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,7 +53,7 @@ import org.n52.io.v1.data.FeatureOutput;
 import org.n52.io.v1.data.ReferenceValueOutput;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesMetadata;
+import org.n52.io.v1.data.TimeseriesDataMetadata;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.TimeseriesValue;
 
@@ -96,7 +96,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
                  * of the plot's renderer list.
                  */
 
-                TimeseriesMetadata metadata = timeseriesData.getMetadata();
+                TimeseriesDataMetadata metadata = timeseriesData.getMetadata();
                 Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, TimeseriesData> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();

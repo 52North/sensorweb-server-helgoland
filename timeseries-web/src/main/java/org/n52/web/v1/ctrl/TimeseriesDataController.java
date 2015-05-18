@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,49 +27,50 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.IoParameters.createFromQuery;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.QueryParameters.createFromQuery;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
-import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
-import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-import static org.n52.web.v1.srv.GeneralizingTimeseriesDataService.composeDataService;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
+import org.n52.io.MimeType;
+import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.APPLICATION_ZIP;
+import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.PreRenderingTask;
+import static org.n52.io.QueryParameters.createFromQuery;
+import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.TimeseriesDataCollection;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
+import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
+import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.web.v1.srv.ParameterService;
-import org.n52.web.v1.srv.ServiceParameterService;
-import org.n52.web.v1.srv.TimeseriesDataService;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.composeDataService;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.ServiceParameterService;
+import org.n52.sensorweb.v1.spi.TimeseriesDataService;
+import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -77,6 +78,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -115,9 +118,12 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        Interval timespan = map.getTimespan();
+        IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, timespan);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        if (map.getResultTime() != null) {
+            parameters.setResultTime(map.getResultTime().toString());
+        }
 
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
@@ -169,14 +175,48 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
+        handleBinaryResponse(response, parameters, renderer);
+    }
+
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/zip"}, method = GET)
+    public void getTimeseriesAsZippedCsv(HttpServletResponse response,
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        query.put("zip", Arrays.asList(new String[] { Boolean.TRUE.toString() }));
+        getTimeseriesAsCsv(response, timeseriesId, query);
+    }
+
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = {"text/csv"}, method = GET)
+    public void getTimeseriesAsCsv(HttpServletResponse response,
+                                    @PathVariable String timeseriesId,
+                                    @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+
+        checkIfUnknownTimeseries(timeseriesId);
+
+        IoParameters map = createFromQuery(query);
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        parameters.setGeneralize(map.isGeneralize());
+        parameters.setExpanded(map.isExpanded());
+
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
+
+        response.setCharacterEncoding("UTF-8");
+        if (Boolean.parseBoolean(map.getOther("zip"))) {
+            response.setContentType(APPLICATION_ZIP.toString());
+        } else {
+            response.setContentType(TEXT_CSV.toString());
+        }
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -210,16 +250,16 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map.getStyle(), map.getTimespan());
+        RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
-        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map.getTimespan());
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        
+
         parameters.setGeneralize(map.isGeneralize());
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
-        
+
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
@@ -229,6 +269,9 @@ public class TimeseriesDataController extends BaseController {
                                              @PathVariable String timeseriesId,
                                              @PathVariable String interval,
                                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        if (preRenderingTask == null) {
+            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
+        }
         if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
@@ -307,7 +350,7 @@ public class TimeseriesDataController extends BaseController {
     }
 
     public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = timeseriesMetadataService;
+        this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
     }
 
     public TimeseriesDataService getTimeseriesDataService() {

@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.n52.sensorweb</groupId>
 		<artifactId>timeseries-api</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>timeseries-io</artifactId>
 	<packaging>jar</packaging>
-	<name>Sensor Web Timeseries Input/Output devices</name>
+	<name>Sensor Web Timeseries API - IO</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<dependency>

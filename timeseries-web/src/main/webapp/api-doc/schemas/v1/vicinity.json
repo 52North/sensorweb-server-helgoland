@@ -5,10 +5,10 @@
   "description": "An geographical surrounding defined by a point and a radius.",
   "type": "object",
   "properties": {
-    "center": { 
+    "center": {
       "type": "object",
       "properties": {
-        "type": "string", 
+        "type": "string",
         "coordinates": {
           "type": "array",
           "items": {
@@ -20,7 +20,7 @@
         },
         "crs": {
           "type": "object",
-          "description": "A named coordinate system.", 
+          "description": "A named coordinate system.",
           "properties": {
             "type": "string",
             "properties": {
@@ -32,11 +32,11 @@
         }
       },
       "required": ["type","coordinates"]
-    }, 
+    },
     "radius": {
       "type": "number",
       "description": "The radius in kilometers."
     }
-  }
+  },
   "required": ["center","radius"]
 }

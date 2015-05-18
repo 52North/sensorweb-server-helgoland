@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -28,21 +28,24 @@
 package org.n52.io.format;
 
 public final class FormatterFactory {
-    
-    private String format;
-    
+
+    private final String format;
+
     private FormatterFactory(String format) {
         this.format = format;
     }
-    
+
     public TimeseriesDataFormatter<?> create() {
-        if ("highcharts".equals(format)) {
+        if ("highcharts".equalsIgnoreCase(format)) {
             return new HighchartFormatter();
+        } else if("flotcharts".equalsIgnoreCase(format)
+                || "flot".equalsIgnoreCase(format)) {
+            return new FlotFormatter();
         } else {
             return new TvpFormatter();
         }
     }
-    
+
     public static FormatterFactory createFormatterFactory(String format) {
         return new FormatterFactory(format);
     }

@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,9 +27,11 @@
  */
 package org.n52.io.img;
 
-import org.joda.time.Interval;
+import java.text.SimpleDateFormat;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
+import org.n52.io.IoParameters;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
@@ -80,11 +82,9 @@ public final class RenderingContext {
     }
 
     public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
-                                                                    StyleProperties style,
-                                                                    Interval timespan) {
-        DesignedParameterSet parameters = new DesignedParameterSet();
-        parameters.addTimeseriesWithStyleOptions(metadata.getId(), style);
-        parameters.setTimespan(timespan.toString());
+                                                                    IoParameters ioConfig) {
+        DesignedParameterSet parameters = ioConfig.toDesignedParameterSet();
+        parameters.addTimeseriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, metadata);
     }
 
@@ -99,6 +99,14 @@ public final class RenderingContext {
 
     public TimeseriesMetadataOutput[] getTimeseriesMetadatas() {
         return timeseriesMetadatas.clone();
+    }
+
+    public String getTimeAxisFormat() {
+        if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
+            return chartStyleDefinitions.getAsString("timeaxis.format");
+        } else {
+            return "yyyy-MM-dd, HH:mm";
+        }
     }
 
 }

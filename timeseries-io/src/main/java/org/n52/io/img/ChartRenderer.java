@@ -1,5 +1,5 @@
 /**
- * ﻿Copyright (C) 2013-2014 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,45 +27,55 @@
  */
 package org.n52.io.img;
 
+import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
+import java.awt.Font;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
-import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
-
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import static javax.imageio.ImageIO.write;
+import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.Timeline;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.block.BlockFrame;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.title.TextTitle;
+import org.jfree.ui.HorizontalAlignment;
+import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.VerticalAlignment;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
+import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
+import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
+import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.io.v1.data.StyleProperties;
@@ -87,11 +97,11 @@ public abstract class ChartRenderer implements IoHandler {
     private MimeType mimeType;
 
     private boolean drawLegend;
-    
+
     private boolean generalize;
 
     private boolean showGrid;
-    
+
     private JFreeChart chart;
 
     private XYPlot xyPlot;
@@ -109,17 +119,14 @@ public abstract class ChartRenderer implements IoHandler {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
             p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
-        	write(drawChartToImage(), mimeType.getFormatName(), stream);
-        }
-        catch (IOException e) {
+            write(drawChartToImage(), mimeType.getFormatName(), stream);
+        } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
-        }
-        finally {
+        } finally {
             try {
                 stream.flush();
                 stream.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
             }
         }
@@ -132,13 +139,16 @@ public abstract class ChartRenderer implements IoHandler {
         Graphics2D chartGraphics = chartImage.createGraphics();
         chartGraphics.fillRect(0, 0, width, height);
         chartGraphics.setColor(WHITE);
-        
+
         chart.setTextAntiAlias(true);
         chart.setAntiAlias(true);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setFrame(BlockBorder.NONE);
+        }
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
-    
+
     public XYPlot getXYPlot() {
         if (xyPlot == null) {
             xyPlot = createChart(context);
@@ -165,11 +175,11 @@ public abstract class ChartRenderer implements IoHandler {
     public void setDrawLegend(boolean drawLegend) {
         this.drawLegend = drawLegend;
     }
-    
+
     public boolean isGeneralize() {
         return generalize;
     }
-    
+
     public void setGeneralize(boolean generalize) {
         this.generalize = generalize;
     }
@@ -191,27 +201,51 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        this.chart = createTimeSeriesChart(null,
-                                           i18n.get("time"),
-                                           i18n.get("value"),
-                                           null,
-                                           drawLegend,
-                                           showTooltips,
-                                           true);
+        DateTime end = getTimespan() != null
+                ? DateTime.parse(getTimespan().split("/")[1])
+                : new DateTime();
+        //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
+        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
+
+        StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
+        domainAxisLabel.append(" (").append(zoneName).append(")");
+        chart = createTimeSeriesChart(null,
+                domainAxisLabel.toString(),
+                i18n.get("value"),
+                null,
+                drawLegend,
+                showTooltips,
+                true);
         return createPlotArea(chart);
     }
 
     private XYPlot createPlotArea(JFreeChart chart) {
-        XYPlot xyPlot = chart.getXYPlot();
-        xyPlot.setBackgroundPaint(WHITE);
-        xyPlot.setDomainGridlinePaint(LIGHT_GRAY);
-        xyPlot.setRangeGridlinePaint(LIGHT_GRAY);
-        xyPlot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
-        showCrosshairsOnAxes(xyPlot);
-        configureDomainAxis(xyPlot);
-        showGridlinesOnChart(xyPlot);
-        configureTimeAxis(xyPlot);
-        return xyPlot;
+        XYPlot plot = chart.getXYPlot();
+        plot.setBackgroundPaint(WHITE);
+        plot.setDomainGridlinePaint(LIGHT_GRAY);
+        plot.setRangeGridlinePaint(LIGHT_GRAY);
+        plot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
+        showCrosshairsOnAxes(plot);
+        configureDomainAxis(plot);
+        showGridlinesOnChart(plot);
+        configureTimeAxis(plot);
+        addNotice(chart);
+        return plot;
+    }
+
+    private void addNotice(JFreeChart chart) {
+        TextTitle notice = new TextTitle();
+        String msg = i18n.get("notice");
+        if (msg != null && !msg.isEmpty()) {
+            notice.setText(msg);
+            notice.setPaint(BLACK);
+            notice.setFont(FONT_LABEL_SMALL);
+            notice.setPosition(RectangleEdge.BOTTOM);
+            notice.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+            notice.setVerticalAlignment(VerticalAlignment.BOTTOM);
+            notice.setPadding(new RectangleInsets(0, 0, 20, 20));
+            chart.addSubtitle(notice);
+        }
     }
 
     private void configureDomainAxis(XYPlot xyPlot) {
@@ -233,10 +267,25 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private void configureTimeAxis(XYPlot xyPlot) {
-        String timespan = getChartStyleDefinitions().getTimespan();
         DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
-        timeAxis.setRange(getStartTime(timespan), getEndTime(timespan));
-        timeAxis.setDateFormatOverride(new SimpleDateFormat());
+        timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
+
+        String timeformat = "yyyy-MM-dd, HH:mm";
+        if (getChartStyleDefinitions().containsParameter("timeformat")) {
+            timeformat = getChartStyleDefinitions().getAsString("timeformat");
+        }
+        DateFormat requestTimeFormat = new SimpleDateFormat(timeformat, i18n.getLocale());
+        requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
+        timeAxis.setDateFormatOverride(requestTimeFormat);
+        timeAxis.setTimeZone(getTimezone().toTimeZone());
+    }
+
+    private String getTimespan() {
+        return getChartStyleDefinitions().getTimespan();
+    }
+
+    private DateTimeZone getTimezone() {
+        return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
@@ -267,7 +316,7 @@ public abstract class ChartRenderer implements IoHandler {
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId) {
         return getChartStyleDefinitions().getStyleOptions(timeseriesId);
     }
-    
+
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
         return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
     }
@@ -299,12 +348,15 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     static class LabelConstants {
+
         static final Color COLOR = BLACK;
         static final int FONT_SIZE = 12;
+        static final int FONT_SIZE_SMALL = 9;
         static final int FONT_SIZE_TICKS = 10;
         static final String LOGICAL_FONT = "Sans-serif";
         static final Font FONT_LABEL = new Font(LOGICAL_FONT, BOLD, FONT_SIZE);
         static final Font FONT_DOMAIN = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_TICKS);
+        static final Font FONT_LABEL_SMALL = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_SMALL);
     }
 
 }
