@@ -47,8 +47,8 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
-            List<? extends ParameterOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new OfferingOutput[0]);
+            List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
+            return results.toArray(new OfferingOutput[results.size()]);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get offering data.");
         }
