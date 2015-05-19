@@ -68,7 +68,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = searchResult.getNameI18n(locale);
+            String label = getLabelFrom(searchResult, locale);
             results.add(new PhenomenonSearchResult(pkid, label));
         }
         return results;
@@ -128,7 +128,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
 
     private PhenomenonOutput createCondensed(PhenomenonEntity entity, DbQuery parameters) {
         PhenomenonOutput result = new PhenomenonOutput();
-        result.setLabel(entity.getNameI18n(parameters.getLocale()));
+        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         return result;
     }

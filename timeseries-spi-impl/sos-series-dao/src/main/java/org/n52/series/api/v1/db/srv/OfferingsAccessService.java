@@ -34,11 +34,11 @@ import org.n52.io.IoParameters;
 import org.n52.io.v1.data.OfferingOutput;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.io.v1.data.ProcedureOutput;
+import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.web.InternalServerException;
-import org.n52.sensorweb.v1.spi.ParameterService;
 
 public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {
 
