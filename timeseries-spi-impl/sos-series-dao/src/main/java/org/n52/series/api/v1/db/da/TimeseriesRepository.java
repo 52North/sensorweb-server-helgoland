@@ -45,6 +45,8 @@ import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesDataMetadata;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
@@ -55,8 +57,6 @@ import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.ObservationDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
-import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
 
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
@@ -222,39 +222,30 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
-
+    
     private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
         String locale = query.getLocale();
-        String stationLabel = entity.getFeature().getNameI18n(locale);
-        if (stationLabel == null || stationLabel.isEmpty()) {
-        	if (entity.getFeature().getName() != null && !entity.getFeature().getName().isEmpty()) {
-        		stationLabel = entity.getFeature().getName();
-        	} else if (entity.getFeature().getCanonicalId() != null && !entity.getFeature().getCanonicalId().isEmpty()) {
-        		stationLabel = entity.getFeature().getCanonicalId();
-        	}
-        }
-        String procedureLabel = entity.getProcedure().getNameI18n(locale);
-        if (procedureLabel == null || procedureLabel.isEmpty()) {
-        	if (entity.getProcedure().getName() != null && !entity.getProcedure().getName().isEmpty()) {
-        		procedureLabel = entity.getProcedure().getName();
-        	} else if (entity.getProcedure().getCanonicalId() != null && !entity.getProcedure().getCanonicalId().isEmpty()) {
-        		procedureLabel = entity.getProcedure().getCanonicalId();
-        	}
-        }
-        String phenomenonLabel = entity.getPhenomenon().getNameI18n(locale);
-        if (phenomenonLabel == null || phenomenonLabel.isEmpty()) {
-        	if (entity.getPhenomenon().getName() != null && !entity.getPhenomenon().getName().isEmpty()) {
-        		phenomenonLabel = entity.getPhenomenon().getName();
-        	} else if (entity.getPhenomenon().getCanonicalId() != null && !entity.getPhenomenon().getCanonicalId().isEmpty()) {
-        		phenomenonLabel = entity.getPhenomenon().getCanonicalId();
-        	}
-        }
+        String stationLabel = getLabelFrom(entity.getFeature(), locale);
+        String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
+        String phenomenonLabel = getLabelFrom(entity.getPhenomenon(), locale);
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
         output.setStation(createCondensedStation(entity, query));
         return output;
+    }
+
+    private String getLabelFrom(DescribableEntity<? extends I18nEntity> entity, String locale) {
+    	String label = entity.getNameI18n(locale);
+    	 if (label == null || label.isEmpty()) {
+         	if (entity.getName() != null && !entity.getName().isEmpty()) {
+         		label = entity.getName();
+         	} else if (entity.getCanonicalId() != null && !entity.getCanonicalId().isEmpty()) {
+         		label = entity.getCanonicalId();
+         	}
+         }
+    	 return label;
     }
 
     private String createTimeseriesLabel(String phenomenon, String procedure, String station) {
