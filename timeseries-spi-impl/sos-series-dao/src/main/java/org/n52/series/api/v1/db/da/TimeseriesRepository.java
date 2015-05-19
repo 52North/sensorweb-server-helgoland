@@ -106,7 +106,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-                results.add(createCondensed(timeseries, query));
+            	/*
+            	 *  ATM, the SWC REST API only supports numeric types
+            	 *  We check for a unit to check for them
+            	 */
+            	if (timeseries.getUnit() != null) {
+            		results.add(createCondensed(timeseries, query));
+            	} 
             }
             return results;
 
@@ -123,7 +129,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-                results.add(createExpanded(session, timeseries, query));
+            	/*
+            	 *  ATM, the SWC REST API only supports numeric types
+            	 *  We check for a unit to check for them
+            	 */
+            	if (timeseries.getUnit() != null) {
+            		results.add(createExpanded(session, timeseries, query));
+            	}
             }
             return results;
         }
@@ -138,7 +150,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-            if (result == null) {
+        	/*
+        	 *  ATM, the SWC REST API only supports numeric types
+        	 *  We check for a unit to check for them
+        	 */
+            if (result == null || result.getUnit() == null) {
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
             }
             return createExpanded(session, result, dbQuery);
