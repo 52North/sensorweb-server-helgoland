@@ -28,19 +28,9 @@
 package org.n52.io.v1.data;
 
 
-public class FeatureOutput extends ParameterOutput {
+public class FeatureOutput extends AbstractOutput {
 
-	private ServiceOutput service;
-
-	public ServiceOutput getService() {
-		return service;
-	}
-
-	public void setService(ServiceOutput service) {
-		this.service = service;
-	}
-
-    @Override
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();

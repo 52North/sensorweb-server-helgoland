@@ -27,4 +27,55 @@
  */
 package org.n52.io.v1.data;
 
-public class CategoryOutput extends AbstractOutput {}
+/**
+ * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk J&uuml;rrens</a>
+ * @since 1.5.0
+ */
+public class AbstractOutput extends ParameterOutput {
+
+	protected ServiceOutput service;
+
+	public AbstractOutput() {
+		super();
+	}
+
+	public ServiceOutput getService() {
+		return service;
+	}
+
+	public void setService(ServiceOutput service) {
+		this.service = service;
+	}
+
+	@Override
+	public int hashCode() {
+	    final int prime = 31;
+	    int result = super.hashCode();
+	    result = prime * result + ( (service == null) ? 0 : service.hashCode());
+	    return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+	        return true;
+	    }
+	    if ( !super.equals(obj)) {
+	        return false;
+	    }
+	    if ( ! (this.getClass().isAssignableFrom(obj.getClass()))) {
+	        return false;
+	    }
+	    AbstractOutput other = (AbstractOutput) obj;
+	    if (service == null) {
+	        if (other.service != null) {
+	            return false;
+	        }
+	    }
+	    else if ( !service.equals(other.service)) {
+	        return false;
+	    }
+	    return true;
+	}
+
+}

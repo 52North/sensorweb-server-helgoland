@@ -93,9 +93,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (SeriesEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String phenomenonLabel = searchResult.getPhenomenon().getNameI18n(locale);
-            String procedureLabel = searchResult.getProcedure().getNameI18n(locale);
-            String stationLabel = searchResult.getFeature().getNameI18n(locale);
+            String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
+            String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
+            String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
             String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
@@ -241,18 +241,6 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         output.setUom(entity.getUnit().getNameI18n(locale));
         output.setStation(createCondensedStation(entity, query));
         return output;
-    }
-
-    private String getLabelFrom(DescribableEntity<? extends I18nEntity> entity, String locale) {
-    	String label = entity.getNameI18n(locale);
-    	 if (label == null || label.isEmpty()) {
-         	if (entity.getName() != null && !entity.getName().isEmpty()) {
-         		label = entity.getName();
-         	} else if (entity.getCanonicalId() != null && !entity.getCanonicalId().isEmpty()) {
-         		label = entity.getCanonicalId();
-         	}
-         }
-    	 return label;
     }
 
     private String createTimeseriesLabel(String phenomenon, String procedure, String station) {

@@ -177,38 +177,56 @@ public abstract class SessionAwareRepository {
         serviceOutput.setId(instance.getId());
         return serviceOutput;
     }
+    
+	protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
+		if (isi18nNameAvailable(entity, locale)) {
+			return entity.getNameI18n(locale);
+		} else if (isNameAvailable(entity)) {
+			return entity.getName();
+		} else {
+			return entity.getCanonicalId();
+		}
+	}
+
+	private boolean isNameAvailable(DescribableEntity<?> entity) {
+		return entity.getName() != null && !entity.getName().isEmpty();
+	}
+
+	private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
+		return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
+	}
 
     private PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
         PhenomenonOutput outputvalue = new PhenomenonOutput();
-        outputvalue.setLabel(entity.getNameI18n(parameters.getLocale()));
+        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
     private OfferingOutput getCondensedOffering(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
         OfferingOutput outputvalue = new OfferingOutput();
-        outputvalue.setLabel(entity.getNameI18n(parameters.getLocale()));
+        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
     private ProcedureOutput getCondensedProcedure(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
         ProcedureOutput outputvalue = new ProcedureOutput();
-        outputvalue.setLabel(entity.getNameI18n(parameters.getLocale()));
+        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
     private FeatureOutput getCondensedFeature(DescribableEntity<I18nFeatureEntity> entity, DbQuery parameters) {
         FeatureOutput outputvalue = new FeatureOutput();
-        outputvalue.setLabel(entity.getNameI18n(parameters.getLocale()));
+        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
     private CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
         CategoryOutput outputvalue = new CategoryOutput();
-        outputvalue.setLabel(entity.getNameI18n(parameters.getLocale()));
+        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
