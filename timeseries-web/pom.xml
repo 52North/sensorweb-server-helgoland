@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.n52.sensorweb</groupId>
 		<artifactId>timeseries-api</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.5.0</version>
 	</parent>
 	<artifactId>timeseries-web</artifactId>
 	<packaging>jar</packaging>
