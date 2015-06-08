@@ -57,8 +57,12 @@ import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.ObservationDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.web.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 
     public TimeseriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -112,7 +116,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             	 */
             	if (timeseries.getUnit() != null) {
             		results.add(createCondensed(timeseries, query));
-            	} 
+            	}
             }
             return results;
 
@@ -135,7 +139,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             	 */
             	if (timeseries.getUnit() != null) {
             		results.add(createExpanded(session, timeseries, query));
-            	}
+            	} else {
+                    LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
+                }
             }
             return results;
         }
@@ -155,6 +161,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         	 *  We check for a unit to check for them
         	 */
             if (result == null || result.getUnit() == null) {
+                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
             }
             return createExpanded(session, result, dbQuery);
@@ -222,7 +229,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
-    
+
     private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
         String locale = query.getLocale();
