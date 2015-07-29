@@ -27,15 +27,63 @@
  */
 package org.n52.web.v1.ctrl;
 
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_PROCEDURES;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.n52.io.IoParameters;
+import org.n52.io.v1.data.RawFormats;
+import org.n52.sensorweb.v1.spi.RawDataService;
+import org.n52.web.InternalServerException;
+import org.n52.web.OptionNotSupported;
+import org.n52.web.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping(value = COLLECTION_PROCEDURES)
 public class ProceduresParameterController extends ParameterController {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ProceduresParameterController.class);
     
-    // resource controller for procedures
+	@RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
+	public void getRawData(HttpServletResponse response,
+			@PathVariable("item") String id,
+			@RequestParam MultiValueMap<String, String> query) {
+		if (getParameterService() instanceof RawDataService && ((RawDataService)getParameterService()).supportsRawData()) {
+			IoParameters queryMap = createFromQuery(query);
+			InputStream inputStream = ((RawDataService)getParameterService()).getRawData(id, queryMap);
+			if (inputStream == null) {
+				throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+			}
+			try {
+				IOUtils.copyLarge(inputStream, response.getOutputStream());
+			} catch (IOException e) {
+				throw new InternalServerException("Error while querying raw procedure data", e);
+			} finally {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						LOGGER.error("Error while closing InputStream", e);
+					}
+				}
+			}
+		} else {
+			throw new OptionNotSupported(
+					"Querying of raw procedure data is not supported by the underlying service!");
+		}
+	}
 
 }
