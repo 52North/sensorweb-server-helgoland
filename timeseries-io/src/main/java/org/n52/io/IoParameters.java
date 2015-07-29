@@ -221,6 +221,11 @@ public class IoParameters {
      * Determines how raw data shall be formatted.
      */
     static final String FORMAT = "format";
+    
+    /**
+     * Determines how raw data shall be queried from service.
+     */
+    static final String  RAW_FORMAT = "rawFormat";
 
     /**
      * The default format for raw data output.
@@ -501,6 +506,18 @@ public class IoParameters {
             return DEFAULT_FORMAT;
         }
         return query.get(FORMAT);
+    }
+    
+    
+    public boolean isSetRawFormat() {
+    	return query.containsKey(RAW_FORMAT);
+    }
+    
+    public String getRawFormat() {
+        if (isSetRawFormat()) {
+        	return query.get(RAW_FORMAT);
+        }
+        return null;
     }
 
     /**

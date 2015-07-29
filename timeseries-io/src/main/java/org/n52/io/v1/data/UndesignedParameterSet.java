@@ -41,7 +41,9 @@ public class UndesignedParameterSet extends ParameterSet {
     private String resultTime;
 
     private String format;
-
+    
+    private String rawFormat;
+    
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     /**
@@ -85,6 +87,27 @@ public class UndesignedParameterSet extends ParameterSet {
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+    
+    /**
+     * @return the raw output format the raw data shall have.
+     */
+    public String getRawFormat() {
+        return rawFormat;
+    }
+
+    /**
+     * @param format Which raw output format the raw data shall have.
+     */
+    public void setRawFormat(String rawFormat) {
+        this.rawFormat = rawFormat;
+    }
+    
+    /**
+     * @return <code>true</code> if rawFormat is set
+     */
+    public boolean isSetRawFormat() {
+    	return getRawFormat() != null && !getRawFormat().isEmpty();
     }
 
     public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
