@@ -27,14 +27,16 @@
  */
 package org.n52.sensorweb.v1.spi;
 
+import java.io.InputStream;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Locale;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.CollatorComparable;
+import org.n52.io.v1.data.UndesignedParameterSet;
 
-public class LocaleAwareSortService<T> implements ParameterService<T> {
+public class LocaleAwareSortService<T> implements ParameterService<T>, RawDataService {
 
     private ParameterService<T> composedService;
 
@@ -104,7 +106,7 @@ public class LocaleAwareSortService<T> implements ParameterService<T> {
             }
         }
     }
-
+    
     private boolean isCollatorComparable(T[] toSort) {
         return CollatorComparable.class.isAssignableFrom(toSort[0].getClass());
     }
@@ -114,5 +116,26 @@ public class LocaleAwareSortService<T> implements ParameterService<T> {
         container[i] = container[j];
         container[j] = tmp;;
     }
+
+	@Override
+	public InputStream getRawData(String id, IoParameters query) {
+		if (composedService instanceof RawDataService) {
+			return ((RawDataService)composedService).getRawData(id, query);
+		}
+		return null;
+	}
+
+	@Override
+	public InputStream getRawData(UndesignedParameterSet parameters) {
+		if (composedService instanceof RawDataService) {
+			return ((RawDataService)composedService).getRawData(parameters);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean supportsRawData() {
+		return composedService instanceof RawDataService && ((RawDataService)composedService).supportsRawData();
+	}
 
 }
