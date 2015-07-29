@@ -27,4 +27,42 @@
  */
 package org.n52.io.v1.data;
 
-public class ProcedureOutput extends OfferingOutput {}
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+public class ProcedureOutput extends OfferingOutput implements RawFormats {
+	
+	private Set<String> rawFormats;
+
+	@Override
+	public String[] getRawFormats() {
+		if (rawFormats != null) {
+            return rawFormats.toArray(new String[0]);
+        }
+        return null;
+	}
+
+	@Override
+	public void addRawFormat(String format) {
+		if (format != null && !format.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+	        }
+			rawFormats.add(format);
+		}
+	}
+	
+	@Override
+	public void setRawFormats(Collection<String> formats) {
+		if (formats != null && !formats.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+			} else {
+				rawFormats.clear();
+			}
+			this.rawFormats.addAll(formats);
+		}
+	}
+	
+}
