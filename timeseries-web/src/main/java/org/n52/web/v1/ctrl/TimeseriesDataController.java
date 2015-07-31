@@ -154,6 +154,7 @@ public class TimeseriesDataController extends BaseController {
 	@RequestMapping(value = "/getData", method = POST, params = { RawFormats.RAW_FORMAT })
 	public void getRawTimeseriesCollectionData(HttpServletResponse response,
 												@RequestBody UndesignedParameterSet parameters) throws Exception {
+		checkIfUnknownTimeseries(parameters.getTimeseries());
 		if (timeseriesDataService instanceof RawDataService && ((RawDataService) timeseriesDataService).supportsRawData()) {
 			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
 			if (inputStream == null) {
