@@ -31,20 +31,22 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Point;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.geotools.util.MapEntry;
+
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
-import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
+
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
+
 import org.n52.io.geojson.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
@@ -52,6 +54,7 @@ import org.n52.io.style.Style;
 import org.n52.io.v1.data.BBox;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.ParameterSet;
+import org.n52.io.v1.data.RawFormats;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.UndesignedParameterSet;
 import org.n52.io.v1.data.Vicinity;
@@ -225,7 +228,7 @@ public class IoParameters {
     /**
      * Determines how raw data shall be queried from service.
      */
-    static final String  RAW_FORMAT = "rawFormat";
+    static final String RAW_FORMAT = RawFormats.RAW_FORMAT;
 
     /**
      * The default format for raw data output.
