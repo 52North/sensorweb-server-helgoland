@@ -27,7 +27,6 @@
  */
 package org.n52.io.v1.data;
 
-import org.joda.time.Interval;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParameters;
 import org.n52.io.Utils;
@@ -93,6 +92,10 @@ public class UndesignedParameterSet extends ParameterSet {
      * @return the raw output format the raw data shall have.
      */
     public String getRawFormat() {
+    	if ((rawFormat == null || (rawFormat != null && rawFormat.isEmpty())) 
+    			&& containsParameter(RawFormats.RAW_FORMAT.toLowerCase())) {
+    		setRawFormat(getAsString(RawFormats.RAW_FORMAT.toLowerCase()));
+    	}
         return rawFormat;
     }
 
