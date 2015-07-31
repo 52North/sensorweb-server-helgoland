@@ -185,9 +185,11 @@ public class TimeseriesDataController extends BaseController {
     public void getRawTimeseriesData(HttpServletResponse response,
     									@PathVariable String timeseriesId,
 										@RequestParam MultiValueMap<String, String> query) {
+    	checkIfUnknownTimeseries(timeseriesId);
+        IoParameters map = createFromQuery(query);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
     	if (timeseriesDataService instanceof RawDataService && ((RawDataService)timeseriesDataService).supportsRawData()) {
-    		IoParameters queryMap = createFromQuery(query);
-    		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(timeseriesId, queryMap);
+    		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
     		if (inputStream == null) {
     			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");
     		}
