@@ -111,6 +111,10 @@ public class TimeseriesDataController extends BaseController {
                                                     @RequestBody UndesignedParameterSet parameters) throws Exception {
 
         checkIfUnknownTimeseries(parameters.getTimeseries());
+        if (parameters.isSetRawFormat()) {
+        	getRawTimeseriesCollectionData(response, parameters);
+        	return null;
+        }
 
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
         TimeseriesDataCollection< ? > formattedDataCollection = format(timeseriesData, parameters.getFormat());
