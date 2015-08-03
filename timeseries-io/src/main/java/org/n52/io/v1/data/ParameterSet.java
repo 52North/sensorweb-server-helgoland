@@ -164,7 +164,7 @@ public abstract class ParameterSet {
 
     public final void setParameters(Map<String, Object> parameters) {
         if (parameters != null) {
-            this.parameters = parameters;
+            this.parameters.putAll(parameters);
         }
     }
 
