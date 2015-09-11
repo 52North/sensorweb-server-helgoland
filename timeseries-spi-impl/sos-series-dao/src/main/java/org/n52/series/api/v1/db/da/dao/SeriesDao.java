@@ -96,7 +96,6 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
         return (SeriesEntity) criteria.uniqueResult();
-        //return (SeriesEntity) session.get(SeriesEntity.class, key);
     }
 
     @Override
