@@ -35,11 +35,11 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.n52.io.style.BarStyle;
 
 final class BarRenderer implements Renderer {
-    
+
     static final String BAR_CHART_TYPE = "bar";
-    
+
     private XYBarRenderer renderer;
-    
+
     private BarStyle style;
 
     private BarRenderer(BarStyle style) {
@@ -61,13 +61,14 @@ final class BarRenderer implements Renderer {
     }
 
     @Override
-    public void setColorForSeriesAt(int index) {
-    	this.renderer.setSeriesPaint(index, Color.decode(style.getColor()));
+    public void setColorForSeries() {
+        // each renderer renders just one series
+    	this.renderer.setSeriesPaint(0, Color.decode(style.getColor()));
     }
 
 	public static BarRenderer createBarRenderer(BarStyle barStyle) {
 		return new BarRenderer(barStyle);
 	}
-	
+
 }
 
