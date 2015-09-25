@@ -50,8 +50,6 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
 
     private StatusInterval[] statusIntervals;
 
-    private List<Object> extras;
-
     public String getUom() {
         return uom;
     }
@@ -62,20 +60,6 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
 
     public StationOutput getStation() {
         return station;
-    }
-
-    public Object[] getExtras() {
-        if (extras != null) {
-            return extras.toArray();
-        }
-        return null;
-    }
-
-    public void addExtra(Object extra) {
-        if (extras == null) {
-            extras = new ArrayList<Object>();
-        }
-        extras.add(extra);
     }
 
     public void setStation(StationOutput station) {

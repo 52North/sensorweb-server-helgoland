@@ -27,23 +27,35 @@
  */
 package org.n52.web.v1.ctrl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.n52.io.ConfigApplier;
 import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.IoParameters;
+import static org.n52.io.QueryParameters.createFromQuery;
 import org.n52.io.v1.data.ParameterOutput;
+import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.web.WebExceptionAdapter;
+import org.n52.web.v1.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,9 +64,36 @@ public abstract class ParameterController extends BaseController implements Rest
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
+    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<MetadataExtension<ParameterOutput>>();
+
+    private List<ConfigApplier<ParameterOutput>> configAppliers = new ArrayList<ConfigApplier<ParameterOutput>>();
+
     private ServiceParameterService serviceParameterService;
 
     private ParameterService<ParameterOutput> parameterService;
+    @RequestMapping(value = "/{item}/extras", method = GET)
+    public Map<String, Object> getExtras(@PathVariable("item") String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters queryMap = createFromQuery(query);
+        Map<String, Object> extras = new HashMap<String, Object>();
+        for (MetadataExtension<?> extension : metadataExtensions) {
+            final Map<String, Object> furtherExtras = extension.getData(queryMap, timeseriesId);
+            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
+            if ( !overridableKeys.isEmpty()) {
+                String[] keys = overridableKeys.toArray(new String[0]);
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
+            }
+            extras.putAll(furtherExtras);
+        }
+        return extras;
+    }
+
+    private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
+        Map<String, Object> currentData = new HashMap<String, Object>(data);
+        Set<String> overridableKeys = currentData.keySet();
+        overridableKeys.retainAll(dataToAdd.keySet());
+        return overridableKeys;
+    }
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
@@ -92,12 +131,21 @@ public abstract class ParameterController extends BaseController implements Rest
     }
 
     protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
-        return toBeProcessed; // return unprocessed
+
+        for (ParameterOutput parameterOutput : toBeProcessed) {
+            doPostProcessOn(parameterOutput);
+        }
+
+        return toBeProcessed;
     }
 
     protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        return toBeProcessed; // return unprocessed
+        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
+            applier.applyConfigOn(toBeProcessed);
+        }
+        return toBeProcessed;
     }
+
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
@@ -116,4 +164,19 @@ public abstract class ParameterController extends BaseController implements Rest
         this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
     }
 
+    public List<ConfigApplier<ParameterOutput>> getConfigAppliers() {
+        return configAppliers;
+    }
+
+    public void setConfigAppliers(List<ConfigApplier<ParameterOutput>> configAppliers) {
+        this.configAppliers = configAppliers;
+    }
+
+    public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {
+        return metadataExtensions;
+    }
+
+    public void setMetadataExtensions(List<MetadataExtension<ParameterOutput>> metadataExtensions) {
+        this.metadataExtensions = metadataExtensions;
+    }
 }
