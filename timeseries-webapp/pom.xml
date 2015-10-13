@@ -13,7 +13,7 @@
 
     <properties>
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
-        <config.logger.fileappender.filepath>${catalina.base}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
+        <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
     </properties>
 
     <dependencies>

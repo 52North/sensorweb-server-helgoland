@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.n52.io.v1.data.ParameterOutput;
 
@@ -45,8 +47,9 @@ public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
 
     public LicenseConfigApplier() {
         try {
-            this.licenseText = FileUtils.readFileToString(new File(CONFIG_FILE));
-        } catch (IOException e) {
+            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
+            this.licenseText = FileUtils.readFileToString(file);
+        } catch (URISyntaxException | IOException e) {
             LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
         }
     }
