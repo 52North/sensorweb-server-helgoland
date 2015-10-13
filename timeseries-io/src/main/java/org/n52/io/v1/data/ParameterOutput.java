@@ -42,7 +42,7 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
     private String license;
 
     private List<String> extras;
-
+    
     public String getId() {
         return id;
     }
