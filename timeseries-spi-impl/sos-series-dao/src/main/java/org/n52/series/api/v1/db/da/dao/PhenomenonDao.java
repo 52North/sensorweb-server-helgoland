@@ -81,8 +81,9 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
         
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon.pkid");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
+        // actually filter does not make sense here
+//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon.pkid");
+//        criteria.add(Subqueries.propertyIn("p.pkid", filter));
         
         parameters.addPagingTo(criteria);
         return (List<PhenomenonEntity>) criteria.list();

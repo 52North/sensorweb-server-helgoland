@@ -73,7 +73,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
 
             /*
              * For each index put data and its renderer configured to a particular style.
-             * 
+             *
              * As each timeseries may define its custom styling and different chart types we have to loop over
              * all timeseries to configure chart rendering.
              */
@@ -166,7 +166,8 @@ public class MultipleChartsRenderer extends ChartRenderer {
 
         public void setRenderer(Renderer renderer) {
             getXYPlot().setRenderer(timeseriesIndex, renderer.getXYRenderer());
-            renderer.setColorForSeriesAt(timeseriesIndex);
+            //renderer.setColorForSeries(timeseriesIndex);
+            renderer.setColorForSeries();
         }
 
         public void setData(TimeseriesData data, TimeseriesMetadataOutput timeMetadata, StyleProperties style) {

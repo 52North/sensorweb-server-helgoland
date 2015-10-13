@@ -91,7 +91,7 @@ final class LineRenderer implements Renderer {
         float[] dashSequence = new float[] {4.0f * width, 4.0f * width};
         return new BasicStroke(width, CAP_ROUND, JOIN_ROUND, 1.0f, dashSequence, 0.0f);
     }
-    
+
     @Override
     public XYItemRenderer getXYRenderer() {
         return this.lineRenderer;
@@ -103,8 +103,9 @@ final class LineRenderer implements Renderer {
     }
 
     @Override
-    public void setColorForSeriesAt(int index) {
-        lineRenderer.setSeriesPaint(index, decode(style.getColor()));
+    public void setColorForSeries() {
+        // each renderer renders just one series
+        lineRenderer.setSeriesPaint(0, decode(style.getColor()));
     }
 
     public static LineRenderer createStyledLineRenderer(LineStyle style) {

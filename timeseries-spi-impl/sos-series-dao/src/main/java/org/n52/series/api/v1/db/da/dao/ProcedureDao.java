@@ -85,8 +85,9 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure.pkid");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
+        // actually filter does not make sense here
+//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure.pkid");
+//        criteria.add(Subqueries.propertyIn("p.pkid", filter));
 
         parameters.addPagingTo(criteria);
         return (List<ProcedureEntity>) criteria.list();
