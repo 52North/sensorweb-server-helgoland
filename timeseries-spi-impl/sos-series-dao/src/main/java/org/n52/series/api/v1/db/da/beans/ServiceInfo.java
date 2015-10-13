@@ -32,7 +32,7 @@ public class ServiceInfo {
     private String serviceId;
     
     private String serviceDescription;
-
+    
     public String getServiceId() {
         return serviceId;
     }
@@ -48,5 +48,5 @@ public class ServiceInfo {
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
-    
+
 }

@@ -92,8 +92,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             return timeseries; // nothing to do
         }
 
-        //int threshold = data.length / 10; // TODO define the threshold
-
         TimeseriesData sampled = new TimeseriesData();
 
         // Bucket size. Leave room for start and end data points
@@ -114,7 +112,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 
             for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
                 avgTimestamp += data[avgRangeStart].getTimestamp();
-                if (data[avgRangeStart].getValue() != null) {
+                Double value = data[avgRangeStart].getValue();
+                if (value != null && !Double.isNaN(value)) {
                     avgValue += data[avgRangeStart].getValue();
                 }
             }
@@ -123,26 +122,28 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             avgValue /= avgRangeLength;
 
             // get the range for this bucket
-            int rangeOffs = (int) Math.floor((i + 0) * every) + 1;
+            int rangeOff = (int) Math.floor((i + 0) * every) + 1;
             int rangeTo = (int) Math.floor((i + 1) * every) + 1;
 
             // Point a
             double tempTimestamp = data[pointIndex].getTimestamp();
-            double tempValue = data[pointIndex].getValue();
+            Double tempValue = data[pointIndex].getValue(); // XXX case (value == null || value == Double.NaN)
 
             double area;
             TimeseriesValue maxAreaPoint = null;
             int nextPointIndex = 0;
             double maxArea = area = -1;
 
-            for (; rangeOffs < rangeTo; rangeOffs++) {
+            for (; rangeOff < rangeTo; rangeOff++) {
                 // calculate triangle area over three buckets
-                if (data[rangeOffs].getValue() != null) {
-                    area = Math.abs((tempTimestamp - avgTimestamp) * (data[rangeOffs].getValue() - tempValue) - (tempTimestamp - data[rangeOffs].getTimestamp()) * (avgValue - tempValue)) * 0.5;
+                Double rangeOffValue = data[rangeOff].getValue();
+                if (rangeOffValue != null && !Double.isNaN(rangeOffValue)) {
+                    area = Math.abs((tempTimestamp - avgTimestamp) * (rangeOffValue - tempValue)
+                            - (tempTimestamp - data[rangeOff].getTimestamp()) * (avgValue - tempValue)) * 0.5;
                     if (area > maxArea) {
                         maxArea = area;
-                        maxAreaPoint = data[rangeOffs];
-                        nextPointIndex = rangeOffs;
+                        maxAreaPoint = data[rangeOff];
+                        nextPointIndex = rangeOff;
                     }
                 }
             }

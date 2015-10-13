@@ -125,7 +125,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
             TimeseriesRepository repository = createTimeseriesRepository();
             return repository.getInstance(item, DbQuery.createFrom(query));
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get series data for '" + item + "'.");
+            throw new InternalServerException("Could not get series data for '" + item + "'.", e);
         }
 
     }

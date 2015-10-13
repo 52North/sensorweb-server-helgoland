@@ -27,6 +27,7 @@
  */
 package org.n52.io.v1.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
 
@@ -56,7 +57,9 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     }
 
     public Double getValue() {
-        return value;
+        return value == null 
+                ? Double.NaN
+                : value;
     }
 
     public void setValue(Double value) {
