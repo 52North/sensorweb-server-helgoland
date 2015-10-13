@@ -38,6 +38,8 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
     private String domainId;
 
     private String label;
+    
+    private String license;
 
     private List<String> extras;
 
@@ -79,6 +81,14 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     /**
