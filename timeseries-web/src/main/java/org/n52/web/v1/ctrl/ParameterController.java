@@ -35,14 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.n52.io.ConfigApplier;
-import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.IoParameters;
 import static org.n52.io.QueryParameters.createFromQuery;
 import org.n52.io.v1.data.ParameterOutput;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
