@@ -46,8 +46,10 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
 
     private TimeseriesOutput parameters;
 
+    // TODO add as extra
     private StyleProperties renderingHints;
 
+    // TODO add as extra
     private StatusInterval[] statusIntervals;
 
     public String getUom() {
@@ -98,18 +100,22 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
         this.parameters = timeseries;
     }
 
+    // TODO add as extra
     public StyleProperties getRenderingHints() {
         return this.renderingHints;
     }
 
+    // TODO add as extra
     public void setRenderingHints(StyleProperties renderingHints) {
         this.renderingHints = renderingHints;
     }
 
+    // TODO add as extra
     public StatusInterval[] getStatusIntervals() {
         return statusIntervals;
     }
 
+    // TODO add as extra
     public void setStatusIntervals(StatusInterval[] statusIntervals) {
         this.statusIntervals = statusIntervals;
     }
