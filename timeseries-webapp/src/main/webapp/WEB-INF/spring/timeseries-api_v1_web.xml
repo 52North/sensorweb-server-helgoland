@@ -51,7 +51,7 @@
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.StationsParameterController" parent="parameterController">
+    <bean class="org.n52.web.v1.ctrl.StationsParameterController">
         <property name="parameterService" ref="stationParameterService" />
     </bean>
 
@@ -62,6 +62,7 @@
             <list>
                 <bean class="org.n52.io.RenderingHintsConfigApplier" />
                 <bean class="org.n52.io.StatusIntervalsConfigApplier" />
+                <bean class="org.n52.io.LicenseConfigApplier" />
             </list>
         </property>
         <property name="metadataExtensions">
