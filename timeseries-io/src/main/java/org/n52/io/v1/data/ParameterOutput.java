@@ -28,6 +28,8 @@
 package org.n52.io.v1.data;
 
 import java.text.Collator;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
@@ -36,7 +38,11 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
     private String domainId;
 
     private String label;
+    
+    private String license;
 
+    private List<String> extras;
+    
     public String getId() {
         return id;
     }
@@ -75,6 +81,33 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
+    /**
+     * @return a list of extra identifiers available via /&lt;resource&gt;/extras
+     *
+     * TODO make queryable, for example: ../extras?get=myFancyAddon1,myFancyAddon2
+     */
+    public String[] getExtras() {
+        if (extras != null) {
+            return extras.toArray(new String[0]);
+        }
+        return null;
+    }
+
+    public void addExtra(String extra) {
+        if (extras == null) {
+            extras = new ArrayList<String>();
+        }
+        extras.add(extra);
     }
 
     @Override
