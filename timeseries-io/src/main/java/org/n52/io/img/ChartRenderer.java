@@ -206,6 +206,7 @@ public abstract class ChartRenderer implements IoHandler {
                 : new DateTime();
         //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
         String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
+        zoneName = "+00:00".equalsIgnoreCase(zoneName) ? "UTC" : zoneName;
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");

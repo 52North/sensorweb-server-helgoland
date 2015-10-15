@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.criterion.Property;
 
 public class DbQuery {
 

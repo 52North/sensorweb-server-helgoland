@@ -27,47 +27,4 @@
  */
 package org.n52.io.v1.data;
 
-public class ProcedureOutput extends ParameterOutput {
-
-	private ServiceOutput service;
-
-	public ServiceOutput getService() {
-		return service;
-	}
-
-	public void setService(ServiceOutput service) {
-		this.service = service;
-	}
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ( (service == null) ? 0 : service.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if ( !super.equals(obj)) {
-            return false;
-        }
-        if ( ! (obj instanceof ProcedureOutput)) {
-            return false;
-        }
-        ProcedureOutput other = (ProcedureOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        }
-        else if ( !service.equals(other.service)) {
-            return false;
-        }
-        return true;
-    }
-	
-}
+public class ProcedureOutput extends OfferingOutput {}

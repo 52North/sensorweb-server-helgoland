@@ -37,7 +37,14 @@
   border-color: #d0e3f0;
 }
 
+.n52-description-list dt {
+    font-weight: bold;
+    font-size: larger;
+}
 
+.n52-description-list dd {
+    text-indent: 1em;
+}
 
 /*
  * Side navigation

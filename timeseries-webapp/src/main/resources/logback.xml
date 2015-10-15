@@ -3,7 +3,7 @@
 	<!-- refer to http://logback.qos.ch/manual/appenders.html -->
 
 	<property name="logFile"
-		value="${config.logger.fileappender.filepath}/timeseries-webapp" />
+		value="${config.logger.fileappender.filepath}" />
 
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">

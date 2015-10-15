@@ -18,27 +18,36 @@
         <property name="metadataService" ref="metadataService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.OfferingsParameterController">
+
+    <bean class="org.n52.web.v1.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="configAppliers">
+            <list>
+                <bean class="org.n52.io.LicenseConfigApplier" />
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.v1.ctrl.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ServicesParameterController">
+    <bean class="org.n52.web.v1.ctrl.ServicesParameterController" parent="parameterController">
         <property name="parameterService" ref="serviceParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.CategoriesParameterController">
+    <bean class="org.n52.web.v1.ctrl.CategoriesParameterController" parent="parameterController">
         <property name="parameterService" ref="categoryParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.FeaturesParameterController">
+    <bean class="org.n52.web.v1.ctrl.FeaturesParameterController" parent="parameterController">
         <property name="parameterService" ref="featureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ProceduresParameterController">
+    <bean class="org.n52.web.v1.ctrl.ProceduresParameterController" parent="parameterController">
         <property name="parameterService" ref="procedureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.PhenomenaParameterController">
+    <bean class="org.n52.web.v1.ctrl.PhenomenaParameterController" parent="parameterController">
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
@@ -46,13 +55,14 @@
         <property name="parameterService" ref="stationParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController">
+    <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
         <property name="configAppliers">
             <list>
                 <bean class="org.n52.io.RenderingHintsConfigApplier" />
                 <bean class="org.n52.io.StatusIntervalsConfigApplier" />
+                <bean class="org.n52.io.LicenseConfigApplier" />
             </list>
         </property>
         <property name="metadataExtensions">

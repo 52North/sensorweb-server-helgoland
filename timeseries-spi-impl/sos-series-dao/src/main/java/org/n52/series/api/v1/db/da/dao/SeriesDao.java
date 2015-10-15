@@ -96,7 +96,6 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
         return (SeriesEntity) criteria.uniqueResult();
-        //return (SeriesEntity) session.get(SeriesEntity.class, key);
     }
 
     @Override
@@ -121,8 +120,9 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @SuppressWarnings("unchecked")
     public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = session.createCriteria(SeriesEntity.class)
-                .createCriteria("feature", LEFT_OUTER_JOIN)
+        Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
+        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
         return (List<SeriesEntity>) criteria.list();
     }

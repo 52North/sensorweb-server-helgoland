@@ -45,6 +45,8 @@ import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesDataMetadata;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
@@ -55,10 +57,12 @@ import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.ObservationDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.web.ResourceNotFoundException;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
-import org.n52.sensorweb.v1.spi.search.TimeseriesSearchResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 
     public TimeseriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -89,9 +93,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (SeriesEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String phenomenonLabel = searchResult.getPhenomenon().getNameI18n(locale);
-            String procedureLabel = searchResult.getProcedure().getNameI18n(locale);
-            String stationLabel = searchResult.getFeature().getNameI18n(locale);
+            String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
+            String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
+            String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
             String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
@@ -106,7 +110,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-                results.add(createCondensed(timeseries, query));
+            	/*
+            	 *  ATM, the SWC REST API only supports numeric types
+            	 *  We check for a unit to check for them
+            	 */
+            	if (timeseries.getUnit() != null) {
+            		results.add(createCondensed(timeseries, query));
+            	}
             }
             return results;
 
@@ -123,7 +133,15 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-                results.add(createExpanded(session, timeseries, query));
+            	/*
+            	 *  ATM, the SWC REST API only supports numeric types
+            	 *  We check for a unit to check for them
+            	 */
+            	if (timeseries.getUnit() != null) {
+            		results.add(createExpanded(session, timeseries, query));
+            	} else {
+                    LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
+                }
             }
             return results;
         }
@@ -138,7 +156,12 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-            if (result == null) {
+        	/*
+        	 *  ATM, the SWC REST API only supports numeric types
+        	 *  We check for a unit to check for them
+        	 */
+            if (result == null || result.getUnit() == null) {
+                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
             }
             return createExpanded(session, result, dbQuery);
@@ -210,9 +233,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
         String locale = query.getLocale();
-        String stationLabel = entity.getFeature().getNameI18n(locale);
-        String procedureLabel = entity.getProcedure().getNameI18n(locale);
-        String phenomenonLabel = entity.getPhenomenon().getNameI18n(locale);
+        String stationLabel = getLabelFrom(entity.getFeature(), locale);
+        String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
+        String phenomenonLabel = getLabelFrom(entity.getPhenomenon(), locale);
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));

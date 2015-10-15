@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.n52.sensorweb</groupId>
 		<artifactId>timeseries-api</artifactId>
-		<version>1.4.0</version>
+		<version>1.6.0</version>
 	</parent>
 	<artifactId>timeseries-io</artifactId>
 	<packaging>jar</packaging>
@@ -12,7 +12,7 @@
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<dependency>
-			<!-- ensure loading before ealier versions -->
+			<!-- ensure loading before earlier versions -->
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-opengis</artifactId>
 		</dependency>
@@ -35,7 +35,7 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>jfree</groupId>
+			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 		</dependency>
 		<dependency>
