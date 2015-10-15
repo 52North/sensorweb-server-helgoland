@@ -84,9 +84,8 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         
-        // actually filter does not make sense here
-//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature.pkid");
-//        criteria.add(Subqueries.propertyIn("f.pkid", filter));
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
+        criteria.add(Subqueries.propertyIn("f.pkid", filter));
                 
         parameters.addSpatialFilterTo(criteria, parameters);
         parameters.addPagingTo(criteria);
