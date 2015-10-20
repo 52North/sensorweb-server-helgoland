@@ -81,7 +81,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
         
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("category.pkid");
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("category");
         criteria.add(Subqueries.propertyIn("c.pkid", filter));
         
         parameters.addPagingTo(criteria);

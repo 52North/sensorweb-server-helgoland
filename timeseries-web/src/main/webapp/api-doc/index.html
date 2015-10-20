@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8">
     <title>Documentation REST-API, Version 1</title>
+
     <!-- Bootstrap -->
-    <link type="text/css" rel="stylesheet" href="css/bootstrap-3.0.0-rc1/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="css/n52/apidoc-style.css">
+    <link href="css/bootstrap-3.0.0-rc1/bootstrap.min.css" rel="stylesheet">
+    <link href="css/n52/apidoc-style.css" rel="stylesheet">
   </head>
   <body>
 
@@ -84,6 +85,13 @@
               <li><a href="#formats-highchart">Highchart Format</a></li>
             </ul>
           </li>
+          <li> <!-- Generalization -->
+            <a data-toggle="collapse" data-parent="#contents" data-target="#formats-subitems"  href="#generalization">Generalization</a>
+            <ul id="formats-subitems" class="nav collapse">
+              <li><a href="#generalization-dp">Douglas-Peucker</a></li>
+              <li><a href="#generalization-lttb">LTTB Downsample</a></li>
+            </ul>
+          </li>
           <li> <!-- Parameters -->
             <a data-toggle="collapse" data-parent="#contents" data-target="#parameters-subitems"  href="#parameters">Parameters</a>
             <ul id="parameters-subitems" class="nav collapse">
@@ -92,15 +100,8 @@
               <li><a href="#parameter-phenomena">Phenomena</a></li>
             </ul>
           </li>
-          <li> <!-- Testing -->
-            <a data-toggle="collapse" data-parent="#contents" data-target="#testing-subitems"  href="#testing">Testing</a>
-            <ul id="testing-subitems" class="nav collapse">
-                <li><a href="#testing-status-intervals">Status Intervals</a></li>
-                <li><a href="#testing-rendering-hints">Rendering Hints</a></li>
-            </ul>
-          </li>
-          <li> <!-- Legacy -->
-            <a data-toggle="collapse" data-parent="#contents" data-target="#nonpublic-subitems"  href="#nonpublic">Legacy</a>
+          <li> <!-- Legacy/Unstable -->
+            <a data-toggle="collapse" data-parent="#contents" data-target="#nonpublic-subitems"  href="#nonpublic">Unstable/Legacy</a>
             <ul id="nonpublic-subitems" class="nav collapse">
               <li><a href="#nonpublic-offerings">Offerings</a></li>
               <li><a href="#nonpublic-features">Features</a></li>
@@ -136,6 +137,10 @@
             <tr>
               <th>What</th>
               <th>When</th>
+            </tr>
+            <tr>
+              <td>Added <a href="#generalization">generalization section</a>.</td>
+              <td>2015-07-06</td>
             </tr>
             <tr>
               <td>Added station <a href="#general-common-query-parameters">to general query parameters</a>.</td>
@@ -1013,7 +1018,7 @@ Content-Type: application/json;charset=UTF-8
                   <pre>generalize=true</pre>
                 </td>
                 <td>
-                  Indicates that timeseries data shall be generalized. Default is <code>false</code>. For generalization <a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">the Douglas-Peucker algorithm</a> is used.
+                    Indicates that timeseries data shall be generalized. See <a href="#generalization">genralization section</a> for details.
                 </td>
               </tr>
               <tr>
@@ -1578,7 +1583,7 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
 				</div>
 			</section>
 
-            <!-- Formats
+      <!-- Formats
 			================================================== -->
 			<section id="formats">
 				<div class="page-header">
@@ -1702,6 +1707,69 @@ http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/getData > img.png
           </div>
         </div>
 			</section>
+
+
+      <!-- Gernalization
+			================================================== -->
+			<section id="generalization">
+				<div class="page-header">
+					<h1>Generalization</h1>
+					<p class="pull-right up-link">
+						<a href="#"><i class="icon-chevron-up"></i> top</a>
+					</p>
+				</div>
+				<div>
+                    <p>Depending on sampling resolution and timespan timeseries data can be huge. Generalizing data
+                        can make sense in more than just a low bandwidth use case (e.g. smoothing the curve).</p>
+
+                    <p>The API supports two generalization algorithms which can be enabled by <code>generalize=true</code>.
+                        Default generalization behaviour is set to <code>false</code> (may be configurable in future).
+                        More algorithms can be added easily.</p>
+
+                    <h2 id="generalization-dp">Douglas-Peucker Downsampling</h2>
+                    <ul>
+                        <li>Downsamples timeseries values by using a threshold value (<a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Details</a>)</li>
+                        <li>Parameters
+                            <ul>
+                                <li><code>generalize=true</code></li>
+                                <li><code>generalizing_algorithm=dp</code></li>
+                                <li><code>tolerance_value=&lt;double-value&gt;</code> (default is <code>0.1</code>)</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h2 id="generalization-lttb">Largest-Triangle-Three Bucket Downsampling</h2>
+                    <ul>
+                        <li>Downsamples to a fix amount of output values (<a href="http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf">Details</a>)</li>
+                        <li>Parameters
+                            <ul>
+                                <li><code>generalize=true</code></li>
+                                <li><code>generalizing_algorithm=lttb</code></li>
+                                <li><code>threshold=&lt;int-value&gt;</code> (default is <code>200</code>)</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+<!--
+                    <dl class="n52-description-list">
+                        <dt id="generalization-dp">Douglas-Peucker Downsampling</dt>
+                        <dd>Details on generalization strategy can be found
+                            <a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">on Wikipedia</a>.
+                            Enable it by adding <code>generalize=true&generalizing_algorithm=DP</code>. Tolerance threshold can be
+                            defined by parameter <code>TOLERANCE_VALUE</code> which is set to <code>0.1</code> by default.
+                        </dd>
+                        <dt id="generalization-lttb">Largest-Triangle-Three Bucket Downsampling</dt>
+                        <dd><a href="http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf">Diving into details</a>
+                            Enabled by adding <code>generalize=true&generalizing_algorithm=LTTB</code>.</dd>
+                    </dl>
+-->
+                </div>
+
+
+			</section>
+
+
+
 
 			<!-- Parameters
 			================================================== -->
@@ -1953,47 +2021,22 @@ Content-Type: application/json;charset=UTF-8
 
 
 
-        <!-- Testing
-        ================================================== -->
-        <section id="testing">
-            <div class="page-header">
-                <h1>Unstable/Legacy</h1>
-                <p class="pull-right up-link">
-                    <a href="#"><i class="icon-chevron-up"></i> top</a>
-                </p>
-            </div>
-
-            <div class="n52-callout n52-callout-info">
-              This section describes new and testing functionlity which may become part of the public API. Clients
-              should not rely on these features to be supported by all API implementations.
-            </div>
-
-            <div id="testing-status-intervals">
-                <h2>Status Intervals</h2> <!-- Status Intervals -->
-
-            </div>
-
-            <div id="testing-rendering-hints">
-                <h2>Rendering Hints</h2> <!-- Rendering Hints -->
-
-            </div>
-
-        </section>
 
 
 
-        <!-- Legacy
-        ================================================== -->
-        <section id="nonpublic">
-            <div class="page-header">
-                <h1>Unstable/Legacy</h1>
-                <p class="pull-right up-link">
-                    <a href="#"><i class="icon-chevron-up"></i> top</a>
-                </p>
-            </div>
+
+      <!-- Unstable/Legacy
+			================================================== -->
+			<section id="nonpublic">
+				<div class="page-header">
+					<h1>Unstable/Legacy</h1>
+					<p class="pull-right up-link">
+						<a href="#"><i class="icon-chevron-up"></i> top</a>
+					</p>
+				</div>
 
         <div class="n52-callout n52-callout-info">
-          This section describes legacy functionlity which may be removed in future versions, but are kept for backward compatibility.
+          This section describe non public functionlity which may be either unstable or legacy to be kept for backward compatibility.
         </div>
 
 

@@ -25,13 +25,38 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.io;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@RequestMapping(value = COLLECTION_TIMESERIES)
-public class TimeseriesMetadataController extends ParameterController {
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URISyntaxException;
+import org.apache.commons.io.FileUtils;
+import org.n52.io.v1.data.ParameterOutput;
 
-    // resource controller for timeseries metadata
+public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseConfigApplier.class);
+
+    private static final String CONFIG_FILE = "/config-license.txt";
+
+    private String licenseText;
+
+    public LicenseConfigApplier() {
+        try {
+            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
+            this.licenseText = FileUtils.readFileToString(file);
+        } catch (URISyntaxException | IOException e) {
+            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
+        }
+    }
+
+    @Override
+    public void applyConfigOn(ParameterOutput toApplyConfigOn) {
+        toApplyConfigOn.setLicense(licenseText);
+    }
+
 }
