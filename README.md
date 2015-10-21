@@ -18,5 +18,6 @@ most common workflows.
 ## Documentation
 The API documentation can be found here:
 https://52north.github.io/sensorweb-rest-api
+
 ~~The API documentation is in the 52°North wiki:
 https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
