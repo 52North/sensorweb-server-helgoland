@@ -16,6 +16,7 @@ making use of GitFlow. Altlassian provides [a good overview]
 most common workflows.
 
 ## Documentation
-The API documentation is in the 52°North wiki:
+The API documentation can be found here:
 https://52north.github.io/sensorweb-rest-api
-~~https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
+~~The API documentation is in the 52°North wiki:
+https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
