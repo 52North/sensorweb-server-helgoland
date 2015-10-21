@@ -27,7 +27,7 @@
  */
 package org.n52.io.geojson;
 
-import org.n52.io.Utils;
+import java.util.Arrays;
 
 
 public class GeojsonPoint extends GeojsonGeometry {
@@ -40,12 +40,14 @@ public class GeojsonPoint extends GeojsonGeometry {
     
     public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
         GeojsonPoint sfGeometry = new GeojsonPoint();
-        sfGeometry.setCoordinates(Utils.copy(coordinates));
+        //sfGeometry.setCoordinates(Utils.copy(coordinates));
+        sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
         return sfGeometry;
     }
     
     public void setCoordinates(Double[] coordinates) {
-        this.coordinates = checkCoordinates(Utils.copy(coordinates));
+        //this.coordinates = checkCoordinates(Utils.copy(coordinates));
+        this.coordinates = checkCoordinates(Arrays.copyOf(coordinates, coordinates.length));
     }
 
     void setType(String type) {
@@ -57,7 +59,8 @@ public class GeojsonPoint extends GeojsonGeometry {
     }
     
     public Double[] getCoordinates() {
-        return Utils.copy(coordinates);
+        return Arrays.copyOf(coordinates, coordinates.length);
+//        return Utils.copy(coordinates);
     }
 
 }
