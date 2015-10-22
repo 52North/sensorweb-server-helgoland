@@ -35,7 +35,7 @@ public class TimeseriesDataMetadata implements Serializable {
 
     private static final long serialVersionUID = 7422416308386483575L;
     
-    private Map<String, TimeseriesData> referenceValues = new HashMap<String, TimeseriesData>();
+    private Map<String, TimeseriesData> referenceValues = new HashMap<>();
 
     public Map<String, TimeseriesData> getReferenceValues() {
         return referenceValues;

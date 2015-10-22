@@ -42,7 +42,7 @@ public class TimeseriesData implements Serializable {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<TimeseriesValue> values = new ArrayList<TimeseriesValue>();
+    private List<TimeseriesValue> values = new ArrayList<>();
     
     private TimeseriesDataMetadata metadata;
     
