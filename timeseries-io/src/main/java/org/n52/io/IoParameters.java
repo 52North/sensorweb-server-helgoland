@@ -605,11 +605,32 @@ public class IoParameters {
             LOGGER.debug("Parsed bbox bounds: {}", bounds.toString());
         }
         else {
-            bounds.extendBy(lowerLeft);
-            bounds.extendBy(upperRight);
+            extendBy(lowerLeft, bounds);
+            extendBy(upperRight, bounds);
             LOGGER.debug("Merged bounds: {}", bounds.toString());
         }
         return bounds;
+    }
+    
+    
+    /**
+     * Extends the bounding box with the given point. If point is contained by
+     * this instance nothing is changed.
+     *
+     * @param point the point in CRS:84 which shall extend the bounding box.
+     */
+    private void extendBy(Point point, BoundingBox bbox) {
+        if (bbox.contains(point)) {
+            return;
+        }
+        double llX = Math.min(point.getX(), bbox.getLowerLeft().getX());
+        double llY = Math.max(point.getX(), bbox.getUpperRight().getX());
+        double urX = Math.min(point.getY(), bbox.getLowerLeft().getY());
+        double urY = Math.max(point.getY(), bbox.getUpperRight().getY());
+
+        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
+        bbox.setUr(crsUtils.createPoint(urX, urY, bbox.getSrs()));
     }
 
     /**

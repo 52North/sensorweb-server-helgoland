@@ -575,8 +575,12 @@ Content-Type: application/json;charset=UTF-8
                 <td><pre>crs=EPSG:25832</pre></td>
                 <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (in this case to 'EPSG:25832' (ETRS89 / UTM zone 32N)).</p>
                 <p>Per default geometries are referenced by the WGS84 CRS (precisely: CRS84, lon/lat order). If <code>crs</code> value differs from default, all output geometries are transformed to match the asked CRS.</p>
-                <p>Please note that some CRS switch coordinate axes. Double check axes ordering before interpreting coordinates!</p>
-                <div class="n52-callout n52-callout-info">Future versions of the API may provide kind of a <code>strictXY</code> parameter or similar to give clients more control on this.</div>
+                </td>
+              </tr>
+              <tr>
+                <td><code>forceXY</code> <br/></td>
+                <td><pre>forceXY=true</pre></td>
+                <td><p>Some CRS switch coordinate axes. Double check axes ordering before interpreting coordinates! Use <code>forceXY=true</code> to always get <code>lat</code> as <code>X</code> and <code>lon</code> as <code>Y</code>.</p>
                 </td>
               </tr>
               <tr>
