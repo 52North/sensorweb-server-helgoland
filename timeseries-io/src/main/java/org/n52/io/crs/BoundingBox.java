@@ -27,6 +27,7 @@
  */
 package org.n52.io.crs;
 
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 
 import java.io.Serializable;
 
@@ -48,9 +49,10 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * @param ll the lower left corner
-     * @param ur the upper right corner
-     * @param srs the spatial reference system
+     * @param ll
+     *        the lower left corner
+     * @param ur
+     *        the upper right corner
      */
     public BoundingBox(Point ll, Point ur, String srs) {
         this.ll = ll;
@@ -59,14 +61,36 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * Indicates if the given point is contained by this instance. The point's
-     * coordinates are assumed to be in the same coordinate reference system.
-     *
-     * @param point the point to check.
+     * Indicates if the given point is contained by this instance. The point's coordinates are assumed to be
+     * in the same coordinate reference system.
+     * 
+     * @param point
+     *        the point to check.
      * @return if this instance contains the given coordiantes.
      */
     public boolean contains(Point point) {
         return isWithinXRange(point.getX()) && isWithinYRange(point.getY());
+    }
+
+    /**
+     * Extends the bounding box with the given point. If point is contained by this instance nothing is
+     * changed.
+     * 
+     * @param point
+     *        the point in CRS:84 which shall extend the bounding box.
+     */
+    public void extendBy(Point point) {
+        if (this.contains(point)) {
+            return;
+        }
+        double llX = Math.min(point.getX(), ll.getX());
+        double llY = Math.max(point.getX(), ur.getX());
+        double urX = Math.min(point.getY(), ll.getY());
+        double urY = Math.max(point.getY(), ur.getY());
+        
+        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        this.ll = crsUtils.createPoint(llX, llY, srs);
+        this.ur = crsUtils.createPoint(urX, urY, srs);
     }
 
     private boolean isWithinXRange(double x) {
@@ -75,14 +99,6 @@ public class BoundingBox implements Serializable {
 
     private boolean isWithinYRange(double y) {
         return ll.getY() <= y && y <= ur.getY();
-    }
-
-    public void setLl(Point ll) {
-        this.ll = ll;
-    }
-
-    public void setUr(Point ur) {
-        this.ur = ur;
     }
 
     /**
