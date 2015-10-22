@@ -27,40 +27,38 @@
  */
 package org.n52.io.geojson;
 
-import java.util.Arrays;
-
-
-public class GeojsonPoint extends GeojsonGeometry {
-
-    private static final long serialVersionUID = 4348077077881433456L;
+public class GeojsonLineString extends GeojsonGeometry {
     
-    private static final String GEOJSON_TYPE_POINT = "Point";
+    private static final long serialVersionUID = 2014878619454088577L;
 
-    protected Double[] coordinates;
-    
-    public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
-        GeojsonPoint sfGeometry = new GeojsonPoint();
-        //sfGeometry.setCoordinates(Utils.copy(coordinates));
-        sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+    private static final String GEOJSON_TYPE_LINESTRING = "LineString";
+
+    protected Double[][] points
+;    
+    public static GeojsonLineString createWithCoordinates(Double[][] coordinates) {
+        GeojsonLineString sfGeometry = new GeojsonLineString();
+        sfGeometry.setCoordinates(coordinates);
         return sfGeometry;
     }
     
-    public void setCoordinates(Double[] coordinates) {
-        //this.coordinates = checkCoordinates(Utils.copy(coordinates));
-        this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+    public void setCoordinates(Double[][] points) {
+        for (Double[] point : points) {
+            assertCoordinates(point);
+        }
+        this.points = points;
     }
 
     void setType(String type) {
         // keep for serialization
     }
 
+    @Override
     public String getType() {
-        return GEOJSON_TYPE_POINT;
+        return GEOJSON_TYPE_LINESTRING;
     }
     
-    public Double[] getCoordinates() {
-        return Arrays.copyOf(coordinates, coordinates.length);
-//        return Utils.copy(coordinates);
+    public Double[][] getCoordinates() {
+        return points;
     }
 
 }

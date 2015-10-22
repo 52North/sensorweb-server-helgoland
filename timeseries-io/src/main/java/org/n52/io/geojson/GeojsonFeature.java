@@ -38,23 +38,26 @@ public class GeojsonFeature extends GeojsonObject {
     
     protected Map<String, Object> properties = null;
     
-    private GeojsonPoint geometry; // XXX should be GeojsonGeometry, but generics are different here 
+    private GeojsonGeometry geometry;
     
+    private String id;
+    
+    @Override
     public String getType() {
         return GEOJSON_TYPE_FEATURE;
     }
     
-    public GeojsonPoint getGeometry() {
+    public GeojsonGeometry getGeometry() {
         return geometry;
     }
 
-    public void setGeometry(GeojsonPoint geometry) {
+    public void setGeometry(GeojsonGeometry geometry) {
         this.geometry = geometry;
     }
     
     public void addProperty(String property, Object value) {
         if (properties == null) {
-            properties = new HashMap<String, Object>();
+            properties = new HashMap<>();
         }
         properties.put(property, value);
     }
@@ -65,6 +68,24 @@ public class GeojsonFeature extends GeojsonObject {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+    
+    public boolean hasProperty(String property) {
+        return this.properties != null
+                && this.properties.containsKey(property);
+    }
+    
+    public String getId() {
+        if (this.id == null || this.id.isEmpty()) {
+            if (properties != null) {
+                return (String) properties.get("id");
+            }
+        }
+        return this.id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
     
 }

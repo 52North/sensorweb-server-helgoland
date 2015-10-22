@@ -34,10 +34,12 @@ public abstract class GeojsonGeometry extends GeojsonObject {
     private static final long serialVersionUID = -2611259809054586079L;
 
     /**
+     * @param coordinates the coordinates to assert.
+     * @return checked coordinates for method chaining.
      * @throws IllegalArgumentException
-     *         if coordinates are <code>null</code> or do not contain two dimensional point.
+     *         if coordinates are <code>null</code> or do not contain 2D or 3D points.
      */
-    protected Double[] checkCoordinates(Double[] coordinates) {
+    protected Double[] assertCoordinates(Double[] coordinates) {
         if (coordinates == null) {
             throw new NullPointerException("Coordinates must not be null.");
         }
