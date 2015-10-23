@@ -179,18 +179,26 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
-        try {
-            Geometry geometry = featureEntity.getGeom();
-            String fromCrs = "EPSG:" +geometry.getSRID();
-            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
-        }
-        catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
-        }
-        catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
-        }
+    	if (featureEntity.getGeom() == null) {
+    		LOGGER.info("No geometry available for station/feature: {}" + featureEntity.getCanonicalId());
+    		return null;
+    	}
+    	if (featureEntity.getGeom() instanceof Point) {
+	        try {
+	            Geometry geometry = featureEntity.getGeom();
+	            String fromCrs = "EPSG:" +geometry.getSRID();
+	        	Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+	        	return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+	        }
+	        catch (FactoryException e) {
+	            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
+	        }
+	        catch (TransformException e) {
+	            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
+	        }
+	    } else {
+	    	LOGGER.info("The geometry of station/feature '{}' is of not supported type: {}" + featureEntity.getCanonicalId(), featureEntity.getGeom().getClass().getSimpleName());
+	    }
         return null;
     }
 
