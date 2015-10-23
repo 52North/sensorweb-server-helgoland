@@ -12,15 +12,9 @@
         <many-to-one name="feature" class="org.n52.series.api.v1.db.da.beans.FeatureEntity" 
                      formula="(select s.stationid from station s, samplingpoint sp where s.stationid = sp.station 
                                 and sp.samplingpointid = samplingpointid)" />
-
-        
-
         <many-to-one name="unit" class="org.n52.series.api.v1.db.da.beans.UnitEntity" column="unitid" />
-        <!-- defines a fixed number of decimal places -->
         <property name="numberOfDecimals" formula="3" type="int" />
-
-        <!-- TODO remove formula when SOS adds published_flag to data model -->
-        <property name="published" column="published_flag" formula="1" type="org.hibernate.type.NumericBooleanType" />
+        <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
 
         <component name="firstValue" class="org.n52.series.api.v1.db.da.beans.ObservationEntity">
             <property name="timestamp" column="firsttimestamp" type="timestamp" />
