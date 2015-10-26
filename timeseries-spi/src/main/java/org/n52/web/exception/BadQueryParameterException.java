@@ -32,6 +32,8 @@ package org.n52.web.exception;
  * @author Henning Bredel <h.bredel@52north.org>
  */
 public class BadQueryParameterException extends RuntimeException {
+    
+    private static final long serialVersionUID = 8220427733871836223L;
 
     public BadQueryParameterException(String message) {
         super(message);
