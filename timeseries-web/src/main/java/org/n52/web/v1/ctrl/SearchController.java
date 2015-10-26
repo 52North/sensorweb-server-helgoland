@@ -35,13 +35,13 @@ import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.sensorweb.v1.spi.SearchService;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping(value = SEARCH, produces = {"application/json"})
 public class SearchController extends BaseController {
 

@@ -41,14 +41,14 @@ import org.n52.sensorweb.v1.spi.TransformingStationService;
 import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
 public class StationsParameterController {
 
