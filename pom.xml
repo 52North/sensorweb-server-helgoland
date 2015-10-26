@@ -50,13 +50,14 @@
     </scm>
 
     <properties>
-        <org.springframework.version>3.2.6.RELEASE</org.springframework.version>
-        <sensorwebclient.version>3.2.0</sensorwebclient.version>
+        <org.springframework.version>4.2.2.RELEASE</org.springframework.version>
         <logback.version>1.1.3</logback.version>
         <jackson.version>2.6.2</jackson.version>
-        <geotools.version>8.5</geotools.version>
+        <geotools.version>14.0</geotools.version>
         <slf4j.version>1.7.12</slf4j.version>
-
+        
+        <java.compiler.source>1.7</java.compiler.source>
+        <java.compiler.target>1.7</java.compiler.target>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <currentYearDynamic>${maven.build.timestamp}</currentYearDynamic>
@@ -218,8 +219,6 @@
                 <version>${org.springframework.version}</version>
             </dependency>
 
-
-
             <dependency>
                 <groupId>org.jfree</groupId>
                 <artifactId>jfreechart</artifactId>
@@ -259,6 +258,51 @@
                 <version>2.2</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <!-- drop-in replacement for JCL -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <!-- drop-in replacement for jog4j -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <!-- excludes commons logging -->
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+        
         </dependencies>
     </dependencyManagement>
 
@@ -269,50 +313,7 @@
         <!-- ==================================================== -->
 
         <!-- LOGGING DEPENDENCIES -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <!-- drop-in replacement for JCL version 1.1.1 -->
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <!-- drop-in replacement for JCL version 1.1.1 -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <!-- each application using OXF shall choose its favorite logging implementation -->
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
-        </dependency>
+        
     </dependencies>
 
     <build>
@@ -322,69 +323,25 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
-                </plugin>
-
-                <plugin>
-                    <!-- NOTE: We don't need a groupId specification because the group is
-                    org.apache.maven.plugins ...which is assumed by default. -->
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <descriptors>
-                            <descriptor>src/main/assembly/release.xml</descriptor>
-                        </descriptors>
-                    </configuration>
-                </plugin>
-				
-                <plugin>
-                    <groupId>org.jasig.maven</groupId>
-                    <artifactId>maven-notice-plugin</artifactId>
-                    <version>1.0.6.1</version>
-                    <configuration>
-                        <noticeTemplate>misc/NOTICE.template</noticeTemplate>
-                        <licenseMapping>
-                            <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
-                        </licenseMapping>
-                        <generateChildNotices>false</generateChildNotices>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>check-license</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.2</version>
-                    <configuration>
-                        <preparationGoals>clean</preparationGoals>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
 
         <plugins>
-
-            <!-- ==================================================== -->
-            <!-- =========== PLUGINS ACTIVE BY DEFAULT ============== -->
-            <!-- ==================================================== -->
-
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                </plugin>
+            
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.0</version>
                 <executions>
                     <execution>
                         <id>git-commit-id</id>
@@ -392,24 +349,6 @@
                             <goal>revision</goal>
                         </goals>
                         <phase>validate</phase>
-                        <configuration>
-                            <dateFormat>yyyy-MM-dd HH:mm:ssZ</dateFormat>
-                            <!-- Only changing prefix since properties conflicts with jgit above
-                            <prefix>git-commit-id</prefix>-->
-                            <!-- We're using a pom in this example
-                            <skipPoms>false</skipPoms>-->
-                            <gitDescribe>
-                                <!-- Faster to get just branch if skip = true -->
-                                <skip>false</skip>
-                            </gitDescribe>
-
-                            <abbrevLength>7</abbrevLength>
-                            <!--
-                            <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                            <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
-                            -->
-                            <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ss}</timestampFormat>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -417,22 +356,12 @@
             <plugin>
                 <groupId>org.codehaus.groovy.maven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
-                <version>1.0</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
                         <goals>
                             <goal>execute</goal>
                         </goals>
-                        <configuration>
-                            <source>
-                                import java.util.Date
-                                import java.text.MessageFormat
-                                def vartimestamp = MessageFormat.format("{0,date,yyyy}", new
-                                Date())
-                                project.properties['currentYearDynamic'] = vartimestamp
-                            </source>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -440,28 +369,6 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>2.11</version>
-                <configuration>
-                    <header>misc/52N_license-header.txt</header>
-                    <properties>
-                        <inceptionYear>${project.inceptionYear}</inceptionYear>
-                        <latestYearOfContribution>${currentYear}</latestYearOfContribution>
-                        <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution>
-                    </properties>
-                    <aggregate>true</aggregate>
-                    <includes>
-                        <include>src/**/*.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>**/logback.xml</exclude>
-                        <exclude>**/logback-test.xml</exclude>
-                        <exclude>**/src/test/resources/**</exclude>
-                        <exclude>**/generated-sources/xml-pdf-format</exclude>
-                        <exclude>**/src/main/resources/*</exclude>
-                        <exclude>**/src/main/assembly/*</exclude>
-                    </excludes>
-                    <strictCheck>true</strictCheck>
-                </configuration>
                 <executions>
                     <execution>
                         <id>check-license</id>
@@ -472,37 +379,34 @@
                     </execution>
                 </executions>
             </plugin>
+            
+<!--            <plugin>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>maven-notice-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>check-license</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <meminitial>256m</meminitial>
-                    <maxmem>512m</maxmem>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>test-jar</goal>
+                            <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <excludes>logback-test.xml</excludes>
-                            </excludes>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -517,7 +421,157 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
         </plugins>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.10</version>
+                </plugin>
+                
+                <plugin>
+                    <!-- license headers -->
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>2.11</version>
+                    <configuration>
+                        <header>misc/52N_license-header.txt</header>
+                        <properties>
+                            <inceptionYear>${project.inceptionYear}</inceptionYear>
+                            <latestYearOfContribution>${currentYear}</latestYearOfContribution>
+                            <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution>
+                        </properties>
+                        <aggregate>true</aggregate>
+                        <includes>
+                            <include>src/**/*.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/logback.xml</exclude>
+                            <exclude>**/logback-test.xml</exclude>
+                            <exclude>**/src/test/resources/**</exclude>
+                            <exclude>**/generated-sources/xml-pdf-format</exclude>
+                            <exclude>**/src/main/resources/*</exclude>
+                            <exclude>**/src/main/assembly/*</exclude>
+                        </excludes>
+                        <strictCheck>true</strictCheck>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <!-- dependencies' licenses -->
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.8</version>
+                    <configuration>
+                        <useMissingFile>true</useMissingFile>
+                        <fileTemplate>misc/license-as-csv.ftl</fileTemplate>
+                        <licenseMerges>
+                            <licenseMerge>The Apache Software License, Version 2.0|Apache 2|Apache License, Version 2.0|Apache License, version 2.0|Apache Public License 2.0|AL 2.0</licenseMerge>
+                            <licenseMerge>Apache Software Licenses|Apache Software License|Apache License</licenseMerge>
+                            <licenseMerge>GNU General Public License, v2.0|GNU GENERAL PUBLIC LICENSE Version 2, June 1991|GNU General Public License, Version 2.0</licenseMerge>
+                            <licenseMerge>Common Development and Distribution License (CDDL), version 1.0| Common Development and Distribution License (CDDL) v1.0</licenseMerge>
+                            <licenseMerge>GNU Lesser General Public License, version 2.1|LGPL 2.1</licenseMerge>
+                            <licenseMerge>Mozilla Public License version 1.1|MPL 1.1</licenseMerge>
+                            <licenseMerge>Eclipse Public License, Version 1.0|Eclipse Public License (EPL), Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
+                            <licenseMerge>GNU Lesser General Public Licence|LGPL</licenseMerge>
+                        </licenseMerges>
+                    </configuration>
+                </plugin>
+				
+                <plugin>
+                    <!-- assemble licenses --> 
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>maven-notice-plugin</artifactId>
+                    <version>1.0.6.1</version>
+                    <configuration>
+                        <noticeTemplate>misc/NOTICE.template</noticeTemplate>
+                        <licenseMapping>
+                            <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
+                        </licenseMapping>
+                        <generateChildNotices>false</generateChildNotices>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.codehaus.groovy.maven</groupId>
+                    <artifactId>gmaven-plugin</artifactId>
+                    <version>1.0</version>
+                    <configuration>
+                        <source>
+                            import java.util.Date
+                            import java.text.MessageFormat
+                            def vartimestamp = MessageFormat.format("{0,date,yyyy}", new
+                            Date())
+                            project.properties['currentYearDynamic'] = vartimestamp
+                        </source>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>2.2.0</version>
+                    <configuration>
+                        <dateFormat>yyyy-MM-dd HH:mm:ssZ</dateFormat>
+                        <gitDescribe>
+                            <!-- Faster to get just branch if skip = true -->
+                            <skip>false</skip>
+                        </gitDescribe>
+                        <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ss}</timestampFormat>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                    <configuration>
+                        <source>${java.compiler.source}</source>
+                        <target>${java.compiler.target}</target>
+                        <meminitial>256m</meminitial>
+                        <maxmem>512m</maxmem>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.2</version>
+                    <configuration>
+                        <preparationGoals>clean</preparationGoals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <descriptors>
+                            <descriptor>src/main/assembly/release.xml</descriptor>
+                        </descriptors>
+                    </configuration>
+                </plugin>
+                
+            </plugins>
+        </pluginManagement>
     </build>
 
     <profiles>
@@ -542,21 +596,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>license-maven-plugin</artifactId>
-                        <version>1.8</version>
-                        <configuration>
-                            <useMissingFile>true</useMissingFile>
-                            <fileTemplate>misc/license-as-csv.ftl</fileTemplate>
-                            <licenseMerges>
-                                <licenseMerge>The Apache Software License, Version 2.0|Apache 2|Apache License, Version 2.0|Apache License, version 2.0|Apache Public License 2.0|AL 2.0</licenseMerge>
-                                <licenseMerge>Apache Software Licenses|Apache Software License|Apache License</licenseMerge>
-                                <licenseMerge>GNU General Public License, v2.0|GNU GENERAL PUBLIC LICENSE Version 2, June 1991|GNU General Public License, Version 2.0</licenseMerge>
-                                <licenseMerge>Common Development and Distribution License (CDDL), version 1.0| Common Development and Distribution License (CDDL) v1.0</licenseMerge>
-                                <licenseMerge>GNU Lesser General Public License, version 2.1|LGPL 2.1</licenseMerge>
-                                <licenseMerge>Mozilla Public License version 1.1|MPL 1.1</licenseMerge>
-                                <licenseMerge>Eclipse Public License, Version 1.0|Eclipse Public License (EPL), Version 1.0|Eclipse Public License - v 1.0</licenseMerge>
-                                <licenseMerge>GNU Lesser General Public Licence|LGPL</licenseMerge>
-                            </licenseMerges>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>create-license-list</id>
@@ -571,32 +610,10 @@
             </build>
         </profile>
 
-
-        <profile>
-            <id>check</id>
-            <build>
-                <plugins>
-                    <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>cobertura-maven-plugin</artifactId>
-                    <executions> <execution> <goals> <goal>clean</goal> <goal>check</goal> </goals>
-                    </execution> </executions> </plugin> -->
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-
-        </profile>
     </profiles>
 
     <repositories>
+        
         <repository>
             <id>n52-releases</id>
             <name>52n Releases</name>
@@ -608,6 +625,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        
         <repository>
             <id>n52-snapshots</id>
             <name>52n Snapshots</name>
@@ -619,7 +637,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <!-- new geotools repos -->
+        
         <repository>
             <id>osgeo</id>
             <name>Open Source Geospatial Foundation Repository</name>
@@ -628,35 +646,16 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>boundless</id>
-            <name>Boundless, formerly OpenGeo</name>
-            <url>http://repo.boundlessgeo.com/main/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+        
         <repository>
             <id>spring-central</id>
             <name>spring-release-remote</name>
             <url>http://repo.springsource.org/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>java</id>
-            <url>http://java.net/projects/maven-repository/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
+        
     </repositories>
 
 </project>
