@@ -31,25 +31,25 @@ import java.text.SimpleDateFormat;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.IoParameters;
-import org.n52.io.v1.data.DesignedParameterSet;
-import org.n52.io.v1.data.StyleProperties;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.request.StyleProperties;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
 
 public final class RenderingContext {
 
-    private DesignedParameterSet chartStyleDefinitions;
+    private RequestStyledParameterSet chartStyleDefinitions;
 
     private TimeseriesMetadataOutput[] timeseriesMetadatas;
 
     // use static constructors
-    private RenderingContext(DesignedParameterSet timeseriesStyles, TimeseriesMetadataOutput[] timeseriesMetadatas) {
+    private RenderingContext(RequestStyledParameterSet timeseriesStyles, TimeseriesMetadataOutput[] timeseriesMetadatas) {
         this.timeseriesMetadatas = timeseriesMetadatas == null ? new TimeseriesMetadataOutput[0] : timeseriesMetadatas;
         this.chartStyleDefinitions = timeseriesStyles;
     }
 
     public static RenderingContext createEmpty() {
-        return new RenderingContext(new DesignedParameterSet(), new TimeseriesMetadataOutput[0]);
+        return new RenderingContext(new RequestStyledParameterSet(), new TimeseriesMetadataOutput[0]);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class RenderingContext {
      *         if amount of timeseries described by the given arguments is not in sync.
      * @return a rendering context to be used by {@link IoFactory} to create an {@link IoHandler}.
      */
-    public static RenderingContext createContextWith(DesignedParameterSet timeseriesStyles,
+    public static RenderingContext createContextWith(RequestStyledParameterSet timeseriesStyles,
                                                      TimeseriesMetadataOutput... timeseriesMetadatas) {
         if (timeseriesStyles == null || timeseriesMetadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
@@ -83,7 +83,7 @@ public final class RenderingContext {
 
     public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
                                                                     IoParameters ioConfig) {
-        DesignedParameterSet parameters = ioConfig.toDesignedParameterSet();
+        RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
         parameters.addTimeseriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, metadata);
     }
@@ -93,7 +93,7 @@ public final class RenderingContext {
         chartStyleDefinitions.setHeight(dimension.getHeight());
     }
 
-    public DesignedParameterSet getChartStyleDefinitions() {
+    public RequestStyledParameterSet getChartStyleDefinitions() {
         return chartStyleDefinitions;
     }
 

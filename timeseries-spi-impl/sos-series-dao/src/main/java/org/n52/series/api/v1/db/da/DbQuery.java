@@ -43,7 +43,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;

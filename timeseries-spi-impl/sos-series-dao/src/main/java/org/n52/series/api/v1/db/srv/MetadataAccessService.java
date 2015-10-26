@@ -29,8 +29,8 @@ package org.n52.series.api.v1.db.srv;
 
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.EntityCounter;
-import org.n52.web.InternalServerException;
-import org.n52.sensorweb.v1.spi.CountingMetadataService;
+import org.n52.web.exception.InternalServerException;
+import org.n52.sensorweb.spi.v1.CountingMetadataService;
 
 public class MetadataAccessService implements CountingMetadataService {
 
@@ -51,7 +51,7 @@ public class MetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getTimeseriesCount() {
+    public int getSeriesCount() {
         try {
             return repository.countTimeseries();
         } catch (DataAccessException e ) {

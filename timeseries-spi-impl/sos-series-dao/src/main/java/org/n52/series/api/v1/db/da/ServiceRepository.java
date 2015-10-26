@@ -30,10 +30,10 @@ package org.n52.series.api.v1.db.da;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.io.v1.data.ServiceOutput;
-import org.n52.io.v1.data.ServiceOutput.ParameterCount;
+import org.n52.io.response.v1.ServiceOutput;
+import org.n52.io.response.v1.ServiceOutput.ParameterCount;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
-import org.n52.web.InternalServerException;
+import org.n52.web.exception.InternalServerException;
 
 public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 

@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesDataMetadata;
-import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesDataMetadata;
+import org.n52.io.response.TimeseriesValue;
 
 
 public class HighchartFormatter implements TimeseriesDataFormatter<HighchartDataCollection> {

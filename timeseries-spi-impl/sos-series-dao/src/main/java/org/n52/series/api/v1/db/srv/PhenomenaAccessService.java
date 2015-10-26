@@ -30,13 +30,13 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.io.IoParameters;
-import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.PhenomenonRepository;
-import org.n52.web.InternalServerException;
-import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.web.exception.InternalServerException;
+import org.n52.sensorweb.spi.ParameterService;
 
 public class PhenomenaAccessService extends ServiceInfoAccess implements ParameterService<PhenomenonOutput> {
 

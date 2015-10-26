@@ -35,7 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
-import org.n52.io.v1.data.ParameterOutput;
+import org.n52.io.response.ParameterOutput;
 
 public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
 

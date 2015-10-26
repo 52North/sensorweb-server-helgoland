@@ -34,11 +34,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Properties;
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 
 import org.n52.io.format.TvpDataCollection;
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.TimeseriesValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

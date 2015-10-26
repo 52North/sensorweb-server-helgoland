@@ -27,7 +27,7 @@
  */
 package org.n52.io.style;
 
-import org.n52.io.v1.data.StyleProperties;
+import org.n52.io.request.StyleProperties;
 
 public class LineStyle extends Style {
 

@@ -30,7 +30,7 @@ package org.n52.io;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.v1.data.StatusInterval;
+import org.n52.io.response.StatusInterval;
 
 public class ConfigStatusIntervals {
 

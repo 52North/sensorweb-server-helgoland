@@ -32,9 +32,9 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.n52.io.ConfigRenderingHints.ConfiguredStyle;
-import org.n52.io.v1.data.PhenomenonOutput;
-import org.n52.io.v1.data.StyleProperties;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.request.StyleProperties;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
