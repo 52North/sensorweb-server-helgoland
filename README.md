@@ -1,7 +1,10 @@
-# timeseries-api
+# Sensor Web REST API
+The Sensor Web REST API (formaly known as timeseries-api) provides a thin 
+access layer to sensor data via RESTful Web binding with different output 
+formats like json, pdf or png.
 
-The timeseries API provides a thin access layer to timeseries data via
-RESTful Web binding with different output formats like json, pdf or png.
+Note: We renamed the project to better align with the intend to provide 
+sensor data rather than just timeseries data. 
 
 ## Developing
 We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 
@@ -13,6 +16,8 @@ making use of GitFlow. Altlassian provides [a good overview]
 most common workflows.
 
 ## Documentation
+The API documentation can be found here:
+https://52north.github.io/sensorweb-rest-api
 
-The API documentation is in the 52°North wiki:
-https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface
+~~The API documentation is in the 52°North wiki:
+https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
