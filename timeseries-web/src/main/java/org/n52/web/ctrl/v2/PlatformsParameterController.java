@@ -28,7 +28,7 @@
 package org.n52.web.ctrl.v2;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_STATIONS;
+import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
@@ -48,10 +48,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
-public class StationsParameterController {
+@RequestMapping(value = COLLECTION_PLATFORMS, produces = {"application/json"})
+public class PlatformsParameterController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformsParameterController.class);
 
     private ParameterService<StationOutput> parameterService;
 

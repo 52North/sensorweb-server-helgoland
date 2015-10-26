@@ -66,9 +66,9 @@ public interface RestfulUrls {
     static final String COLLECTION_PHENOMENA = API_VERSION_PATH + "/phenomena";
 
     /**
-     * Subpath identifying a collection of stations available.
+     * Subpath identifying a collection of platforms available.
      */
-    static final String COLLECTION_STATIONS = API_VERSION_PATH + "/stations";
+    static final String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
 
     /**
      * Subpath identifying a collection of series metadata available.
