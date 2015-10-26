@@ -96,9 +96,7 @@
                             <artifactItem>
                                 <groupId>org.n52.sensorweb</groupId>
                                 <artifactId>timeseries-series-dao</artifactId>
-                                <includes>hbm/sos/series/**.hbm.xml</includes>
-                                <!--<excludes>hbm/sos/series/FeatureResource.hbm.xml,hbm/sos/series/SeriesResource.hbm.xml</excludes>-->
-                                <excludes>hbm/sos/series/*_ereporting.hbm.xml</excludes>
+                                <includes>hbm/**</includes>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>

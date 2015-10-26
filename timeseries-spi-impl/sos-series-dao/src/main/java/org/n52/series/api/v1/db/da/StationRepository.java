@@ -173,7 +173,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     private StationOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
-        stationOutput.addProperty("id", entity.getPkid());
+        stationOutput.addProperty("id", Long.toString(entity.getPkid()));
         stationOutput.addProperty("label", getLabelFrom(entity, parameters.getLocale()));
         return stationOutput;
     }
