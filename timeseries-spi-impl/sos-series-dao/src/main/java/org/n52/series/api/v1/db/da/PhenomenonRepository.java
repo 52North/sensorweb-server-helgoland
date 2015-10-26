@@ -32,15 +32,15 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.PhenomenonEntity;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.PhenomenonDao;
-import org.n52.web.ResourceNotFoundException;
-import org.n52.sensorweb.v1.spi.search.PhenomenonSearchResult;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.sensorweb.spi.search.v1.PhenomenonSearchResult;
+import org.n52.sensorweb.spi.SearchResult;
 
 public class PhenomenonRepository extends SessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 

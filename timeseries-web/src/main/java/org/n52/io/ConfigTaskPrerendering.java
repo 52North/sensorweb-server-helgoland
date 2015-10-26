@@ -30,7 +30,7 @@ package org.n52.io;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.v1.data.StyleProperties;
+import org.n52.io.request.StyleProperties;
 
 public class ConfigTaskPrerendering {
 

@@ -27,6 +27,7 @@
  */
 package org.n52.io;
 
+import org.n52.io.request.IoParameters;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;

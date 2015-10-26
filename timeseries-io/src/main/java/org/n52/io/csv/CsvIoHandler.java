@@ -46,9 +46,9 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -33,9 +33,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.n52.io.ConfigStatusIntervals.ConfigInterval;
-import org.n52.io.v1.data.PhenomenonOutput;
-import org.n52.io.v1.data.StatusInterval;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.response.StatusInterval;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,7 +27,7 @@
  */
 package org.n52.io.format;
 
-import org.n52.io.v1.data.TimeseriesDataCollection;
+import org.n52.io.response.TimeseriesDataCollection;
 
 public final class HighchartDataCollection extends TimeseriesDataCollection<HighchartSeries> {
 

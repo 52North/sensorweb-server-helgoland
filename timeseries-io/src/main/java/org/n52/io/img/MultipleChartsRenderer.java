@@ -49,13 +49,13 @@ import org.jfree.data.time.Week;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
-import org.n52.io.v1.data.FeatureOutput;
-import org.n52.io.v1.data.ReferenceValueOutput;
-import org.n52.io.v1.data.StyleProperties;
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesDataMetadata;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.io.v1.data.TimeseriesValue;
+import org.n52.io.response.v1.FeatureOutput;
+import org.n52.io.response.ReferenceValueOutput;
+import org.n52.io.request.StyleProperties;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesDataMetadata;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesValue;
 
 public class MultipleChartsRenderer extends ChartRenderer {
 

@@ -33,7 +33,7 @@
 
 package org.n52.io.generalize;
 
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 import org.n52.io.format.TvpDataCollection;
 
 /**

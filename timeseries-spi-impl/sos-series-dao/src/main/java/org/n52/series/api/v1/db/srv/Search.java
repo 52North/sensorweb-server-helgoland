@@ -37,8 +37,8 @@ import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
-import org.n52.sensorweb.v1.spi.SearchService;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.sensorweb.spi.SearchService;
+import org.n52.sensorweb.spi.SearchResult;
 
 public class Search extends ServiceInfoAccess implements SearchService {
 

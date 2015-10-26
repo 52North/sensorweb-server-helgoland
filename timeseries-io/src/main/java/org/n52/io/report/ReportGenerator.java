@@ -35,7 +35,7 @@ import java.util.Locale;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.img.RenderingContext;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
 
 public abstract class ReportGenerator implements IoHandler {
 
