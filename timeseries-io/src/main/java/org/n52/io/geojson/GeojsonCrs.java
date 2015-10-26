@@ -43,7 +43,7 @@ public class GeojsonCrs extends GeojsonObject {
     private String type = TYPE_NAME;
     
     GeojsonCrs() {
-        this.properties = new HashMap<String, String>();
+        this.properties = new HashMap<>();
     }
     
     public void addProperty(String key, String value) {

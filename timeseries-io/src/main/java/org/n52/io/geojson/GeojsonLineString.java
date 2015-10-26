@@ -25,30 +25,40 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.v1.data;
+package org.n52.io.geojson;
 
-import java.text.Collator;
+public class GeojsonLineString extends GeojsonGeometry {
+    
+    private static final long serialVersionUID = 2014878619454088577L;
 
-import org.n52.io.geojson.GeojsonFeature;
-import org.n52.io.geojson.GeojsonPoint;
+    private static final String GEOJSON_TYPE_LINESTRING = "LineString";
 
-public class StationOutput extends GeojsonFeature implements CollatorComparable<StationOutput> {
-
-    private static final long serialVersionUID = -2868469756939569521L;
-
-    @Override
-    public int compare(Collator collator, StationOutput o) {
-        if (collator == null) {
-            collator = Collator.getInstance();
-        }
-        String thisLabel = (String) getProperties().get("label");
-        String otherLabel = (String) o.getProperties().get("label");
-        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
+    protected Double[][] points
+;    
+    public static GeojsonLineString createWithCoordinates(Double[][] coordinates) {
+        GeojsonLineString sfGeometry = new GeojsonLineString();
+        sfGeometry.setCoordinates(coordinates);
+        return sfGeometry;
     }
     
+    public void setCoordinates(Double[][] points) {
+        for (Double[] point : points) {
+            assertCoordinates(point);
+        }
+        this.points = points;
+    }
+
+    void setType(String type) {
+        // keep for serialization
+    }
+
     @Override
-    public GeojsonPoint getGeometry() {
-        return (GeojsonPoint) super.getGeometry();
+    public String getType() {
+        return GEOJSON_TYPE_LINESTRING;
+    }
+    
+    public Double[][] getCoordinates() {
+        return points;
     }
 
 }

@@ -47,7 +47,7 @@ public class GeojsonPoint extends GeojsonGeometry {
     
     public void setCoordinates(Double[] coordinates) {
         //this.coordinates = checkCoordinates(Utils.copy(coordinates));
-        this.coordinates = checkCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+        this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
     }
 
     void setType(String type) {

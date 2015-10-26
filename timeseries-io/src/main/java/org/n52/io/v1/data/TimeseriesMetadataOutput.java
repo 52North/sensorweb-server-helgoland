@@ -27,8 +27,6 @@
  */
 package org.n52.io.v1.data;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.n52.io.Utils;
 

@@ -35,13 +35,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.sensorweb.v1.spi.CountingMetadataService;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+@RestController
 @RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
 public final class ResourcesController {
 
@@ -53,7 +53,7 @@ public final class ResourcesController {
     }
 
     private ResourceCollection[] createResources(boolean expanded) {
-        List<ResourceCollection> resources = new ArrayList<ResourceCollection>();
+        List<ResourceCollection> resources = new ArrayList<>();
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");
         ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription("Represents a sequence of data values measured over time.");
