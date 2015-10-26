@@ -27,7 +27,7 @@
  */
 package org.n52.io.generalize;
 
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

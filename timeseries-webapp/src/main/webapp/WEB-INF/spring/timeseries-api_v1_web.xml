@@ -16,12 +16,12 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
-    <bean class="org.n52.web.v1.ctrl.ResourcesController">
+    <bean class="org.n52.web.ctrl.v1.ResourcesController">
         <property name="metadataService" ref="metadataService" />
     </bean>
 
 
-    <bean class="org.n52.web.v1.ctrl.ParameterController" id="parameterController" abstract="true">
+    <bean class="org.n52.web.ctrl.v1.ParameterController" id="parameterController" abstract="true">
         <property name="configAppliers">
             <list>
                 <bean class="org.n52.io.LicenseConfigApplier" />
@@ -29,35 +29,35 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.OfferingsParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ServicesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ServicesParameterController" parent="parameterController">
         <property name="parameterService" ref="serviceParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.CategoriesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.CategoriesParameterController" parent="parameterController">
         <property name="parameterService" ref="categoryParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.FeaturesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.FeaturesParameterController" parent="parameterController">
         <property name="parameterService" ref="featureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ProceduresParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ProceduresParameterController" parent="parameterController">
         <property name="parameterService" ref="procedureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.PhenomenaParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.PhenomenaParameterController" parent="parameterController">
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.StationsParameterController">
+    <bean class="org.n52.web.ctrl.v1.StationsParameterController">
         <property name="parameterService" ref="stationParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.TimeseriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
         <property name="configAppliers">
@@ -70,7 +70,7 @@
         <property name="metadataExtensions">
             <list>
                 <!--
-                <bean class="org.n52.web.v1.extension.ResultTimeExtension">
+                <bean class="org.n52.io.extension.ResultTimeExtension">
                     <property name="resultTimeService" ref="resultTimeService"/>
                 </bean>
                 -->
@@ -78,7 +78,7 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.TimeseriesDataController">
+    <bean class="org.n52.web.ctrl.v1.TimeseriesDataController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
@@ -99,7 +99,7 @@
         <property name="enabled" value="false" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.SearchController">
+    <bean class="org.n52.web.ctrl.v1.SearchController">
         <property name="searchService" ref="searchService"/>
     </bean>
 

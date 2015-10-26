@@ -27,8 +27,8 @@
  */
 package org.n52.io.format;
 
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesDataCollection;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.TimeseriesDataCollection;
 
 /**
  * Represents a time value pair data format. This class acts as a convenience class to encapsulate

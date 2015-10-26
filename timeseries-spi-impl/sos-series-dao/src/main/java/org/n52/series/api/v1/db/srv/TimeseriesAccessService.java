@@ -30,22 +30,22 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 import org.n52.io.format.TvpDataCollection;
-import org.n52.io.v1.data.TimeseriesData;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.io.v1.data.UndesignedParameterSet;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
-import org.n52.web.InternalServerException;
-import org.n52.sensorweb.v1.spi.ParameterService;
-import org.n52.sensorweb.v1.spi.TimeseriesDataService;
+import org.n52.web.exception.InternalServerException;
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.sensorweb.spi.TimeseriesDataService;
 
 public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ParameterService<TimeseriesMetadataOutput> {
 
     @Override
-    public TvpDataCollection getTimeseriesData(UndesignedParameterSet parameters) {
+    public TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         try {
             TvpDataCollection dataCollection = new TvpDataCollection();
             for (String timeseriesId : parameters.getTimeseries()) {
@@ -60,7 +60,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
         }
     }
 
-    private TimeseriesData getDataFor(String timeseriesId, UndesignedParameterSet parameters) throws DataAccessException {
+    private TimeseriesData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters) throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         TimeseriesRepository repository = createTimeseriesRepository();
         if (parameters.isExpanded()) {

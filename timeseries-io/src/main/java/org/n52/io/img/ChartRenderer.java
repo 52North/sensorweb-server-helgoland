@@ -76,11 +76,11 @@ import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
 import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
 import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
 import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
-import org.n52.io.v1.data.DesignedParameterSet;
-import org.n52.io.v1.data.PhenomenonOutput;
-import org.n52.io.v1.data.StyleProperties;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.io.v1.data.TimeseriesOutput;
+import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.request.StyleProperties;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.TimeseriesOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -322,7 +322,7 @@ public abstract class ChartRenderer implements IoHandler {
         return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
     }
 
-    protected DesignedParameterSet getChartStyleDefinitions() {
+    protected RequestStyledParameterSet getChartStyleDefinitions() {
         return context.getChartStyleDefinitions();
     }
 

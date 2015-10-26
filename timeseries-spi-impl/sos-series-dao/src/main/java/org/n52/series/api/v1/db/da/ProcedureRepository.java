@@ -32,15 +32,15 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.n52.io.v1.data.ProcedureOutput;
+import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.ProcedureEntity;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.ProcedureDao;
-import org.n52.web.ResourceNotFoundException;
-import org.n52.sensorweb.v1.spi.search.ProcedureSearchResult;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.sensorweb.spi.search.v1.ProcedureSearchResult;
+import org.n52.sensorweb.spi.SearchResult;
 
 public class ProcedureRepository extends SessionAwareRepository implements OutputAssembler<ProcedureOutput> {
 

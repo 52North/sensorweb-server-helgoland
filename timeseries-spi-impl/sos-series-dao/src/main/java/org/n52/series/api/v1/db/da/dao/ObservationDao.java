@@ -35,7 +35,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
-import org.n52.io.IoParameters;
+import org.n52.io.request.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
