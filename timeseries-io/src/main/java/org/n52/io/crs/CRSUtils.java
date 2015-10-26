@@ -353,11 +353,6 @@ public final class CRSUtils {
             return false;
         }
         return axisOrderFirst != axisOrderSecond;
-
-        // AxisDirection sourceFirstAxis = first.getCoordinateSystem().getAxis(0).getDirection();
-        // AxisDirection targetFirstAxis = second.getCoordinateSystem().getAxis(0).getDirection();
-        // return sourceFirstAxis.equals(AxisDirection.NORTH) && !targetFirstAxis.equals(AxisDirection.NORTH)
-        // || !sourceFirstAxis.equals(AxisDirection.NORTH) && targetFirstAxis.equals(AxisDirection.NORTH);
     }
 
     /**
@@ -401,8 +396,7 @@ public final class CRSUtils {
      * @param hints
      *        Some Geotools {@link Hints} which set behavior and special considerations regarding to the
      *        spatial operations.
-     * @throws FactoryException
-     *         if decoding default CRS fails.
+     * @return an instance of {@link CRSUtils} using given hints
      */
     public static CRSUtils createEpsgReferenceHelper(Hints hints) throws IllegalStateException {
         return new CRSUtils(getCRSAuthorityFactory("EPSG", hints));
