@@ -41,6 +41,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import org.n52.io.crs.CRSUtils;
 import static org.n52.io.geojson.JSONConstants.COORDINATES;
 import static org.n52.io.geojson.JSONConstants.CRS;
 import static org.n52.io.geojson.JSONConstants.GEOMETRIES;
@@ -63,7 +64,7 @@ import static org.n52.io.geojson.JSONConstants.TYPE;
  */
 public class GeoJSONEncoder {
     // XXX internally we are using CRS:84 which has different axes ordering
-    public static final int DEFAULT_SRID = 4326;
+    public static final int DEFAULT_SRID = CRSUtils.EPSG_WGS84;
 
     public static final String SRID_LINK_PREFIX = "http://www.opengis.net/def/crs/EPSG/0/";
 
@@ -76,7 +77,7 @@ public class GeoJSONEncoder {
             return encodeGeometry(value, DEFAULT_SRID);
         }
     }
-
+    
     protected ObjectNode encodeGeometry(Geometry geometry, int parentSrid) throws GeoJSONException {
         checkNotNull(geometry);
         if (geometry.isEmpty()) {

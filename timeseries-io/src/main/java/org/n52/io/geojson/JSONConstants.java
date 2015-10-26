@@ -56,6 +56,8 @@ public interface JSONConstants {
     String MULTI_POINT = "MultiPoint";
 
     String MULTI_POLYGON = "MultiPolygon";
+    
+    String NAME = "name";
 
     String POINT = "Point";
 

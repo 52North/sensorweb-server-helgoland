@@ -62,6 +62,8 @@ public final class CRSUtils {
      * Default is CRS:84 (EPSG:4326 with lon/lat ordering).
      */
     public static final String DEFAULT_CRS = "CRS:84";
+    
+    public static final int EPSG_WGS84 = 4326;
 
     /**
      * Internally used spatial reference frame.
