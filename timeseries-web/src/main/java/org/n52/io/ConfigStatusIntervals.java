@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.n52.io.v1.data.StatusInterval;
 
+@Deprecated
 public class ConfigStatusIntervals {
 
 	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
