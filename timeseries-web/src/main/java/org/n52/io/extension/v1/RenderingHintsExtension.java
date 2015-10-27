@@ -55,7 +55,7 @@ public class RenderingHintsExtension implements MetadataExtension<TimeseriesMeta
 			ObjectMapper om = new ObjectMapper();
 			return om.readValue(config, RenderingHintsExtensionConfig.class);
 		} catch (IOException e) {
-			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE);
+			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
 			return new RenderingHintsExtensionConfig();
 		}
 	}
