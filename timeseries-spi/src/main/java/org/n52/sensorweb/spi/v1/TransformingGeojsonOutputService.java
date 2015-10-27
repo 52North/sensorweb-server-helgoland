@@ -27,7 +27,7 @@
  */
 package org.n52.sensorweb.spi.v1;
 
-import org.n52.io.geojson.GeojsonFeature;
+import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
@@ -45,27 +45,27 @@ public class TransformingGeojsonOutputService extends TransformationService impl
     }
 
     @Override
-    public StationOutput[] getExpandedParameters(IoParameters query) {
+    public GeojsonFeature[] getExpandedParameters(IoParameters query) {
         GeojsonFeature[] features = composedService.getExpandedParameters(query);
-        return transformStations(query, features);
+        return transformFeatures(query, features);
     }
 
     @Override
     public GeojsonFeature[] getCondensedParameters(IoParameters query) {
         GeojsonFeature[] features = composedService.getCondensedParameters(query);
-        return transformStations(query, features);
+        return transformFeatures(query, features);
     }
 
     @Override
     public GeojsonFeature[] getParameters(String[] items) {
         GeojsonFeature[] features = composedService.getParameters(items);
-        return transformStations(IoParameters.createDefaults(), features);
+        return transformFeatures(IoParameters.createDefaults(), features);
     }
 
     @Override
     public GeojsonFeature[] getParameters(String[] items, IoParameters query) {
         GeojsonFeature[] features = composedService.getParameters(items, query);
-        return transformStations(query, features);
+        return transformFeatures(query, features);
     }
 
     @Override

@@ -32,14 +32,14 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.geotools.factory.Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER;
 import static org.geotools.referencing.ReferencingFactoryFinder.getCRSAuthorityFactory;
-import static org.n52.io.geojson.GeojsonCrs.createNamedCRS;
-import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
+import static org.n52.io.geojson.old.GeojsonCrs.createNamedCRS;
+import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -263,26 +263,6 @@ public final class CRSUtils {
     }
 
     /**
-     * Transforms a given point from a given reference to a destinated reference.
-     *
-     * @param point
-     *        the point to transform.
-     * @param srcFrame
-     *        the reference the given point is in.
-     * @param destFrame
-     *        the reference frame the point shall be transformed to.
-     * @return a transformed point.
-     * @throws FactoryException
-     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
-     *         {@link MathTransform} could be created.
-     * @throws TransformException
-     *         if transformation fails for any other reason.
-     */
-    public Point transform(Point point, String srcFrame, String destFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, getCrsFor(srcFrame), getCrsFor(destFrame));
-    }
-
-    /**
      * Transforms a given geometry from a given reference to a destinated reference.
      *
      * @param geometry
@@ -303,9 +283,9 @@ public final class CRSUtils {
         return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
-    private Geometry transform(Geometry point, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
+    private Geometry transform(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
             TransformException {
-        return JTS.transform(point, CRS.findMathTransform(srs, dest));
+        return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
     }
 
     /**

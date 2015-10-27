@@ -38,7 +38,7 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.v1.TransformingStationService;
+import org.n52.sensorweb.spi.v1.TransformingGeojsonOutputService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class StationsParameterController {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
         if (procedure == null) {
-            throw new ResourceNotFoundException("Found no procedure with given id.");
+            throw new ResourceNotFoundException("Found no station with given id.");
         }
 
         return new ModelAndView().addObject(procedure);
@@ -104,8 +104,8 @@ public class StationsParameterController {
     }
 
     public void setParameterService(ParameterService<StationOutput> stationParameterService) {
-        ParameterService<StationOutput> service = new TransformingStationService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<StationOutput>(new WebExceptionAdapter<StationOutput>(service));
+        ParameterService<StationOutput> service = new TransformingGeojsonOutputService(stationParameterService);
+        this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 
 }
