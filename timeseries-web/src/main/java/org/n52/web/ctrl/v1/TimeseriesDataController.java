@@ -60,7 +60,7 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import org.n52.web.exception.BadRequestException;
-import org.n52.web.common.BaseController;
+import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;

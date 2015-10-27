@@ -32,7 +32,7 @@ import static org.n52.web.ctrl.v1.RestfulUrls.SEARCH;
 import java.util.Collection;
 
 import org.n52.web.exception.BadRequestException;
-import org.n52.web.common.BaseController;
+import org.n52.web.ctrl.BaseController;
 import org.n52.sensorweb.spi.SearchService;
 import org.n52.sensorweb.spi.SearchResult;
 import org.springframework.web.bind.annotation.RequestMapping;
