@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.n52.io.extension.MetadataExtension;
 import org.n52.io.request.IoParameters;
 
-public class RenderingHintsExtension implements MetadataExtension<TimeseriesMetadataOutput> {
+public class RenderingHintsExtension extends MetadataExtension<TimeseriesMetadataOutput> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RenderingHintsExtension.class);
 	
@@ -50,6 +50,14 @@ public class RenderingHintsExtension implements MetadataExtension<TimeseriesMeta
     private static final String EXTENSION_NAME = "renderingHints";
 
 	private final RenderingHintsExtensionConfig renderingConfig = readConfig();
+
+    public RenderingHintsExtension() {
+        this(EXTENSION_NAME);
+    }
+
+    public RenderingHintsExtension(String name) {
+        super(name);
+    }
     
 	private RenderingHintsExtensionConfig readConfig() {
 		try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
@@ -61,11 +69,6 @@ public class RenderingHintsExtension implements MetadataExtension<TimeseriesMeta
 		}
 	}
 	
-    @Override
-    public void addExtensionTo(TimeseriesMetadataOutput output) {
-        output.addExtra(EXTENSION_NAME);
-    }
-
     @Override
     public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
         String timeseriesId = output.getId();
@@ -82,11 +85,6 @@ public class RenderingHintsExtension implements MetadataExtension<TimeseriesMeta
             return style;
         }
         return null;
-    }
-
-    @Override
-    public String getExtensionName() {
-        return EXTENSION_NAME;
     }
 
     private StyleProperties createStyle(RenderingHintsExtensionConfig.ConfiguredStyle configuredStyle) {

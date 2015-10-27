@@ -31,11 +31,21 @@ package org.n52.io.extension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 
-public interface MetadataExtension<T extends ParameterOutput> {
+public abstract class MetadataExtension<T extends ParameterOutput> {
+    
+    private final String extensionName;
+    
+    public MetadataExtension(String name) {
+        this.extensionName = name;
+    }
 
-    public void addExtensionTo(T output);
+    public abstract Object getExtras(T output, IoParameters parameters);
 
-    public Object getExtras(T output, IoParameters parameters);
+    public void addExtensionTo(T output) {
+        output.addExtra(extensionName);
+    }
 
-    public String getExtensionName();
+    public String getExtensionName() {
+        return extensionName;
+    }
 }

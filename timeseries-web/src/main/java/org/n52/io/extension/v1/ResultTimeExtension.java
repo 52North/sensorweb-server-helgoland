@@ -37,7 +37,7 @@ import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadataOutput> {
+public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOutput> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ResultTimeExtension.class);
 
@@ -48,6 +48,14 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
     private final ResultTimeExtensionConfig config = readConfig();
 
     private ResultTimeService resultTimeService;
+
+    public ResultTimeExtension() {
+        this(EXTENSION_NAME);
+    }
+
+    public ResultTimeExtension(String name) {
+        super(name);
+    }
 
     private ResultTimeExtensionConfig readConfig() {
         try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
@@ -74,11 +82,6 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
         }
     }
 
-    @Override
-    public String getExtensionName() {
-        return EXTENSION_NAME;
-    }
-    
     private boolean enabled(String serviceId) {
         return config.getServices().contains(serviceId);
     }

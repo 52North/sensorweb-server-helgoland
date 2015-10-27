@@ -44,7 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.n52.io.extension.MetadataExtension;
 import org.n52.io.request.IoParameters;
 
-public class StatusIntervalsExtension implements MetadataExtension<TimeseriesMetadataOutput> {
+public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetadataOutput> {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 	
@@ -64,11 +64,14 @@ public class StatusIntervalsExtension implements MetadataExtension<TimeseriesMet
 		}
 	}
 
-    @Override
-    public void addExtensionTo(TimeseriesMetadataOutput output) {
-        output.addExtra(EXTENSION_NAME);
+    public StatusIntervalsExtension() {
+        this(EXTENSION_NAME);
     }
 
+    public StatusIntervalsExtension(String name) {
+        super(name);
+    }
+    
     @Override
     public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
         String timeseriesId = output.getId();
@@ -85,11 +88,6 @@ public class StatusIntervalsExtension implements MetadataExtension<TimeseriesMet
             return intervals;
         }
         return null;
-    }
-
-    @Override
-    public String getExtensionName() {
-        return EXTENSION_NAME;
     }
 
 	private StatusInterval[] createIntervals(ConfigInterval configInterval) {
