@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -83,39 +83,13 @@ public class GeoJSONDecoder {
     public static final int DIM_3D = 3;
 	
 	
-	public Geometry decodeJSON(JsonNode node) throws GeoJSONException {
+	public Geometry decodeGeometry(JsonNode node) throws GeoJSONException {
 		if (node == null || node.isNull() || node.isMissingNode()) {
 			return null;
 		} else {
 			return decodeGeometry(node, DEFAULT_GEOMETRY_FACTORY);
 		}
 	}
-
-	protected Coordinate[] decodeCoordinates(JsonNode node) throws GeoJSONException {
-        if (!node.isArray()) {
-            throw new GeoJSONException("expected array");
-        }
-        Coordinate[] coordinates = new Coordinate[node.size()];
-        for (int i = 0; i < node.size(); ++i) {
-            coordinates[i] = decodeCoordinate(node.get(i));
-        }
-        return coordinates;
-    }
-
-    protected Polygon decodePolygonCoordinates(JsonNode coordinates, GeometryFactory fac) throws GeoJSONException {
-        if (!coordinates.isArray()) {
-            throw new GeoJSONException("expected array");
-        }
-        if (coordinates.size() < 1) {
-            throw new GeoJSONException("missing polygon shell");
-        }
-        LinearRing shell = fac.createLinearRing(decodeCoordinates(coordinates.get(0)));
-        LinearRing[] holes = new LinearRing[coordinates.size() - 1];
-        for (int i = 1; i < coordinates.size(); ++i) {
-            holes[i - 1] = fac.createLinearRing(decodeCoordinates(coordinates.get(i)));
-        }
-        return fac.createPolygon(shell, holes);
-    }
 
     protected Geometry decodeGeometry(Object o, GeometryFactory parentFactory) throws GeoJSONException {
         if (!(o instanceof JsonNode)) {
@@ -141,6 +115,32 @@ public class GeoJSONDecoder {
         } else {
             throw new GeoJSONException("Unkown geometry type: " + type);
         }
+    }
+
+	protected Coordinate[] decodeCoordinates(JsonNode node) throws GeoJSONException {
+        if (!node.isArray()) {
+            throw new GeoJSONException("expected array");
+        }
+        Coordinate[] coordinates = new Coordinate[node.size()];
+        for (int i = 0; i < node.size(); ++i) {
+            coordinates[i] = decodeCoordinate(node.get(i));
+        }
+        return coordinates;
+    }
+
+    protected Polygon decodePolygonCoordinates(JsonNode coordinates, GeometryFactory fac) throws GeoJSONException {
+        if (!coordinates.isArray()) {
+            throw new GeoJSONException("expected array");
+        }
+        if (coordinates.size() < 1) {
+            throw new GeoJSONException("missing polygon shell");
+        }
+        LinearRing shell = fac.createLinearRing(decodeCoordinates(coordinates.get(0)));
+        LinearRing[] holes = new LinearRing[coordinates.size() - 1];
+        for (int i = 1; i < coordinates.size(); ++i) {
+            holes[i - 1] = fac.createLinearRing(decodeCoordinates(coordinates.get(i)));
+        }
+        return fac.createPolygon(shell, holes);
     }
 
     protected MultiLineString decodeMultiLineString(JsonNode node, GeometryFactory fac) throws GeoJSONException {
