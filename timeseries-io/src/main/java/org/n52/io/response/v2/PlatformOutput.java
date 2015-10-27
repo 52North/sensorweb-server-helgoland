@@ -27,11 +27,14 @@
  */
 package org.n52.io.response.v2;
 
+import java.util.Collection;
 import org.n52.io.response.ParameterOutput;
 
 public abstract class PlatformOutput extends ParameterOutput {
 
     private static final long serialVersionUID = -2868469756939569521L;
+    
+    private FeatureOutputCollection features;
     
     private PlatformType type;
     
@@ -47,6 +50,10 @@ public abstract class PlatformOutput extends ParameterOutput {
             throw new NullPointerException("Type is null.");
         }
         this.type = type;
+    }
+    
+    public Collection<FeatureOutput> getFeatures() {
+        return this.features.getItems();
     }
     
     public String getType() {
