@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.n52.io.request.StyleProperties;
 
+@Deprecated
 public class ConfigRenderingHints {
 
 	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();

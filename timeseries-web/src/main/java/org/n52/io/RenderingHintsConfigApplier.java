@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class RenderingHintsConfigApplier extends ConfigApplier<TimeseriesMetadataOutput> {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(RenderingHintsConfigApplier.class);

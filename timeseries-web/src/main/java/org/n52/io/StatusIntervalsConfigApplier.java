@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class StatusIntervalsConfigApplier extends ConfigApplier<TimeseriesMetadataOutput> {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsConfigApplier.class);
