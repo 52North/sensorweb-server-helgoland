@@ -27,6 +27,7 @@
  */
 package org.n52.web.ctrl.v1;
 
+import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_FEATURES;
 
 import org.springframework.web.bind.annotation.RequestMapping;
