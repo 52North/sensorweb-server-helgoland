@@ -25,40 +25,61 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-public class GeojsonLineString extends GeojsonGeometry {
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class GeojsonCrs extends GeojsonObject {
     
-    private static final long serialVersionUID = 2014878619454088577L;
+    private static final long serialVersionUID = 5964748458745655509L;
 
-    private static final String GEOJSON_TYPE_LINESTRING = "LineString";
+    private static final String TYPE_NAME = "name";
+    
+    private Map<String, String> properties;
 
-    protected Double[][] points
-;    
-    public static GeojsonLineString createWithCoordinates(Double[][] coordinates) {
-        GeojsonLineString sfGeometry = new GeojsonLineString();
-        sfGeometry.setCoordinates(coordinates);
-        return sfGeometry;
+    private String type = TYPE_NAME;
+    
+    GeojsonCrs() {
+        this.properties = new HashMap<>();
     }
     
-    public void setCoordinates(Double[][] points) {
-        for (Double[] point : points) {
-            assertCoordinates(point);
-        }
-        this.points = points;
+    public void addProperty(String key, String value) {
+        properties.put(key, value);
+    }
+    
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+    
     void setType(String type) {
-        // keep for serialization
+        this.type = type;
     }
 
     @Override
     public String getType() {
-        return GEOJSON_TYPE_LINESTRING;
+        return type;
     }
     
-    public Double[][] getCoordinates() {
-        return points;
+    @JsonIgnore
+    public String getName() {
+        return properties.get("name");
     }
-
+    
+    public static GeojsonCrs createNamedCRS(String name) {
+        if (name == null) {
+            throw new NullPointerException("Argument 'name' must not be null.");
+        }
+        GeojsonCrs namedCrs = new GeojsonCrs();
+        namedCrs.addProperty("name", name);
+        namedCrs.setType(TYPE_NAME);
+        return namedCrs;
+    }
+    
 }

@@ -25,38 +25,42 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import java.util.Collection;
+import java.util.Arrays;
 
-import org.n52.io.Utils;
 
-public final class GeojsonFeatureCollection {
+public class GeojsonPoint extends GeojsonGeometry {
 
-    private GeojsonFeature[] features;
+    private static final long serialVersionUID = 4348077077881433456L;
     
-    public static GeojsonFeatureCollection create(Collection<? extends GeojsonFeature> features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features.toArray(new GeojsonFeature[0]));
-        return collection;
-    }
+    private static final String GEOJSON_TYPE_POINT = "Point";
+
+    protected Double[] coordinates;
     
-    public static <T extends GeojsonFeature> GeojsonFeatureCollection create(T[] features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features);
-        return collection;
+    public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
+        GeojsonPoint sfGeometry = new GeojsonPoint();
+        //sfGeometry.setCoordinates(Utils.copy(coordinates));
+        sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+        return sfGeometry;
     }
     
-    private GeojsonFeatureCollection() {
-        // for serialization
+    public void setCoordinates(Double[] coordinates) {
+        //this.coordinates = checkCoordinates(Utils.copy(coordinates));
+        this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
     }
 
-    public GeojsonFeature[] getFeatures() {
-        return Utils.copy(features);
+    void setType(String type) {
+        // keep for serialization
     }
 
-    public void setFeatures(GeojsonFeature[] features) {
-        this.features = Utils.copy(features);
+    public String getType() {
+        return GEOJSON_TYPE_POINT;
     }
     
+    public Double[] getCoordinates() {
+        return Arrays.copyOf(coordinates, coordinates.length);
+//        return Utils.copy(coordinates);
+    }
+
 }

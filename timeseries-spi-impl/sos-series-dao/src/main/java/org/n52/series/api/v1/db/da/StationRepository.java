@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;

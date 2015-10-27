@@ -25,26 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import java.io.Serializable;
+import java.util.Arrays;
 
-public abstract class GeojsonObject implements Serializable {
-    
-    private static final long serialVersionUID = -6879838545330014414L;
-    
-    private GeojsonCrs crs;
-    
-    public void setCrs(GeojsonCrs crs) {
-        this.crs = crs;
-    }
+public abstract class GeojsonGeometry extends GeojsonObject {
 
-    public GeojsonCrs getCrs() {
-        return crs;
-    }
+    private static final long serialVersionUID = -2611259809054586079L;
 
     /**
-     * @return the geojson type of the object (e.g. <code>Feature</code>, <code>Point</code>, etc.).
+     * @param coordinates the coordinates to assert.
+     * @return checked coordinates for method chaining.
+     * @throws IllegalArgumentException
+     *         if coordinates are <code>null</code> or do not contain 2D or 3D points.
      */
-    public abstract String getType();
+    protected Double[] assertCoordinates(Double[] coordinates) {
+        if (coordinates == null) {
+            throw new NullPointerException("Coordinates must not be null.");
+        }
+        if (coordinates.length != 2 && coordinates.length != 3) {
+            String asString = Arrays.toString(coordinates);
+            throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
+        }
+        return coordinates;
+    }
+
 }
