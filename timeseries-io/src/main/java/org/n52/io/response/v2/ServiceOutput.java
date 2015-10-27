@@ -25,8 +25,10 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v1;
+package org.n52.io.response.v2;
 
+import java.util.Arrays;
+import java.util.List;
 import org.n52.io.response.ParameterOutput;
 
 public class ServiceOutput extends ParameterOutput {
@@ -39,8 +41,11 @@ public class ServiceOutput extends ParameterOutput {
 	
 	private Boolean supportsFirstLatest;
 	
+    private final List<String> filters = Arrays.asList(new String[]{ 
+        "features, procedures, phenomena, categories, services, platforms"} );
+    
 	private ParameterCount quantities;
-	
+    
 	public String getServiceUrl() {
 		return serviceUrl;
 	}
@@ -79,6 +84,20 @@ public class ServiceOutput extends ParameterOutput {
 
     public void setQuantities(ParameterCount countedParameters) {
         this.quantities = countedParameters;
+    }
+    
+    public void removeFilter(String filter) {
+        filters.remove(filter);
+    }
+    
+    public void addFilter(String filter) {
+        if ( !filters.contains(filter)) {
+            filters.add(filter);
+        }
+    }
+    
+    public String[] getFilters() {
+        return filters.toArray(new String[0]);
     }
 
 	@Override
@@ -129,7 +148,7 @@ public class ServiceOutput extends ParameterOutput {
         }
         return true;
     }
-    
+
     public static class ParameterCount {
 
         private int amountOfferings;
