@@ -58,13 +58,6 @@
     <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
-        <property name="configAppliers">
-            <list>
-                <bean class="org.n52.io.RenderingHintsConfigApplier" />
-                <bean class="org.n52.io.StatusIntervalsConfigApplier" />
-                <bean class="org.n52.io.LicenseConfigApplier" />
-            </list>
-        </property>
         <property name="metadataExtensions">
             <list>
                 <!--
