@@ -25,17 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.extension.v1;
 
+import java.util.HashMap;
+import java.util.Map;
 
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.request.StyleProperties;
 
-public interface MetadataExtension<T extends ParameterOutput> {
+public class RenderingHintsExtensionConfig {
+    
+	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();
 
-    public void addExtensionTo(T output);
+	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<>();
 
-    public Object getExtras(T output, IoParameters parameters);
+	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+		return phenomenonStyles;
+	}
 
-    public String getExtensionName();
+	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+		this.phenomenonStyles = phenomenonStyles;
+	}
+
+	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+		return timeseriesStyles;
+	}
+
+	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+		this.timeseriesStyles = timeseriesStyles;
+	}
+
+	public static class ConfiguredStyle {
+
+		private StyleProperties style;
+
+		public StyleProperties getStyle() {
+			return style;
+		}
+
+		public void setStyle(StyleProperties style) {
+			this.style = style;
+		}
+
+	}
+
 }

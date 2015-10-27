@@ -65,31 +65,25 @@ public abstract class ParameterController extends BaseController {
 
     private List<ConfigApplier<ParameterOutput>> configAppliers = new ArrayList<>();
 
+    private ParameterService<ParameterOutput> parameterService;
+    
     private ServiceParameterService serviceParameterService;
 
-    private ParameterService<ParameterOutput> parameterService;
     @RequestMapping(value = "/{item}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable("item") String timeseriesId,
+    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
         Map<String, Object> extras = new HashMap<>();
-        for (MetadataExtension<?> extension : metadataExtensions) {
-            final Map<String, Object> furtherExtras = extension.getData(queryMap, timeseriesId);
-            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
-            if ( !overridableKeys.isEmpty()) {
-                String[] keys = overridableKeys.toArray(new String[0]);
-                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+            final Object furtherExtras = extension.getExtras(from, queryMap);
+            final String extensionName = extension.getExtensionName();
+            if (extras.containsKey(extensionName)) {
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", extensionName);
             }
-            extras.putAll(furtherExtras);
+            extras.put(extensionName, furtherExtras);
         }
         return extras;
-    }
-
-    private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
-        Map<String, Object> currentData = new HashMap<>(data);
-        Set<String> overridableKeys = currentData.keySet();
-        overridableKeys.retainAll(dataToAdd.keySet());
-        return overridableKeys;
     }
 
     @RequestMapping(method = GET)

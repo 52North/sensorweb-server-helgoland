@@ -25,16 +25,16 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.extension.v1;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigResultTime {
+public class ResultTimeExtensionConfig {
     
     private List<String> services = new ArrayList<String>();
 
-    public ConfigResultTime() {
+    public ResultTimeExtensionConfig() {
     }
 
     public List<String> getServices() {
