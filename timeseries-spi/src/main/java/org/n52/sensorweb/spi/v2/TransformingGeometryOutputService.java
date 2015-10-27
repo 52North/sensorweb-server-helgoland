@@ -28,7 +28,6 @@
 package org.n52.sensorweb.spi.v2;
 
 import org.n52.io.geojson.GeoJSONFeature;
-import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.sensorweb.spi.TransformationService;
