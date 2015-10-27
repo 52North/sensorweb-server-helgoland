@@ -28,13 +28,9 @@
 package org.n52.web.v1.ctrl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.n52.io.ConfigApplier;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
 import org.n52.io.IoParameters;
@@ -62,8 +58,6 @@ public abstract class ParameterController extends BaseController implements Rest
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
     private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<MetadataExtension<ParameterOutput>>();
-
-    private List<ConfigApplier<ParameterOutput>> configAppliers = new ArrayList<ConfigApplier<ParameterOutput>>();
 
     private ParameterService<ParameterOutput> parameterService;
     
@@ -137,9 +131,9 @@ public abstract class ParameterController extends BaseController implements Rest
         return toBeProcessed;
     }
 
-    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
-            applier.applyConfigOn(toBeProcessed);
+    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            extension.addExtensionTo(output);
         }
         return toBeProcessed;
     }
@@ -160,14 +154,6 @@ public abstract class ParameterController extends BaseController implements Rest
     public void setParameterService(ParameterService<ParameterOutput> parameterService) {
         ParameterService<ParameterOutput> service = new WebExceptionAdapter<ParameterOutput>(parameterService);
         this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
-    }
-
-    public List<ConfigApplier<ParameterOutput>> getConfigAppliers() {
-        return configAppliers;
-    }
-
-    public void setConfigAppliers(List<ConfigApplier<ParameterOutput>> configAppliers) {
-        this.configAppliers = configAppliers;
     }
 
     public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {
