@@ -29,13 +29,9 @@ package org.n52.web.ctrl;
 
 import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import org.n52.io.ConfigApplier;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.request.IoParameters;
@@ -62,8 +58,6 @@ public abstract class ParameterController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
     private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<>();
-
-    private List<ConfigApplier<ParameterOutput>> configAppliers = new ArrayList<>();
 
     private ParameterService<ParameterOutput> parameterService;
     
@@ -131,9 +125,6 @@ public abstract class ParameterController extends BaseController {
     }
 
     protected ParameterOutput addExtensionInfo(ParameterOutput output) {
-//        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
-//            applier.applyConfigOn(toBeProcessed);
-//        }
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             extension.addExtensionTo(output);
         }
@@ -156,14 +147,6 @@ public abstract class ParameterController extends BaseController {
     public void setParameterService(ParameterService<ParameterOutput> parameterService) {
         ParameterService<ParameterOutput> service = new WebExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);
-    }
-
-    public List<ConfigApplier<ParameterOutput>> getConfigAppliers() {
-        return configAppliers;
-    }
-
-    public void setConfigAppliers(List<ConfigApplier<ParameterOutput>> configAppliers) {
-        this.configAppliers = configAppliers;
     }
 
     public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {

@@ -27,13 +27,10 @@
  */
 package org.n52.io.extension.v1;
 
-import org.n52.io.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.n52.io.ConfigStatusIntervals.ConfigInterval;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
@@ -42,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.n52.io.extension.MetadataExtension;
+import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.request.IoParameters;
 
 public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetadataOutput> {
@@ -52,15 +50,15 @@ public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetada
     
     private static final String EXTENSION_NAME = "statusIntervals";
 
-	private final ConfigStatusIntervals intervalConfig = readConfig();
+	private final StatusIntervalsExtensionConfig intervalConfig = readConfig();
 	
-	private ConfigStatusIntervals readConfig() {
+	private StatusIntervalsExtensionConfig readConfig() {
 		try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
 			ObjectMapper om = new ObjectMapper();
-			return om.readValue(config, ConfigStatusIntervals.class);
+			return om.readValue(config, StatusIntervalsExtensionConfig.class);
 		} catch (Exception e) {
 			LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
-			return new ConfigStatusIntervals();
+			return new StatusIntervalsExtensionConfig();
 		}
 	}
 
@@ -76,8 +74,8 @@ public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetada
     public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
         String timeseriesId = output.getId();
         PhenomenonOutput phenomenon = output.getParameters().getPhenomenon();
-        Map<String, ConfigInterval> timeseriesIntervals = this.intervalConfig.getTimeseriesIntervals();
-        Map<String, ConfigInterval> phenomenaIntervals = this.intervalConfig.getPhenomenonIntervals();
+        Map<String, ConfigInterval> timeseriesIntervals = intervalConfig.getTimeseriesIntervals();
+        Map<String, ConfigInterval> phenomenaIntervals = intervalConfig.getPhenomenonIntervals();
         if (timeseriesIntervals.containsKey(timeseriesId)) {
             final StatusInterval[] intervals = createIntervals(timeseriesIntervals.get(timeseriesId));
             output.setStatusIntervals(intervals); // stay backwards compatible

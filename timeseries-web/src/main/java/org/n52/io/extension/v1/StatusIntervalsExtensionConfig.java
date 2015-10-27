@@ -27,7 +27,6 @@
  */
 package org.n52.io.extension.v1;
 
-import org.n52.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,12 +34,9 @@ import org.n52.io.response.StatusInterval;
 
 public class StatusIntervalsExtensionConfig {
 
-	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
+	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
 	
-	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<String, ConfigInterval>();
-	
-	public StatusIntervalsExtensionConfig() {
-	}
+	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
 	
 	public Map<String, ConfigInterval> getPhenomenonIntervals() {
 		return phenomenonIntervals;
