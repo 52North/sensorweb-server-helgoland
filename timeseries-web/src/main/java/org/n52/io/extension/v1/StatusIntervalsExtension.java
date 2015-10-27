@@ -28,21 +28,18 @@
 package org.n52.io.extension.v1;
 
 import org.n52.io.*;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.n52.io.ConfigStatusIntervals.ConfigInterval;
-import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.StatusInterval;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.n52.io.extension.MetadataExtension;
-import org.n52.io.request.IoParameters;
+import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.v1.data.StatusInterval;
+import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
 public class StatusIntervalsExtension implements MetadataExtension<TimeseriesMetadataOutput> {
 	

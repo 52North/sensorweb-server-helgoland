@@ -27,11 +27,10 @@
  */
 package org.n52.io.extension.v1;
 
-import org.n52.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.response.StatusInterval;
+import org.n52.io.v1.data.StatusInterval;
 
 public class StatusIntervalsExtensionConfig {
 
