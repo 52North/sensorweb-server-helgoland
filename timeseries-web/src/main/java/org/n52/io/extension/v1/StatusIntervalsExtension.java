@@ -59,8 +59,7 @@ public class StatusIntervalsExtension implements MetadataExtension<TimeseriesMet
 			ObjectMapper om = new ObjectMapper();
 			return om.readValue(config, ConfigStatusIntervals.class);
 		} catch (Exception e) {
-			LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE);
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
 			return new ConfigStatusIntervals();
 		}
 	}

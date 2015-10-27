@@ -38,10 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
 import org.n52.io.extension.MetadataExtension;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
 
 public class RenderingHintsExtension implements MetadataExtension<TimeseriesMetadataOutput> {
 	
@@ -58,7 +56,7 @@ public class RenderingHintsExtension implements MetadataExtension<TimeseriesMeta
 			ObjectMapper om = new ObjectMapper();
 			return om.readValue(config, RenderingHintsExtensionConfig.class);
 		} catch (IOException e) {
-			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE);
+			LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
 			return new RenderingHintsExtensionConfig();
 		}
 	}
