@@ -5,3 +5,5 @@ target
 gh-pages
 docs
 /scratchpad.txt
+*.swp
+*.swo
