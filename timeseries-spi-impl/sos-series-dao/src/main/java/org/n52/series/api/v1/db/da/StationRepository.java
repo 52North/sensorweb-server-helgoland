@@ -182,7 +182,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             Geometry geometry = featureEntity.getGeom();
             String fromCrs = "EPSG:" +geometry.getSRID();
-            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+            Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
             return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
         }
         catch (FactoryException e) {

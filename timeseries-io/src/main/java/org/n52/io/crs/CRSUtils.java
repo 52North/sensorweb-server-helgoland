@@ -131,7 +131,7 @@ public final class CRSUtils {
      *         if creating the target CRS fails.
      */
     public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs) throws TransformException, FactoryException {
-        Point transformedPoint = transformInnerToOuter(point, targetCrs);
+        Point transformedPoint = (Point) transformInnerToOuter(point, targetCrs);
         GeojsonPoint asGeoJSON = convertToGeojsonFrom(transformedPoint);
         if ( !DEFAULT_CRS.equalsIgnoreCase(targetCrs)) {
             asGeoJSON.setCrs(createNamedCRS(targetCrs));
@@ -227,39 +227,39 @@ public final class CRSUtils {
     }
 
     /**
-     * Transforms a given point from a given reference to inner reference, which is WGS84 (CRS:84).
+     * Transforms a given geometry from a given reference to inner reference, which is WGS84 (CRS:84).
      *
-     * @param point
-     *        the point to transform.
+     * @param geometry
+     *        the geometry to transform.
      * @param srcFrame
      *        the CRS authority code the given point is referenced in.
-     * @return a point referenced in WGS84
+     * @return a geometry referenced in WGS84
      * @throws FactoryException
      *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
      *         {@link MathTransform} could be created.
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, getCrsFor(srcFrame), internCrs);
+    public Geometry transformOuterToInner(Geometry geometry, String srcFrame) throws FactoryException, TransformException {
+        return transform(geometry, getCrsFor(srcFrame), internCrs);
     }
 
     /**
-     * Transforms a given point from its inner reference (which is WGS84 (CRS:84)) to a given reference.
+     * Transforms a given geometry from its inner reference (which is WGS84 (CRS:84)) to a given reference.
      *
-     * @param point
-     *        the point to transform.
+     * @param geometry
+     *        the geometry to transform.
      * @param destFrame
      *        the CRS authority code the given point shall be transformed to.
-     * @return a transformed point with dest reference.
+     * @return a transformed geometry with dest reference.
      * @throws FactoryException
      *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
      *         {@link MathTransform} could be created.
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Point transformInnerToOuter(Point point, String destFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, internCrs, getCrsFor(destFrame));
+    public Geometry transformInnerToOuter(Geometry geometry, String destFrame) throws FactoryException, TransformException {
+        return transform(geometry, internCrs, getCrsFor(destFrame));
     }
 
     /**

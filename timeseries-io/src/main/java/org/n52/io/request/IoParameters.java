@@ -705,7 +705,7 @@ public class IoParameters {
     private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
-            Point crs84Point = crsUtils.transformOuterToInner(toTransformed, getCrs());
+            Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
             return crsUtils.convertToGeojsonFrom(crs84Point);
         }
         catch (TransformException e) {

@@ -25,66 +25,68 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.sensorweb.spi.v1;
+package org.n52.sensorweb.spi.v2;
 
+import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
+import org.n52.sensorweb.spi.TransformationService;
 
 /**
  * Composes a {@link ParameterService} for {@link GeojsonFeature}s to transform geometries to requested spatial
  * reference system.
  */
-public class TransformingGeojsonOutputService extends TransformationService implements ParameterService<GeojsonFeature> {
+public class TransformingGeometryOutputService extends TransformationService implements ParameterService<GeoJSONFeature> {
 
-    private final ParameterService<GeojsonFeature> composedService;
+    private final ParameterService<GeoJSONFeature> composedService;
 
-    public TransformingGeojsonOutputService(ParameterService<GeojsonFeature> toCompose) {
+    public TransformingGeometryOutputService(ParameterService<GeoJSONFeature> toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public GeojsonFeature[] getExpandedParameters(IoParameters query) {
-        GeojsonFeature[] features = composedService.getExpandedParameters(query);
+    public GeoJSONFeature[] getExpandedParameters(IoParameters query) {
+        GeoJSONFeature[] features = composedService.getExpandedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature[] getCondensedParameters(IoParameters query) {
-        GeojsonFeature[] features = composedService.getCondensedParameters(query);
+    public GeoJSONFeature[] getCondensedParameters(IoParameters query) {
+        GeoJSONFeature[] features = composedService.getCondensedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature[] getParameters(String[] items) {
-        GeojsonFeature[] features = composedService.getParameters(items);
+    public GeoJSONFeature[] getParameters(String[] items) {
+        GeoJSONFeature[] features = composedService.getParameters(items);
         return transformFeatures(IoParameters.createDefaults(), features);
     }
 
     @Override
-    public GeojsonFeature[] getParameters(String[] items, IoParameters query) {
-        GeojsonFeature[] features = composedService.getParameters(items, query);
+    public GeoJSONFeature[] getParameters(String[] items, IoParameters query) {
+        GeoJSONFeature[] features = composedService.getParameters(items, query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature getParameter(String item) {
-        GeojsonFeature feature = composedService.getParameter(item);
-        transformInline(feature, IoParameters.createDefaults());
+    public GeoJSONFeature getParameter(String item) {
+        GeoJSONFeature feature = composedService.getParameter(item);
+        transformInline(feature.getGeometry(), IoParameters.createDefaults());
         return feature;
     }
 
     @Override
-    public GeojsonFeature getParameter(String item, IoParameters query) {
-        GeojsonFeature feature = composedService.getParameter(item, query);
-        transformInline(feature, query);
+    public GeoJSONFeature getParameter(String item, IoParameters query) {
+        GeoJSONFeature feature = composedService.getParameter(item, query);
+        transformInline(feature.getGeometry(), query);
         return feature;
     }
     
-    private GeojsonFeature[] transformFeatures(IoParameters query, GeojsonFeature[] features) {
+    private GeoJSONFeature[] transformFeatures(IoParameters query, GeoJSONFeature[] features) {
         if (features != null) {
-            for (GeojsonFeature feature : features) {
-                transformInline(feature, query);
+            for (GeoJSONFeature feature : features) {
+                transformInline(feature.getGeometry(), query);
             }
         }
         return features;
