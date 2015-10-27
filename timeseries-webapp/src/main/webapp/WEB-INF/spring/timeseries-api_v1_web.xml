@@ -21,7 +21,7 @@
     </bean>
 
 
-    <bean class="org.n52.web.ctrl.v1.ParameterController" id="parameterController" abstract="true">
+    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
         <property name="configAppliers">
             <list>
                 <bean class="org.n52.io.LicenseConfigApplier" />
@@ -62,16 +62,16 @@
         <property name="parameterService" ref="timeseriesService" />
         <property name="configAppliers">
             <list>
-                <bean class="org.n52.io.RenderingHintsConfigApplier" />
-                <bean class="org.n52.io.StatusIntervalsConfigApplier" />
                 <bean class="org.n52.io.LicenseConfigApplier" />
             </list>
         </property>
         <property name="metadataExtensions">
             <list>
+                <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
+                <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
                 <!--
                 <bean class="org.n52.io.extension.ResultTimeExtension">
-                    <property name="resultTimeService" ref="resultTimeService"/>
+                    <property name="resultTimeService" class="org.n52.sensorweb.spi.resultTimeService"/>
                 </bean>
                 -->
             </list>
