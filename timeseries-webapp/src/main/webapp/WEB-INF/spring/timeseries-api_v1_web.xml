@@ -22,9 +22,14 @@
 
 
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
-        <property name="configAppliers">
+<!--        <property name="configAppliers">
             <list>
                 <bean class="org.n52.io.LicenseConfigApplier" />
+            </list>
+        </property>-->
+        <property name="metadataExtensions">
+            <list>
+                <bean class="org.n52.io.extension.LicenseExtension" />
             </list>
         </property>
     </bean>
@@ -66,7 +71,7 @@
             </list>
         </property>
         <property name="metadataExtensions">
-            <list>
+            <list merge="true">
                 <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
                 <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
                 <!--

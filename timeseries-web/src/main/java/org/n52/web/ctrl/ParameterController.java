@@ -92,7 +92,7 @@ public abstract class ParameterController extends BaseController {
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            ParameterOutput[] result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -112,7 +112,7 @@ public abstract class ParameterController extends BaseController {
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = doPostProcessOn(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -121,20 +121,23 @@ public abstract class ParameterController extends BaseController {
         return new ModelAndView().addObject(parameter);
     }
 
-    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
+    protected ParameterOutput[] addExtensionInfos(ParameterOutput[] toBeProcessed) {
 
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            doPostProcessOn(parameterOutput);
+            addExtensionInfo(parameterOutput);
         }
 
         return toBeProcessed;
     }
 
-    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
-            applier.applyConfigOn(toBeProcessed);
+    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+//        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
+//            applier.applyConfigOn(toBeProcessed);
+//        }
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            extension.addExtensionTo(output);
         }
-        return toBeProcessed;
+        return output;
     }
 
 

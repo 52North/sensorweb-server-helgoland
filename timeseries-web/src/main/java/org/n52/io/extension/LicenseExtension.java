@@ -25,38 +25,49 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 
-public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
+public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseConfigApplier.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
     private static final String CONFIG_FILE = "/config-license.txt";
+    
+    private static final String EXTENSION_NAME = "license";
 
-    private String licenseText;
+    private final String licenseText = readLicenseText();
+    
+    public LicenseExtension() {
+        this(EXTENSION_NAME);
+    }
 
-    public LicenseConfigApplier() {
+    public LicenseExtension(String name) {
+        super(name);
+    }
+    
+    private String readLicenseText() {
         try {
             File file = new File(getClass().getResource(CONFIG_FILE).toURI());
-            this.licenseText = FileUtils.readFileToString(file);
+            return FileUtils.readFileToString(file);
         } catch (URISyntaxException | IOException e) {
             LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
         }
+        return null;
     }
 
     @Override
-    public void applyConfigOn(ParameterOutput toApplyConfigOn) {
-        toApplyConfigOn.setLicense(licenseText);
+    public Object getExtras(ParameterOutput output, IoParameters parameters) {
+        return licenseText;
     }
 
 }
