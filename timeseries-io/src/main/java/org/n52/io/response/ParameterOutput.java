@@ -105,7 +105,7 @@ public class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     public void addExtra(String extra) {
         if (extras == null) {
-            extras = new ArrayList<String>();
+            extras = new ArrayList<>();
         }
         extras.add(extra);
     }

@@ -27,6 +27,7 @@
  */
 package org.n52.web.ctrl.v2;
 
+import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PHENOMENA;
 
 import org.springframework.web.bind.annotation.RequestMapping;
