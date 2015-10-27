@@ -27,22 +27,15 @@
  */
 package org.n52.web.v1.extension;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class ConfigResultTime {
-    
-    private List<String> services = new ArrayList<String>();
+import org.n52.io.IoParameters;
+import org.n52.io.response.ParameterOutput;
 
-    public ConfigResultTime() {
-    }
+public interface MetadataExtension<T extends ParameterOutput> {
 
-    public List<String> getServices() {
-        return services;
-    }
+    public void addExtensionTo(T output);
 
-    public void setServices(List<String> services) {
-        this.services = services;
-    }
-    
+    public Object getExtras(T output, IoParameters parameters);
+
+    public String getExtensionName();
 }

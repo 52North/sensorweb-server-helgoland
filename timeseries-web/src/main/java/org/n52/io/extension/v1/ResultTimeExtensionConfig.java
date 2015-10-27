@@ -25,16 +25,24 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension.v1;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.n52.io.IoParameters;
+public class ResultTimeExtensionConfig {
+    
+    private List<String> services = new ArrayList<String>();
 
-public interface MetadataExtension<T> {
+    public ResultTimeExtensionConfig() {
+    }
 
-    public void applyExtensionOn(T toApplyExtensionOn);
+    public List<String> getServices() {
+        return services;
+    }
 
-    public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
-
+    public void setServices(List<String> services) {
+        this.services = services;
+    }
+    
 }

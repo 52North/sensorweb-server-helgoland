@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -33,9 +33,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.n52.io.IoParameters;
-import org.n52.io.v1.data.TimeseriesMetadataOutput;
-import org.n52.sensorweb.v1.spi.ResultTimeService;
+import org.n52.io.extension.MetadataExtension;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,37 +44,44 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ResultTimeExtension.class);
 
-    private static final String TYPE = "resultTime";
-
     private static final String CONFIG_FILE = "/config-extension-resultTime.json";
 
-    private final ConfigResultTime config;
+    private static final String EXTENSION_NAME = "resultTime";
+
+    private final ResultTimeExtensionConfig config = readConfig();
 
     private ResultTimeService resultTimeService;
 
-    public ResultTimeExtension() {
-        config = readConfig();
+    private ResultTimeExtensionConfig readConfig() {
+        try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
+            ObjectMapper om = new ObjectMapper();
+            return om.readValue(taskConfig, ResultTimeExtensionConfig.class);
+        } catch (IOException e) {
+            LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
+            return new ResultTimeExtensionConfig();
+        }
     }
-
+    
     @Override
-    public Map<String, Object> getData(IoParameters parameters,
-            String timeseriesId) {
-        Map<String, Object> data = new HashMap<String, Object>();
-        if (parameters.getOther("request") != null && parameters.getOther("request").equals(TYPE)) {
-            ArrayList<String> timestamps = resultTimeService.getResultTimeList(parameters, timeseriesId);
-            data.put("resultTime", timestamps);
-            return data;
+    public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
+        if (parameters.getOther("request") != null && parameters.getOther("request").equals(EXTENSION_NAME)) {
+            return resultTimeService.getResultTimeList(parameters, output.getId());
         }
         return null;
     }
 
     @Override
-    public void applyExtensionOn(TimeseriesMetadataOutput output) {
+    public void addExtensionTo(TimeseriesMetadataOutput output) {
         if (enabled(output.getParameters().getService().getId())) {
-            output.addExtra(TYPE);
+            output.addExtra(EXTENSION_NAME);
         }
     }
 
+    @Override
+    public String getExtensionName() {
+        return EXTENSION_NAME;
+    }
+    
     private boolean enabled(String serviceId) {
         return config.getServices().contains(serviceId);
     }
@@ -84,25 +92,6 @@ public class ResultTimeExtension implements MetadataExtension<TimeseriesMetadata
 
     public void setResultTimeService(ResultTimeService resultTimeService) {
         this.resultTimeService = resultTimeService;
-    }
-
-    private ConfigResultTime readConfig() {
-        InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);
-        try {
-            ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, ConfigResultTime.class);
-        } catch (IOException e) {
-            LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
-            return new ConfigResultTime();
-        } finally {
-            if (taskConfig != null) {
-                try {
-                    taskConfig.close();
-                } catch (IOException e) {
-                    LOGGER.debug("Stream already closed.");
-                }
-            }
-        }
     }
 
 }
