@@ -27,35 +27,14 @@
  */
 package org.n52.io.extension;
 
-import java.io.IOException;
-import java.io.InputStream;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
-import org.n52.sensorweb.spi.ResultTimeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.Session;
 
-public class MetadataExtension extends MetadataExtension<ParameterOutput> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataExtension.class);
-
-    private static final String EXTENSION_NAME = "databaseMetadata";
-
-
-    public MetadataExtension() {
-        this(EXTENSION_NAME);
-    }
-
-    public MetadataExtension(String name) {
-        super(name);
-    }
+public class DatabaseMetadataDao {
     
-    @Override
-    public Object getExtras(ParameterOutput output, IoParameters parameters) {
-        
-        // TODO read from db
-        
-        return null;
+    private final Session session;
+
+    public DatabaseMetadataDao(Session session) {
+        this.session = session;
     }
 
 }

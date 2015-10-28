@@ -27,14 +27,33 @@
  */
 package org.n52.io.extension;
 
-import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.ext.MetadataExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MetadataDao {
-    
-    private final Session session;
+public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
-    public MetadataDao(Session session) {
-        this.session = session;
+    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataExtension.class);
+
+    private static final String EXTENSION_NAME = "databaseMetadata";
+
+
+    public DatabaseMetadataExtension() {
+        this(EXTENSION_NAME);
+    }
+
+    public DatabaseMetadataExtension(String name) {
+        super(name);
+    }
+
+    @Override
+    public Object getExtras(ParameterOutput output, IoParameters parameters) {
+        
+        // TODO
+        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
