@@ -67,15 +67,19 @@ public abstract class ParameterController extends BaseController {
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
+        Set<String> fields = queryMap.getFields();
+        
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
-            final Object furtherExtras = extension.getExtras(from, queryMap);
-            final String extensionName = extension.getExtensionName();
-            if (extras.containsKey(extensionName)) {
-                LOGGER.warn("Metadata extension overrides existing extra data: {}", extensionName);
+            if (fields ==null || fields.contains(extension.getExtensionName().toLowerCase())) {
+                ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+                final Object furtherExtras = extension.getExtras(from, queryMap);
+                final String extensionName = extension.getExtensionName();
+                if (extras.containsKey(extensionName)) {
+                    LOGGER.warn("Extension '{}' overrides already existing metadata!", extensionName);
+                }
+                extras.put(extensionName, furtherExtras);
             }
-            extras.put(extensionName, furtherExtras);
         }
         return extras;
     }
