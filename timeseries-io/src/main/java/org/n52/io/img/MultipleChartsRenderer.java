@@ -33,6 +33,7 @@ import static org.n52.io.style.BarStyle.createBarStyle;
 import static org.n52.io.style.LineStyle.createLineStyle;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -66,10 +67,10 @@ public class MultipleChartsRenderer extends ChartRenderer {
     @Override
     public void generateOutput(TvpDataCollection data) {
         Map<String, TimeseriesData> allTimeseries = data.getAllTimeseries();
-        TimeseriesMetadataOutput[] timeseriesMetadatas = getTimeseriesMetadataOutputs();
+        List<TimeseriesMetadataOutput> timeseriesMetadatas = getTimeseriesMetadataOutputs();
 
-        int rendererCount = timeseriesMetadatas.length;
-        for (int rendererIndex = 0; rendererIndex < timeseriesMetadatas.length; rendererIndex++) {
+        int rendererCount = timeseriesMetadatas.size();
+        for (int rendererIndex = 0; rendererIndex < timeseriesMetadatas.size(); rendererIndex++) {
 
             /*
              * For each index put data and its renderer configured to a particular style.
@@ -77,7 +78,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
              * As each timeseries may define its custom styling and different chart types we have to loop over
              * all timeseries to configure chart rendering.
              */
-            TimeseriesMetadataOutput timeseriesMetadata = timeseriesMetadatas[rendererIndex];
+            TimeseriesMetadataOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
 
             String timeseriesId = timeseriesMetadata.getId();
             StyleProperties style = getTimeseriesStyleFor(timeseriesId);

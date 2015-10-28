@@ -28,9 +28,12 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -40,50 +43,59 @@ import org.n52.sensorweb.spi.ParameterService;
 
 public class PhenomenaAccessService extends ServiceInfoAccess implements ParameterService<PhenomenonOutput> {
 
+    private OutputCollection<PhenomenonOutput> createOutputCollection(List<PhenomenonOutput> results) {
+        return new OutputCollection<PhenomenonOutput>(results) {
+                @Override
+                protected Comparator<PhenomenonOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
-    public PhenomenonOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<PhenomenonOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             List<PhenomenonOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new PhenomenonOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get phenomenon data.");
+            throw new InternalServerException("Could not get phenomenon data.", e);
         }
     }
 
     @Override
-    public PhenomenonOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<PhenomenonOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             List<PhenomenonOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new PhenomenonOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get phenomenon data.");
+            throw new InternalServerException("Could not get phenomenon data.", e);
         }
     }
 
     @Override
-    public PhenomenonOutput[] getParameters(String[] phenomenonIds) {
+    public OutputCollection<PhenomenonOutput> getParameters(String[] phenomenonIds) {
         return getParameters(phenomenonIds, IoParameters.createDefaults());
     }
 
     @Override
-    public PhenomenonOutput[] getParameters(String[] phenomenonIds, IoParameters query) {
+    public OutputCollection<PhenomenonOutput> getParameters(String[] phenomenonIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
-            List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
+            List<PhenomenonOutput> results = new ArrayList<>();
             for (String phenomenonId : phenomenonIds) {
                 results.add(repository.getInstance(phenomenonId, dbQuery));
             }
-            return results.toArray(new PhenomenonOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get phenomenon data.");
+            throw new InternalServerException("Could not get phenomenon data.", e);
         }
     }
 
@@ -100,7 +112,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Paramet
             return repository.getInstance(phenomenonId, dbQuery);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get phenomenon data for '" + phenomenonId + "'.");
+            throw new InternalServerException("Could not get phenomenon data for '" + phenomenonId + "'.", e);
         }
     }
 

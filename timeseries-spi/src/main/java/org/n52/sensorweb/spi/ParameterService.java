@@ -28,6 +28,7 @@
 package org.n52.sensorweb.spi;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 
 /**
  * A generic service to get arbitrary parameters from the underlying data access implementation. In general the access
@@ -40,24 +41,24 @@ public interface ParameterService<T> {
 
     /**
      * @param query query parameters to control the output.
-     * @return an array of expanded items.
+     * @return an output collection of expanded items.
      */
-    T[] getExpandedParameters(IoParameters query);
+    OutputCollection<T> getExpandedParameters(IoParameters query);
 
     /**
      * @param query query parameters to control the output.
-     * @return an array of compact items.
+     * @return an output collection of compact items.
      */
-    T[] getCondensedParameters(IoParameters query);
+    OutputCollection<T> getCondensedParameters(IoParameters query);
 
     /**
      * Gets the requested items with respect to default query settings. Use
      * {@link #getParameters(String[], IoParameters)} to control the output items.
      *
      * @param items a subset of item ids which are of interest.
-     * @return an array of expanded items which are of interest. Not known ids will be ignored.
+     * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
      */
-    T[] getParameters(String[] items);
+    OutputCollection<T> getParameters(String[] items);
 
     /**
      * Gets the requested items with respect to the given query parameters. <b>Note</b>, that implementations may be
@@ -66,9 +67,9 @@ public interface ParameterService<T> {
      *
      * @param items a subset of item ids which are of interest.
      * @param query query parameters to control the output.
-     * @return an array of expanded items which are of interest. Not known ids will be ignored.
+     * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
      */
-    T[] getParameters(String[] items, IoParameters query);
+    OutputCollection<T> getParameters(String[] items, IoParameters query);
 
     /**
      * Gets the requested item with respect to default query settings. Use {@link #getParameter(String, IoParameters)}

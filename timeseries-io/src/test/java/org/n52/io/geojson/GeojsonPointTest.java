@@ -28,7 +28,8 @@
 package org.n52.io.geojson;
 
 
-import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
+import org.n52.io.geojson.old.GeojsonPoint;
+import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.junit.Test;
 

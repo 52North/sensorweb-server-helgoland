@@ -27,24 +27,43 @@
  */
 package org.n52.io.geojson;
 
-import java.io.Serializable;
+/**
+ * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json-common/src/main/java/org/n52/sos/coding/json/JSONConstants.java
+ * 
+ * @since 2.0
+ */
+public interface JSONConstants {
 
-public abstract class GeojsonObject implements Serializable {
-    
-    private static final long serialVersionUID = -6879838545330014414L;
-    
-    private GeojsonCrs crs;
-    
-    public void setCrs(GeojsonCrs crs) {
-        this.crs = crs;
-    }
+    String COORDINATES = "coordinates";
 
-    public GeojsonCrs getCrs() {
-        return crs;
-    }
+    String CRS = "crs";
 
-    /**
-     * @return the geojson type of the object (e.g. <code>Feature</code>, <code>Point</code>, etc.).
-     */
-    public abstract String getType();
+    String GEOMETRIES = "geometries";
+
+    String GEOMETRY = "geometry";
+
+    String GEOMETRY_COLLECTION = "GeometryCollection";
+
+    String HREF = "href";
+
+    String LINE_STRING = "LineString";
+
+    String LINK = "link";
+
+    String MULTI_LINE_STRING = "MultiLineString";
+
+    String MULTI_POINT = "MultiPoint";
+
+    String MULTI_POLYGON = "MultiPolygon";
+    
+    String NAME = "name";
+
+    String POINT = "Point";
+
+    String POLYGON = "Polygon";
+
+    String PROPERTIES = "properties";
+
+    String TYPE = "type";
+	
 }

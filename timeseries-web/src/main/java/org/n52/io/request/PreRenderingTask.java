@@ -64,6 +64,7 @@ import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import org.n52.io.response.OutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -345,10 +346,10 @@ public class PreRenderingTask implements ServletConfigAware {
                 Map<String, ConfiguredStyle> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
                 Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
                 for (String phenomenonId : phenomenonStyles.keySet()) {
-                    Map<String, String> parameters = new HashMap<String, String>();
+                    Map<String, String> parameters = new HashMap<>();
                     parameters.put(PHENOMENON, phenomenonId);
                     IoParameters query = IoParameters.createFromQuery(parameters);
-                    TimeseriesMetadataOutput[] metadatas = timeseriesMetadataService.getCondensedParameters(query);
+                    OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
                     for (TimeseriesMetadataOutput metadata : metadatas) {
                         String timeseriesId = metadata.getId();
                         ConfiguredStyle style = timeseriesStyles.containsKey(timeseriesId)

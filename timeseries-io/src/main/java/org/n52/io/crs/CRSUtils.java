@@ -32,14 +32,14 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.geotools.factory.Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER;
 import static org.geotools.referencing.ReferencingFactoryFinder.getCRSAuthorityFactory;
-import static org.n52.io.geojson.GeojsonCrs.createNamedCRS;
-import static org.n52.io.geojson.GeojsonPoint.createWithCoordinates;
+import static org.n52.io.geojson.old.GeojsonCrs.createNamedCRS;
+import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -62,6 +62,8 @@ public final class CRSUtils {
      * Default is CRS:84 (EPSG:4326 with lon/lat ordering).
      */
     public static final String DEFAULT_CRS = "CRS:84";
+    
+    public static final int EPSG_WGS84 = 4326;
 
     /**
      * Internally used spatial reference frame.
@@ -129,7 +131,7 @@ public final class CRSUtils {
      *         if creating the target CRS fails.
      */
     public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs) throws TransformException, FactoryException {
-        Point transformedPoint = transformInnerToOuter(point, targetCrs);
+        Point transformedPoint = (Point) transformInnerToOuter(point, targetCrs);
         GeojsonPoint asGeoJSON = convertToGeojsonFrom(transformedPoint);
         if ( !DEFAULT_CRS.equalsIgnoreCase(targetCrs)) {
             asGeoJSON.setCrs(createNamedCRS(targetCrs));
@@ -225,59 +227,39 @@ public final class CRSUtils {
     }
 
     /**
-     * Transforms a given point from a given reference to inner reference, which is WGS84 (CRS:84).
+     * Transforms a given geometry from a given reference to inner reference, which is WGS84 (CRS:84).
      *
-     * @param point
-     *        the point to transform.
+     * @param geometry
+     *        the geometry to transform.
      * @param srcFrame
      *        the CRS authority code the given point is referenced in.
-     * @return a point referenced in WGS84
+     * @return a geometry referenced in WGS84
      * @throws FactoryException
      *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
      *         {@link MathTransform} could be created.
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, getCrsFor(srcFrame), internCrs);
+    public Geometry transformOuterToInner(Geometry geometry, String srcFrame) throws FactoryException, TransformException {
+        return transform(geometry, getCrsFor(srcFrame), internCrs);
     }
 
     /**
-     * Transforms a given point from its inner reference (which is WGS84 (CRS:84)) to a given reference.
+     * Transforms a given geometry from its inner reference (which is WGS84 (CRS:84)) to a given reference.
      *
-     * @param point
-     *        the point to transform.
+     * @param geometry
+     *        the geometry to transform.
      * @param destFrame
      *        the CRS authority code the given point shall be transformed to.
-     * @return a transformed point with dest reference.
+     * @return a transformed geometry with dest reference.
      * @throws FactoryException
      *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
      *         {@link MathTransform} could be created.
      * @throws TransformException
      *         if transformation fails for any other reason.
      */
-    public Point transformInnerToOuter(Point point, String destFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, internCrs, getCrsFor(destFrame));
-    }
-
-    /**
-     * Transforms a given point from a given reference to a destinated reference.
-     *
-     * @param point
-     *        the point to transform.
-     * @param srcFrame
-     *        the reference the given point is in.
-     * @param destFrame
-     *        the reference frame the point shall be transformed to.
-     * @return a transformed point.
-     * @throws FactoryException
-     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
-     *         {@link MathTransform} could be created.
-     * @throws TransformException
-     *         if transformation fails for any other reason.
-     */
-    public Point transform(Point point, String srcFrame, String destFrame) throws FactoryException, TransformException {
-        return (Point) transform(point, getCrsFor(srcFrame), getCrsFor(destFrame));
+    public Geometry transformInnerToOuter(Geometry geometry, String destFrame) throws FactoryException, TransformException {
+        return transform(geometry, internCrs, getCrsFor(destFrame));
     }
 
     /**
@@ -301,9 +283,9 @@ public final class CRSUtils {
         return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
-    private Geometry transform(Geometry point, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
+    private Geometry transform(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
             TransformException {
-        return JTS.transform(point, CRS.findMathTransform(srs, dest));
+        return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
     }
 
     /**
@@ -353,11 +335,6 @@ public final class CRSUtils {
             return false;
         }
         return axisOrderFirst != axisOrderSecond;
-
-        // AxisDirection sourceFirstAxis = first.getCoordinateSystem().getAxis(0).getDirection();
-        // AxisDirection targetFirstAxis = second.getCoordinateSystem().getAxis(0).getDirection();
-        // return sourceFirstAxis.equals(AxisDirection.NORTH) && !targetFirstAxis.equals(AxisDirection.NORTH)
-        // || !sourceFirstAxis.equals(AxisDirection.NORTH) && targetFirstAxis.equals(AxisDirection.NORTH);
     }
 
     /**
@@ -401,8 +378,7 @@ public final class CRSUtils {
      * @param hints
      *        Some Geotools {@link Hints} which set behavior and special considerations regarding to the
      *        spatial operations.
-     * @throws FactoryException
-     *         if decoding default CRS fails.
+     * @return an instance of {@link CRSUtils} using given hints
      */
     public static CRSUtils createEpsgReferenceHelper(Hints hints) throws IllegalStateException {
         return new CRSUtils(getCRSAuthorityFactory("EPSG", hints));

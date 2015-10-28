@@ -27,65 +27,56 @@
  */
 package org.n52.io.geojson;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Geometry;
+import java.util.Comparator;
 
-public class GeojsonFeature extends GeojsonObject {
-
-    private static final long serialVersionUID = 863297394860249486L;
-
-    private static final String GEOJSON_TYPE_FEATURE = "Feature";
+public class GeoJSONFeature extends GeoJSONObject {
     
-    protected Map<String, Object> properties = null;
-    
-    private GeojsonGeometry geometry;
+    public static <T extends GeoJSONFeature> Comparator<T> defaultComparator() {
+        return new Comparator<T>() {
+                @Override
+                public int compare(T o1, T o2) {
+                    if (o1 == null || o2 == null) {
+                        throw new NullPointerException("comparing null value(s)!");
+                    }
+                    String label1 = getLabelOf(o1);
+                    String label2 = getLabelOf(o2);
+                    return label1.compareTo(label2);
+                }
+
+                private String getLabelOf(GeoJSONFeature feature) {
+                    return feature.hasProperty("label")
+                            ? (String) feature.getProperty("label")
+                            : "";
+                }
+            };
+    }
     
     private String id;
     
-    @Override
-    public String getType() {
-        return GEOJSON_TYPE_FEATURE;
-    }
+    @JsonIgnore
+    private Geometry geometry;
     
-    public GeojsonGeometry getGeometry() {
+    public GeoJSONFeature(String type, Geometry geometry) throws GeoJSONException {
+        super(type);
+        this.geometry = geometry;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Geometry getGeometry() {
         return geometry;
     }
 
-    public void setGeometry(GeojsonGeometry geometry) {
+    public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
-    }
-    
-    public void addProperty(String property, Object value) {
-        if (properties == null) {
-            properties = new HashMap<>();
-        }
-        properties.put(property, value);
-    }
-
-    public Map<String, Object> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-    
-    public boolean hasProperty(String property) {
-        return this.properties != null
-                && this.properties.containsKey(property);
-    }
-    
-    public String getId() {
-        if (this.id == null || this.id.isEmpty()) {
-            if (properties != null) {
-                return (String) properties.get("id");
-            }
-        }
-        return this.id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
     }
     
 }
