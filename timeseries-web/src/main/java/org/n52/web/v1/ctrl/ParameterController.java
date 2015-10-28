@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import java.util.Set;
+import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.IoParameters;
 import static org.n52.io.QueryParameters.createFromQuery;
@@ -97,7 +98,7 @@ public abstract class ParameterController extends BaseController implements Rest
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -117,7 +118,7 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = doPostProcessOn(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -127,21 +128,18 @@ public abstract class ParameterController extends BaseController implements Rest
     }
 
     protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
-
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            doPostProcessOn(parameterOutput);
+            addExtensionInfos(parameterOutput);
         }
-
         return toBeProcessed;
     }
 
-    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+    protected ParameterOutput addExtensionInfos(ParameterOutput output) {
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             extension.addExtensionTo(output);
         }
         return toBeProcessed;
     }
-
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
