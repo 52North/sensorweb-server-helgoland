@@ -4,3 +4,5 @@ target
 .classpath
 wiki
 /scratchpad.txt
+*.swp
+*.swo
