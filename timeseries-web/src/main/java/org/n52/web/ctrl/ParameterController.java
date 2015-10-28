@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.request.IoParameters;
@@ -90,7 +91,7 @@ public abstract class ParameterController extends BaseController {
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -110,7 +111,7 @@ public abstract class ParameterController extends BaseController {
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -120,21 +121,18 @@ public abstract class ParameterController extends BaseController {
     }
 
     protected ParameterOutput[] addExtensionInfos(ParameterOutput[] toBeProcessed) {
-
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            addExtensionInfo(parameterOutput);
+            addExtensionInfos(parameterOutput);
         }
-
         return toBeProcessed;
     }
 
-    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+    protected ParameterOutput addExtensionInfos(ParameterOutput output) {
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             extension.addExtensionTo(output);
         }
         return output;
     }
-
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
