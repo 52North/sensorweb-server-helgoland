@@ -27,15 +27,22 @@
  */
 package org.n52.io.response.v2;
 
+import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import org.n52.io.response.ParameterOutput;
 
 public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
 
     @Override
     @JsonProperty(value = "services")
-    public Collection<ServiceOutput> getItems() {
+    public List<ServiceOutput> getItems() {
         return super.getItems();
     }
     
+    @Override
+    protected Comparator<ServiceOutput> getComparator() {
+        return ParameterOutput.defaultComparator();
+    }
 }

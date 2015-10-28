@@ -33,6 +33,7 @@ import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
@@ -60,14 +61,14 @@ public class PlatformsParameterController {
         IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
-            Object[] result = parameterService.getExpandedParameters(map);
+            OutputCollection<?> result = parameterService.getExpandedParameters(map);
 
             // TODO add paging
 
             return new ModelAndView().addObject(result);
         }
         else {
-            Object[] result = parameterService.getCondensedParameters(map);
+            OutputCollection<?> result = parameterService.getCondensedParameters(map);
 
             // TODO add paging
 

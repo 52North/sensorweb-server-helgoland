@@ -29,8 +29,29 @@ package org.n52.io.geojson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vividsolutions.jts.geom.Geometry;
+import java.util.Comparator;
 
 public class GeoJSONFeature extends GeoJSONObject {
+    
+    public static <T extends GeoJSONFeature> Comparator<T> defaultComparator() {
+        return new Comparator<T>() {
+                @Override
+                public int compare(T o1, T o2) {
+                    if (o1 == null || o2 == null) {
+                        throw new NullPointerException("comparing null value(s)!");
+                    }
+                    String label1 = getLabelOf(o1);
+                    String label2 = getLabelOf(o2);
+                    return label1.compareTo(label2);
+                }
+
+                private String getLabelOf(GeoJSONFeature feature) {
+                    return feature.hasProperty("label")
+                            ? (String) feature.getProperty("label")
+                            : "";
+                }
+            };
+    }
     
     private String id;
     

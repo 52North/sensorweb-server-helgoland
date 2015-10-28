@@ -27,10 +27,31 @@
  */
 package org.n52.io.geojson.old;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GeojsonFeature extends GeojsonObject {
+    
+    public static <T extends GeojsonFeature> Comparator<T> defaultComparator() {
+        return new Comparator<T>() {
+                @Override
+                public int compare(T o1, T o2) {
+                    if (o1 == null || o2 == null) {
+                        throw new NullPointerException("comparing null value(s)!");
+                    }
+                    String label1 = getLabelOf(o1);
+                    String label2 = getLabelOf(o2);
+                    return label1.compareTo(label2);
+                }
+
+                private String getLabelOf(GeojsonFeature feature) {
+                    return feature.hasProperty("label")
+                            ? (String) feature.getProperties().get("label")
+                            : "";
+                }
+            };
+    }
 
     private static final long serialVersionUID = 863297394860249486L;
 

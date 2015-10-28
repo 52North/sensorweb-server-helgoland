@@ -58,6 +58,7 @@ import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.InternalServerException;
@@ -154,8 +155,8 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
+        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
@@ -231,8 +232,8 @@ public class SeriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
+        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);

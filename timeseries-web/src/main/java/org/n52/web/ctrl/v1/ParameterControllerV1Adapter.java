@@ -25,45 +25,19 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.web.ctrl.v1;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import org.n52.io.response.OutputCollection;
+import org.n52.web.ctrl.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-public class OutputCollection<T> implements Iterable<T> {
-    
-    private final List<T> items;
-    
-    protected OutputCollection() {
-        this.items = Collections.emptyList();
-    }
-
-    protected OutputCollection(List<T> itmes) {
-        this.items = itmes;
-    }
-    
-    public void addtem(T item) {
-        items.add(item);
-    }
-    
-    public void removeItem(T item) {
-        items.remove(item);
-    }
-    
-    public Collection<T> getItems() {
-        return Collections.unmodifiableCollection(items);
-    }
-    
-    public boolean containsItem(T item) {
-        return items.contains(item);
-    }
+@RequestMapping(produces = {"application/json"})
+public abstract class ParameterControllerV1Adapter extends ParameterController {
     
     @Override
-    public Iterator<T> iterator() {
-        return items.iterator();
+    protected ModelAndView createModelAndView(OutputCollection<?> items) {
+        return new ModelAndView().addObject(items.getItems());
     }
-    
-    
+
 }

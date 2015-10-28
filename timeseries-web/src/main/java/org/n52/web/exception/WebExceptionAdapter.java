@@ -28,6 +28,7 @@
 package org.n52.web.exception;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
 
 /**
@@ -46,8 +47,8 @@ public class WebExceptionAdapter<T> implements ParameterService<T> {
     }
 
     @Override
-    public T[] getExpandedParameters(IoParameters query) {
-        T[] parameters = composedService.getExpandedParameters(query);
+    public OutputCollection<T> getExpandedParameters(IoParameters query) {
+        OutputCollection<T> parameters = composedService.getExpandedParameters(query);
         if (parameters == null) {
             throw new InternalServerException("SPI implementation did return null value!");
         }
@@ -55,8 +56,8 @@ public class WebExceptionAdapter<T> implements ParameterService<T> {
     }
 
     @Override
-    public T[] getCondensedParameters(IoParameters query) {
-        T[] parameters = composedService.getCondensedParameters(query);
+    public OutputCollection<T> getCondensedParameters(IoParameters query) {
+        OutputCollection<T> parameters = composedService.getCondensedParameters(query);
         if (parameters == null) {
             throw new InternalServerException("SPI implementation did return null value!");
         }
@@ -64,8 +65,8 @@ public class WebExceptionAdapter<T> implements ParameterService<T> {
     }
 
     @Override
-    public T[] getParameters(String[] items) {
-        T[] parameters = composedService.getParameters(items);
+    public OutputCollection<T> getParameters(String[] items) {
+        OutputCollection<T> parameters = composedService.getParameters(items);
         if (parameters == null) {
             throw new InternalServerException("SPI implementation did return null value!");
         }
@@ -73,8 +74,8 @@ public class WebExceptionAdapter<T> implements ParameterService<T> {
     }
 
     @Override
-    public T[] getParameters(String[] items, IoParameters query) {
-        T[] parameters = composedService.getParameters(items, query);
+    public OutputCollection<T> getParameters(String[] items, IoParameters query) {
+        OutputCollection<T> parameters = composedService.getParameters(items, query);
         if (parameters == null) {
             throw new InternalServerException("SPI implementation did return null value!");
         }
