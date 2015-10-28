@@ -27,38 +27,43 @@
  */
 package org.n52.io.geojson;
 
-public class GeojsonLineString extends GeojsonGeometry {
+/**
+ * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json-common/src/main/java/org/n52/sos/coding/json/JSONConstants.java
+ * 
+ * @since 2.0
+ */
+public interface JSONConstants {
+
+    String COORDINATES = "coordinates";
+
+    String CRS = "crs";
+
+    String GEOMETRIES = "geometries";
+
+    String GEOMETRY = "geometry";
+
+    String GEOMETRY_COLLECTION = "GeometryCollection";
+
+    String HREF = "href";
+
+    String LINE_STRING = "LineString";
+
+    String LINK = "link";
+
+    String MULTI_LINE_STRING = "MultiLineString";
+
+    String MULTI_POINT = "MultiPoint";
+
+    String MULTI_POLYGON = "MultiPolygon";
     
-    private static final long serialVersionUID = 2014878619454088577L;
+    String NAME = "name";
 
-    private static final String GEOJSON_TYPE_LINESTRING = "LineString";
+    String POINT = "Point";
 
-    protected Double[][] points
-;    
-    public static GeojsonLineString createWithCoordinates(Double[][] coordinates) {
-        GeojsonLineString sfGeometry = new GeojsonLineString();
-        sfGeometry.setCoordinates(coordinates);
-        return sfGeometry;
-    }
-    
-    public void setCoordinates(Double[][] points) {
-        for (Double[] point : points) {
-            assertCoordinates(point);
-        }
-        this.points = points;
-    }
+    String POLYGON = "Polygon";
 
-    void setType(String type) {
-        // keep for serialization
-    }
+    String PROPERTIES = "properties";
 
-    @Override
-    public String getType() {
-        return GEOJSON_TYPE_LINESTRING;
-    }
-    
-    public Double[][] getCoordinates() {
-        return points;
-    }
-
+    String TYPE = "type";
+	
 }

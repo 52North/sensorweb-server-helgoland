@@ -25,29 +25,42 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
 import java.util.Arrays;
 
-public abstract class GeojsonGeometry extends GeojsonObject {
 
-    private static final long serialVersionUID = -2611259809054586079L;
+public class GeojsonPoint extends GeojsonGeometry {
 
-    /**
-     * @param coordinates the coordinates to assert.
-     * @return checked coordinates for method chaining.
-     * @throws IllegalArgumentException
-     *         if coordinates are <code>null</code> or do not contain 2D or 3D points.
-     */
-    protected Double[] assertCoordinates(Double[] coordinates) {
-        if (coordinates == null) {
-            throw new NullPointerException("Coordinates must not be null.");
-        }
-        if (coordinates.length != 2 && coordinates.length != 3) {
-            String asString = Arrays.toString(coordinates);
-            throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
-        }
-        return coordinates;
+    private static final long serialVersionUID = 4348077077881433456L;
+    
+    private static final String GEOJSON_TYPE_POINT = "Point";
+
+    protected Double[] coordinates;
+    
+    public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
+        GeojsonPoint sfGeometry = new GeojsonPoint();
+        //sfGeometry.setCoordinates(Utils.copy(coordinates));
+        sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+        return sfGeometry;
+    }
+    
+    public void setCoordinates(Double[] coordinates) {
+        //this.coordinates = checkCoordinates(Utils.copy(coordinates));
+        this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+    }
+
+    void setType(String type) {
+        // keep for serialization
+    }
+
+    public String getType() {
+        return GEOJSON_TYPE_POINT;
+    }
+    
+    public Double[] getCoordinates() {
+        return Arrays.copyOf(coordinates, coordinates.length);
+//        return Utils.copy(coordinates);
     }
 
 }

@@ -25,35 +25,61 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response;
+package org.n52.io.geojson.old;
 
-import org.n52.io.geojson.old.GeojsonPoint;
+import java.util.HashMap;
+import java.util.Map;
 
-public class BBox {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class GeojsonCrs extends GeojsonObject {
     
-    private GeojsonPoint ll;
+    private static final long serialVersionUID = 5964748458745655509L;
+
+    private static final String TYPE_NAME = "name";
     
-    private GeojsonPoint ur;
+    private Map<String, String> properties;
 
-    public BBox(GeojsonPoint ll, GeojsonPoint ur) {
-        this.ll = ll;
-        this.ur = ur;
+    private String type = TYPE_NAME;
+    
+    GeojsonCrs() {
+        this.properties = new HashMap<>();
+    }
+    
+    public void addProperty(String key, String value) {
+        properties.put(key, value);
+    }
+    
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
-    public GeojsonPoint getLl() {
-        return ll;
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+    
+    void setType(String type) {
+        this.type = type;
     }
 
-    public void setLl(GeojsonPoint ll) {
-        this.ll = ll;
+    @Override
+    public String getType() {
+        return type;
     }
-
-    public GeojsonPoint getUr() {
-        return ur;
+    
+    @JsonIgnore
+    public String getName() {
+        return properties.get("name");
     }
-
-    public void setUr(GeojsonPoint ur) {
-        this.ur = ur;
+    
+    public static GeojsonCrs createNamedCRS(String name) {
+        if (name == null) {
+            throw new NullPointerException("Argument 'name' must not be null.");
+        }
+        GeojsonCrs namedCrs = new GeojsonCrs();
+        namedCrs.addProperty("name", name);
+        namedCrs.setType(TYPE_NAME);
+        return namedCrs;
     }
     
 }

@@ -25,38 +25,15 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.response.v2;
 
-import java.util.Collection;
+import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.geojson.GeoJSONException;
 
-import org.n52.io.Utils;
+public class TrackOutput extends FeatureOutput {
 
-public final class GeojsonFeatureCollection {
-
-    private GeojsonFeature[] features;
-    
-    public static GeojsonFeatureCollection create(Collection<? extends GeojsonFeature> features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features.toArray(new GeojsonFeature[0]));
-        return collection;
-    }
-    
-    public static <T extends GeojsonFeature> GeojsonFeatureCollection create(T[] features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features);
-        return collection;
-    }
-    
-    private GeojsonFeatureCollection() {
-        // for serialization
-    }
-
-    public GeojsonFeature[] getFeatures() {
-        return Utils.copy(features);
-    }
-
-    public void setFeatures(GeojsonFeature[] features) {
-        this.features = Utils.copy(features);
+    public TrackOutput(String type, Geometry geometry) throws GeoJSONException {
+        super(type, geometry);
     }
     
 }

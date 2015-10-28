@@ -30,8 +30,8 @@ package org.n52.io.response.v1;
 import org.n52.io.response.CollatorComparable;
 import java.text.Collator;
 
-import org.n52.io.geojson.GeojsonFeature;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonFeature;
+import org.n52.io.geojson.old.GeojsonPoint;
 
 public class StationOutput extends GeojsonFeature implements CollatorComparable<StationOutput> {
 

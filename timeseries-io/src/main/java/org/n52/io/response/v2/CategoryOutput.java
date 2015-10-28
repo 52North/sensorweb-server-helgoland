@@ -25,18 +25,8 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.io.response.v2;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
+import org.n52.io.response.AbstractOutput;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterController {
-    
-    // resource controller for procedures
-
-}
+public class CategoryOutput extends AbstractOutput {}

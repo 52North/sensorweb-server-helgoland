@@ -27,24 +27,20 @@
  */
 package org.n52.io.geojson;
 
-import java.io.Serializable;
+/**
+ *
+ * @since 2.0
+ */
+public class GeoJSONException extends Exception {
 
-public abstract class GeojsonObject implements Serializable {
-    
-    private static final long serialVersionUID = -6879838545330014414L;
-    
-    private GeojsonCrs crs;
-    
-    public void setCrs(GeojsonCrs crs) {
-        this.crs = crs;
+    private static final long serialVersionUID = -8203818559729187312L;
+
+    public GeoJSONException(String message) {
+        super(message);
     }
 
-    public GeojsonCrs getCrs() {
-        return crs;
+    public GeoJSONException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    /**
-     * @return the geojson type of the object (e.g. <code>Feature</code>, <code>Point</code>, etc.).
-     */
-    public abstract String getType();
 }

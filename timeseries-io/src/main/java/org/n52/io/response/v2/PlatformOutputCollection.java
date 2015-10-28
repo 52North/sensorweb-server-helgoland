@@ -25,61 +25,17 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
 
-import java.util.HashMap;
-import java.util.Map;
+package org.n52.io.response.v2;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 
-public class GeojsonCrs extends GeojsonObject {
+public class PlatformOutputCollection extends OutputCollection<PlatformOutput> {
     
-    private static final long serialVersionUID = 5964748458745655509L;
-
-    private static final String TYPE_NAME = "name";
-    
-    private Map<String, String> properties;
-
-    private String type = TYPE_NAME;
-    
-    GeojsonCrs() {
-        this.properties = new HashMap<>();
-    }
-    
-    public void addProperty(String key, String value) {
-        properties.put(key, value);
-    }
-    
-    public Map<String, String> getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-    
-    void setType(String type) {
-        this.type = type;
-    }
-
     @Override
-    public String getType() {
-        return type;
+    @JsonProperty(value = "platforms")
+    public Collection<PlatformOutput> getItems() {
+        return super.getItems();
     }
-    
-    @JsonIgnore
-    public String getName() {
-        return properties.get("name");
-    }
-    
-    public static GeojsonCrs createNamedCRS(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument 'name' must not be null.");
-        }
-        GeojsonCrs namedCrs = new GeojsonCrs();
-        namedCrs.addProperty("name", name);
-        namedCrs.setType(TYPE_NAME);
-        return namedCrs;
-    }
-    
 }

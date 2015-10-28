@@ -47,7 +47,7 @@ import org.n52.io.crs.CRSUtils;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
@@ -705,7 +705,7 @@ public class IoParameters {
     private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
-            Point crs84Point = crsUtils.transformOuterToInner(toTransformed, getCrs());
+            Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
             return crsUtils.convertToGeojsonFrom(crs84Point);
         }
         catch (TransformException e) {

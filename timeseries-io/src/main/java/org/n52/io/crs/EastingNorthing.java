@@ -28,12 +28,12 @@
 package org.n52.io.crs;
 
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.geojson.GeojsonCrs.createNamedCRS;
+import static org.n52.io.geojson.old.GeojsonCrs.createNamedCRS;
 
 import java.io.Serializable;
 
-import org.n52.io.geojson.GeojsonCrs;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonCrs;
+import org.n52.io.geojson.old.GeojsonPoint;
 
 class EastingNorthing implements Serializable {
 

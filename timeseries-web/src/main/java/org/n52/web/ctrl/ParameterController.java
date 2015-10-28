@@ -25,8 +25,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.web.ctrl;
 
+import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,11 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.n52.io.ConfigApplier;
+import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.request.IoParameters;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import org.n52.io.response.ParameterOutput;
-import org.n52.web.common.BaseController;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
@@ -56,7 +57,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
-public abstract class ParameterController extends BaseController implements RestfulUrls {
+public abstract class ParameterController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -96,7 +97,9 @@ public abstract class ParameterController extends BaseController implements Rest
         IoParameters queryMap = createFromQuery(query);
 
         if (queryMap.isExpanded()) {
+            Stopwatch stopwatch = startStopwatch();
             ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
 

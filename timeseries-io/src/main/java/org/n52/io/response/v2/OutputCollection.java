@@ -25,18 +25,45 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.io.response.v2;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterController {
+public class OutputCollection<T> implements Iterable<T> {
     
-    // resource controller for procedures
+    private final List<T> items;
+    
+    protected OutputCollection() {
+        this.items = Collections.emptyList();
+    }
 
+    protected OutputCollection(List<T> itmes) {
+        this.items = itmes;
+    }
+    
+    public void addtem(T item) {
+        items.add(item);
+    }
+    
+    public void removeItem(T item) {
+        items.remove(item);
+    }
+    
+    public Collection<T> getItems() {
+        return Collections.unmodifiableCollection(items);
+    }
+    
+    public boolean containsItem(T item) {
+        return items.contains(item);
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        return items.iterator();
+    }
+    
+    
 }

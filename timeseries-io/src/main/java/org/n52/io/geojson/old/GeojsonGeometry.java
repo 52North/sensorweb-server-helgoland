@@ -25,18 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.io.geojson.old;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
+import java.util.Arrays;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+public abstract class GeojsonGeometry extends GeojsonObject {
 
-@RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterController {
-    
-    // resource controller for procedures
+    private static final long serialVersionUID = -2611259809054586079L;
+
+    /**
+     * @param coordinates the coordinates to assert.
+     * @return checked coordinates for method chaining.
+     * @throws IllegalArgumentException
+     *         if coordinates are <code>null</code> or do not contain 2D or 3D points.
+     */
+    protected Double[] assertCoordinates(Double[] coordinates) {
+        if (coordinates == null) {
+            throw new NullPointerException("Coordinates must not be null.");
+        }
+        if (coordinates.length != 2 && coordinates.length != 3) {
+            String asString = Arrays.toString(coordinates);
+            throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
+        }
+        return coordinates;
+    }
 
 }

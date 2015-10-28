@@ -25,18 +25,37 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.io.geojson;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Geometry;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterController {
+public class GeoJSONFeature extends GeoJSONObject {
     
-    // resource controller for procedures
+    private String id;
+    
+    @JsonIgnore
+    private Geometry geometry;
+    
+    public GeoJSONFeature(String type, Geometry geometry) throws GeoJSONException {
+        super(type);
+        this.geometry = geometry;
+    }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+    
 }

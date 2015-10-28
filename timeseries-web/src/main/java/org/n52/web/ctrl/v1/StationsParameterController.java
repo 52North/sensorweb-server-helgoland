@@ -27,6 +27,7 @@
  */
 package org.n52.web.ctrl.v1;
 
+import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.web.common.Stopwatch;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
@@ -38,7 +39,7 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.v1.TransformingStationService;
+import org.n52.sensorweb.spi.v1.TransformingGeojsonOutputService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public class StationsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<StationOutput> parameterService;
+    private ParameterService<GeojsonFeature> parameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -89,23 +90,23 @@ public class StationsParameterController {
         // TODO check parameters and throw BAD_REQUEST if invalid
 
         Stopwatch stopwatch = startStopwatch();
-        StationOutput procedure = parameterService.getParameter(procedureId, map);
+        Object result = parameterService.getParameter(procedureId, map);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
-        if (procedure == null) {
-            throw new ResourceNotFoundException("Found no procedure with given id.");
+        if (result == null) {
+            throw new ResourceNotFoundException("Found no station with given id.");
         }
 
-        return new ModelAndView().addObject(procedure);
+        return new ModelAndView().addObject(result);
     }
 
-    public ParameterService<StationOutput> getParameterService() {
+    public ParameterService<GeojsonFeature> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<StationOutput> stationParameterService) {
-        ParameterService<StationOutput> service = new TransformingStationService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<StationOutput>(new WebExceptionAdapter<StationOutput>(service));
+    public void setParameterService(ParameterService<GeojsonFeature> stationParameterService) {
+        ParameterService<GeojsonFeature> service = new TransformingGeojsonOutputService(stationParameterService);
+        this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 
 }

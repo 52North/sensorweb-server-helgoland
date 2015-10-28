@@ -25,42 +25,26 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import java.util.Arrays;
+import java.io.Serializable;
 
-
-public class GeojsonPoint extends GeojsonGeometry {
-
-    private static final long serialVersionUID = 4348077077881433456L;
+public abstract class GeojsonObject implements Serializable {
     
-    private static final String GEOJSON_TYPE_POINT = "Point";
-
-    protected Double[] coordinates;
+    private static final long serialVersionUID = -6879838545330014414L;
     
-    public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
-        GeojsonPoint sfGeometry = new GeojsonPoint();
-        //sfGeometry.setCoordinates(Utils.copy(coordinates));
-        sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
-        return sfGeometry;
-    }
+    private GeojsonCrs crs;
     
-    public void setCoordinates(Double[] coordinates) {
-        //this.coordinates = checkCoordinates(Utils.copy(coordinates));
-        this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
+    public void setCrs(GeojsonCrs crs) {
+        this.crs = crs;
     }
 
-    void setType(String type) {
-        // keep for serialization
+    public GeojsonCrs getCrs() {
+        return crs;
     }
 
-    public String getType() {
-        return GEOJSON_TYPE_POINT;
-    }
-    
-    public Double[] getCoordinates() {
-        return Arrays.copyOf(coordinates, coordinates.length);
-//        return Utils.copy(coordinates);
-    }
-
+    /**
+     * @return the geojson type of the object (e.g. <code>Feature</code>, <code>Point</code>, etc.).
+     */
+    public abstract String getType();
 }

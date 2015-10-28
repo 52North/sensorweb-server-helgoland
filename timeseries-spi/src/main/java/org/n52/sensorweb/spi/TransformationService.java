@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.sensorweb.spi.v1;
+package org.n52.sensorweb.spi;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.web.exception.BadQueryParameterException;
@@ -38,29 +38,27 @@ import org.n52.io.crs.CRSUtils;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Point;
-import org.n52.io.geojson.old.GeojsonFeature;
-import org.n52.io.geojson.old.GeojsonPoint;
-
+/**
+ * @since 2.0
+ */
 public abstract class TransformationService {
 
     /**
-     * @param feature the feature to transform.
+     * @param geometry the geometry to transform.
      * @param query the query containing CRS and how to handle axes order.
+     * @return the transformed geometry.
      * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
-    protected void transformInline(GeojsonFeature feature, IoParameters query) {
+    protected Geometry transformInline(Geometry geometry, IoParameters query) {
         String crs = query.getCrs();
         if (DEFAULT_CRS.equals(crs)) {
-            return; // no need to transform
+            return geometry; // no need to transform
         }
         try {
             CRSUtils crsUtils = query.isForceXY()
                     ? createEpsgForcedXYAxisOrder()
                     : createEpsgStrictAxisOrder();
-            GeojsonPoint geojsonPoint = (GeojsonPoint) feature.getGeometry();
-            Point point = crsUtils.convertToPointFrom(geojsonPoint);
-            feature.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+            return crsUtils.transformInnerToOuter(geometry, crs);
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {

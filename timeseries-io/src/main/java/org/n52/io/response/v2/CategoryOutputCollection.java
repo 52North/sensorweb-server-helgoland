@@ -25,18 +25,16 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.ctrl.v2;
+package org.n52.io.response.v2;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterController {
+public class CategoryOutputCollection extends OutputCollection<CategoryOutput> {
     
-    // resource controller for procedures
-
+    @Override
+    @JsonProperty(value = "categories")
+    public Collection<CategoryOutput> getItems() {
+        return super.getItems();
+    }
 }
