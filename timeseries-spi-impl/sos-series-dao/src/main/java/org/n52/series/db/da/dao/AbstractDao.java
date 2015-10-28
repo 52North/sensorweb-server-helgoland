@@ -25,18 +25,31 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da;
+package org.n52.series.db.da.dao;
 
-public class DataAccessException extends Exception {
+import java.util.List;
 
-    private static final long serialVersionUID = 4112723724626544387L;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.n52.series.api.v1.db.da.beans.I18nEntity;
+import org.n52.series.db.da.DbQuery;
 
-    public DataAccessException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DataAccessException(String message) {
-        super(message);
+public abstract class AbstractDao<T> implements GenericDao<T, Long> {
+    
+    protected Session session;
+    
+    public AbstractDao(Session session) {
+        if (session == null) {
+            throw new NullPointerException("Cannot operate on a null session.");
+        }
+        this.session = session;
     }
     
+    public abstract List<T> find(String search, DbQuery query);
+
+    public boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
+        Criteria i18nCriteria = session.createCriteria(clazz);
+        return parameters.checkTranslationForLocale(i18nCriteria);
+    }
+
 }

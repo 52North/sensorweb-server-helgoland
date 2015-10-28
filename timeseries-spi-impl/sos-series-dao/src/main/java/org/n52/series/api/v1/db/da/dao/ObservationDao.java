@@ -36,10 +36,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.dao.AbstractDao;
 
 public class ObservationDao extends AbstractDao<ObservationEntity> {
 

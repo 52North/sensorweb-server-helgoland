@@ -32,9 +32,9 @@ import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
 import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.ParameterService;
 

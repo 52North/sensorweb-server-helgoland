@@ -38,11 +38,12 @@ import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.dao.AbstractDao;
 
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 

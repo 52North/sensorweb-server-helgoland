@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da;
+package org.n52.series.db.da;
 
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
@@ -33,7 +33,7 @@ import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
-import static org.n52.series.api.v1.db.da.beans.DataModelUtil.isEntitySupported;
+import static org.n52.series.db.da.beans.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
 
@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.criterion.Property;
 
 public class DbQuery {
 

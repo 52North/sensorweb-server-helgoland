@@ -29,6 +29,9 @@ package org.n52.series.api.v1.db.da;
 
 import java.util.List;
 
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+
 public interface OutputAssembler<T> {
 
     public List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;

@@ -38,6 +38,9 @@ import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.CategoryDao;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.sensorweb.spi.search.v1.CategorySearchResult;
 import org.n52.sensorweb.spi.SearchResult;
 

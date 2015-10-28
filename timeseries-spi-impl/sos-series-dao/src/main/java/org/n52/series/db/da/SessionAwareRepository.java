@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da;
+package org.n52.series.db.da;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -44,6 +44,7 @@ import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.TimeseriesOutput;
 import org.n52.sensorweb.spi.SearchResult;
+import org.n52.series.api.v1.db.da.ServiceRepository;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nCategoryEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
@@ -130,11 +131,11 @@ public abstract class SessionAwareRepository {
         }
     }
 
-    protected void returnSession(Session session) {
+    public void returnSession(Session session) {
         sessionHolder.returnSession(session);
     }
 
-    protected Session getSession() {
+    public Session getSession() {
         if (sessionHolder == null) {
             createSessionHolderIfNeccessary();
         }

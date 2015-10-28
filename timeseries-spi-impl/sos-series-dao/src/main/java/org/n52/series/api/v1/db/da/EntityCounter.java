@@ -39,6 +39,8 @@ import org.n52.series.api.v1.db.da.dao.FeatureDao;
 import org.n52.series.api.v1.db.da.dao.PhenomenonDao;
 import org.n52.series.api.v1.db.da.dao.ProcedureDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.sensorweb.spi.SearchResult;
 
 public class EntityCounter {
