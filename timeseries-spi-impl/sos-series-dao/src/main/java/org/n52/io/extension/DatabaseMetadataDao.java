@@ -27,47 +27,14 @@
  */
 package org.n52.io.extension;
 
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hibernate.Session;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import org.apache.commons.io.FileUtils;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
-
-public class LicenseExtension extends MetadataExtension<ParameterOutput> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
-
-    private static final String CONFIG_FILE = "/config-license.txt";
+public class DatabaseMetadataDao {
     
-    private static final String EXTENSION_NAME = "license";
+    private final Session session;
 
-    private final String licenseText = readLicenseText();
-    
-    public LicenseExtension() {
-        this(EXTENSION_NAME);
-    }
-
-    public LicenseExtension(String name) {
-        super(name);
-    }
-    
-    private String readLicenseText() {
-        try {
-            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
-            return FileUtils.readFileToString(file);
-        } catch (URISyntaxException | IOException e) {
-            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
-        }
-        return null;
-    }
-
-    @Override
-    public Object getExtras(ParameterOutput output, IoParameters parameters) {
-        return licenseText;
+    public DatabaseMetadataDao(Session session) {
+        this.session = session;
     }
 
 }

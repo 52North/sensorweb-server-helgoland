@@ -25,16 +25,27 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.response.ext;
 
-import org.hibernate.Session;
 
-public class MetadataDao {
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.ParameterOutput;
+
+public abstract class MetadataExtension<T extends ParameterOutput> {
     
-    private final Session session;
-
-    public MetadataDao(Session session) {
-        this.session = session;
+    private final String extensionName;
+    
+    public MetadataExtension(String name) {
+        this.extensionName = name;
     }
 
+    public abstract Object getExtras(T output, IoParameters parameters);
+
+    public void addExtensionTo(T output) {
+        output.addExtra(extensionName);
+    }
+
+    public String getExtensionName() {
+        return extensionName;
+    }
 }

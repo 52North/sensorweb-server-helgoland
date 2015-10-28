@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.n52.io.extension.MetadataExtension;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.request.IoParameters;
 

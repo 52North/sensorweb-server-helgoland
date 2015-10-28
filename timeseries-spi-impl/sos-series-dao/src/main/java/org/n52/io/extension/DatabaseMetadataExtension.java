@@ -27,25 +27,33 @@
  */
 package org.n52.io.extension;
 
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.ext.MetadataExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class MetadataExtension<T extends ParameterOutput> {
-    
-    private final String extensionName;
-    
-    public MetadataExtension(String name) {
-        this.extensionName = name;
+public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataExtension.class);
+
+    private static final String EXTENSION_NAME = "databaseMetadata";
+
+
+    public DatabaseMetadataExtension() {
+        this(EXTENSION_NAME);
     }
 
-    public abstract Object getExtras(T output, IoParameters parameters);
-
-    public void addExtensionTo(T output) {
-        output.addExtra(extensionName);
+    public DatabaseMetadataExtension(String name) {
+        super(name);
     }
 
-    public String getExtensionName() {
-        return extensionName;
+    @Override
+    public Object getExtras(ParameterOutput output, IoParameters parameters) {
+        
+        // TODO
+        
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
 }

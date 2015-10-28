@@ -25,37 +25,49 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.response.ext;
 
 import java.io.IOException;
-import java.io.InputStream;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
-import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MetadataExtension extends MetadataExtension<ParameterOutput> {
+import java.io.File;
+import java.net.URISyntaxException;
+import org.apache.commons.io.FileUtils;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.ParameterOutput;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataExtension.class);
+public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
-    private static final String EXTENSION_NAME = "databaseMetadata";
+    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
+    private static final String CONFIG_FILE = "/config-license.txt";
+    
+    private static final String EXTENSION_NAME = "license";
 
-    public MetadataExtension() {
+    private final String licenseText = readLicenseText();
+    
+    public LicenseExtension() {
         this(EXTENSION_NAME);
     }
 
-    public MetadataExtension(String name) {
+    public LicenseExtension(String name) {
         super(name);
     }
     
+    private String readLicenseText() {
+        try {
+            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
+            return FileUtils.readFileToString(file);
+        } catch (URISyntaxException | IOException e) {
+            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
+        }
+        return null;
+    }
+
     @Override
     public Object getExtras(ParameterOutput output, IoParameters parameters) {
-        
-        // TODO read from db
-        
-        return null;
+        return licenseText;
     }
 
 }
