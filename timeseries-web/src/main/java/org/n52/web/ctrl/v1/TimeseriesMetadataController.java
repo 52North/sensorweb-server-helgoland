@@ -27,14 +27,43 @@
  */
 package org.n52.web.ctrl.v1;
 
+import org.n52.io.extension.MetadataExtension;
+import org.n52.io.request.IoParameters;
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import org.n52.io.response.ParameterOutput;
 import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
+import org.n52.web.exception.ResourceNotFoundException;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterController {
 
     // resource controller for timeseries metadata
+    
+    @Override
+    @RequestMapping(value = "/{item}", method = GET)
+    public ModelAndView getItem(@PathVariable("item") String id,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters queryMap = createFromQuery(query);
+        ParameterOutput parameter = addExtensionInfos(getParameterService().getParameter(id, queryMap));
+        for (MetadataExtension<ParameterOutput> extension : getMetadataExtensions()) {
+            // some extensions have to stay backward compatible
+            // these add their infos directly to the metadata output
+            extension.getExtras(parameter, queryMap);
+        }
+
+        if (parameter == null) {
+            throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+        }
+
+        return new ModelAndView().addObject(parameter);
+    }
 }
