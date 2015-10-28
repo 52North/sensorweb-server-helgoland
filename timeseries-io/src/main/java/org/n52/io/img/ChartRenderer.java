@@ -43,17 +43,15 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static javax.imageio.ImageIO.write;
+import java.util.List;
 import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.Timeline;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.block.BlockFrame;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.HorizontalAlignment;
@@ -310,7 +308,7 @@ public abstract class ChartRenderer implements IoHandler {
         return uom.toString();
     }
 
-    protected TimeseriesMetadataOutput[] getTimeseriesMetadataOutputs() {
+    protected List<TimeseriesMetadataOutput> getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }
 

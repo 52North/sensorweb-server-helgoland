@@ -28,9 +28,12 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DataAccessException;
@@ -40,47 +43,56 @@ import org.n52.web.exception.InternalServerException;
 
 public class FeaturesAccessService extends ServiceInfoAccess implements ParameterService<FeatureOutput> {
 
+    private OutputCollection<FeatureOutput> createOutputCollection(List<FeatureOutput> results) {
+        return new OutputCollection<FeatureOutput>(results) {
+                @Override
+                protected Comparator<FeatureOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
-    public FeatureOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<FeatureOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             List<FeatureOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new FeatureOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get feature data.", e);
         }
     }
 
     @Override
-    public FeatureOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<FeatureOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             List<FeatureOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new FeatureOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get feature data.", e);
         }
     }
 
     @Override
-    public FeatureOutput[] getParameters(String[] featureIds) {
+    public OutputCollection<FeatureOutput> getParameters(String[] featureIds) {
         return getParameters(featureIds, IoParameters.createDefaults());
     }
 
     @Override
-    public FeatureOutput[] getParameters(String[] featureIds, IoParameters query) {
+    public OutputCollection<FeatureOutput> getParameters(String[] featureIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
-            List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+            List<FeatureOutput> results = new ArrayList<>();
             for (String categoryId : featureIds) {
                 results.add(repository.getInstance(categoryId, dbQuery));
             }
-            return results.toArray(new  FeatureOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get feature data.");
+            throw new InternalServerException("Could not get feature data.", e);
         }
     }
 
@@ -96,7 +108,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
             FeatureRepository repository = createFeatureRepository();
             return repository.getInstance(featureId, dbQuery);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get feature data.");
+            throw new InternalServerException("Could not get feature data.", e);
         }
     }
 

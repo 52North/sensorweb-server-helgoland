@@ -27,7 +27,6 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.response.v1.ServiceOutput;
 
 /**

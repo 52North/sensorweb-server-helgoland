@@ -27,6 +27,7 @@
  */
 package org.n52.sensorweb.spi.v1;
 
+import com.vividsolutions.jts.geom.Geometry;
 import org.n52.web.exception.BadQueryParameterException;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
@@ -34,36 +35,21 @@ import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.response.v1.StationOutput;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Point;
+import org.n52.io.geojson.old.GeojsonFeature;
+import org.n52.io.geojson.old.GeojsonPoint;
 
 public abstract class TransformationService {
 
     /**
-     *
-     * @param query the query parameters.
-     * @param stations the stations to transform.
-     * @return all transformed stations matching the query.
-     * @throws BadQueryParameterException if an invalid CRS has been passed in.
-     */
-    protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
-        if (stations != null) {
-            for (StationOutput stationOutput : stations) {
-                transformInline(stationOutput, query);
-            }
-        }
-        return stations;
-    }
-
-    /**
-     * @param station the station to transform.
+     * @param feature the feature to transform.
      * @param query the query containing CRS and how to handle axes order.
      * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
-    protected void transformInline(StationOutput station, IoParameters query) {
+    protected void transformInline(GeojsonFeature feature, IoParameters query) {
         String crs = query.getCrs();
         if (DEFAULT_CRS.equals(crs)) {
             return; // no need to transform
@@ -72,8 +58,9 @@ public abstract class TransformationService {
             CRSUtils crsUtils = query.isForceXY()
                     ? createEpsgForcedXYAxisOrder()
                     : createEpsgStrictAxisOrder();
-            Point point = crsUtils.convertToPointFrom(station.getGeometry());
-            station.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+            GeojsonPoint geojsonPoint = (GeojsonPoint) feature.getGeometry();
+            Point point = crsUtils.convertToPointFrom(geojsonPoint);
+            feature.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {

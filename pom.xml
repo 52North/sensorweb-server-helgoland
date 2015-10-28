@@ -375,6 +375,7 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
                         <id>check-license</id>
@@ -446,6 +447,13 @@
         
         <pluginManagement>
             <plugins>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -464,7 +472,7 @@
                             <latestYearOfContribution>${currentYear}</latestYearOfContribution>
                             <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution>
                         </properties>
-                        <aggregate>true</aggregate>
+                        <!--<aggregate>true</aggregate>-->
                         <includes>
                             <include>src/**/*.java</include>
                         </includes>

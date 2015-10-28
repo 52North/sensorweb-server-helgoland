@@ -38,7 +38,7 @@ import static org.n52.io.crs.WGS84Util.normalizeLongitude;
 
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 
 import com.vividsolutions.jts.geom.Point;

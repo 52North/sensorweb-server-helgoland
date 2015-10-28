@@ -25,40 +25,26 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.response.v2;
 
-public class GeojsonLineString extends GeojsonGeometry {
-    
-    private static final long serialVersionUID = 2014878619454088577L;
+import org.n52.io.response.OutputCollection;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Comparator;
+import java.util.List;
+import org.n52.io.geojson.GeoJSONFeature;
 
-    private static final String GEOJSON_TYPE_LINESTRING = "LineString";
-
-    protected Double[][] points
-;    
-    public static GeojsonLineString createWithCoordinates(Double[][] coordinates) {
-        GeojsonLineString sfGeometry = new GeojsonLineString();
-        sfGeometry.setCoordinates(coordinates);
-        return sfGeometry;
-    }
-    
-    public void setCoordinates(Double[][] points) {
-        for (Double[] point : points) {
-            assertCoordinates(point);
-        }
-        this.points = points;
-    }
-
-    void setType(String type) {
-        // keep for serialization
-    }
+public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
     @Override
-    public String getType() {
-        return GEOJSON_TYPE_LINESTRING;
+    @JsonProperty(value = "features")
+    public List<FeatureOutput> getItems() {
+        return super.getItems();
     }
     
-    public Double[][] getCoordinates() {
-        return points;
+    @Override
+    protected Comparator<FeatureOutput> getComparator() {
+        return GeoJSONFeature.defaultComparator();
     }
-
+    
 }
+ 

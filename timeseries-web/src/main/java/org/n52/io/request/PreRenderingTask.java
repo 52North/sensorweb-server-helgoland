@@ -62,7 +62,7 @@ import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
-import org.n52.io.task.ScheduledJob;
+import org.n52.io.response.OutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
