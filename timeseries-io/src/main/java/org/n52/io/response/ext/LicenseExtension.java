@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -47,14 +49,6 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
     private final String licenseText = readLicenseText();
     
-    public LicenseExtension() {
-        this(EXTENSION_NAME);
-    }
-
-    public LicenseExtension(String name) {
-        super(name);
-    }
-    
     private String readLicenseText() {
         try {
             File file = new File(getClass().getResource(CONFIG_FILE).toURI());
@@ -66,8 +60,20 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     }
 
     @Override
-    public Object getExtras(ParameterOutput output, IoParameters parameters) {
-        return licenseText;
+    public String getExtensionName() {
+        return EXTENSION_NAME;
+    }
+    
+    @Override
+    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
+        return hasExtrasToReturn(output, parameters)
+                ? wrapSingleIntoMap(licenseText)
+                : Collections.<String, Object>emptyMap();
+    }
+
+    @Override
+    public void addExtraMetadataFieldNames(ParameterOutput output) {
+        output.addExtra(EXTENSION_NAME);
     }
 
 }

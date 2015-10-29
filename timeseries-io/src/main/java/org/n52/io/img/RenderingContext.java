@@ -43,9 +43,9 @@ public final class RenderingContext {
 
     // use static constructors
     private RenderingContext(RequestStyledParameterSet timeseriesStyles, List<TimeseriesMetadataOutput> timeseriesMetadatas) {
-        this.timeseriesMetadatas = (List<TimeseriesMetadataOutput>) (timeseriesMetadatas.isEmpty()
-                ? Collections.emptyList()
-                : timeseriesMetadatas);
+        this.timeseriesMetadatas = timeseriesMetadatas.isEmpty()
+                ? Collections.<TimeseriesMetadataOutput>emptyList()
+                : timeseriesMetadatas;
         this.chartStyleDefinitions = timeseriesStyles;
     }
 

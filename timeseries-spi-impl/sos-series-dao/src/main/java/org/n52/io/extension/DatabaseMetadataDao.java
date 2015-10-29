@@ -27,7 +27,13 @@
  */
 package org.n52.io.extension;
 
+import java.util.List;
+import java.util.Set;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 
 public class DatabaseMetadataDao {
     
@@ -35,6 +41,37 @@ public class DatabaseMetadataDao {
 
     public DatabaseMetadataDao(Session session) {
         this.session = session;
+    }
+    
+    public MetadataEntity<?> getInstance(Long key) {
+        return (MetadataEntity) session.get(MetadataEntity.class, key);
+    }
+    
+    public List<MetadataEntity<?>> getAll() {
+        Criteria criteria = session.createCriteria(MetadataEntity.class);
+        return (List<MetadataEntity<?>>) criteria.list();
+    }
+
+    List<MetadataEntity<?>> getSelected(Set<String> fields) {
+        Criteria criteria = session.createCriteria(MetadataEntity.class);
+        addCaseInsensitivePropertyMatch(criteria, fields);
+//        criteria.add(Restrictions.in("name", fields)); // not case insensitive
+        return (List<MetadataEntity<?>>) criteria.list();
+    }
+
+    private void addCaseInsensitivePropertyMatch(Criteria criteria, Set<String> fields) {
+        Disjunction disjunction = Restrictions.disjunction();
+        for (String field: fields) {
+            disjunction.add(Restrictions.eq("name", field).ignoreCase());
+        }
+        criteria.add(disjunction);
+    }
+
+    List<String> getMetadataNames(Long id) {
+        Criteria criteria = session.createCriteria(MetadataEntity.class)
+                .add(Restrictions.eq("seriesId", id))
+                .setProjection(Projections.property("name"));
+        return (List<String>) criteria.list();
     }
 
 }

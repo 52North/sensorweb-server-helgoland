@@ -33,6 +33,8 @@ public abstract class MetadataEntity<T> {
     
     private Long pkid;
     
+    private Long seriesId;
+    
     private String name;
     
     private String type;
@@ -47,6 +49,14 @@ public abstract class MetadataEntity<T> {
 
     public void setPkid(Long pkid) {
         this.pkid = pkid;
+    }
+
+    public Long getSeriesId() {
+        return seriesId;
+    }
+
+    public void setSeriesId(Long seriesId) {
+        this.seriesId = seriesId;
     }
 
     public String getName() {
@@ -79,6 +89,12 @@ public abstract class MetadataEntity<T> {
 
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+    
+    public DatabaseMetadataOutput<T> toOutput() {
+        return DatabaseMetadataOutput.<T>create()
+                .withValue(value)
+                .lastUpdatedAt(lastUpdate);
     }
     
 }

@@ -29,6 +29,8 @@ package org.n52.web.ctrl;
 
 import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,21 +71,26 @@ public abstract class ParameterController extends BaseController {
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        Set<String> fields = queryMap.getFields();
         
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            if (fields ==null || fields.contains(extension.getExtensionName().toLowerCase())) {
-                ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
-                final Object furtherExtras = extension.getExtras(from, queryMap);
-                final String extensionName = extension.getExtensionName();
-                if (extras.containsKey(extensionName)) {
-                    LOGGER.warn("Extension '{}' overrides already existing metadata!", extensionName);
-                }
-                extras.put(extensionName, furtherExtras);
+            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
+            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
+            if ( !overridableKeys.isEmpty()) {
+                String[] keys = overridableKeys.toArray(new String[0]);
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
             }
+            extras.putAll(furtherExtras);
         }
         return extras;
+    }
+    
+    private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
+        Map<String, Object> currentData = new HashMap<>(data);
+        Set<String> overridableKeys = currentData.keySet();
+        overridableKeys.retainAll(dataToAdd.keySet());
+        return overridableKeys;
     }
 
     @RequestMapping(method = GET)
@@ -124,6 +131,7 @@ public abstract class ParameterController extends BaseController {
 
         return new ModelAndView().addObject(parameter);
     }
+    
     protected OutputCollection<ParameterOutput> addExtensionInfos(OutputCollection<ParameterOutput> toBeProcessed) {
         for (ParameterOutput parameterOutput : toBeProcessed) {
             addExtensionInfos(parameterOutput);
@@ -133,7 +141,7 @@ public abstract class ParameterController extends BaseController {
 
     protected ParameterOutput addExtensionInfos(ParameterOutput output) {
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            extension.addExtensionTo(output);
+            extension.addExtraMetadataFieldNames(output);
         }
         return output;
     }

@@ -22,14 +22,9 @@
 
 
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
-<!--        <property name="configAppliers">
-            <list>
-                <bean class="org.n52.io.LicenseConfigApplier" />
-            </list>
-        </property>-->
         <property name="metadataExtensions">
             <list>
-                <bean class="org.n52.io.extension.LicenseExtension" />
+                <bean class="org.n52.io.response.ext.LicenseExtension" />
             </list>
         </property>
     </bean>
@@ -69,11 +64,9 @@
             <list merge="true">
                 <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
                 <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
-                <!--
-                <bean class="org.n52.io.extension.ResultTimeExtension">
-                    <property name="resultTimeService" class="org.n52.sensorweb.spi.resultTimeService"/>
-                </bean>
-                -->
+                <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+                <!-- Have a look at the README.md at TBD -->
+                <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
             </list>
         </property>
     </bean>
