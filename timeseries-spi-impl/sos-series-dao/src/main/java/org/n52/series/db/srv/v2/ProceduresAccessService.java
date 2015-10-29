@@ -33,15 +33,16 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ProcedureOutput;
 import org.n52.io.response.v2.ProcedureOutputCollection;
+import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.v2.ProcedureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ProceduresAccessService extends ServiceInfoAccess {
+public class ProceduresAccessService extends ServiceInfoAccess implements ParameterService<ProcedureOutput> {
 
-//	 @Override
+	 @Override
 	    public ProcedureOutputCollection getExpandedParameters(IoParameters query) {
 	        try {
 	            DbQuery dbQuery = DbQuery.createFrom(query);
@@ -54,7 +55,7 @@ public class ProceduresAccessService extends ServiceInfoAccess {
 	        }
 	    }
 
-//	    @Override
+	    @Override
 	    public ProcedureOutputCollection getCondensedParameters(IoParameters query) {
 	        try {
 	            DbQuery dbQuery = DbQuery.createFrom(query);
@@ -67,12 +68,12 @@ public class ProceduresAccessService extends ServiceInfoAccess {
 	        }
 	    }
 
-//	    @Override
+	    @Override
 	    public ProcedureOutputCollection getParameters(String[] procedureIds) {
 	        return getParameters(procedureIds, IoParameters.createDefaults());
 	    }
 
-//	    @Override
+	    @Override
 	    public ProcedureOutputCollection getParameters(String[] procedureIds, IoParameters query) {
 	        try {
 	            DbQuery dbQuery = DbQuery.createFrom(query);
@@ -87,12 +88,12 @@ public class ProceduresAccessService extends ServiceInfoAccess {
 	        }
 	    }
 
-//	    @Override
+	    @Override
 	    public ProcedureOutput getParameter(String procedureId) {
 	        return getParameter(procedureId, IoParameters.createDefaults());
 	    }
 
-//	    @Override
+	    @Override
 	    public ProcedureOutput getParameter(String procedureId, IoParameters query) {
 	        try {
 	            DbQuery dbQuery = DbQuery.createFrom(query);

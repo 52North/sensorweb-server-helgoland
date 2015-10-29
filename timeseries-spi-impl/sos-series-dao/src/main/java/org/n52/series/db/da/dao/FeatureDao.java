@@ -25,25 +25,22 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da.dao;
+package org.n52.series.db.da.dao;
 
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.FeatureEntity;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.dao.AbstractDao;
+
+import com.google.common.base.Strings;
 
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
@@ -54,7 +51,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(FeatureEntity.class);
+        Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
@@ -80,7 +77,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(FeatureEntity.class, "f");
+        Criteria criteria = getDefaultCriteria("f");
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
@@ -94,11 +91,18 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     }
     
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(FeatureEntity.class)
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected Criteria getDefaultCriteria() {
+    	return getDefaultCriteria(null);
+    }
+    
+    private Criteria getDefaultCriteria(String alias) {
+    	Criteria criteria;
+    	if (Strings.isNullOrEmpty(alias)) {
+    		criteria = session.createCriteria(FeatureEntity.class);
+    	} else {
+    		criteria = session.createCriteria(FeatureEntity.class, alias);
+    	}
+    	return criteria;
     }
 
 }

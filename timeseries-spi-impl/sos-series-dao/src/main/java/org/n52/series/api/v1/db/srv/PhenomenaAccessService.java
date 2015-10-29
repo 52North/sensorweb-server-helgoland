@@ -35,12 +35,12 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
-import org.n52.sensorweb.spi.ParameterService;
 
 public class PhenomenaAccessService extends ServiceInfoAccess implements ParameterService<PhenomenonOutput> {
 

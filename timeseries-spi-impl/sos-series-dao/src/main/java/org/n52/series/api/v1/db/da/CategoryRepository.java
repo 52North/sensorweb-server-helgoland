@@ -38,7 +38,7 @@ import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class CategoryRepository extends AbstractCategoryRepository implements OutputAssembler<CategoryOutput> {
+public class CategoryRepository extends AbstractCategoryRepository<CategoryOutput> {
 
     public CategoryRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);

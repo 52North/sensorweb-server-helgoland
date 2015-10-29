@@ -41,7 +41,7 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.CategoryDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public abstract class AbstractCategoryRepository extends SessionAwareRepository {
+public abstract class AbstractCategoryRepository<T> extends SessionAwareRepository implements OutputAssembler<T> {
 
 	
 	protected AbstractCategoryRepository(ServiceInfo serviceInfo) {

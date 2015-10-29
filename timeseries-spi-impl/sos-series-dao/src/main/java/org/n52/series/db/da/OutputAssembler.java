@@ -25,12 +25,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da;
+package org.n52.series.db.da;
 
 import java.util.List;
-
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
 
 public interface OutputAssembler<T> {
 

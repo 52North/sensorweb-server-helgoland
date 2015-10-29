@@ -31,20 +31,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.format.TvpDataCollection;
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
 
 public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ParameterService<TimeseriesMetadataOutput> {
 

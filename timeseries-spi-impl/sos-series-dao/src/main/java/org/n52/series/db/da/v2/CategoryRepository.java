@@ -38,13 +38,13 @@ import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class CategoryRepository extends AbstractCategoryRepository {
+public class CategoryRepository extends AbstractCategoryRepository<CategoryOutput> {
 
-	protected CategoryRepository(ServiceInfo serviceInfo) {
+	public CategoryRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);
 	}
 	
-//	@Override
+	@Override
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -59,7 +59,7 @@ public class CategoryRepository extends AbstractCategoryRepository {
         }
     }
 
-//    @Override
+    @Override
     public List<CategoryOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -74,7 +74,7 @@ public class CategoryRepository extends AbstractCategoryRepository {
         }
     }
 
-//    @Override
+    @Override
     public CategoryOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {

@@ -31,6 +31,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.I18nEntity;
 
@@ -46,10 +48,18 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     }
     
     public abstract List<T> find(String search, DbQuery query);
+    
+    protected abstract Criteria getDefaultCriteria();
 
     public boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
     }
-
+    
+    @Override
+    public int getCount() throws DataAccessException {
+        Criteria criteria = getDefaultCriteria()
+                .setProjection(Projections.rowCount());
+        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    }
 }

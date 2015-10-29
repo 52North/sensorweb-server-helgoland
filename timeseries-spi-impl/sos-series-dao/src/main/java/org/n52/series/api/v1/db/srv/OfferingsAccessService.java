@@ -33,8 +33,8 @@ import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.ProcedureRepository;

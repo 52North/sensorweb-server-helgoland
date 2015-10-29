@@ -38,14 +38,14 @@ import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class ProcedureRepository extends AbstractProcedureRepository  {
+public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOutput> {
 
     public ProcedureRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
     }
 
 
-//    @Override
+    @Override
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -59,7 +59,7 @@ public class ProcedureRepository extends AbstractProcedureRepository  {
         }
     }
 
-//    @Override
+    @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -73,7 +73,7 @@ public class ProcedureRepository extends AbstractProcedureRepository  {
         }
     }
 
-//    @Override
+    @Override
     public ProcedureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {

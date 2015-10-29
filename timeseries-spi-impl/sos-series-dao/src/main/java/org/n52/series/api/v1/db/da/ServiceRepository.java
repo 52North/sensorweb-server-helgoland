@@ -34,6 +34,7 @@ import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ServiceOutput.ParameterCount;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.InternalServerException;
 

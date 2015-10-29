@@ -25,10 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da.beans;
-
-import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nFeatureEntity;
+package org.n52.series.db.da.beans;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -44,6 +41,10 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
 
     public void setGeom(Geometry geom) {
         this.geom = geom;
+    }
+    
+    public boolean isSetGeometry() {
+    	return getGeom() != null && !getGeom().isEmpty();
     }
 
     @Override

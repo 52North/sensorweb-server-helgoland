@@ -32,19 +32,19 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.response.v2.PhenomenonOutput;
-import org.n52.series.db.da.AbstractPhenomenaRepository;
+import org.n52.series.db.da.AbstractPhenomenonRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class PhenomenaRepository extends AbstractPhenomenaRepository {
+public class PhenomenonRepository extends AbstractPhenomenonRepository<PhenomenonOutput>{
 
-	protected PhenomenaRepository(ServiceInfo serviceInfo) {
+	public PhenomenonRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);
 	}
 	
-//	@Override
+	@Override
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -58,7 +58,7 @@ public class PhenomenaRepository extends AbstractPhenomenaRepository {
         }
     }
 
-//    @Override
+    @Override
     public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -72,7 +72,7 @@ public class PhenomenaRepository extends AbstractPhenomenaRepository {
         }
     }
 
-//    @Override
+    @Override
     public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {

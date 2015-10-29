@@ -41,9 +41,9 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.PhenomenonDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public abstract class AbstractPhenomenaRepository extends SessionAwareRepository {
+public abstract class AbstractPhenomenonRepository<T> extends SessionAwareRepository implements OutputAssembler<T> {
 
-	protected AbstractPhenomenaRepository(ServiceInfo serviceInfo) {
+	protected AbstractPhenomenonRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);
 	}
 

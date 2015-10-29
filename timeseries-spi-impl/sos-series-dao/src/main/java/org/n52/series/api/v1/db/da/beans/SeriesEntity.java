@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.n52.series.db.da.beans.CategoryEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.UnitEntity;

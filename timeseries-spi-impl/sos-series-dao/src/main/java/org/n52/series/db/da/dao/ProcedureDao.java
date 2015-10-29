@@ -27,20 +27,22 @@
  */
 package org.n52.series.db.da.dao;
 
+import static org.hibernate.criterion.Restrictions.eq;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import static org.hibernate.criterion.Restrictions.eq;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
+
+import com.google.common.base.Strings;
 
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
@@ -53,7 +55,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(ProcedureEntity.class);
+        Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
@@ -79,7 +81,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ProcedureEntity.class, "p")
+        Criteria criteria = getDefaultCriteria("p")
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
@@ -93,11 +95,17 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     }
 
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(ProcedureEntity.class)
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected Criteria getDefaultCriteria() {
+    	return getDefaultCriteria(null);
     }
-
+    
+    private Criteria getDefaultCriteria(String alias) {
+    	Criteria criteria;
+    	if (Strings.isNullOrEmpty(alias)) {
+    		criteria = session.createCriteria(ProcedureEntity.class);
+    	} else {
+    		criteria = session.createCriteria(ProcedureEntity.class, alias);
+    	}
+    	return criteria;
+    }
 }

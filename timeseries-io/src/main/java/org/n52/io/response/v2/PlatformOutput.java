@@ -52,6 +52,11 @@ public abstract class PlatformOutput extends ParameterOutput {
         this.type = type;
     }
     
+    public PlatformOutput setFeatures(FeatureOutputCollection features) {
+    	this.features = features;
+    	return this;
+    }
+    
     public Collection<FeatureOutput> getFeatures() {
         return this.features.getItems();
     }

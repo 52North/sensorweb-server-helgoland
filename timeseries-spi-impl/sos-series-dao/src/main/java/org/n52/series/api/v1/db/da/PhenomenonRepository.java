@@ -32,13 +32,13 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.series.db.da.AbstractPhenomenaRepository;
+import org.n52.series.db.da.AbstractPhenomenonRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class PhenomenonRepository extends AbstractPhenomenaRepository implements OutputAssembler<PhenomenonOutput> {
+public class PhenomenonRepository extends AbstractPhenomenonRepository<PhenomenonOutput> {
 
     public PhenomenonRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);

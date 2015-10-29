@@ -32,7 +32,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
@@ -40,6 +39,8 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.I18nPhenomenonEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
+
+import com.google.common.base.Strings;
 
 public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
@@ -50,7 +51,7 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(PhenomenonEntity.class);
+        Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nPhenomenonEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
@@ -76,7 +77,7 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(PhenomenonEntity.class, "p");
+        Criteria criteria = getDefaultCriteria("p");
         if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
@@ -89,11 +90,18 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     }
 
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(PhenomenonEntity.class)
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected Criteria getDefaultCriteria() {
+    	return getDefaultCriteria(null);
+    }
+    
+    private Criteria getDefaultCriteria(String alias) {
+    	Criteria criteria;
+    	if (Strings.isNullOrEmpty(alias)) {
+    		criteria = session.createCriteria(PhenomenonEntity.class);
+    	} else {
+    		criteria = session.createCriteria(PhenomenonEntity.class, alias);
+    	}
+    	return criteria;
     }
 
 }

@@ -30,16 +30,17 @@ package org.n52.series.db.srv.v2;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ServiceCollectionOutput;
 import org.n52.io.response.v2.ServiceOutput;
+import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.v2.ServiceRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ServiceAccessService extends ServiceInfoAccess {
+public class ServiceAccessService extends ServiceInfoAccess implements ServiceParameterService<ServiceOutput> {
 
 
-//    @Override
+    @Override
     public ServiceCollectionOutput getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -51,7 +52,7 @@ public class ServiceAccessService extends ServiceInfoAccess {
         }
     }
 
-//    @Override
+    @Override
     public ServiceCollectionOutput getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -63,12 +64,12 @@ public class ServiceAccessService extends ServiceInfoAccess {
         }
     }
 
-//    @Override
+    @Override
     public ServiceCollectionOutput getParameters(String[] items) {
         return getParameters(items, IoParameters.createDefaults());
     }
 
-//    @Override
+    @Override
     public ServiceCollectionOutput getParameters(String[] items, IoParameters query) {
         for (String serviceId : items) {
             ServiceOutput result = getParameter(serviceId, query);
@@ -79,12 +80,12 @@ public class ServiceAccessService extends ServiceInfoAccess {
         return null;
     }
 
-//    @Override
+    @Override
     public ServiceOutput getParameter(String item) {
         return getParameter(item, IoParameters.createDefaults());
     }
 
-//    @Override
+    @Override
     public ServiceOutput getParameter(String item, IoParameters query) {
         try {
             ServiceRepository serviceRepository = createServiceRepository();
@@ -98,7 +99,7 @@ public class ServiceAccessService extends ServiceInfoAccess {
         }
     }
 
-//    @Override
+    @Override
     public boolean isKnownTimeseries(String timeseriesId) {
 //        try {
 //            DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());

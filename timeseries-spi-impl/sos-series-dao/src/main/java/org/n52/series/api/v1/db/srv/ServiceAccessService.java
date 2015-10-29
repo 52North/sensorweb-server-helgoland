@@ -34,15 +34,15 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ServiceOutput;
+import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.api.v1.db.da.ServiceRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
-import org.n52.sensorweb.spi.ServiceParameterService;
 
-public class ServiceAccessService extends ServiceInfoAccess implements ServiceParameterService {
+public class ServiceAccessService extends ServiceInfoAccess implements ServiceParameterService<ServiceOutput> {
     
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
         return new OutputCollection<ServiceOutput>(result) {

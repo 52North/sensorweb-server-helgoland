@@ -27,15 +27,17 @@
  */
 package org.n52.series.db.da;
 
+import static org.n52.io.request.IoParameters.createFromQuery;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import static org.n52.io.request.IoParameters.createFromQuery;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.OfferingOutput;

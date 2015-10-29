@@ -41,7 +41,7 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.ProcedureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public abstract class AbstractProcedureRepository extends SessionAwareRepository  {
+public abstract class AbstractProcedureRepository<T> extends SessionAwareRepository implements OutputAssembler<T>  {
 
 	protected AbstractProcedureRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);

@@ -97,7 +97,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ObservationEntity.class)
+        Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
@@ -117,7 +117,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      */
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ObservationEntity.class)
+        Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
@@ -127,8 +127,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
 
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getObservationsFor(SeriesEntity series, DbQuery query) {
-        Criteria criteria = query.addTimespanTo(session
-                .createCriteria(ObservationEntity.class))
+        Criteria criteria = query.addTimespanTo(getDefaultCriteria())
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         return criteria.list();
@@ -136,11 +135,15 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(ObservationEntity.class)
+        Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_DELETED, Boolean.FALSE))
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
+
+	@Override
+	protected Criteria getDefaultCriteria() {
+		return session.createCriteria(ObservationEntity.class);
+	}
 
 }

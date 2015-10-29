@@ -40,10 +40,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.dao.AbstractDao;
@@ -67,7 +67,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
          */
 
         List<SeriesEntity> series = new ArrayList<SeriesEntity>();
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria());
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
 
@@ -93,7 +93,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(SeriesEntity.class)
+        Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
         return (SeriesEntity) criteria.uniqueResult();
@@ -130,8 +130,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(SeriesEntity.class)
+        Criteria criteria = getDefaultCriteria()
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
@@ -148,6 +147,11 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                         Restrictions.isNotNull(alias + "lastValue")),
                 Restrictions.eq(alias + "published", true)));
         return criteria;
+    }
+    
+    @Override
+    protected Criteria getDefaultCriteria() {
+    	return session.createCriteria(SeriesEntity.class);
     }
 
 }

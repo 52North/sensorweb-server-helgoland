@@ -38,7 +38,7 @@ import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public class ProcedureRepository extends AbstractProcedureRepository implements OutputAssembler<ProcedureOutput> {
+public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOutput> {
 
     public ProcedureRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
