@@ -29,9 +29,22 @@ package org.n52.io.response.v2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
+import java.util.List;
 
 
 public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput> {
+	
+	public ProcedureOutputCollection() {
+		super();
+	}
+	
+	public ProcedureOutputCollection(ProcedureOutput item) {
+		super(item);
+	}
+	
+	public ProcedureOutputCollection(List<ProcedureOutput> items) {
+		super(items);
+	}
     
     @Override
     @JsonProperty(value = "procedures")

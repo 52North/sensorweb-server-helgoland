@@ -40,11 +40,16 @@ public class OutputCollection<T> implements Iterable<T> {
         this.items = Collections.emptyList();
     }
 
-    protected OutputCollection(List<T> itmes) {
-        this.items = itmes;
+    protected OutputCollection(T item) {
+    	this();
+    	this.items.add(item);
+	}
+
+	protected OutputCollection(List<T> itmes) {
+		this.items = itmes;
     }
     
-    public void addtem(T item) {
+    public void addItem(T item) {
         items.add(item);
     }
     
