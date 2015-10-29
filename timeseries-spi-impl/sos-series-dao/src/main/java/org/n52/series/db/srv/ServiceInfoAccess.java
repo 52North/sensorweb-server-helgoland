@@ -25,9 +25,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.srv;
+package org.n52.series.db.srv;
 
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.beans.ServiceInfo;
 
 public abstract class ServiceInfoAccess {
     
@@ -40,6 +40,5 @@ public abstract class ServiceInfoAccess {
     public void setServiceInfo(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
-
     
 }

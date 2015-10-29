@@ -35,6 +35,7 @@ import org.n52.io.response.v1.CategoryOutput;
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.ParameterService;
 

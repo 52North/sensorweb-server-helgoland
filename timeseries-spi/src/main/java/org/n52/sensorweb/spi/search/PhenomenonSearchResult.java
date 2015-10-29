@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.sensorweb.spi.search.v1;
+package org.n52.sensorweb.spi.search;
 
 import org.n52.sensorweb.spi.SearchResult;
 

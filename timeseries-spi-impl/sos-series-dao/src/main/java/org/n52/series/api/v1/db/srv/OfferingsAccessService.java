@@ -38,6 +38,7 @@ import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {

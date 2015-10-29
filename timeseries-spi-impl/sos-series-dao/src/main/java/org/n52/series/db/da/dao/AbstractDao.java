@@ -31,8 +31,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.beans.I18nEntity;
 
 public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     

@@ -37,6 +37,7 @@ import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
+import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.sensorweb.spi.SearchService;
 import org.n52.sensorweb.spi.SearchResult;
 

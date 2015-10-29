@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da.dao;
+package org.n52.series.db.da.dao;
 
 import java.util.List;
 
@@ -37,11 +37,10 @@ import org.hibernate.criterion.Restrictions;
 import static org.hibernate.criterion.Restrictions.eq;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
-import org.n52.series.api.v1.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.beans.I18nProcedureEntity;
+import org.n52.series.db.da.beans.ProcedureEntity;
 
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 

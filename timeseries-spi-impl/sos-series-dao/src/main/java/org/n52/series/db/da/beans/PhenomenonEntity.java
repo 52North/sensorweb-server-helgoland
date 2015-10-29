@@ -25,8 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da.beans;
-
+package org.n52.series.db.da.beans;
 
 public class PhenomenonEntity extends DescribableEntity<I18nPhenomenonEntity> {
 

@@ -27,6 +27,9 @@
  */
 package org.n52.series.api.v1.db.da.beans;
 
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.I18nFeatureEntity;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 

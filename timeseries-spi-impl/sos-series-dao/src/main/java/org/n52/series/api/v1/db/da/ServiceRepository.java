@@ -32,9 +32,9 @@ import java.util.List;
 
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ServiceOutput.ParameterCount;
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.InternalServerException;
 
 public class ServiceRepository implements OutputAssembler<ServiceOutput> {
