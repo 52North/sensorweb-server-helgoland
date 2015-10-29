@@ -27,15 +27,24 @@
  */
 package org.n52.io.response.v2;
 
+import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import org.n52.io.geojson.GeoJSONFeature;
 
 public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
     @Override
     @JsonProperty(value = "features")
-    public Collection<FeatureOutput> getItems() {
+    public List<FeatureOutput> getItems() {
         return super.getItems();
     }
+    
+    @Override
+    protected Comparator<FeatureOutput> getComparator() {
+        return GeoJSONFeature.defaultComparator();
+    }
+    
 }
  

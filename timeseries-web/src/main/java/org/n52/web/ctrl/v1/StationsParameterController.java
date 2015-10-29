@@ -35,7 +35,7 @@ import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.StationOutput;
+import org.n52.io.response.OutputCollection;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
@@ -64,21 +64,21 @@ public class StationsParameterController {
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            Object[] result = parameterService.getExpandedParameters(map);
+            OutputCollection<?> result = parameterService.getExpandedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
 
-            return new ModelAndView().addObject(result);
+            return new ModelAndView().addObject(result.getItems());
         }
         else {
             Stopwatch stopwatch = startStopwatch();
-            Object[] result = parameterService.getCondensedParameters(map);
+            OutputCollection<?>  result = parameterService.getCondensedParameters(map);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
 
-            return new ModelAndView().addObject(result);
+            return new ModelAndView().addObject(result.getItems());
         }
     }
 

@@ -29,9 +29,25 @@ package org.n52.io.response;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-public class ParameterOutput implements CollatorComparable<ParameterOutput> {
+public abstract class ParameterOutput implements CollatorComparable<ParameterOutput> {
+
+    /**
+     * Takes the labels to compare.
+     * 
+     * @param <T> the actual type.
+     * @return a label comparing {@link Comparator}
+     */
+    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+        return new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return o1.getLabel().compareTo(o2.getLabel());
+            }
+        };
+    }
 
     private String id;
 

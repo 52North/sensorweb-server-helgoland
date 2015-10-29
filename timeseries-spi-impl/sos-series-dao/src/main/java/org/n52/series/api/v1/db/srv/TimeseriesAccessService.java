@@ -28,6 +28,7 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
@@ -35,6 +36,8 @@ import org.n52.io.format.TvpDataCollection;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
@@ -45,6 +48,15 @@ import org.n52.sensorweb.spi.TimeseriesDataService;
 
 public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ParameterService<TimeseriesMetadataOutput> {
 
+    private OutputCollection<TimeseriesMetadataOutput> createOutputCollection(List<TimeseriesMetadataOutput> results) {
+        return new OutputCollection<TimeseriesMetadataOutput>(results) {
+                @Override
+                protected Comparator<TimeseriesMetadataOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
     public TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         try {
@@ -72,44 +84,44 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     }
 
     @Override
-    public TimeseriesMetadataOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new TimeseriesMetadataOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get timeseries metadata from database.", e);
         }
     }
 
     @Override
-    public TimeseriesMetadataOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new TimeseriesMetadataOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get series data.", e);
         }
     }
 
     @Override
-    public TimeseriesMetadataOutput[] getParameters(String[] items) {
+    public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items) {
         return getParameters(items, IoParameters.createDefaults());
     }
 
     @Override
-    public TimeseriesMetadataOutput[] getParameters(String[] items, IoParameters query) {
+    public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
-            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+            List<TimeseriesMetadataOutput> results = new ArrayList<>();
             for (String timeseriesId : items) {
                 results.add(repository.getInstance(timeseriesId, dbQuery));
             }
-            return results.toArray(new TimeseriesMetadataOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get series data.", e);
         }

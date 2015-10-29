@@ -28,9 +28,11 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ProcedureOutput;
@@ -43,52 +45,65 @@ import org.n52.web.exception.InternalServerException;
 
 public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {
 
+    private OutputCollection<OfferingOutput> createOutputCollection(List<OfferingOutput> results) {
+        return new OutputCollection<OfferingOutput>(results) {
+                @Override
+                protected Comparator<OfferingOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
-    public OfferingOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<OfferingOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
-            List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new OfferingOutput[results.size()]);
+            List<OfferingOutput> results = new ArrayList<>();
+            List<ProcedureOutput> procedures = repository.getAllExpanded(dbQuery);
+            for (ProcedureOutput procedureOutput : procedures) {
+                results.add(createOfferingFrom(procedureOutput));
+            }
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get offering data.");
+            throw new InternalServerException("Could not get offering data.", e);
         }
     }
 
     @Override
-    public OfferingOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<OfferingOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
-            List<OfferingOutput> results = new ArrayList<OfferingOutput>();
+            List<OfferingOutput> results = new ArrayList<>();
             List<ProcedureOutput> procedures = repository.getAllCondensed(dbQuery);
             for (ProcedureOutput procedureOutput : procedures) {
                 results.add(createOfferingFrom(procedureOutput));
             }
-            return results.toArray(new OfferingOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get offering data.");
+            throw new InternalServerException("Could not get offering data.", e);
         }
     }
 
     @Override
-    public OfferingOutput[] getParameters(String[] offeringIds) {
+    public OutputCollection<OfferingOutput> getParameters(String[] offeringIds) {
         return getParameters(offeringIds, IoParameters.createDefaults());
     }
 
     @Override
-    public OfferingOutput[] getParameters(String[] offeringIds, IoParameters query) {
+    public OutputCollection<OfferingOutput> getParameters(String[] offeringIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
-            List<OfferingOutput> results = new ArrayList<OfferingOutput>();
+            List<OfferingOutput> results = new ArrayList<>();
             for (String offeringId : offeringIds) {
                 ProcedureOutput procedure = repository.getInstance(offeringId, dbQuery);
                 results.add(createOfferingFrom(procedure));
             }
-            return results.toArray(new OfferingOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get offering data.");
+            throw new InternalServerException("Could not get offering data.", e);
         }
     }
 
@@ -104,7 +119,7 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
             ProcedureRepository repository = createProcedureRepository();
             return createOfferingFrom(repository.getInstance(offeringId, dbQuery));
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get offering data");
+            throw new InternalServerException("Could not get offering data", e);
         }
     }
 

@@ -30,6 +30,7 @@ package org.n52.sensorweb.spi.v1;
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 
 /**
  * Composes a {@link ParameterService} for {@link GeojsonFeature}s to transform geometries to requested spatial
@@ -44,26 +45,26 @@ public class TransformingGeojsonOutputService extends TransformationService impl
     }
 
     @Override
-    public GeojsonFeature[] getExpandedParameters(IoParameters query) {
-        GeojsonFeature[] features = composedService.getExpandedParameters(query);
+    public OutputCollection<GeojsonFeature> getExpandedParameters(IoParameters query) {
+        OutputCollection<GeojsonFeature> features = composedService.getExpandedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature[] getCondensedParameters(IoParameters query) {
-        GeojsonFeature[] features = composedService.getCondensedParameters(query);
+    public OutputCollection<GeojsonFeature> getCondensedParameters(IoParameters query) {
+        OutputCollection<GeojsonFeature> features = composedService.getCondensedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature[] getParameters(String[] items) {
-        GeojsonFeature[] features = composedService.getParameters(items);
+    public OutputCollection<GeojsonFeature> getParameters(String[] items) {
+        OutputCollection<GeojsonFeature> features = composedService.getParameters(items);
         return transformFeatures(IoParameters.createDefaults(), features);
     }
 
     @Override
-    public GeojsonFeature[] getParameters(String[] items, IoParameters query) {
-        GeojsonFeature[] features = composedService.getParameters(items, query);
+    public OutputCollection<GeojsonFeature> getParameters(String[] items, IoParameters query) {
+        OutputCollection<GeojsonFeature> features = composedService.getParameters(items, query);
         return transformFeatures(query, features);
     }
 
@@ -81,7 +82,7 @@ public class TransformingGeojsonOutputService extends TransformationService impl
         return feature;
     }
     
-    private GeojsonFeature[] transformFeatures(IoParameters query, GeojsonFeature[] features) {
+    private OutputCollection<GeojsonFeature> transformFeatures(IoParameters query, OutputCollection<GeojsonFeature> features) {
         if (features != null) {
             for (GeojsonFeature feature : features) {
                 transformInline(feature, query);

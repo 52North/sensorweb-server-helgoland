@@ -28,10 +28,13 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.CategoryOutput;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
@@ -41,47 +44,56 @@ import org.n52.sensorweb.spi.ParameterService;
 
 public class CategoriesAccessService extends ServiceInfoAccess implements ParameterService<CategoryOutput> {
 
+    private OutputCollection<CategoryOutput> createOutputCollection(List<CategoryOutput> results) {
+        return new OutputCollection<CategoryOutput>(results) {
+                @Override
+                protected Comparator<CategoryOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
-    public CategoryOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<CategoryOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new CategoryOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get category data.", e);
         }
     }
-
+    
     @Override
-    public CategoryOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<CategoryOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new CategoryOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get category data.", e);
         }
     }
 
     @Override
-    public CategoryOutput[] getParameters(String[] categoryIds) {
+    public OutputCollection<CategoryOutput> getParameters(String[] categoryIds) {
         return getParameters(categoryIds, IoParameters.createDefaults());
     }
 
     @Override
-    public CategoryOutput[] getParameters(String[] categoryIds, IoParameters query) {
+    public OutputCollection<CategoryOutput> getParameters(String[] categoryIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
-            List<CategoryOutput> results = new ArrayList<CategoryOutput>();
+            List<CategoryOutput> results = new ArrayList<>();
             for (String categoryId : categoryIds) {
                 results.add(repository.getInstance(categoryId, dbQuery));
             }
-            return results.toArray(new  CategoryOutput[0]);
+            return createOutputCollection(results);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get category data.");
+            throw new InternalServerException("Could not get category data.", e);
         }
     }
 
@@ -97,7 +109,7 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
             CategoryRepository repository = createCategoryRepository();
             return repository.getInstance(categoryId, dbQuery);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get category data.");
+            throw new InternalServerException("Could not get category data.", e);
         }
     }
 

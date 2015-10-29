@@ -28,9 +28,12 @@
 package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import org.n52.io.geojson.old.GeojsonFeature;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.db.da.DataAccessException;
@@ -41,6 +44,15 @@ import org.n52.sensorweb.spi.ParameterService;
 
 public class StationsAccessService extends ServiceInfoAccess implements ParameterService<StationOutput> {
 
+    private OutputCollection<StationOutput> createOutputCollection(List<StationOutput> results) {
+        return new OutputCollection<StationOutput>(results) {
+                @Override
+                protected Comparator<StationOutput> getComparator() {
+                    return GeojsonFeature.defaultComparator();
+                }
+            };
+    }
+    
     public StationsAccessService(String dbSrid) {
         if (dbSrid != null) {
             StationRepository repository = createStationRepository();
@@ -49,49 +61,49 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     }
 
     @Override
-    public StationOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<StationOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new StationOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get station data.");
+            throw new InternalServerException("Could not get station data.", e);
         }
     }
 
     @Override
-    public StationOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<StationOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new StationOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get station data.");
+            throw new InternalServerException("Could not get station data.", e);
         }
     }
 
     @Override
-    public StationOutput[] getParameters(String[] stationsIds) {
+    public OutputCollection<StationOutput> getParameters(String[] stationsIds) {
         return getParameters(stationsIds, IoParameters.createDefaults());
     }
 
     @Override
-    public StationOutput[] getParameters(String[] stationIds, IoParameters query) {
+    public OutputCollection<StationOutput> getParameters(String[] stationIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             StationRepository repository = createStationRepository();
-            List<StationOutput> results = new ArrayList<StationOutput>();
+            List<StationOutput> results = new ArrayList<>();
             for (String stationId : stationIds) {
                 results.add(repository.getInstance(stationId, dbQuery));
             }
-            return results.toArray(new StationOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get station data.");
+            throw new InternalServerException("Could not get station data.", e);
         }
     }
 
@@ -108,7 +120,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
             return repository.getInstance(stationId, dbQuery);
         }
         catch (DataAccessException e) {
-            throw new InternalServerException("Could not get station data.");
+            throw new InternalServerException("Could not get station data.", e);
         }
     }
 

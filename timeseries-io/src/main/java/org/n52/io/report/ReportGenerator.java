@@ -27,6 +27,7 @@
  */
 package org.n52.io.report;
 
+import java.util.List;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 
@@ -61,7 +62,7 @@ public abstract class ReportGenerator implements IoHandler {
         return context;
     }
 
-    protected TimeseriesMetadataOutput[] getTimeseriesMetadatas() {
+    protected List<TimeseriesMetadataOutput> getTimeseriesMetadatas() {
         return getContext().getTimeseriesMetadatas();
     }
 

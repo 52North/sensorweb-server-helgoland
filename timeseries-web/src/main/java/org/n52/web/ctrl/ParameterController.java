@@ -47,6 +47,7 @@ import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.n52.io.extension.MetadataExtension;
+import org.n52.io.response.OutputCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -98,20 +99,24 @@ public abstract class ParameterController extends BaseController {
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            OutputCollection<ParameterOutput> result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
 
-            return new ModelAndView().addObject(result);
+            return createModelAndView(result);
         }
         else {
-            ParameterOutput[] results = parameterService.getCondensedParameters(queryMap);
+            OutputCollection<ParameterOutput> results = parameterService.getCondensedParameters(queryMap);
 
             // TODO add paging
 
-            return new ModelAndView().addObject(results);
+            return createModelAndView(results);
         }
+    }
+    
+    protected ModelAndView createModelAndView(OutputCollection<?> items) {
+        return new ModelAndView().addObject(items);
     }
 
     @RequestMapping(value = "/{item}", method = GET)
@@ -127,7 +132,7 @@ public abstract class ParameterController extends BaseController {
         return new ModelAndView().addObject(parameter);
     }
 
-    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
+    protected OutputCollection<ParameterOutput> doPostProcessOn(OutputCollection<ParameterOutput> toBeProcessed) {
 
         for (ParameterOutput parameterOutput : toBeProcessed) {
             doPostProcessOn(parameterOutput);
