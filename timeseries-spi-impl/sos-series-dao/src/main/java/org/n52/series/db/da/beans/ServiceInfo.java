@@ -25,13 +25,15 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da.beans;
+package org.n52.series.db.da.beans;
 
 public class ServiceInfo {
     
     private String serviceId;
     
     private String serviceDescription;
+    
+    private String type = "Thin DB access layer service.";
 
     public String getServiceId() {
         return serviceId;
@@ -48,5 +50,13 @@ public class ServiceInfo {
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
     
 }
