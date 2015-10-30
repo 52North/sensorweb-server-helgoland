@@ -11,5 +11,5 @@
 		REFERENCES series (seriesid) MATCH SIMPLE
 		ON UPDATE NO ACTION ON DELETE NO ACTION,
 	CONSTRAINT metadataidentity UNIQUE (series_id, field_name),
-	CONSTRAINT chk_type CHECK (field_type IN ('string','boolean','integer','double','text'))
+	CONSTRAINT chk_type CHECK (field_type IN ('string','boolean','integer','double','text','json'))
 )

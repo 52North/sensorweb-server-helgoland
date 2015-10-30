@@ -19,6 +19,10 @@
             <property name="value" column="field_value" type="string" />
         </subclass>
         
+        <subclass name="MetadataJsonEntity" discriminator-value="json">
+            <property name="value" column="field_value" type="string" />
+        </subclass>
+        
         <subclass name="MetadataBooleanEntity" discriminator-value="boolean">
             <property name="value" column="field_value" type="org.hibernate.type.BooleanType" />
         </subclass>
@@ -30,5 +34,6 @@
         <subclass name="MetadataIntegerEntity" discriminator-value="integer">
             <property name="value" column="field_value" type="integer" />
         </subclass>
+        
     </class>
 </hibernate-mapping>
