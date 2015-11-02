@@ -10,7 +10,7 @@
         <property name="canonicalId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
-        <set name="trackLocations"
+        <list name="trackLocations"
              table="observationHasOffering"
              inverse="false"
              fetch="select"
@@ -21,6 +21,6 @@
             <many-to-many entity-name="TrackLocationEntity" >
                 <column name="observationId"  not-null="true" />
             </many-to-many>
-        </set>
+        </list>
     </class>
 </hibernate-mapping>
