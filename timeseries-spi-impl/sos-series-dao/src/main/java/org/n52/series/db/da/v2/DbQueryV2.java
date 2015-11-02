@@ -31,9 +31,14 @@ import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
@@ -47,7 +52,7 @@ public class DbQueryV2 extends DbQuery {
 
 	@Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
+		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class, "series");
 
 		if (getParameters().getPhenomenon() != null) {
 			filter.createCriteria("phenomenon")
@@ -57,24 +62,26 @@ public class DbQueryV2 extends DbQuery {
 			filter.createCriteria("procedure")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
 		}
-		if (getParameters().getOffering() != null) {
-			// here procedure == offering
-			filter.createCriteria("procedure")
-					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
-		}
 //		if (getParameters().getFeature() != null) {
-//			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
+//			Long id = preParse(getParameters().getFeature());
+//			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
 //		}
-//		if (getParameters().getStation() != null) {
-//			// here feature == station
-//			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
-//		}
+		if (getParameters().getOther("platform") != null) {
+			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
+		}
 		if (getParameters().getCategory() != null) {
 			filter.createCriteria("category")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
 		}
 
 		return filter.setProjection(projectionList().add(property(propertyName)));
+	}
+
+	private Long preParse(String feature) {
+		if (feature.contains("_")) {
+			return parseToId(feature.substring(feature.lastIndexOf("_")));
+		}
+		return parseToId(feature);
 	}
 
 	public static DbQuery createFrom(IoParameters parameters) {
