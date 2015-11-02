@@ -85,7 +85,7 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         }
         
         // TODO add DetachedCriteria to DbQuery, is this required?
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("site");
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
         criteria.add(Subqueries.propertyIn("s.pkid", filter));
                 
         parameters.addSpatialFilterTo(criteria, parameters);
