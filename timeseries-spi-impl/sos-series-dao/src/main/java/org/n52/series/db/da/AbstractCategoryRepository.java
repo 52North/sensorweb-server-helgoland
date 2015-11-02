@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.CategorySearchResult;
 import org.n52.series.db.da.beans.CategoryEntity;
@@ -53,7 +54,7 @@ public abstract class AbstractCategoryRepository<T> extends SessionAwareReposito
         Session session = getSession();
         try {
             CategoryDao categoryDao = new CategoryDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
             List<CategoryEntity> found = categoryDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }

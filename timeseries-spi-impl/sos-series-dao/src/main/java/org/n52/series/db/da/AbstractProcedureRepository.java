@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.ProcedureSearchResult;
 import org.n52.series.db.da.beans.DescribableEntity;
@@ -52,7 +53,7 @@ public abstract class AbstractProcedureRepository<T> extends SessionAwareReposit
         Session session = getSession();
         try {
             ProcedureDao procedureDao = new ProcedureDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
             List<ProcedureEntity> found = procedureDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.series.db.da.AbstractCategoryRepository;
 import org.n52.series.db.da.DataAccessException;
@@ -102,4 +103,13 @@ public class CategoryRepository extends AbstractCategoryRepository<CategoryOutpu
         return result;
     }
 
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 }

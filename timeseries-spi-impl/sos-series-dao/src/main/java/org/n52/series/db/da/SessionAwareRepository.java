@@ -105,14 +105,20 @@ public abstract class SessionAwareRepository {
         return serviceInfo;
     }
 
+    @Deprecated
     protected DbQuery createDefaultsWithLocale(String locale) {
-        if (locale == null) {
-            return DbQuery.createFrom(IoParameters.createDefaults());
-        }
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("locale", locale);
-        return DbQuery.createFrom(createFromQuery(parameters));
+//        if (locale == null) {
+//            return DbQuery.createFrom(IoParameters.createDefaults());
+//        }
+//        Map<String, String> parameters = new HashMap<String, String>();
+//        parameters.put("locale", locale);
+//        return DbQuery.createFrom(createFromQuery(parameters));
+        return getDbQuery(IoParameters.createDefaults(), locale);
     }
+    
+    protected abstract DbQuery getDbQuery(IoParameters parameters);
+    
+    protected abstract DbQuery getDbQuery(IoParameters parameters, String locale);
 
     protected ServiceOutput getServiceOutput() throws DataAccessException {
         ServiceRepository serviceRepository = createServiceRepository();

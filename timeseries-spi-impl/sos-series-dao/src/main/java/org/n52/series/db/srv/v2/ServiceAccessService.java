@@ -33,6 +33,7 @@ import org.n52.io.response.v2.ServiceOutput;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.v2.DbQueryV2;
 import org.n52.series.db.da.v2.ServiceRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
@@ -43,7 +44,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public ServiceCollectionOutput getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV2.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             return serviceRepository.getAllExpanded(dbQuery);
         }
@@ -55,7 +56,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public ServiceCollectionOutput getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV2.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             return serviceRepository.getAllCondensed(dbQuery);
         }
@@ -91,7 +92,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
             ServiceRepository serviceRepository = createServiceRepository();
             String serviceId = serviceRepository.getServiceId();
             return serviceId.equals(item) ?
-                serviceRepository.getInstance(serviceId, DbQuery.createFrom(query))
+                serviceRepository.getInstance(serviceId, DbQueryV2.createFrom(query))
                 : null;
         }
         catch (DataAccessException e) {

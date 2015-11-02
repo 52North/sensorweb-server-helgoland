@@ -39,6 +39,7 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesValue;
@@ -77,7 +78,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntity> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
         }
@@ -346,5 +347,15 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             .setScale(scale, HALF_UP)
             .doubleValue();
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 
 }

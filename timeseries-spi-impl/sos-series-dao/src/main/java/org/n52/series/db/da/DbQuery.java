@@ -27,8 +27,6 @@
  */
 package org.n52.series.db.da;
 
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
@@ -46,7 +44,7 @@ import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -55,11 +53,11 @@ import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 
-public class DbQuery {
+public abstract class DbQuery {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbQuery.class);
 
-    private static final String COLUMN_KEY = "pkid";
+    protected static final String COLUMN_KEY = "pkid";
 
     private static final String COLUMN_LOCALE = "locale";
 
@@ -69,11 +67,13 @@ public class DbQuery {
 
     private String sridAuthorityCode = "EPSG:4326"; // default
 
-    private DbQuery(IoParameters parameters) {
+    protected DbQuery(IoParameters parameters) {
         if (parameters != null) {
             this.parameters = parameters;
         }
     }
+    
+    public abstract DetachedCriteria createDetachedFilterCriteria(String propertyName);
 
     public void setDatabaseAuthorityCode(String code) {
         this.sridAuthorityCode = code;
@@ -128,46 +128,13 @@ public class DbQuery {
         return criteria;
     }
 
-    public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
-
-        if (parameters.getPhenomenon() != null) {
-            filter.createCriteria("phenomenon")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getPhenomenon())));
-        }
-        if (parameters.getProcedure() != null) {
-            filter.createCriteria("procedure")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getProcedure())));
-        }
-        if (parameters.getOffering() != null) {
-            // here procedure == offering
-            filter.createCriteria("procedure")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getOffering())));
-        }
-        if (parameters.getFeature() != null) {
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getFeature())));
-        }
-        if (parameters.getStation() != null) {
-            // here feature == station
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getStation())));
-        }
-        if (parameters.getCategory() != null) {
-            filter.createCriteria("category")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getCategory())));
-        }
-
-        return filter.setProjection(projectionList().add(property(propertyName)));
-    }
-
     /**
      * @param id
      *        the id string to parse.
      * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
      *         long.
      */
-    private Long parseToId(String id) {
+    protected Long parseToId(String id) {
         try {
             return Long.parseLong(id);
         }
@@ -196,9 +163,9 @@ public class DbQuery {
         }
         return criteria;
     }
-
-    public static DbQuery createFrom(IoParameters parameters) {
-        return new DbQuery(parameters);
+    
+    protected IoParameters getParameters() {
+    	return parameters;
     }
-
+    
 }

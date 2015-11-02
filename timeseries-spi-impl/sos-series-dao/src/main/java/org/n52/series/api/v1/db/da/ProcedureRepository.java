@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.series.db.da.AbstractProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
@@ -95,4 +96,14 @@ public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOu
         result.setId(Long.toString(entity.getPkid()));
         return result;
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 }

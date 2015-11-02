@@ -37,6 +37,7 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.CategoryRepository;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
@@ -56,7 +57,7 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<CategoryOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -68,7 +69,7 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<CategoryOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -85,7 +86,7 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<CategoryOutput> getParameters(String[] categoryIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = new ArrayList<>();
             for (String categoryId : categoryIds) {
@@ -105,7 +106,7 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     @Override
     public CategoryOutput getParameter(String categoryId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             CategoryRepository repository = createCategoryRepository();
             return repository.getInstance(categoryId, dbQuery);
         } catch (DataAccessException e) {

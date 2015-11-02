@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
@@ -57,7 +58,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = featureDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }
@@ -135,4 +136,14 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         return result;
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 }
