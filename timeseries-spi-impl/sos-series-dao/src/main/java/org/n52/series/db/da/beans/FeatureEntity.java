@@ -43,7 +43,7 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
         this.geom = geom;
     }
     
-    public boolean isSetGeometry() {
+    public boolean isSetGeom() {
     	return getGeom() != null && !getGeom().isEmpty();
     }
 

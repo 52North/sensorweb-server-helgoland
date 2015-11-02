@@ -43,6 +43,10 @@ public class TrackEntity extends DescribableEntity<I18nTrackEntity> {
 		this.trackLocations = trackLocations;
 	}
 	
+	public boolean hasTrackLocations() {
+		return getTrackLocations() != null && !getTrackLocations().isEmpty();
+	}
+	
 	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

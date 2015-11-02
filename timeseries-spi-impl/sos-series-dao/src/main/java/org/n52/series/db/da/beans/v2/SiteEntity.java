@@ -42,6 +42,10 @@ public class SiteEntity extends DescribableEntity<I18nSiteEntity> {
     public void setGeom(Geometry geom) {
         this.geom = geom;
     }
+    
+    public boolean isSetGeom() {
+    	return getGeom() != null && !getGeom().isEmpty();
+    }
 
     @Override
     public String toString() {
@@ -50,5 +54,5 @@ public class SiteEntity extends DescribableEntity<I18nSiteEntity> {
         sb.append(" Canonical id: ").append(getCanonicalId());
         return sb.append(" ]").toString();
     }
-    
+
 }
