@@ -119,18 +119,8 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		return criteria;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Long> getRelatedPlatforms(Long pkid) {
-		// From SOS to get FeatureOfInterest for Offering
-//		 Criteria c = observationDAO.getDefaultObservationInfoCriteria(session);
-//	     if (observationDAO instanceof SeriesObservationDAO) {
-//	         Criteria seriesCriteria = c.createCriteria(ContextualReferencedSeriesObservation.SERIES);
-//	         seriesCriteria.createCriteria(Series.FEATURE_OF_INTEREST).setProjection(
-//	                 Projections.distinct(Projections.property(FeatureOfInterest.IDENTIFIER)));
-	//
-//	         public void addOfferingRestricionForObservation(Criteria c, String offering) {
-//	             criteria.createCriteria(AbstractObservation.OFFERINGS).add(Restrictions.eq(Offering.IDENTIFIER, offering));
-//	         }
-		
 		/*
 		 * SELECT DISTINCT f.featureOfInterestId FROM observation o, series s,
 		 * featureOfInterest f, offering of, observationHasOffering oo WHERE
