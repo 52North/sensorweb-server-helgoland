@@ -46,8 +46,8 @@ public class GeoJSONFeature extends GeoJSONObject {
                 }
 
                 private String getLabelOf(GeoJSONFeature feature) {
-                    return feature.hasProperty("label")
-                            ? (String) feature.getProperty("label")
+                    return feature.hasProperty(LABEL)
+                            ? (String) feature.getProperty(LABEL)
                             : "";
                 }
             };
