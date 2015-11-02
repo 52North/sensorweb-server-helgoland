@@ -39,14 +39,8 @@ public class MetadataJsonEntity extends MetadataEntity<String> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetadataJsonEntity.class);
     
-    @Override
-    @JsonIgnore
-    public String getValue() {
-        return super.getValue();
-    }
-    
     @JsonGetter(value = "value")
-    public JsonNode getSerializedValue() {
+    public JsonNode getJsonValue() {
         ObjectMapper om = new ObjectMapper();
         try {
             return om.readTree(getValue());
