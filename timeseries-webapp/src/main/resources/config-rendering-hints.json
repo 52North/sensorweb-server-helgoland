@@ -1,6 +1,6 @@
 {
     "phenomenonStyles": {
-        "phe_39b6c8bd9f50fc1892b407c9268cf557": {
+        "6": {
             "style": {
                 "chartType": "bar",
                 "properties": {
@@ -12,7 +12,7 @@
         }
     },
     "timeseriesStyles": {
-        "ts_20775c426a66cbd01ca662fcdfd28d44": {
+        "1": {
             "style": {
                 "chartType": "bar",
                 "properties": {

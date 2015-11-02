@@ -25,51 +25,31 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Test;
 
-import org.n52.io.request.StyleProperties;
-
-public class ConfigRenderingHints {
-
-	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
-
-	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
-
-	public ConfigRenderingHints() {
-		
-	}
-	
-	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
-		return phenomenonStyles;
-	}
-
-	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
-		this.phenomenonStyles = phenomenonStyles;
-	}
-
-	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-		return timeseriesStyles;
-	}
-
-	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-		this.timeseriesStyles = timeseriesStyles;
-	}
-
-	public static class ConfiguredStyle {
-
-		private StyleProperties style;
-
-		public StyleProperties getStyle() {
-			return style;
-		}
-
-		public void setStyle(StyleProperties style) {
-			this.style = style;
-		}
-
-	}
-
+public class MetadataJsonEntitiyTest {
+    
+    @Test
+    public void givenMetadataJsonEntity_whenSerialize_ValueAsJsonNode() throws JsonProcessingException, IOException {
+        MetadataJsonEntity entity = new MetadataJsonEntity();
+        entity.setPkid(1L);
+        entity.setName("some_metadata");
+        entity.setSeriesId(1L);
+        entity.setType("json");
+        entity.setValue("{\"key\":\"value\",\"object\":{\"key1\":\"string\",\"key2\":42}}");
+        
+        ObjectMapper om = new ObjectMapper();
+        String jsonString = om.writeValueAsString(entity);
+        JsonNode jsonNode = om.readTree(jsonString);
+        JsonNode at = jsonNode.path("value").path("object");
+        Assert.assertTrue(at.isObject());
+    }
+            
 }

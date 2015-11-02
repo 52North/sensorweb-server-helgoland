@@ -21,10 +21,10 @@
     </bean>
 
 
-    <bean class="org.n52.web.ctrl.v1.ParameterController" id="parameterController" abstract="true">
-        <property name="configAppliers">
+    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="metadataExtensions">
             <list>
-                <bean class="org.n52.io.LicenseConfigApplier" />
+                <bean class="org.n52.io.response.ext.LicenseExtension" />
             </list>
         </property>
     </bean>
@@ -60,20 +60,13 @@
     <bean class="org.n52.web.ctrl.v1.TimeseriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
-        <property name="configAppliers">
-            <list>
-                <bean class="org.n52.io.RenderingHintsConfigApplier" />
-                <bean class="org.n52.io.StatusIntervalsConfigApplier" />
-                <bean class="org.n52.io.LicenseConfigApplier" />
-            </list>
-        </property>
         <property name="metadataExtensions">
-            <list>
-                <!--
-                <bean class="org.n52.io.extension.ResultTimeExtension">
-                    <property name="resultTimeService" ref="resultTimeService"/>
-                </bean>
-                -->
+            <list merge="true">
+                <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
+                <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
+                <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+                <!-- Have a look at the README.md at TBD -->
+                <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
             </list>
         </property>
     </bean>

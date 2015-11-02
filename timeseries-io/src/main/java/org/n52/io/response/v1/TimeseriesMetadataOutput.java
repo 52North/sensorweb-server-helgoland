@@ -50,9 +50,11 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     private TimeseriesOutput parameters;
 
     // TODO add as extra
+    @Deprecated
     private StyleProperties renderingHints;
 
     // TODO add as extra
+    @Deprecated
     private StatusInterval[] statusIntervals;
 
     public String getUom() {
@@ -104,21 +106,25 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     }
 
     // TODO add as extra
+    @Deprecated
     public StyleProperties getRenderingHints() {
         return this.renderingHints;
     }
 
     // TODO add as extra
+    @Deprecated
     public void setRenderingHints(StyleProperties renderingHints) {
         this.renderingHints = renderingHints;
     }
 
     // TODO add as extra
+    @Deprecated
     public StatusInterval[] getStatusIntervals() {
         return statusIntervals;
     }
 
     // TODO add as extra
+    @Deprecated
     public void setStatusIntervals(StatusInterval[] statusIntervals) {
         this.statusIntervals = statusIntervals;
     }

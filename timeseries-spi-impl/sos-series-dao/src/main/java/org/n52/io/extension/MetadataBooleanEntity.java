@@ -27,22 +27,6 @@
  */
 package org.n52.io.extension;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ConfigResultTime {
-    
-    private List<String> services = new ArrayList<String>();
-
-    public ConfigResultTime() {
-    }
-
-    public List<String> getServices() {
-        return services;
-    }
-
-    public void setServices(List<String> services) {
-        this.services = services;
-    }
+public class MetadataBooleanEntity extends MetadataEntity<Boolean> {
     
 }
