@@ -27,22 +27,28 @@
  */
 package org.n52.io.response.v2;
 
+import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.response.CollatorComparable;
 import java.text.Collator;
+import org.n52.io.geojson.GeoJSONException;
+import org.n52.io.geojson.GeoJSONFeature;
 
-import org.n52.io.geojson.GeojsonFeature;
 
-public class FeatureOutput extends GeojsonFeature implements CollatorComparable<FeatureOutput> {
+public class FeatureOutput extends GeoJSONFeature implements CollatorComparable<FeatureOutput> {
 
     private static final long serialVersionUID = -2868469756939569521L;
+
+    public FeatureOutput(String type, Geometry geometry) throws GeoJSONException {
+        super(type, geometry);
+    }
 
     @Override
     public int compare(Collator collator, FeatureOutput o) {
         if (collator == null) {
             collator = Collator.getInstance();
         }
-        String thisLabel = (String) getProperties().get("label");
-        String otherLabel = (String) o.getProperties().get("label");
+        String thisLabel = (String) getProperty("label");
+        String otherLabel = (String) o.getProperty("label");
         return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
     }
 

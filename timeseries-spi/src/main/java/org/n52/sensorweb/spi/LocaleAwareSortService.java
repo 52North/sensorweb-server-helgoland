@@ -27,13 +27,11 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.sensorweb.spi.ParameterService;
 import java.text.Collator;
-import java.util.Arrays;
 import java.util.Locale;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.CollatorComparable;
+import org.n52.io.response.OutputCollection;
 
 public class LocaleAwareSortService<T> implements ParameterService<T> {
 
@@ -48,31 +46,27 @@ public class LocaleAwareSortService<T> implements ParameterService<T> {
     }
 
     @Override
-    public T[] getExpandedParameters(IoParameters query) {
-        T[] result = composedService.getExpandedParameters(query);
-        sort(createCollator(query.getLocale()), result);
-        return result;
+    public OutputCollection<T> getExpandedParameters(IoParameters query) {
+        OutputCollection<T> result = composedService.getExpandedParameters(query);
+        return result.withSortedItems(createCollator(query.getLocale()));
     }
 
     @Override
-    public T[] getCondensedParameters(IoParameters query) {
-        T[] result = composedService.getCondensedParameters(query);
-        sort(createCollator(query.getLocale()), result);
-        return result;
+    public OutputCollection<T> getCondensedParameters(IoParameters query) {
+        OutputCollection<T> result = composedService.getCondensedParameters(query);
+        return result.withSortedItems(createCollator(query.getLocale()));
     }
 
     @Override
-    public T[] getParameters(String[] items) {
-        T[] result = composedService.getParameters(items);
-        Arrays.sort(result); // TODO sort locale dependend
-        return result;
+    public OutputCollection<T> getParameters(String[] items) {
+        OutputCollection<T> result = composedService.getParameters(items);
+        return result.withSortedItems(createCollator(IoParameters.createDefaults().getLocale()));
     }
 
     @Override
-    public T[] getParameters(String[] items, IoParameters query) {
-        T[] result = composedService.getParameters(items, query);
-        sort(createCollator(query.getLocale()), result);
-        return result;
+    public OutputCollection<T> getParameters(String[] items, IoParameters query) {
+        OutputCollection<T> result = composedService.getParameters(items, query);
+        return result.withSortedItems(createCollator(query.getLocale()));
     }
 
     @Override
@@ -83,37 +77,6 @@ public class LocaleAwareSortService<T> implements ParameterService<T> {
     @Override
     public T getParameter(String item, IoParameters query) {
         return composedService.getParameter(item, query);
-    }
-
-    private void sort(Collator collator, T[] toSort) {
-        if (toSort == null || toSort.length == 0) {
-            return;
-        }
-        
-        if ( !isCollatorComparable(toSort)) {
-            Arrays.sort(toSort);
-            return;
-        }
-        
-        for (int i = 0; i < toSort.length; i++) {
-            for (int j = i + 1; j < toSort.length; j++) {
-                CollatorComparable<T> first = (CollatorComparable<T>) toSort[i];
-                T second = toSort[j];
-                if (first.compare(collator, second) > 0) {
-                    swap(toSort, i, j);
-                }
-            }
-        }
-    }
-
-    private boolean isCollatorComparable(T[] toSort) {
-        return CollatorComparable.class.isAssignableFrom(toSort[0].getClass());
-    }
-
-    private void swap(T[] container, int i, int j) {
-        T tmp = container[i];
-        container[i] = container[j];
-        container[j] = tmp;;
     }
 
 }

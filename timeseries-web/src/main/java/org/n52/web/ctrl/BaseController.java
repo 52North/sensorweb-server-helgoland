@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.OutputStream;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -124,13 +125,13 @@ public abstract class BaseController {
         response.setStatus(status.value());
         response.setContentType(APPLICATION_JSON.getMimeType());
         ObjectMapper objectMapper = createObjectMapper();
-        ObjectWriter writer = objectMapper.writerWithType(ExceptionResponse.class);
+        ObjectWriter writer = objectMapper.writerFor(ExceptionResponse.class);
         ExceptionResponse exceptionResponse = createExceptionResponse(e, status);
-        try {
-            writer.writeValue(response.getOutputStream(), exceptionResponse);
+        try (OutputStream outputStream = response.getOutputStream()) {
+            writer.writeValue(outputStream, exceptionResponse);
         }
         catch (IOException ioe) {
-            LOGGER.error("Could not process error message.", e);
+            LOGGER.error("Could not process error message.", ioe);
         }
     }
 

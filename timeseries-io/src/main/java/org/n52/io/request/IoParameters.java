@@ -33,9 +33,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.geotools.util.MapEntry;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
@@ -47,7 +51,7 @@ import org.n52.io.crs.CRSUtils;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
@@ -70,7 +74,7 @@ public class IoParameters {
      * How detailed the output shall be.
      */
     static final String EXPANDED = "expanded";
-
+    
     /**
      * The default expansion of collection items.
      *
@@ -288,6 +292,11 @@ public class IoParameters {
      * Determines the bbox filter
      */
     static final String BBOX = "bbox";
+    
+    /**
+     * Determines the fields filter
+     */
+    static final String FIELDS = "fields";
 
     private Map<String, String> query;
 
@@ -569,6 +578,20 @@ public class IoParameters {
     public String getStation() {
         return query.get(STATION);
     }
+    
+    public Set<String> getFields() {
+        return query.containsKey(FIELDS)
+                ? new HashSet<>(csvToLowerCasedSet(query.get(FIELDS)))
+                : null;
+    }
+    
+    private Set<String> csvToLowerCasedSet(String csv){
+        String[] values = csv.split(",");
+        for (int i = 0; i < values.length; i++) {
+            values[i] = values[i].toLowerCase();
+        }
+        return new HashSet<>(Arrays.asList(values));
+    }
 
     /**
      * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting bounding
@@ -705,7 +728,7 @@ public class IoParameters {
     private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
-            Point crs84Point = crsUtils.transformOuterToInner(toTransformed, getCrs());
+            Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
             return crsUtils.convertToGeojsonFrom(crs84Point);
         }
         catch (TransformException e) {

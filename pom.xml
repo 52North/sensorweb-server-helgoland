@@ -369,6 +369,7 @@
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
                         <id>check-license</id>
@@ -465,7 +466,7 @@
                             <latestYearOfContribution>${currentYear}</latestYearOfContribution>
                             <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution>
                         </properties>
-                        <aggregate>true</aggregate>
+                        <!--<aggregate>true</aggregate>-->
                         <includes>
                             <include>src/**/*.java</include>
                         </includes>

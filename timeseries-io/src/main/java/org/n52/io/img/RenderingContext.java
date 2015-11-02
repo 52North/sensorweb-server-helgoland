@@ -27,29 +27,31 @@
  */
 package org.n52.io.img;
 
-import java.text.SimpleDateFormat;
-import org.n52.io.IntervalWithTimeZone;
+import java.util.Collections;
+import java.util.List;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.request.StyleProperties;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
 
 public final class RenderingContext {
 
-    private RequestStyledParameterSet chartStyleDefinitions;
+    private final RequestStyledParameterSet chartStyleDefinitions;
 
-    private TimeseriesMetadataOutput[] timeseriesMetadatas;
+    private final List<TimeseriesMetadataOutput> timeseriesMetadatas;
 
     // use static constructors
-    private RenderingContext(RequestStyledParameterSet timeseriesStyles, TimeseriesMetadataOutput[] timeseriesMetadatas) {
-        this.timeseriesMetadatas = timeseriesMetadatas == null ? new TimeseriesMetadataOutput[0] : timeseriesMetadatas;
+    private RenderingContext(RequestStyledParameterSet timeseriesStyles, List<TimeseriesMetadataOutput> timeseriesMetadatas) {
+        this.timeseriesMetadatas = timeseriesMetadatas.isEmpty()
+                ? Collections.<TimeseriesMetadataOutput>emptyList()
+                : timeseriesMetadatas;
         this.chartStyleDefinitions = timeseriesStyles;
     }
 
     public static RenderingContext createEmpty() {
-        return new RenderingContext(new RequestStyledParameterSet(), new TimeseriesMetadataOutput[0]);
+        List<TimeseriesMetadataOutput> emptyList = Collections.emptyList();
+        return new RenderingContext(new RequestStyledParameterSet(), emptyList);
     }
 
     /**
@@ -64,14 +66,14 @@ public final class RenderingContext {
      * @return a rendering context to be used by {@link IoFactory} to create an {@link IoHandler}.
      */
     public static RenderingContext createContextWith(RequestStyledParameterSet timeseriesStyles,
-                                                     TimeseriesMetadataOutput... timeseriesMetadatas) {
+                                                     List<TimeseriesMetadataOutput> timeseriesMetadatas) {
         if (timeseriesStyles == null || timeseriesMetadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
         String[] timeseriesIds = timeseriesStyles.getTimeseries();
-        if (timeseriesIds.length != timeseriesMetadatas.length) {
+        if (timeseriesIds.length != timeseriesMetadatas.size()) {
             int amountTimeseries = timeseriesIds.length;
-            int amountMetadatas = timeseriesMetadatas.length;
+            int amountMetadatas = timeseriesMetadatas.size();
             StringBuilder sb = new StringBuilder();
             sb.append("Size of designs and metadatas do not match: ");
             sb.append("#Timeseries: ").append(amountTimeseries).append(" vs. ");
@@ -85,7 +87,7 @@ public final class RenderingContext {
                                                                     IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
         parameters.addTimeseriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
-        return createContextWith(parameters, metadata);
+        return createContextWith(parameters, Collections.singletonList(metadata));
     }
 
     public void setDimensions(ChartDimension dimension) {
@@ -97,8 +99,8 @@ public final class RenderingContext {
         return chartStyleDefinitions;
     }
 
-    public TimeseriesMetadataOutput[] getTimeseriesMetadatas() {
-        return timeseriesMetadatas.clone();
+    public List<TimeseriesMetadataOutput> getTimeseriesMetadatas() {
+        return timeseriesMetadatas;
     }
 
     public String getTimeAxisFormat() {

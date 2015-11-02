@@ -27,12 +27,13 @@
  */
 package org.n52.web.ctrl.v1;
 
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_SERIES;
+import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping(value = COLLECTION_SERIES)
-public class TimeseriesMetadataController extends ParameterController {
+@RestController
+@RequestMapping(value = COLLECTION_TIMESERIES)
+public class TimeseriesMetadataController extends ParameterControllerV1Adapter {
 
     // resource controller for timeseries metadata
 }

@@ -27,9 +27,12 @@
  */
 package org.n52.series.api.v1.db.srv;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -39,14 +42,32 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.ServiceParameterService;
 
 public class ServiceAccessService extends ServiceInfoAccess implements ServiceParameterService {
-
+    
+    private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
+        return new OutputCollection<ServiceOutput>(result) {
+                @Override
+                protected Comparator<ServiceOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
+    private OutputCollection<ServiceOutput> createOutputCollection(List<ServiceOutput> results) {
+        return new OutputCollection<ServiceOutput>(results) {
+                @Override
+                protected Comparator<ServiceOutput> getComparator() {
+                    return ParameterOutput.defaultComparator();
+                }
+            };
+    }
+    
     @Override
-    public ServiceOutput[] getExpandedParameters(IoParameters query) {
+    public OutputCollection<ServiceOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             List<ServiceOutput> results = serviceRepository.getAllExpanded(dbQuery);
-            return results.toArray(new ServiceOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get service data.", e);
@@ -54,12 +75,12 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     }
 
     @Override
-    public ServiceOutput[] getCondensedParameters(IoParameters query) {
+    public OutputCollection<ServiceOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             List<ServiceOutput> results = serviceRepository.getAllCondensed(dbQuery);
-            return results.toArray(new ServiceOutput[0]);
+            return createOutputCollection(results);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get service data.", e);
@@ -67,16 +88,16 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     }
 
     @Override
-    public ServiceOutput[] getParameters(String[] items) {
+    public OutputCollection<ServiceOutput> getParameters(String[] items) {
         return getParameters(items, IoParameters.createDefaults());
     }
 
     @Override
-    public ServiceOutput[] getParameters(String[] items, IoParameters query) {
+    public OutputCollection<ServiceOutput> getParameters(String[] items, IoParameters query) {
         for (String serviceId : items) {
             ServiceOutput result = getParameter(serviceId, query);
             if (result != null) {
-                return new ServiceOutput[] {result};
+                return createOutputCollection(result);
             }
         }
         return null;

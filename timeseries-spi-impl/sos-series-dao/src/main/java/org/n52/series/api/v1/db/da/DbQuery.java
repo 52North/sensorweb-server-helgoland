@@ -183,8 +183,8 @@ public class DbQuery {
             try {
                 CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
                 int databaseSrid = crsUtils.getSrsIdFrom(sridAuthorityCode);
-                Point ll = crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
-                Point ur = crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
+                Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
+                Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
                 criteria.add(SpatialRestrictions.filter("geom", envelope, databaseSrid));
             }
