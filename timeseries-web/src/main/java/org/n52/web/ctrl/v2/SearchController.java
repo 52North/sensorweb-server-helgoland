@@ -27,7 +27,7 @@
  */
 package org.n52.web.ctrl.v2;
 
-import static org.n52.web.ctrl.v1.RestfulUrls.SEARCH;
+import static org.n52.web.ctrl.v2.RestfulUrls.SEARCH;
 
 import java.util.Collection;
 

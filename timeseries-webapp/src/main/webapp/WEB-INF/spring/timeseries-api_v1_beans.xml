@@ -9,7 +9,7 @@
 
     <mvc:annotation-driven />
 
-	<bean id="serviceInfo" class="org.n52.series.api.v1.db.da.beans.ServiceInfo">
+	<bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />
     </bean>

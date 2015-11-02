@@ -34,7 +34,7 @@ import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.sensorweb.spi.v1.CountingMetadataService;
+import org.n52.sensorweb.spi.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
