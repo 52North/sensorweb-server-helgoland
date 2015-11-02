@@ -25,51 +25,76 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
-import org.n52.io.request.StyleProperties;
+public abstract class MetadataEntity<T> {
+    
+    private Long pkid;
+    
+    private Long seriesId;
+    
+    private String name;
+    
+    private String type;
+    
+    private T value;
+    
+    private Date lastUpdate;
 
-public class ConfigRenderingHints {
+    public Long getPkid() {
+        return pkid;
+    }
 
-	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
+    public void setPkid(Long pkid) {
+        this.pkid = pkid;
+    }
 
-	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
+    public Long getSeriesId() {
+        return seriesId;
+    }
 
-	public ConfigRenderingHints() {
-		
-	}
-	
-	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
-		return phenomenonStyles;
-	}
+    public void setSeriesId(Long seriesId) {
+        this.seriesId = seriesId;
+    }
 
-	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
-		this.phenomenonStyles = phenomenonStyles;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-		return timeseriesStyles;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-		this.timeseriesStyles = timeseriesStyles;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public static class ConfiguredStyle {
+    public void setType(String type) {
+        this.type = type;
+    }
 
-		private StyleProperties style;
+    public T getValue() {
+        return value;
+    }
 
-		public StyleProperties getStyle() {
-			return style;
-		}
+    public void setValue(T value) {
+        this.value = value;
+    }
 
-		public void setStyle(StyleProperties style) {
-			this.style = style;
-		}
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
 
-	}
-
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+    
+    public DatabaseMetadataOutput<T> toOutput() {
+        return DatabaseMetadataOutput.<T>create()
+                .withValue(value)
+                .lastUpdatedAt(lastUpdate);
+    }
+    
 }

@@ -27,14 +27,6 @@
  */
 package org.n52.io.extension;
 
-import java.util.Map;
-
-import org.n52.io.request.IoParameters;
-
-public interface MetadataExtension<T> {
-
-    public void applyExtensionOn(T toApplyExtensionOn);
-
-    public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
-
+public class MetadataIntegerEntity extends MetadataEntity<Integer> {
+    
 }
