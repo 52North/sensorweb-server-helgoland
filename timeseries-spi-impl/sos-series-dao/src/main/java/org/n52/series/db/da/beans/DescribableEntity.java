@@ -29,6 +29,8 @@ package org.n52.series.db.da.beans;
 
 import java.util.Set;
 
+import com.google.common.base.Strings;
+
 public class DescribableEntity<T extends I18nEntity> {
 
     /**
@@ -77,6 +79,10 @@ public class DescribableEntity<T extends I18nEntity> {
     public void setName(String name) {
         this.name = name;
     }
+    
+	public boolean isSetName() {
+		return !Strings.isNullOrEmpty(getName());
+	}
 
     public String getDescription() {
         return description;

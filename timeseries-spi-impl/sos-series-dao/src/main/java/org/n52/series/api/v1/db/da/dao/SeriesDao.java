@@ -40,6 +40,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
@@ -86,10 +87,10 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         return series;
     }
 
-    @Override
-    public SeriesEntity getInstance(Long key) throws DataAccessException {
-        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public SeriesEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQueryV1.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
@@ -99,10 +100,10 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         return (SeriesEntity) criteria.uniqueResult();
     }
 
-    @Override
-    public List<SeriesEntity> getAllInstances() throws DataAccessException {
-        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public List<SeriesEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQueryV1.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     @SuppressWarnings("unchecked")

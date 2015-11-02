@@ -32,15 +32,19 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
+import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.I18nSiteEntity;
 import org.n52.series.db.da.beans.v2.I18nTrackEntity;
 import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.v2.DbQueryV2;
 
 import com.google.common.base.Strings;
 
@@ -61,20 +65,20 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		return criteria.list();
 	}
 
-	@Override
-	public TrackEntity getInstance(Long key) throws DataAccessException {
-		 return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-	}
+//	@Override
+//	public TrackEntity getInstance(Long key) throws DataAccessException {
+//		 return getInstance(key, DbQueryV2.createFrom(IoParameters.createDefaults()));
+//	}
 
 	@Override
 	public TrackEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
 		 return (TrackEntity) session.get(TrackEntity.class, key);
 	}
 
-	@Override
-	public List<TrackEntity> getAllInstances() throws DataAccessException {
-		return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-	}
+//	@Override
+//	public List<TrackEntity> getAllInstances() throws DataAccessException {
+//		return getAllInstances(DbQueryV2.createFrom(IoParameters.createDefaults()));
+//	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -110,18 +114,37 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		// TODO does this really work???
 		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
 		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
+		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
 		criteria.add(Restrictions.isEmpty("trackLocations"));
 		return criteria;
 	}
+
+	public List<Long> getRelatedPlatforms(Long pkid) {
+		// From SOS to get FeatureOfInterest for Offering
+//		 Criteria c = observationDAO.getDefaultObservationInfoCriteria(session);
+//	     if (observationDAO instanceof SeriesObservationDAO) {
+//	         Criteria seriesCriteria = c.createCriteria(ContextualReferencedSeriesObservation.SERIES);
+//	         seriesCriteria.createCriteria(Series.FEATURE_OF_INTEREST).setProjection(
+//	                 Projections.distinct(Projections.property(FeatureOfInterest.IDENTIFIER)));
+	//
+//	         public void addOfferingRestricionForObservation(Criteria c, String offering) {
+//	             criteria.createCriteria(AbstractObservation.OFFERINGS).add(Restrictions.eq(Offering.IDENTIFIER, offering));
+//	         }
+		
+		/*
+		 * SELECT DISTINCT f.featureOfInterestId FROM observation o, series s,
+		 * featureOfInterest f, offering of, observationHasOffering oo WHERE
+		 * of.offeringId = 1 AND of.offeringId = oo.offeringId AND
+		 * oo.observationId = o.observationId AND o.seriesId = s.seriesId AND
+		 * s.featureOfInterestId = f.featureOfInterestId;
+		 */
+		Criteria c = session.createCriteria(ObservationEntity.class);
+		Criteria seriesCriteria = c.createCriteria("seriesPkid");
+		seriesCriteria.createCriteria("feature").setProjection(
+        Projections.distinct(Projections.property("pkid")));
+		c.createCriteria("tracks").add(Restrictions.eq("pkid", pkid));
+		return c.list();
+	}
 	
-	// From SOS to get FeatureOfInterest for Offering
-//	 Criteria c = observationDAO.getDefaultObservationInfoCriteria(session);
-//     if (observationDAO instanceof SeriesObservationDAO) {
-//         Criteria seriesCriteria = c.createCriteria(ContextualReferencedSeriesObservation.SERIES);
-//         seriesCriteria.createCriteria(Series.FEATURE_OF_INTEREST).setProjection(
-//                 Projections.distinct(Projections.property(FeatureOfInterest.IDENTIFIER)));
-//
-//         public void addOfferingRestricionForObservation(Criteria c, String offering) {
-//             criteria.createCriteria(AbstractObservation.OFFERINGS).add(Restrictions.eq(Offering.IDENTIFIER, offering));
-//         }
+
 }

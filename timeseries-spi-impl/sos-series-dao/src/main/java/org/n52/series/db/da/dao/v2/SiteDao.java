@@ -40,6 +40,7 @@ import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.I18nSiteEntity;
 import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.v2.DbQueryV2;
 
 import com.google.common.base.Strings;
 
@@ -60,20 +61,20 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         return criteria.list();
     }
     
-    @Override
-    public SiteEntity getInstance(Long key) throws DataAccessException {
-        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public SiteEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQueryV2.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     public SiteEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (SiteEntity) session.get(SiteEntity.class, key);
     }
     
-    @Override
-    public List<SiteEntity> getAllInstances() throws DataAccessException {
-        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public List<SiteEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQueryV2.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     @SuppressWarnings("unchecked")

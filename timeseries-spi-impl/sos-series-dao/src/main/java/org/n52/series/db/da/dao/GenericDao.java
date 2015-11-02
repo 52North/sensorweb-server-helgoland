@@ -39,11 +39,11 @@ import org.n52.series.db.da.DbQuery;
  */
 public interface GenericDao<T, PK extends Serializable> {
     
-    T getInstance(PK key) throws DataAccessException;
+//    T getInstance(PK key) throws DataAccessException;
 
     T getInstance(PK key, DbQuery parameters) throws DataAccessException;
     
-    List<T> getAllInstances() throws DataAccessException;
+//    List<T> getAllInstances() throws DataAccessException;
     
     List<T> getAllInstances(DbQuery parameters) throws DataAccessException;
 

@@ -63,20 +63,20 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
         return criteria.list();
     }
 
-    @Override
-    public ProcedureEntity getInstance(Long key) throws DataAccessException {
-        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public ProcedureEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     public ProcedureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (ProcedureEntity) session.get(ProcedureEntity.class, key);
     }
 
-    @Override
-    public List<ProcedureEntity> getAllInstances() throws DataAccessException {
-        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public List<ProcedureEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     @SuppressWarnings("unchecked")

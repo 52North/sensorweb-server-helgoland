@@ -59,20 +59,20 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         return criteria.list();
     }
     
-    @Override
-    public FeatureEntity getInstance(Long key) throws DataAccessException {
-        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public FeatureEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
     
-    @Override
-    public List<FeatureEntity> getAllInstances() throws DataAccessException {
-        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public List<FeatureEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     @SuppressWarnings("unchecked")

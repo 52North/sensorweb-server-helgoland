@@ -36,6 +36,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.n52.io.request.IoParameters;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
@@ -57,26 +58,26 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
         return new ArrayList<ObservationEntity>();
     }
 
-    @Override
-    public ObservationEntity getInstance(Long key) throws DataAccessException {
-        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    @Override
+//    public ObservationEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQueryV1.createFrom(IoParameters.createDefaults()));
+//    }
 
     @Override
     public ObservationEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (ObservationEntity) session.get(ObservationEntity.class, key);
     }
 
-    /**
-     * Retrieves all available observation instances.<br/>
-     * <br/>
-     * Do NOT use this method if you want observations belonging to a particular series. To gain only those
-     * observation you have to use {@link #getAllInstancesFor(SeriesEntity)}.
-     */
-    @Override
-    public List<ObservationEntity> getAllInstances() throws DataAccessException {
-        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-    }
+//    /**
+//     * Retrieves all available observation instances.<br/>
+//     * <br/>
+//     * Do NOT use this method if you want observations belonging to a particular series. To gain only those
+//     * observation you have to use {@link #getAllInstancesFor(SeriesEntity)}.
+//     */
+//    @Override
+//    public List<ObservationEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQueryV1.createFrom(IoParameters.createDefaults()));
+//    }
 
     /**
      * Retrieves all available observation instances.<br/>
@@ -85,7 +86,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      * observation you have to use {@link #getAllInstancesFor(SeriesEntity)}.
      */
     public List<ObservationEntity> getAllInstancesFor(SeriesEntity series) throws DataAccessException {
-        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
+        return getAllInstancesFor(series, DbQueryV1.createFrom(IoParameters.createDefaults()));
     }
 
     /**
