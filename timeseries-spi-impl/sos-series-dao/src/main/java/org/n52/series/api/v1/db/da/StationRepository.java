@@ -37,17 +37,22 @@ import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
-import org.n52.series.api.v1.db.da.beans.DescribableEntity;
-import org.n52.series.api.v1.db.da.beans.FeatureEntity;
-import org.n52.series.api.v1.db.da.beans.I18nEntity;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
-import org.n52.series.api.v1.db.da.dao.FeatureDao;
-import org.n52.series.api.v1.db.da.dao.SeriesDao;
-import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.StationSearchResult;
+import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.api.v1.db.da.dao.SeriesDao;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.dao.FeatureDao;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -73,7 +78,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao stationDao = new FeatureDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = stationDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }
@@ -154,7 +159,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             parameters.setDatabaseAuthorityCode(dbSrid);
             FeatureDao featureDao = new FeatureDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id));
+            FeatureEntity result = featureDao.getInstance(parseId(id), DbQueryV1.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         }
         finally {
@@ -197,5 +202,15 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public void setDatabaseSrid(String dbSrid) {
         this.dbSrid = dbSrid;
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 
 }

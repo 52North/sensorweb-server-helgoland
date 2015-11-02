@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.v2">
+    <class name="ObservationEntity" table="observation" >
+        <id name="pkid" type="long">
+            <column name="observationid" />
+            <generator class="assigned" />
+        </id>
+        <property name="seriesPkid" column="seriesid"  type="long" />
+        <property name="timestamp" column="phenomenontimeend" type="timestamp" />
+        <property name="deleted" column="deleted" type="org.hibernate.type.TrueFalseType" />
+        <set name="tracks"
+             table="observationHasOffering"
+             inverse="false"
+             fetch="select"
+             lazy="true" >
+            <key>
+                <column name="observationId"
+                        not-null="true" />
+            </key>
+            <many-to-many entity-name="TrackEntity" >
+                <column name="offeringId"
+                        not-null="true" />
+            </many-to-many>
+        </set>
+        <join table="numericvalue" fetch="join">
+            <key column="observationid" foreign-key="observationid" />
+            <property name="value" type="double" />
+        </join>
+    </class>
+</hibernate-mapping>

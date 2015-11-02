@@ -36,7 +36,11 @@ import org.n52.io.response.ParameterOutput;
 
 public class PlatformOutputCollection extends OutputCollection<PlatformOutput> {
     
-    @Override
+    public PlatformOutputCollection(List<PlatformOutput> results) {
+		super(results);
+	}
+
+	@Override
     @JsonProperty(value = "platforms")
     public List<PlatformOutput> getItems() {
         return super.getItems();

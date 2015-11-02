@@ -36,9 +36,11 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.api.v1.db.da.FeatureRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class FeaturesAccessService extends ServiceInfoAccess implements ParameterService<FeatureOutput> {
@@ -55,7 +57,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<FeatureOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             List<FeatureOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -67,7 +69,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<FeatureOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             List<FeatureOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -84,7 +86,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<FeatureOutput> getParameters(String[] featureIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             List<FeatureOutput> results = new ArrayList<>();
             for (String categoryId : featureIds) {
@@ -104,7 +106,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public FeatureOutput getParameter(String featureId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             FeatureRepository repository = createFeatureRepository();
             return repository.getInstance(featureId, dbQuery);
         } catch (DataAccessException e) {

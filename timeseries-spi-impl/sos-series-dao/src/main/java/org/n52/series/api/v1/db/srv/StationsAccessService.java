@@ -30,16 +30,18 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import org.n52.io.geojson.old.GeojsonFeature;
 
+import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.StationOutput;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
-import org.n52.series.api.v1.db.da.StationRepository;
-import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.StationRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.web.exception.InternalServerException;
 
 public class StationsAccessService extends ServiceInfoAccess implements ParameterService<StationOutput> {
 
@@ -62,7 +64,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<StationOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -75,7 +77,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<StationOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -93,7 +95,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public OutputCollection<StationOutput> getParameters(String[] stationIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = new ArrayList<>();
             for (String stationId : stationIds) {
@@ -114,7 +116,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public StationOutput getParameter(String stationId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             StationRepository repository = createStationRepository();
             return repository.getInstance(stationId, dbQuery);
         }

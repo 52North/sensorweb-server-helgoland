@@ -33,13 +33,15 @@ import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {
@@ -56,7 +58,7 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<OfferingOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             List<ProcedureOutput> procedures = repository.getAllExpanded(dbQuery);
@@ -72,7 +74,7 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<OfferingOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             List<ProcedureOutput> procedures = repository.getAllCondensed(dbQuery);
@@ -93,7 +95,7 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<OfferingOutput> getParameters(String[] offeringIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             for (String offeringId : offeringIds) {
@@ -114,7 +116,7 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OfferingOutput getParameter(String offeringId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             return createOfferingFrom(repository.getInstance(offeringId, dbQuery));
         } catch (DataAccessException e) {

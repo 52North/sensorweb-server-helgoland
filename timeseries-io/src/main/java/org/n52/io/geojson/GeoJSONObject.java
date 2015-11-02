@@ -56,7 +56,10 @@ public class GeoJSONObject {
         GeometryCollection,
         Feature,
         FeatureCollection;
+    	
     }
+    
+    public static final String LABEL = "label";
     
     private GeoJSONType type;
     

@@ -31,14 +31,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.n52.sensorweb.spi.SearchResult;
+import org.n52.sensorweb.spi.SearchService;
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.api.v1.db.da.FeatureRepository;
 import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
-import org.n52.sensorweb.spi.SearchService;
-import org.n52.sensorweb.spi.SearchResult;
+import org.n52.series.db.srv.ServiceInfoAccess;
 
 public class Search extends ServiceInfoAccess implements SearchService {
 

@@ -31,19 +31,21 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.format.TvpDataCollection;
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
-import org.n52.series.api.v1.db.da.TimeseriesRepository;
-import org.n52.web.exception.InternalServerException;
+import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.TimeseriesRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.web.exception.InternalServerException;
 
 public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ParameterService<TimeseriesMetadataOutput> {
 
@@ -73,7 +75,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     }
 
     private TimeseriesData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters) throws DataAccessException {
-        DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        DbQuery dbQuery = DbQueryV1.createFrom(IoParameters.createFromQuery(parameters));
         TimeseriesRepository repository = createTimeseriesRepository();
         if (parameters.isExpanded()) {
             return repository.getDataWithReferenceValues(timeseriesId, dbQuery);
@@ -85,7 +87,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     @Override
     public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -97,7 +99,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     @Override
     public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -114,7 +116,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     @Override
     public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
             for (String timeseriesId : items) {
@@ -135,7 +137,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     public TimeseriesMetadataOutput getParameter(String item, IoParameters query) {
         try {
             TimeseriesRepository repository = createTimeseriesRepository();
-            return repository.getInstance(item, DbQuery.createFrom(query));
+            return repository.getInstance(item, DbQueryV1.createFrom(query));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get series data for '" + item + "'.");
         }

@@ -35,7 +35,11 @@ import org.n52.io.response.ParameterOutput;
 
 public class CategoryOutputCollection extends OutputCollection<CategoryOutput> {
     
-    @Override
+    public CategoryOutputCollection(List<CategoryOutput> results) {
+		super(results);
+	}
+
+	@Override
     @JsonProperty(value = "categories")
     public List<CategoryOutput> getItems() {
         return super.getItems();

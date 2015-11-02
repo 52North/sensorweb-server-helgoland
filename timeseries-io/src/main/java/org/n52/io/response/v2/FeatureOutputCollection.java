@@ -35,7 +35,11 @@ import org.n52.io.geojson.GeoJSONFeature;
 
 public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
-    @Override
+    public FeatureOutputCollection(List<FeatureOutput> items) {
+		super(items);
+	}
+
+	@Override
     @JsonProperty(value = "features")
     public List<FeatureOutput> getItems() {
         return super.getItems();

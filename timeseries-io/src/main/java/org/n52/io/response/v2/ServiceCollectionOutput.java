@@ -32,9 +32,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
+import java.util.List;
 
 public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
-
+	
+	public ServiceCollectionOutput() {
+		super();
+	}
+	
+	public ServiceCollectionOutput(ServiceOutput item) {
+		super(item);
+	}
+	
+	public ServiceCollectionOutput(List<ServiceOutput> items) {
+		super(items);
+	}
+	
     @Override
     @JsonProperty(value = "services")
     public List<ServiceOutput> getItems() {

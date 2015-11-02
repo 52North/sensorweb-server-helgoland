@@ -47,8 +47,8 @@ public class FeatureOutput extends GeoJSONFeature implements CollatorComparable<
         if (collator == null) {
             collator = Collator.getInstance();
         }
-        String thisLabel = (String) getProperty("label");
-        String otherLabel = (String) o.getProperty("label");
+        String thisLabel = (String) getProperty(LABEL);
+        String otherLabel = (String) o.getProperty(LABEL);
         return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
     }
 

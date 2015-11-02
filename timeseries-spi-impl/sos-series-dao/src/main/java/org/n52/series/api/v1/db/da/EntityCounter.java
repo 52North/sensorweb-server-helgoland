@@ -31,15 +31,19 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.n52.series.api.v1.db.da.beans.DescribableEntity;
-import org.n52.series.api.v1.db.da.beans.I18nEntity;
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
-import org.n52.series.api.v1.db.da.dao.CategoryDao;
-import org.n52.series.api.v1.db.da.dao.FeatureDao;
-import org.n52.series.api.v1.db.da.dao.PhenomenonDao;
-import org.n52.series.api.v1.db.da.dao.ProcedureDao;
-import org.n52.series.api.v1.db.da.dao.SeriesDao;
+import org.n52.io.request.IoParameters;
 import org.n52.sensorweb.spi.SearchResult;
+import org.n52.series.api.v1.db.da.dao.SeriesDao;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.dao.CategoryDao;
+import org.n52.series.db.da.dao.FeatureDao;
+import org.n52.series.db.da.dao.PhenomenonDao;
+import org.n52.series.db.da.dao.ProcedureDao;
 
 public class EntityCounter {
 
@@ -60,6 +64,16 @@ public class EntityCounter {
                                                             String locale) {
             return null;
         }
+        
+        @Override
+    	protected DbQuery getDbQuery(IoParameters parameters) {
+    		return DbQueryV1.createFrom(parameters);
+    	}
+
+    	@Override
+    	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+    		return DbQueryV1.createFrom(parameters, locale);
+    	}
     };
 
     public int countStations() throws DataAccessException {

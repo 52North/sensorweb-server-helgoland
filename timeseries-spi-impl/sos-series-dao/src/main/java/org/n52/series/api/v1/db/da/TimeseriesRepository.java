@@ -39,23 +39,28 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.ReferenceValueOutput;
-import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.v1.TimeseriesDataMetadata;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
-import org.n52.io.response.TimeseriesValue;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
-import org.n52.series.api.v1.db.da.beans.DescribableEntity;
-import org.n52.series.api.v1.db.da.beans.FeatureEntity;
-import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
-import org.n52.series.api.v1.db.da.beans.ProcedureEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.ObservationDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.beans.ProcedureEntity;
+import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +78,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntity> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
         }
@@ -342,5 +347,15 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             .setScale(scale, HALF_UP)
             .doubleValue();
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 
 }

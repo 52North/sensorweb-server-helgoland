@@ -35,11 +35,13 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.series.api.v1.db.da.DataAccessException;
-import org.n52.series.api.v1.db.da.DbQuery;
-import org.n52.series.api.v1.db.da.PhenomenonRepository;
-import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.PhenomenonRepository;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.web.exception.InternalServerException;
 
 public class PhenomenaAccessService extends ServiceInfoAccess implements ParameterService<PhenomenonOutput> {
 
@@ -55,7 +57,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<PhenomenonOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             List<PhenomenonOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -68,7 +70,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<PhenomenonOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             List<PhenomenonOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -86,7 +88,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public OutputCollection<PhenomenonOutput> getParameters(String[] phenomenonIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             List<PhenomenonOutput> results = new ArrayList<>();
             for (String phenomenonId : phenomenonIds) {
@@ -107,7 +109,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Paramet
     @Override
     public PhenomenonOutput getParameter(String phenomenonId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = DbQueryV1.createFrom(query);
             PhenomenonRepository repository = createPhenomenonRepository();
             return repository.getInstance(phenomenonId, dbQuery);
         }

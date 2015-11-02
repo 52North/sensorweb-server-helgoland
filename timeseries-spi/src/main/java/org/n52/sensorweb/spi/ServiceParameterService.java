@@ -27,13 +27,11 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.io.response.v1.ServiceOutput;
-
 /**
  * Extends the generic {@link ParameterService} interface to provide quick check if timeseries resources
  * exist.
  */
-public interface ServiceParameterService extends ParameterService<ServiceOutput> {
+public interface ServiceParameterService<T> extends ParameterService<T> {
 
     public boolean isKnownTimeseries(String timeseriesId);
 }

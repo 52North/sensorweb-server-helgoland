@@ -32,15 +32,20 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.FeatureOutput;
-import org.n52.series.api.v1.db.da.beans.DescribableEntity;
-import org.n52.series.api.v1.db.da.beans.FeatureEntity;
-import org.n52.series.api.v1.db.da.beans.I18nEntity;
-import org.n52.series.api.v1.db.da.beans.ServiceInfo;
-import org.n52.series.api.v1.db.da.dao.FeatureDao;
-import org.n52.web.exception.ResourceNotFoundException;
-import org.n52.sensorweb.spi.search.v1.FeatureSearchResult;
 import org.n52.sensorweb.spi.SearchResult;
+import org.n52.sensorweb.spi.search.FeatureSearchResult;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.dao.FeatureDao;
+import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput>  {
 
@@ -53,7 +58,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            DbQuery parameters = createDefaultsWithLocale(locale);
+            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = featureDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }
@@ -131,4 +136,14 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         return result;
     }
+    
+    @Override
+	protected DbQuery getDbQuery(IoParameters parameters) {
+		return DbQueryV1.createFrom(parameters);
+	}
+
+	@Override
+	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+		return DbQueryV1.createFrom(parameters, locale);
+	}
 }
