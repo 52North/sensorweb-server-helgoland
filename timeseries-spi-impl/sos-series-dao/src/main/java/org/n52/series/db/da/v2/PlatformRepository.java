@@ -30,9 +30,11 @@ package org.n52.series.db.da.v2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.v2.FeatureOutput;
 import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.StationaryPlatformOutput;
@@ -49,6 +51,7 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
+import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Point;
 
 public class PlatformRepository extends SessionAwareRepository implements OutputAssembler<PlatformOutput> {
@@ -147,14 +150,21 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 		return new MobilePlatformOutput();
 	}
 
-	private void addFeatures(PlatformOutput result) {
+	private void addFeatures(PlatformOutput result) throws DataAccessException {
+		Map<String, String> queryParameters = Maps.newHashMap();
+		queryParameters.put("feature", result.getId());
+		DbQuery parameters = DbQueryV2.createFrom(IoParameters.createFromQuery(queryParameters));
 		if (result instanceof StationaryPlatformOutput) {
-			// add Site
+			result.setFeatures(createFeatureRepository().getSites(parameters));
 		} else if (result instanceof MobilePlatformOutput) {
-			// Add Tracks
+			result.setFeatures(createFeatureRepository().getTracks(parameters));
 		}
 	}
 	
+	private FeatureRepository createFeatureRepository() {
+		return new FeatureRepository(getServiceInfo());
+	}
+
 	@Override
 	protected DbQuery getDbQuery(IoParameters parameters) {
 		return DbQueryV2.createFrom(parameters);

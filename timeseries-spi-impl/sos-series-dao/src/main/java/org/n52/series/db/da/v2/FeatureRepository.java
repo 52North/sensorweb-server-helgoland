@@ -36,6 +36,7 @@ import org.n52.io.geojson.GeoJSONException;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.FeatureOutput;
+import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.io.response.v2.SiteOutput;
 import org.n52.io.response.v2.TrackOutput;
 import org.n52.sensorweb.spi.SearchResult;
@@ -172,14 +173,46 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 		}
 	}
 
+	public FeatureOutputCollection getSites(DbQuery parameters) throws DataAccessException {
+		Session session = getSession();
+		try {
+			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
+			if (sites != null) {
+				for (SiteEntity entity : sites) {
+					results.add(createCondensed(entity, parameters, FeatureType.SITE));
+				}
+			}
+			return new FeatureOutputCollection(results);
+		} finally {
+			returnSession(session);
+		}
+	}
+
+	public FeatureOutputCollection getTracks(DbQuery parameters) throws DataAccessException {
+		Session session = getSession();
+		try {
+			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<TrackEntity> tracks = new TrackDao(session).getAllInstances(parameters);
+			if (tracks != null) {
+				for (TrackEntity entity : tracks) {
+					results.add(createCondensed(entity, parameters, FeatureType.TRACK_OFFERING, session));
+				}
+			}
+			return new FeatureOutputCollection(results);
+		} finally {
+			returnSession(session);
+		}
+	}
+
 	private FeatureOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
 		FeatureType type = getTypeFor(id);
 		if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FEATURE.equals(type)) {
-			 SiteEntity siteEntity = new SiteDao(session).getInstance(parseFeatureId(id, type), parameters);
-			 return createExpanded(siteEntity, parameters, type);
+			SiteEntity siteEntity = new SiteDao(session).getInstance(parseFeatureId(id, type), parameters);
+			return createExpanded(siteEntity, parameters, type);
 		} else if (FeatureType.TRACK_OFFERING.equals(type)) {
 			TrackEntity trackEntity = new TrackDao(session).getInstance(parseFeatureId(id, type), parameters);
-			 return createExpanded(trackEntity, parameters, type, session);
+			return createExpanded(trackEntity, parameters, type, session);
 		}
 		return null;
 	}
@@ -239,7 +272,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 			try {
 				FeatureOutput result = null;
 				if (entity.getGeom() instanceof Point) {
-					result = new SiteOutput(entity.getGeom().getGeometryType(), entity.getGeom());
+					result = new SiteOutput();
 				} else {
 					// TODO
 				}
@@ -260,8 +293,21 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     
 	private TrackOutput createExpanded(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
     	TrackOutput result = createCondensed(entity, parameters, type, session);
-    	if (entity.hasTrackLocations()) {
-    		
+    	if (result != null && entity.hasTrackLocations()) {
+    		List<TrackLocationEntity> trackLocations = entity.getTrackLocations();
+			Geometry geom = createGeometryFrom(trackLocations);
+			result.setGeometry(geom);
+	    	if (entity.isSetName()) {
+				result.addProperty(entity.getName(), entity.getName());
+			}
+	    	List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
+	    	if (platform != null && !platform.isEmpty()) {
+	    		if (platform.size() == 1) {
+	    			result.addProperty("platform", platform.iterator().next());
+	    		} else {
+	    			result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
+	    		}
+	    	}
     	}
         return result;
     }
@@ -269,21 +315,8 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     private TrackOutput createCondensed(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
     	try {
     		if (entity.hasTrackLocations()) {
-    			List<TrackLocationEntity> trackLocations = entity.getTrackLocations();
-    			Geometry geom = createGeometryFrom(trackLocations);
-    			TrackOutput result = new TrackOutput(geom.getGeometryType(), geom);
+    			TrackOutput result = new TrackOutput();
     	    	result.setId(createUniqueId(entity.getPkid(), type));
-    	    	if (entity.isSetName()) {
-    				result.addProperty(entity.getName(), entity.getName());
-    			}
-    	    	List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
-    	    	if (platform != null && !platform.isEmpty()) {
-    	    		if (platform.size() == 1) {
-    	    			result.addProperty("platform", platform.iterator().next());
-    	    		} else {
-    	    			result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
-    	    		}
-    	    	}
     		}
     	} catch (GeoJSONException e) {
 			throw new DataAccessException("Error while creating output.", e);
