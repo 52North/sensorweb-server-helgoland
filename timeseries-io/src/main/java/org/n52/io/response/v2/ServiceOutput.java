@@ -151,27 +151,17 @@ public class ServiceOutput extends ParameterOutput {
 
     public static class ParameterCount {
 
-        private int amountOfferings;
-        
         private int amountFeatures;
         
         private int amountProcedures;
         
         private int amountPhenomena;
         
-        private int amountStations;
+        private int amountPlatforms;
 
-        private int amountTimeseries;
+        private int amountSeries;
         
         private int amountCategories;
-
-        public int getOfferings() {
-            return amountOfferings;
-        }
-
-        public void setOfferingsSize(int size) {
-            this.amountOfferings = size;
-        }
 
         public int getFeatures() {
             return amountFeatures;
@@ -197,20 +187,20 @@ public class ServiceOutput extends ParameterOutput {
             this.amountPhenomena = size;
         }
 
-        public int getStations() {
-            return amountStations;
+        public int getPlatforms() {
+            return amountPlatforms;
         }
 
-        public void setStationsSize(int size) {
-            this.amountStations = size;
+        public void setPlatformsSize(int size) {
+            this.amountPlatforms = size;
         }
 
-        public void setTimeseriesSize(int countTimeseries) {
-            this.amountTimeseries = countTimeseries;
+        public void setSeriesSize(int countSeries) {
+            this.amountSeries = countSeries;
         }
         
-        public int getTimeseries() {
-            return this.amountTimeseries;
+        public int getSeries() {
+            return this.amountSeries;
         }
 
         public int getCategories() {
