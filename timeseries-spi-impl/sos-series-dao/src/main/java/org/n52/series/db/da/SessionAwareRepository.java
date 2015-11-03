@@ -30,6 +30,7 @@ package org.n52.series.db.da;
 import static org.n52.io.request.IoParameters.createFromQuery;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,8 @@ import org.n52.sos.service.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vividsolutions.jts.io.InStream;
+
 public abstract class SessionAwareRepository {
 
     // TODO tackle issue #71
@@ -82,10 +85,10 @@ public abstract class SessionAwareRepository {
     protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
 
     private static HibernateSessionHolder createSessionHolderIfNeccessary() {
-        try {
+        try (InputStream inputStream =  SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES)){
             if (Configurator.getInstance() == null) {
                 Properties connectionProviderConfig = new Properties();
-                connectionProviderConfig.load(SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES));
+                connectionProviderConfig.load(inputStream);
                 SessionFactoryProvider provider = new SessionFactoryProvider();
                 provider.initialize(connectionProviderConfig);
 
