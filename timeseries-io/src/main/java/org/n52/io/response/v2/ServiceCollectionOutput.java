@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
-import java.util.List;
 
 public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
 	
