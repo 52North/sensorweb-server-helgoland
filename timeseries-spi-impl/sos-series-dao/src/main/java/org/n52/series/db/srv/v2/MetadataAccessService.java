@@ -28,49 +28,71 @@
 package org.n52.series.db.srv.v2;
 
 import org.n52.sensorweb.spi.v2.CountingMetadataService;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.v2.EntityCounter;
+import org.n52.web.exception.InternalServerException;
 
-public class MetadataAccessService implements CountingMetadataService{
+public class MetadataAccessService implements CountingMetadataService {
+	
+	 private EntityCounter repository = new EntityCounter();
 
 	@Override
 	public int getServiceCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 1; // we only provide 1 service
 	}
 
 	@Override
 	public int getPlatformsCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+            return repository.countPlatforms();
+        } catch (DataAccessException e ) {
+            throw new InternalServerException("Could not count Platform entities.", e);
+        }
 	}
 
 	@Override
 	public int getSeriesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+            return repository.countSeries();
+        } catch (DataAccessException e ) {
+            throw new InternalServerException("Could not count Series entities.", e);
+        }
 	}
 
 	@Override
 	public int getCategoriesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+            return repository.countCategories();
+        } catch (DataAccessException e ) {
+            throw new InternalServerException("Could not count Categories entities.", e);
+        }
 	}
 
 	@Override
 	public int getFeaturesCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		 try {
+	            return repository.countFeatures();
+	        } catch (DataAccessException e ) {
+	            throw new InternalServerException("Could not count Feature entities.", e);
+	        }
 	}
 
 	@Override
 	public int getProceduresCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		 try {
+	            return repository.countProcedures();
+	        } catch (DataAccessException e ) {
+	            throw new InternalServerException("Could not count Procedure entities.", e);
+	        }
 	}
 
 	@Override
 	public int getPhenomenaCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+            return repository.countPhenomena();
+        } catch (DataAccessException e ) {
+            throw new InternalServerException("Could not count Phenomenon entities.", e);
+        }
 	}
 
 }
