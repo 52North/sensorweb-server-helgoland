@@ -27,19 +27,19 @@
  */
 package org.n52.series.db.da.beans.v2;
 
-import java.util.List;
+import java.util.Set;
 
 import org.n52.series.db.da.beans.DescribableEntity;
 
 public class TrackEntity extends DescribableEntity<I18nTrackEntity> {
 
-	private List<TrackLocationEntity> trackLocations;
+	private Set<TrackLocationEntity> trackLocations;
 
-	public List<TrackLocationEntity> getTrackLocations() {
+	public Set<TrackLocationEntity> getTrackLocations() {
 		return trackLocations;
 	}
 
-	public void setTrackLocations(List<TrackLocationEntity> trackLocations) {
+	public void setTrackLocations(Set<TrackLocationEntity> trackLocations) {
 		this.trackLocations = trackLocations;
 	}
 	

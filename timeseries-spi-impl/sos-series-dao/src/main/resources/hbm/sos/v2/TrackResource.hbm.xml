@@ -10,7 +10,7 @@
         <property name="canonicalId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
-        <list name="trackLocations"
+        <set name="trackLocations"
              table="observationHasOffering"
              inverse="false"
              fetch="select"
@@ -18,10 +18,9 @@
             <key>
                 <column name="offeringId" not-null="true" />
             </key>
-            <list-index column="identifier"/>
             <many-to-many entity-name="org.n52.series.db.da.beans.v2.TrackLocationEntity" >
                 <column name="observationId"  not-null="true" />
             </many-to-many>
-        </list>
+        </set>
     </class>
 </hibernate-mapping>

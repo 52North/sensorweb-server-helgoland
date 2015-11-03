@@ -29,9 +29,11 @@ package org.n52.series.db.da.beans.v2;
 
 import java.util.Date;
 
+import org.n52.sos.ogc.gml.time.TimeInstant;
+
 import com.vividsolutions.jts.geom.Geometry;
 
-public class TrackLocationEntity {
+public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
 
 	private Long pkid;
 
@@ -82,4 +84,17 @@ public class TrackLocationEntity {
     	}
     	return super.equals(obj);
     }
+
+	@Override
+	public int compareTo(TrackLocationEntity o) {
+		if (o instanceof TrackLocationEntity) {
+			TrackLocationEntity tle = (TrackLocationEntity) o;
+			if (getTimestamp().before(tle.getTimestamp())) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
