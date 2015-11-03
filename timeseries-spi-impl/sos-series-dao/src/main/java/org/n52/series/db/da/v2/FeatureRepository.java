@@ -70,6 +70,8 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	
 	private static final String TRACK_FEATURE_PREFIX = "trackFeature_";
 	
+	private String dbSrid = "EPSG:4326";
+	
 	private enum FeatureType {
 		SITE,
 		TRACK_FEATURE,
@@ -117,6 +119,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	public List<FeatureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
+			parameters.setDatabaseAuthorityCode(dbSrid);
 			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
 			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
 			if (sites != null) {
@@ -140,6 +143,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
+			parameters.setDatabaseAuthorityCode(dbSrid);
 			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
 			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
 			if (sites != null) {
@@ -163,6 +167,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	public FeatureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
+			parameters.setDatabaseAuthorityCode(dbSrid);
 			FeatureOutput result = getInstance(id, parameters, session);
 			if (result == null) {
 	            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
@@ -188,6 +193,10 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 			returnSession(session);
 		}
 	}
+	
+	public void setDatabaseSrid(String dbSrid) {
+        this.dbSrid = dbSrid;
+    }
 
 	public FeatureOutputCollection getTracks(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
