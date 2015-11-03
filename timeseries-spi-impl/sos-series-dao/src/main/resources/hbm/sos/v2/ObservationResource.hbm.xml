@@ -19,7 +19,7 @@
                 <column name="observationId"
                         not-null="true" />
             </key>
-            <many-to-many entity-name="TrackEntity" >
+            <many-to-many entity-name="org.n52.series.db.da.beans.v2.TrackEntity" >
                 <column name="offeringId"
                         not-null="true" />
             </many-to-many>
