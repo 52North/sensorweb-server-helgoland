@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ObservationEntity extends org.n52.series.api.v1.db.da.beans.ObservationEntity {
+public class ObservationEntityV2 extends org.n52.series.api.v1.db.da.beans.ObservationEntity {
 
     private Set<TrackEntity> tracks = new HashSet<>(0);
     public Set<TrackEntity> getTracks() {
