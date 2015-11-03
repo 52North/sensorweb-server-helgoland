@@ -29,7 +29,9 @@ package org.n52.series.db.da.v2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Session;
 import org.n52.io.geojson.GeoJSONException;
@@ -303,7 +305,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	private TrackOutput createExpanded(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
     	TrackOutput result = createCondensed(entity, parameters, type, session);
     	if (result != null && entity.hasTrackLocations()) {
-    		List<TrackLocationEntity> trackLocations = entity.getTrackLocations();
+    		Set<TrackLocationEntity> trackLocations = entity.getTrackLocations();
 			Geometry geom = createGeometryFrom(trackLocations);
 			result.setGeometry(geom);
 	    	if (entity.isSetName()) {
@@ -337,10 +339,12 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 		return new TrackDao(session).getRelatedPlatforms(pkid);
 	}
 
-	private Geometry createGeometryFrom(List<TrackLocationEntity> trackLocations) {
+	private Geometry createGeometryFrom(Set<TrackLocationEntity> trackLocations) {
+		List<TrackLocationEntity> list = Lists.newArrayList(trackLocations);
+		Collections.sort(list);
     	 List<Coordinate> coordinates = Lists.newLinkedList();
 	    int srid = -1;
-	    for (TrackLocationEntity trackLocation : trackLocations) {
+	    for (TrackLocationEntity trackLocation : list) {
 	    	if (trackLocation.isSetGeom()) {
 	    		Geometry geom = trackLocation.getGeom();
 	    		if (geom instanceof Point) {
