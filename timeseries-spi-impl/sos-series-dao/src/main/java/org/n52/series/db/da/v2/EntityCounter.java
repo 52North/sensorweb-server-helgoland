@@ -80,7 +80,9 @@ public class EntityCounter {
     public int countFeatures() throws DataAccessException {
         Session session = repository.getSession();
         try {
-            return new FeatureDao(session).getCount();
+        	int siteCount = new SiteDao(session).getCount();
+        	int trackCount = new TrackDao(session).getCount();
+            return siteCount + trackCount;
         }
         finally {
             repository.returnSession(session);
@@ -90,9 +92,7 @@ public class EntityCounter {
     public int countPlatforms() throws DataAccessException {
         Session session = repository.getSession();
         try {
-        	int siteCount = new SiteDao(session).getCount();
-        	int trackCount = new TrackDao(session).getCount();
-            return siteCount + trackCount;
+        	return new FeatureDao(session).getCount();
         }
         finally {
             repository.returnSession(session);
