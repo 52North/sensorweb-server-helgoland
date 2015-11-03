@@ -46,7 +46,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
         try {
             DbQuery dbQuery = DbQueryV2.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
-            return serviceRepository.getAllExpanded(dbQuery);
+            return new ServiceCollectionOutput(serviceRepository.getAllExpanded(dbQuery));
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get service data.", e);
@@ -58,7 +58,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
         try {
             DbQuery dbQuery = DbQueryV2.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
-            return serviceRepository.getAllCondensed(dbQuery);
+            return new ServiceCollectionOutput(serviceRepository.getAllCondensed(dbQuery));
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get service data.", e);
