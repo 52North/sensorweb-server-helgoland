@@ -40,11 +40,11 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     private final List<T> items;
     
     protected OutputCollection() {
-        this.items = new ArrayList<>();
+        this.items = Collections.emptyList();
     }
     
     protected OutputCollection(T item) {
-        this();
+    	this.items = new ArrayList<>();
         addtem(item);
     }
 
