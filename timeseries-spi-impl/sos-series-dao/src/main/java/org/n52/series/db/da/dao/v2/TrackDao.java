@@ -33,6 +33,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
@@ -45,6 +46,7 @@ import org.n52.series.db.da.beans.v2.I18nTrackEntity;
 import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.dao.AbstractDao;
 import org.n52.series.db.da.v2.DbQueryV2;
+import org.n52.sos.ds.hibernate.util.HibernateHelper;
 
 import com.google.common.base.Strings;
 
@@ -114,8 +116,8 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		// TODO does this really work???
 		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
 		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
-		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
-		criteria.add(Restrictions.isEmpty("trackLocations"));
+//		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
+		criteria.add(Restrictions.isNotEmpty("trackLocations"));
 		return criteria;
 	}
 
@@ -135,6 +137,12 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		c.createCriteria("tracks").add(Restrictions.eq("pkid", pkid));
 		return c.list();
 	}
+	
+	@Override
+    public int getCount() throws DataAccessException {
+        Criteria criteria = getDefaultCriteria().setProjection(Projections.distinct(Projections.property("pkid")));
+        return criteria != null ? criteria.list().size() : 0;
+    }
 	
 
 }
