@@ -36,7 +36,7 @@ public class SeriesMetadataOutput extends ParameterOutput {
 
 	private String uom;
 
-    private PlatformOutput station;
+    private PlatformOutput platform;
 
     private ReferenceValueOutput[] referenceValues;
 
@@ -54,12 +54,12 @@ public class SeriesMetadataOutput extends ParameterOutput {
         this.uom = uom;
     }
 
-    public PlatformOutput getStation() {
-        return station;
+    public PlatformOutput getPlatform() {
+        return platform;
     }
 
-    public void setStation(PlatformOutput station) {
-        this.station = station;
+    public void setPlatform(PlatformOutput platform) {
+        this.platform = platform;
     }
 
     public ReferenceValueOutput[] getReferenceValues() {
