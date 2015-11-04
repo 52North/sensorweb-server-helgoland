@@ -47,7 +47,7 @@ import org.n52.series.db.da.dao.ProcedureDao;
 
 public class EntityCounter {
 
-    private SessionAwareRepository repository = new SessionAwareRepository(new ServiceInfo()) {
+    private SessionAwareRepository repository = new ExtendedSessionAwareRepository(new ServiceInfo()) {
         /**
          * Not for use in this context
          */

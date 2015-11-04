@@ -39,7 +39,6 @@ import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.OutputAssembler;
-import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -47,7 +46,7 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput>  {
+public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput>  {
 
     public FeatureRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -137,13 +136,4 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         return result;
     }
     
-    @Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV1.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV1.createFrom(parameters, locale);
-	}
 }

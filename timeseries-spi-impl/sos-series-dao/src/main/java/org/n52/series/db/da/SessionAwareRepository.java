@@ -27,34 +27,18 @@
  */
 package org.n52.series.db.da;
 
-import static org.n52.io.request.IoParameters.createFromQuery;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.CategoryOutput;
-import org.n52.io.response.v1.FeatureOutput;
-import org.n52.io.response.v1.OfferingOutput;
-import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.io.response.v1.ServiceOutput;
-import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.ServiceOutput;
 import org.n52.sensorweb.spi.SearchResult;
-import org.n52.series.api.v1.db.da.ServiceRepository;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nCategoryEntity;
 import org.n52.series.db.da.beans.I18nEntity;
-import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.beans.I18nPhenomenonEntity;
-import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.sos.ds.hibernate.HibernateSessionHolder;
 import org.n52.sos.ds.hibernate.SessionFactoryProvider;
@@ -62,8 +46,6 @@ import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.service.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vividsolutions.jts.io.InStream;
 
 public abstract class SessionAwareRepository {
 
@@ -84,7 +66,9 @@ public abstract class SessionAwareRepository {
 
     protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
 
-    private static HibernateSessionHolder createSessionHolderIfNeccessary() {
+    protected abstract ServiceOutput getServiceOutput() throws DataAccessException;
+
+	private static HibernateSessionHolder createSessionHolderIfNeccessary() {
         try (InputStream inputStream =  SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES)){
             if (Configurator.getInstance() == null) {
                 Properties connectionProviderConfig = new Properties();
@@ -123,16 +107,6 @@ public abstract class SessionAwareRepository {
     
     protected abstract DbQuery getDbQuery(IoParameters parameters, String locale);
 
-    protected ServiceOutput getServiceOutput() throws DataAccessException {
-        ServiceRepository serviceRepository = createServiceRepository();
-        List<ServiceOutput> all = serviceRepository.getAllCondensed(null);
-        return all.get(0); // only this service available
-    }
-
-    private ServiceRepository createServiceRepository() {
-        return new ServiceRepository(serviceInfo);
-    }
-
     protected Long parseId(String id) throws DataAccessException {
         try {
             return Long.parseLong(id);
@@ -158,38 +132,6 @@ public abstract class SessionAwareRepository {
         }
     }
 
-    protected Map<String, TimeseriesOutput> createTimeseriesList(List<SeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<String, TimeseriesOutput>();
-        for (SeriesEntity timeseries : series) {
-            if ( !timeseries.getProcedure().isReference()) {
-                String timeseriesId = timeseries.getPkid().toString();
-                timeseriesOutputs.put(timeseriesId, createTimeseriesOutput(timeseries, parameters));
-            }
-        }
-        return timeseriesOutputs;
-    }
-
-    protected TimeseriesOutput createTimeseriesOutput(SeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
-        TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
-        timeseriesOutput.setService(getCondensedService());
-        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
-        timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
-        timeseriesOutput.setPhenomenon(getCondensedPhenomenon(timeseries.getPhenomenon(), parameters));
-        timeseriesOutput.setFeature(getCondensedFeature(timeseries.getFeature(), parameters));
-        timeseriesOutput.setCategory(getCondensedCategory(timeseries.getCategory(), parameters));
-        return timeseriesOutput;
-    }
-
-    private ServiceOutput getCondensedService() throws DataAccessException {
-        ServiceRepository serviceRepository = createServiceRepository();
-        String serviceId = serviceRepository.getServiceId();
-        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId);
-        ServiceOutput serviceOutput = new ServiceOutput();
-        serviceOutput.setLabel(instance.getLabel());
-        serviceOutput.setId(instance.getId());
-        return serviceOutput;
-    }
-    
 	protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
 		if (isi18nNameAvailable(entity, locale)) {
 			return entity.getNameI18n(locale);
@@ -207,41 +149,4 @@ public abstract class SessionAwareRepository {
 	private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
 		return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
 	}
-
-    private PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
-        PhenomenonOutput outputvalue = new PhenomenonOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
-    }
-
-    private OfferingOutput getCondensedOffering(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
-        OfferingOutput outputvalue = new OfferingOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
-    }
-
-    private ProcedureOutput getCondensedProcedure(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
-        ProcedureOutput outputvalue = new ProcedureOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
-    }
-
-    private FeatureOutput getCondensedFeature(DescribableEntity<I18nFeatureEntity> entity, DbQuery parameters) {
-        FeatureOutput outputvalue = new FeatureOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
-    }
-
-    private CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
-        CategoryOutput outputvalue = new CategoryOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
-    }
-
-
-}
+}

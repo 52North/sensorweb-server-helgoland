@@ -55,7 +55,6 @@ import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.OutputAssembler;
-import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -65,7 +64,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
+public class TimeseriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 
@@ -347,15 +346,5 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             .setScale(scale, HALF_UP)
             .doubleValue();
     }
-    
-    @Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV1.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV1.createFrom(parameters, locale);
-	}
 
 }

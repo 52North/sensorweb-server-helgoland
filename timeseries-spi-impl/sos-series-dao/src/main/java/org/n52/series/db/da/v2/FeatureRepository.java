@@ -46,7 +46,6 @@ import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.OutputAssembler;
-import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
@@ -64,7 +63,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput>  {
+public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput>  {
 
 	private static final String SITE_PREFIX = "site_";
 	
@@ -367,15 +366,5 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 	        return geometryFactory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
 	    }
     }
-	
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV2.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV2.createFrom(parameters, locale);
-	}
 	
 }

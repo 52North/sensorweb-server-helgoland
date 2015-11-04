@@ -28,21 +28,54 @@
 package org.n52.series.api.v1.db.da;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.series.db.da.AbstractProcedureRepository;
+import org.n52.sensorweb.spi.SearchResult;
+import org.n52.sensorweb.spi.search.ProcedureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.dao.ProcedureDao;
+import org.n52.web.exception.ResourceNotFoundException;
 
-public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOutput> {
+public class ProcedureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<ProcedureOutput> {
 
     public ProcedureRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
+    }
+    
+    @Override
+    public Collection<SearchResult> searchFor(String searchString, String locale) {
+        Session session = getSession();
+        try {
+            ProcedureDao procedureDao = new ProcedureDao(session);
+            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
+            List<ProcedureEntity> found = procedureDao.find(searchString, parameters);
+            return convertToSearchResults(found, locale);
+        }
+        finally {
+            returnSession(session);
+        }
+    }
+
+    @Override
+    protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+                                                        String locale) {
+        List<SearchResult> results = new ArrayList<SearchResult>();
+        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+            String pkid = searchResult.getPkid().toString();
+            String label = getLabelFrom(searchResult,locale);
+            results.add(new ProcedureSearchResult(pkid, label));
+        }
+        return results;
     }
 
     @Override
@@ -83,6 +116,19 @@ public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOu
             returnSession(session);
         }
     }
+    
+    protected List<ProcedureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+		return new ProcedureDao(session).getAllInstances(parameters);
+	}
+	
+	protected ProcedureEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+		ProcedureDao procedureDAO = new ProcedureDao(session);
+		ProcedureEntity result = procedureDAO.getInstance(id, parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return result;
+	}
 
     private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
         ProcedureOutput result = createCondensed(entity, parameters);
@@ -97,13 +143,4 @@ public class ProcedureRepository extends AbstractProcedureRepository<ProcedureOu
         return result;
     }
     
-    @Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV1.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV1.createFrom(parameters, locale);
-	}
 }

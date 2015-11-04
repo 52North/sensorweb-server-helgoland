@@ -43,12 +43,13 @@ import org.n52.series.db.da.dao.CategoryDao;
 import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.series.db.da.dao.PhenomenonDao;
 import org.n52.series.db.da.dao.ProcedureDao;
+import org.n52.series.db.da.dao.v2.SeriesDao;
 import org.n52.series.db.da.dao.v2.SiteDao;
 import org.n52.series.db.da.dao.v2.TrackDao;
 
 public class EntityCounter {
 	
-	private SessionAwareRepository repository = new SessionAwareRepository(new ServiceInfo()) {
+	private SessionAwareRepository repository = new ExtendedSessionAwareRepository(new ServiceInfo()) {
         /**
          * Not for use in this context
          */
@@ -130,13 +131,12 @@ public class EntityCounter {
     }
 
     public int countSeries() throws DataAccessException {
-//        Session session = repository.getSession();
-//        try {
-//            return new SeriesDao(session).getCount();
-//        }
-//        finally {
-//            repository.returnSession(session);
-//        }
-    	return 0;
+        Session session = repository.getSession();
+        try {
+            return new SeriesDao(session).getCount();
+        }
+        finally {
+            repository.returnSession(session);
+        }
     }
 }
