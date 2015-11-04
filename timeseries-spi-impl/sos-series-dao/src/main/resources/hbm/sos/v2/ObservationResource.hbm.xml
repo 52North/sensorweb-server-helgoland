@@ -10,6 +10,7 @@
         <property name="seriesPkid" column="seriesid"  type="long" />
         <property name="timestamp" column="phenomenontimeend" type="timestamp" />
         <property name="deleted" column="deleted" type="org.hibernate.type.TrueFalseType" />
+        <property name="geom" column="samplingGeometry" type="org.hibernate.spatial.GeometryType" />
         <set name="tracks"
              table="observationHasOffering"
              inverse="false"
