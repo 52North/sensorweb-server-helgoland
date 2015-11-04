@@ -31,18 +31,13 @@ import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 
 public class DbQueryV2 extends DbQuery {
 
@@ -52,7 +47,7 @@ public class DbQueryV2 extends DbQuery {
 
 	@Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class, "series");
+		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntityV2.class, "series");
 
 		if (getParameters().getPhenomenon() != null) {
 			filter.createCriteria("phenomenon")
