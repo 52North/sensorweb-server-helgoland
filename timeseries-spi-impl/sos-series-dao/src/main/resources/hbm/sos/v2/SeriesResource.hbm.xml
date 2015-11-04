@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.v2">
+    <class name="SeriesEntityV2" table="series">
+        <id name="pkid" type="long">
+            <column name="seriesid" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="category" class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" insert="false" update="false" />
+        <many-to-one name="procedure" class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" />
+        <many-to-one name="phenomenon" class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" insert="false" update="false"  />
+        <many-to-one name="feature" class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" />
+        <many-to-one name="unit" class="org.n52.series.db.da.beans.UnitEntity" column="unitid" />
+        <property name="numberOfDecimals" formula="3" type="int" />
+        <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
+
+        <component name="firstValue" class="org.n52.series.db.da.beans.v2.ObservationEntityV2">
+            <property name="timestamp" column="firsttimestamp" type="timestamp" />
+            <property name="value" column="firstnumericvalue" type="double" />
+        </component>
+        <component name="lastValue" class="org.n52.series.db.da.beans.v2.ObservationEntityV2">
+            <property name="timestamp" column="lasttimestamp" type="timestamp" />
+            <property name="value" column="lastnumericvalue" type="double" />
+        </component>
+        <list name="observations" table="observation" fetch="select" inverse="true">
+            <key column="observationid" />
+            <index column="seriesid" />
+            <one-to-many class="org.n52.series.db.da.beans.v2.ObservationEntityV2" />
+        </list>
+    </class>
+</hibernate-mapping>

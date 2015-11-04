@@ -34,6 +34,7 @@ import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.v2.DbQueryV2;
+import org.n52.series.db.da.v2.SeriesRepository;
 import org.n52.series.db.da.v2.ServiceRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
@@ -102,20 +103,19 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
 
     @Override
     public boolean isKnownTimeseries(String timeseriesId) {
-//        try {
-//            DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());
-//            TimeseriesRepository timeseriesRepository = createTimeseriesRepository();
-//            return timeseriesRepository.getInstance(timeseriesId, dbQuery) != null;
-//        }
-//        catch (DataAccessException e) {
-//            throw new InternalServerException("Could not determine if timeseries '" + timeseriesId + "' is known.");
-//        }
-    	return false;
+        try {
+            DbQuery dbQuery = DbQueryV2.createFrom(IoParameters.createDefaults());
+            SeriesRepository SeriesRepository = createSeriesRepository();
+            return SeriesRepository.checkId(timeseriesId, dbQuery);
+        }
+        catch (DataAccessException e) {
+            throw new InternalServerException("Could not determine if timeseries '" + timeseriesId + "' is known.");
+        }
     }
 
-//    private TimeseriesRepository createTimeseriesRepository() {
-//        return new TimeseriesRepository(getServiceInfo());
-//    }
+    private SeriesRepository createSeriesRepository() {
+        return new SeriesRepository(getServiceInfo());
+    }
 
     private ServiceRepository createServiceRepository() {
         return new ServiceRepository(getServiceInfo());

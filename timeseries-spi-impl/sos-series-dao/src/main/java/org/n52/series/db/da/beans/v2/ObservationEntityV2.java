@@ -30,10 +30,29 @@ package org.n52.series.db.da.beans.v2;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.series.db.da.beans.AbstractObservationEntity;
 
-public class ObservationEntityV2 extends org.n52.series.api.v1.db.da.beans.ObservationEntity {
+import com.vividsolutions.jts.geom.Geometry;
 
+
+public class ObservationEntityV2 extends AbstractObservationEntity {
+
+	private Geometry geom;
+	 
     private Set<TrackEntity> tracks = new HashSet<>(0);
+    
+    public Geometry getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geometry geom) {
+        this.geom = geom;
+    }
+    
+    public boolean isSetGeom() {
+    	return getGeom() != null && !getGeom().isEmpty();
+    }
+    
     public Set<TrackEntity> getTracks() {
         return tracks;
     }
