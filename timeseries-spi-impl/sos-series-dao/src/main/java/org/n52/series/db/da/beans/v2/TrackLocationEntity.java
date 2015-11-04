@@ -29,8 +29,6 @@ package org.n52.series.db.da.beans.v2;
 
 import java.util.Date;
 
-import org.n52.sos.ogc.gml.time.TimeInstant;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 public class TrackLocationEntity implements Comparable<TrackLocationEntity> {

@@ -39,8 +39,6 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.DbQueryV1;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;

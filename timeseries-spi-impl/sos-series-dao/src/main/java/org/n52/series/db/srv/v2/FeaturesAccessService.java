@@ -38,7 +38,6 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.v2.DbQueryV2;
 import org.n52.series.db.da.v2.FeatureRepository;
-import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 

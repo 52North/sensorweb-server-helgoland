@@ -34,13 +34,11 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.I18nSiteEntity;
 import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.dao.AbstractDao;
-import org.n52.series.db.da.v2.DbQueryV2;
 
 import com.google.common.base.Strings;
 
