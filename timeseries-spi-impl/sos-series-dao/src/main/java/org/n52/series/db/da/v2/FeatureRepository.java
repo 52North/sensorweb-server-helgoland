@@ -327,6 +327,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     		if (entity.hasTrackLocations()) {
     			TrackOutput result = new TrackOutput();
     	    	result.setId(createUniqueId(entity.getPkid(), type));
+    	    	return result;
     		}
     	} catch (GeoJSONException e) {
 			throw new DataAccessException("Error while creating output.", e);
