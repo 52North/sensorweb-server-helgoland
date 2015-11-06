@@ -36,7 +36,7 @@ import org.n52.io.response.ParameterOutput;
 public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
 	
 	public ServiceCollectionOutput() {
-		super();
+		// empty collection
 	}
 	
 	public ServiceCollectionOutput(ServiceOutput item) {

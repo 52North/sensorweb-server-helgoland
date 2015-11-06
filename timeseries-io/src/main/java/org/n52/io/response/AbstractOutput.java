@@ -27,8 +27,6 @@
  */
 package org.n52.io.response;
 
-import org.n52.io.response.ServiceOutput;
-
 /**
  * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk J&uuml;rrens</a>
  * @since 1.5.0

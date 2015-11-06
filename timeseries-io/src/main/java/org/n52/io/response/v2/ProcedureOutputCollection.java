@@ -30,13 +30,16 @@ package org.n52.io.response.v2;
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
-import java.util.List;
 import org.n52.io.response.ParameterOutput;
 import java.util.List;
 
 
 public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput> {
 	
+    public ProcedureOutputCollection() {
+        // empty collection
+    }
+    
 	public ProcedureOutputCollection(ProcedureOutput item) {
 		super(item);
 	}

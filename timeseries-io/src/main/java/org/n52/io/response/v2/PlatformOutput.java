@@ -34,7 +34,7 @@ public abstract class PlatformOutput extends ParameterOutput {
 
     private static final long serialVersionUID = -2868469756939569521L;
     
-    private FeatureOutputCollection features;
+    private FeatureOutputCollection features = new FeatureOutputCollection();
     
     private PlatformType type;
     

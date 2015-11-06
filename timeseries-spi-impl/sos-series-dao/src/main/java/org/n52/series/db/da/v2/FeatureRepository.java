@@ -88,7 +88,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	public Collection<SearchResult> searchFor(String queryString, String locale) {
 		Session session = getSession();
 		try {
-			List<DescribableEntity<?>> results = new ArrayList<DescribableEntity<?>>();
+			List<DescribableEntity<?>> results = new ArrayList<>();
 			DbQuery parameters = DbQueryV2.createFrom(IoParameters.createDefaults(), locale);
 			Collection<SiteEntity> sites = new SiteDao(session).find(queryString, parameters);
 			if (sites != null) {
@@ -107,7 +107,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	@Override
 	protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
 			String locale) {
-		List<SearchResult> results = new ArrayList<SearchResult>();
+		List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
@@ -121,7 +121,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		Session session = getSession();
 		try {
 			parameters.setDatabaseAuthorityCode(dbSrid);
-			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<FeatureOutput> results = new ArrayList<>();
 			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
 			if (sites != null) {
 				for (SiteEntity entity : sites) {
@@ -145,7 +145,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		Session session = getSession();
 		try {
 			parameters.setDatabaseAuthorityCode(dbSrid);
-			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<FeatureOutput> results = new ArrayList<>();
 			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
 			if (sites != null) {
 				for (SiteEntity entity : sites) {
@@ -182,7 +182,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	public FeatureOutputCollection getSites(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
-			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<FeatureOutput> results = new ArrayList<>();
 			List<SiteEntity> sites = new SiteDao(session).getAllInstances(parameters);
 			if (sites != null) {
 				for (SiteEntity entity : sites) {
@@ -202,7 +202,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	public FeatureOutputCollection getTracks(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
-			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+			List<FeatureOutput> results = new ArrayList<>();
 			List<TrackEntity> tracks = new TrackDao(session).getAllInstances(parameters);
 			if (tracks != null) {
 				for (TrackEntity entity : tracks) {
@@ -238,10 +238,10 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		return FeatureType.NON;
 	}
 	
-	
 	public Long parseFeatureId(String id) throws DataAccessException {
 		return parseFeatureId(id, getTypeFor(id));
 	}
+    
 	private Long parseFeatureId(String id, FeatureType type) throws DataAccessException {
 		switch (type) {
 		case SITE:

@@ -39,16 +39,8 @@ import java.util.Map;
 public class GeoJSONObject {
     
     public enum GeoJSONType {
-        Point,
-        MultiPoint,
-        LineString,
-        MultiLineString,
-        Polygon,
-        MultiPolygon,
-        GeometryCollection,
         Feature,
         FeatureCollection;
-    	
     }
     
     public static final String LABEL = "label";
@@ -64,14 +56,6 @@ public class GeoJSONObject {
     
     public GeoJSONObject(String type) {
         this.type = GeoJSONType.valueOf(type);
-    }
-    
-    public void addProperty(String key, Object value) {
-        this.members.put(key, value);
-    }
-    
-    public void removeProperty(String key) {
-        this.members.remove(key);
     }
     
     @JsonIgnore
