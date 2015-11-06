@@ -29,6 +29,7 @@ package org.n52.io.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -43,8 +44,8 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     }
     
     protected OutputCollection(T item) {
-        this.items = Collections.emptyList();
-        this.items.add(item);
+    	this.items = new ArrayList<>();
+        addtem(item);
     }
 
     protected OutputCollection(List<T> items) {

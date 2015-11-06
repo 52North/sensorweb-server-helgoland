@@ -31,7 +31,7 @@ import java.util.Date;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class TrackLocationEntity {
+public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
 
 	private Long pkid;
 
@@ -82,4 +82,17 @@ public class TrackLocationEntity {
     	}
     	return super.equals(obj);
     }
+
+	@Override
+	public int compareTo(TrackLocationEntity o) {
+		if (o instanceof TrackLocationEntity) {
+			TrackLocationEntity tle = (TrackLocationEntity) o;
+			if (getTimestamp().before(tle.getTimestamp())) {
+				return -1;
+			} else {
+				return 1;
+			}
+		}
+		return 0;
+	}
 }

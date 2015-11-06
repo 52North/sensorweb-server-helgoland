@@ -25,36 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.series.db.da.beans.v2;
 
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Comparator;
-import java.util.List;
-import org.n52.io.response.ParameterOutput;
+import java.util.HashSet;
+import java.util.Set;
 
-public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
-	
-	public ServiceCollectionOutput() {
-		super();
-	}
-	
-	public ServiceCollectionOutput(ServiceOutput item) {
-		super(item);
-	}
-	
-	public ServiceCollectionOutput(List<ServiceOutput> items) {
-		super(items);
-	}
-	
-    @Override
-    @JsonProperty(value = "services")
-    public List<ServiceOutput> getItems() {
-        return super.getItems();
+import org.n52.series.db.da.beans.AbstractObservationEntity;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+
+public class ObservationEntityV2 extends AbstractObservationEntity {
+
+	private Geometry geom;
+	 
+    private Set<TrackEntity> tracks = new HashSet<>(0);
+    
+    public Geometry getGeom() {
+        return geom;
+    }
+
+    public void setGeom(Geometry geom) {
+        this.geom = geom;
     }
     
+    public boolean isSetGeom() {
+    	return getGeom() != null && !getGeom().isEmpty();
+    }
+    
+    public Set<TrackEntity> getTracks() {
+        return tracks;
+    }
+
+    public void setTracks(Set<TrackEntity> tracks) {
+        this.tracks = tracks;
+    }
+
     @Override
-    protected Comparator<ServiceOutput> getComparator() {
-        return ParameterOutput.defaultComparator();
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" id: ").append(getPkid());
+        return sb.append(" ]").toString();
     }
 }

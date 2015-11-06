@@ -33,9 +33,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
@@ -130,6 +132,12 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
             }
             return outputs;
         }
+
+		@Override
+		protected ServiceOutput getServiceOutput() throws DataAccessException {
+			// not used here
+			return null;
+		}
         
     }
 

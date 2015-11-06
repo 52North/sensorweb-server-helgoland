@@ -25,28 +25,66 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.beans.v2;
+package org.n52.series.db.da.beans;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Date;
 
+public abstract class AbstractObservationEntity {
+	 private Long pkid;
 
-public class ObservationEntity extends org.n52.series.api.v1.db.da.beans.ObservationEntity {
+	    private Date timestamp;
 
-    private Set<TrackEntity> tracks = new HashSet<>(0);
-    public Set<TrackEntity> getTracks() {
-        return tracks;
-    }
+	    private Double value;
 
-    public void setTracks(Set<TrackEntity> tracks) {
-        this.tracks = tracks;
-    }
+	    private Long seriesPkid;
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" id: ").append(getPkid());
-        return sb.append(" ]").toString();
-    }
+	    private Boolean deleted;
+
+	    public Long getPkid() {
+	        return pkid;
+	    }
+
+	    public void setPkid(Long pkid) {
+	        this.pkid = pkid;
+	    }
+
+	    public Date getTimestamp() {
+	        return timestamp;
+	    }
+
+	    public void setTimestamp(Date timestamp) {
+	        this.timestamp = timestamp;
+	    }
+
+	    public Double getValue() {
+	        return value;
+	    }
+
+	    public void setValue(Double value) {
+	        this.value = value;
+	    }
+
+	    public Long getSeriesPkid() {
+	        return seriesPkid;
+	    }
+
+	    public void setSeriesPkid(Long seriesPkid) {
+	        this.seriesPkid = seriesPkid;
+	    }
+
+	    public boolean getDeleted() {
+	        return deleted;
+	    }
+
+	    public void setDeleted(Boolean deleted) {
+	        this.deleted = deleted;
+	    }
+
+	    @Override
+	    public String toString() {
+	        StringBuilder sb = new StringBuilder();
+	        sb.append(getClass().getSimpleName()).append(" [");
+	        sb.append(" id: ").append(pkid);
+	        return sb.append(" ]").toString();
+	    }
 }

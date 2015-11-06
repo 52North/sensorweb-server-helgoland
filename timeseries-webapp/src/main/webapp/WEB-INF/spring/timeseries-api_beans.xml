@@ -2,26 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xsi:schemaLocation="
-        http://www.springframework.org/schema/beans
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
 
     <mvc:annotation-driven />
 
-	<bean id="serviceInfo" class="org.n52.series.api.v1.db.da.beans.ServiceInfo">
+	<bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />
     </bean>
-    
-    <!-- timeseries api web controller bindings -->
-    <import resource="timeseries-api_beans.xml"/>
-     
-    <import resource="timeseries-api_v1_web.xml"/>
-    <import resource="timeseries-api_v1_beans.xml"/>
-    
-    <import resource="timeseries-api_v2_web.xml"/>
-    <import resource="timeseries-api_v2_beans.xml"/>
+
+    <bean id="serviceInfoAccess" class="org.n52.series.db.srv.ServiceInfoAccess" abstract="true">
+        <property name="serviceInfo" ref="serviceInfo" />
+    </bean>
 
 </beans>

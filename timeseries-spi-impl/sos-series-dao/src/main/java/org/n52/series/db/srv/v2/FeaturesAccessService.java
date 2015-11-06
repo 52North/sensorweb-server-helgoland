@@ -41,7 +41,14 @@ import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class FeatureAccessService extends ServiceInfoAccess implements ParameterService<FeatureOutput> {
+public class FeaturesAccessService extends ServiceInfoAccess implements ParameterService<FeatureOutput> {
+	
+	public FeaturesAccessService(String dbSrid) {
+        if (dbSrid != null) {
+            FeatureRepository repository = createFeatureRepository();
+            repository.setDatabaseSrid(dbSrid);
+        }
+    }
 
 	@Override
 	public FeatureOutputCollection getExpandedParameters(IoParameters query) {

@@ -20,16 +20,16 @@
 
     <!-- inject implementation of the Timeseries API's SPI version 2 -->
 
-    <bean id="searchServiceV2" class="org.n52.series.db.srv.v2.Search" parent="serviceInfoAccessV2" />
-    <bean id="serviceParameterServiceV2" class="org.n52.series.db.srv.v2.ServiceAccessService" parent="serviceInfoAccessV2" />
-    <bean id="categoryParameterServiceV2" class="org.n52.series.db.srv.v2.CategoriesAccessService" parent="serviceInfoAccessV2" />
-    <bean id="featureParameterServiceV2" class="org.n52.series.db.srv.v2.FeatureAccessService" parent="serviceInfoAccessV2" />
-    <bean id="procedureParameterServiceV2" class="org.n52.series.db.srv.v2.ProceduresAccessService" parent="serviceInfoAccessV2" />
-    <bean id="platformParameterServiceV2" class="org.n52.series.db.srv.v2.PlatformAccessService" parent="serviceInfoAccessV2" >
-       <!--<constructor-arg name="dbSrid" value="EPSG:4326" />-->
+    <bean id="searchServiceV2" class="org.n52.series.db.srv.v2.Search" parent="serviceInfoAccess" />
+    <bean id="serviceParameterServiceV2" class="org.n52.series.db.srv.v2.ServiceAccessService" parent="serviceInfoAccess" />
+    <bean id="categoryParameterServiceV2" class="org.n52.series.db.srv.v2.CategoriesAccessService" parent="serviceInfoAccess" />
+    <bean id="featureParameterServiceV2" class="org.n52.series.db.srv.v2.FeaturesAccessService" parent="serviceInfoAccess" >
+       <constructor-arg name="dbSrid" value="EPSG:4326" />
     </bean>
-    <bean id="phenomenonParameterServiceV2" class="org.n52.series.db.srv.v2.PhenomenaAccessService"  parent="serviceInfoAccessV2" />
-    <!--<bean id="timeseriesServiceV2" class="org.n52.series.api.v1.db.srv.TimeseriesAccessService" parent="serviceInfoAccessV2" />-->
-    <!--<bean id="metadataServiceV2" class="org.n52.series.api.v1.db.srv.MetadataAccessService" />-->
+    <bean id="procedureParameterServiceV2" class="org.n52.series.db.srv.v2.ProceduresAccessService" parent="serviceInfoAccess" />
+    <bean id="platformParameterServiceV2" class="org.n52.series.db.srv.v2.PlatformsAccessService" parent="serviceInfoAccess" />
+    <bean id="phenomenonParameterServiceV2" class="org.n52.series.db.srv.v2.PhenomenaAccessService"  parent="serviceInfoAccess" />
+    <bean id="timeseriesServiceV2" class="org.n52.series.db.srv.v2.SeriesAccessService" parent="serviceInfoAccess" />
+    <bean id="metadataServiceV2" class="org.n52.series.db.srv.v2.MetadataAccessService" />
 
 </beans>

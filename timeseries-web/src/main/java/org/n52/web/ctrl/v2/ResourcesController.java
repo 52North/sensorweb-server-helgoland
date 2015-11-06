@@ -34,7 +34,7 @@ import static org.n52.web.ctrl.v2.RestfulUrls.API_VERSION_PATH;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.sensorweb.spi.CountingMetadataService;
+import org.n52.sensorweb.spi.v2.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,24 +55,24 @@ public final class ResourcesController {
     private ResourceCollection[] createResources(boolean expanded) {
         List<ResourceCollection> resources = new ArrayList<>();
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
-        ResourceCollection stations = createResource("platforms").withLabel("Platform").withDescription("A sensor platform (stationary or mobile) is where measurements are taken.");
-        ResourceCollection timeseries = createResource("series").withLabel("Series").withDescription("Represents a sequence of data values measured over time.");
+        ResourceCollection platforms = createResource("platforms").withLabel("Platform").withDescription("A sensor platform (stationary or mobile) is where measurements are taken.");
+        ResourceCollection series = createResource("series").withLabel("Series").withDescription("Represents a sequence of data values measured over time.");
         ResourceCollection categories = createResource("categories").withLabel("Category").withDescription("A category group available timeseries.");
         ResourceCollection features = createResource("features").withLabel("Feature").withDescription("An organizing unit to filter resources.");
         ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription("An organizing unit to filter resources.");
         ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription("An organizing unit to filter resources.");
         if (expanded) {
             services.setSize(metadataService.getServiceCount());
-            stations.setSize(metadataService.getStationsCount());
-            timeseries.setSize(metadataService.getSeriesCount());
+            platforms.setSize(metadataService.getPlatformsCount());
+            series.setSize(metadataService.getSeriesCount());
             categories.setSize(metadataService.getCategoriesCount());
             features.setSize(metadataService.getFeaturesCount());
             procedures.setSize(metadataService.getProceduresCount());
             phenomena.setSize(metadataService.getPhenomenaCount());
         }
         resources.add(services);
-        resources.add(stations);
-        resources.add(timeseries);
+        resources.add(platforms);
+        resources.add(series);
         resources.add(categories);
         resources.add(features);
         resources.add(procedures);

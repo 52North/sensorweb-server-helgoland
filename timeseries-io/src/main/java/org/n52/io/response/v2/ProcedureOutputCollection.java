@@ -37,10 +37,6 @@ import java.util.List;
 
 public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput> {
 	
-	public ProcedureOutputCollection() {
-		super();
-	}
-	
 	public ProcedureOutputCollection(ProcedureOutput item) {
 		super(item);
 	}

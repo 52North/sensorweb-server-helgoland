@@ -28,22 +28,54 @@
 package org.n52.series.api.v1.db.da;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.series.db.da.AbstractPhenomenonRepository;
+import org.n52.sensorweb.spi.SearchResult;
+import org.n52.sensorweb.spi.search.PhenomenonSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.dao.PhenomenonDao;
+import org.n52.web.exception.ResourceNotFoundException;
 
-public class PhenomenonRepository extends AbstractPhenomenonRepository<PhenomenonOutput> {
+public class PhenomenonRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 
     public PhenomenonRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
     }
+    
+    @Override
+	public Collection<SearchResult> searchFor(String searchString, String locale) {
+		Session session = getSession();
+		try {
+			PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+			DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
+			List<PhenomenonEntity> found = phenomenonDao.find(searchString, parameters);
+			return convertToSearchResults(found, locale);
+		} finally {
+			returnSession(session);
+		}
+	}
+
+	@Override
+	protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+			String locale) {
+		List<SearchResult> results = new ArrayList<SearchResult>();
+		for (DescribableEntity<? extends I18nEntity> searchResult : found) {
+			String pkid = searchResult.getPkid().toString();
+			String label = getLabelFrom(searchResult, locale);
+			results.add(new PhenomenonSearchResult(pkid, label));
+		}
+		return results;
+	}
 
     @Override
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
@@ -83,6 +115,19 @@ public class PhenomenonRepository extends AbstractPhenomenonRepository<Phenomeno
             returnSession(session);
         }
     }
+	
+	protected List<PhenomenonEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+		return new PhenomenonDao(session).getAllInstances(parameters);
+	}
+	
+	protected PhenomenonEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+		PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+        PhenomenonEntity result = phenomenonDao.getInstance(id, parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return result;
+	}
 
     private PhenomenonOutput createExpanded(PhenomenonEntity entity, DbQuery parameters) throws DataAccessException {
         PhenomenonOutput result = createCondensed(entity, parameters);
@@ -96,14 +141,4 @@ public class PhenomenonRepository extends AbstractPhenomenonRepository<Phenomeno
         result.setId(Long.toString(entity.getPkid()));
         return result;
     }
-    
-    @Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV1.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV1.createFrom(parameters, locale);
-	}
 }

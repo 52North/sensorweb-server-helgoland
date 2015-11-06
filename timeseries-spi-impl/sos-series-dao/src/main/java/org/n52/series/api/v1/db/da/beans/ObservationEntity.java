@@ -27,66 +27,10 @@
  */
 package org.n52.series.api.v1.db.da.beans;
 
-import java.util.Date;
+import org.n52.series.db.da.beans.AbstractObservationEntity;
 
 
-public class ObservationEntity {
+public class ObservationEntity extends AbstractObservationEntity {
 
-    private Long pkid;
 
-    private Date timestamp;
-
-    private Double value;
-
-    private Long seriesPkid;
-
-    private Boolean deleted;
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    public Long getSeriesPkid() {
-        return seriesPkid;
-    }
-
-    public void setSeriesPkid(Long seriesPkid) {
-        this.seriesPkid = seriesPkid;
-    }
-
-    public boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" id: ").append(pkid);
-        return sb.append(" ]").toString();
-    }
 }

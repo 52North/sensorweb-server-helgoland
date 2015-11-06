@@ -27,34 +27,57 @@
  */
 package org.n52.io.response.v2;
 
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Comparator;
-import java.util.List;
-import org.n52.io.response.ParameterOutput;
 
-public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
+public class SeriesOutput {
 	
-	public ServiceCollectionOutput() {
-		super();
-	}
-	
-	public ServiceCollectionOutput(ServiceOutput item) {
-		super(item);
-	}
-	
-	public ServiceCollectionOutput(List<ServiceOutput> items) {
-		super(items);
-	}
-	
-    @Override
-    @JsonProperty(value = "services")
-    public List<ServiceOutput> getItems() {
-        return super.getItems();
-    }
+	private ServiceOutput service;
     
-    @Override
-    protected Comparator<ServiceOutput> getComparator() {
-        return ParameterOutput.defaultComparator();
+    private PlatformOutput platform;
+    
+    private ProcedureOutput procedure;
+    
+    private PhenomenonOutput phenomenon;
+    
+    private CategoryOutput category;
+
+    public ServiceOutput getService() {
+        return service;
     }
+
+    public void setService(ServiceOutput service) {
+        this.service = service;
+    }
+
+    public PlatformOutput getFPlatfrom() {
+        return platform;
+    }
+
+    public void setPlatform(PlatformOutput platform) {
+        this.platform = platform;
+    }
+
+    public ProcedureOutput getProcedure() {
+        return procedure;
+    }
+
+    public void setProcedure(ProcedureOutput procedure) {
+        this.procedure = procedure;
+    }
+
+    public PhenomenonOutput getPhenomenon() {
+        return phenomenon;
+    }
+
+    public void setPhenomenon(PhenomenonOutput phenomenon) {
+        this.phenomenon = phenomenon;
+    }
+
+    public CategoryOutput getCategory() {
+        return category;
+    }
+
+    public void setCategory(CategoryOutput category) {
+        this.category = category;
+    }
+
 }

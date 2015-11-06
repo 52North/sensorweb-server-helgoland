@@ -27,18 +27,23 @@
  */
 package org.n52.series.db.da.v2;
 
-import org.n52.io.response.v2.ServiceCollectionOutput;
+import java.util.List;
+
 import org.n52.io.response.v2.ServiceOutput;
 import org.n52.io.response.v2.ServiceOutput.ParameterCount;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.web.exception.InternalServerException;
 
-public class ServiceRepository {
+import com.google.common.collect.Lists;
+
+public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 	
 	private ServiceInfo serviceInfo;
     
-//    private EntityCounter counter = new EntityCounter();
+    private EntityCounter counter = new EntityCounter();
     
     public ServiceRepository(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
@@ -48,17 +53,17 @@ public class ServiceRepository {
         return serviceInfo.getServiceId();
     }
 
-//	@Override
-	public ServiceCollectionOutput getAllCondensed(DbQuery parameters) throws DataAccessException {
-		return new ServiceCollectionOutput(getCondensedService());
+	@Override
+	public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
+		return Lists.newArrayList(getCondensedService());
 	}
 
-//	@Override
-	public ServiceCollectionOutput getAllExpanded(DbQuery parameters) throws DataAccessException {
-		return new ServiceCollectionOutput(getExpandedService());
+	@Override
+	public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+		return Lists.newArrayList(getExpandedService());
 	}
 
-//	@Override
+	@Override
 	public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
 		return getExpandedService();
 	}
@@ -98,21 +103,19 @@ public class ServiceRepository {
     }
 
     private ParameterCount countEntities(ServiceOutput service) {
-//        try {
+        try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
-            // #procedures == #offerings
-//            quantities.setOfferingsSize(counter.countProcedures());
-//            quantities.setProceduresSize(counter.countProcedures());
-//            quantities.setCategoriesSize(counter.countCategories());
-//            quantities.setTimeseriesSize(counter.countTimeseries());
-//            quantities.setPhenomenaSize(counter.countPhenomena());
-//            quantities.setFeaturesSize(counter.countFeatures());
-//            quantities.setStationsSize(counter.countStations());
+            quantities.setProceduresSize(counter.countProcedures());
+            quantities.setCategoriesSize(counter.countCategories());
+            quantities.setSeriesSize(counter.countSeries());
+            quantities.setPhenomenaSize(counter.countPhenomena());
+            quantities.setFeaturesSize(counter.countFeatures());
+            quantities.setPlatformsSize(counter.countPlatforms());
             return quantities;
-//        }
-//        catch (DataAccessException e) {
-//            throw new InternalServerException("Could not count parameter entities.", e);
-//        }
+        }
+        catch (DataAccessException e) {
+            throw new InternalServerException("Could not count parameter entities.", e);
+        }
     }
 
 }

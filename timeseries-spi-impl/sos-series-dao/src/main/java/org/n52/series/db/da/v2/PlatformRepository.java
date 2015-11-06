@@ -30,6 +30,7 @@ package org.n52.series.db.da.v2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
@@ -41,7 +42,6 @@ import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.OutputAssembler;
-import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -49,9 +49,10 @@ import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
+import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Point;
 
-public class PlatformRepository extends SessionAwareRepository implements OutputAssembler<PlatformOutput> {
+public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
 	public PlatformRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);
@@ -111,8 +112,8 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 			returnSession(session);
 		}
 	}
-
-	@Override
+	
+    @Override
 	public PlatformOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
@@ -127,13 +128,25 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 		}
 	}
 
+	public PlatformOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            FeatureDao featureDao = new FeatureDao(session);
+            FeatureEntity result = featureDao.getInstance(parseId(id), DbQueryV2.createFrom(IoParameters.createDefaults()));
+            return createCondensed(result, parameters);
+        }
+        finally {
+            returnSession(session);
+        }
+    }
+
 	private PlatformOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
 		PlatformOutput result = createCondensed(entity, parameters);
 		addFeatures(result);
 		return result;
 	}
 
-	private PlatformOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
+	protected PlatformOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
 		PlatformOutput result = getConcretePlatformOutput(entity, parameters);
 		result.setId(Long.toString(entity.getPkid()));
 		result.setLabel(getLabelFrom(entity, parameters.getLocale()));
@@ -147,22 +160,18 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 		return new MobilePlatformOutput();
 	}
 
-	private void addFeatures(PlatformOutput result) {
+	private void addFeatures(PlatformOutput result) throws DataAccessException {
+		Map<String, String> queryParameters = Maps.newHashMap();
+		queryParameters.put("feature", result.getId());
+		DbQuery parameters = DbQueryV2.createFrom(IoParameters.createFromQuery(queryParameters));
 		if (result instanceof StationaryPlatformOutput) {
-			// add Site
+			result.setFeatures(createFeatureRepository().getSites(parameters));
 		} else if (result instanceof MobilePlatformOutput) {
-			// Add Tracks
+			result.setFeatures(createFeatureRepository().getTracks(parameters));
 		}
 	}
 	
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV2.createFrom(parameters);
+	private FeatureRepository createFeatureRepository() {
+		return new FeatureRepository(getServiceInfo());
 	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV2.createFrom(parameters, locale);
-	}
-	
 }

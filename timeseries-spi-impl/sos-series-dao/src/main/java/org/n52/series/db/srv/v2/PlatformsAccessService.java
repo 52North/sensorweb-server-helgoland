@@ -41,7 +41,7 @@ import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class PlatformAccessService extends ServiceInfoAccess implements ParameterService<PlatformOutput> {
+public class PlatformsAccessService extends ServiceInfoAccess implements ParameterService<PlatformOutput> {
 
 	@Override
 	public PlatformOutputCollection getExpandedParameters(IoParameters query) {

@@ -38,6 +38,10 @@ public class FeatureOutput extends GeoJSONFeature implements CollatorComparable<
 
     private static final long serialVersionUID = -2868469756939569521L;
 
+    public FeatureOutput(String type) throws GeoJSONException {
+        super(type);
+    }
+    
     public FeatureOutput(String type, Geometry geometry) throws GeoJSONException {
         super(type, geometry);
     }

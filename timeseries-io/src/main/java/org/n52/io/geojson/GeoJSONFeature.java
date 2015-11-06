@@ -58,6 +58,10 @@ public class GeoJSONFeature extends GeoJSONObject {
     @JsonIgnore
     private Geometry geometry;
     
+    public GeoJSONFeature(String type) throws GeoJSONException {
+        super(type);
+    }
+    
     public GeoJSONFeature(String type, Geometry geometry) throws GeoJSONException {
         super(type);
         this.geometry = geometry;

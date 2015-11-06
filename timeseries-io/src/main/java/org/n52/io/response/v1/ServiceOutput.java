@@ -27,51 +27,9 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.response.ParameterOutput;
-
-public class ServiceOutput extends ParameterOutput {
-
-	private String serviceUrl;
-
-	private String version;
-	
-	private String type;
-	
-	private Boolean supportsFirstLatest;
+public class ServiceOutput extends org.n52.io.response.ServiceOutput {
 	
 	private ParameterCount quantities;
-	
-	public String getServiceUrl() {
-		return serviceUrl;
-	}
-
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public Boolean isSupportsFirstLatest() {
-        return supportsFirstLatest;
-    }
-
-    public void setSupportsFirstLatest(boolean supportsFirstLatest) {
-        this.supportsFirstLatest = Boolean.valueOf(supportsFirstLatest);
-    }
 
     public ParameterCount getQuantities() {
         return quantities;
@@ -81,55 +39,6 @@ public class ServiceOutput extends ParameterOutput {
         this.quantities = countedParameters;
     }
 
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ( (serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ( (type == null) ? 0 : type.hashCode());
-        result = prime * result + ( (version == null) ? 0 : version.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if ( !super.equals(obj)) {
-            return false;
-        }
-        if ( ! (obj instanceof ServiceOutput)) {
-            return false;
-        }
-        ServiceOutput other = (ServiceOutput) obj;
-        if (serviceUrl == null) {
-            if (other.serviceUrl != null) {
-                return false;
-            }
-        }
-        else if ( !serviceUrl.equals(other.serviceUrl)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        }
-        else if ( !type.equals(other.type)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        }
-        else if ( !version.equals(other.version)) {
-            return false;
-        }
-        return true;
-    }
-    
     public static class ParameterCount {
 
         private int amountOfferings;

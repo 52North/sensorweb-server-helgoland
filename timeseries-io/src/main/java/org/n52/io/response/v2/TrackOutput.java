@@ -32,8 +32,12 @@ import org.n52.io.geojson.GeoJSONException;
 
 public class TrackOutput extends FeatureOutput {
 
-    public TrackOutput(String type, Geometry geometry) throws GeoJSONException {
-        super(type, geometry);
+	public TrackOutput() throws GeoJSONException {
+        super("track");
+    }
+	
+    public TrackOutput(Geometry geometry) throws GeoJSONException {
+        super("track", geometry);
     }
     
 }

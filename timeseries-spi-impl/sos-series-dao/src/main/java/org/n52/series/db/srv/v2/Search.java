@@ -34,7 +34,9 @@ import java.util.List;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
 import org.n52.series.db.da.v2.CategoryRepository;
+import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.da.v2.PhenomenonRepository;
+import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.da.v2.ProcedureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 
@@ -46,8 +48,8 @@ public class Search extends ServiceInfoAccess implements SearchService {
 //        results.addAll(getTimeseriesRepository().searchFor(search, locale));
         results.addAll(getPhenomenonRepository().searchFor(search, locale));
         results.addAll(getProcedureRepository().searchFor(search, locale));
-//        results.addAll(getStationRepository().searchFor(search, locale));
-//        results.addAll(getFeatureRepository().searchFor(search, locale));
+        results.addAll(getPlatformRepository().searchFor(search, locale));
+        results.addAll(getFeatureRepository().searchFor(search, locale));
         results.addAll(getCategoryRepositry().searchFor(search, locale));
         return results;
     }
@@ -61,7 +63,15 @@ public class Search extends ServiceInfoAccess implements SearchService {
         return new PhenomenonRepository(getServiceInfo());
     }
 
-    private CategoryRepository getCategoryRepositry() {
+    private PlatformRepository getPlatformRepository() {
+		return new PlatformRepository(getServiceInfo());
+	}
+
+	private FeatureRepository getFeatureRepository() {
+		return new FeatureRepository(getServiceInfo());
+	}
+
+	private CategoryRepository getCategoryRepositry() {
         return new CategoryRepository(getServiceInfo());
     }
 

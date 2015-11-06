@@ -25,36 +25,22 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.sensorweb.spi.v2;
 
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Comparator;
-import java.util.List;
-import org.n52.io.response.ParameterOutput;
+public interface CountingMetadataService {
+	
+	int getServiceCount();
 
-public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
-	
-	public ServiceCollectionOutput() {
-		super();
-	}
-	
-	public ServiceCollectionOutput(ServiceOutput item) {
-		super(item);
-	}
-	
-	public ServiceCollectionOutput(List<ServiceOutput> items) {
-		super(items);
-	}
-	
-    @Override
-    @JsonProperty(value = "services")
-    public List<ServiceOutput> getItems() {
-        return super.getItems();
-    }
+    int getPlatformsCount();
+
+    int getSeriesCount();
+
+    int getCategoriesCount();
+
+    int getFeaturesCount();
+
+    int getProceduresCount();
+
+    int getPhenomenaCount();
     
-    @Override
-    protected Comparator<ServiceOutput> getComparator() {
-        return ParameterOutput.defaultComparator();
-    }
 }

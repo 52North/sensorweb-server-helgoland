@@ -46,7 +46,6 @@ import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.OutputAssembler;
-import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -61,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class StationRepository extends SessionAwareRepository implements OutputAssembler<StationOutput> {
+public class StationRepository extends ExtendedSessionAwareRepository implements OutputAssembler<StationOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationRepository.class);
 
@@ -185,10 +184,12 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
         try {
-            Geometry geometry = featureEntity.getGeom();
-            String fromCrs = "EPSG:" +geometry.getSRID();
-            Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+        	if (featureEntity.isSetGeom()) {
+	            Geometry geometry = featureEntity.getGeom();
+	            String fromCrs = "EPSG:" +geometry.getSRID();
+	            Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+	            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+        	}
         }
         catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
@@ -202,15 +203,5 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public void setDatabaseSrid(String dbSrid) {
         this.dbSrid = dbSrid;
     }
-    
-    @Override
-	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV1.createFrom(parameters);
-	}
-
-	@Override
-	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV1.createFrom(parameters, locale);
-	}
 
 }

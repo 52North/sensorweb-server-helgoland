@@ -29,55 +29,15 @@ package org.n52.io.response.v2;
 
 import java.util.Arrays;
 import java.util.List;
-import org.n52.io.response.ParameterOutput;
 
-public class ServiceOutput extends ParameterOutput {
+public class ServiceOutput extends org.n52.io.response.ServiceOutput {
 
-	private String serviceUrl;
-
-	private String version;
-	
-	private String type;
-	
-	private Boolean supportsFirstLatest;
 	
     private final List<String> filters = Arrays.asList(new String[]{ 
         "features, procedures, phenomena, categories, services, platforms"} );
     
 	private ParameterCount quantities;
     
-	public String getServiceUrl() {
-		return serviceUrl;
-	}
-
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public Boolean isSupportsFirstLatest() {
-        return supportsFirstLatest;
-    }
-
-    public void setSupportsFirstLatest(boolean supportsFirstLatest) {
-        this.supportsFirstLatest = Boolean.valueOf(supportsFirstLatest);
-    }
-
     public ParameterCount getQuantities() {
         return quantities;
     }
@@ -100,78 +60,19 @@ public class ServiceOutput extends ParameterOutput {
         return filters.toArray(new String[0]);
     }
 
-	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ( (serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ( (type == null) ? 0 : type.hashCode());
-        result = prime * result + ( (version == null) ? 0 : version.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if ( !super.equals(obj)) {
-            return false;
-        }
-        if ( ! (obj instanceof ServiceOutput)) {
-            return false;
-        }
-        ServiceOutput other = (ServiceOutput) obj;
-        if (serviceUrl == null) {
-            if (other.serviceUrl != null) {
-                return false;
-            }
-        }
-        else if ( !serviceUrl.equals(other.serviceUrl)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        }
-        else if ( !type.equals(other.type)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        }
-        else if ( !version.equals(other.version)) {
-            return false;
-        }
-        return true;
-    }
-
     public static class ParameterCount {
 
-        private int amountOfferings;
-        
         private int amountFeatures;
         
         private int amountProcedures;
         
         private int amountPhenomena;
         
-        private int amountStations;
+        private int amountPlatforms;
 
-        private int amountTimeseries;
+        private int amountSeries;
         
         private int amountCategories;
-
-        public int getOfferings() {
-            return amountOfferings;
-        }
-
-        public void setOfferingsSize(int size) {
-            this.amountOfferings = size;
-        }
 
         public int getFeatures() {
             return amountFeatures;
@@ -197,20 +98,20 @@ public class ServiceOutput extends ParameterOutput {
             this.amountPhenomena = size;
         }
 
-        public int getStations() {
-            return amountStations;
+        public int getPlatforms() {
+            return amountPlatforms;
         }
 
-        public void setStationsSize(int size) {
-            this.amountStations = size;
+        public void setPlatformsSize(int size) {
+            this.amountPlatforms = size;
         }
 
-        public void setTimeseriesSize(int countTimeseries) {
-            this.amountTimeseries = countTimeseries;
+        public void setSeriesSize(int countSeries) {
+            this.amountSeries = countSeries;
         }
         
-        public int getTimeseries() {
-            return this.amountTimeseries;
+        public int getSeries() {
+            return this.amountSeries;
         }
 
         public int getCategories() {
