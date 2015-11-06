@@ -37,6 +37,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PhenomenonOutputCollection  extends OutputCollection<PhenomenonOutput> {
 	
+    public PhenomenonOutputCollection() {
+        // empty collection
+    }
+    
 	public PhenomenonOutputCollection(PhenomenonOutput item) {
 		super(item);
 	}

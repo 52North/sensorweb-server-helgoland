@@ -27,37 +27,63 @@
  */
 package org.n52.io.response.v2;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.geojson.GeoJSONSerializer;
+import org.n52.io.response.AbstractOutput;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
-import org.n52.io.response.CollatorComparable;
-import java.text.Collator;
-import org.n52.io.geojson.GeoJSONException;
-import org.n52.io.geojson.GeoJSONFeature;
 
 
-public class FeatureOutput extends GeoJSONFeature implements CollatorComparable<FeatureOutput> {
+@JsonSerialize(using = GeoJSONSerializer.class, as = GeoJSONObject.class)
+public class FeatureOutput extends AbstractOutput {
 
-    private static final long serialVersionUID = -2868469756939569521L;
+    private final Map<String, Object> members = new HashMap<>();
     
-    public FeatureOutput() throws GeoJSONException {
-        super(GeoJSONType.Feature.name());
-    }
-
-    public FeatureOutput(String type) throws GeoJSONException {
-        super(type);
+    private final String featureType;
+    
+    private Geometry geometry;
+    
+    public FeatureOutput(String featureType) {
+        this.featureType = featureType;
     }
     
-    public FeatureOutput(String type, Geometry geometry) throws GeoJSONException {
-        super(type, geometry);
+    public FeatureOutput(String featureType, Geometry geometry) {
+        this(featureType);
+        this.geometry = geometry;
+    }
+    
+    public String getFeatureType() {
+        return featureType;
+    }
+    
+    public void addProperty(String key, Object value) {
+        this.members.put(key, value);
+    }
+    
+    public void removeProperty(String key) {
+        this.members.remove(key);
+    }
+    
+    public Map<String, Object> getProperties() {
+        return Collections.unmodifiableMap(members);
     }
 
-    @Override
-    public int compare(Collator collator, FeatureOutput o) {
-        if (collator == null) {
-            collator = Collator.getInstance();
-        }
-        String thisLabel = (String) getProperty(LABEL);
-        String otherLabel = (String) o.getProperty(LABEL);
-        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
+    public void setProperties(Map<String, Object> properties) {
+        this.members.putAll(properties);
     }
 
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+    
+    
 }

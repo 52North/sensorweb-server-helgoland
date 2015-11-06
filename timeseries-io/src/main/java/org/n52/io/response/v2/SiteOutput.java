@@ -29,16 +29,15 @@ package org.n52.io.response.v2;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONException;
-import org.n52.io.geojson.GeoJSONObject.GeoJSONType;
 
 public class SiteOutput extends FeatureOutput {
 	
 	public SiteOutput() throws GeoJSONException {
-        super();
+        super("site");
     }
 	
-    public SiteOutput(Geometry geometry) throws GeoJSONException {
-        super(GeoJSONType.Feature.name(), geometry);
+    public SiteOutput(String type, Geometry geometry) throws GeoJSONException {
+        super("site", geometry);
     }
     
 }

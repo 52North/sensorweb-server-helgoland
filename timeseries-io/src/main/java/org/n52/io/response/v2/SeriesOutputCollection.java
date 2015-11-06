@@ -25,33 +25,38 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-
 package org.n52.io.response.v2;
 
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
-import java.util.List;
 import org.n52.io.response.ParameterOutput;
+import java.util.List;
 
-public class PlatformOutputCollection extends OutputCollection<PlatformOutput> {
-    
-    public PlatformOutputCollection() {
+
+public class SeriesOutputCollection extends OutputCollection<SeriesMetadataOutput> {
+	
+    public SeriesOutputCollection() {
         // empty collection
     }
     
-    public PlatformOutputCollection(List<PlatformOutput> results) {
-		super(results);
+	public SeriesOutputCollection(SeriesMetadataOutput item) {
+		super(item);
 	}
-
-	@Override
-    @JsonProperty(value = "platforms")
-    public List<PlatformOutput> getItems() {
+	
+	public SeriesOutputCollection(List<SeriesMetadataOutput> items) {
+		super(items);
+	}
+    
+    @Override
+    @JsonProperty(value = "series")
+    public List<SeriesMetadataOutput> getItems() {
         return super.getItems();
     }
     
     @Override
-    protected Comparator<PlatformOutput> getComparator() {
+    protected Comparator<SeriesMetadataOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
+    
 }

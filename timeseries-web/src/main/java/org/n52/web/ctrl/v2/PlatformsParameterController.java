@@ -34,6 +34,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.v2.PlatformOutput;
+import org.n52.io.response.v2.PlatformOutputCollection;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
@@ -54,7 +56,7 @@ public class PlatformsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformsParameterController.class);
 
-    private ParameterService<GeoJSONFeature> parameterService;
+    private ParameterService<PlatformOutput> parameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -92,12 +94,14 @@ public class PlatformsParameterController {
         return new ModelAndView().addObject(result);
     }
 
-    public ParameterService<GeoJSONFeature> getParameterService() {
+    public ParameterService<PlatformOutput> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<GeoJSONFeature> geojsonOutputService) {
-        ParameterService<GeoJSONFeature> service = new TransformingGeometryOutputService(geojsonOutputService);
+    public void setParameterService(ParameterService<PlatformOutput> geojsonOutputService) {
+        // TODO via config
+//        ParameterService<PlatformOutput> service = new TransformingGeometryOutputService(geojsonOutputService);
+        ParameterService<PlatformOutput> service = geojsonOutputService;
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 

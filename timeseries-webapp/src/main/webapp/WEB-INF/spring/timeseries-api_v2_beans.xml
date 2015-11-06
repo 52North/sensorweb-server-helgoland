@@ -8,6 +8,15 @@
         http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
 
     <mvc:annotation-driven />
+    
+<!--	<bean id="serviceInfo" class="org.n52.series.api.v1.db.da.beans.ServiceInfo">
+        <property name="serviceId" value="1" />
+        <property name="serviceDescription" value="My Timeseries Service." />
+    </bean>-->
+
+    <bean id="serviceInfoAccessV2" class="org.n52.series.db.srv.v2.ServiceInfoAccess" abstract="true">
+        <property name="serviceInfo" ref="serviceInfo" />
+    </bean>
 
     <!-- inject implementation of the Timeseries API's SPI version 2 -->
 

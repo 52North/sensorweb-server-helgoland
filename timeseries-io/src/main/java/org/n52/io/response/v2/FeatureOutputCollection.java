@@ -31,10 +31,14 @@ import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
 import java.util.List;
-import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.response.ParameterOutput;
 
 public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
+    public FeatureOutputCollection() {
+        // empty collection
+    }
+            
     public FeatureOutputCollection(List<FeatureOutput> items) {
 		super(items);
 	}
@@ -47,8 +51,7 @@ public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
     
     @Override
     protected Comparator<FeatureOutput> getComparator() {
-        return GeoJSONFeature.defaultComparator();
+        return ParameterOutput.defaultComparator();
     }
-    
 }
  
