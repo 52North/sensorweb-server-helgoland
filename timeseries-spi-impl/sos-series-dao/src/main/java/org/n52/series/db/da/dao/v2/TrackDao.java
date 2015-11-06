@@ -81,16 +81,20 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 	@SuppressWarnings("unchecked")
 	public List<TrackEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
 		Criteria criteria = getDefaultCriteria("t");
+		// TODO does this really work???
+		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
+		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
+//		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
+		criteria.add(Restrictions.isNotEmpty("trackLocations"));
         if (hasTranslation(parameters, I18nSiteEntity.class)) {
             parameters.addLocaleTo(criteria, I18nSiteEntity.class);
         }
         
         // TODO add DetachedCriteria to DbQuery, is this required?
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("track");
-        criteria.add(Subqueries.propertyIn("t.pkid", filter));
+//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("track");
+//        criteria.add(Subqueries.propertyIn("t.pkid", filter));
         
         // TODO how to handle? Now only the trackLocations which are in the Filter are returned.
-        Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
         parameters.addSpatialFilterTo(trackLocationsCriteria, parameters);
         parameters.addPagingTo(criteria);
         return (List<TrackEntity>) criteria.list();
@@ -108,11 +112,7 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		} else {
 			criteria = session.createCriteria(TrackEntity.class, alias);
 		}
-		// TODO does this really work???
-		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
-		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
-//		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
-		criteria.add(Restrictions.isNotEmpty("trackLocations"));
+
 		return criteria;
 	}
 
