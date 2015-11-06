@@ -37,6 +37,10 @@ import org.n52.io.geojson.GeoJSONFeature;
 public class FeatureOutput extends GeoJSONFeature implements CollatorComparable<FeatureOutput> {
 
     private static final long serialVersionUID = -2868469756939569521L;
+    
+    public FeatureOutput() throws GeoJSONException {
+        super(GeoJSONType.Feature.name());
+    }
 
     public FeatureOutput(String type) throws GeoJSONException {
         super(type);
