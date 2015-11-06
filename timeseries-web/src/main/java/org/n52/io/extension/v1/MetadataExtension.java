@@ -25,11 +25,11 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension.v1;
 
 
 import org.n52.io.IoParameters;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.v1.data.ParameterOutput;
 
 public interface MetadataExtension<T extends ParameterOutput> {
 

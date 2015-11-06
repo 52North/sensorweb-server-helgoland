@@ -46,7 +46,7 @@ import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.web.WebExceptionAdapter;
-import org.n52.io.extension.v1.MetadataExtension;
+import org.n52.web.v1.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -73,19 +73,30 @@ public abstract class ParameterController extends BaseController implements Rest
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/web/v1/ctrl/ParameterController.java
         Map<String, Object> extras = new HashMap<String, Object>();
+        for (MetadataExtension<?> extension : metadataExtensions) {
+            final Map<String, Object> furtherExtras = extension.getData(queryMap, timeseriesId);
+            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
+            if ( !overridableKeys.isEmpty()) {
+                String[] keys = overridableKeys.toArray(new String[0]);
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
+=======
+        Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
             final Object furtherExtras = extension.getExtras(from, queryMap);
             final String extensionName = extension.getExtensionName();
             if (extras.containsKey(extensionName)) {
                 LOGGER.warn("Metadata extension overrides existing extra data: {}", extensionName);
+>>>>>>> d469edc... refactor metadata extension:timeseries-web/src/main/java/org/n52/web/ctrl/ParameterController.java
             }
             extras.put(extensionName, furtherExtras);
         }
         return extras;
     }
 
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/web/v1/ctrl/ParameterController.java
     private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
         Map<String, Object> currentData = new HashMap<String, Object>(data);
         Set<String> overridableKeys = currentData.keySet();
@@ -93,6 +104,8 @@ public abstract class ParameterController extends BaseController implements Rest
         return overridableKeys;
     }
 
+=======
+>>>>>>> d469edc... refactor metadata extension:timeseries-web/src/main/java/org/n52/web/ctrl/ParameterController.java
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);

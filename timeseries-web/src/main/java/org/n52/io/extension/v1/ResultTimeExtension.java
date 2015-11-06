@@ -30,13 +30,9 @@ package org.n52.io.extension.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import org.n52.io.extension.MetadataExtension;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
-import org.n52.sensorweb.spi.ResultTimeService;
+import org.n52.io.IoParameters;
+import org.n52.io.v1.data.TimeseriesMetadataOutput;
+import org.n52.sensorweb.v1.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

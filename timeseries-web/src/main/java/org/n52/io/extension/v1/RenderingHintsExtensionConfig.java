@@ -30,7 +30,7 @@ package org.n52.io.extension.v1;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.request.StyleProperties;
+import org.n52.io.v1.data.StyleProperties;
 
 public class RenderingHintsExtensionConfig {
     

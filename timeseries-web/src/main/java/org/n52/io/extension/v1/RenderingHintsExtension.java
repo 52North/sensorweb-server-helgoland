@@ -31,17 +31,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.request.StyleProperties;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.HashMap;
-import org.n52.io.extension.MetadataExtension;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.IoParameters;
+import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.v1.data.StyleProperties;
+import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
 public class RenderingHintsExtension implements MetadataExtension<TimeseriesMetadataOutput> {
 	
