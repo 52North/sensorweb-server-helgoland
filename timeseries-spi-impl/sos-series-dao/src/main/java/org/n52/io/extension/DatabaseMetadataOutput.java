@@ -29,72 +29,31 @@ package org.n52.io.extension;
 
 import java.util.Date;
 
-public abstract class MetadataEntity<T> {
-    
-    private Long pkid;
-    
-    private Long seriesId;
-    
-    private String name;
-    
-    private String type;
-    
+public class DatabaseMetadataOutput<T> {
+
     private T value;
     
-    private Date lastUpdated;
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public Long getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(Long seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    private Date lastUpdate;
 
     public T getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+    
+    static <T> DatabaseMetadataOutput<T> create() {
+        return new DatabaseMetadataOutput<>();
+    }
+
+    DatabaseMetadataOutput<T> withValue(T value) {
         this.value = value;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+        return this;
     }
     
-    public DatabaseMetadataOutput<T> toOutput() {
-        return DatabaseMetadataOutput.<T>create()
-                .withValue(value)
-                .lastUpdatedAt(lastUpdated);
+    DatabaseMetadataOutput<T> lastUpdatedAt(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+        return this;
     }
-    
 }

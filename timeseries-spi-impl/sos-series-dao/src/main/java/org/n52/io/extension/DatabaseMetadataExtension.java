@@ -27,33 +27,99 @@
  */
 package org.n52.io.extension;
 
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.hibernate.Session;
+import org.n52.io.IoParameters;
 import org.n52.io.response.ext.MetadataExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.n52.io.v1.data.ParameterOutput;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.series.api.v1.db.da.DataAccessException;
+import org.n52.series.api.v1.db.da.SessionAwareRepository;
+import org.n52.series.api.v1.db.da.beans.DescribableEntity;
+import org.n52.series.api.v1.db.da.beans.I18nEntity;
+import org.n52.web.InternalServerException;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataExtension.class);
-
     private static final String EXTENSION_NAME = "databaseMetadata";
+    
+    private final MetadataRepository repository = new MetadataRepository();
 
-
-    public DatabaseMetadataExtension() {
-        this(EXTENSION_NAME);
+    @Override
+    public String getExtensionName() {
+        return EXTENSION_NAME;
     }
-
-    public DatabaseMetadataExtension(String name) {
-        super(name);
+    
+    @Override
+    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
+        return repository.getExtras(output, parameters);
     }
 
     @Override
-    public Object getExtras(ParameterOutput output, IoParameters parameters) {
+    public void addExtraMetadataFieldNames(ParameterOutput output) {
+        List<String> fieldNames = repository.getFieldNames(output.getId());
+        for (String fieldName : fieldNames) {
+            output.addExtra(fieldName);
+        }
+    }
+    
+    private class MetadataRepository extends SessionAwareRepository {
+
+        public MetadataRepository() {
+            super(null); // no service info needed
+        }
+
+        @Override
+        public Collection<SearchResult> searchFor(String queryString, String locale) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
         
-        // TODO
+        private List<String> getFieldNames(String id) {
+            Session session = getSession();
+            try {
+                DatabaseMetadataDao dao = new DatabaseMetadataDao(session);
+                return dao.getMetadataNames(parseId(id));
+            } catch (DataAccessException e) {
+                throw new InternalServerException("Could not get metadata field names", e);
+            }finally {
+                returnSession(session);
+            }
+        }
+
+        private Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
+            Session session = getSession();
+            try {
+                DatabaseMetadataDao dao = new DatabaseMetadataDao(session);
+                final Set<String> fields = parameters.getFields();
+                return fields == null
+                        ? convertToOutputs(dao.getAll())
+                        : convertToOutputs(dao.getSelected(fields));
+            } finally {
+                returnSession(session);
+            }
+        }
+
+        private Map<String, Object> convertToOutputs(List<MetadataEntity<?>> allInstances) {
+            if (allInstances == null) {
+                return Collections.emptyMap();
+            }
+            Map<String, Object> outputs = new HashMap<>();
+            for (MetadataEntity entity : allInstances) {
+                outputs.put(entity.getName(), entity.toOutput());
+            }
+            return outputs;
+        }
         
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

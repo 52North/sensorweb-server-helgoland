@@ -28,14 +28,15 @@
 package org.n52.web.v1.ctrl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.IoParameters;
 import static org.n52.io.QueryParameters.createFromQuery;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
@@ -43,7 +44,7 @@ import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.web.WebExceptionAdapter;
-import org.n52.io.extension.v1.MetadataExtension;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -118,7 +119,7 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -127,18 +128,18 @@ public abstract class ParameterController extends BaseController implements Rest
         return new ModelAndView().addObject(parameter);
     }
 
-    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
+    protected ParameterOutput[] addExtensionInfos(ParameterOutput[] toBeProcessed) {
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            addExtensionInfos(parameterOutput);
+            addExtensionInfo(parameterOutput);
         }
         return toBeProcessed;
     }
 
-    protected ParameterOutput addExtensionInfos(ParameterOutput output) {
+    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            extension.addExtensionTo(output);
+            extension.addExtraMetadataFieldNames(output);
         }
-        return toBeProcessed;
+        return output;
     }
 
     public ServiceParameterService getServiceParameterService() {

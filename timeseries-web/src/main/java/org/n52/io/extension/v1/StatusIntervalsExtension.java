@@ -27,7 +27,6 @@
  */
 package org.n52.io.extension.v1;
 
-import org.n52.io.*;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.n52.io.v1.data.PhenomenonOutput;
+import java.util.Collections;
+import org.n52.io.IoParameters;
+import org.n52.io.response.ext.MetadataExtension;
+import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.v1.data.StatusInterval;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
@@ -60,30 +62,65 @@ public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetada
 		}
 	}
 
-    public StatusIntervalsExtension() {
-        this(EXTENSION_NAME);
+    @Override
+    public String getExtensionName() {
+        return EXTENSION_NAME;
     }
 
-    public StatusIntervalsExtension(String name) {
-        super(name);
+    @Override
+    public void addExtraMetadataFieldNames(TimeseriesMetadataOutput output) {
+        if (hasStatusIntervals(output)) {
+            output.addExtra(EXTENSION_NAME);
+        }
     }
     
+    private boolean hasStatusIntervals(TimeseriesMetadataOutput output) {
+        return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
+    }
+
+    private boolean hasSeriesConfiguration(TimeseriesMetadataOutput output) {
+        String id = output.getId();
+        return intervalConfig.getTimeseriesIntervals().containsKey(id);
+    }
+	
+    private boolean hasPhenomenonConfiguration(TimeseriesMetadataOutput output) {
+        String id = output.getParameters().getPhenomenon().getId();
+        return intervalConfig.getPhenomenonIntervals().containsKey(id);
+    }
+
     @Override
-    public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
-        String timeseriesId = output.getId();
-        PhenomenonOutput phenomenon = output.getParameters().getPhenomenon();
-        Map<String, ConfigInterval> timeseriesIntervals = intervalConfig.getTimeseriesIntervals();
-        Map<String, ConfigInterval> phenomenaIntervals = intervalConfig.getPhenomenonIntervals();
-        if (timeseriesIntervals.containsKey(timeseriesId)) {
-            final StatusInterval[] intervals = createIntervals(timeseriesIntervals.get(timeseriesId));
-            output.setStatusIntervals(intervals); // stay backwards compatible
-            return intervals;
-        } else if (phenomenaIntervals.containsKey(phenomenon.getId())) {
-            final StatusInterval[] intervals = createIntervals(phenomenaIntervals.get(phenomenon.getId()));
-            output.setStatusIntervals(intervals); // stay backwards compatible
-            return intervals;
+    public Map<String, Object> getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
+        if ( !hasExtrasToReturn(output, parameters)) {
+            return Collections.emptyMap();
         }
-        return null;
+        
+        if (hasSeriesConfiguration(output)) {
+            final StatusInterval[] intervals = createIntervals(getSeriesIntervals(output));
+            output.setStatusIntervals(intervals); // stay backwards compatible
+            return wrapSingleIntoMap(intervals);
+        } else if (hasPhenomenonConfiguration(output)) {
+            final StatusInterval[] intervals = createIntervals(getPhenomenonIntervals(output));
+            output.setStatusIntervals(intervals); // stay backwards compatible
+            return wrapSingleIntoMap(intervals);
+        }
+        
+        LOGGER.error("No status intervals found for {} (id={})", output, output.getId());
+        return Collections.emptyMap();
+    }
+    
+    
+    private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
+        return super.hasExtrasToReturn(output, parameters)
+                && hasStatusIntervals(output);
+    }
+    
+    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(TimeseriesMetadataOutput output) {
+        return intervalConfig.getTimeseriesIntervals().get(output.getId());
+    }
+    
+    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(TimeseriesMetadataOutput output) {
+        String id = output.getParameters().getPhenomenon().getId();
+        return intervalConfig.getPhenomenonIntervals().get(id);
     }
 
 	private StatusInterval[] createIntervals(ConfigInterval configInterval) {

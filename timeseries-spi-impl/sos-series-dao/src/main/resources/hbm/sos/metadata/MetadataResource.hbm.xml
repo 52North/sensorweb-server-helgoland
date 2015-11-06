@@ -10,8 +10,9 @@
         
         <discriminator column="field_type" type="string" />
         
+        <property name="seriesId" column="series_id" type="long" />
         <property name="name" column="field_name" type="string" />
-        <property name="type" column="field_type" type="string" />
+        <property name="type" column="field_type" type="string"  insert="false" update="false" />
         <property name="lastUpdated" column="last_update" type="timestamp" />
         
         <subclass name="MetadataStringEntity" discriminator-value="string">
@@ -23,7 +24,7 @@
         </subclass>
         
         <subclass name="MetadataBooleanEntity" discriminator-value="boolean">
-            <property name="value" column="field_value" type="org.hibernate.type.NumericBooleanType" />
+            <property name="value" column="field_value" type="org.hibernate.type.BooleanType"/>
         </subclass>
         
         <subclass name="MetadataDoubleEntity" discriminator-value="double">

@@ -30,7 +30,12 @@ package org.n52.io.extension.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import org.n52.io.IoParameters;
+import org.n52.io.response.ext.MetadataExtension;
+import org.n52.io.v1.data.ServiceOutput;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.sensorweb.v1.spi.ResultTimeService;
 import org.slf4j.Logger;
@@ -48,14 +53,6 @@ public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOut
 
     private ResultTimeService resultTimeService;
 
-    public ResultTimeExtension() {
-        this(EXTENSION_NAME);
-    }
-
-    public ResultTimeExtension(String name) {
-        super(name);
-    }
-
     private ResultTimeExtensionConfig readConfig() {
         try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
             ObjectMapper om = new ObjectMapper();
@@ -65,24 +62,43 @@ public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOut
             return new ResultTimeExtensionConfig();
         }
     }
-    
+
     @Override
-    public Object getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
-        if (parameters.getOther("request") != null && parameters.getOther("request").equals(EXTENSION_NAME)) {
-            return resultTimeService.getResultTimeList(parameters, output.getId());
-        }
-        return null;
+    public String getExtensionName() {
+        return EXTENSION_NAME;
     }
 
     @Override
-    public void addExtensionTo(TimeseriesMetadataOutput output) {
-        if (enabled(output.getParameters().getService().getId())) {
+    public void addExtraMetadataFieldNames(TimeseriesMetadataOutput output) {
+        final ServiceOutput service = output.getParameters().getService();
+        if (isAvailableFor(service.getId())) {
             output.addExtra(EXTENSION_NAME);
         }
     }
-
-    private boolean enabled(String serviceId) {
+    
+    private boolean isAvailableFor(String serviceId) {
         return config.getServices().contains(serviceId);
+    }
+
+    @Override
+    public Map<String, Object> getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
+        return hasExtrasToReturn(output, parameters)
+                ? wrapSingleIntoMap(getResultTimes(parameters, output))
+                : Collections.<String, Object>emptyMap();
+    }
+
+    private ArrayList<String> getResultTimes(IoParameters parameters, TimeseriesMetadataOutput output) {
+        return resultTimeService.getResultTimeList(parameters, output.getId());
+    }
+    
+    private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
+        return super.hasExtrasToReturn(output, parameters)
+                && hasResultTimeRequestParameter(parameters);
+    }
+
+    private static boolean hasResultTimeRequestParameter(IoParameters parameters) {
+        return parameters.containsParameter("request")
+                && parameters.getOther("request").equalsIgnoreCase(EXTENSION_NAME);
     }
 
     public ResultTimeService getResultTimeService() {
