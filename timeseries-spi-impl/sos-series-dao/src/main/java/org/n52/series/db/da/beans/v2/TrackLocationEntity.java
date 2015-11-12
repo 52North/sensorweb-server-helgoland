@@ -29,6 +29,7 @@ package org.n52.series.db.da.beans.v2;
 
 import java.util.Date;
 
+import com.google.common.base.Objects;
 import com.vividsolutions.jts.geom.Geometry;
 
 public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
@@ -54,6 +55,10 @@ public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+    
+    public boolean isSetTimestamp() {
+    	return getTimestamp() != null;
+    }
 
     public Geometry getGeom() {
         return geom;
@@ -78,18 +83,36 @@ public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
     @Override
     public boolean equals(Object obj) {
     	if (obj instanceof TrackLocationEntity) {
-    		return this.timestamp.equals(((TrackLocationEntity) obj).getTimestamp());
+    		TrackLocationEntity tl = (TrackLocationEntity) obj;
+    		if (isSetGeom() && isSetTimestamp() && tl.isSetGeom() && tl.isSetTimestamp()) {
+	    		return Objects.equal(getTimestamp(), tl.getTimestamp()) 
+	    				&& Objects.equal(getGeom(), tl.getGeom());
+    		}
     	}
     	return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+    	if (isSetTimestamp() && isSetGeom()) {
+    		return Objects.hashCode(getTimestamp(), getGeom());
+    	}
+    	return super.hashCode();
     }
 
 	@Override
 	public int compareTo(TrackLocationEntity o) {
 		if (o instanceof TrackLocationEntity) {
 			TrackLocationEntity tle = (TrackLocationEntity) o;
-			if (getTimestamp().before(tle.getTimestamp())) {
+			if (isSetTimestamp() && tle.isSetTimestamp()) {
+				if (getTimestamp().before(tle.getTimestamp())) {
+					return -1;
+				} else {
+					return 1;
+				}
+			} else if (isSetTimestamp() && !tle.isSetTimestamp()) {
 				return -1;
-			} else {
+			} else if (!isSetTimestamp() && tle.isSetTimestamp()) {
 				return 1;
 			}
 		}
