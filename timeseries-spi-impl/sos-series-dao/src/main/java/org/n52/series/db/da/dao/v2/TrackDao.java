@@ -27,6 +27,9 @@
  */
 package org.n52.series.db.da.dao.v2;
 
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -35,11 +38,12 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.I18nSiteEntity;
 import org.n52.series.db.da.beans.v2.I18nTrackEntity;
+import org.n52.series.db.da.beans.v2.ObservationEntityV2;
+import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.dao.AbstractDao;
 
@@ -112,7 +116,7 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		} else {
 			criteria = session.createCriteria(TrackEntity.class, alias);
 		}
-
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria;
 	}
 
@@ -125,11 +129,14 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		 * oo.observationId = o.observationId AND o.seriesId = s.seriesId AND
 		 * s.featureOfInterestId = f.featureOfInterestId;
 		 */
-		Criteria c = session.createCriteria(ObservationEntity.class);
-		Criteria seriesCriteria = c.createCriteria("seriesPkid");
-		seriesCriteria.createCriteria("feature").setProjection(
-        Projections.distinct(Projections.property("pkid")));
-		c.createCriteria("tracks").add(Restrictions.eq("pkid", pkid));
+		DetachedCriteria dc = DetachedCriteria.forClass(ObservationEntityV2.class);
+		dc.createCriteria("tracks").add(Restrictions.eq("pkid", pkid));
+		dc.setProjection(Projections.distinct(Projections.property("seriesPkid")));
+		
+		Criteria c = session.createCriteria(SeriesEntityV2.class, "s");
+		c.createCriteria("feature", "f").setProjection(Projections.distinct(Projections.property("f.pkid")));
+		c.add(Subqueries.propertyIn("s.pkid", dc));
+		
 		return c.list();
 	}
 	
