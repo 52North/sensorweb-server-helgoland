@@ -29,11 +29,13 @@ package org.n52.series.db.da.v2;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 
 import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.n52.io.geojson.GeoJSONException;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.request.IoParameters;
@@ -73,7 +75,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	
 	private String dbSrid = "EPSG:4326";
 	
-	private enum FeatureType {
+	public enum FeatureType {
 		SITE,
 		TRACK_FEATURE,
 		TRACK_OFFERING,
@@ -227,7 +229,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		return null;
 	}
 	
-	private FeatureType getTypeFor(String featureId) {
+	public static FeatureType getTypeFor(String featureId) {
 		if (featureId.startsWith(SITE_PREFIX)) {
 			return FeatureType.SITE;
 		} else if (featureId.startsWith(TRACK_PREFIX)) {
@@ -272,7 +274,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	private FeatureOutput createExpanded(SiteEntity entity, DbQuery parameters, FeatureType type) throws DataAccessException {
 		FeatureOutput result = createCondensed(entity, parameters, type);
         if (result != null) {
-        	
+        	result.setGeometry(entity.getGeom());
         }
         return result;
     }
@@ -304,29 +306,39 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	private TrackOutput createExpanded(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
     	TrackOutput result = createCondensed(entity, parameters, type, session);
     	if (result != null && entity.hasTrackLocations()) {
-    		Set<TrackLocationEntity> trackLocations = entity.getTrackLocations();
+    		SortedSet<TrackLocationEntity> trackLocations = entity.getTrackLocations();
 			Geometry geom = createGeometryFrom(trackLocations);
 			result.setGeometry(geom);
-	    	if (entity.isSetName()) {
-				result.addProperty(entity.getName(), entity.getName());
-			}
-	    	List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
-	    	if (platform != null && !platform.isEmpty()) {
-	    		if (platform.size() == 1) {
-	    			result.addProperty("platform", platform.iterator().next());
-	    		} else {
-	    			result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
-	    		}
-	    	}
+	    	result.addProperty("time", getTime(trackLocations));
     	}
         return result;
     }
 
-    private TrackOutput createCondensed(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
+    private String getTime(SortedSet<TrackLocationEntity> trackLocations) {
+    	StringBuilder time = new StringBuilder();
+    	time.append(getDateAsIsoString(trackLocations.first().getTimestamp()));
+    	time.append("/");
+    	time.append(getDateAsIsoString(trackLocations.last().getTimestamp()));
+    	return time.toString();
+	}
+
+    private String getDateAsIsoString(Date date) {
+    	return new DateTime(date).toDateTime(DateTimeZone.UTC).toString();
+    }
+    
+	private TrackOutput createCondensed(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
     	try {
     		if (entity.hasTrackLocations()) {
     			TrackOutput result = new TrackOutput();
     	    	result.setId(createUniqueId(entity.getPkid(), type));
+    	    	List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
+    	    	if (platform != null && !platform.isEmpty()) {
+    	    		if (platform.size() == 1) {
+    	    			result.addProperty("platform", platform.iterator().next());
+    	    		} else {
+    	    			result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
+    	    		}
+    	    	}
     	    	return result;
     		}
     	} catch (GeoJSONException e) {
@@ -339,12 +351,10 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		return new TrackDao(session).getRelatedPlatforms(pkid);
 	}
 
-	private Geometry createGeometryFrom(Set<TrackLocationEntity> trackLocations) {
-		List<TrackLocationEntity> list = Lists.newArrayList(trackLocations);
-		Collections.sort(list);
-    	 List<Coordinate> coordinates = Lists.newLinkedList();
+	private Geometry createGeometryFrom(SortedSet<TrackLocationEntity> trackLocations) {
+    	List<Coordinate> coordinates = Lists.newLinkedList();
 	    int srid = -1;
-	    for (TrackLocationEntity trackLocation : list) {
+	    for (TrackLocationEntity trackLocation : trackLocations) {
 	    	if (trackLocation.isSetGeom()) {
 	    		Geometry geom = trackLocation.getGeom();
 	    		if (geom instanceof Point) {
