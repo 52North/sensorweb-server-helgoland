@@ -84,6 +84,10 @@ public class FeatureOutput extends AbstractOutput {
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
+
+    public boolean isSetGeometry() {
+        return getGeometry() != null && !getGeometry().isEmpty();
+    }
     
     
 }
