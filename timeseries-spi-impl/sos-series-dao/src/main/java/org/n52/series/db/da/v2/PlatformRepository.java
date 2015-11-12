@@ -162,7 +162,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
 	private void addFeatures(PlatformOutput result) throws DataAccessException {
 		Map<String, String> queryParameters = Maps.newHashMap();
-		queryParameters.put("feature", result.getId());
+		queryParameters.put("platform", result.getId());
 		DbQuery parameters = DbQueryV2.createFrom(IoParameters.createFromQuery(queryParameters));
 		if (result instanceof StationaryPlatformOutput) {
 			result.setFeatures(createFeatureRepository().getSites(parameters));
