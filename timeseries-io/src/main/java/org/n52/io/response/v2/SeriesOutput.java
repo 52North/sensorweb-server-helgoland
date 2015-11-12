@@ -48,7 +48,7 @@ public class SeriesOutput {
         this.service = service;
     }
 
-    public PlatformOutput getFPlatfrom() {
+    public PlatformOutput getPlatfrom() {
         return platform;
     }
 
