@@ -86,6 +86,15 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
+    
+    /**
+     * Check if the domainId is set and not empty
+     * 
+     * @return <code>true</code> if domainId is set and not empty
+     */
+    public boolean isSetDomainId() {
+        return getDomainId() != null && !getDomainId().isEmpty();
+    }
 
     /**
      * @return the label or the id if label is not set.
