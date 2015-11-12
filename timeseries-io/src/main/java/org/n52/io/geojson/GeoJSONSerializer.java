@@ -35,6 +35,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import org.n52.io.response.v2.FeatureOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,12 +50,32 @@ public class GeoJSONSerializer extends JsonSerializer<FeatureOutput> {
 
     @Override
     public void serialize(FeatureOutput value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+        if (value.isSetGeometry()) {
+            writeFeature(value, gen);
+        } else {
+            writeGeometryLessFeature(value, gen);
+        }
+    }
+
+    private void writeFeature(FeatureOutput value, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("type", "Feature");
         gen.writeStringField("id", value.getId());
         gen.writeObjectField("properties", encodeProperties(value));
         gen.writeObjectField("geometry", encodeGeometry(value));
         gen.writeEndObject();
+    }
+
+    private void writeGeometryLessFeature(FeatureOutput value, JsonGenerator gen) throws IOException {
+        gen.writeStartObject();
+        writeMap(encodeProperties(value), gen);
+        gen.writeEndObject();
+    }
+
+    private void writeMap(Map<String, Object> map, JsonGenerator gen) throws IOException {
+        for (Entry<String, Object> entry : map.entrySet()) {
+            gen.writeObjectField(entry.getKey(), entry.getValue());
+        }
     }
 
     private Object encodeGeometry(FeatureOutput value) {
@@ -72,7 +94,9 @@ public class GeoJSONSerializer extends JsonSerializer<FeatureOutput> {
         properties.put("id", value.getId());
         properties.put("label", value.getLabel());
         properties.put("type", value.getFeatureType());
-        properties.put("domainId", value.getDomainId());
+        if (value.isSetDomainId()) {
+            properties.put("domainId", value.getDomainId());
+        }
         properties.putAll(value.getProperties());
         return properties;
     }
