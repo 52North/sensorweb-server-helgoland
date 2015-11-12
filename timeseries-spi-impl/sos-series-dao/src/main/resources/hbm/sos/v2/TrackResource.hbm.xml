@@ -13,8 +13,7 @@
         <set name="trackLocations"
              table="observationHasOffering"
              inverse="false"
-             fetch="select"
-             lazy="true" >
+             fetch="select" >
             <key>
                 <column name="offeringId" not-null="true" />
             </key>
