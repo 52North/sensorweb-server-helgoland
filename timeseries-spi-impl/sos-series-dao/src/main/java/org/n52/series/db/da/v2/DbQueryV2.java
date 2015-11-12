@@ -38,6 +38,9 @@ import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
+import org.n52.series.db.da.beans.v2.SiteEntity;
+import org.n52.series.db.da.dao.v2.SiteDao;
+import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class DbQueryV2 extends DbQuery {
 
@@ -57,10 +60,16 @@ public class DbQueryV2 extends DbQuery {
 			filter.createCriteria("procedure")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
 		}
-//		if (getParameters().getFeature() != null) {
-//			Long id = preParse(getParameters().getFeature());
-//			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
-//		}
+		if (getParameters().getFeature() != null) {
+			FeatureType type = FeatureRepository.getTypeFor(getParameters().getFeature());
+			if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FEATURE.equals(type)) {
+				Long id = preParse(getParameters().getFeature());
+				filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
+			} else if (FeatureType.TRACK_OFFERING.equals(type)) {
+				Long id = preParse(getParameters().getFeature());
+				filter.createCriteria("observations").createCriteria("tracks").add(Restrictions.eq(COLUMN_KEY, id));
+			}
+		}
 		if (getParameters().getOther("platform") != null) {
 			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
 		}
