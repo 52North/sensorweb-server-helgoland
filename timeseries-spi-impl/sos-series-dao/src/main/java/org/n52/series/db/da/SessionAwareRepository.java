@@ -68,7 +68,7 @@ public abstract class SessionAwareRepository {
 
     protected abstract ServiceOutput getServiceOutput() throws DataAccessException;
 
-	private static HibernateSessionHolder createSessionHolderIfNeccessary() {
+    private static HibernateSessionHolder createSessionHolderIfNeccessary() {
         try (InputStream inputStream =  SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES)){
             if (Configurator.getInstance() == null) {
                 Properties connectionProviderConfig = new Properties();
