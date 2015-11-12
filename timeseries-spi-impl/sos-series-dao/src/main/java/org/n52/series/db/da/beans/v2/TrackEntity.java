@@ -28,15 +28,18 @@
 package org.n52.series.db.da.beans.v2;
 
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.n52.series.db.da.beans.DescribableEntity;
+
+import com.google.common.collect.Sets;
 
 public class TrackEntity extends DescribableEntity<I18nTrackEntity> {
 
 	private Set<TrackLocationEntity> trackLocations;
 
-	public Set<TrackLocationEntity> getTrackLocations() {
-		return trackLocations;
+	public SortedSet<TrackLocationEntity> getTrackLocations() {
+		return Sets.newTreeSet(trackLocations);
 	}
 
 	public void setTrackLocations(Set<TrackLocationEntity> trackLocations) {
