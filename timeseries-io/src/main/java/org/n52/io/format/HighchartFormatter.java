@@ -28,11 +28,18 @@
 package org.n52.io.format;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.ListSelectionEvent;
+
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.v1.TimeseriesDataMetadata;
+import org.n52.io.response.v2.SeriesValue;
+
+import com.vividsolutions.jts.geom.Coordinate;
+
 import org.n52.io.response.TimeseriesValue;
 
 
@@ -70,9 +77,18 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
     private List<Number[]> formatSeries(TimeseriesData timeseries) {
         List<Number[]> series = new ArrayList<Number[]>();
         for (TimeseriesValue currentValue : timeseries.getValues()) {
-            Long timestamp = currentValue.getTimestamp();
-            Double value = currentValue.getValue();
-            series.add(new Number[] {timestamp, value});
+            List<Number> list = new ArrayList<>();
+            list.add(currentValue.getTimestamp());
+            list.add(currentValue.getValue());
+            if (currentValue instanceof SeriesValue && ((SeriesValue) currentValue).isSetGeometry()) {
+                Coordinate coordinate = ((SeriesValue)currentValue).getGeometry().getCoordinate();
+                list.add(coordinate.x);
+                list.add(coordinate.y);
+                if (!Double.isNaN(coordinate.z)) {
+                    list.add(coordinate.z);
+                }
+            }
+            series.add(list.toArray(new Number[0]));
         }
         return series;
     }
