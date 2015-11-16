@@ -39,6 +39,8 @@ public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
     private Date timestamp;
 
     private Geometry geom;
+    
+    private Long seriesPkid;
 
     public Long getPkid() {
         return pkid;
@@ -70,6 +72,14 @@ public class TrackLocationEntity implements Comparable<TrackLocationEntity> {
     
     public boolean isSetGeom() {
     	return getGeom() != null && !getGeom().isEmpty();
+    }
+    
+    public Long getSeriesPkid() {
+        return seriesPkid;
+    }
+
+    public void setSeriesPkid(Long seriesPkid) {
+        this.seriesPkid = seriesPkid;
     }
 
     @Override
