@@ -47,7 +47,7 @@ import org.n52.sos.service.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SessionAwareRepository {
+public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     // TODO tackle issue #71
     private static final String DATASOURCE_PROPERTIES = "/datasource.properties";
@@ -87,13 +87,19 @@ public abstract class SessionAwareRepository {
             throw new RuntimeException("Could not establish database connection.");
         }
     }
+    
+    public void cleanup() {
+        if (sessionHolder != null && Configurator.getInstance().getDataConnectionProvider() != null) {
+            Configurator.getInstance().getDataConnectionProvider().cleanup();
+        }
+    }
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
     }
 
     @Deprecated
-    protected DbQuery createDefaultsWithLocale(String locale) {
+    protected AbstractDbQuery createDefaultsWithLocale(String locale) {
 //        if (locale == null) {
 //            return DbQuery.createFrom(IoParameters.createDefaults());
 //        }
@@ -103,9 +109,9 @@ public abstract class SessionAwareRepository {
         return getDbQuery(IoParameters.createDefaults(), locale);
     }
     
-    protected abstract DbQuery getDbQuery(IoParameters parameters);
+    protected abstract DBQ getDbQuery(IoParameters parameters);
     
-    protected abstract DbQuery getDbQuery(IoParameters parameters, String locale);
+    protected abstract DBQ getDbQuery(IoParameters parameters, String locale);
 
     protected Long parseId(String id) throws DataAccessException {
         try {
