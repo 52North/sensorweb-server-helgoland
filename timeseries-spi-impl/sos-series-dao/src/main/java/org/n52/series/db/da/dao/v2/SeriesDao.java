@@ -40,13 +40,16 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
+import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.beans.v2.TrackEntity;
-import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.v2.DbQuery;
+import org.n52.series.db.da.v2.FeatureRepository;
+import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class SeriesDao extends AbstractDao<SeriesEntityV2> {
 
@@ -96,9 +99,13 @@ public class SeriesDao extends AbstractDao<SeriesEntityV2> {
         Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_PKID, filter));
+        
         return (SeriesEntityV2) criteria.uniqueResult();
     }
-
+    
 //    @Override
 //    public List<SeriesEntityV2> getAllInstances() throws DataAccessException {
 //        return getAllInstances(DbQueryV1.createFrom(IoParameters.createDefaults()));
@@ -113,31 +120,31 @@ public class SeriesDao extends AbstractDao<SeriesEntityV2> {
                 .add(eq("reference", false));
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn("s.pkid", filter));
+        criteria.add(Subqueries.propertyIn(COLUMN_PKID, filter));
 
         parameters.addPagingTo(criteria);
         return (List<SeriesEntityV2>) criteria.list();
     }
 
-    @SuppressWarnings("unchecked")
-    public List<SeriesEntityV2> getInstancesWith(SiteEntity feature) {
-        Criteria criteria = session.createCriteria(SeriesEntityV2.class, "s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
-        criteria.createCriteria("feature", LEFT_OUTER_JOIN)
-                .add(eq(COLUMN_PKID, feature.getPkid()));
-        return (List<SeriesEntityV2>) criteria.list();
-    }
-    
-    @SuppressWarnings("unchecked")
-    public List<SeriesEntityV2> getInstancesWith(TrackEntity feature) {
+//    @SuppressWarnings("unchecked")
+//    public List<SeriesEntityV2> getInstancesWith(SiteEntity feature) {
 //        Criteria criteria = session.createCriteria(SeriesEntityV2.class, "s");
 //        addIgnoreNonPublishedSeriesTo(criteria, "s");
 //        criteria.createCriteria("feature", LEFT_OUTER_JOIN)
 //                .add(eq(COLUMN_PKID, feature.getPkid()));
 //        return (List<SeriesEntityV2>) criteria.list();
-    	// TODO
-        return null;
-    }
+//    }
+//    
+//    @SuppressWarnings("unchecked")
+//    public List<SeriesEntityV2> getInstancesWith(TrackEntity feature) {
+////        Criteria criteria = session.createCriteria(SeriesEntityV2.class, "s");
+////        addIgnoreNonPublishedSeriesTo(criteria, "s");
+////        criteria.createCriteria("feature", LEFT_OUTER_JOIN)
+////                .add(eq(COLUMN_PKID, feature.getPkid()));
+////        return (List<SeriesEntityV2>) criteria.list();
+//    	// TODO
+//        return null;
+//    }
 
     @Override
     public int getCount() throws DataAccessException {

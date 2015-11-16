@@ -35,15 +35,18 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
-import org.n52.series.db.da.dao.AbstractDao;
-import org.n52.series.db.da.v2.DbQueryV2;
+import org.n52.series.db.da.v2.DbQuery;
+import org.n52.series.db.da.v2.FeatureRepository;
+import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class ObservationDao extends AbstractDao<ObservationEntityV2> {
 
@@ -90,20 +93,25 @@ public class ObservationDao extends AbstractDao<ObservationEntityV2> {
      * observation you have to use {@link #getAllInstancesFor(SeriesEntityV2)}.
      */
     public List<ObservationEntityV2> getAllInstancesFor(SeriesEntityV2 series) throws DataAccessException {
-        return getAllInstancesFor(series, DbQueryV2.createFrom(IoParameters.createDefaults()));
+        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
     /**
      * Retrieves all available observation instances.<br/>
      * <br/>
      * Do NOT use this method if you want observations belonging to a particular series. To gain only those
-     * observation you have to use {@link #getAllInstancesFor(SeriesEntityV2, DbQuery)}.
+     * observation you have to use {@link #getAllInstancesFor(SeriesEntityV2, AbstractDbQuery)}.
      */
     @Override
     @SuppressWarnings("unchecked")
     public List<ObservationEntityV2> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        checkForTracksAndAddFilter(criteria, parameters);
+        
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<ObservationEntityV2>) criteria.list();
@@ -125,16 +133,25 @@ public class ObservationDao extends AbstractDao<ObservationEntityV2> {
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        checkForTracksAndAddFilter(criteria, parameters);
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<ObservationEntityV2>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
-    public List<ObservationEntityV2> getObservationsFor(SeriesEntityV2 series, DbQuery query) {
-        Criteria criteria = query.addTimespanTo(getDefaultCriteria())
+    public List<ObservationEntityV2> getObservationsFor(SeriesEntityV2 series, DbQuery parameters) {
+        Criteria criteria = parameters.addTimespanTo(getDefaultCriteria())
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
+        
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        checkForTracksAndAddFilter(criteria, parameters);
         return criteria.list();
     }
 
@@ -152,11 +169,25 @@ public class ObservationDao extends AbstractDao<ObservationEntityV2> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ObservationEntityV2> getInstancesFor(Date timestamp, SeriesEntityV2 series) {
+	public List<ObservationEntityV2> getInstancesFor(Date timestamp, SeriesEntityV2 series, DbQuery parameters) {
 		Criteria criteria = getDefaultCriteria()
 				.add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
 				.add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
+		
+		DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        checkForTracksAndAddFilter(criteria, parameters);
 		return criteria.list(); 
+	}
+	
+	private void checkForTracksAndAddFilter(Criteria criteria, DbQuery parameters) {
+	    if (parameters.getParameters().getFeature() != null) {
+	    FeatureType type = FeatureRepository.getTypeFor(parameters.getParameters().getFeature());
+	    Long id = parameters.preParse(parameters.getParameters().getFeature());
+    	    if (FeatureType.TRACK_FROM_OFFERING.equals(type)) {
+                criteria.createCriteria("tracks").add(Restrictions.eq("pkid", id));
+    	    }
+	    }
 	}
 
 }

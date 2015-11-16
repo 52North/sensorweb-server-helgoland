@@ -27,9 +27,6 @@
  */
 package org.n52.series.db.da.dao.v2;
 
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
-
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -39,13 +36,12 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.beans.v2.I18nSiteEntity;
 import org.n52.series.db.da.beans.v2.I18nTrackEntity;
 import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.n52.series.db.da.beans.v2.TrackEntity;
-import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.v2.DbQuery;
 
 import com.google.common.base.Strings;
 
@@ -88,17 +84,15 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		// TODO does this really work???
 		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
 		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
-//		trackLocationsCriteria.addOrder(Order.asc("timestamp"));
 		criteria.add(Restrictions.isNotEmpty("trackLocations"));
         if (hasTranslation(parameters, I18nSiteEntity.class)) {
             parameters.addLocaleTo(criteria, I18nSiteEntity.class);
         }
         
         // TODO add DetachedCriteria to DbQuery, is this required?
-//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("track");
-//        criteria.add(Subqueries.propertyIn("t.pkid", filter));
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        trackLocationsCriteria.add(Subqueries.propertyIn("seriesPkid", filter));
         
-        // TODO how to handle? Now only the trackLocations which are in the Filter are returned.
         parameters.addSpatialFilterTo(trackLocationsCriteria, parameters);
         parameters.addPagingTo(criteria);
         return (List<TrackEntity>) criteria.list();
