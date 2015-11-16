@@ -27,6 +27,8 @@
  */
 package org.n52.io.response.v2;
 
+import java.util.Collection;
+
 import org.n52.io.Utils;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ReferenceValueOutput;
@@ -37,6 +39,8 @@ public class SeriesMetadataOutput extends ParameterOutput {
 	private String uom;
 
     private PlatformOutput platform;
+    
+    private FeatureOutputCollection features = new FeatureOutputCollection();
 
     private ReferenceValueOutput[] referenceValues;
 
@@ -60,6 +64,14 @@ public class SeriesMetadataOutput extends ParameterOutput {
 
     public void setPlatform(PlatformOutput platform) {
         this.platform = platform;
+    }
+    
+    public void setFeatures(FeatureOutputCollection features) {
+        this.features = features;
+    }
+    
+    public Collection<FeatureOutput> getFeatures() {
+        return this.features.getItems();
     }
 
     public ReferenceValueOutput[] getReferenceValues() {
