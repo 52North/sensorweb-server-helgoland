@@ -43,13 +43,16 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.TimeseriesDataMetadata;
+import org.n52.io.response.v2.FeatureOutputCollection;
+import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.SeriesMetadataOutput;
+import org.n52.io.response.v2.SeriesValue;
+import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -62,6 +65,8 @@ import org.n52.series.db.da.dao.v2.SeriesDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
 
@@ -76,7 +81,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            DbQuery parameters = DbQueryV2.createFrom(IoParameters.createDefaults(), locale);
+            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntityV2> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
         }
@@ -199,6 +204,9 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntityV2 series = seriesDao.getInstance(parseId(seriesId), dbQuery);
+            if (series == null) {
+                throw new ResourceNotFoundException("Resource with id '" + seriesId + "' and requested parameters could not be found.");
+            }
             return createTimeseriesData(series, dbQuery, session);
         }
         finally {
@@ -213,12 +221,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             SeriesEntityV2 series = seriesDao.getInstance(parseId(seriesId), dbQuery);
             TimeseriesData result = createTimeseriesData(series, dbQuery, session);
             Set<SeriesEntityV2> referenceValues = series.getReferenceValues();
-            // TODO
-//            if (referenceValues != null && !referenceValues.isEmpty()) {
-//                TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
-//                metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
-//                result.setMetadata(metadata);
-//            }
+            if (referenceValues != null && !referenceValues.isEmpty()) {
+                TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
+                metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
+                result.setMetadata(metadata);
+            }
             return result;
         }
         finally {
@@ -231,8 +238,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     	// TODOD
         output.setParameters(createSeriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
-        output.setFirstValue(queryObservationFor(series.getFirstValue(), series));
-        output.setLastValue(queryObservationFor(series.getLastValue(), series));
+        output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
+        output.setLastValue(queryObservationFor(series.getLastValue(), series, query));
         return output;
     }
 
@@ -264,7 +271,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         output.setLabel(createSeriesLabel(phenomenonLabel, procedureLabel, platformLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
-        output.setPlatform(createCondensedPlatform(entity, query));
+        output.setFeatures(createCondensedPlatform(entity, query));
         return output;
     }
 
@@ -275,11 +282,21 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return sb.append(station).toString();
     }
 
-    private PlatformOutput createCondensedPlatform(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
+    private FeatureOutputCollection createCondensedPlatform(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
-        PlatformRepository platformRepository = new PlatformRepository(getServiceInfo());
-        return platformRepository.getCondensedInstance(featurePkid, query);
+        
+        PlatformOutput platform = createPlatformRepository().getCondensedInstance(featurePkid, query);
+        
+        Map<String, String> queryParameters = Maps.newHashMap();
+        queryParameters.put("platform", platform.getId());
+        DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
+        if (platform instanceof StationaryPlatformOutput) {
+            return createFeatureRepository().getSites(parameters);
+        } else if (platform instanceof MobilePlatformOutput) {
+            return createFeatureRepository().getTracks(parameters);
+        }
+        return new FeatureOutputCollection();
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntityV2> referenceValues,
@@ -355,18 +372,21 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             // do not fail on empty observations
             return null;
         }
-        TimeseriesValue value = new TimeseriesValue();
+        SeriesValue value = new SeriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(formatDecimal(observation.getValue(), series));
+        if (observation.isSetGeom()) {
+            value.setGeometry(observation.getGeom());
+        }
         return value;
     }
     
-    private TimeseriesValue queryObservationFor(ObservationEntityV2 observation, SeriesEntityV2 series) {
+    private TimeseriesValue queryObservationFor(ObservationEntityV2 observation, SeriesEntityV2 series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         }
-        List<ObservationEntityV2> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series);
+        List<ObservationEntityV2> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
         if (observations != null && !observations.isEmpty()) {
         	 return createTimeseriesValueFor(observations.iterator().next(), series);
         }
@@ -378,6 +398,14 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return new BigDecimal(value)
             .setScale(scale, HALF_UP)
             .doubleValue();
+    }
+    
+    private FeatureRepository createFeatureRepository() {
+        return new FeatureRepository(getServiceInfo());
+    }
+    
+    private PlatformRepository createPlatformRepository() {
+        return new PlatformRepository(getServiceInfo());
     }
 
 }
