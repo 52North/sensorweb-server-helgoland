@@ -51,6 +51,7 @@
 
     <bean class="org.n52.web.ctrl.v2.PlatformsParameterController">
         <property name="parameterService" ref="platformParameterServiceV2" />
+        <property name="featureParameterService" ref="featureParameterServiceV2" />
     </bean>
 
     <bean class="org.n52.web.ctrl.v2.SeriesMetadataController" parent="parameterController">

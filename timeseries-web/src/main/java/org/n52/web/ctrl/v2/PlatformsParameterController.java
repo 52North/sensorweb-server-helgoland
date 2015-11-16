@@ -27,22 +27,21 @@
  */
 package org.n52.web.ctrl.v2;
 
-import org.n52.io.geojson.GeoJSONFeature;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.io.response.v2.PlatformOutput;
-import org.n52.io.response.v2.PlatformOutputCollection;
-import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.v2.TransformingGeometryOutputService;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +56,8 @@ public class PlatformsParameterController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformsParameterController.class);
 
     private ParameterService<PlatformOutput> parameterService;
+    
+    private ParameterService<FeatureOutputCollection> featureParameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -93,6 +94,54 @@ public class PlatformsParameterController {
 
         return new ModelAndView().addObject(result);
     }
+    
+    @RequestMapping(value = "/{platformItem}/features", method = GET)
+    public ModelAndView getFeatures(@PathVariable("platformItem") String platformId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        // TODO check parameters and throw BAD_REQUEST if invalid
+        PlatformOutput platform = parameterService.getParameter(platformId);
+        if (platform == null) {
+            throw new ResourceNotFoundException("Found no platform for given platform id.");
+        }
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        
+        Object result = null;
+        if (map.isExpanded()) {
+            result = featureParameterService.getExpandedParameters(map);
+        } else {
+           result = featureParameterService.getCondensedParameters(map);
+        }
+
+        if (result == null) {
+            throw new ResourceNotFoundException("Found no feature for given platform id.");
+        }
+
+        return new ModelAndView().addObject(result);
+    }
+    
+    @RequestMapping(value = "/{platformItem}/features/{featureItem}", method = GET)
+    public ModelAndView getFeatures(@PathVariable("platformItem") String platformId, @PathVariable("featureItem") String featureId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+
+        // check parameters and throw BAD_REQUEST if invalid
+        MultiValueMap<String, String> platformMap = new LinkedMultiValueMap<>();
+        platformMap.add("feature", featureId);
+        IoParameters platformQuery = createFromQuery(platformMap);
+        PlatformOutput platform = parameterService.getParameter(platformId, platformQuery);
+        if (platform == null) {
+            throw new ResourceNotFoundException("Found no platform for given platform id.");
+        }
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        Object result = featureParameterService.getParameter(featureId, map);
+
+        if (result == null) {
+            throw new ResourceNotFoundException("Found no feature with given id for given platfrom id.");
+        }
+
+        return new ModelAndView().addObject(result);
+    }
 
     public ParameterService<PlatformOutput> getParameterService() {
         return parameterService;
@@ -103,6 +152,10 @@ public class PlatformsParameterController {
 //        ParameterService<PlatformOutput> service = new TransformingGeometryOutputService(geojsonOutputService);
         ParameterService<PlatformOutput> service = geojsonOutputService;
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
+    }
+
+    public void setFeatureParameterService(ParameterService<FeatureOutputCollection> featureParameterService) {
+        this.featureParameterService = featureParameterService;
     }
 
 }
