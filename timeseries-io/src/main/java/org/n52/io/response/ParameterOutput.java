@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class ParameterOutput implements CollatorComparable<ParameterOutput> {
 
     /**
@@ -83,6 +85,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      *
      * @param domainId the domain id of the parameter.
      */
+    @JsonIgnore
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
@@ -92,6 +95,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * 
      * @return <code>true</code> if domainId is set and not empty
      */
+    @JsonIgnore
     public boolean isSetDomainId() {
         return getDomainId() != null && !getDomainId().isEmpty();
     }
