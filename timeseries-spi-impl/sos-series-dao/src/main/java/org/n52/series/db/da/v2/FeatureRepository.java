@@ -46,8 +46,6 @@ import org.n52.io.response.v2.TrackOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
@@ -77,8 +75,8 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	
 	public enum FeatureType {
 		SITE,
-		TRACK_FEATURE,
-		TRACK_OFFERING,
+		TRACK_FROM_FEATURE,
+		TRACK_FROM_OFFERING,
 		NON;
 	}
 	
@@ -91,7 +89,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		Session session = getSession();
 		try {
 			List<DescribableEntity<?>> results = new ArrayList<>();
-			DbQuery parameters = DbQueryV2.createFrom(IoParameters.createDefaults(), locale);
+			DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
 			Collection<SiteEntity> sites = new SiteDao(session).find(queryString, parameters);
 			if (sites != null) {
 				results.addAll(sites);
@@ -133,7 +131,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			List<TrackEntity> tracks = new TrackDao(session).getAllInstances(parameters);
 			if (tracks != null) {
 				for (TrackEntity entity : tracks) {
-					results.add(createCondensed(entity, parameters, FeatureType.TRACK_OFFERING, session));
+					results.add(createCondensed(entity, parameters, FeatureType.TRACK_FROM_OFFERING, session));
 				}
 			}
 			return results;
@@ -157,7 +155,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			List<TrackEntity> tracks = new TrackDao(session).getAllInstances(parameters);
 			if (tracks != null) {
 				for (TrackEntity entity : tracks) {
-					results.add(createExpanded(entity, parameters, FeatureType.TRACK_OFFERING, session));
+					results.add(createExpanded(entity, parameters, FeatureType.TRACK_FROM_OFFERING, session));
 				}
 			}
 			return results;
@@ -208,7 +206,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			List<TrackEntity> tracks = new TrackDao(session).getAllInstances(parameters);
 			if (tracks != null) {
 				for (TrackEntity entity : tracks) {
-					results.add(createCondensed(entity, parameters, FeatureType.TRACK_OFFERING, session));
+					results.add(createCondensed(entity, parameters, FeatureType.TRACK_FROM_OFFERING, session));
 				}
 			}
 			return new FeatureOutputCollection(results);
@@ -219,11 +217,17 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 
 	private FeatureOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
 		FeatureType type = getTypeFor(id);
-		if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FEATURE.equals(type)) {
+		if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FROM_FEATURE.equals(type)) {
 			SiteEntity siteEntity = new SiteDao(session).getInstance(parseFeatureId(id, type), parameters);
+			if (siteEntity == null) {
+			    throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+			}
 			return createExpanded(siteEntity, parameters, type);
-		} else if (FeatureType.TRACK_OFFERING.equals(type)) {
+		} else if (FeatureType.TRACK_FROM_OFFERING.equals(type)) {
 			TrackEntity trackEntity = new TrackDao(session).getInstance(parseFeatureId(id, type), parameters);
+			if (trackEntity == null) {
+			    throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+            }
 			return createExpanded(trackEntity, parameters, type, session);
 		}
 		return null;
@@ -233,9 +237,9 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		if (featureId.startsWith(SITE_PREFIX)) {
 			return FeatureType.SITE;
 		} else if (featureId.startsWith(TRACK_PREFIX)) {
-			return FeatureType.TRACK_OFFERING;
+			return FeatureType.TRACK_FROM_OFFERING;
 		} else if (featureId.startsWith(TRACK_FEATURE_PREFIX)) {
-			return FeatureType.TRACK_FEATURE;
+			return FeatureType.TRACK_FROM_FEATURE;
 		} 
 		return FeatureType.NON;
 	}
@@ -248,9 +252,9 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		switch (type) {
 		case SITE:
 			return super.parseId(id.replace(SITE_PREFIX, ""));
-		case TRACK_OFFERING:
+		case TRACK_FROM_OFFERING:
 			return super.parseId(id.replace(TRACK_PREFIX, ""));
-		case TRACK_FEATURE:
+		case TRACK_FROM_FEATURE:
 			return super.parseId(id.replace(TRACK_FEATURE_PREFIX, ""));
 		default:
 			return super.parseId(id);
@@ -262,9 +266,9 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 		switch (type) {
 		case SITE:
 			return SITE_PREFIX + stringId;
-		case TRACK_OFFERING:
+		case TRACK_FROM_OFFERING:
 			return TRACK_PREFIX + stringId;
-		case TRACK_FEATURE:
+		case TRACK_FROM_FEATURE:
 			return TRACK_FEATURE_PREFIX + stringId;
 		default:
 			return stringId;
