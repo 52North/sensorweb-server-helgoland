@@ -42,15 +42,13 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.StationSearchResult;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.api.v1.db.da.dao.FeatureDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -77,7 +75,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             FeatureDao stationDao = new FeatureDao(session);
-            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
+            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = stationDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }
@@ -158,7 +156,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         try {
             parameters.setDatabaseAuthorityCode(dbSrid);
             FeatureDao featureDao = new FeatureDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQueryV1.createFrom(IoParameters.createDefaults()));
+            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         }
         finally {

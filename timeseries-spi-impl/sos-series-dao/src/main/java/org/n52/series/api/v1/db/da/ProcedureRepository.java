@@ -36,14 +36,12 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.ProcedureSearchResult;
+import org.n52.series.api.v1.db.da.dao.ProcedureDao;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.dao.ProcedureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class ProcedureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<ProcedureOutput> {

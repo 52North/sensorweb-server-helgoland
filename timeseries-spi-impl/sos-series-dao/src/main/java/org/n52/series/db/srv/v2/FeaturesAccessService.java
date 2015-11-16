@@ -35,8 +35,7 @@ import org.n52.io.response.v2.FeatureOutput;
 import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.v2.DbQueryV2;
+import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
@@ -53,7 +52,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	@Override
 	public FeatureOutputCollection getExpandedParameters(IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = repository.getAllExpanded(dbQuery);
 			return new FeatureOutputCollection(results);
@@ -65,7 +64,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	@Override
 	public FeatureOutputCollection getCondensedParameters(IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = repository.getAllCondensed(dbQuery);
 			return new FeatureOutputCollection(results);
@@ -82,7 +81,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	@Override
 	public FeatureOutputCollection getParameters(String[] featureIds, IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
 			for (String featureId : featureIds) {
@@ -102,7 +101,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	@Override
 	public FeatureOutput getParameter(String featureId, IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			FeatureRepository repository = createFeatureRepository();
 			return repository.getInstance(featureId, dbQuery);
 		} catch (DataAccessException e) {

@@ -53,8 +53,6 @@ import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.api.v1.db.da.dao.ObservationDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -77,7 +75,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
+            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntity> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
         }

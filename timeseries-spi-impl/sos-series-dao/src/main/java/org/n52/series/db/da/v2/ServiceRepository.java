@@ -32,8 +32,7 @@ import java.util.List;
 import org.n52.io.response.v2.ServiceOutput;
 import org.n52.io.response.v2.ServiceOutput.ParameterCount;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
+import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.InternalServerException;
 
@@ -70,7 +69,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 	
 	/**
      * Gets a condensed view of the requested service, i.e. it avoids getting a full version of the requested
-     * service. Getting a full version (like {@link #getInstance(String, DbQuery)}) would redundantly count
+     * service. Getting a full version (like {@link #getInstance(String, AbstractDbQuery)}) would redundantly count
      * all parameter values available for the requested requested service.
      * 
      * @param id

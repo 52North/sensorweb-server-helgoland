@@ -36,14 +36,12 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
+import org.n52.series.api.v1.db.da.dao.FeatureDao;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.dao.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput>  {
@@ -57,7 +55,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            DbQuery parameters = DbQueryV1.createFrom(IoParameters.createDefaults(), locale);
+            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = featureDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
         }

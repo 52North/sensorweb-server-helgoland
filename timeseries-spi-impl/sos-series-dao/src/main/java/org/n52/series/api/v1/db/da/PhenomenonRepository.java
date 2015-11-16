@@ -36,14 +36,12 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.PhenomenonSearchResult;
+import org.n52.series.api.v1.db.da.dao.PhenomenonDao;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.dao.PhenomenonDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class PhenomenonRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PhenomenonOutput> {

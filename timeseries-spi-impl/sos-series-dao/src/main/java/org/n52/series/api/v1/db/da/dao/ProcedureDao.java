@@ -25,7 +25,9 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao;
+package org.n52.series.api.v1.db.da.dao;
+
+import static org.hibernate.criterion.Restrictions.eq;
 
 import java.util.List;
 
@@ -34,58 +36,61 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.beans.I18nPhenomenonEntity;
-import org.n52.series.db.da.beans.PhenomenonEntity;
+import org.n52.series.db.da.beans.I18nProcedureEntity;
+import org.n52.series.db.da.beans.ProcedureEntity;
 
 import com.google.common.base.Strings;
 
-public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
+public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
-    public PhenomenonDao(Session session) {
+    private static final String COLUMN_REFERENCE = "reference";
+
+    public ProcedureDao(Session session) {
         super(session);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonEntity> find(String search, DbQuery query) {
+    public List<ProcedureEntity> find(String search, DbQuery query) {
         Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nPhenomenonEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
+        if (hasTranslation(query, I18nProcedureEntity.class)) {
+            criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
     }
-    
+
 //    @Override
-//    public PhenomenonEntity getInstance(Long key) throws DataAccessException {
+//    public ProcedureEntity getInstance(Long key) throws DataAccessException {
 //        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
-    public PhenomenonEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (PhenomenonEntity) session.get(PhenomenonEntity.class, key);
+    public ProcedureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        return (ProcedureEntity) session.get(ProcedureEntity.class, key);
     }
-    
+
 //    @Override
-//    public List<PhenomenonEntity> getAllInstances() throws DataAccessException {
+//    public List<ProcedureEntity> getAllInstances() throws DataAccessException {
 //        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("p");
-        if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
+    public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria("p")
+                .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
+        if (hasTranslation(parameters, I18nProcedureEntity.class)) {
+            parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
-        
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
+
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
         criteria.add(Subqueries.propertyIn("p.pkid", filter));
-        
+
         parameters.addPagingTo(criteria);
-        return (List<PhenomenonEntity>) criteria.list();
+        return (List<ProcedureEntity>) criteria.list();
     }
 
     @Override
@@ -96,11 +101,10 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     private Criteria getDefaultCriteria(String alias) {
     	Criteria criteria;
     	if (Strings.isNullOrEmpty(alias)) {
-    		criteria = session.createCriteria(PhenomenonEntity.class);
+    		criteria = session.createCriteria(ProcedureEntity.class);
     	} else {
-    		criteria = session.createCriteria(PhenomenonEntity.class, alias);
+    		criteria = session.createCriteria(ProcedureEntity.class, alias);
     	}
     	return criteria;
     }
-
 }

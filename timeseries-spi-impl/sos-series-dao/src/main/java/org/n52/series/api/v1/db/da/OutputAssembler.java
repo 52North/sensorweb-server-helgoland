@@ -25,28 +25,18 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao;
+package org.n52.series.api.v1.db.da;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.AbstractDbQuery;
 
-/**
- * @param <T> entity type
- * @param <PK> primary key
- */
-public interface GenericDao<T, PK extends Serializable, DBQ extends AbstractDbQuery> {
-    
-//    T getInstance(PK key) throws DataAccessException;
+public interface OutputAssembler<T> {
 
-    T getInstance(PK key, DBQ parameters) throws DataAccessException;
+    public List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;
     
-//    List<T> getAllInstances() throws DataAccessException;
+    public List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
     
-    List<T> getAllInstances(DBQ parameters) throws DataAccessException;
-
-    int getCount(/*PK key*/) throws DataAccessException;
+    public T getInstance(String id, DbQuery parameters) throws DataAccessException;
     
 }

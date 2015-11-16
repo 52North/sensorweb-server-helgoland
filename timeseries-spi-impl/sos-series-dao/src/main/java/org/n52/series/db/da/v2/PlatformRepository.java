@@ -40,13 +40,11 @@ import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.dao.FeatureDao;
+import org.n52.series.db.da.dao.v2.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
 import com.google.common.collect.Maps;
@@ -63,7 +61,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 		Session session = getSession();
 		try {
 			FeatureDao featureDao = new FeatureDao(session);
-			DbQuery parameters = DbQueryV2.createFrom(IoParameters.createDefaults(), locale);
+			DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
 			List<FeatureEntity> found = featureDao.find(searchString, parameters);
 			return convertToSearchResults(found, locale);
 		} finally {
@@ -132,7 +130,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQueryV2.createFrom(IoParameters.createDefaults()));
+            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         }
         finally {
@@ -163,7 +161,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 	private void addFeatures(PlatformOutput result) throws DataAccessException {
 		Map<String, String> queryParameters = Maps.newHashMap();
 		queryParameters.put("platform", result.getId());
-		DbQuery parameters = DbQueryV2.createFrom(IoParameters.createFromQuery(queryParameters));
+		DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
 		if (result instanceof StationaryPlatformOutput) {
 			result.setFeatures(createFeatureRepository().getSites(parameters));
 		} else if (result instanceof MobilePlatformOutput) {

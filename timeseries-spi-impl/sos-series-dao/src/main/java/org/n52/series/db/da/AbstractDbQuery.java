@@ -52,9 +52,9 @@ import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 
-public abstract class DbQuery {
+public abstract class AbstractDbQuery {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DbQuery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDbQuery.class);
 
     protected static final String COLUMN_KEY = "pkid";
 
@@ -66,7 +66,7 @@ public abstract class DbQuery {
 
     private String sridAuthorityCode = "EPSG:4326"; // default
 
-    protected DbQuery(IoParameters parameters) {
+    protected AbstractDbQuery(IoParameters parameters) {
         if (parameters != null) {
             this.parameters = parameters;
         }
@@ -142,7 +142,7 @@ public abstract class DbQuery {
         }
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery parameters) {
+    public Criteria addSpatialFilterTo(Criteria criteria, AbstractDbQuery parameters) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -163,7 +163,7 @@ public abstract class DbQuery {
         return criteria;
     }
     
-    protected IoParameters getParameters() {
+    public IoParameters getParameters() {
     	return parameters;
     }
     

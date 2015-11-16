@@ -25,18 +25,20 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao;
+package org.n52.series.api.v1.db.da.dao;
 
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.dao.GenericDao;
 
-public abstract class AbstractDao<T> implements GenericDao<T, Long> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
     
     protected Session session;
     
@@ -51,7 +53,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     
     protected abstract Criteria getDefaultCriteria();
 
-    public boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
+    public boolean hasTranslation(AbstractDbQuery parameters, Class<? extends I18nEntity> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
     }

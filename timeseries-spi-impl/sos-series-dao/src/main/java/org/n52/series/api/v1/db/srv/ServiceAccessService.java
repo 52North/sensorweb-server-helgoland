@@ -35,11 +35,10 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ServiceRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
@@ -66,7 +65,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public OutputCollection<ServiceOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             List<ServiceOutput> results = serviceRepository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -79,7 +78,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public OutputCollection<ServiceOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ServiceRepository serviceRepository = createServiceRepository();
             List<ServiceOutput> results = serviceRepository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -116,7 +115,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
             ServiceRepository serviceRepository = createServiceRepository();
             String serviceId = serviceRepository.getServiceId();
             return serviceId.equals(item) ?
-                serviceRepository.getInstance(serviceId, DbQueryV1.createFrom(query))
+                serviceRepository.getInstance(serviceId, DbQuery.createFrom(query))
                 : null;
         }
         catch (DataAccessException e) {
@@ -127,7 +126,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public boolean isKnownTimeseries(String timeseriesId) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(IoParameters.createDefaults());
+            DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());
             TimeseriesRepository timeseriesRepository = createTimeseriesRepository();
             return timeseriesRepository.getInstance(timeseriesId, dbQuery) != null;
         }

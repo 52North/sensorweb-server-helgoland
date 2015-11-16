@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.v2;
+package org.n52.series.api.v1.db.da;
 
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
@@ -36,21 +36,17 @@ import java.util.Map;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.beans.v2.SeriesEntityV2;
-import org.n52.series.db.da.beans.v2.SiteEntity;
-import org.n52.series.db.da.dao.v2.SiteDao;
-import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
+import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.n52.series.db.da.AbstractDbQuery;
 
-public class DbQueryV2 extends DbQuery {
+public class DbQuery extends AbstractDbQuery {
 
-	private DbQueryV2(IoParameters parameters) {
+	private DbQuery(IoParameters parameters) {
 		super(parameters);
 	}
 
-	@Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntityV2.class, "series");
+		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
 
 		if (getParameters().getPhenomenon() != null) {
 			filter.createCriteria("phenomenon")
@@ -60,18 +56,17 @@ public class DbQueryV2 extends DbQuery {
 			filter.createCriteria("procedure")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
 		}
-		if (getParameters().getFeature() != null) {
-			FeatureType type = FeatureRepository.getTypeFor(getParameters().getFeature());
-			if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FEATURE.equals(type)) {
-				Long id = preParse(getParameters().getFeature());
-				filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
-			} else if (FeatureType.TRACK_OFFERING.equals(type)) {
-				Long id = preParse(getParameters().getFeature());
-				filter.createCriteria("observations").createCriteria("tracks").add(Restrictions.eq(COLUMN_KEY, id));
-			}
+		if (getParameters().getOffering() != null) {
+			// here procedure == offering
+			filter.createCriteria("procedure")
+					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
 		}
-		if (getParameters().getOther("platform") != null) {
-			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
+		if (getParameters().getFeature() != null) {
+			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
+		}
+		if (getParameters().getStation() != null) {
+			// here feature == station
+			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
 		}
 		if (getParameters().getCategory() != null) {
 			filter.createCriteria("category")
@@ -81,24 +76,17 @@ public class DbQueryV2 extends DbQuery {
 		return filter.setProjection(projectionList().add(property(propertyName)));
 	}
 
-	private Long preParse(String feature) {
-		if (feature.contains("_")) {
-			return parseToId(feature.substring(feature.lastIndexOf("_")));
-		}
-		return parseToId(feature);
-	}
-
 	public static DbQuery createFrom(IoParameters parameters) {
-		return new DbQueryV2(parameters);
+		return new DbQuery(parameters);
 	}
 
 	public static DbQuery createFrom(IoParameters parameters, String locale) {
 		if (locale == null) {
-			new DbQueryV2(parameters);
+			new DbQuery(parameters);
 		}
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("locale", locale);
-		return new DbQueryV2(IoParameters.createFromQuery(params));
+		return new DbQuery(IoParameters.createFromQuery(params));
 	}
 
 }

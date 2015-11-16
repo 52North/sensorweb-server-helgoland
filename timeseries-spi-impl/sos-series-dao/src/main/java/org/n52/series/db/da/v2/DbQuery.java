@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.api.v1.db.da;
+package org.n52.series.db.da.v2;
 
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
@@ -34,20 +34,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
-import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.AbstractDbQuery;
+import org.n52.series.db.da.beans.v2.ObservationEntityV2;
+import org.n52.series.db.da.beans.v2.SeriesEntityV2;
+import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
-public class DbQueryV1 extends DbQuery {
+public class DbQuery extends AbstractDbQuery {
 
-	private DbQueryV1(IoParameters parameters) {
+	private DbQuery(IoParameters parameters) {
 		super(parameters);
 	}
 
-	@Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
+	    
+		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntityV2.class, "series");
 
 		if (getParameters().getPhenomenon() != null) {
 			filter.createCriteria("phenomenon")
@@ -57,37 +61,47 @@ public class DbQueryV1 extends DbQuery {
 			filter.createCriteria("procedure")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
 		}
-		if (getParameters().getOffering() != null) {
-			// here procedure == offering
-			filter.createCriteria("procedure")
-					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
-		}
 		if (getParameters().getFeature() != null) {
-			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
+		    
+			FeatureType type = FeatureRepository.getTypeFor(getParameters().getFeature());
+			Long id = preParse(getParameters().getFeature());
+			if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FROM_FEATURE.equals(type)) {
+				filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
+			} else if (FeatureType.TRACK_FROM_OFFERING.equals(type)) {
+			    DetachedCriteria trackFilter = DetachedCriteria.forClass(ObservationEntityV2.class, "o");
+			    trackFilter.createCriteria("tracks").add(Restrictions.eq("pkid", id));
+			    trackFilter.setProjection(Projections.distinct(Projections.property("seriesPkid")));
+	            filter.add(Subqueries.propertyIn("pkid", trackFilter));
+			}
 		}
-		if (getParameters().getStation() != null) {
-			// here feature == station
-			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
+		if (getParameters().getOther("platform") != null) {
+			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
 		}
 		if (getParameters().getCategory() != null) {
 			filter.createCriteria("category")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
 		}
-
 		return filter.setProjection(projectionList().add(property(propertyName)));
 	}
 
+	public Long preParse(String feature) {
+		if (feature.contains("_")) {
+			return parseToId(feature.substring(feature.lastIndexOf("_") + 1));
+		}
+		return parseToId(feature);
+	}
+
 	public static DbQuery createFrom(IoParameters parameters) {
-		return new DbQueryV1(parameters);
+		return new DbQuery(parameters);
 	}
 
 	public static DbQuery createFrom(IoParameters parameters, String locale) {
 		if (locale == null) {
-			new DbQueryV1(parameters);
+			new DbQuery(parameters);
 		}
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("locale", locale);
-		return new DbQueryV1(IoParameters.createFromQuery(params));
+		return new DbQuery(IoParameters.createFromQuery(params));
 	}
 
 }

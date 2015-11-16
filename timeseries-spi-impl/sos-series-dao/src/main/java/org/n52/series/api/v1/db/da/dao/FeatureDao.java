@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao.v2;
+package org.n52.series.api.v1.db.da.dao;
 
 import java.util.List;
 
@@ -34,60 +34,59 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.v2.I18nSiteEntity;
-import org.n52.series.db.da.beans.v2.SiteEntity;
-import org.n52.series.db.da.v2.DbQuery;
+import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.I18nFeatureEntity;
 
 import com.google.common.base.Strings;
 
-public class SiteDao extends AbstractDao<SiteEntity> {
+public class FeatureDao extends AbstractDao<FeatureEntity> {
 
-	public SiteDao(Session session) {
-		super(session);
-	}
-
-	@Override
+    public FeatureDao(Session session) {
+        super(session);
+    }
+    
+    @Override
     @SuppressWarnings("unchecked")
-    public List<SiteEntity> find(String search, DbQuery query) {
+    public List<FeatureEntity> find(String search, DbQuery query) {
         Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nSiteEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nSiteEntity.class);
+        if (hasTranslation(query, I18nFeatureEntity.class)) {
+            criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
     }
     
 //    @Override
-//    public SiteEntity getInstance(Long key) throws DataAccessException {
-//        return getInstance(key, DbQueryV2.createFrom(IoParameters.createDefaults()));
+//    public FeatureEntity getInstance(Long key) throws DataAccessException {
+//        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
-    public SiteEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (SiteEntity) session.get(SiteEntity.class, key);
+    public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
     
 //    @Override
-//    public List<SiteEntity> getAllInstances() throws DataAccessException {
-//        return getAllInstances(DbQueryV2.createFrom(IoParameters.createDefaults()));
+//    public List<FeatureEntity> getAllInstances() throws DataAccessException {
+//        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SiteEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("s");
-        if (hasTranslation(parameters, I18nSiteEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nSiteEntity.class);
+    public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria("f");
+        if (hasTranslation(parameters, I18nFeatureEntity.class)) {
+            parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         
-        // TODO add DetachedCriteria to DbQuery, is this required?
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
-        criteria.add(Subqueries.propertyIn("s.pkid", filter));
+        criteria.add(Subqueries.propertyIn("f.pkid", filter));
                 
         parameters.addSpatialFilterTo(criteria, parameters);
         parameters.addPagingTo(criteria);
-        return (List<SiteEntity>) criteria.list();
+        return (List<FeatureEntity>) criteria.list();
     }
     
     @Override
@@ -98,11 +97,10 @@ public class SiteDao extends AbstractDao<SiteEntity> {
     private Criteria getDefaultCriteria(String alias) {
     	Criteria criteria;
     	if (Strings.isNullOrEmpty(alias)) {
-    		criteria = session.createCriteria(SiteEntity.class);
+    		criteria = session.createCriteria(FeatureEntity.class);
     	} else {
-    		criteria = session.createCriteria(SiteEntity.class, alias);
+    		criteria = session.createCriteria(FeatureEntity.class, alias);
     	}
-    	criteria.add(Restrictions.isNotNull("geom"));
     	return criteria;
     }
 

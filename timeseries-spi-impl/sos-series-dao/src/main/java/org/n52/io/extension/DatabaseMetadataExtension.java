@@ -41,7 +41,7 @@ import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
+import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
@@ -71,19 +71,19 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
         }
     }
     
-    private class MetadataRepository extends SessionAwareRepository {
+    private class MetadataRepository extends SessionAwareRepository<AbstractDbQuery> {
 
         public MetadataRepository() {
             super(null); // no service info needed
         }
 
         @Override
-        protected DbQuery getDbQuery(IoParameters parameters) {
+        protected AbstractDbQuery getDbQuery(IoParameters parameters) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
-        protected DbQuery getDbQuery(IoParameters parameters, String locale) {
+        protected AbstractDbQuery getDbQuery(IoParameters parameters, String locale) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 

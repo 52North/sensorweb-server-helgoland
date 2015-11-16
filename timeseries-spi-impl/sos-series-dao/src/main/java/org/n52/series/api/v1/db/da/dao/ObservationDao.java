@@ -36,12 +36,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.n52.io.request.IoParameters;
-import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.dao.AbstractDao;
+import org.n52.series.db.da.AbstractDbQuery;
 
 public class ObservationDao extends AbstractDao<ObservationEntity> {
 
@@ -86,14 +85,14 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      * observation you have to use {@link #getAllInstancesFor(SeriesEntity)}.
      */
     public List<ObservationEntity> getAllInstancesFor(SeriesEntity series) throws DataAccessException {
-        return getAllInstancesFor(series, DbQueryV1.createFrom(IoParameters.createDefaults()));
+        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
     /**
      * Retrieves all available observation instances.<br/>
      * <br/>
      * Do NOT use this method if you want observations belonging to a particular series. To gain only those
-     * observation you have to use {@link #getAllInstancesFor(SeriesEntity, DbQuery)}.
+     * observation you have to use {@link #getAllInstancesFor(SeriesEntity, AbstractDbQuery)}.
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -117,7 +116,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      *         if accessing data from DB failed.
      */
     @SuppressWarnings("unchecked")
-    public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, DbQuery parameters) throws DataAccessException {
+    public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, AbstractDbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
@@ -127,7 +126,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ObservationEntity> getObservationsFor(SeriesEntity series, DbQuery query) {
+    public List<ObservationEntity> getObservationsFor(SeriesEntity series, AbstractDbQuery query) {
         Criteria criteria = query.addTimespanTo(getDefaultCriteria())
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));

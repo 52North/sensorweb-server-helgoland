@@ -41,8 +41,7 @@ import org.n52.io.response.v2.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.v2.DbQueryV2;
+import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.SeriesRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
@@ -77,7 +76,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 
 	private TimeseriesData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
 			throws DataAccessException {
-		DbQuery dbQuery = DbQueryV2.createFrom(IoParameters.createFromQuery(parameters));
+		DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
 		SeriesRepository repository = createSeriesRepository();
 		if (parameters.isExpanded()) {
 			return repository.getDataWithReferenceValues(timeseriesId, dbQuery);
@@ -89,7 +88,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 	@Override
 	public OutputCollection<SeriesMetadataOutput> getExpandedParameters(IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			SeriesRepository repository = createSeriesRepository();
 			List<SeriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
 			return createOutputCollection(results);
@@ -101,7 +100,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 	@Override
 	public OutputCollection<SeriesMetadataOutput> getCondensedParameters(IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			SeriesRepository repository = createSeriesRepository();
 			List<SeriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
 			return createOutputCollection(results);
@@ -118,7 +117,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 	@Override
 	public OutputCollection<SeriesMetadataOutput> getParameters(String[] items, IoParameters query) {
 		try {
-			DbQuery dbQuery = DbQueryV2.createFrom(query);
+			DbQuery dbQuery = DbQuery.createFrom(query);
 			SeriesRepository repository = createSeriesRepository();
 			List<SeriesMetadataOutput> results = new ArrayList<>();
 			for (String seriesId : items) {
@@ -139,7 +138,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 	public SeriesMetadataOutput getParameter(String item, IoParameters query) {
 		try {
 			SeriesRepository repository = createSeriesRepository();
-			return repository.getInstance(item, DbQueryV2.createFrom(query));
+			return repository.getInstance(item, DbQuery.createFrom(query));
 		} catch (DataAccessException e) {
 			throw new InternalServerException("Could not get series data for '" + item + "'.");
 		}

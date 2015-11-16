@@ -37,7 +37,6 @@ import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.ProcedureOutput;
 import org.n52.io.response.v2.SeriesOutput;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -47,7 +46,7 @@ import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 
-public abstract class ExtendedSessionAwareRepository extends SessionAwareRepository {
+public abstract class ExtendedSessionAwareRepository extends SessionAwareRepository<DbQuery> {
 
 	protected ExtendedSessionAwareRepository(ServiceInfo serviceInfo) {
 		super(serviceInfo);
@@ -111,11 +110,11 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
 
 	@Override
 	protected DbQuery getDbQuery(IoParameters parameters) {
-		return DbQueryV2.createFrom(parameters);
+		return DbQuery.createFrom(parameters);
 	}
 
 	@Override
 	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-		return DbQueryV2.createFrom(parameters, locale);
+		return DbQuery.createFrom(parameters, locale);
 	}
 }

@@ -25,28 +25,45 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao;
+package org.n52.series.db.da.dao.v2;
 
-import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
+import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.dao.GenericDao;
+import org.n52.series.db.da.v2.DbQuery;
 
-/**
- * @param <T> entity type
- * @param <PK> primary key
- */
-public interface GenericDao<T, PK extends Serializable, DBQ extends AbstractDbQuery> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
     
-//    T getInstance(PK key) throws DataAccessException;
+    protected Session session;
+    
+    public AbstractDao(Session session) {
+        if (session == null) {
+            throw new NullPointerException("Cannot operate on a null session.");
+        }
+        this.session = session;
+    }
+    
+    public abstract List<T> find(String search, DbQuery query);
+    
+    protected abstract Criteria getDefaultCriteria();
 
-    T getInstance(PK key, DBQ parameters) throws DataAccessException;
+    public boolean hasTranslation(AbstractDbQuery parameters, Class<? extends I18nEntity> clazz) {
+        Criteria i18nCriteria = session.createCriteria(clazz);
+        return parameters.checkTranslationForLocale(i18nCriteria);
+    }
     
-//    List<T> getAllInstances() throws DataAccessException;
-    
-    List<T> getAllInstances(DBQ parameters) throws DataAccessException;
-
-    int getCount(/*PK key*/) throws DataAccessException;
-    
+    @Override
+    public int getCount() throws DataAccessException {
+        Criteria criteria = getDefaultCriteria()
+                .setProjection(Projections.rowCount());
+        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    }
 }

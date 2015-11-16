@@ -25,9 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da.dao;
-
-import static org.hibernate.criterion.Restrictions.eq;
+package org.n52.series.api.v1.db.da.dao;
 
 import java.util.List;
 
@@ -36,61 +34,58 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
-import org.n52.series.db.da.beans.I18nProcedureEntity;
-import org.n52.series.db.da.beans.ProcedureEntity;
+import org.n52.series.db.da.beans.CategoryEntity;
+import org.n52.series.db.da.beans.I18nCategoryEntity;
 
 import com.google.common.base.Strings;
 
-public class ProcedureDao extends AbstractDao<ProcedureEntity> {
+public class CategoryDao extends AbstractDao<CategoryEntity> {
 
-    private static final String COLUMN_REFERENCE = "reference";
-
-    public ProcedureDao(Session session) {
+    public CategoryDao(Session session) {
         super(session);
     }
-
+    
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> find(String search, DbQuery query) {
+    public List<CategoryEntity> find(String search, DbQuery query) {
         Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nProcedureEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
+        if (hasTranslation(query, I18nCategoryEntity.class)) {
+            criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
     }
 
 //    @Override
-//    public ProcedureEntity getInstance(Long key) throws DataAccessException {
+//    public CategoryEntity getInstance(Long key) throws DataAccessException {
 //        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
-    public ProcedureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (ProcedureEntity) session.get(ProcedureEntity.class, key);
+    public CategoryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        return (CategoryEntity) session.get(CategoryEntity.class, key);
     }
-
+    
 //    @Override
-//    public List<ProcedureEntity> getAllInstances() throws DataAccessException {
+//    public List<CategoryEntity> getAllInstances() throws DataAccessException {
 //        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
 //    }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("p")
-                .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
-        if (hasTranslation(parameters, I18nProcedureEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
+    public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria("c");
+        if (hasTranslation(parameters, I18nCategoryEntity.class)) {
+            parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
-
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
-
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("category");
+        criteria.add(Subqueries.propertyIn("c.pkid", filter));
+        
         parameters.addPagingTo(criteria);
-        return (List<ProcedureEntity>) criteria.list();
+        return criteria.list();
     }
 
     @Override
@@ -101,10 +96,11 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     private Criteria getDefaultCriteria(String alias) {
     	Criteria criteria;
     	if (Strings.isNullOrEmpty(alias)) {
-    		criteria = session.createCriteria(ProcedureEntity.class);
+    		criteria = session.createCriteria(CategoryEntity.class);
     	} else {
-    		criteria = session.createCriteria(ProcedureEntity.class, alias);
+    		criteria = session.createCriteria(CategoryEntity.class, alias);
     	}
     	return criteria;
     }
+
 }

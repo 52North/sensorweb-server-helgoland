@@ -36,10 +36,9 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.series.api.v1.db.da.DbQueryV1;
+import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.DbQuery;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
@@ -57,7 +56,7 @@ public class ProceduresAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<ProcedureOutput> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
@@ -70,7 +69,7 @@ public class ProceduresAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<ProcedureOutput> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<ProcedureOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
@@ -88,7 +87,7 @@ public class ProceduresAccessService extends ServiceInfoAccess implements Parame
     @Override
     public OutputCollection<ProcedureOutput> getParameters(String[] procedureIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             List<ProcedureOutput> results = new ArrayList<>();
             for (String procedureId : procedureIds) {
@@ -108,7 +107,7 @@ public class ProceduresAccessService extends ServiceInfoAccess implements Parame
     @Override
     public ProcedureOutput getParameter(String procedureId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQueryV1.createFrom(query);
+            DbQuery dbQuery = DbQuery.createFrom(query);
             ProcedureRepository repository = createProcedureRepository();
             return repository.getInstance(procedureId, dbQuery);
         } catch (DataAccessException e) {
