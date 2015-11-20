@@ -47,13 +47,15 @@ public class DatabaseMetadataDao {
         return (MetadataEntity) session.get(MetadataEntity.class, key);
     }
     
-    public List<MetadataEntity<?>> getAll() {
-        Criteria criteria = session.createCriteria(MetadataEntity.class);
+    public List<MetadataEntity<?>> getAllFor(Long id) {
+        Criteria criteria = session.createCriteria(MetadataEntity.class)
+                .add(Restrictions.eq("seriesId", id));
         return (List<MetadataEntity<?>>) criteria.list();
     }
 
-    List<MetadataEntity<?>> getSelected(Set<String> fields) {
-        Criteria criteria = session.createCriteria(MetadataEntity.class);
+    List<MetadataEntity<?>> getSelected(Long id, Set<String> fields) {
+        Criteria criteria = session.createCriteria(MetadataEntity.class)
+                .add(Restrictions.eq("seriesId", id));
         addCaseInsensitivePropertyMatch(criteria, fields);
 //        criteria.add(Restrictions.in("name", fields)); // not case insensitive
         return (List<MetadataEntity<?>>) criteria.list();
