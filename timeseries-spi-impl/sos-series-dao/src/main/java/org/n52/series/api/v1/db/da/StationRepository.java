@@ -180,10 +180,12 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
         try {
-            Geometry geometry = featureEntity.getGeom();
-            String fromCrs = "EPSG:" +geometry.getSRID();
-            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            if (featureEntity.isSetGeom()) {
+                Geometry geometry = featureEntity.getGeom();
+                String fromCrs = "EPSG:" +geometry.getSRID();
+                Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+                return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            }
         }
         catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());

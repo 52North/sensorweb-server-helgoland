@@ -42,7 +42,11 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
     public void setGeom(Geometry geom) {
         this.geom = geom;
     }
-
+    
+    public boolean isSetGeom() {
+    	return getGeom() != null && !getGeom().isEmpty();
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
