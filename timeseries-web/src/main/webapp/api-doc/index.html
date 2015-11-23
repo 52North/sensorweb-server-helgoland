@@ -921,6 +921,12 @@ Content-Type: application/json;charset=UTF-8
                 <td><p>Lists the raw data of timeseries with id <code>{id}</code>.</p></td>
               </tr>
               <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/getData</code></td>
+                <td><code>image/png</code></td>
+                <td><p>Draws a graph of the data of timeseries with id <code>{id}</code>.</p></td>
+              </tr>
+              <tr>
                 <td><code>POST</code></td>
                 <td><code>/api/v1/timeseries/getData</code></td>
                 <td><code>application/json</code></td>
@@ -978,6 +984,28 @@ Content-Type: application/json;charset=UTF-8
                 </td>
                 <td>
                   An <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 formatted period</a>. Only backslash formatted values are supported.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>width</code>
+                </td>
+                <td>
+                  <pre>width=200</pre>
+                </td>
+                <td>
+                  If <code>image/png</code> is requested, <code>width</code> determines the width in pixels.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>height</code>
+                </td>
+                <td>
+                  <pre>height=200</pre>
+                </td>
+                <td>
+                  If <code>image/png</code> is requested, <code>height</code> determines the width in pixels.
                 </td>
               </tr>
               <tr>

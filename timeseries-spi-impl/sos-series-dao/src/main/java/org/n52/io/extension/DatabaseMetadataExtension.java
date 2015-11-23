@@ -102,8 +102,10 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
                 DatabaseMetadataDao dao = new DatabaseMetadataDao(session);
                 final Set<String> fields = parameters.getFields();
                 return fields == null
-                        ? convertToOutputs(dao.getAll())
-                        : convertToOutputs(dao.getSelected(fields));
+                        ? convertToOutputs(dao.getAllFor(parseId(output.getId())))
+                        : convertToOutputs(dao.getSelected(parseId(output.getId()), fields));
+            } catch (DataAccessException e) {
+                throw new InternalServerException("Could not get extra metadata.", e);
             } finally {
                 returnSession(session);
             }
