@@ -225,7 +225,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			return createExpanded(siteEntity, parameters, type);
 		} else if (FeatureType.TRACK_FROM_OFFERING.equals(type)) {
 			TrackEntity trackEntity = new TrackDao(session).getInstance(parseFeatureId(id, type), parameters);
-			if (trackEntity == null) {
+			if (trackEntity == null || !trackEntity.hasTrackLocations()) {
 			    throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
             }
 			return createExpanded(trackEntity, parameters, type, session);
