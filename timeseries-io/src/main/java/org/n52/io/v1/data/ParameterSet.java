@@ -28,14 +28,22 @@
 package org.n52.io.v1.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ParameterSet {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParameterSet.class);
 
     private final Map<String, Object> parameters;
 
@@ -176,9 +184,27 @@ public abstract class ParameterSet {
     public final void addParameter(String parameter, Object value) {
         this.parameters.put(parameter.toLowerCase(), value);
     }
+    
+    public final <T> T getAs(Class<T> clazz, String parameter) {
+        try {
+            if ( !parameters.containsKey(parameter.toLowerCase())) {
+                LOGGER.debug("parameter '{}' is not available.", parameter);
+                return null;
+            }
+            ObjectMapper om = new ObjectMapper();
+            return om.treeToValue(getAsJsonNode(parameter), clazz);
+        } catch (IOException e) {
+            LOGGER.error("No appropriate config for parameter '{}'.", parameter, e);
+            return null;
+        }
+    }
 
     public final Object getAsObject(String parameter) {
         return this.parameters.get(parameter.toLowerCase());
+    }
+    
+    public final JsonNode getAsJsonNode(String parameter) {
+        return (JsonNode) this.parameters.get(parameter.toLowerCase());
     }
 
     public final String getAsString(String parameter) {

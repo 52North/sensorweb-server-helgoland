@@ -63,7 +63,7 @@ public class DesignedParameterSet extends ParameterSet {
      * Creates an instance with non-null default values.
      */
     public DesignedParameterSet() {
-        styleOptions = new HashMap<String, StyleProperties>();
+        styleOptions = new HashMap<>();
     }
 
     /**
