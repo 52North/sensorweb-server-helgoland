@@ -29,6 +29,7 @@ package org.n52.web.v1.ctrl;
 
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -70,19 +71,17 @@ public abstract class ParameterController extends BaseController implements Rest
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        Set<String> fields = queryMap.getFields();
         
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            if (fields == null || fields.contains(extension.getExtensionName().toLowerCase())) {
-                ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
-                final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
-                final String extensionName = extension.getExtensionName();
-                if (extras.containsKey(extensionName)) {
-                    LOGGER.warn("Extension '{}' overrides already existing metadata!", extensionName);
-                }
-                extras.putAll(furtherExtras);
+            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
+            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
+            if ( !overridableKeys.isEmpty()) {
+                String[] keys = overridableKeys.toArray(new String[0]);
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
             }
+            extras.putAll(furtherExtras);
         }
         return extras;
     }
