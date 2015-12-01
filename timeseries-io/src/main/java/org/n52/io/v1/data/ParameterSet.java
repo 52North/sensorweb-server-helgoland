@@ -33,13 +33,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoParameters;
 
 public abstract class ParameterSet {
 
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private final Map<String, Object> parameters;
 
     private boolean generalize; // TODO add generelaize algorithm + extra parameters ??
 
@@ -52,7 +50,7 @@ public abstract class ParameterSet {
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     protected ParameterSet() {
-        parameters = new HashMap<String, Object>();
+        parameters = new HashMap<>();
         parameters.put("timespan", createDefaultTimespan());
     }
 
@@ -164,7 +162,8 @@ public abstract class ParameterSet {
 
     public final void setParameters(Map<String, Object> parameters) {
         if (parameters != null) {
-            this.parameters = parameters;
+            this.parameters.clear();
+            this.parameters.putAll(parameters);
         }
     }
 
