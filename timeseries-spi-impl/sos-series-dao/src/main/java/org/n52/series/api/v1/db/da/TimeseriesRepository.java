@@ -332,7 +332,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        Double observationValue = getServiceInfo().hasNoDataValue(observation)
+        Double observationValue = !getServiceInfo().hasNoDataValue(observation)
                 ? formatDecimal(observation.getValue(), series)
                 : Double.NaN;
         value.setValue(observationValue);
