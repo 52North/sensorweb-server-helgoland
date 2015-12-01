@@ -1,0 +1,49 @@
+  README
+#########
+
+ Supported DBMS
+----------------
+
+- PostrgeSQL 9.x with PostGIS 2.x
+
+
+ Supported SOS versions
+------------------------
+
+This service supports the following 52N SOS versions with series or e-Reporting database concepts. 
+
+- series:		4.1.x, 4.2.x, 4.3.x, 4.4.x
+- ereporting:	4.3.x, 4.4.x
+
+The default configuration is series database concepts of 52N SOS versions 4.2.x and higher.
+How to configure support for 52N SOS 4.1.x or for the e-Reporting database concepts see below.
+
+
+ Database configuration
+------------------------
+
+The database configuration file is located in
+
+ [WEBAPP_NAME]\WEB-INF\classes\datasource.properties
+
+The properties that need to be changed:
+
+- Username: 		hibernate.connection.username	(default = postgres)
+- Password: 		hibernate.connection.password	(default = postgres)
+- Connection-URL:	hibernate.connection.url		(default = jdbc\:postgresql\://localhost\:5432/sos)
+
+
+ SOS version 4.1.x
+-------------------
+
+If you use the SOS 4.1.x with series database concept, you should modify the HIBERNATE_DIRECTORY property to
+
+HIBERNATE_DIRECTORY=/hbm/sos/v41
+
+
+ SOS e-Reporting database concept
+----------------------------------
+
+If you use the SOS e-Reporting database concept, you should modify the HIBERNATE_DIRECTORY property to
+
+HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/ereporting

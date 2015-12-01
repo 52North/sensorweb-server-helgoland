@@ -25,13 +25,8 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.io.extension;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@RequestMapping(value = COLLECTION_TIMESERIES)
-public class TimeseriesMetadataController extends ParameterController {
-
-    // resource controller for timeseries metadata
+public class MetadataStringEntity extends MetadataEntity<String> {
+    
 }

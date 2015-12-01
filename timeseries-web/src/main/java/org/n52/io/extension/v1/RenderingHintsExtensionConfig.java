@@ -25,40 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.schema;
+package org.n52.io.extension.v1;
 
-import org.junit.Test;
-import org.n52.io.v1.data.DesignedParameterSet;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.n52.io.v1.data.StyleProperties;
-import org.n52.io.v1.data.UndesignedParameterSet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
+public class RenderingHintsExtensionConfig {
+    
+	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();
 
-public class VicinitySchemaTest {
-	
-	private static final String VICINITY_SCHEMA_V1 = "";
+	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<>();
 
-	@Test
-	public void test() throws JsonProcessingException {
-        System.out.println(getSchemaFor(UndesignedParameterSet.class));
-	    System.out.println(getSchemaFor(DesignedParameterSet.class));
-        System.out.println(getSchemaFor(StyleProperties.class));
+	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+		return phenomenonStyles;
 	}
 
-    private String getSchemaFor(Class<?> clazz) throws JsonProcessingException {
-        ObjectMapper m = new ObjectMapper();
-        SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
-        m.acceptJsonFormatVisitor(m.constructType(clazz), visitor);
-        JsonSchema jsonSchema = visitor.finalSchema();
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append(clazz.getSimpleName()).append(": ");
-        sb.append(m.writeValueAsString(jsonSchema));
-        
-        return sb.toString();
-    }
+	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+		this.phenomenonStyles = phenomenonStyles;
+	}
+
+	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+		return timeseriesStyles;
+	}
+
+	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+		this.timeseriesStyles = timeseriesStyles;
+	}
+
+	public static class ConfiguredStyle {
+
+		private StyleProperties style;
+
+		public StyleProperties getStyle() {
+			return style;
+		}
+
+		public void setStyle(StyleProperties style) {
+			this.style = style;
+		}
+
+	}
 
 }

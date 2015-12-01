@@ -25,13 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.io.extension.v1;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.HashMap;
+import java.util.Map;
 
-@RequestMapping(value = COLLECTION_TIMESERIES)
-public class TimeseriesMetadataController extends ParameterController {
+import org.n52.io.v1.data.StatusInterval;
 
-    // resource controller for timeseries metadata
+public class StatusIntervalsExtensionConfig {
+
+	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
+	
+	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
+	
+	public Map<String, ConfigInterval> getPhenomenonIntervals() {
+		return phenomenonIntervals;
+	}
+
+	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
+		this.phenomenonIntervals = phenomenonIntervals;
+	}
+
+	public Map<String, ConfigInterval> getTimeseriesIntervals() {
+		return timeseriesIntervals;
+	}
+
+	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
+		this.timeseriesIntervals = timeseriesIntervals;
+	}
+
+	public static class ConfigInterval {
+		
+		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+
+		public Map<String, StatusInterval> getStatusIntervals() {
+			return statusIntervals;
+		}
+
+		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
+			this.statusIntervals = statusIntervals;
+		}
+
+		
+	}
 }

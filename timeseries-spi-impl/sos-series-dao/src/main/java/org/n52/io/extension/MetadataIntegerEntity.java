@@ -25,10 +25,8 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
-public abstract class ConfigApplier<T> {
+public class MetadataIntegerEntity extends MetadataEntity<Integer> {
     
-    public abstract void applyConfigOn(T toApplyConfigOn);
-
 }

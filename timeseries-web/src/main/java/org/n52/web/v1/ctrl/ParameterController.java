@@ -27,11 +27,18 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.QueryParameters.createFromQuery;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.n52.io.IoParameters;
+import static org.n52.io.QueryParameters.createFromQuery;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
@@ -39,11 +46,13 @@ import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.web.WebExceptionAdapter;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,9 +61,37 @@ public abstract class ParameterController extends BaseController implements Rest
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
-    private ServiceParameterService serviceParameterService;
+    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<MetadataExtension<ParameterOutput>>();
 
     private ParameterService<ParameterOutput> parameterService;
+    
+    private ServiceParameterService serviceParameterService;
+
+    @RequestMapping(value = "/{item}/extras", method = GET)
+    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters queryMap = createFromQuery(query);
+        
+        Map<String, Object> extras = new HashMap<>();
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
+            Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
+            if ( !overridableKeys.isEmpty()) {
+                String[] keys = overridableKeys.toArray(new String[0]);
+                LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
+            }
+            extras.putAll(furtherExtras);
+        }
+        return extras;
+    }
+
+    private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
+        Map<String, Object> currentData = new HashMap<String, Object>(data);
+        Set<String> overridableKeys = currentData.keySet();
+        overridableKeys.retainAll(dataToAdd.keySet());
+        return overridableKeys;
+    }
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
@@ -62,7 +99,7 @@ public abstract class ParameterController extends BaseController implements Rest
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -82,7 +119,7 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = doPostProcessOn(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -91,12 +128,18 @@ public abstract class ParameterController extends BaseController implements Rest
         return new ModelAndView().addObject(parameter);
     }
 
-    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
-        return toBeProcessed; // return unprocessed
+    protected ParameterOutput[] addExtensionInfos(ParameterOutput[] toBeProcessed) {
+        for (ParameterOutput parameterOutput : toBeProcessed) {
+            addExtensionInfo(parameterOutput);
+        }
+        return toBeProcessed;
     }
 
-    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        return toBeProcessed; // return unprocessed
+    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            extension.addExtraMetadataFieldNames(output);
+        }
+        return output;
     }
 
     public ServiceParameterService getServiceParameterService() {
@@ -116,4 +159,11 @@ public abstract class ParameterController extends BaseController implements Rest
         this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
     }
 
+    public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {
+        return metadataExtensions;
+    }
+
+    public void setMetadataExtensions(List<MetadataExtension<ParameterOutput>> metadataExtensions) {
+        this.metadataExtensions = metadataExtensions;
+    }
 }

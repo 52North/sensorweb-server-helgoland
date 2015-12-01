@@ -25,13 +25,24 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.ctrl;
+package org.n52.io.extension.v1;
 
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.ArrayList;
+import java.util.List;
 
-@RequestMapping(value = COLLECTION_TIMESERIES)
-public class TimeseriesMetadataController extends ParameterController {
+public class ResultTimeExtensionConfig {
+    
+    private List<String> services = new ArrayList<String>();
 
-    // resource controller for timeseries metadata
+    public ResultTimeExtensionConfig() {
+    }
+
+    public List<String> getServices() {
+        return services;
+    }
+
+    public void setServices(List<String> services) {
+        this.services = services;
+    }
+    
 }
