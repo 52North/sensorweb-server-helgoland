@@ -40,13 +40,17 @@ public class ServiceInfo {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInfo.class);
 
-    private static final Double threshold = 0.01;
+    private static final Double DOUBLE_THRESHOLD = 0.01;
 
     private String serviceId;
 
     private String serviceDescription;
 
     private List<Double> noDataValues;
+    
+    public ServiceInfo() {
+        noDataValues = Collections.emptyList();
+    }
 
     public String getServiceId() {
         return serviceId;
@@ -73,8 +77,11 @@ public class ServiceInfo {
     }
 
     private boolean containsValue(Collection<Double> collection, double key) {
+        if (collection == null) {
+            return false;
+        }
         for (double d : collection) {
-            if (Math.abs(d / key - 1) < threshold) {
+            if (Math.abs(d / key - 1) < DOUBLE_THRESHOLD) {
                 return true;
             }
         }
