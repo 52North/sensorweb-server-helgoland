@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.request.IoParameters;
@@ -44,8 +45,16 @@ import org.n52.web.exception.InternalServerException;
 
 public class StationsAccessService extends ServiceInfoAccess implements ShutdownParameterService<StationOutput> {
     
-    private final StationRepository repository = new StationRepository(getServiceInfo());
+    private String dbSrid = "EPSG:4326";
+    
+    private StationRepository repository = new StationRepository(getServiceInfo());
 
+    @PostConstruct
+    public void init() {
+        repository = new StationRepository(getServiceInfo());
+        repository.setDatabaseSrid(dbSrid);
+    }
+    
     private OutputCollection<StationOutput> createOutputCollection(List<StationOutput> results) {
         return new OutputCollection<StationOutput>(results) {
                 @Override
@@ -56,9 +65,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Shutdown
     }
     
     public StationsAccessService(String dbSrid) {
-        if (dbSrid != null) {
-            repository.setDatabaseSrid(dbSrid);
-        }
+        this.dbSrid = dbSrid;
     }
 
     @Override

@@ -29,6 +29,7 @@ package org.n52.series.db.srv.v2;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ProcedureOutput;
@@ -42,8 +43,13 @@ import org.n52.web.exception.InternalServerException;
 
 public class ProceduresAccessService extends ServiceInfoAccess implements ShutdownParameterService<ProcedureOutput> {
     
-    private final ProcedureRepository repository = new ProcedureRepository(getServiceInfo());
+    private ProcedureRepository repository;
 
+    @PostConstruct
+    public void init() {
+        repository = new ProcedureRepository(getServiceInfo());
+    }
+    
     @Override
     public ProcedureOutputCollection getExpandedParameters(IoParameters query) {
         try {

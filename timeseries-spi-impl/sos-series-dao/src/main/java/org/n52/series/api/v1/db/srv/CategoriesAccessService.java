@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
@@ -44,8 +45,13 @@ import org.n52.web.exception.InternalServerException;
 
 public class CategoriesAccessService extends ServiceInfoAccess implements ShutdownParameterService<CategoryOutput> {
     
-    private final CategoryRepository repository = new CategoryRepository(getServiceInfo());
+    private CategoryRepository repository;
 
+    @PostConstruct
+    public void init() {
+        repository = new CategoryRepository(getServiceInfo());
+    }
+    
     private OutputCollection<CategoryOutput> createOutputCollection(List<CategoryOutput> results) {
         return new OutputCollection<CategoryOutput>(results) {
                 @Override

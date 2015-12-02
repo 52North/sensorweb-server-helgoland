@@ -30,6 +30,7 @@ package org.n52.series.db.srv.v2;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -44,7 +45,12 @@ import org.n52.web.exception.InternalServerException;
 
 public class PhenomenaAccessService extends ServiceInfoAccess implements ShutdownParameterService<PhenomenonOutput> {
 
-    private final PhenomenonRepository repository = new PhenomenonRepository(getServiceInfo());
+    private PhenomenonRepository repository;
+    
+    @PostConstruct
+    public void init() {
+        repository = new PhenomenonRepository(getServiceInfo());
+    }
     
 	private PhenomenonOutputCollection createOutputCollection(List<PhenomenonOutput> results) {
         return new PhenomenonOutputCollection(results) {

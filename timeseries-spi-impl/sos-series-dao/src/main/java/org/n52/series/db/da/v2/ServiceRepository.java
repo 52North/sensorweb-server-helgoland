@@ -40,9 +40,9 @@ import com.google.common.collect.Lists;
 
 public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 	
-	private ServiceInfo serviceInfo;
+	private final ServiceInfo serviceInfo;
     
-    private EntityCounter counter = new EntityCounter();
+    private final EntityCounter counter = new EntityCounter();
     
     public ServiceRepository(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;

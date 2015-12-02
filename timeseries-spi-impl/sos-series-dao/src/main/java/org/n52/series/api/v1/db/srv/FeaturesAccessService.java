@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
@@ -44,8 +45,13 @@ import org.n52.web.exception.InternalServerException;
 
 public class FeaturesAccessService extends ServiceInfoAccess implements ShutdownParameterService<FeatureOutput> {
     
-    private final FeatureRepository repository = new FeatureRepository(getServiceInfo());
+    private FeatureRepository repository;
 
+    @PostConstruct
+    public void init() {
+        repository = new FeatureRepository(getServiceInfo());
+    }
+    
     private OutputCollection<FeatureOutput> createOutputCollection(List<FeatureOutput> results) {
         return new OutputCollection<FeatureOutput>(results) {
                 @Override

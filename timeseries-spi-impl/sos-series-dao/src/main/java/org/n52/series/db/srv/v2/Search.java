@@ -30,6 +30,7 @@ package org.n52.series.db.srv.v2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
@@ -42,16 +43,25 @@ import org.n52.series.db.srv.ServiceInfoAccess;
 
 public class Search extends ServiceInfoAccess implements SearchService {
 
-    private final ProcedureRepository procedureRepository = new ProcedureRepository(getServiceInfo());
+    private ProcedureRepository procedureRepository;
 
-    private final PhenomenonRepository phenomenonRepository = new PhenomenonRepository(getServiceInfo());
+    private PhenomenonRepository phenomenonRepository;
 
-    private final PlatformRepository platformRepository = new PlatformRepository(getServiceInfo());
+    private PlatformRepository platformRepository;
 
-    private final FeatureRepository featureRepository = new FeatureRepository(getServiceInfo());
+    private FeatureRepository featureRepository;
     
-    private final CategoryRepository categoryRepository = new CategoryRepository(getServiceInfo());
+    private CategoryRepository categoryRepository;
 
+    @PostConstruct
+    public void init() {
+        procedureRepository = new ProcedureRepository(getServiceInfo());
+        phenomenonRepository = new PhenomenonRepository(getServiceInfo());
+        platformRepository = new PlatformRepository(getServiceInfo());
+        featureRepository = new FeatureRepository(getServiceInfo());
+        categoryRepository = new CategoryRepository(getServiceInfo());
+    }
+    
     @Override
     public Collection<SearchResult> searchResources(String search, String locale) {
         List<SearchResult> results = new ArrayList<>();

@@ -29,6 +29,7 @@ package org.n52.series.api.v1.db.srv;
 
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
@@ -47,9 +48,15 @@ public class ServiceAccessService extends ServiceInfoAccess implements
         ServiceParameterService<ServiceOutput>, 
         ShutdownParameterService<ServiceOutput> {
     
-    private final ServiceRepository serviceRepository = new ServiceRepository(getServiceInfo());
+    private ServiceRepository serviceRepository;
     
-    private final TimeseriesRepository timeseriesRepository = new TimeseriesRepository(getServiceInfo());
+    private TimeseriesRepository timeseriesRepository;
+    
+    @PostConstruct
+    public void init() {
+        serviceRepository = new ServiceRepository(getServiceInfo());
+        timeseriesRepository = new TimeseriesRepository(getServiceInfo());
+    }
     
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
         return new OutputCollection<ServiceOutput>(result) {

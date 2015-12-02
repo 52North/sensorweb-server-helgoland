@@ -27,6 +27,7 @@
  */
 package org.n52.series.db.srv.v2;
 
+import javax.annotation.PostConstruct;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ServiceCollectionOutput;
 import org.n52.io.response.v2.ServiceOutput;
@@ -43,10 +44,16 @@ public class ServiceAccessService extends ServiceInfoAccess implements
         ServiceParameterService<ServiceOutput>,
         ShutdownParameterService<ServiceOutput> {
 
-    private final ServiceRepository serviceRepository = new ServiceRepository(getServiceInfo());
+    private ServiceRepository serviceRepository;
     
-    private final SeriesRepository seriesRepository = new SeriesRepository(getServiceInfo());
+    private SeriesRepository seriesRepository;
 
+    @PostConstruct
+    public void init() {
+        seriesRepository = new SeriesRepository(getServiceInfo());
+        serviceRepository = new ServiceRepository(getServiceInfo());
+    }
+    
     @Override
     public ServiceCollectionOutput getExpandedParameters(IoParameters query) {
         try {

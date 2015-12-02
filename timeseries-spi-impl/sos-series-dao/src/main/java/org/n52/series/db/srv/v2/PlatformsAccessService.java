@@ -29,6 +29,7 @@ package org.n52.series.db.srv.v2;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.PlatformOutput;
@@ -42,8 +43,13 @@ import org.n52.web.exception.InternalServerException;
 
 public class PlatformsAccessService extends ServiceInfoAccess implements ShutdownParameterService<PlatformOutput> {
 
-    private final PlatformRepository repository = new PlatformRepository(getServiceInfo());
+    private PlatformRepository repository;
 	
+    @PostConstruct
+    public void init() {
+        repository = new PlatformRepository(getServiceInfo());
+    }
+    
     @Override
 	public PlatformOutputCollection getExpandedParameters(IoParameters query) {
 		try {

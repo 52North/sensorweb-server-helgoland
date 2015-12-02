@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.IoParameters;
@@ -48,7 +49,12 @@ import org.n52.web.exception.InternalServerException;
 
 public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ShutdownParameterService<TimeseriesMetadataOutput> {
 
-    private final TimeseriesRepository repository = new TimeseriesRepository(getServiceInfo());
+    private TimeseriesRepository repository;
+    
+    @PostConstruct
+    public void init() {
+        repository = new TimeseriesRepository(getServiceInfo());
+    }
     
     private OutputCollection<TimeseriesMetadataOutput> createOutputCollection(List<TimeseriesMetadataOutput> results) {
         return new OutputCollection<TimeseriesMetadataOutput>(results) {

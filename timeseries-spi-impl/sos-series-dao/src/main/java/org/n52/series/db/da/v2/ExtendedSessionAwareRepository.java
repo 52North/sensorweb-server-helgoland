@@ -59,11 +59,11 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     	seriesOutput.setPhenomenon(getCondensedPhenomenon(series.getPhenomenon(), parameters));
     	seriesOutput.setPlatform(getCondensedFeature(series.getFeature(), parameters));
     	seriesOutput.setCategory(getCondensedCategory(series.getCategory(), parameters));
-	        return seriesOutput;
+        return seriesOutput;
 	}
 
 	protected org.n52.io.response.v2.ServiceOutput getCondensedService() throws DataAccessException {
-	    ServiceRepository serviceRepository = createServiceRepository();
+        ServiceRepository serviceRepository = createServiceRepository();
 	    String serviceId = serviceRepository.getServiceId();
 	    org.n52.io.response.v2.ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId);
 	    org.n52.io.response.v2.ServiceOutput serviceOutput = new org.n52.io.response.v2.ServiceOutput();
@@ -74,15 +74,15 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
 
 	@Override
 	protected ServiceOutput getServiceOutput() throws DataAccessException {
-		ServiceRepository serviceRepository = createServiceRepository();
+        ServiceRepository serviceRepository = createServiceRepository();
 		List<org.n52.io.response.v2.ServiceOutput> all = serviceRepository.getAllCondensed(null);
 		return all.get(0); // only this service available
 	}
 
-	private ServiceRepository createServiceRepository() {
-		return new ServiceRepository(getServiceInfo());
-	}
-	
+    private ServiceRepository createServiceRepository() {
+        return new ServiceRepository(getServiceInfo());
+    }
+    
 	private PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
         PhenomenonOutput outputvalue = new PhenomenonOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));

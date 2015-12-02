@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
@@ -46,8 +47,13 @@ import org.n52.web.exception.InternalServerException;
 public class OfferingsAccessService extends ServiceInfoAccess implements ShutdownParameterService<OfferingOutput> {
     
     // offerings equals procedures in our case
-    private final ProcedureRepository repository = new ProcedureRepository(getServiceInfo());
+    private ProcedureRepository repository;
 
+    @PostConstruct
+    public void init() {
+        repository = new ProcedureRepository(getServiceInfo());
+    }
+    
     private OutputCollection<OfferingOutput> createOutputCollection(List<OfferingOutput> results) {
         return new OutputCollection<OfferingOutput>(results) {
                 @Override
