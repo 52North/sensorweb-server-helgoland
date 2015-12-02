@@ -35,14 +35,16 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.CategoryOutput;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class CategoriesAccessService extends ServiceInfoAccess implements ParameterService<CategoryOutput> {
+public class CategoriesAccessService extends ServiceInfoAccess implements ShutdownParameterService<CategoryOutput> {
+    
+    private final CategoryRepository repository = new CategoryRepository(getServiceInfo());
 
     private OutputCollection<CategoryOutput> createOutputCollection(List<CategoryOutput> results) {
         return new OutputCollection<CategoryOutput>(results) {
@@ -57,7 +59,6 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     public OutputCollection<CategoryOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -69,7 +70,6 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     public OutputCollection<CategoryOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -86,7 +86,6 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     public OutputCollection<CategoryOutput> getParameters(String[] categoryIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            CategoryRepository repository = createCategoryRepository();
             List<CategoryOutput> results = new ArrayList<>();
             for (String categoryId : categoryIds) {
                 results.add(repository.getInstance(categoryId, dbQuery));
@@ -106,15 +105,15 @@ public class CategoriesAccessService extends ServiceInfoAccess implements Parame
     public CategoryOutput getParameter(String categoryId, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            CategoryRepository repository = createCategoryRepository();
             return repository.getInstance(categoryId, dbQuery);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get category data.", e);
         }
     }
 
-    private CategoryRepository createCategoryRepository() {
-        return new CategoryRepository(getServiceInfo());
+    @Override
+    public void shutdown() {
+        repository.cleanup();
     }
 
 }

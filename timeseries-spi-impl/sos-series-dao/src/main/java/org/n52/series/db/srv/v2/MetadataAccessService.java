@@ -34,7 +34,7 @@ import org.n52.web.exception.InternalServerException;
 
 public class MetadataAccessService implements CountingMetadataService {
 	
-	 private EntityCounter repository = new EntityCounter();
+	private final EntityCounter repository = new EntityCounter();
 
 	@Override
 	public int getServiceCount() {

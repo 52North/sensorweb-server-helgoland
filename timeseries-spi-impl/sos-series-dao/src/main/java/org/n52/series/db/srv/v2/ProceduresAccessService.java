@@ -33,78 +33,78 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ProcedureOutput;
 import org.n52.io.response.v2.ProcedureOutputCollection;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.ProcedureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ProceduresAccessService extends ServiceInfoAccess implements ParameterService<ProcedureOutput> {
+public class ProceduresAccessService extends ServiceInfoAccess implements ShutdownParameterService<ProcedureOutput> {
+    
+    private final ProcedureRepository repository = new ProcedureRepository(getServiceInfo());
 
-	 @Override
-	    public ProcedureOutputCollection getExpandedParameters(IoParameters query) {
-	        try {
-	            DbQuery dbQuery = DbQuery.createFrom(query);
-	            ProcedureRepository repository = createProcedureRepository();
-	            List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
-	            return new ProcedureOutputCollection(results);
-	        }
-	        catch (DataAccessException e) {
-	            throw new InternalServerException("Could not get procedure data.");
-	        }
-	    }
+    @Override
+    public ProcedureOutputCollection getExpandedParameters(IoParameters query) {
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
+            return new ProcedureOutputCollection(results);
+        }
+        catch (DataAccessException e) {
+            throw new InternalServerException("Could not get procedure data.");
+        }
+    }
 
-	    @Override
-	    public ProcedureOutputCollection getCondensedParameters(IoParameters query) {
-	        try {
-	            DbQuery dbQuery = DbQuery.createFrom(query);
-	            ProcedureRepository repository = createProcedureRepository();
-	            List<ProcedureOutput> results = repository.getAllCondensed(dbQuery);
-	            return new ProcedureOutputCollection(results);
-	        }
-	        catch (DataAccessException e) {
-	            throw new InternalServerException("Could not get procedure data.");
-	        }
-	    }
+    @Override
+    public ProcedureOutputCollection getCondensedParameters(IoParameters query) {
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<ProcedureOutput> results = repository.getAllCondensed(dbQuery);
+            return new ProcedureOutputCollection(results);
+        }
+        catch (DataAccessException e) {
+            throw new InternalServerException("Could not get procedure data.");
+        }
+    }
 
-	    @Override
-	    public ProcedureOutputCollection getParameters(String[] procedureIds) {
-	        return getParameters(procedureIds, IoParameters.createDefaults());
-	    }
+    @Override
+    public ProcedureOutputCollection getParameters(String[] procedureIds) {
+        return getParameters(procedureIds, IoParameters.createDefaults());
+    }
 
-	    @Override
-	    public ProcedureOutputCollection getParameters(String[] procedureIds, IoParameters query) {
-	        try {
-	            DbQuery dbQuery = DbQuery.createFrom(query);
-	            ProcedureRepository repository = createProcedureRepository();
-	            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
-	            for (String procedureId : procedureIds) {
-	                results.add(repository.getInstance(procedureId, dbQuery));
-	            }
-	            return new ProcedureOutputCollection(results);
-	        } catch (DataAccessException e) {
-	            throw new InternalServerException("Could not get procedure data.");
-	        }
-	    }
+    @Override
+    public ProcedureOutputCollection getParameters(String[] procedureIds, IoParameters query) {
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
+            for (String procedureId : procedureIds) {
+                results.add(repository.getInstance(procedureId, dbQuery));
+            }
+            return new ProcedureOutputCollection(results);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get procedure data.");
+        }
+    }
 
-	    @Override
-	    public ProcedureOutput getParameter(String procedureId) {
-	        return getParameter(procedureId, IoParameters.createDefaults());
-	    }
+    @Override
+    public ProcedureOutput getParameter(String procedureId) {
+        return getParameter(procedureId, IoParameters.createDefaults());
+    }
 
-	    @Override
-	    public ProcedureOutput getParameter(String procedureId, IoParameters query) {
-	        try {
-	            DbQuery dbQuery = DbQuery.createFrom(query);
-	            ProcedureRepository repository = createProcedureRepository();
-	            return repository.getInstance(procedureId, dbQuery);
-	        } catch (DataAccessException e) {
-	            throw new InternalServerException("Could not get procedure data");
-	        }
-	    }
+    @Override
+    public ProcedureOutput getParameter(String procedureId, IoParameters query) {
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            return repository.getInstance(procedureId, dbQuery);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get procedure data");
+        }
+    }
 
-	    private ProcedureRepository createProcedureRepository() {
-	        return new ProcedureRepository(getServiceInfo());
-	    }
+    @Override
+    public void shutdown() {
+        repository.cleanup();
+    }
+    
 }

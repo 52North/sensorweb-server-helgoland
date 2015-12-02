@@ -38,16 +38,18 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.v1.TimeseriesMetadataOutput;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ParameterService<TimeseriesMetadataOutput> {
+public class TimeseriesAccessService extends ServiceInfoAccess implements TimeseriesDataService, ShutdownParameterService<TimeseriesMetadataOutput> {
 
+    private final TimeseriesRepository repository = new TimeseriesRepository(getServiceInfo());
+    
     private OutputCollection<TimeseriesMetadataOutput> createOutputCollection(List<TimeseriesMetadataOutput> results) {
         return new OutputCollection<TimeseriesMetadataOutput>(results) {
                 @Override
@@ -75,7 +77,6 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
 
     private TimeseriesData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters) throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
-        TimeseriesRepository repository = createTimeseriesRepository();
         if (parameters.isExpanded()) {
             return repository.getDataWithReferenceValues(timeseriesId, dbQuery);
         } else {
@@ -87,7 +88,6 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -99,7 +99,6 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -116,7 +115,6 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            TimeseriesRepository repository = createTimeseriesRepository();
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
             for (String timeseriesId : items) {
                 results.add(repository.getInstance(timeseriesId, dbQuery));
@@ -135,7 +133,6 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
     @Override
     public TimeseriesMetadataOutput getParameter(String item, IoParameters query) {
         try {
-            TimeseriesRepository repository = createTimeseriesRepository();
             return repository.getInstance(item, DbQuery.createFrom(query));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get series data for '" + item + "'.");
@@ -143,8 +140,9 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
 
     }
 
-    private TimeseriesRepository createTimeseriesRepository() {
-        return new TimeseriesRepository(getServiceInfo());
+    @Override
+    public void shutdown() {
+        repository.cleanup();
     }
 
 }

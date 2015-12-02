@@ -36,14 +36,17 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {
+public class OfferingsAccessService extends ServiceInfoAccess implements ShutdownParameterService<OfferingOutput> {
+    
+    // offerings equals procedures in our case
+    private final ProcedureRepository repository = new ProcedureRepository(getServiceInfo());
 
     private OutputCollection<OfferingOutput> createOutputCollection(List<OfferingOutput> results) {
         return new OutputCollection<OfferingOutput>(results) {
@@ -58,7 +61,6 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OutputCollection<OfferingOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             List<ProcedureOutput> procedures = repository.getAllExpanded(dbQuery);
             for (ProcedureOutput procedureOutput : procedures) {
@@ -74,7 +76,6 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OutputCollection<OfferingOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             List<ProcedureOutput> procedures = repository.getAllCondensed(dbQuery);
             for (ProcedureOutput procedureOutput : procedures) {
@@ -95,7 +96,6 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OutputCollection<OfferingOutput> getParameters(String[] offeringIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
             List<OfferingOutput> results = new ArrayList<>();
             for (String offeringId : offeringIds) {
                 ProcedureOutput procedure = repository.getInstance(offeringId, dbQuery);
@@ -116,7 +116,6 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OfferingOutput getParameter(String offeringId, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
             return createOfferingFrom(repository.getInstance(offeringId, dbQuery));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get offering data", e);
@@ -131,10 +130,9 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
         return offering;
     }
 
-    private ProcedureRepository createProcedureRepository() {
-        // offerings equals procedures in our case
-        return new ProcedureRepository(getServiceInfo());
+    @Override
+    public void shutdown() {
+        repository.cleanup();
     }
-
 
 }

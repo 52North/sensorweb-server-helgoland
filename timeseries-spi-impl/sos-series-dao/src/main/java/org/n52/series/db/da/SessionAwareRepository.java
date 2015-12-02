@@ -55,6 +55,8 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
 
     private static final HibernateSessionHolder sessionHolder = createSessionHolderIfNeccessary();
+    
+    private static SessionFactoryProvider provider;
 
     private final ServiceInfo serviceInfo;
 
@@ -73,11 +75,8 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
             if (Configurator.getInstance() == null) {
                 Properties connectionProviderConfig = new Properties();
                 connectionProviderConfig.load(inputStream);
-                SessionFactoryProvider provider = new SessionFactoryProvider();
+                provider = new SessionFactoryProvider();
                 provider.initialize(connectionProviderConfig);
-
-                // TODO configure hbm.xml mapping path
-
                 return new HibernateSessionHolder(provider);
             } else {
                 return new HibernateSessionHolder();
@@ -89,8 +88,8 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     }
     
     public void cleanup() {
-        if (sessionHolder != null && Configurator.getInstance().getDataConnectionProvider() != null) {
-            Configurator.getInstance().getDataConnectionProvider().cleanup();
+        if (provider != null) {
+            provider.cleanup();
         }
     }
 
@@ -155,4 +154,5 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 	private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
 		return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
 	}
-}
+
+}

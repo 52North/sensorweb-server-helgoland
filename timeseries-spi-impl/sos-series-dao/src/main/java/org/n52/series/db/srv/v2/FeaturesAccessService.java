@@ -33,18 +33,19 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.FeatureOutput;
 import org.n52.io.response.v2.FeatureOutputCollection;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class FeaturesAccessService extends ServiceInfoAccess implements ParameterService<FeatureOutput> {
+public class FeaturesAccessService extends ServiceInfoAccess implements ShutdownParameterService<FeatureOutput> {
 	
+    private final FeatureRepository repository = new FeatureRepository(getServiceInfo());
+    
 	public FeaturesAccessService(String dbSrid) {
         if (dbSrid != null) {
-            FeatureRepository repository = createFeatureRepository();
             repository.setDatabaseSrid(dbSrid);
         }
     }
@@ -53,7 +54,6 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	public FeatureOutputCollection getExpandedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = repository.getAllExpanded(dbQuery);
 			return new FeatureOutputCollection(results);
 		} catch (DataAccessException e) {
@@ -65,7 +65,6 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	public FeatureOutputCollection getCondensedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = repository.getAllCondensed(dbQuery);
 			return new FeatureOutputCollection(results);
 		} catch (DataAccessException e) {
@@ -82,7 +81,6 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	public FeatureOutputCollection getParameters(String[] featureIds, IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			FeatureRepository repository = createFeatureRepository();
 			List<FeatureOutput> results = new ArrayList<FeatureOutput>();
 			for (String featureId : featureIds) {
 				results.add(repository.getInstance(featureId, dbQuery));
@@ -102,15 +100,14 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Paramete
 	public FeatureOutput getParameter(String featureId, IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			FeatureRepository repository = createFeatureRepository();
 			return repository.getInstance(featureId, dbQuery);
 		} catch (DataAccessException e) {
 			throw new InternalServerException("Could not get feature data");
 		}
 	}
 
-	private FeatureRepository createFeatureRepository() {
-		return new FeatureRepository(getServiceInfo());
-	}
-
+    @Override
+	public void shutdown() {
+        repository.cleanup();
+    }
 }

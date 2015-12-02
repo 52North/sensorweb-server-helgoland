@@ -42,37 +42,35 @@ import org.n52.series.db.srv.ServiceInfoAccess;
 
 public class Search extends ServiceInfoAccess implements SearchService {
 
+    private final ProcedureRepository procedureRepository = new ProcedureRepository(getServiceInfo());
+
+    private final PhenomenonRepository phenomenonRepository = new PhenomenonRepository(getServiceInfo());
+
+    private final PlatformRepository platformRepository = new PlatformRepository(getServiceInfo());
+
+    private final FeatureRepository featureRepository = new FeatureRepository(getServiceInfo());
+    
+    private final CategoryRepository categoryRepository = new CategoryRepository(getServiceInfo());
+
     @Override
     public Collection<SearchResult> searchResources(String search, String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
+        List<SearchResult> results = new ArrayList<>();
 //        results.addAll(getTimeseriesRepository().searchFor(search, locale));
-        results.addAll(getPhenomenonRepository().searchFor(search, locale));
-        results.addAll(getProcedureRepository().searchFor(search, locale));
-        results.addAll(getPlatformRepository().searchFor(search, locale));
-        results.addAll(getFeatureRepository().searchFor(search, locale));
-        results.addAll(getCategoryRepositry().searchFor(search, locale));
+        results.addAll(phenomenonRepository.searchFor(search, locale));
+        results.addAll(procedureRepository.searchFor(search, locale));
+        results.addAll(platformRepository.searchFor(search, locale));
+        results.addAll(featureRepository.searchFor(search, locale));
+        results.addAll(categoryRepository.searchFor(search, locale));
         return results;
     }
-
-
-    private ProcedureRepository getProcedureRepository() {
-        return new ProcedureRepository(getServiceInfo());
-    }
-
-    private PhenomenonRepository getPhenomenonRepository() {
-        return new PhenomenonRepository(getServiceInfo());
-    }
-
-    private PlatformRepository getPlatformRepository() {
-		return new PlatformRepository(getServiceInfo());
-	}
-
-	private FeatureRepository getFeatureRepository() {
-		return new FeatureRepository(getServiceInfo());
-	}
-
-	private CategoryRepository getCategoryRepositry() {
-        return new CategoryRepository(getServiceInfo());
+    
+    @Override
+    public void shutdown() {
+        phenomenonRepository.cleanup();
+        procedureRepository.cleanup();
+        platformRepository.cleanup();
+        featureRepository.cleanup();
+        categoryRepository.cleanup();
     }
 
 }

@@ -43,5 +43,7 @@ public interface SearchService {
      * @return a collection of matching results.
      */
     Collection<SearchResult> searchResources(String search, String locale);
+    
+    void shutdown();
 
 }

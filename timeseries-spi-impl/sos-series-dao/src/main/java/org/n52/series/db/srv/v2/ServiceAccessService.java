@@ -32,20 +32,25 @@ import org.n52.io.response.v2.ServiceCollectionOutput;
 import org.n52.io.response.v2.ServiceOutput;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.SeriesRepository;
 import org.n52.series.db.da.v2.ServiceRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ServiceAccessService extends ServiceInfoAccess implements ServiceParameterService<ServiceOutput> {
+public class ServiceAccessService extends ServiceInfoAccess implements 
+        ServiceParameterService<ServiceOutput>,
+        ShutdownParameterService<ServiceOutput> {
 
+    private final ServiceRepository serviceRepository = new ServiceRepository(getServiceInfo());
+    
+    private final SeriesRepository seriesRepository = new SeriesRepository(getServiceInfo());
 
     @Override
     public ServiceCollectionOutput getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ServiceRepository serviceRepository = createServiceRepository();
             return new ServiceCollectionOutput(serviceRepository.getAllExpanded(dbQuery));
         }
         catch (DataAccessException e) {
@@ -57,7 +62,6 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     public ServiceCollectionOutput getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ServiceRepository serviceRepository = createServiceRepository();
             return new ServiceCollectionOutput(serviceRepository.getAllCondensed(dbQuery));
         }
         catch (DataAccessException e) {
@@ -89,7 +93,6 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     @Override
     public ServiceOutput getParameter(String item, IoParameters query) {
         try {
-            ServiceRepository serviceRepository = createServiceRepository();
             String serviceId = serviceRepository.getServiceId();
             return serviceId.equals(item) ?
                 serviceRepository.getInstance(serviceId, DbQuery.createFrom(query))
@@ -104,19 +107,15 @@ public class ServiceAccessService extends ServiceInfoAccess implements ServicePa
     public boolean isKnownTimeseries(String timeseriesId) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());
-            SeriesRepository SeriesRepository = createSeriesRepository();
-            return SeriesRepository.checkId(timeseriesId, dbQuery);
+            return seriesRepository.checkId(timeseriesId, dbQuery);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not determine if timeseries '" + timeseriesId + "' is known.");
         }
     }
 
-    private SeriesRepository createSeriesRepository() {
-        return new SeriesRepository(getServiceInfo());
-    }
-
-    private ServiceRepository createServiceRepository() {
-        return new ServiceRepository(getServiceInfo());
+    @Override
+    public void shutdown() {
+        seriesRepository.cleanup();
     }
 }

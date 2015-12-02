@@ -33,20 +33,21 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.PlatformOutputCollection;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class PlatformsAccessService extends ServiceInfoAccess implements ParameterService<PlatformOutput> {
+public class PlatformsAccessService extends ServiceInfoAccess implements ShutdownParameterService<PlatformOutput> {
 
-	@Override
+    private final PlatformRepository repository = new PlatformRepository(getServiceInfo());
+	
+    @Override
 	public PlatformOutputCollection getExpandedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			PlatformRepository repository = createPlatformRepository();
 			List<PlatformOutput> results = repository.getAllExpanded(dbQuery);
 			return new PlatformOutputCollection(results);
 		} catch (DataAccessException e) {
@@ -58,7 +59,6 @@ public class PlatformsAccessService extends ServiceInfoAccess implements Paramet
 	public PlatformOutputCollection getCondensedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			PlatformRepository repository = createPlatformRepository();
 			List<PlatformOutput> results = repository.getAllCondensed(dbQuery);
 			return new PlatformOutputCollection(results);
 		} catch (DataAccessException e) {
@@ -75,7 +75,6 @@ public class PlatformsAccessService extends ServiceInfoAccess implements Paramet
 	public PlatformOutputCollection getParameters(String[] ids, IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			PlatformRepository repository = createPlatformRepository();
 			List<PlatformOutput> results = new ArrayList<PlatformOutput>();
 			for (String id : ids) {
 				results.add(repository.getInstance(id, dbQuery));
@@ -95,14 +94,15 @@ public class PlatformsAccessService extends ServiceInfoAccess implements Paramet
 	public PlatformOutput getParameter(String platformId, IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			PlatformRepository repository = createPlatformRepository();
 			return repository.getInstance(platformId, dbQuery);
 		} catch (DataAccessException e) {
 			throw new InternalServerException("Could not get platform data");
 		}
 	}
 
-	private PlatformRepository createPlatformRepository() {
-		return new PlatformRepository(getServiceInfo());
-	}
+    @Override
+    public void shutdown() {
+        repository.cleanup();
+    }
+    
 }

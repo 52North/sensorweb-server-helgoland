@@ -35,14 +35,16 @@ import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.StationOutput;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class StationsAccessService extends ServiceInfoAccess implements ParameterService<StationOutput> {
+public class StationsAccessService extends ServiceInfoAccess implements ShutdownParameterService<StationOutput> {
+    
+    private final StationRepository repository = new StationRepository(getServiceInfo());
 
     private OutputCollection<StationOutput> createOutputCollection(List<StationOutput> results) {
         return new OutputCollection<StationOutput>(results) {
@@ -55,7 +57,6 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     
     public StationsAccessService(String dbSrid) {
         if (dbSrid != null) {
-            StationRepository repository = createStationRepository();
             repository.setDatabaseSrid(dbSrid);
         }
     }
@@ -64,7 +65,6 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     public OutputCollection<StationOutput> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
         }
@@ -77,7 +77,6 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     public OutputCollection<StationOutput> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
         }
@@ -95,7 +94,6 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     public OutputCollection<StationOutput> getParameters(String[] stationIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            StationRepository repository = createStationRepository();
             List<StationOutput> results = new ArrayList<>();
             for (String stationId : stationIds) {
                 results.add(repository.getInstance(stationId, dbQuery));
@@ -116,7 +114,6 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     public StationOutput getParameter(String stationId, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            StationRepository repository = createStationRepository();
             return repository.getInstance(stationId, dbQuery);
         }
         catch (DataAccessException e) {
@@ -124,8 +121,9 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
         }
     }
 
-    private StationRepository createStationRepository() {
-        return new StationRepository(getServiceInfo());
+    @Override
+    public void shutdown() {
+        repository.cleanup();
     }
 
 }
