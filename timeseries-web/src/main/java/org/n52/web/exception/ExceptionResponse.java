@@ -82,7 +82,10 @@ public final class ExceptionResponse {
     }
 
     private String formatMessageOutput(Throwable causedBy) {
-        return causedBy.getMessage().replace("\"", "'");
+        final String message = causedBy.getMessage();
+        return message != null 
+                ? message.replace("\"", "'")
+                : null;
     }
 
     public String[] getHints() {
