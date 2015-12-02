@@ -27,7 +27,6 @@
  */
 package org.n52.series.db.srv.v2;
 
-import javax.annotation.PostConstruct;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ServiceCollectionOutput;
 import org.n52.io.response.v2.ServiceOutput;
@@ -48,7 +47,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements
     
     private SeriesRepository seriesRepository;
 
-    @PostConstruct
+    @Override
     public void init() {
         seriesRepository = new SeriesRepository(getServiceInfo());
         serviceRepository = new ServiceRepository(getServiceInfo());

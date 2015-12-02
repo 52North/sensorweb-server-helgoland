@@ -30,7 +30,6 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.IoParameters;
@@ -51,7 +50,7 @@ public class TimeseriesAccessService extends ServiceInfoAccess implements Timese
 
     private TimeseriesRepository repository;
     
-    @PostConstruct
+    @Override
     public void init() {
         repository = new TimeseriesRepository(getServiceInfo());
     }

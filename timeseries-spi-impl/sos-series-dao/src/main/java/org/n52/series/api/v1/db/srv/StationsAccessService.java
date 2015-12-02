@@ -30,7 +30,6 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.request.IoParameters;
@@ -49,7 +48,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Shutdown
     
     private StationRepository repository = new StationRepository(getServiceInfo());
 
-    @PostConstruct
+    @Override
     public void init() {
         repository = new StationRepository(getServiceInfo());
         repository.setDatabaseSrid(dbSrid);

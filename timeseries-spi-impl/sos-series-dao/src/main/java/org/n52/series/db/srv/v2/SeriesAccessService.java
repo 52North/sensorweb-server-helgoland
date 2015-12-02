@@ -30,7 +30,6 @@ package org.n52.series.db.srv.v2;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.IoParameters;
@@ -52,7 +51,7 @@ public class SeriesAccessService extends ServiceInfoAccess
     
     private SeriesRepository repository;
 
-    @PostConstruct
+    @Override
     public void init() {
         repository = new SeriesRepository(getServiceInfo());
     }

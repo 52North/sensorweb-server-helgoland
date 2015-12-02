@@ -45,7 +45,7 @@ public class PlatformsAccessService extends ServiceInfoAccess implements Shutdow
 
     private PlatformRepository repository;
 	
-    @PostConstruct
+    @Override
     public void init() {
         repository = new PlatformRepository(getServiceInfo());
     }

@@ -71,9 +71,15 @@ import com.google.common.collect.Maps;
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesRepository.class);
+    
+    private final FeatureRepository featureRepository;
+    
+    private final PlatformRepository platformRepository;
 
     public SeriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
+        featureRepository = new FeatureRepository(getServiceInfo());
+        platformRepository = new PlatformRepository(getServiceInfo());
     }
 
     @Override
@@ -286,15 +292,15 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
         
-        PlatformOutput platform = createPlatformRepository().getCondensedInstance(featurePkid, query);
+        PlatformOutput platform = platformRepository.getCondensedInstance(featurePkid, query);
         
         Map<String, String> queryParameters = Maps.newHashMap();
         queryParameters.put("platform", platform.getId());
         DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
         if (platform instanceof StationaryPlatformOutput) {
-            return createFeatureRepository().getSites(parameters);
+            return featureRepository.getSites(parameters);
         } else if (platform instanceof MobilePlatformOutput) {
-            return createFeatureRepository().getTracks(parameters);
+            return featureRepository.getTracks(parameters);
         }
         return new FeatureOutputCollection();
     }
@@ -400,12 +406,10 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             .doubleValue();
     }
     
-    private FeatureRepository createFeatureRepository() {
-        return new FeatureRepository(getServiceInfo());
-    }
-    
-    private PlatformRepository createPlatformRepository() {
-        return new PlatformRepository(getServiceInfo());
+    public void shutdown() {
+        featureRepository.cleanup();
+        platformRepository.cleanup();
+        super.cleanup();
     }
 
 }

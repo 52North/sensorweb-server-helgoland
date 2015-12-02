@@ -29,7 +29,6 @@ package org.n52.series.db.srv.v2;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.FeatureOutput;
@@ -47,7 +46,7 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Shutdown
     
     private FeatureRepository repository;
     
-    @PostConstruct
+    @Override
     public void init() {
         repository = new FeatureRepository(getServiceInfo());
         repository.setDatabaseSrid(dbSrid);

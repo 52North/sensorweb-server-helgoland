@@ -30,7 +30,6 @@ package org.n52.series.db.srv.v2;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -47,7 +46,7 @@ public class PhenomenaAccessService extends ServiceInfoAccess implements Shutdow
 
     private PhenomenonRepository repository;
     
-    @PostConstruct
+    @Override
     public void init() {
         repository = new PhenomenonRepository(getServiceInfo());
     }

@@ -32,6 +32,8 @@ import org.n52.series.db.da.beans.ServiceInfo;
 public abstract class ServiceInfoAccess {
     
     private ServiceInfo serviceInfo;
+    
+    public abstract void init();
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;

@@ -29,7 +29,6 @@ package org.n52.series.api.v1.db.srv;
 
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
@@ -52,7 +51,7 @@ public class ServiceAccessService extends ServiceInfoAccess implements
     
     private TimeseriesRepository timeseriesRepository;
     
-    @PostConstruct
+    @Override
     public void init() {
         serviceRepository = new ServiceRepository(getServiceInfo());
         timeseriesRepository = new TimeseriesRepository(getServiceInfo());

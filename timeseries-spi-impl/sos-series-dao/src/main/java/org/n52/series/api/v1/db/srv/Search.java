@@ -30,7 +30,6 @@ package org.n52.series.api.v1.db.srv;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
@@ -56,7 +55,7 @@ public class Search extends ServiceInfoAccess implements SearchService {
     
     private CategoryRepository categoryRepository;
 
-    @PostConstruct
+    @Override
     public void init() {
         timeseriesRepository = new TimeseriesRepository(getServiceInfo());
         procedureRepository = new ProcedureRepository(getServiceInfo());
