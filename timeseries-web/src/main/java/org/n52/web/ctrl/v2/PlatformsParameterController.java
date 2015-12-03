@@ -35,6 +35,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.io.response.v2.PlatformOutput;
+import org.n52.io.response.v2.SeriesOutputCollection;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -58,6 +59,8 @@ public class PlatformsParameterController {
     private ParameterService<PlatformOutput> parameterService;
     
     private ParameterService<FeatureOutputCollection> featureParameterService;
+    
+    private ParameterService<SeriesOutputCollection> seriesParameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -80,13 +83,13 @@ public class PlatformsParameterController {
     }
 
     @RequestMapping(value = "/{item}", method = GET)
-    public ModelAndView getItem(@PathVariable("item") String procedureId,
+    public ModelAndView getItem(@PathVariable("item") String platformId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
-        Object result = parameterService.getParameter(procedureId, map);
+        Object result = parameterService.getParameter(platformId, map);
 
         if (result == null) {
             throw new ResourceNotFoundException("Found no platform with given id.");
@@ -121,7 +124,7 @@ public class PlatformsParameterController {
     }
     
     @RequestMapping(value = "/{platformItem}/features/{featureItem}", method = GET)
-    public ModelAndView getFeatures(@PathVariable("platformItem") String platformId, @PathVariable("featureItem") String featureId,
+    public ModelAndView getFeatureItem(@PathVariable("platformItem") String platformId, @PathVariable("featureItem") String featureId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
 
         // check parameters and throw BAD_REQUEST if invalid
@@ -142,6 +145,54 @@ public class PlatformsParameterController {
 
         return new ModelAndView().addObject(result);
     }
+    
+    @RequestMapping(value = "/{platformItem}/series", method = GET)
+    public ModelAndView getSeries(@PathVariable("platformItem") String platformId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        // TODO check parameters and throw BAD_REQUEST if invalid
+        PlatformOutput platform = parameterService.getParameter(platformId);
+        if (platform == null) {
+            throw new ResourceNotFoundException("Found no platform for given platform id.");
+        }
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        
+        Object result = null;
+        if (map.isExpanded()) {
+            result = seriesParameterService.getExpandedParameters(map);
+        } else {
+           result = seriesParameterService.getCondensedParameters(map);
+        }
+
+        if (result == null) {
+            throw new ResourceNotFoundException("Found no series for given platform id.");
+        }
+
+        return new ModelAndView().addObject(result);
+    }
+    
+    @RequestMapping(value = "/{platformItem}/series/{seriesItem}", method = GET)
+    public ModelAndView getSeriesItem(@PathVariable("platformItem") String platformId, @PathVariable("seriesItem") String seriesId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+
+        // check parameters and throw BAD_REQUEST if invalid
+        MultiValueMap<String, String> platformMap = new LinkedMultiValueMap<>();
+        platformMap.add("series", seriesId);
+        IoParameters platformQuery = createFromQuery(platformMap);
+        PlatformOutput platform = parameterService.getParameter(platformId, platformQuery);
+        if (platform == null) {
+            throw new ResourceNotFoundException("Found no platform for given platform id.");
+        }
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        Object result = seriesParameterService.getParameter(seriesId, map);
+
+        if (result == null) {
+            throw new ResourceNotFoundException("Found no series with given id for given platfrom id.");
+        }
+
+        return new ModelAndView().addObject(result);
+    }
 
     public ParameterService<PlatformOutput> getParameterService() {
         return parameterService;
@@ -156,6 +207,10 @@ public class PlatformsParameterController {
 
     public void setFeatureParameterService(ParameterService<FeatureOutputCollection> featureParameterService) {
         this.featureParameterService = featureParameterService;
+    }
+    
+    public void setSeriesParameterService(ParameterService<SeriesOutputCollection> seriesParameterService) {
+        this.seriesParameterService = seriesParameterService;
     }
 
 }

@@ -44,6 +44,8 @@ import org.n52.sos.ds.hibernate.HibernateSessionHolder;
 import org.n52.sos.ds.hibernate.SessionFactoryProvider;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.service.Configurator;
+import org.n52.web.exception.BadRequestException;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,12 +114,12 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     
     protected abstract DBQ getDbQuery(IoParameters parameters, String locale);
 
-    protected Long parseId(String id) throws DataAccessException {
+    protected Long parseId(String id) throws BadRequestException {
         try {
             return Long.parseLong(id);
         }
         catch (NumberFormatException e) {
-            throw new DataAccessException("Illegal id: " + id);
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
     }
 

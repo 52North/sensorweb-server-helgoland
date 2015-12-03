@@ -20,7 +20,6 @@
         <property name="metadataService" ref="metadataServiceV2" />
     </bean>
 
-
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
         <property name="metadataExtensions">
             <list>
@@ -52,11 +51,12 @@
     <bean class="org.n52.web.ctrl.v2.PlatformsParameterController">
         <property name="parameterService" ref="platformParameterServiceV2" />
         <property name="featureParameterService" ref="featureParameterServiceV2" />
+        <property name="seriesParameterService" ref="seriesServiceV2" />
     </bean>
 
     <bean class="org.n52.web.ctrl.v2.SeriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterServiceV2" />
-        <property name="parameterService" ref="timeseriesServiceV2" />
+        <property name="parameterService" ref="seriesServiceV2" />
         <property name="metadataExtensions">
             <list merge="true">
                 <!--<bean class="org.n52.io.extension.v2.RenderingHintsExtension" />-->
@@ -70,16 +70,16 @@
 
     <bean class="org.n52.web.ctrl.v2.SeriesDataController">
         <property name="serviceParameterService" ref="serviceParameterServiceV2" />
-        <property name="timeseriesMetadataService" ref="timeseriesServiceV2" />
-        <property name="timeseriesDataService" ref="timeseriesServiceV2" />
+        <property name="timeseriesMetadataService" ref="seriesServiceV2" />
+        <property name="timeseriesDataService" ref="seriesServiceV2" />
         <property name="preRenderingTask" ref="preRenderingTask" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 
     <bean id="preRenderingTask" class="org.n52.io.request.PreRenderingTask"
           destroy-method="shutdownTask" factory-method="createTask">
-        <property name="timeseriesMetadataService" ref="timeseriesServiceV2" />
-        <property name="timeseriesDataService" ref="timeseriesServiceV2" />
+        <property name="timeseriesMetadataService" ref="seriesServiceV2" />
+        <property name="timeseriesDataService" ref="seriesServiceV2" />
         <property name="outputPath" value="generated/prerendered" />
         <property name="width" value="800" />
         <property name="height" value="500" />

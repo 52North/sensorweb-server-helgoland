@@ -50,7 +50,7 @@ public class SeriesValue extends TimeseriesValue {
     
     public SeriesValue(long timestamp, Double value, Geometry geometry) {
         super(timestamp, value);
-        this.setGeometry(geometry);
+        this.geometry = geometry;
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
