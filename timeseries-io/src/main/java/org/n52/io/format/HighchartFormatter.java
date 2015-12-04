@@ -35,7 +35,7 @@ import java.util.Map;
 import javax.swing.event.ListSelectionEvent;
 
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesDataMetadata;
+import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.v2.SeriesValue;
 
 import com.vividsolutions.jts.geom.Coordinate;

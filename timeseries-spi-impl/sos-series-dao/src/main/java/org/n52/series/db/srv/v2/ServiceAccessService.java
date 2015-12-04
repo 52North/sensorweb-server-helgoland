@@ -40,7 +40,7 @@ import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class ServiceAccessService extends ServiceInfoAccess implements 
-        ServiceParameterService<ServiceOutput>,
+        ServiceParameterService<ServiceOutput>, 
         ShutdownParameterService<ServiceOutput> {
 
     private ServiceRepository serviceRepository;

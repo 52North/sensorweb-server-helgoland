@@ -25,39 +25,18 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.io.response;
 
-import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Comparator;
-import org.n52.io.response.ParameterOutput;
-import java.util.List;
+public interface CommonSeriesOutput {
+    
+    public ParameterOutput getService();
 
+    public ParameterOutput getProcedure();
+    
+    public ParameterOutput getFeature();
 
-public class SeriesOutputCollection extends OutputCollection<TimeseriesMetadataOutput> {
-	
-    public SeriesOutputCollection() {
-        // empty collection
-    }
-    
-	public SeriesOutputCollection(TimeseriesMetadataOutput item) {
-		super(item);
-	}
-	
-	public SeriesOutputCollection(List<TimeseriesMetadataOutput> items) {
-		super(items);
-	}
-    
-    @Override
-    @JsonProperty(value = "series")
-    public List<TimeseriesMetadataOutput> getItems() {
-        return super.getItems();
-    }
-    
-    @Override
-    protected Comparator<TimeseriesMetadataOutput> getComparator() {
-        return ParameterOutput.defaultComparator();
-    }
+    public ParameterOutput getPhenomenon();
+
+    public ParameterOutput getCategory();
     
 }

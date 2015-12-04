@@ -53,9 +53,10 @@ import org.n52.io.style.LineStyle;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.request.StyleProperties;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesDataMetadata;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesDataMetadata;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.TimeseriesValue;
 
 public class MultipleChartsRenderer extends ChartRenderer {
@@ -121,7 +122,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
     }
 
     private String createChartId(TimeseriesMetadataOutput metadata, String referenceId) {
-        FeatureOutput feature = metadata.getParameters().getFeature();
+        ParameterOutput feature = metadata.getParameters().getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
         if (referenceId != null) {

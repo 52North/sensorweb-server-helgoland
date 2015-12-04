@@ -25,22 +25,15 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.io.response;
 
-import java.util.Collection;
 
+import org.n52.io.request.StyleProperties;
 import org.n52.io.Utils;
-import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ReferenceValueOutput;
-import org.n52.io.response.TimeseriesValue;
 
-public class SeriesMetadataOutput extends ParameterOutput {
+public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> extends ParameterOutput {
 
-	private String uom;
-
-    private PlatformOutput platform;
-    
-    private FeatureOutputCollection features = new FeatureOutputCollection();
+    private String uom;
 
     private ReferenceValueOutput[] referenceValues;
 
@@ -48,7 +41,15 @@ public class SeriesMetadataOutput extends ParameterOutput {
 
     private TimeseriesValue lastValue;
 
-    private SeriesOutput parameters;
+    private T parameters;
+
+    // TODO add as extra
+    @Deprecated
+    private StyleProperties renderingHints;
+
+    // TODO add as extra
+    @Deprecated
+    private StatusInterval[] statusIntervals;
 
     public String getUom() {
         return uom;
@@ -56,22 +57,6 @@ public class SeriesMetadataOutput extends ParameterOutput {
 
     public void setUom(String uom) {
         this.uom = uom;
-    }
-
-    public PlatformOutput getPlatform() {
-        return platform;
-    }
-
-    public void setPlatform(PlatformOutput platform) {
-        this.platform = platform;
-    }
-    
-    public void setFeatures(FeatureOutputCollection features) {
-        this.features = features;
-    }
-    
-    public Collection<FeatureOutput> getFeatures() {
-        return this.features.getItems();
     }
 
     public ReferenceValueOutput[] getReferenceValues() {
@@ -98,11 +83,36 @@ public class SeriesMetadataOutput extends ParameterOutput {
         this.lastValue = lastValue;
     }
 
-    public SeriesOutput getParameters() {
+    public T getParameters() {
         return parameters;
     }
 
-    public void setParameters(SeriesOutput timeseries) {
-        this.parameters = timeseries;
+    public void setParameters(T seriesOutput) {
+        this.parameters = seriesOutput;
     }
+
+    // TODO add as extra
+    @Deprecated
+    public StyleProperties getRenderingHints() {
+        return this.renderingHints;
+    }
+
+    // TODO add as extra
+    @Deprecated
+    public void setRenderingHints(StyleProperties renderingHints) {
+        this.renderingHints = renderingHints;
+    }
+
+    // TODO add as extra
+    @Deprecated
+    public StatusInterval[] getStatusIntervals() {
+        return statusIntervals;
+    }
+
+    // TODO add as extra
+    @Deprecated
+    public void setStatusIntervals(StatusInterval[] statusIntervals) {
+        this.statusIntervals = statusIntervals;
+    }
+
 }

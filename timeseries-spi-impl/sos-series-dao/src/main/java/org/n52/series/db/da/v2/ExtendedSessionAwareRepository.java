@@ -57,12 +57,12 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     	seriesOutput.setService(getCondensedService());
     	seriesOutput.setProcedure(getCondensedProcedure(series.getProcedure(), parameters));
     	seriesOutput.setPhenomenon(getCondensedPhenomenon(series.getPhenomenon(), parameters));
-    	seriesOutput.setPlatform(getCondensedFeature(series.getFeature(), parameters));
+    	seriesOutput.setPlatform(getCondensedPlatform(series.getFeature(), parameters));
     	seriesOutput.setCategory(getCondensedCategory(series.getCategory(), parameters));
         return seriesOutput;
 	}
 
-	protected org.n52.io.response.v2.ServiceOutput getCondensedService() throws DataAccessException {
+	protected ServiceOutput getCondensedService() throws DataAccessException {
         ServiceRepository serviceRepository = createServiceRepository();
 	    String serviceId = serviceRepository.getServiceId();
 	    org.n52.io.response.v2.ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId);
@@ -97,17 +97,17 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return outputvalue;
     }
 
-    private PlatformOutput getCondensedFeature(FeatureEntity entity, DbQuery parameters) {
+    private PlatformOutput getCondensedPlatform(FeatureEntity entity, DbQuery parameters) {
     	return new PlatformRepository(getServiceInfo()).createCondensed(entity, parameters);
     }
-
+    
     private CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
         CategoryOutput outputvalue = new CategoryOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
-
+    
 	@Override
 	protected DbQuery getDbQuery(IoParameters parameters) {
 		return DbQuery.createFrom(parameters);
@@ -117,4 +117,5 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
 	protected DbQuery getDbQuery(IoParameters parameters, String locale) {
 		return DbQuery.createFrom(parameters, locale);
 	}
+
 }

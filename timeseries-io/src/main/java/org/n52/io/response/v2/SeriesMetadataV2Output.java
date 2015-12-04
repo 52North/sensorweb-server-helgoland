@@ -25,25 +25,21 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v1;
+package org.n52.io.response.v2;
 
-import org.n52.io.response.TimeseriesData;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-public class TimeseriesDataMetadata implements Serializable {
+import org.n52.io.response.*;
 
-    private static final long serialVersionUID = 7422416308386483575L;
+public class SeriesMetadataV2Output extends TimeseriesMetadataOutput<SeriesOutput> {
     
-    private Map<String, TimeseriesData> referenceValues = new HashMap<>();
+    private FeatureOutputCollection featureOutput;
 
-    public Map<String, TimeseriesData> getReferenceValues() {
-        return referenceValues;
+    public FeatureOutputCollection getFeatureOutput() {
+        return featureOutput;
     }
 
-    public void setReferenceValues(Map<String, TimeseriesData> referenceValues) {
-        this.referenceValues = referenceValues;
+    public void setFeatures(FeatureOutputCollection featureOutput) {
+        this.featureOutput = featureOutput;
     }
-    
+
 }

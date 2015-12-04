@@ -37,7 +37,7 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v2.SeriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.ShutdownParameterService;
@@ -47,7 +47,7 @@ import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class SeriesAccessService extends ServiceInfoAccess
-		implements TimeseriesDataService, ShutdownParameterService<SeriesMetadataOutput> {
+		implements TimeseriesDataService, ShutdownParameterService<TimeseriesMetadataOutput> {
     
     private SeriesRepository repository;
 
@@ -56,10 +56,10 @@ public class SeriesAccessService extends ServiceInfoAccess
         repository = new SeriesRepository(getServiceInfo());
     }
     
-	private OutputCollection<SeriesMetadataOutput> createOutputCollection(List<SeriesMetadataOutput> results) {
-		return new OutputCollection<SeriesMetadataOutput>(results) {
+	private OutputCollection<TimeseriesMetadataOutput> createOutputCollection(List<TimeseriesMetadataOutput> results) {
+		return new OutputCollection<TimeseriesMetadataOutput>(results) {
 			@Override
-			protected Comparator<SeriesMetadataOutput> getComparator() {
+			protected Comparator<TimeseriesMetadataOutput> getComparator() {
 				return ParameterOutput.defaultComparator();
 			}
 		};
@@ -92,10 +92,10 @@ public class SeriesAccessService extends ServiceInfoAccess
 	}
 
 	@Override
-	public OutputCollection<SeriesMetadataOutput> getExpandedParameters(IoParameters query) {
+	public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			List<SeriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
+			List<TimeseriesMetadataOutput> results = repository.getAllExpanded(dbQuery);
 			return createOutputCollection(results);
 		} catch (DataAccessException e) {
 			throw new InternalServerException("Could not get series metadata from database.", e);
@@ -103,10 +103,10 @@ public class SeriesAccessService extends ServiceInfoAccess
 	}
 
 	@Override
-	public OutputCollection<SeriesMetadataOutput> getCondensedParameters(IoParameters query) {
+	public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			List<SeriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
+			List<TimeseriesMetadataOutput> results = repository.getAllCondensed(dbQuery);
 			return createOutputCollection(results);
 		} catch (DataAccessException e) {
 			throw new InternalServerException("Could not get series data.", e);
@@ -114,15 +114,15 @@ public class SeriesAccessService extends ServiceInfoAccess
 	}
 
 	@Override
-	public OutputCollection<SeriesMetadataOutput> getParameters(String[] items) {
+	public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items) {
 		return getParameters(items, IoParameters.createDefaults());
 	}
 
 	@Override
-	public OutputCollection<SeriesMetadataOutput> getParameters(String[] items, IoParameters query) {
+	public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items, IoParameters query) {
 		try {
 			DbQuery dbQuery = DbQuery.createFrom(query);
-			List<SeriesMetadataOutput> results = new ArrayList<>();
+			List<TimeseriesMetadataOutput> results = new ArrayList<>();
 			for (String seriesId : items) {
 				results.add(repository.getInstance(seriesId, dbQuery));
 			}
@@ -133,12 +133,12 @@ public class SeriesAccessService extends ServiceInfoAccess
 	}
 
 	@Override
-	public SeriesMetadataOutput getParameter(String item) {
+	public TimeseriesMetadataOutput getParameter(String item) {
 		return getParameter(item, IoParameters.createDefaults());
 	}
 
 	@Override
-	public SeriesMetadataOutput getParameter(String item, IoParameters query) {
+	public TimeseriesMetadataOutput getParameter(String item, IoParameters query) {
 		try {
 			return repository.getInstance(item, DbQuery.createFrom(query));
 		} catch (DataAccessException e) {

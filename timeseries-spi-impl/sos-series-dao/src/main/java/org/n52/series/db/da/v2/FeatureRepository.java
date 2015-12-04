@@ -178,7 +178,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			returnSession(session);
 		}
 	}
-
+    
 	public FeatureOutputCollection getSites(DbQuery parameters) throws DataAccessException {
 		Session session = getSession();
 		try {
@@ -331,24 +331,22 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     }
     
 	private TrackOutput createCondensed(TrackEntity entity, DbQuery parameters, FeatureType type, Session session) throws DataAccessException {
-    	try {
-    		if (entity.hasTrackLocations()) {
-    			TrackOutput result = new TrackOutput();
-    	    	result.setId(createUniqueId(entity.getPkid(), type));
-    	    	List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
-    	    	if (platform != null && !platform.isEmpty()) {
-    	    		if (platform.size() == 1) {
-    	    			result.addProperty("platform", platform.iterator().next());
-    	    		} else {
-    	    			result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
-    	    		}
-    	    	}
-    	    	return result;
-    		}
-    	} catch (GeoJSONException e) {
-			throw new DataAccessException("Error while creating output.", e);
-		}
-        return null;
+        if ( !entity.hasTrackLocations()) {
+            return null;
+        }
+        
+        TrackOutput result = new TrackOutput();
+        result.setId(createUniqueId(entity.getPkid(), type));
+        List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
+        if (platform != null && !platform.isEmpty()) {
+            if (platform.size() == 1) { // XXX
+                result.addProperty("platform", platform.iterator().next());
+            } else {
+                throw new DataAccessException("multiple platforms for track!");
+                //result.addProperty("platforms", platform.toArray(new Long[platform.size()]));
+            }
+        }
+        return result;
     }
     
     private List<Long> getPlatformIdForTrack(Long pkid, Session session) {

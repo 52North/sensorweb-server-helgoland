@@ -32,7 +32,6 @@ import java.util.List;
 
 public class ServiceOutput extends org.n52.io.response.ServiceOutput {
 
-	
     private final List<String> filters = Arrays.asList(new String[]{ 
         "features, procedures, phenomena, categories, services, platforms"} );
     

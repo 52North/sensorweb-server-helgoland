@@ -27,7 +27,9 @@
  */
 package org.n52.io.response.v1;
 
-public class TimeseriesOutput {
+import org.n52.io.response.CommonSeriesOutput;
+
+public class TimeseriesOutput implements CommonSeriesOutput {
     
     private ServiceOutput service;
     
@@ -41,6 +43,7 @@ public class TimeseriesOutput {
     
     private CategoryOutput category;
 
+    @Override
     public ServiceOutput getService() {
         return service;
     }
@@ -65,6 +68,7 @@ public class TimeseriesOutput {
         this.feature = feature;
     }
 
+    @Override
     public ProcedureOutput getProcedure() {
         return procedure;
     }
@@ -73,6 +77,7 @@ public class TimeseriesOutput {
         this.procedure = procedure;
     }
 
+    @Override
     public PhenomenonOutput getPhenomenon() {
         return phenomenon;
     }
@@ -81,6 +86,7 @@ public class TimeseriesOutput {
         this.phenomenon = phenomenon;
     }
 
+    @Override
     public CategoryOutput getCategory() {
         return category;
     }

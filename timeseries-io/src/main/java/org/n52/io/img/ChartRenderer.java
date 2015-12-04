@@ -75,10 +75,10 @@ import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
 import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
 import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
-import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.CommonSeriesOutput;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,8 +297,8 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     protected String createRangeLabel(TimeseriesMetadataOutput timeseriesMetadata) {
-        TimeseriesOutput parameters = timeseriesMetadata.getParameters();
-        PhenomenonOutput phenomenon = parameters.getPhenomenon();
+        CommonSeriesOutput parameters = timeseriesMetadata.getParameters();
+        ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
         uom.append(phenomenon.getLabel());
         String uomLabel = timeseriesMetadata.getUom();

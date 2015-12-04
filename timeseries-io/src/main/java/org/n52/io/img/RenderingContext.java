@@ -33,7 +33,7 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 
 public final class RenderingContext {
 

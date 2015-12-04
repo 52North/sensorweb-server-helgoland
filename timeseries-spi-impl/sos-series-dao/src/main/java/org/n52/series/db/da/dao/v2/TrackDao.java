@@ -44,6 +44,8 @@ import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.v2.DbQuery;
 
 import com.google.common.base.Strings;
+import org.n52.io.request.IoParameters;
+import org.n52.series.db.da.beans.v2.SiteEntity;
 
 public class TrackDao extends AbstractDao<TrackEntity> {
 
@@ -62,20 +64,10 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 		return criteria.list();
 	}
 
-//	@Override
-//	public TrackEntity getInstance(Long key) throws DataAccessException {
-//		 return getInstance(key, DbQueryV2.createFrom(IoParameters.createDefaults()));
-//	}
-
 	@Override
 	public TrackEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
 		 return (TrackEntity) session.get(TrackEntity.class, key);
 	}
-
-//	@Override
-//	public List<TrackEntity> getAllInstances() throws DataAccessException {
-//		return getAllInstances(DbQueryV2.createFrom(IoParameters.createDefaults()));
-//	}
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -115,7 +107,7 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Long> getRelatedPlatforms(Long pkid) {
+	public List<Long> getRelatedPlatforms(Long pkid) { // XXX
 		/*
 		 * SELECT DISTINCT f.featureOfInterestId FROM observation o, series s,
 		 * featureOfInterest f, offering of, observationHasOffering oo WHERE

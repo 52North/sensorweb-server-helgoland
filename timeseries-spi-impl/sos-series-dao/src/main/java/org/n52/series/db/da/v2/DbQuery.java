@@ -49,6 +49,7 @@ public class DbQuery extends AbstractDbQuery {
 		super(parameters);
 	}
 
+    @Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
 	    
 		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntityV2.class, "series");
@@ -97,7 +98,7 @@ public class DbQuery extends AbstractDbQuery {
 
 	public static DbQuery createFrom(IoParameters parameters, String locale) {
 		if (locale == null) {
-			new DbQuery(parameters);
+			return new DbQuery(parameters);
 		}
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("locale", locale);

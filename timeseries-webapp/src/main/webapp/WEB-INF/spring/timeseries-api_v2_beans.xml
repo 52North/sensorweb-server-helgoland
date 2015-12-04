@@ -20,7 +20,7 @@
     <bean id="procedureParameterServiceV2" class="org.n52.series.db.srv.v2.ProceduresAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />
     <bean id="platformParameterServiceV2" class="org.n52.series.db.srv.v2.PlatformsAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />
     <bean id="phenomenonParameterServiceV2" class="org.n52.series.db.srv.v2.PhenomenaAccessService"  parent="serviceInfoAccess" destroy-method="shutdown" />
-    <bean id="timeseriesServiceV2" class="org.n52.series.db.srv.v2.SeriesAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />
+    <bean id="seriesServiceV2" class="org.n52.series.db.srv.v2.SeriesAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />
     <bean id="metadataServiceV2" class="org.n52.series.db.srv.v2.MetadataAccessService" />
 
 </beans>

@@ -36,12 +36,13 @@ import java.util.Map;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ServiceOutput;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOutput> {
+public class ResultTimeExtension extends MetadataExtension<SeriesMetadataV1Output> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ResultTimeExtension.class);
 
@@ -69,7 +70,7 @@ public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOut
     }
 
     @Override
-    public void addExtraMetadataFieldNames(TimeseriesMetadataOutput output) {
+    public void addExtraMetadataFieldNames(SeriesMetadataV1Output output) {
         final ServiceOutput service = output.getParameters().getService();
         if (isAvailableFor(service.getId())) {
             output.addExtra(EXTENSION_NAME);
@@ -81,7 +82,7 @@ public class ResultTimeExtension extends MetadataExtension<TimeseriesMetadataOut
     }
 
     @Override
-    public Map<String, Object> getExtras(TimeseriesMetadataOutput output, IoParameters parameters) {
+    public Map<String, Object> getExtras(SeriesMetadataV1Output output, IoParameters parameters) {
         return hasExtrasToReturn(output, parameters)
                 ? wrapSingleIntoMap(getResultTimes(parameters, output))
                 : Collections.<String, Object>emptyMap();

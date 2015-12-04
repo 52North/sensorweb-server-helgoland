@@ -57,6 +57,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     private String label;
     
+    @Deprecated
     private String license;
 
     private List<String> extras;
@@ -112,18 +113,18 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
         this.label = label;
     }
 
+    @Deprecated
     public String getLicense() {
         return license;
     }
 
+    @Deprecated
     public void setLicense(String license) {
         this.license = license;
     }
 
     /**
      * @return a list of extra identifiers available via /&lt;resource&gt;/extras
-     *
-     * TODO make queryable, for example: ../extras?get=myFancyAddon1,myFancyAddon2
      */
     public String[] getExtras() {
         if (extras != null) {

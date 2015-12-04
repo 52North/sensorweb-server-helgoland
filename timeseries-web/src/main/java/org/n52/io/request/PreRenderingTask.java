@@ -62,9 +62,10 @@ import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -80,7 +81,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
 
-    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
+    private ParameterService<SeriesMetadataV1Output> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
 
@@ -165,11 +166,11 @@ public class PreRenderingTask implements ServletConfigAware {
         this.outputPath = outputPath;
     }
 
-    public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
+    public ParameterService<SeriesMetadataV1Output> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<SeriesMetadataV1Output> timeseriesMetadataService) {
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
@@ -349,7 +350,7 @@ public class PreRenderingTask implements ServletConfigAware {
                     Map<String, String> parameters = new HashMap<>();
                     parameters.put(PHENOMENON, phenomenonId);
                     IoParameters query = IoParameters.createFromQuery(parameters);
-                    OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
+                    OutputCollection<SeriesMetadataV1Output> metadatas = timeseriesMetadataService.getCondensedParameters(query);
                     for (TimeseriesMetadataOutput metadata : metadatas) {
                         String timeseriesId = metadata.getId();
                         ConfiguredStyle style = timeseriesStyles.containsKey(timeseriesId)
@@ -361,7 +362,7 @@ public class PreRenderingTask implements ServletConfigAware {
                 }
 
                 for (String timeseriesId : timeseriesStyles.keySet()) {
-                    TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+                    SeriesMetadataV1Output metadata = timeseriesMetadataService.getParameter(timeseriesId);
                     PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
                     if (!phenomenonStyles.containsKey(phenomenon.getId())) {
                         // overridden phenomena styles have been rendered already

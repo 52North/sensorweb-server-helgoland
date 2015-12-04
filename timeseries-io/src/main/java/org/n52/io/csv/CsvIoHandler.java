@@ -47,8 +47,10 @@ import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +146,9 @@ public class CsvIoHandler implements IoHandler {
     private void writeData(OutputStream stream) throws IOException {
         for (TimeseriesMetadataOutput metadata : context.getTimeseriesMetadatas()) {
             TimeseriesData timeseries = data.getTimeseries(metadata.getId());
-            String station = (String) metadata.getStation().getProperties().get("label");
+            String station = metadata instanceof SeriesMetadataV1Output // XXX hack
+                    ?  (String) ((SeriesMetadataV1Output)metadata).getStation().getProperties().get("label")
+                    :  ((SeriesMetadataV2Output)metadata).getLabel();
             String phenomenon = metadata.getParameters().getPhenomenon().getLabel();
             String uom = metadata.getUom();
 

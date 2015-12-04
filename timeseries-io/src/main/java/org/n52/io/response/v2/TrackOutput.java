@@ -28,15 +28,14 @@
 package org.n52.io.response.v2;
 
 import com.vividsolutions.jts.geom.Geometry;
-import org.n52.io.geojson.GeoJSONException;
 
 public class TrackOutput extends FeatureOutput {
 
-	public TrackOutput() throws GeoJSONException {
+	public TrackOutput() {
         super("track");
     }
 	
-    public TrackOutput(Geometry geometry) throws GeoJSONException {
+    public TrackOutput(Geometry geometry) {
         super("track", geometry);
     }
     

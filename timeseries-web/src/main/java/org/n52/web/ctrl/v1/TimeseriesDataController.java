@@ -55,7 +55,7 @@ import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;

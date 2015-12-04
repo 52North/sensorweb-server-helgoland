@@ -44,8 +44,9 @@ import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.v1.StationOutput;
-import org.n52.io.response.v1.TimeseriesDataMetadata;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesDataMetadata;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
@@ -233,7 +234,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
+        SeriesMetadataV1Output output = new SeriesMetadataV1Output();
         String locale = query.getLocale();
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
         String procedureLabel = getLabelFrom(entity.getProcedure(), locale);

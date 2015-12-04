@@ -70,8 +70,8 @@
 
     <bean class="org.n52.web.ctrl.v2.SeriesDataController">
         <property name="serviceParameterService" ref="serviceParameterServiceV2" />
-        <property name="timeseriesMetadataService" ref="seriesServiceV2" />
-        <property name="timeseriesDataService" ref="seriesServiceV2" />
+        <property name="seriesMetadataService" ref="seriesServiceV2" />
+        <property name="seriesDataService" ref="seriesServiceV2" />
         <property name="preRenderingTask" ref="preRenderingTask" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>

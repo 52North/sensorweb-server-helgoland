@@ -27,8 +27,12 @@
  */
 package org.n52.io.response.v2;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.n52.io.response.CommonSeriesOutput;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.ServiceOutput;
 
-public class SeriesOutput {
+public class SeriesOutput implements CommonSeriesOutput {
 	
 	private ServiceOutput service;
     
@@ -40,7 +44,8 @@ public class SeriesOutput {
     
     private CategoryOutput category;
 
-    public ServiceOutput getService() {
+    @Override
+    public ParameterOutput getService() {
         return service;
     }
 
@@ -48,15 +53,8 @@ public class SeriesOutput {
         this.service = service;
     }
 
-    public PlatformOutput getPlatfrom() {
-        return platform;
-    }
-
-    public void setPlatform(PlatformOutput platform) {
-        this.platform = platform;
-    }
-
-    public ProcedureOutput getProcedure() {
+    @Override
+    public ParameterOutput getProcedure() {
         return procedure;
     }
 
@@ -64,7 +62,8 @@ public class SeriesOutput {
         this.procedure = procedure;
     }
 
-    public PhenomenonOutput getPhenomenon() {
+    @Override
+    public ParameterOutput getPhenomenon() {
         return phenomenon;
     }
 
@@ -72,7 +71,18 @@ public class SeriesOutput {
         this.phenomenon = phenomenon;
     }
 
-    public CategoryOutput getCategory() {
+    @Override
+    @JsonProperty(value = "platform")
+    public ParameterOutput getFeature() {
+        return platform;
+    }
+
+    public void setPlatform(PlatformOutput platform) {
+        this.platform = platform;
+    }
+
+    @Override
+    public ParameterOutput getCategory() {
         return category;
     }
 

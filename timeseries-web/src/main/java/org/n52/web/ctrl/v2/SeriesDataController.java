@@ -54,7 +54,7 @@ import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
@@ -89,9 +89,9 @@ public class SeriesDataController extends BaseController {
 
     private ServiceParameterService serviceParameterService;
 
-    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
+    private ParameterService<TimeseriesMetadataOutput> seriesMetadataService;
 
-    private TimeseriesDataService timeseriesDataService;
+    private TimeseriesDataService seriesDataService;
 
     private PreRenderingTask preRenderingTask;
 
@@ -155,7 +155,7 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
@@ -172,7 +172,7 @@ public class SeriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        TimeseriesMetadataOutput metadata = seriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -200,7 +200,7 @@ public class SeriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        TimeseriesMetadataOutput metadata = seriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -232,7 +232,7 @@ public class SeriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
@@ -247,7 +247,7 @@ public class SeriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        TimeseriesMetadataOutput metadata = seriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
@@ -328,8 +328,8 @@ public class SeriesDataController extends BaseController {
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-            ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
-            : timeseriesDataService.getTimeseriesData(parameters);
+            ? composeDataService(seriesDataService).getTimeseriesData(parameters)
+            : seriesDataService.getTimeseriesData(parameters);
         return timeseriesData;
     }
 
@@ -341,20 +341,20 @@ public class SeriesDataController extends BaseController {
         this.serviceParameterService = serviceParameterService;
     }
 
-    public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
-        return timeseriesMetadataService;
+    public ParameterService<TimeseriesMetadataOutput> getSeriesMetadataService() {
+        return seriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
+    public void setSeriesMetadataService(ParameterService<TimeseriesMetadataOutput> seriesMetadataService) {
+        this.seriesMetadataService = new WebExceptionAdapter<>(seriesMetadataService);
     }
 
-    public TimeseriesDataService getTimeseriesDataService() {
-        return timeseriesDataService;
+    public TimeseriesDataService getSeriesDataService() {
+        return seriesDataService;
     }
 
-    public void setTimeseriesDataService(TimeseriesDataService timeseriesDataService) {
-        this.timeseriesDataService = timeseriesDataService;
+    public void setSeriesDataService(TimeseriesDataService timeseriesDataService) {
+        this.seriesDataService = timeseriesDataService;
     }
 
     public PreRenderingTask getPreRenderingTask() {

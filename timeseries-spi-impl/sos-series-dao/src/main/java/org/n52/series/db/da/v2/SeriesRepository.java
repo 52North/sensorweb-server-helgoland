@@ -43,11 +43,10 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.TimeseriesDataMetadata;
-import org.n52.io.response.v2.FeatureOutputCollection;
+import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
-import org.n52.io.response.v2.SeriesMetadataOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v2.SeriesValue;
 import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
@@ -67,8 +66,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
+import org.n52.io.response.v2.FeatureOutput;
+import org.n52.io.response.v2.FeatureOutputCollection;
+import org.n52.io.response.v2.SeriesMetadataV2Output;
 
-public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
+public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesRepository.class);
     
@@ -118,11 +120,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
 
 
     @Override
-    public List<SeriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
+    public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            List<SeriesMetadataOutput> results = new ArrayList<SeriesMetadataOutput>();
+            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
             	/*
             	 *  ATM, the SWC REST API only supports numeric types
@@ -141,11 +143,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    public List<SeriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
+    public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            List<SeriesMetadataOutput> results = new ArrayList<SeriesMetadataOutput>();
+            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
             	/*
             	 *  ATM, the SWC REST API only supports numeric types
@@ -165,7 +167,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    public SeriesMetadataOutput getInstance(String seriesId, DbQuery dbQuery) throws DataAccessException {
+    public TimeseriesMetadataOutput getInstance(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
@@ -239,9 +241,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    private SeriesMetadataOutput createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
-    	SeriesMetadataOutput output = createCondensed(series, query);
-    	// TODOD
+    private TimeseriesMetadataOutput createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
+    	TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setParameters(createSeriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
@@ -268,8 +269,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
 
-    private SeriesMetadataOutput createCondensed(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
-        SeriesMetadataOutput output = new SeriesMetadataOutput();
+    private SeriesMetadataV2Output createCondensed(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
+        SeriesMetadataV2Output output = new SeriesMetadataV2Output();
         String locale = query.getLocale();
         String platformLabel = getLabelFrom(entity.getFeature(), locale);
         String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
@@ -277,7 +278,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         output.setLabel(createSeriesLabel(phenomenonLabel, procedureLabel, platformLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
-        output.setFeatures(createCondensedPlatform(entity, query));
+        output.setFeatures(createCondensedFeature(entity, query));
         return output;
     }
 
@@ -288,7 +289,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return sb.append(station).toString();
     }
 
-    private FeatureOutputCollection createCondensedPlatform(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
+    private FeatureOutputCollection createCondensedFeature(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
         
@@ -296,13 +297,14 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         
         Map<String, String> queryParameters = Maps.newHashMap();
         queryParameters.put("platform", platform.getId());
+        queryParameters.put("series", Long.toString(entity.getPkid()));
         DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
         if (platform instanceof StationaryPlatformOutput) {
             return featureRepository.getSites(parameters);
         } else if (platform instanceof MobilePlatformOutput) {
             return featureRepository.getTracks(parameters);
         }
-        return new FeatureOutputCollection();
+        return null;
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntityV2> referenceValues,

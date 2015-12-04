@@ -54,8 +54,8 @@ import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartRenderer;
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.v1.TimeseriesMetadataOutput;
-import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.CommonSeriesOutput;
 import org.n52.io.response.TimeseriesValue;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
@@ -168,7 +168,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         DocumentStructureType report = document.getDocumentStructure();
         TimeSeries timeseries = report.addNewTimeSeries();
 
-        TimeseriesOutput parameters = metadata.getParameters();
+        CommonSeriesOutput parameters = metadata.getParameters();
         timeseries.setFeatureOfInterestID(parameters.getFeature().getLabel());
         timeseries.setPhenomenID(parameters.getPhenomenon().getLabel());
         timeseries.setProcedureID(parameters.getProcedure().getLabel());
@@ -218,7 +218,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     private String createValueTableHeader(TimeseriesMetadataOutput metadata) {
-        TimeseriesOutput parameters = metadata.getParameters();
+        CommonSeriesOutput parameters = metadata.getParameters();
         String phenomenon = parameters.getPhenomenon().getLabel();
         return phenomenon + " (" + metadata.getUom() + ")";
     }

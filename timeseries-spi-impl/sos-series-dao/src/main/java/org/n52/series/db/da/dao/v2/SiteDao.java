@@ -40,6 +40,7 @@ import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.v2.DbQuery;
 
 import com.google.common.base.Strings;
+import org.n52.io.request.IoParameters;
 
 public class SiteDao extends AbstractDao<SiteEntity> {
 
@@ -58,21 +59,22 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         return criteria.list();
     }
     
-//    @Override
-//    public SiteEntity getInstance(Long key) throws DataAccessException {
-//        return getInstance(key, DbQueryV2.createFrom(IoParameters.createDefaults()));
-//    }
-
+    public SiteEntity getSite(DbQuery query) {
+        Criteria criteria = getDefaultCriteria();
+        final IoParameters parameter = query.getParameters();
+        if (hasTranslation(query, I18nSiteEntity.class)) {
+            query.addLocaleTo(criteria, I18nSiteEntity.class);
+        }
+        String platformId = parameter.getOther("platformId");
+        criteria.add(Restrictions.eq("pkid", Long.parseLong(platformId)));
+        return (SiteEntity) criteria.uniqueResult();
+    }
+    
     @Override
     public SiteEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (SiteEntity) session.get(SiteEntity.class, key);
     }
     
-//    @Override
-//    public List<SiteEntity> getAllInstances() throws DataAccessException {
-//        return getAllInstances(DbQueryV2.createFrom(IoParameters.createDefaults()));
-//    }
-
     @Override
     @SuppressWarnings("unchecked")
     public List<SiteEntity> getAllInstances(DbQuery parameters) throws DataAccessException {

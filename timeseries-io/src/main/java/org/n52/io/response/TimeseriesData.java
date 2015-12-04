@@ -37,7 +37,6 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.n52.io.response.v1.TimeseriesDataMetadata;
 
 public class TimeseriesData implements Serializable {
 
