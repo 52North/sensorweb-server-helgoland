@@ -32,40 +32,25 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.n52.io.IoParameters;
 
-public class ParameterSetTest {
+public class IOParametersTest {
     
     @Test
-    public void testJsonObjectInGeneralConfig() {
+    public void testJsonOverriddenWidthConfigParameter() {
         IoParameters parameters = IoParameters.createDefaults();
-        UndesignedParameterSet set = parameters.toUndesignedParameterSet();
-        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "generalizer");
-        Assert.assertNotNull(config);
-        Assert.assertThat(config.getDefaultGeneralizer(), Matchers.is("lttb"));
+        Assert.assertThat(parameters.getChartDimension().getWidth(), Matchers.is(2000));
     }
     
     @Test
-    public void testNotAvailableJsonObjectInGeneralConfig() {
+    public void testBooleanValue() {
         IoParameters parameters = IoParameters.createDefaults();
-        UndesignedParameterSet set = parameters.toUndesignedParameterSet();
-        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "doesnotexist");
-        Assert.assertNull(config);
+        Assert.assertTrue(parameters.isGeneralize());
     }
     
-    private static class GeneralizerConfig {
-        private String defaultGeneralizer;
-        private String noDataGapThreshold;
-
-        public String getDefaultGeneralizer() {
-            return defaultGeneralizer;
-        }
-        public void setDefaultGeneralizer(String defaultGeneralizer) {
-            this.defaultGeneralizer = defaultGeneralizer;
-        }
-        public String getNoDataGapThreshold() {
-            return noDataGapThreshold;
-        }
-        public void setNoDataGapThreshold(String noDataGapThreshold) {
-            this.noDataGapThreshold = noDataGapThreshold;
-        }
+    @Test
+    public void testAfterConvertedFromParameterSet() {
+        UndesignedParameterSet set = UndesignedParameterSet.createForSingleTimeseries("1", IoParameters.createDefaults());
+        IoParameters parameters = IoParameters.createFromQuery(set);
+        Assert.assertTrue(parameters.isGeneralize());
     }
+    
 }

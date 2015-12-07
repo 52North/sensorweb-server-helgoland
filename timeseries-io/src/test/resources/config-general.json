@@ -4,5 +4,6 @@
     "generalizer" : {
         "defaultGeneralizer" : "lttb",
         "noDataGapThreshold" : 5
-    }
+    },
+    "generalize" : true
 }

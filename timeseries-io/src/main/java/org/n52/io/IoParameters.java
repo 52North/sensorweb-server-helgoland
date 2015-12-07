@@ -73,6 +73,8 @@ public class IoParameters {
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
     private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
+    
+    private static final ObjectMapper om = new ObjectMapper();
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
@@ -775,8 +777,7 @@ public class IoParameters {
     }
     
     private String getAsString(String parameter) {
-        final JsonNode node = this.query.get(parameter.toLowerCase());
-        return node.asText();
+        return query.get(parameter.toLowerCase()).asText();
     }
 
     /**
@@ -789,7 +790,8 @@ public class IoParameters {
     private int getAsInteger(String parameter) {
         try {
             String value = getAsString(parameter);
-            return Integer.parseInt(value);
+            Integer.parseInt(value);
+            return query.get(parameter).asInt();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
@@ -806,7 +808,8 @@ public class IoParameters {
     private boolean getAsBoolean(String parameter) {
         try {
             String value = getAsString(parameter);
-            return Boolean.parseBoolean(value);
+            Boolean.parseBoolean(value);
+            return query.get(parameter).asBoolean();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
@@ -848,18 +851,24 @@ public class IoParameters {
 
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
-        ObjectMapper om = new ObjectMapper();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
             String key = entry.getKey();
-            try {
-                parameters.put(key, om.<JsonNode>readValue(entry.getValue(), 
-                        TypeFactory.defaultInstance()
-                                .constructMapLikeType(HashMap.class, String.class, JsonNode.class)));
-            } catch (IOException e) {
-                LOGGER.error("Could not parse parameter '{}'", key, e);
-            }
+            String value = entry.getValue();
+            parameters.put(key, getJsonNodeFrom(value));
         }
         return parameters;
+    }
+    
+    public static JsonNode getJsonNodeFrom(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return om.readTree(om.writeValueAsString(object));
+        } catch (IOException e) {
+            LOGGER.error("Could not parse parameter", e);
+            return null;
+        }
     }
 
     /**
@@ -868,14 +877,14 @@ public class IoParameters {
      * @return a query map for convenient parameter access plus validation.
      */
     public static IoParameters createFromQuery(ParameterSet parameters) {
-        return createFromQuery(createQueryParametersFrom(parameters));
+        return new IoParameters(createQueryParametersFrom(parameters));
     }
 
-    private static Map<String, String> createQueryParametersFrom(ParameterSet parameters) {
-        Map<String, String> queryParameters = new HashMap<>();
+    private static Map<String, JsonNode> createQueryParametersFrom(ParameterSet parameters) {
+        Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameters()) {
             Object value = parameters.getAsObject(parameter);
-            queryParameters.put(parameter.toLowerCase(), String.valueOf(value));
+            queryParameters.put(parameter.toLowerCase(), getJsonNodeFrom(value));
         }
         return queryParameters;
     }
