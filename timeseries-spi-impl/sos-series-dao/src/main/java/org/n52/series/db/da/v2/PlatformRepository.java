@@ -38,7 +38,6 @@ import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
-import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -49,6 +48,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 
 import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Point;
+import org.n52.sensorweb.spi.search.v2.PlatformSearchResult;
 
 public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
@@ -72,11 +72,11 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 	@Override
 	protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
 			String locale) {
-		List<SearchResult> results = new ArrayList<SearchResult>();
+		List<SearchResult> results = new ArrayList<>();
 		for (DescribableEntity<? extends I18nEntity> searchResult : found) {
 			String pkid = searchResult.getPkid().toString();
 			String label = getLabelFrom(searchResult, locale);
-			results.add(new FeatureSearchResult(pkid, label));
+			results.add(new PlatformSearchResult(pkid, label));
 		}
 		return results;
 	}
@@ -86,7 +86,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 		Session session = getSession();
 		try {
 			FeatureDao featureDao = new FeatureDao(session);
-			List<PlatformOutput> results = new ArrayList<PlatformOutput>();
+			List<PlatformOutput> results = new ArrayList<>();
 			for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
 				results.add(createCondensed(featureEntity, parameters));
 			}
@@ -101,7 +101,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 		Session session = getSession();
 		try {
 			FeatureDao featureDao = new FeatureDao(session);
-			List<PlatformOutput> results = new ArrayList<PlatformOutput>();
+			List<PlatformOutput> results = new ArrayList<>();
 			for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
 				results.add(createExpanded(featureEntity, parameters));
 			}
@@ -126,7 +126,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 		}
 	}
 
-	public PlatformOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
+	PlatformOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);

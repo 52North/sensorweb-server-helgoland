@@ -25,39 +25,24 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.sensorweb.spi.search.v2;
 
-import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.Comparator;
-import org.n52.io.response.ParameterOutput;
-import java.util.List;
+import org.n52.sensorweb.spi.SearchResult;
 
+public class SeriesSearchResult extends SearchResult {
 
-public class SeriesOutputCollection extends OutputCollection<SeriesMetadataV2Output> {
-	
-    public SeriesOutputCollection() {
-        // empty collection
-    }
-    
-	public SeriesOutputCollection(SeriesMetadataV2Output item) {
-		super(item);
+	public SeriesSearchResult(String id, String label) {
+		super(id, label);
 	}
-	
-	public SeriesOutputCollection(List<SeriesMetadataV2Output> items) {
-		super(items);
+
+	@Override
+	public String getHref() {
+		return "./series/" + getId();
 	}
-    
-    @Override
-    @JsonProperty(value = "series")
-    public List<SeriesMetadataV2Output> getItems() {
-        return super.getItems();
-    }
-    
-    @Override
-    protected Comparator<SeriesMetadataV2Output> getComparator() {
-        return ParameterOutput.defaultComparator();
-    }
-    
+
+	@Override
+	public String getType() {
+		return "series";
+	}
+
 }

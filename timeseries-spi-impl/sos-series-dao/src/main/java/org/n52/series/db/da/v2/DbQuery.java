@@ -32,15 +32,18 @@ import static org.hibernate.criterion.Projections.property;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.hibernate.Criteria;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.v2.PlatformOutput;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
+import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class DbQuery extends AbstractDbQuery {
@@ -75,14 +78,25 @@ public class DbQuery extends AbstractDbQuery {
 	            filter.add(Subqueries.propertyIn("pkid", trackFilter));
 			}
 		}
+        if (getParameters().getType() != null) {
+            final String type = getParameters().getType();
+            if (type.equalsIgnoreCase(PlatformOutput.PlatformType.STATIONARY.getType())) {
+                filter.createCriteria("feature")
+                    .add(Restrictions.isNotNull("geom"));
+            } else if (type.equalsIgnoreCase(PlatformOutput.PlatformType.MOBILE.getType())) {
+                filter.createCriteria("feature")
+                    .add(Restrictions.isNull("geom"));
+            }
+        }
 		if (getParameters().getOther("platform") != null) {
-			filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
+			filter.createCriteria("feature")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOther("platform"))));
 		}
 		if (getParameters().getCategory() != null) {
 			filter.createCriteria("category")
 					.add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
 		}
-		return filter.setProjection(projectionList().add(property(propertyName)));
+		return filter.setProjection(Projections.property(propertyName));
 	}
 
 	public Long preParse(String feature) {

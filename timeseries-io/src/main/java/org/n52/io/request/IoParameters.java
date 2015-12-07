@@ -67,7 +67,7 @@ public class IoParameters {
 
     private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
     
-    private static final ObjectMapper om = new ObjectMapper();
+    private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
@@ -263,6 +263,8 @@ public class IoParameters {
      * Determines the station filter
      */
     static final String STATION = "station";
+    
+    static final String PLATFORMS= "platforms";
 
     /**
      * Determines the category filter
@@ -298,8 +300,10 @@ public class IoParameters {
      * Determines the fields filter
      */
     static final String FIELDS = "fields";
+    
+    static final String TYPE = "type";
 
-    private Map<String, JsonNode> query;
+    private final Map<String, JsonNode> query;
 
     /**
      * Use static constructor {@link #createFromQuery(MultiValueMap)}.
@@ -318,7 +322,6 @@ public class IoParameters {
 
     private Map<String, JsonNode> readDefaultConfig() {
         try (InputStream taskConfig = getClass().getResourceAsStream(DEFAULT_CONFIG_FILE)) {
-            ObjectMapper om = new ObjectMapper();
             return om.readValue(taskConfig, TypeFactory
                     .defaultInstance()
                     .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
@@ -571,9 +574,21 @@ public class IoParameters {
         return getAsString(STATION);
     }
     
+    public Set<String> getPlatforms() {
+        return query.containsKey(PLATFORMS)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(PLATFORMS)))
+                : null;
+    }
+    
     public Set<String> getFields() {
         return query.containsKey(FIELDS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(FIELDS)))
+                : null;
+    }
+    
+    public String getType() {
+        return query.containsKey(TYPE)
+                ? getAsString(TYPE)
                 : null;
     }
     

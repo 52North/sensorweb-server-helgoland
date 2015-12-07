@@ -46,11 +46,9 @@ import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v2.SeriesValue;
 import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
-import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -66,11 +64,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
-import org.n52.io.response.v2.FeatureOutput;
 import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
+import org.n52.sensorweb.spi.search.v2.SeriesSearchResult;
 
-public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
+public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataV2Output> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesRepository.class);
     
@@ -102,29 +100,29 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
                                                         String locale) {
         // not needed, use #convertToResults() instead
-        return new ArrayList<SearchResult>();
+        return new ArrayList<>();
     }
 
     private List<SearchResult> convertToResults(List<SeriesEntityV2> found, String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
+        List<SearchResult> results = new ArrayList<>();
         for (SeriesEntityV2 searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
             String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
             String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
             String label = createSeriesLabel(phenomenonLabel, procedureLabel, stationLabel);
-            results.add(new TimeseriesSearchResult(pkid, label));
+            results.add(new SeriesSearchResult(pkid, label));
         }
         return results;
     }
 
 
     @Override
-    public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
+    public List<SeriesMetadataV2Output> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+            List<SeriesMetadataV2Output> results = new ArrayList<>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
             	/*
             	 *  ATM, the SWC REST API only supports numeric types
@@ -143,11 +141,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
+    public List<SeriesMetadataV2Output> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+            List<SeriesMetadataV2Output> results = new ArrayList<>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
             	/*
             	 *  ATM, the SWC REST API only supports numeric types
@@ -167,7 +165,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    public TimeseriesMetadataOutput getInstance(String seriesId, DbQuery dbQuery) throws DataAccessException {
+    public SeriesMetadataV2Output getInstance(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
@@ -241,8 +239,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
-    	TimeseriesMetadataOutput output = createCondensed(series, query);
+    private SeriesMetadataV2Output createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
+    	SeriesMetadataV2Output output = createCondensed(series, query);
         output.setParameters(createSeriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
