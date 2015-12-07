@@ -71,7 +71,7 @@ public final class QueryParameters extends IoParameters {
     }
 
     private QueryParameters(Map<String, String> query) {
-        super(query);
+        super(convertValuesToJsonNodes(query));
     }
 
     @Override

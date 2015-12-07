@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Map;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 
 public abstract class MetadataExtension<T extends ParameterOutput> {

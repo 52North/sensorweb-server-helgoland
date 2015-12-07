@@ -89,7 +89,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     public static RequestSimpleParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
-        RequestSimpleParameterSet parameterSet = parameters.toUndesignedParameterSet();
+        RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
         parameterSet.setTimeseries(new String[] { timeseriesId });
         IntervalWithTimeZone timespan = parameters.getTimespan();
         parameterSet.setTimespan(timespan.toString());

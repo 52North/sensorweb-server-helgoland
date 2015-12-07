@@ -28,16 +28,23 @@
 package org.n52.io.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class RequestParameterSet {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
 
-    private Map<String, Object> parameters = new HashMap<String, Object>();
+    private final Map<String, JsonNode> parameters;
 
     private boolean generalize; // TODO add generelaize algorithm + extra parameters ??
 
@@ -50,8 +57,8 @@ public abstract class RequestParameterSet {
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     protected RequestParameterSet() {
-        parameters = new HashMap<String, Object>();
-        parameters.put("timespan", createDefaultTimespan());
+        parameters = new HashMap<>();
+        parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
     }
 
     private String createDefaultTimespan() {
@@ -93,9 +100,10 @@ public abstract class RequestParameterSet {
      * @param timespan the timespan to set.
      */
     public void setTimespan(String timespan) {
-        parameters.put("timespan", timespan != null
+        timespan = timespan != null
                 ? validateTimespan(timespan)
-                : createDefaultTimespan());
+                : createDefaultTimespan();
+        parameters.put("timespan", IoParameters.getJsonNodeFrom(timespan));
     }
 
     /**
@@ -160,9 +168,10 @@ public abstract class RequestParameterSet {
         return parameters.get(parameter);
     }
 
-    public final void setParameters(Map<String, Object> parameters) {
+    public final void setParameters(Map<String, JsonNode> parameters) {
         if (parameters != null) {
-            this.parameters = parameters;
+            this.parameters.clear();
+            this.parameters.putAll(parameters);
         }
     }
 
@@ -172,28 +181,42 @@ public abstract class RequestParameterSet {
      * @param parameter parameter name.
      * @param value the parameter's value.
      */
-    public final void addParameter(String parameter, Object value) {
+    public final void addParameter(String parameter, JsonNode value) {
         this.parameters.put(parameter.toLowerCase(), value);
+    }
+    
+    public final <T> T getAs(Class<T> clazz, String parameter) {
+        try {
+            if ( !parameters.containsKey(parameter.toLowerCase())) {
+                LOGGER.debug("parameter '{}' is not available.", parameter);
+                return null;
+            }
+            ObjectMapper om = new ObjectMapper();
+            return om.treeToValue(getAsJsonNode(parameter), clazz);
+        } catch (IOException e) {
+            LOGGER.error("No appropriate config for parameter '{}'.", parameter, e);
+            return null;
+        }
     }
 
     public final Object getAsObject(String parameter) {
         return this.parameters.get(parameter.toLowerCase());
     }
+    
+    public final JsonNode getAsJsonNode(String parameter) {
+        return (JsonNode) this.parameters.get(parameter.toLowerCase());
+    }
 
     public final String getAsString(String parameter) {
-        return (String) this.parameters.get(parameter.toLowerCase());
+        return this.parameters.get(parameter.toLowerCase()).asText();
     }
 
     public final int getAsInt(String parameter) {
-        return (Integer) this.parameters.get(parameter.toLowerCase());
+        return this.parameters.get(parameter.toLowerCase()).asInt();
     }
 
     public final boolean getAsBoolean(String parameter) {
-        return (Boolean) this.parameters.get(parameter.toLowerCase());
-    }
-
-    public final String[] getAsStrings(String parameter) {
-        return (String[]) this.parameters.get(parameter.toLowerCase());
+        return this.parameters.get(parameter.toLowerCase()).asBoolean();
     }
 
     public abstract String[] getTimeseries();

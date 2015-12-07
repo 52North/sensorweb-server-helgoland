@@ -27,13 +27,33 @@
  */
 package org.n52.series.db.da.beans;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import org.n52.series.api.v1.db.da.beans.ObservationEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ServiceInfo {
-    
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInfo.class);
+
+    private static final Double DOUBLE_THRESHOLD = 0.01;
+
     private String serviceId;
-    
+
     private String serviceDescription;
     
     private String type = "Thin DB access layer service.";
+
+    private List<Double> noDataValues;
+    
+    public ServiceInfo() {
+        noDataValues = Collections.emptyList();
+    }
 
     public String getServiceId() {
         return serviceId;
@@ -50,7 +70,6 @@ public class ServiceInfo {
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
     }
-
 	public String getType() {
 		return type;
 	}
@@ -58,5 +77,48 @@ public class ServiceInfo {
 	public void setType(String type) {
 		this.type = type;
 	}
-    
+
+    @JsonIgnore
+    public boolean hasNoDataValue(ObservationEntity observation) {
+        Double value = observation.getValue();
+        return value == null
+                || Double.isNaN(value)
+                || containsValue(noDataValues, value);
+    }
+
+    private boolean containsValue(Collection<Double> collection, double key) {
+        if (collection == null) {
+            return false;
+        }
+        for (double d : collection) {
+            if (Math.abs(d / key - 1) < DOUBLE_THRESHOLD) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getNoDataValues() {
+        final String csv = Arrays.toString(noDataValues.toArray(new Double[0]));
+        return csv.substring(1).substring(0, csv.length() - 2);
+    }
+
+    public void setNoDataValues(String noDataValues) {
+        LOGGER.debug("Set noData values: {}", noDataValues);
+        if (noDataValues == null || noDataValues.isEmpty()) {
+            this.noDataValues = Collections.emptyList();
+        } else {
+            List<Double> validatedValues = new ArrayList<>();
+            String[] values = noDataValues.split(",");
+            for (String value : values) {
+                String trimmed = value.trim();
+                try {
+                    validatedValues.add(Double.parseDouble(trimmed));
+                } catch (NumberFormatException e) {
+                    LOGGER.warn("Ignoring configured NO_DATA value {} (not a double).", trimmed);
+                }
+            }
+            this.noDataValues = validatedValues;
+        }
+    }
 }

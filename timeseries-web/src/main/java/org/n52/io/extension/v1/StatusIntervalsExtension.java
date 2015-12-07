@@ -37,8 +37,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
-import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 
@@ -84,7 +84,7 @@ public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataV1
     }
 	
     private boolean hasPhenomenonConfiguration(SeriesMetadataV1Output output) {
-        String id = output.getParameters().getPhenomenon().getId();
+        String id = output.getId();
         return intervalConfig.getPhenomenonIntervals().containsKey(id);
     }
 

@@ -9,8 +9,6 @@
 
     <mvc:annotation-driven />
 
-	<!-- inject implementation of the Timeseries API's SPI version 1 -->
-
     <bean id="searchService" class="org.n52.series.api.v1.db.srv.Search" parent="serviceInfoAccess" destroy-method="shutdown" />
     <bean id="serviceParameterService" class="org.n52.series.api.v1.db.srv.ServiceAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />
     <bean id="offeringParameterService" class="org.n52.series.api.v1.db.srv.OfferingsAccessService" parent="serviceInfoAccess" destroy-method="shutdown" />

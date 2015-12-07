@@ -25,34 +25,33 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.v1.data;
 
-import java.lang.reflect.Array;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Test;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
 
-public final class Utils {
-
-    private Utils() {
-        // hide construction
+public class IOParametersTest {
+    
+    @Test
+    public void testJsonOverriddenWidthConfigParameter() {
+        IoParameters parameters = IoParameters.createDefaults();
+        Assert.assertThat(parameters.getChartDimension().getWidth(), Matchers.is(2000));
     }
-
-    /**
-     * Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
-     * encapsulating arrays from being externally modified.<br/>
-     * <br/>
-     * <b>Note:</b> No deep copy is made.
-     * 
-     * @param source the array to copy.
-     * @return a copied instance of the array.
-     */
-    @SuppressWarnings("unchecked")
-    public static final <T> T[] copy(T[] source) {
-    	if(source != null) {
-            Class< ? > type = source.getClass().getComponentType();
-            T[] target = (T[]) Array.newInstance(type, source.length);
-            System.arraycopy(source, 0, target, 0, source.length);
-            return target;
-    	} else {
-            return null;
-    	}
+    
+    @Test
+    public void testBooleanValue() {
+        IoParameters parameters = IoParameters.createDefaults();
+        Assert.assertTrue(parameters.isGeneralize());
     }
+    
+    @Test
+    public void testAfterConvertedFromParameterSet() {
+        RequestSimpleParameterSet set = RequestSimpleParameterSet.createForSingleTimeseries("1", IoParameters.createDefaults());
+        IoParameters parameters = IoParameters.createFromQuery(set);
+        Assert.assertTrue(parameters.isGeneralize());
+    }
+    
 }

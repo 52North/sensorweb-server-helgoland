@@ -335,10 +335,13 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         }
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(formatDecimal(observation.getValue(), series));
+        Double observationValue = !getServiceInfo().hasNoDataValue(observation)
+                ? formatDecimal(observation.getValue(), series)
+                : Double.NaN;
+        value.setValue(observationValue);
         return value;
     }
-
+    
     private Double formatDecimal(Double value, SeriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)

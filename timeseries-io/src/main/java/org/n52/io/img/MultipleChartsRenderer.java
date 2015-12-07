@@ -213,7 +213,11 @@ public class MultipleChartsRenderer extends ChartRenderer {
                 else if (isLineStyle(style)) {
                     for (TimeseriesValue value : timeseriesData.getValues()) {
                         Second second = new Second(new Date(value.getTimestamp()));
-                        timeseries.add(second, value.getValue());
+                        if ( !value.getValue().isNaN()) {
+                            timeseries.addOrUpdate(second, value.getValue());
+                        } else {
+                            timeseries.addOrUpdate(second, null);
+                        }
                     }
                 }
             }
