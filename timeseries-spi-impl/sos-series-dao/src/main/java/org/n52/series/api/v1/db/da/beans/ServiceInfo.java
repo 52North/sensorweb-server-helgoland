@@ -94,6 +94,7 @@ public class ServiceInfo {
     }
 
     public void setNoDataValues(String noDataValues) {
+        LOGGER.debug("Set noData values: {}", noDataValues);
         if (noDataValues == null || noDataValues.isEmpty()) {
             this.noDataValues = Collections.emptyList();
         } else {
