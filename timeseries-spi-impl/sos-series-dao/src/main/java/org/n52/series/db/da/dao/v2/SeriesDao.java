@@ -40,16 +40,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
-import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
-import org.n52.series.db.da.beans.v2.SiteEntity;
-import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.v2.DbQuery;
-import org.n52.series.db.da.v2.FeatureRepository;
-import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class SeriesDao extends AbstractDao<SeriesEntityV2> {
 

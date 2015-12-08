@@ -45,6 +45,7 @@ public class DbQuery extends AbstractDbQuery {
 		super(parameters);
 	}
 
+    @Override
 	public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
 		DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
 
