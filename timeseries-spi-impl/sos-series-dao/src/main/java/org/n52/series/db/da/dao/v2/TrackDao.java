@@ -44,8 +44,7 @@ import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.v2.DbQuery;
 
 import com.google.common.base.Strings;
-import org.n52.io.request.IoParameters;
-import org.n52.series.db.da.beans.v2.SiteEntity;
+import org.hibernate.HibernateException;
 
 public class TrackDao extends AbstractDao<TrackEntity> {
 
@@ -57,6 +56,8 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 	@SuppressWarnings("unchecked")
 	public List<TrackEntity> find(String search, DbQuery query) {
 		Criteria criteria = getDefaultCriteria();
+        addIgnoreEmptyTrackGeomsCriteria(criteria);
+        
 		if (hasTranslation(query, I18nTrackEntity.class)) {
 			criteria = query.addLocaleTo(criteria, I18nTrackEntity.class);
 		}
@@ -66,16 +67,17 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 
 	@Override
 	public TrackEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-		 return (TrackEntity) session.get(TrackEntity.class, key);
+        Criteria criteria = getDefaultCriteria()
+                .add(Restrictions.eq("pkid", key));
+        addIgnoreEmptyTrackGeomsCriteria(criteria);
+        return (TrackEntity) criteria.uniqueResult();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<TrackEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
 		Criteria criteria = getDefaultCriteria("t");
-		// TODO does this really work???
-		Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
-		trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
+		Criteria trackLocationsCriteria = addIgnoreEmptyTrackGeomsCriteria(criteria);
 		criteria.add(Restrictions.isNotEmpty("trackLocations"));
         if (hasTranslation(parameters, I18nSiteEntity.class)) {
             parameters.addLocaleTo(criteria, I18nSiteEntity.class);
@@ -89,6 +91,12 @@ public class TrackDao extends AbstractDao<TrackEntity> {
         parameters.addPagingTo(criteria);
         return (List<TrackEntity>) criteria.list();
 	}
+
+    private Criteria addIgnoreEmptyTrackGeomsCriteria(Criteria criteria) throws HibernateException {
+        Criteria trackLocationsCriteria = criteria.createCriteria("trackLocations");
+        trackLocationsCriteria.add(Restrictions.isNotNull("geom"));
+        return trackLocationsCriteria;
+    }
 	
 	@Override
 	protected Criteria getDefaultCriteria() {
@@ -96,12 +104,15 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 	}
 
 	private Criteria getDefaultCriteria(String alias) {
-		Criteria criteria;
-		if (Strings.isNullOrEmpty(alias)) {
-			criteria = session.createCriteria(TrackEntity.class);
-		} else {
-			criteria = session.createCriteria(TrackEntity.class, alias);
-		}
+        
+		Criteria criteria = Strings.isNullOrEmpty(alias) 
+            ? session.createCriteria(TrackEntity.class)
+            : session.createCriteria(TrackEntity.class, alias);
+        criteria.add(Restrictions.and(
+                Restrictions.isNotNull("trackLocations"),
+                Restrictions.isNotEmpty("trackLocations")
+        ));
+        
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria;
 	}
