@@ -69,13 +69,10 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	
 	private static final String TRACK_PREFIX = "track_";
 	
-	private static final String TRACK_FEATURE_PREFIX = "trackFeature_";
-	
 	private String dbSrid = "EPSG:4326";
 	
 	public enum FeatureType {
 		SITE,
-		TRACK_FROM_FEATURE,
 		TRACK_FROM_OFFERING,
 		NON;
 	}
@@ -88,17 +85,17 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	public Collection<SearchResult> searchFor(String queryString, String locale) {
 		Session session = getSession();
 		try {
-			List<DescribableEntity<?>> results = new ArrayList<>();
+			List<SearchResult> results = new ArrayList<>();
 			DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
 			Collection<SiteEntity> sites = new SiteDao(session).find(queryString, parameters);
 			if (sites != null) {
-				results.addAll(sites);
+				results.addAll(convertToResults(sites, locale, FeatureType.SITE));
 			}
 			Collection<TrackEntity> tracks =  new TrackDao(session).find(queryString, parameters);
 			if (tracks != null) {
-				results.addAll(tracks);
+				results.addAll(convertToResults(tracks, locale, FeatureType.TRACK_FROM_OFFERING));
 			}
-			return convertToSearchResults(results, locale);
+			return results;
 		} finally {
 			returnSession(session);
 		}
@@ -107,14 +104,21 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 	@Override
 	protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
 			String locale) {
+        // not needed, use #convertToResults() instead
+        return new ArrayList<SearchResult>();
+    }
+    
+    private List<SearchResult> convertToResults(Collection<? extends DescribableEntity<? extends I18nEntity>> found,
+			String locale, FeatureType type) {
 		List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
-            String pkid = searchResult.getPkid().toString();
+            String pkid = createUniqueId(searchResult.getPkid(), type);
             String label = getLabelFrom(searchResult, locale);
             results.add(new FeatureSearchResult(pkid, label));
         }
         return results;
 	}
+    
 
 	@Override
 	public List<FeatureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
@@ -217,7 +221,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 
 	private FeatureOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
 		FeatureType type = getTypeFor(id);
-		if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FROM_FEATURE.equals(type)) {
+		if (FeatureType.SITE.equals(type)) {
 			SiteEntity siteEntity = new SiteDao(session).getInstance(parseFeatureId(id, type), parameters);
 			if (siteEntity == null) {
 			    throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
@@ -238,8 +242,6 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			return FeatureType.SITE;
 		} else if (featureId.startsWith(TRACK_PREFIX)) {
 			return FeatureType.TRACK_FROM_OFFERING;
-		} else if (featureId.startsWith(TRACK_FEATURE_PREFIX)) {
-			return FeatureType.TRACK_FROM_FEATURE;
 		} 
 		return FeatureType.NON;
 	}
@@ -254,8 +256,6 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			return super.parseId(id.replace(SITE_PREFIX, ""));
 		case TRACK_FROM_OFFERING:
 			return super.parseId(id.replace(TRACK_PREFIX, ""));
-		case TRACK_FROM_FEATURE:
-			return super.parseId(id.replace(TRACK_FEATURE_PREFIX, ""));
 		default:
 			return super.parseId(id);
 		}
@@ -268,8 +268,6 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 			return SITE_PREFIX + stringId;
 		case TRACK_FROM_OFFERING:
 			return TRACK_PREFIX + stringId;
-		case TRACK_FROM_FEATURE:
-			return TRACK_FEATURE_PREFIX + stringId;
 		default:
 			return stringId;
 		}
