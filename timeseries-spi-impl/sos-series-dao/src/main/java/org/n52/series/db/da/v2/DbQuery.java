@@ -27,12 +27,9 @@
  */
 package org.n52.series.db.da.v2;
 
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.hibernate.Criteria;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -43,7 +40,6 @@ import org.n52.io.response.v2.PlatformOutput;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
-import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.v2.FeatureRepository.FeatureType;
 
 public class DbQuery extends AbstractDbQuery {
@@ -69,7 +65,7 @@ public class DbQuery extends AbstractDbQuery {
 		    
 			FeatureType type = FeatureRepository.getTypeFor(getParameters().getFeature());
 			Long id = preParse(getParameters().getFeature());
-			if (FeatureType.SITE.equals(type) || FeatureType.TRACK_FROM_FEATURE.equals(type)) {
+			if (FeatureType.SITE.equals(type)) {
 				filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, id));
 			} else if (FeatureType.TRACK_FROM_OFFERING.equals(type)) {
 			    DetachedCriteria trackFilter = DetachedCriteria.forClass(ObservationEntityV2.class, "o");
