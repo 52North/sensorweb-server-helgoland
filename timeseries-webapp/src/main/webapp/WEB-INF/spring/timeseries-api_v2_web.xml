@@ -90,7 +90,7 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v2.SearchController">
-        <property name="searchService" ref="searchService"/>
+        <property name="searchService" ref="searchServiceV2"/>
     </bean>
 
 

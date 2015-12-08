@@ -38,6 +38,7 @@ import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.da.v2.PhenomenonRepository;
 import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.da.v2.ProcedureRepository;
+import org.n52.series.db.da.v2.SeriesRepository;
 import org.n52.series.db.srv.ServiceInfoAccess;
 
 public class Search extends ServiceInfoAccess implements SearchService {
@@ -51,6 +52,8 @@ public class Search extends ServiceInfoAccess implements SearchService {
     private FeatureRepository featureRepository;
     
     private CategoryRepository categoryRepository;
+    
+    private SeriesRepository seriesRepository;
 
     @Override
     public void init() {
@@ -59,12 +62,13 @@ public class Search extends ServiceInfoAccess implements SearchService {
         platformRepository = new PlatformRepository(getServiceInfo());
         featureRepository = new FeatureRepository(getServiceInfo());
         categoryRepository = new CategoryRepository(getServiceInfo());
+        seriesRepository = new SeriesRepository(getServiceInfo());
     }
     
     @Override
     public Collection<SearchResult> searchResources(String search, String locale) {
         List<SearchResult> results = new ArrayList<>();
-//        results.addAll(getTimeseriesRepository().searchFor(search, locale));
+        results.addAll(seriesRepository.searchFor(search, locale));
         results.addAll(phenomenonRepository.searchFor(search, locale));
         results.addAll(procedureRepository.searchFor(search, locale));
         results.addAll(platformRepository.searchFor(search, locale));
@@ -80,6 +84,7 @@ public class Search extends ServiceInfoAccess implements SearchService {
         platformRepository.cleanup();
         featureRepository.cleanup();
         categoryRepository.cleanup();
+        seriesRepository.cleanup();
     }
 
 }
