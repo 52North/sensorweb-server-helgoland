@@ -27,7 +27,6 @@
  */
 package org.n52.io.response.v2;
 
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Comparator;
@@ -41,10 +40,6 @@ public class SeriesOutputCollection extends OutputCollection<SeriesMetadataV2Out
         // empty collection
     }
     
-	public SeriesOutputCollection(SeriesMetadataV2Output item) {
-		super(item);
-	}
-	
 	public SeriesOutputCollection(List<SeriesMetadataV2Output> items) {
 		super(items);
 	}

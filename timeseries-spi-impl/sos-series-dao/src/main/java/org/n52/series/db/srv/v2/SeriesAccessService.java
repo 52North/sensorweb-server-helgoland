@@ -38,6 +38,7 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
+import org.n52.io.response.v2.SeriesOutputCollection;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.ShutdownParameterService;
@@ -57,7 +58,7 @@ public class SeriesAccessService extends ServiceInfoAccess
     }
     
 	private OutputCollection<SeriesMetadataV2Output> createOutputCollection(List<SeriesMetadataV2Output> results) {
-		return new OutputCollection<SeriesMetadataV2Output>(results) {
+		return new SeriesOutputCollection(results) {
 			@Override
 			protected Comparator<SeriesMetadataV2Output> getComparator() {
 				return ParameterOutput.defaultComparator();
