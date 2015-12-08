@@ -39,8 +39,6 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
@@ -65,29 +63,33 @@ import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.task.ScheduledJob;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.TimeseriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.common.Stopwatch;
 import static org.n52.web.common.Stopwatch.startStopwatch;
+import org.quartz.InterruptableJob;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletConfigAware;
 
-public class PreRenderingTask implements ServletConfigAware {
+public class PreRenderingTask extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingTask.class);
 
     private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
 
-    private ParameterService<SeriesMetadataV1Output> timeseriesMetadataService;
+    private final ConfigTaskPrerendering taskConfigPrerendering = readTaskConfig();
+
+    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
     private TimeseriesDataService timeseriesDataService;
-
-    private final ConfigTaskPrerendering taskConfigPrerendering;
-
-    private final RenderTask taskToRun;
 
     private String webappFolder;
 
@@ -101,23 +103,6 @@ public class PreRenderingTask implements ServletConfigAware {
     private int height = 500;
     private String language = "en";
     private boolean showGrid = true;
-
-    // factory method
-    public static PreRenderingTask createTask() {
-        return new PreRenderingTask();
-    }
-
-    // destroy method
-    public void shutdownTask() {
-        this.enabled = false;
-        this.taskToRun.cancel();
-        LOGGER.info("Render task successfully shutted down.");
-    }
-
-    PreRenderingTask() {
-        this.taskToRun = new RenderTask();
-        this.taskConfigPrerendering = readTaskConfig();
-    }
 
     private ConfigTaskPrerendering readTaskConfig() {
         InputStream taskConfig = getClass().getResourceAsStream(TASK_CONFIG_FILE);
@@ -140,17 +125,99 @@ public class PreRenderingTask implements ServletConfigAware {
             }
         }
     }
+    
+    @Override
+    public JobDetail createJobDetails() {
+        return JobBuilder.newJob(PreRenderingTask.class)
+                .withIdentity(getJobName())
+                .withDescription(getJobDescription())
+//                .usingJobData(REWRITE_AT_STARTUP, rewriteAtStartup)
+                .build();
+    }
+    
+    
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        if ( !enabled) {
+            return;
+        }
+        
+        LOGGER.info("Start prerendering task");
+        Map<String, ConfiguredStyle> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
+        Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
+        for (String phenomenonId : phenomenonStyles.keySet()) {
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put(PHENOMENON, phenomenonId);
+            IoParameters query = IoParameters.createFromQuery(parameters);
+            OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
+            for (TimeseriesMetadataOutput metadata : metadatas) {
+                String timeseriesId = metadata.getId();
+                ConfiguredStyle style = timeseriesStyles.containsKey(timeseriesId)
+                    ? timeseriesStyles.get(timeseriesId)
+                    : phenomenonStyles.get(phenomenonId);
+                renderConfiguredIntervals(timeseriesId, style);
 
-    public void startTask() {
-        if (taskToRun != null) {
-            this.enabled = true;
-            Timer timer = new Timer("Prerender charts timer task");
-            timer.schedule(taskToRun, 10000, getPeriodInMilliseconds());
+                if ( !enabled) {
+                    return;
+                }
+            }
+        }
+
+        for (String timeseriesId : timeseriesStyles.keySet()) {
+            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
+            PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
+            if (!phenomenonStyles.containsKey(phenomenon.getId())) {
+                // overridden phenomena styles have been rendered already
+                ConfiguredStyle style = timeseriesStyles.get(timeseriesId);
+                renderConfiguredIntervals(timeseriesId, style);
+
+                if ( !enabled) {
+                    return;
+                }
+            }
         }
     }
 
-    private int getPeriodInMilliseconds() {
-        return 1000 * 60 * periodInMinutes;
+    private void renderConfiguredIntervals(String timeseriesId, ConfiguredStyle style) {
+        try{
+            for (String interval : style.getInterval()) {
+                renderWithStyle(timeseriesId, style.getStyle(), interval);
+            }
+        }
+        catch (IOException e) {
+            LOGGER.error("Error while reading prerendering configuration file!", e);
+        }
+    }
+
+    private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
+        IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
+        IoParameters config = createConfig(timespan.toString(), style);
+
+        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
+        RenderingContext context = createContextForSingleTimeseries(metadata, config);
+        context.setDimensions(new ChartDimension(width, height));
+        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
+        IoHandler renderer = IoFactory
+                .createWith(config)
+                .createIOHandler(context);
+        FileOutputStream fos = createFile(timeseriesId, interval);
+        renderChartFile(renderer, parameters, fos);
+    }
+
+    private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
+        try(FileOutputStream out = fos;) {
+            renderer.generateOutput(getTimeseriesData(parameters));
+            renderer.encodeAndWriteTo(out);
+        }
+        catch (IoParseException | IOException e) {
+            LOGGER.error("Image creation occures error.", e);
+        }
+    }
+
+    @Override
+    public void interrupt() throws UnableToInterruptJobException {
+        this.enabled = false;
+        LOGGER.info("Render task successfully shutted down.");
     }
 
     @Override
@@ -228,9 +295,6 @@ public class PreRenderingTask implements ServletConfigAware {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-        if (enabled) {
-            startTask();
-        }
     }
 
     public boolean hasPrerenderedImage(String timeseriesId, String interval) {
@@ -305,7 +369,7 @@ public class PreRenderingTask implements ServletConfigAware {
     }
 
     private IoParameters createConfig(String interval, StyleProperties style) {
-        Map<String, String> configuration = new HashMap<String, String>();
+        Map<String, String> configuration = new HashMap<>();
 
         // for backward compatibility (from xml config)
         configuration.put(WIDTH, Integer.toString(width));
