@@ -14,18 +14,18 @@
         <property name="numberOfDecimals" formula="3" type="int" />
         <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
 
-        <component name="firstValue" class="org.n52.series.db.da.beans.v2.ObservationEntityV2">
+        <component name="firstValue" class="ObservationEntityV2">
             <property name="timestamp" column="firsttimestamp" type="timestamp" />
             <property name="value" column="firstnumericvalue" type="double" />
         </component>
-        <component name="lastValue" class="org.n52.series.db.da.beans.v2.ObservationEntityV2">
+        <component name="lastValue" class="ObservationEntityV2">
             <property name="timestamp" column="lasttimestamp" type="timestamp" />
             <property name="value" column="lastnumericvalue" type="double" />
         </component>
         <list name="observations" table="observation" fetch="select" inverse="true">
             <key column="observationid" />
             <index column="seriesid" />
-            <one-to-many class="org.n52.series.db.da.beans.v2.ObservationEntityV2" />
+            <one-to-many class="ObservationEntityV2" />
         </list>
     </class>
 </hibernate-mapping>
