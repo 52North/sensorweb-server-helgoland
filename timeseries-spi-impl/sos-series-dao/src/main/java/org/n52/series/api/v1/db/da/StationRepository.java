@@ -184,7 +184,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         try {
         	if (featureEntity.isSetGeom()) {
 	            Geometry geometry = featureEntity.getGeom();
-	            String fromCrs = "EPSG:" +geometry.getSRID();
+	            String fromCrs = "EPSG:" + geometry.getSRID();
 	            Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
 	            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
         	}

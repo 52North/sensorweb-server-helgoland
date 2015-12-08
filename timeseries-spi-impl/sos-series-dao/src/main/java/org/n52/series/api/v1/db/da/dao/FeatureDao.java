@@ -101,6 +101,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     	} else {
     		criteria = session.createCriteria(FeatureEntity.class, alias);
     	}
+        criteria.add(Restrictions.isNotNull("geom"));
     	return criteria;
     }
 
