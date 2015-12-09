@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>timeseries-io</artifactId>
 	<packaging>jar</packaging>
-	<name>Sensor Web Timeseries API - IO</name>
+	<name>RESTful Sensor Web API - IO</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<dependency>

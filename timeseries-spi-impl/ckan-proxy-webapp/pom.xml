@@ -6,10 +6,10 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>timeseries-webapp</artifactId>
+    <artifactId>ckan-proxy-webapp</artifactId>
     <packaging>war</packaging>
-    <name>Sensor Web Timeseries API - Webapp</name>
-    <description>RESTful Sensor Web Client API as template Web application.</description>
+    <name>RESTful Sensor Web API - CKAN Proxy Webapp</name>
+    <description>RESTful access to CKAN data.</description>
 
     <properties>
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
@@ -39,7 +39,7 @@
 
         <dependency>
             <groupId>org.n52.sensorweb</groupId>
-            <artifactId>timeseries-series-dao</artifactId>
+            <artifactId>ckan-proxy</artifactId>
             <version>${project.version}</version>
         </dependency>
 
