@@ -44,7 +44,7 @@ import org.n52.io.IoParseException;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.request.PreRenderingTask;
+import org.n52.io.PreRenderingJob;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
@@ -67,7 +67,7 @@ import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_SERIES;
 import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,9 +91,9 @@ public class SeriesDataController extends BaseController {
 
     private ParameterService<TimeseriesMetadataOutput> seriesMetadataService;
 
-    private TimeseriesDataService seriesDataService;
+    private SeriesDataService seriesDataService;
 
-    private PreRenderingTask preRenderingTask;
+    private PreRenderingJob preRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -328,8 +328,8 @@ public class SeriesDataController extends BaseController {
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-            ? composeDataService(seriesDataService).getTimeseriesData(parameters)
-            : seriesDataService.getTimeseriesData(parameters);
+            ? composeDataService(seriesDataService).getSeriesData(parameters)
+            : seriesDataService.getSeriesData(parameters);
         return timeseriesData;
     }
 
@@ -349,19 +349,19 @@ public class SeriesDataController extends BaseController {
         this.seriesMetadataService = new WebExceptionAdapter<>(seriesMetadataService);
     }
 
-    public TimeseriesDataService getSeriesDataService() {
+    public SeriesDataService getSeriesDataService() {
         return seriesDataService;
     }
 
-    public void setSeriesDataService(TimeseriesDataService timeseriesDataService) {
+    public void setSeriesDataService(SeriesDataService timeseriesDataService) {
         this.seriesDataService = timeseriesDataService;
     }
 
-    public PreRenderingTask getPreRenderingTask() {
+    public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
     }
 
-    public void setPreRenderingTask(PreRenderingTask prerenderingTask) {
+    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
         this.preRenderingTask = prerenderingTask;
     }
 

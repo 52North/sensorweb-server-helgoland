@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.request;
+package org.n52.io;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,32 +43,22 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.io.ConfigTaskPrerendering;
-import org.n52.io.ConfigTaskPrerendering.ConfiguredStyle;
-import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
-import org.n52.io.IoHandler;
-import org.n52.io.IoParseException;
-import static org.n52.io.request.IoParameters.GRID;
-import static org.n52.io.request.IoParameters.HEIGHT;
-import static org.n52.io.request.IoParameters.LOCALE;
-import static org.n52.io.request.IoParameters.PHENOMENON;
-import static org.n52.io.request.IoParameters.TIMESPAN;
-import static org.n52.io.request.IoParameters.WIDTH;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
+import org.n52.io.request.IoParameters;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.PrerenderingJobConfig.ConfiguredStyle;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.StyleProperties;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.task.ScheduledJob;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
-import org.n52.web.common.Stopwatch;
-import static org.n52.web.common.Stopwatch.startStopwatch;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -79,23 +69,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletConfigAware;
 
-public class PreRenderingTask extends ScheduledJob implements InterruptableJob, ServletConfigAware {
+public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingTask.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
 
-    private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
-
-    private final ConfigTaskPrerendering taskConfigPrerendering = readTaskConfig();
+    private final PrerenderingJobConfig taskConfigPrerendering;
 
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
-    private TimeseriesDataService timeseriesDataService;
+    private SeriesDataService timeseriesDataService;
 
     private String webappFolder;
 
     private String outputPath;
-
-    private int periodInMinutes;
 
     private boolean enabled;
 
@@ -104,31 +90,25 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
     private String language = "en";
     private boolean showGrid = true;
 
-    private ConfigTaskPrerendering readTaskConfig() {
-        InputStream taskConfig = getClass().getResourceAsStream(TASK_CONFIG_FILE);
-        try {
+    public PreRenderingJob(String configFile) {
+        taskConfigPrerendering = readJobConfig(configFile);
+    }
+
+    private PrerenderingJobConfig readJobConfig(String configFile) {
+        
+        try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
             ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, ConfigTaskPrerendering.class);
+            return om.readValue(taskConfig, PrerenderingJobConfig.class);
         }
         catch (IOException e) {
-            LOGGER.error("Could not load {}. Using empty config.", TASK_CONFIG_FILE, e);
-            return new ConfigTaskPrerendering();
-        }
-        finally {
-            if (taskConfig != null) {
-                try {
-                    taskConfig.close();
-                }
-                catch (IOException e) {
-                    LOGGER.debug("Stream already closed.");
-                }
-            }
+            LOGGER.error("Could not load {}. Using empty config.", configFile, e);
+            return new PrerenderingJobConfig();
         }
     }
     
     @Override
     public JobDetail createJobDetails() {
-        return JobBuilder.newJob(PreRenderingTask.class)
+        return JobBuilder.newJob(PreRenderingJob.class)
                 .withIdentity(getJobName())
                 .withDescription(getJobDescription())
 //                .usingJobData(REWRITE_AT_STARTUP, rewriteAtStartup)
@@ -147,7 +127,7 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
         Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
         for (String phenomenonId : phenomenonStyles.keySet()) {
             Map<String, String> parameters = new HashMap<>();
-            parameters.put(PHENOMENON, phenomenonId);
+            parameters.put("phenomenon", phenomenonId);
             IoParameters query = IoParameters.createFromQuery(parameters);
             OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
@@ -165,7 +145,7 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
 
         for (String timeseriesId : timeseriesStyles.keySet()) {
             TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId);
-            PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
+            ParameterOutput phenomenon = metadata.getParameters().getPhenomenon();
             if (!phenomenonStyles.containsKey(phenomenon.getId())) {
                 // overridden phenomena styles have been rendered already
                 ConfiguredStyle style = timeseriesStyles.get(timeseriesId);
@@ -233,19 +213,19 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
         this.outputPath = outputPath;
     }
 
-    public ParameterService<SeriesMetadataV1Output> getTimeseriesMetadataService() {
+    public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(ParameterService<SeriesMetadataV1Output> timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public TimeseriesDataService getTimeseriesDataService() {
+    public SeriesDataService getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(TimeseriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
@@ -279,14 +259,6 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
 
     public void setShowGrid(boolean showGrid) {
         this.showGrid = showGrid;
-    }
-
-    public int getPeriodInMinutes() {
-        return periodInMinutes;
-    }
-
-    public void setPeriodInMinutes(int period) {
-        this.periodInMinutes = period;
     }
 
     public boolean isEnabled() {
@@ -372,22 +344,22 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
         Map<String, String> configuration = new HashMap<>();
 
         // for backward compatibility (from xml config)
-        configuration.put(WIDTH, Integer.toString(width));
-        configuration.put(HEIGHT, Integer.toString(height));
-        configuration.put(GRID, Boolean.toString(showGrid));
-        configuration.put(TIMESPAN, interval);
-        configuration.put(LOCALE, language);
+        configuration.put("width", Integer.toString(width));
+        configuration.put("height", Integer.toString(height));
+        configuration.put("grid", Boolean.toString(showGrid));
+        configuration.put("timespan", interval);
+        configuration.put("locale", language);
 
         // overrides the above parameters (from json config)
         configuration.putAll(taskConfigPrerendering.getGeneralConfig());
-        this.width = Integer.parseInt(configuration.get(WIDTH));
-        this.height = Integer.parseInt(configuration.get(HEIGHT));
-        this.showGrid = Boolean.parseBoolean(configuration.get(GRID));
-        this.language = configuration.get(LOCALE);
+        this.width = Integer.parseInt(configuration.get("width"));
+        this.height = Integer.parseInt(configuration.get("height"));
+        this.showGrid = Boolean.parseBoolean(configuration.get("grid"));
+        this.language = configuration.get("locale");
 
         try {
             ObjectMapper om = new ObjectMapper();
-            configuration.put(IoParameters.STYLE, om.writeValueAsString(style));
+            configuration.put("style", om.writeValueAsString(style));
         } catch (JsonProcessingException e) {
             LOGGER.warn("Invalid rendering style.", e);
         }
@@ -396,88 +368,85 @@ public class PreRenderingTask extends ScheduledJob implements InterruptableJob, 
     }
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
-        Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = timeseriesDataService.getTimeseriesData(parameters);
-        LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-        return timeseriesData;
+        return timeseriesDataService.getSeriesData(parameters);
     }
 
-    private final class RenderTask extends TimerTask {
-
-        @Override
-        public void run() {
-            LOGGER.info("Start prerendering task");
-            try {
-                Map<String, ConfiguredStyle> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
-                Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
-                for (String phenomenonId : phenomenonStyles.keySet()) {
-                    Map<String, String> parameters = new HashMap<>();
-                    parameters.put(PHENOMENON, phenomenonId);
-                    IoParameters query = IoParameters.createFromQuery(parameters);
-                    OutputCollection<SeriesMetadataV1Output> metadatas = timeseriesMetadataService.getCondensedParameters(query);
-                    for (TimeseriesMetadataOutput metadata : metadatas) {
-                        String timeseriesId = metadata.getId();
-                        ConfiguredStyle style = timeseriesStyles.containsKey(timeseriesId)
-                            ? timeseriesStyles.get(timeseriesId)
-                            : phenomenonStyles.get(phenomenonId);
-
-                        renderConfiguredIntervals(timeseriesId, style);
-                    }
-                }
-
-                for (String timeseriesId : timeseriesStyles.keySet()) {
-                    SeriesMetadataV1Output metadata = timeseriesMetadataService.getParameter(timeseriesId);
-                    PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
-                    if (!phenomenonStyles.containsKey(phenomenon.getId())) {
-                        // overridden phenomena styles have been rendered already
-                        ConfiguredStyle style = timeseriesStyles.get(timeseriesId);
-                        renderConfiguredIntervals(timeseriesId, style);
-                    }
-                }
-            }
-            catch (IOException e) {
-                LOGGER.error("Error while reading prerendering configuration file!", e);
-            }
-        }
-
-        private void renderConfiguredIntervals(String timeseriesId, ConfiguredStyle style) throws IOException {
-            for (String interval : style.getInterval()) {
-                renderWithStyle(timeseriesId, style.getStyle(), interval);
-            }
-        }
-
-        private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
-            IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
-            IoParameters config = createConfig(timespan.toString(), style);
-
-            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-            RenderingContext context = createContextForSingleTimeseries(metadata, config);
-            context.setDimensions(new ChartDimension(width, height));
-            RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
-            IoHandler renderer = IoFactory
-                    .createWith(config)
-                    .createIOHandler(context);
-            FileOutputStream fos = createFile(timeseriesId, interval);
-            renderChartFile(renderer, parameters, fos);
-        }
-
-        private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
-            try {
-                renderer.generateOutput(getTimeseriesData(parameters));
-                renderer.encodeAndWriteTo(fos);
-            }
-            catch (IoParseException e) {
-                LOGGER.error("Image creation occures error.", e);
-            }
-            finally {
-                try {
-                    fos.flush();
-                    fos.close();
-                }
-                catch (IOException e) {
-                    LOGGER.error("File stream already flushed/closed.", e);
-                }
-            }
-        }
-    }
+//    private final class RenderTask extends TimerTask {
+//
+//        @Override
+//        public void run() {
+//            LOGGER.info("Start prerendering task");
+//            try {
+//                Map<String, ConfiguredStyle> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
+//                Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
+//                for (String phenomenonId : phenomenonStyles.keySet()) {
+//                    Map<String, String> parameters = new HashMap<>();
+//                    parameters.put(PHENOMENON, phenomenonId);
+//                    IoParameters query = IoParameters.createFromQuery(parameters);
+//                    OutputCollection<SeriesMetadataV1Output> metadatas = timeseriesMetadataService.getCondensedParameters(query);
+//                    for (TimeseriesMetadataOutput metadata : metadatas) {
+//                        String timeseriesId = metadata.getId();
+//                        ConfiguredStyle style = timeseriesStyles.containsKey(timeseriesId)
+//                            ? timeseriesStyles.get(timeseriesId)
+//                            : phenomenonStyles.get(phenomenonId);
+//
+//                        renderConfiguredIntervals(timeseriesId, style);
+//                    }
+//                }
+//
+//                for (String timeseriesId : timeseriesStyles.keySet()) {
+//                    SeriesMetadataV1Output metadata = timeseriesMetadataService.getParameter(timeseriesId);
+//                    PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
+//                    if (!phenomenonStyles.containsKey(phenomenon.getId())) {
+//                        // overridden phenomena styles have been rendered already
+//                        ConfiguredStyle style = timeseriesStyles.get(timeseriesId);
+//                        renderConfiguredIntervals(timeseriesId, style);
+//                    }
+//                }
+//            }
+//            catch (IOException e) {
+//                LOGGER.error("Error while reading prerendering configuration file!", e);
+//            }
+//        }
+//
+//        private void renderConfiguredIntervals(String timeseriesId, ConfiguredStyle style) throws IOException {
+//            for (String interval : style.getInterval()) {
+//                renderWithStyle(timeseriesId, style.getStyle(), interval);
+//            }
+//        }
+//
+//        private void renderWithStyle(String timeseriesId, StyleProperties style, String interval) throws IOException {
+//            IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
+//            IoParameters config = createConfig(timespan.toString(), style);
+//
+//            TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
+//            RenderingContext context = createContextForSingleTimeseries(metadata, config);
+//            context.setDimensions(new ChartDimension(width, height));
+//            RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
+//            IoHandler renderer = IoFactory
+//                    .createWith(config)
+//                    .createIOHandler(context);
+//            FileOutputStream fos = createFile(timeseriesId, interval);
+//            renderChartFile(renderer, parameters, fos);
+//        }
+//
+//        private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
+//            try {
+//                renderer.generateOutput(getTimeseriesData(parameters));
+//                renderer.encodeAndWriteTo(fos);
+//            }
+//            catch (IoParseException e) {
+//                LOGGER.error("Image creation occures error.", e);
+//            }
+//            finally {
+//                try {
+//                    fos.flush();
+//                    fos.close();
+//                }
+//                catch (IOException e) {
+//                    LOGGER.error("File stream already flushed/closed.", e);
+//                }
+//            }
+//        }
+//    }
 }

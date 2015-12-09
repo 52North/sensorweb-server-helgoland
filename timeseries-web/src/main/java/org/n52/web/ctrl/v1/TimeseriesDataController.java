@@ -45,7 +45,7 @@ import org.n52.io.IoParseException;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.request.PreRenderingTask;
+import org.n52.io.PreRenderingJob;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
@@ -69,7 +69,7 @@ import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,9 +93,9 @@ public class TimeseriesDataController extends BaseController {
 
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
-    private TimeseriesDataService timeseriesDataService;
+    private SeriesDataService timeseriesDataService;
 
-    private PreRenderingTask preRenderingTask;
+    private PreRenderingJob preRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -331,8 +331,8 @@ public class TimeseriesDataController extends BaseController {
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-            ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
-            : timeseriesDataService.getTimeseriesData(parameters);
+            ? composeDataService(timeseriesDataService).getSeriesData(parameters)
+            : timeseriesDataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }
@@ -353,19 +353,19 @@ public class TimeseriesDataController extends BaseController {
         this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
     }
 
-    public TimeseriesDataService getTimeseriesDataService() {
+    public SeriesDataService getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(TimeseriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
-    public PreRenderingTask getPreRenderingTask() {
+    public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
     }
 
-    public void setPreRenderingTask(PreRenderingTask prerenderingTask) {
+    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
         this.preRenderingTask = prerenderingTask;
     }
 

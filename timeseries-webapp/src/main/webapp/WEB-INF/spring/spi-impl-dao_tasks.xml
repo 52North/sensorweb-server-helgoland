@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+    
+	<mvc:annotation-driven />
+
+    <bean id="jobScheduler" class="org.n52.io.task.JobScheduler" init-method="init" destroy-method="shutdown">
+        <property name="startupDelayInSeconds" value="5" />
+        <property name="enabled" value="true" />
+        <property name="scheduledJobs">
+            <list>
+                <ref bean="batchCacheUpdate"/>
+                <ref bean="preRenderingJobV1" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="batchCacheUpdate" class="org.n52.io.cache.CacheUpdateJob">
+        <property name="jobName" value="Batch Cache Update" />
+        <property name="jobDescription" value="Job which updates caches of configured services." />
+        <property name="triggerName" value="batchCacheUpdate_every5min" />
+
+        <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
+        <property name="cronExpression" value="0 0/5 * * * ?" />
+
+        <property name="triggerAtStartup" value="true" />
+        <property name="rewriteAtStartup" value="false" />
+    </bean>
+    
+    
+    <bean id="preRenderingJobV1" class="org.n52.io.PreRenderingJob">
+        <!-- start with '/' to place config under WEB-INF/classes folder -->
+        <constructor-arg index="0" value="/config-task-prerendering-v1.json" />
+       
+        <property name="jobName" value="Prerendering Job for API v1" />
+        <property name="jobDescription" value="Job prerendering charts." />
+        <property name="triggerName" value="preRenderingV1_dailyAt_03:00am" />
+        <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
+        <property name="cronExpression" value="0 0 03 * * ?" />
+        <property name="triggerAtStartup" value="true" />
+        
+        <property name="timeseriesMetadataService" ref="timeseriesService" />
+        <property name="timeseriesDataService" ref="timeseriesService" />
+        <property name="outputPath" value="generated/prerendered/v1" />
+        <property name="width" value="800" />
+        <property name="height" value="500" />
+        <property name="language" value="de" />
+        <property name="showGrid" value="true" />
+        <property name="enabled" value="false" />
+    </bean>
+
+    
+    <bean id="preRenderingJobV2" class="org.n52.io.PreRenderingJob">
+        <!-- start with '/' to place config under WEB-INF/classes folder -->
+        <constructor-arg index="0" value="/config-task-prerendering-v2.json" />
+        
+        <property name="jobName" value="Prerendering Job for API v2" />
+        <property name="jobDescription" value="Job prerendering charts." />
+        <property name="triggerName" value="preRenderingV1_dailyAt_03:00am" />
+        <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
+        <property name="cronExpression" value="0 0 03 * * ?" />
+        <property name="triggerAtStartup" value="true" />
+        
+        <property name="timeseriesMetadataService" ref="timeseriesService" />
+        <property name="timeseriesDataService" ref="timeseriesService" />
+        <property name="outputPath" value="generated/prerendered/v2" />
+        <property name="width" value="800" />
+        <property name="height" value="500" />
+        <property name="language" value="de" />
+        <property name="showGrid" value="true" />
+        <property name="enabled" value="false" />
+    </bean>
+
+</beans>

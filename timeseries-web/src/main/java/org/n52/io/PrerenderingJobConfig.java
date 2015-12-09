@@ -32,7 +32,7 @@ import java.util.Map;
 
 import org.n52.io.request.StyleProperties;
 
-public class ConfigTaskPrerendering {
+public class PrerenderingJobConfig {
 
     private Map<String, String> generalConfig = new HashMap<String, String>();
 

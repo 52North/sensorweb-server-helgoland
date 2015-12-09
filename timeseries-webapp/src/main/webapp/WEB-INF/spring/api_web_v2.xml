@@ -72,21 +72,8 @@
         <property name="serviceParameterService" ref="serviceParameterServiceV2" />
         <property name="seriesMetadataService" ref="seriesServiceV2" />
         <property name="seriesDataService" ref="seriesServiceV2" />
-        <property name="preRenderingTask" ref="preRenderingTask" />
+        <property name="preRenderingTask" ref="preRenderingJobV2" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
-    </bean>
-
-    <bean id="preRenderingTask" class="org.n52.io.request.PreRenderingTask"
-          destroy-method="shutdownTask" factory-method="createTask">
-        <property name="timeseriesMetadataService" ref="seriesServiceV2" />
-        <property name="timeseriesDataService" ref="seriesServiceV2" />
-        <property name="outputPath" value="generated/prerendered" />
-        <property name="width" value="800" />
-        <property name="height" value="500" />
-        <property name="language" value="de" />
-        <property name="showGrid" value="true" />
-        <property name="periodInMinutes" value="1440" />
-        <property name="enabled" value="false" />
     </bean>
 
     <bean class="org.n52.web.ctrl.v2.SearchController">

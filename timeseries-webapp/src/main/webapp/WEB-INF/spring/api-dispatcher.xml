@@ -16,13 +16,15 @@
         <property name="noDataValues" value="-9999.0,99999" />
     </bean>
     
-    <!-- timeseries api web controller bindings -->
-    <import resource="timeseries-api_beans.xml"/>
-     
-    <import resource="timeseries-api_v1_web.xml"/>
-    <import resource="timeseries-api_v1_beans.xml"/>
+    <import resource="spi-impl-dao_common.xml"/>
     
-    <import resource="timeseries-api_v2_web.xml"/>
-    <import resource="timeseries-api_v2_beans.xml"/>
+    <!-- timeseries api web controller bindings --> 
+    <import resource="spi-impl-dao_v1_ensemble.xml"/>
+    <import resource="spi-impl-dao_v2_ensemble.xml"/>
+    
+    <import resource="api_web_v1.xml"/>
+    <import resource="api_web_v2.xml"/>
+    
+    <import resource="spi-impl-dao_tasks.xml" />
 
 </beans>

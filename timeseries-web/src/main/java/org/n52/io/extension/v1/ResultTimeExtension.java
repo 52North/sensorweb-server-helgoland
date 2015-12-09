@@ -38,7 +38,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
-import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

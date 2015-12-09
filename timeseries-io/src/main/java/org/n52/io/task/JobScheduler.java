@@ -48,11 +48,18 @@ public class JobScheduler {
     private int startupDelayInSeconds = 5; // 5s
 
     private Scheduler scheduler;
+    
+    private boolean enabled = true;
 
     /**
      * Runs all scheduled tasks
      */
     public void init() {
+        if ( !enabled) {
+            LOGGER.info("Job schedular disabled. No jobs will be triggered. This is also true for particularly enabled jobs.");
+            return;
+        }
+        
         if (scheduler == null) {
             createDefaultScheduler();
             if (scheduler == null) {
@@ -62,7 +69,9 @@ public class JobScheduler {
         }
 
         for (ScheduledJob scheduledTask : scheduledJobs) {
-            scheduleJob(scheduledTask);
+            if (scheduledTask.isEnabled()) {
+                scheduleJob(scheduledTask);
+            }
         }
 
         try {
@@ -132,6 +141,14 @@ public class JobScheduler {
 
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

@@ -1,3 +1,6 @@
+/timeseries-webapp/nbactions.xml
+/logs/timeseries-webapp.log
+/timeseries-webapp/logs/timeseries-webapp.log
 target
 .settings
 .project

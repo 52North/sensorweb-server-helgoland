@@ -1,6 +1,6 @@
 {
     "phenomenonStyles": {
-        "phe_39b6c8bd9f50fc1892b407c9268cf557": {
+        "1": {
             "interval": [
                 "lastWeek",
                 "lastMonth"
@@ -16,7 +16,7 @@
         }
     },
     "timeseriesStyles": {
-        "56": {
+        "2": {
             "interval": [
                 "lastWeek",
                 "lastMonth"

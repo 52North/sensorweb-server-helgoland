@@ -9,13 +9,13 @@
 
     <mvc:annotation-driven />
 
+    <bean id="serviceInfoAccess" class="org.n52.series.db.srv.ServiceInfoAccess"  init-method="init" abstract="true">
+        <property name="serviceInfo" ref="serviceInfo" />
+    </bean>
+
 	<bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />
-    </bean>
-
-    <bean id="serviceInfoAccess" class="org.n52.series.db.srv.ServiceInfoAccess"  init-method="init" abstract="true">
-        <property name="serviceInfo" ref="serviceInfo" />
     </bean>
 
 </beans>

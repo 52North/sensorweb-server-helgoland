@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.sensorweb.spi;
+package org.n52.io.extension.v1;
 
 import java.util.ArrayList;
 import org.n52.io.request.IoParameters;
