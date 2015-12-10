@@ -1,0 +1,144 @@
+{
+    "datatype": "csv-observations-collection", 
+    "description": "Hourly sunshine duration is given as sum of the six 10min intervals. For instance, the value for UTC 11 contains the sunshine from UTC 9:51-UTC 10:50",
+    "members": [{
+        "resourceId": "5de42de9-db75-42e7-b9df-0a9f5ce4c724",
+        "resourcetype": "platforms",
+        "headerrows": 1,
+        "fields": [{
+            "fieldId": "Stations_id", 
+            "shortname": "station ID",
+            "longname": "Station identifier",
+            "description": "The Identifier for the station declared by the German weather service (DWD)",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "von_datum", 
+            "shortname": "start date",
+            "longname": "Starting date",
+            "description": "Date for the first available observations",
+            "fieldtype": "Date",
+            "fieldformat": "YYYYMMDD"
+        }, {
+            "fieldId": "bis_datum", 
+            "shortname": "last date",
+            "longname": "Last date",
+            "description": "Date for the last available observations",
+            "fieldtype": "Date",
+            "fieldformat": "YYYYMMDD"
+        }, {
+            "fieldId": "Stationshoehe", 
+            "shortname": "altitude",
+            "longname": "Altitude",
+            "description": "The Altitude of the station above sea level",
+            "phenomenon": "altitude",
+            "uom": "m",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "geoBreite", 
+            "shortname": "lat",
+            "longname": "Latitude",
+            "description": "The latitude position of the station",
+            "elipsoid": "WGS84",
+            "uom": "decimal degrees",
+            "fieldtype": "Float"
+        }, {
+            "fieldId": "geoLaenge", 
+            "shortname": "lon",
+            "longname": "longitude",
+            "description": "The longitude position of the station",
+            "elipsoid": "WGS84",
+            "uom": "decimal degrees",
+            "fieldtype": "Float"
+        }, {
+            "fieldId": "Stationsname", 
+            "shortname": "station name",
+            "longname": "station name",
+            "description": "The official name of the station",
+            "fieldtype": "String"
+        }, {
+            "fieldId": "Bundesland", 
+            "shortname": "state",
+            "longname": "federal state",
+            "description": "The federal state",
+            "fieldtype": "String"
+        }]
+    }, {
+        "resourceId": "67a8343f-10aa-4ee2-a601-b0ebd0402894",
+        "resourcetype": "observations",
+        "headerrows" : 1,
+        "fields": [{
+            "fieldId": "STATIONS_ID", 
+            "shortname": "station identifier",
+            "longname": "station identification number",
+            "description": "The station identification number",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "MESS_DATUM",
+            "shortname": "measurement data",
+            "longname": "measurement data",
+            "description": "The date of the measurement",
+            "fieldtype": "Date",
+            "fieldformat": "YYYMMDDhh"
+        }, {
+            "fieldId": "QUALITAETS_NIVEAU", 
+            "shortname": "quality niveau",
+            "longname": "the quality niveau",
+            "description": "Describes the method of quality control, with which erroneous or suspicious values are identified and set to -999: 1 - only formal control; 2- controlled with individually defined criteria; 3 - automatic control and correction; 5 - historic, subjective procedures; 7 - second control done, before correction; 8 - quality control outside ROUTINE; 9 - not all parameters corrected; 10 - quality control finished, all corrections finished",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "STRUKTUR_VERSION", 
+            "shortname": "network id",
+            "longname": "network identification",
+            "description": "identification of the monitoring network",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "STUNDENSUMME_SONNENSCHEIN", 
+            "shortname": "sunshine duration",
+            "longname": "sunshine duration",
+            "description": "The sunshine duration in minutes",
+            "erroneous": "-999",
+            "phenomenon": "sunshine duration",
+            "uom": "min",
+            "fieldtype": "Float"
+        }]
+    }, {
+        "resourceId": "e4e8a0f7-dc71-4bcc-9011-5a9cdebf7f23",
+        "resourcetype": "observations",
+        "headerrows" : 1,
+        "fields": [{
+            "fieldId": "STATIONS_ID", 
+            "shortname": "station identifier",
+            "longname": "station identification number",
+            "description": "The station identification number",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "MESS_DATUM",
+            "shortname": "measurement data",
+            "longname": "measurement data",
+            "description": "The date of the measurement",
+            "fieldtype": "Date",
+            "fieldformat": "YYYMMDDhh"
+        }, {
+            "fieldId": "QUALITAETS_NIVEAU", 
+            "shortname": "quality niveau",
+            "longname": "the quality niveau",
+            "description": "Describes the method of quality control, with which erroneous or suspicious values are identified and set to -999: 1 - only formal control; 2- controlled with individually defined criteria; 3 - automatic control and correction; 5 - historic, subjective procedures; 7 - second control done, before correction; 8 - quality control outside ROUTINE; 9 - not all parameters corrected; 10 - quality control finished, all corrections finished",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "STRUKTUR_VERSION", 
+            "shortname": "network id",
+            "longname": "network identification",
+            "description": "identification of the monitoring network",
+            "fieldtype": "Integer"
+        }, {
+            "fieldId": "STUNDENSUMME_SONNENSCHEIN", 
+            "shortname": "sunshine duration",
+            "longname": "sunshine duration",
+            "description": "The sunshine duration in minutes",
+            "erroneous": "-999",
+            "phenomenon": "sunshine duration",
+            "uom": "min",
+            "fieldtype": "Float"
+        }]
+    }]
+}

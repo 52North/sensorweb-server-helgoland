@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+
+    <mvc:annotation-driven />
+
+    <!--
+        This bean description file injects the SPI implementation into the Web binding layer.
+        Any change will corrupt the API Web layer. Custom implementation has to be defined
+        by bean descriptions using the ref-ids associated below.
+    -->
+
+    <bean class="org.n52.web.ctrl.v2.ResourcesController">
+        <property name="metadataService" ref="metadataServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="metadataExtensions">
+            <list>
+                <bean class="org.n52.io.response.ext.LicenseExtension" />
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.ServicesParameterController" parent="parameterController">
+        <property name="parameterService" ref="serviceParameterServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.CategoriesParameterController" parent="parameterController">
+        <property name="parameterService" ref="categoryParameterServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.FeaturesParameterController" parent="parameterController">
+        <property name="parameterService" ref="featureParameterServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.ProceduresParameterController" parent="parameterController">
+        <property name="parameterService" ref="procedureParameterServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.PhenomenaParameterController" parent="parameterController">
+        <property name="parameterService" ref="phenomenonParameterServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.PlatformsParameterController">
+        <property name="parameterService" ref="platformParameterServiceV2" />
+        <property name="featureParameterService" ref="featureParameterServiceV2" />
+        <property name="seriesParameterService" ref="seriesServiceV2" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.SeriesMetadataController" parent="parameterController">
+        <property name="serviceParameterService" ref="serviceParameterServiceV2" />
+        <property name="parameterService" ref="seriesServiceV2" />
+        <property name="metadataExtensions">
+            <list merge="true">
+                <!--<bean class="org.n52.io.extension.v2.RenderingHintsExtension" />-->
+                <!--<bean class="org.n52.io.extension.v2.StatusIntervalsExtension" />--> 
+                <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+                <!-- Have a look at the README.md at TBD -->
+                <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.SeriesDataController">
+        <property name="serviceParameterService" ref="serviceParameterServiceV2" />
+        <property name="seriesMetadataService" ref="seriesServiceV2" />
+        <property name="seriesDataService" ref="seriesServiceV2" />
+        <property name="preRenderingTask" ref="preRenderingJobV2" />
+        <property name="requestIntervalRestriction" value="P1Y1D" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v2.SearchController">
+        <property name="searchService" ref="searchServiceV2"/>
+    </bean>
+
+
+</beans>
