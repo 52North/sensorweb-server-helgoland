@@ -10,17 +10,11 @@
 
     <mvc:annotation-driven />
 
-	<bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
-        <property name="serviceId" value="1" />
-        <property name="serviceDescription" value="My Timeseries Service." />
-        <property name="noDataValues" value="-9999.0,99999" />
-    </bean>
-    
     <import resource="spi-impl-dao_common.xml"/>
     
     <!-- timeseries api web controller bindings --> 
-    <import resource="spi-impl-dao_v1_ensemble.xml"/>
-    <import resource="spi-impl-dao_v2_ensemble.xml"/>
+    <import resource="spi-impl-dao_v1_beans.xml"/>
+    <import resource="spi-impl-dao_v2_beans.xml"/>
     
     <import resource="api_web_v1.xml"/>
     <import resource="api_web_v2.xml"/>

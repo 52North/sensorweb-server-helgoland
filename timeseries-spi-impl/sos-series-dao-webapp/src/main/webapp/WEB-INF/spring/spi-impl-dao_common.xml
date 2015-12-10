@@ -16,6 +16,7 @@
 	<bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />
+        <property name="noDataValues" value="-9999.0,99999" />
     </bean>
 
 </beans>

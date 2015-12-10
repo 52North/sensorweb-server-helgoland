@@ -17,24 +17,10 @@
         <property name="enabled" value="true" />
         <property name="scheduledJobs">
             <list>
-                <ref bean="batchCacheUpdate"/>
                 <ref bean="preRenderingJobV1" />
             </list>
         </property>
     </bean>
-    
-    <bean id="batchCacheUpdate" class="org.n52.io.cache.CacheUpdateJob">
-        <property name="jobName" value="Batch Cache Update" />
-        <property name="jobDescription" value="Job which updates caches of configured services." />
-        <property name="triggerName" value="batchCacheUpdate_every5min" />
-
-        <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
-        <property name="cronExpression" value="0 0/5 * * * ?" />
-
-        <property name="triggerAtStartup" value="true" />
-        <property name="rewriteAtStartup" value="false" />
-    </bean>
-    
     
     <bean id="preRenderingJobV1" class="org.n52.io.PreRenderingJob">
         <!-- start with '/' to place config under WEB-INF/classes folder -->
