@@ -12,9 +12,6 @@
     <description>REST SPI Implementation for SOS Series Database.</description>
     <url>http://52north.org/communities/sensorweb/</url>
 
-    <properties>
-        <sos.version>4.3.4</sos.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.n52.sensorweb</groupId>
