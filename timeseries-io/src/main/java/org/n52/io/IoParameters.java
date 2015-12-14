@@ -777,7 +777,10 @@ public class IoParameters {
     }
     
     private String getAsString(String parameter) {
-        return query.get(parameter.toLowerCase()).asText();
+        final JsonNode value = query.get(parameter.toLowerCase());
+        return value != null
+                ? value.asText()
+                : null;
     }
 
     /**
