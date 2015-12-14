@@ -17,18 +17,20 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.joda.time.DateTime;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.DescriptionFile;
-import org.n52.series.ckan.cache.CkanDataCache;
+import org.n52.series.ckan.cache.CkanDataSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CkanHarvester {
+public class CkanHarvestingService {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(CkanHarvester.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CkanHarvestingService.class);
     
     private ObjectMapper om = new ObjectMapper(); // TODO use global om config
     
@@ -42,9 +44,9 @@ public class CkanHarvester {
     
     private CkanMetadataCache metadataCache;
     
-    private CkanDataCache dataCache;
+    private CkanDataSink dataCache;
 
-    public CkanHarvester() {
+    public CkanHarvestingService() {
         try {
             this.resourceDownloadBaseFolder = getClass().getResource("/").toURI();
         } catch (URISyntaxException e) {
@@ -76,13 +78,15 @@ public class CkanHarvester {
     }
     
     public void harvestResources() throws IOException {
+        LOGGER.info("Start harvesting data resources.");
         for (CkanDataset dataset : metadataCache.getDatasets()) {
             if (metadataCache.hasResourceDescription(dataset)) {
+                LOGGER.info("Download resources for dataset {}.", dataset.getId());
                 DescriptionFile description = downloadResourceDescription(dataset);
                 
                 String datasetId = dataset.getId();
                 List<String> resourceIds = getNonResourceDescriptionIds(description.getNode());
-                List<DataFile> csvContents = downloadCsvFiles(dataset, resourceIds);
+                Map<String, DataFile> csvContents = downloadCsvFiles(dataset, resourceIds);
                 
                 // TODO check when to delete or update resource
                 
@@ -90,6 +94,7 @@ public class CkanHarvester {
                         new CsvObservationsCollection(datasetId, description, csvContents));
             }
         }
+        LOGGER.info("Finished harvesting data resources (got #{} resources).", dataCache.size());
     }
     
     private DescriptionFile downloadResourceDescription(CkanDataset dataset) throws IOException {
@@ -99,6 +104,7 @@ public class CkanHarvester {
                 .resolve(resourceName)
                 .toFile();
         downloadToFile(resourceDescriptionResource, file);
+        LOGGER.info("Downloaded resource description to {}.", file.getAbsolutePath());
         return new DescriptionFile(dataset, file, om.readTree(file));
     }
 
@@ -114,8 +120,8 @@ public class CkanHarvester {
         return resourceIds;
     }
 
-    private List<DataFile> downloadCsvFiles(CkanDataset dataset, List<String> resourceIds) {
-        List<DataFile> csvFiles = new ArrayList<>();
+    private Map<String, DataFile> downloadCsvFiles(CkanDataset dataset, List<String> resourceIds) {
+        Map<String, DataFile> csvFiles = new HashMap<>();
         Path datasetDownloadFolder = getDatasetDownloadFolder(dataset);
         for (CkanResource resource : dataset.getResources()) {
             if (resourceIds.contains(resource.getId())) {
@@ -125,7 +131,8 @@ public class CkanHarvester {
                 // TODO download only when newer
                 
                 downloadToFile(resource, file);
-                csvFiles.add(new DataFile(resource, file));
+                LOGGER.info("Downloaded data to {}.", file.getAbsolutePath());
+                csvFiles.put(resource.getId(), new DataFile(resource, file));
             }
         }
         return csvFiles;
@@ -184,13 +191,20 @@ public class CkanHarvester {
         this.resourceClient = resourceClient;
     }
 
-    public CkanMetadataCache getDatasetCache() {
+    public CkanDataSink getDataCache() {
+        return dataCache;
+    }
+
+    public void setDataCache(CkanDataSink dataCache) {
+        this.dataCache = dataCache;
+    }
+
+    public CkanMetadataCache getMetadataCache() {
         return metadataCache;
     }
 
-    public void setDatasetCache(CkanMetadataCache datasetCache) {
-        this.metadataCache = datasetCache;
+    public void setMetadataCache(CkanMetadataCache metadataCache) {
+        this.metadataCache = metadataCache;
     }
-
     
 }
