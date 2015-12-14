@@ -1,13 +1,24 @@
 package org.n52.series.ckan.cache;
 
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 
-public class InMemoryCkanDataCache implements CkanDataCache {
+public class InMemoryCkanDataCache implements CkanDataSink {
     
     private final Map<String, Entry<CkanDataset, CsvObservationsCollection>> datasets = new HashMap<>();
+
+    @Override
+    public int size() {
+        return datasets.size();
+    }
+
+    @Override
+    public void clear() {
+        datasets.clear();
+    }
 
     @Override
     public void insertOrUpdate(CkanDataset dataset, CsvObservationsCollection csvObservationsCollection) {
@@ -21,8 +32,12 @@ public class InMemoryCkanDataCache implements CkanDataCache {
             datasets.put(dataset.getId(), new Entry<>(dataset, csvObservationsCollection));
         }
     }
+
+    public Iterable<Entry<CkanDataset, CsvObservationsCollection>> getCollections() {
+        return datasets.values();
+    }
     
-    private class Entry<M,D> {
+    public class Entry<M,D> {
         private M dataset;
         private D data;
 

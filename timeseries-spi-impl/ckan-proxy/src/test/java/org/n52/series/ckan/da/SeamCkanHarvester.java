@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SeamCkanHarvester extends CkanHarvester {
+public class SeamCkanHarvester extends CkanHarvestingService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SeamCkanHarvester.class);
     
@@ -28,7 +28,7 @@ public class SeamCkanHarvester extends CkanHarvester {
         File[] datasetFiles = folder.listFiles();
         for (File file : datasetFiles) {
             CkanDataset dataset = parseDatasetTestFile(file);
-            getDatasetCache().insertOrUpdate(dataset);
+            getMetadataCache().insertOrUpdate(dataset);
         } 
     }
 
