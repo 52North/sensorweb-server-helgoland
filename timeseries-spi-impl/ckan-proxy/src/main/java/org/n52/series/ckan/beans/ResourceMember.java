@@ -52,6 +52,12 @@ public class ResourceMember {
         return null;
     }
     
+    public ResourceField getField(int index) {
+        return index >= 0 && index < resourceFields.size()
+                ? resourceFields.get(index)
+                : null;
+    }
+    
     public boolean containsField(String fieldId) {
         for (ResourceField field : resourceFields) {
             if (field.getFieldId().equalsIgnoreCase(fieldId)) {
@@ -67,6 +73,14 @@ public class ResourceMember {
             headers.add(field.getShortName());
         }
         return headers;
+    }
+    
+    public List<String> getFieldIds() {
+        List<String> fieldIds = new ArrayList<>();
+        for (ResourceField field : getResourceFields()) {
+            fieldIds.add(field.getFieldId());
+        }
+        return fieldIds;
     }
 
     public void setResourceFields(List<ResourceField> resourceFields) {

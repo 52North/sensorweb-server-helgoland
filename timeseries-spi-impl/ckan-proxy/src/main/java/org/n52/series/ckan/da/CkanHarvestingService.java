@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateTime;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.DescriptionFile;
@@ -52,6 +51,10 @@ public class CkanHarvestingService {
         } catch (URISyntaxException e) {
             LOGGER.error("Could not set download base folder!", e);
         }
+    }
+    
+    public void harvestDatasets() {
+        harvestDatasets(CkanQuery.filter());
     }
     
     public void harvestDatasets(CkanQuery query) {

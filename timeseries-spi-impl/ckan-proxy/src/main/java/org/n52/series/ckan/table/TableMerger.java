@@ -14,60 +14,21 @@ import org.n52.series.ckan.beans.ResourceMember;
 
 class TableMerger {
     
-    private final HashBasedTable<String,String,String> table;
+    private HashBasedTable<String,String,String> table;
     
-    private final CsvObservationsCollection observationCollection;
+    private CsvObservationsCollection observationCollection;
 
-    public static HashBasedTable<String,String,String> merge(ObservationTable table) {
+    public HashBasedTable<String,String,String> merge(ResourceTable table) {
         this.table = HashBasedTable.create();
+        
+        return this.table;
     }
     
     private void joinResourceTables(CsvObservationsCollection observationCollection) {
         Map<ResourceMember, DataFile> dataCollection = observationCollection.getDataCollection();
-        Set<String> joinFields = getJoinFields(dataCollection.keySet());
+        Set<String> joinFields = observationCollection.getJoinFieldIds(dataCollection.keySet());
         for (Map.Entry<ResourceMember, DataFile> entry : dataCollection.entrySet()) {
             
-        }
-    }
-
-    private Set<String> getJoinFields(Set<ResourceMember> members) {
-        List<String> allColumns = new ArrayList<>();
-        ColumnCounter counter = new ColumnCounter();
-        for (ResourceMember member : members) {
-            final List<String> columnHeaders = member.getColumnHeaders();
-            counter.updateWith(columnHeaders);
-            allColumns.addAll(columnHeaders);
-        }
-        
-        Set<String> joinColumns = new LinkedHashSet<>();
-        for (String column : allColumns) {
-            if (counter.isJoinColumn(column)) {
-                joinColumns.add(column);
-            }
-        }
-        return joinColumns;
-    }
-    
-    private class ColumnCounter {
-        private final Map<String, ColumnCount> counts = new HashMap<>();
-        void updateWith(List<String> columns) {
-            for (String column : columns) {
-                if (counts.containsKey(column)) {
-                    counts.get(column).count++;
-                } else {
-                    counts.put(column, new ColumnCount());
-                }
-            }
-        }
-        boolean isJoinColumn(String column) {
-            return counts.get(column).count > 1;
-        }
-    }
-    
-    private class ColumnCount {
-        private int count;
-        public ColumnCount() {
-            count++;
         }
     }
     

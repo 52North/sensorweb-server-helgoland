@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.n52.series.ckan.beans.DataFile;
@@ -20,16 +21,18 @@ public class ResourceTable extends DataTable {
     
     private final DataFile dataFile;
 
-    private final String resourceKey;
-    
     public ResourceTable(ResourceMember resourceMember, DataFile dataFile) {
         this.resourceMember = resourceMember;
-        this.resourceKey = "id_" + resourceMember.getId().substring(0, 6); // TODO
         this.dataFile = dataFile;
+    }
+    
+    public void readIntoMemory() {
+        readIntoMemory(null);
     }
     
     public void readIntoMemory(Set<String> fieldIdsToIndex) {
         final Path filePath = dataFile.getFile().toPath();
+        fieldIdsToIndex = lowerCaseFieldIds(fieldIdsToIndex);
         try {
             List<String> allLines = Files.readAllLines(filePath, dataFile.getEncoding());
             List<String> columnHeaders = resourceMember.getColumnHeaders();
@@ -44,14 +47,14 @@ public class ResourceTable extends DataTable {
                     LOGGER.debug("line: {}", allLines.get(i));
                     continue;
                 }
-                final String id = resourceKey + "_" + i;
+                ResourceKey id = new ResourceKey("" + i, resourceMember);
                 for (int j = 0 ; j < values.length ; j++) {
-                    final String value = values[j];
-                    table.put(id, columnHeaders.get(j), value);
                     final ResourceField field = resourceMember.getField(j);
+                    final String value = values[j];
+                    table.put(id, field, value);
+                    
                     if (fieldIdsToIndex.contains(field.getFieldId())) {
-                        JoinIndex index = new JoinIndex(field, value);
-                        addValueToIndex(index, id);
+                        addJoinIndexValue(id, new JoinIndex(field, value));
                     }
                 }
             }
@@ -61,5 +64,15 @@ public class ResourceTable extends DataTable {
             LOGGER.error("could not read data from {}", filePath, e);
         }
     }
-    
+
+    private Set<String> lowerCaseFieldIds(Set<String> fieldIdsToIndex) {
+        Set<String> lowercaseFieldIds = new HashSet<>();
+        if (fieldIdsToIndex != null) {
+            for (String fieldId : fieldIdsToIndex) {
+                lowercaseFieldIds.add(fieldId.toLowerCase());
+            }
+        }
+        return lowercaseFieldIds;
+    }
+
 }

@@ -11,10 +11,16 @@ public class ResourceField {
     private final String fieldId;
     
     private final JsonNode node;
+    
+    protected ResourceField(String fieldId) {
+        this.fieldId = fieldId.toLowerCase();
+        node = null;
+    }
 
     public ResourceField(JsonNode node) {
         this.node = node;
-        this.fieldId = parseMissingToEmptyString(CkanConstants.MEMBER_FIELD_ID, node);
+        String id = parseMissingToEmptyString(CkanConstants.MEMBER_FIELD_ID, node);
+        this.fieldId = id.toLowerCase();
     }
     
     public Iterator<String> getFieldNames() {
@@ -67,6 +73,10 @@ public class ResourceField {
         }
         return Objects.equals(this.fieldId.toLowerCase(), other.fieldId.toLowerCase());
     }
-    
+
+    @Override
+    public String toString() {
+        return "ResourceField{" + "fieldId=" + fieldId + '}';
+    }
     
 }

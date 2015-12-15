@@ -11,7 +11,7 @@ public interface CkanMetadataCache {
     
     public boolean contains(CkanDataset dataset);
     
-    public boolean isNewerThan(CkanDataset dataset);
+    public boolean containsNewerThan(CkanDataset dataset);
     
     public void insertOrUpdate(CkanDataset dataset);
     

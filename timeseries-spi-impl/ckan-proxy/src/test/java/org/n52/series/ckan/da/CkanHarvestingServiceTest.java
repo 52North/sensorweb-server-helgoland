@@ -7,21 +7,24 @@ import eu.trentorise.opendata.jackan.CkanQuery;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Map;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.ResourceMember;
-import org.n52.series.ckan.table.ObservationTable;
+import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache.Entry;
 import org.n52.series.ckan.util.ResourceClient;
 
+@Ignore
 public class CkanHarvestingServiceTest {
     
     private final ObjectMapper om = new ObjectMapper();
@@ -63,10 +66,17 @@ public class CkanHarvestingServiceTest {
         ckanHarvester.harvestResources();
         
         Entry<CkanDataset, CsvObservationsCollection> entry = ckanDataCache.getCollections().iterator().next();
-        Map<ResourceMember, DataFile> dataCollection = entry.getData().getDataCollection();
-        Map.Entry<ResourceMember, DataFile> data = dataCollection.entrySet().iterator().next();
-        ObservationTable observationTable = new ObservationTable(data.getKey(), data.getValue());
-        observationTable.readIntoMemory();
+        Map<ResourceMember, DataFile> metadataCollection = entry.getData().getMetadataCollection();
+        Map.Entry<ResourceMember, DataFile> data = metadataCollection.entrySet().iterator().next();
+        ResourceTable metadataTable = new ResourceTable(data.getKey(), data.getValue());
+        metadataTable.readIntoMemory(Collections.singleton("stations_id"));
+        
+        Map<ResourceMember, DataFile> observations = entry.getData().getObservationDataCollection();
+        for (Map.Entry<ResourceMember, DataFile> observationData : observations.entrySet()) {
+            ResourceTable dataTable = new ResourceTable(observationData.getKey(), observationData.getValue());
+            dataTable.readIntoMemory(null);
+            metadataTable.leftJoin(dataTable);
+        }
         
 //        for (Entry<CkanDataset, CsvObservationsCollection> entry : ckanDataCache.getCollections()) {
 //            TableMerger tableMerger = new TableMerger(entry.getData());

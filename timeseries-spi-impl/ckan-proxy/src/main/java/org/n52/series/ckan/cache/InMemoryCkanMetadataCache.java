@@ -7,8 +7,12 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import org.n52.series.ckan.da.CkanConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InMemoryCkanMetadataCache implements CkanMetadataCache {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryCkanMetadataCache.class);
     
     private final Map<String, CkanDataset> datasets;
     
@@ -35,21 +39,30 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
     }
 
     @Override
-    public boolean isNewerThan(CkanDataset dataset) {
+    public boolean containsNewerThan(CkanDataset dataset) {
+        if (dataset == null || !contains(dataset)) {
+            return false;
+        }
         Timestamp probablyNewer = dataset.getMetadataModified();
         Timestamp current = datasets.get(dataset.getId()).getMetadataModified();
-        return contains(dataset)
-                ? current.after(probablyNewer)
-                : false;
+        return current.after(probablyNewer)
+                || current.equals(probablyNewer);
     }
 
     @Override
     public void insertOrUpdate(CkanDataset dataset) {
-        if (dataset != null && hasResourceDescription(dataset)) {
-            datasets.put(dataset.getId(), dataset);
-            // TODO load resource files if newer and 
-              // TODO update metadata
-              // TODO update observation data
+        if (dataset != null) {
+            if (containsNewerThan(dataset)) {
+                LOGGER.info("No metadata updates on dataset {}.", dataset.getId());
+            }
+            if (hasResourceDescription(dataset)) {
+                datasets.put(dataset.getId(), dataset);
+                // TODO load resource files if newer and 
+                  // TODO update metadata
+                  // TODO update observation data
+            } else {
+                LOGGER.info("Ignore dataset '{}' as it has no ResourceDescription.", dataset.getId());
+            }
         }
     }
 

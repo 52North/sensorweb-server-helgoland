@@ -3,6 +3,9 @@ package org.n52.series.ckan.cache;
 import org.n52.series.ckan.cache.InMemoryCkanMetadataCache;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanResource;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +41,7 @@ public class InMemoryCkanMetadataCacheTest {
         List<CkanResource> resources = new ArrayList<>();
         resources.add(normalResource);
         resources.add(resourceDescription);
+        dataset.setMetadataModified(Timestamp.valueOf(LocalDateTime.now()));
         dataset.setResources(resources);
         
         ckanCache.insertOrUpdate(dataset);
