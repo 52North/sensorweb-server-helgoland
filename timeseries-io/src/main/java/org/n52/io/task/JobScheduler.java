@@ -32,10 +32,8 @@ import java.util.List;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import static org.quartz.TriggerBuilder.newTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,34 +58,17 @@ public class JobScheduler {
             return;
         }
         
-        if (scheduler == null) {
-            createDefaultScheduler();
-            if (scheduler == null) {
-                LOGGER.info("No scheduler configured.");
-                return;
-            }
-        }
-
         for (ScheduledJob scheduledTask : scheduledJobs) {
             if (scheduledTask.isEnabled()) {
                 scheduleJob(scheduledTask);
             }
         }
-
+        
         try {
             scheduler.startDelayed(startupDelayInSeconds);
             LOGGER.info("Scheduler will start jobs in {}s ...", startupDelayInSeconds);
         } catch (SchedulerException e) {
             LOGGER.error("Could not start scheduler.", e);
-        }
-    }
-
-    private void createDefaultScheduler() {
-        try {
-            SchedulerFactory sf = new StdSchedulerFactory();
-            scheduler = sf.getScheduler();
-        } catch (SchedulerException e) {
-            LOGGER.error("Could create scheduler.", e);
         }
     }
 

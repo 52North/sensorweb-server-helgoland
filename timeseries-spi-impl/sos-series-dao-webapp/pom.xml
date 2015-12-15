@@ -40,7 +40,10 @@
         <dependency>
             <groupId>org.n52.sensorweb</groupId>
             <artifactId>timeseries-series-dao</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>ckan-proxy</artifactId>
         </dependency>
 
         <dependency>
@@ -138,6 +141,22 @@
                         </webResources>
                     </configuration>
                 </plugin>
+                
+<!--                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>9.3.6.v20151106</version>
+                    <configuration>
+                        <scanIntervalSeconds>10</scanIntervalSeconds>
+                        <webAppConfig>
+                            <contextPath>/my-context</contextPath>
+                            <extraClasspath>target/classes;../my-jar-dependency/target/classes</extraClasspath>
+                        </webAppConfig>
+                        <scanTargets>
+                            <scanTarget>../my-jar-dependency/target/classes</scanTarget>
+                        </scanTargets>
+                    </configuration>
+                </plugin>-->
             </plugins>
         </pluginManagement>
     </build>

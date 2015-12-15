@@ -12,7 +12,6 @@
 
     <modules>
         <module>ckan-proxy</module>
-        <module>ckan-proxy-webapp</module>
         <module>sos-series-dao</module>
         <module>sos-series-dao-webapp</module>
     </modules>
@@ -23,6 +22,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.n52.sensorweb</groupId>
+                <artifactId>ckan-proxy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.n52.sensorweb</groupId>
                 <artifactId>timeseries-series-dao</artifactId>

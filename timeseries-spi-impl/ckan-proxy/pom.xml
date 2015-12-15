@@ -8,7 +8,7 @@
     </parent>
     <artifactId>ckan-proxy</artifactId>
     <packaging>jar</packaging>
-    <name>RESTful Sensor Web API - CKAN Proxy</name>
+    <name>RESTful Sensor Web API - CKAN</name>
     <description>REST SPI Implementation for CKAN data.</description>
     <url>http://52north.org/communities/sensorweb/</url>
 

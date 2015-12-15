@@ -90,7 +90,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private String language = "en";
     private boolean showGrid = true;
 
-    public PreRenderingJob(String configFile) {
+    public PreRenderingJob(String configFile) { // XXX
         taskConfigPrerendering = readJobConfig(configFile);
     }
 
@@ -261,10 +261,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.showGrid = showGrid;
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
