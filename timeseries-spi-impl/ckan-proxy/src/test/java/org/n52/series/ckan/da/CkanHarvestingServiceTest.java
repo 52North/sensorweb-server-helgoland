@@ -24,7 +24,7 @@ import org.n52.series.ckan.cache.InMemoryCkanDataCache;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache.Entry;
 import org.n52.series.ckan.util.ResourceClient;
 
-@Ignore
+//@Ignore
 public class CkanHarvestingServiceTest {
     
     private final ObjectMapper om = new ObjectMapper();
@@ -42,7 +42,8 @@ public class CkanHarvestingServiceTest {
     public void setUp() throws URISyntaxException {
         ckanMetadataCache = new InMemoryCkanMetadataCache();
         ckanDataCache = new InMemoryCkanDataCache();
-        ckanHarvester = new CkanHarvestingService();
+//        ckanHarvester = new CkanHarvestingService();
+        ckanHarvester = new SeamCkanHarvester();
         
         ckanHarvester.setResourceClient(new ResourceClient()); // TODO load locally from seam
         ckanHarvester.setCkanClient(new CkanClient("https://ckan.colabis.de")); // TODO load locally from seam
@@ -51,8 +52,8 @@ public class CkanHarvestingServiceTest {
         ckanHarvester.setDataCache(ckanDataCache);
         
         MatcherAssert.assertThat(ckanMetadataCache.size(), CoreMatchers.is(0));
-        CkanQuery query = CkanQuery.filter().byTagNames("DWD");
-        ckanHarvester.harvestDatasets(query);
+//        CkanQuery query = CkanQuery.filter().byTagNames("DWD");
+        ckanHarvester.harvestDatasets();
     }
     
     @Test

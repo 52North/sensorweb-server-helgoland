@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
@@ -101,24 +102,29 @@ public class CkanHarvestingService {
     }
     
     private DescriptionFile downloadResourceDescription(CkanDataset dataset) throws IOException {
-        CkanResource resourceDescriptionResource = metadataCache.getResourceDescription(dataset.getId());
-        final String resourceName = extractFileName(resourceDescriptionResource);
+        JsonNode schemaDescription = metadataCache.getSchemaDescription(dataset.getId());
+        final String resourceName = "dataset_" + dataset.getName();
         File file = getDatasetDownloadFolder(dataset)
                 .resolve(resourceName)
                 .toFile();
-        downloadToFile(resourceDescriptionResource, file);
+        final String contentAsString = om.writeValueAsString(schemaDescription);
+        org.apache.commons.io.FileUtils.writeStringToFile(file, contentAsString);
         LOGGER.info("Downloaded resource description to {}.", file.getAbsolutePath());
-        return new DescriptionFile(dataset, file, om.readTree(file));
+        return new DescriptionFile(dataset, file, schemaDescription);
     }
 
     protected List<String> getNonResourceDescriptionIds(JsonNode resourceDescription) {
         List<String> resourceIds = new ArrayList<>();
         for (JsonNode node : resourceDescription.at("/members")) {
-            JsonNode resourceId = node.findValue("resourceId");
-            resourceId = resourceId == null // XXX fix data
-                    ? node.findValue("resourceid")
-                    : resourceId;
-            resourceIds.add(resourceId.asText());
+            JsonNode resourceId = node.findValue(CkanConstants.MEMBER_RESOURCE_NAME);
+            if (resourceId.isArray()) {
+                Iterator<JsonNode> iter = resourceId.iterator();
+                while (iter.hasNext()) {
+                    resourceIds.add(iter.next().asText());
+                }
+            } else {
+                resourceIds.add(resourceId.asText());
+            }
         }
         return resourceIds;
     }
@@ -133,7 +139,7 @@ public class CkanHarvestingService {
                 
                 // TODO download only when newer
                 
-                downloadToFile(resource, file);
+                downloadToFile(resource.getUrl(), file);
                 LOGGER.info("Downloaded data to {}.", file.getAbsolutePath());
                 csvFiles.put(resource.getId(), new DataFile(resource, file));
             }
@@ -152,13 +158,12 @@ public class CkanHarvestingService {
         return Paths.get(resourceDownloadBaseFolder).resolve(dataset.getName());
     }
     
-    private void downloadToFile(CkanResource resource, File file) {
+    private void downloadToFile(String url, File file) {
         try {
-            String csvContent = resourceClient.downloadTextResource(resource.getUrl());
+            String csvContent = resourceClient.downloadTextResource(url);
             FileUtils.writeStringToFile(file, csvContent);
         } catch (IOException e) {
-            LOGGER.error("Could not download resource '{}' from {}.", 
-                    resource.getId(), resource.getUrl(), e);
+            LOGGER.error("Could not download resource from {}.", url, e);
         }
     }
 

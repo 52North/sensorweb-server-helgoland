@@ -1,18 +1,26 @@
 package org.n52.series.ckan.cache;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.google.common.base.Strings;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanPair;
 import eu.trentorise.opendata.jackan.model.CkanResource;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import org.n52.series.ckan.da.CkanConstants;
+import org.n52.sos.exception.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InMemoryCkanMetadataCache implements CkanMetadataCache {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(InMemoryCkanMetadataCache.class);
+    
+    private final ObjectMapper om = new ObjectMapper(); // TODO use global om config
     
     private final Map<String, CkanDataset> datasets;
     
@@ -89,7 +97,7 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
     }
     
     @Override
-    public CkanResource getResourceDescription(String datasetId) {
+    public JsonNode getSchemaDescription(String datasetId) {
         return datasets.containsKey(datasetId)
                 ? getResourceDesciptionFor(getDataset(datasetId))
                 : null;
@@ -100,20 +108,17 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
         return getResourceDesciptionFor(dataset) != null;
     }
 
-    private CkanResource getResourceDesciptionFor(CkanDataset dataset) {
-        for (CkanResource resource : dataset.getResources()) {
-            if (isResourceDescription(resource)) {
-                return resource;
+    private JsonNode getResourceDesciptionFor(CkanDataset dataset) {
+        for (CkanPair extras : dataset.getExtras()) {
+            if (extras.getKey().equalsIgnoreCase(CkanConstants.SCHEMA_DESCRIPTOR)) {
+                try {
+                    return om.readTree(extras.getValue());
+                } catch (IOException e) {
+                     LOGGER.error("Could not read schema_descriptor: {}", extras.getValue(), e);
+                }
             }
         }
-        return null;
+        return MissingNode.getInstance();
     }
     
-    private static boolean isResourceDescription(CkanResource resource) {
-        final String name = Strings.nullToEmpty(resource.getName());
-        final String format = Strings.nullToEmpty(resource.getFormat());
-        return name.equalsIgnoreCase(CkanConstants.RESOURCE_DESCRIPTION_NAME)
-                && format.equalsIgnoreCase(CkanConstants.RESOURCE_DESCRIPTION_FORMAT);
-    }
-
 }

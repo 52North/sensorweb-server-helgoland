@@ -36,9 +36,10 @@ public class CsvObservationsCollection {
             JsonNode node = iter.next();
             ResourceMember member = new ResourceMember();
             // TODO missing ids will cause conflicts/inconsistencies
-            member.setId(parseMissingToEmptyString(CkanConstants.MEMBER_RESOURCE_ID, node));
-            member.setResourceType(parseMissingToEmptyString(CkanConstants.MEMBER_RESOURCE_TYPE, node));
-            member.setHeaderRows(parseMissingToNegativeInt(CkanConstants.MEMBER_HEADER_ROWS, node));
+            member.setId(parseMissingToEmptyString(node, CkanConstants.MEMBER_RESOURCE_NAME, CkanConstants.MEMBER_RESOURCEID));
+            member.setResourceType(parseMissingToEmptyString(node, CkanConstants.MEMBER_RESOURCE_TYPE, CkanConstants.MEMBER_RESOURCETYPE));
+            final int headerRows = parseMissingToNegativeInt(node, CkanConstants.MEMBER_HEADER_ROWS);
+            member.setHeaderRows(headerRows < 0 ? 1 : headerRows); // assume 1 header row by default
             member.setResourceFields(parseResourceFields(node));
             members.put(member, csvContents.get(member.getId()));
         }

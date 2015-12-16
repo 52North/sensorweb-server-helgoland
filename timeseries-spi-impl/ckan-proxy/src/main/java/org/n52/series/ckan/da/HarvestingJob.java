@@ -31,6 +31,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import javax.servlet.ServletConfig;
 import org.n52.io.task.ScheduledJob;
 import org.quartz.InterruptableJob;
@@ -43,9 +46,10 @@ import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.context.ServletConfigAware;
 
-public class HarvestingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
+public class HarvestingJob extends ScheduledJob implements InterruptableJob {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HarvestingJob.class);
     
@@ -53,8 +57,6 @@ public class HarvestingJob extends ScheduledJob implements InterruptableJob, Ser
     private CkanHarvestingService harvestingService;
     
     private String configFile;
-
-    private String webappFolder;
 
     private boolean enabled = true;
 
@@ -84,26 +86,27 @@ public class HarvestingJob extends ScheduledJob implements InterruptableJob, Ser
         if ( !enabled) {
             return;
         }
+        LOGGER.info("Start ckan harvesting task ...");
         final JobDetail details = context.getJobDetail();
         JobDataMap jobDataMap = details.getJobDataMap();
         HarvestingConfig harvestingConfig = readJobConfig((String) jobDataMap.get("configFile"));
-        
-        LOGGER.info("Start ckan harvesting task");
-        harvestingService.harvestDatasets();
-        
-        // TODO 
-        
+        try {
+            String outputPath = getOutputFolder(harvestingConfig.getOutputPath());
+            LOGGER.debug("Download resources to {}", outputPath);
+            
+            harvestingService.setResourceDownloadBaseFolder(outputPath);
+            harvestingService.harvestDatasets();
+            harvestingService.harvestResources();
+        } catch (Exception e) {
+            LOGGER.error("could not harvest resources! ", e);
+        }
+        LOGGER.info("Done harvesting ckan.");
     }
 
     @Override
     public void interrupt() throws UnableToInterruptJobException {
         this.enabled = false;
         LOGGER.info("Render task successfully shutted down.");
-    }
-
-    @Override
-    public void setServletConfig(ServletConfig servletConfig) {
-        webappFolder = servletConfig.getServletContext().getRealPath("/");
     }
 
     @Override
@@ -124,15 +127,16 @@ public class HarvestingJob extends ScheduledJob implements InterruptableJob, Ser
         this.configFile = configFile;
     }
     
-//    private String getOutputFolder() {
-//        String outputPath = harvestingConfig.getOutputPath();
-//        String outputDirectory = webappFolder + File.separator + outputPath + File.separator;
-//        File dir = new File(outputDirectory);
-//        if ( !dir.exists()) {
-//            dir.mkdirs();
-//        }
-//        return outputDirectory;
-//    }
+    private String getOutputFolder(String outputPath) throws URISyntaxException {
+        URL resource = getClass().getResource("/");
+        URI baseFolder = resource.toURI();
+        String outputDirectory = baseFolder + outputPath + "/";
+        File dir = new File(outputDirectory);
+        if ( !dir.exists()) {
+            dir.mkdirs();
+        }
+        return outputDirectory;
+    }
 
     public CkanHarvestingService getHarvestingService() {
         return harvestingService;

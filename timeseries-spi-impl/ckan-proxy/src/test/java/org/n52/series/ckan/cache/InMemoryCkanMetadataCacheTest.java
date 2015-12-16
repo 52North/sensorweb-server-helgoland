@@ -1,5 +1,7 @@
 package org.n52.series.ckan.cache;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.n52.series.ckan.cache.InMemoryCkanMetadataCache;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanResource;
@@ -45,8 +47,9 @@ public class InMemoryCkanMetadataCacheTest {
         dataset.setResources(resources);
         
         ckanCache.insertOrUpdate(dataset);
-        final CkanResource actual = ckanCache.getResourceDescription(dataset.getId());
-        MatcherAssert.assertThat(actual.getId(), CoreMatchers.is(resourceDescription.getId()));
+        final JsonNode actual = ckanCache.getSchemaDescription(dataset.getId());
+        String actualId = actual.get("id").asText();
+        MatcherAssert.assertThat(actualId, CoreMatchers.is(resourceDescription.getId()));
     }
     
     private CkanResource createRandomCkanResource(CkanDataset dataset) {
