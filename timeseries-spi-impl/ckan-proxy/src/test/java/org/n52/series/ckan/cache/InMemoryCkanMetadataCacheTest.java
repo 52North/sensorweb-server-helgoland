@@ -65,13 +65,13 @@ public class InMemoryCkanMetadataCacheTest {
     @Test
     public void shouldReturnResourceDescription() {
         CkanDataset dataset = new CkanDataset("test-dataset");
-        CkanPair extras = new CkanPair(CkanConstants.SCHEMA_DESCRIPTOR, "{\"id\":\"foobar\"}");
+        CkanPair extras = new CkanPair(CkanConstants.SCHEMA_DESCRIPTOR, "{\"resource_type\":\"csv-observations-collection\",\"schema_descriptor_version\":\"0.1\"}");
         dataset.setExtras(Collections.singletonList(extras));
         
         ckanCache.insertOrUpdate(dataset);
         final SchemaDescriptor actual = ckanCache.getSchemaDescription(dataset.getId());
-        String actualId = actual.getNode().get("id").asText();
-        MatcherAssert.assertThat(actualId, CoreMatchers.is("foobar"));
+        String actualId = actual.getVersion();
+        MatcherAssert.assertThat(actualId, CoreMatchers.is("0.1"));
     }
     
     private CkanResource createRandomCkanResource(CkanDataset dataset) {

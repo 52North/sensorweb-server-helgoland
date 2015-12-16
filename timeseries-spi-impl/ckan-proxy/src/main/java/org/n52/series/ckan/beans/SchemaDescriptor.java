@@ -54,10 +54,6 @@ public class SchemaDescriptor {
         return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SCHEMA_DESCRIPTOR_DESCRIPTION);
     }
     
-    public String getId() {
-        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SCHEMA_DESCRIPTOR_ID);
-    }
-    
     public JsonNode getNode() {
         return node;
     }

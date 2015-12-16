@@ -132,17 +132,25 @@ public class CkanHarvestingService {
     }
     
     private DescriptionFile getSchemaDescription(CkanDataset dataset) throws IOException {
+        saveToFile("dataset_" + dataset.getName(), dataset, om.writeValueAsString(dataset));
         SchemaDescriptor schemaDescription = metadataCache.getSchemaDescription(dataset.getId());
-        final String resourceName = "dataset_" + dataset.getName();
-        File file = getDatasetDownloadFolder(dataset)
-                .resolve(resourceName)
-                .toFile();
-        final String contentAsString = om.writeValueAsString(schemaDescription);
-        org.apache.commons.io.FileUtils.writeStringToFile(file, contentAsString);
+        File file = saveToFile("schema_descriptor.json", dataset, schemaDescription.getNode());
         LOGGER.info("Downloaded resource description to {}.", file.getAbsolutePath());
         return new DescriptionFile(dataset, file, schemaDescription);
     }
+    
+    private File saveToFile(String filename, CkanDataset dataset, Object content) throws IOException {
+        return saveToFile(filename, dataset, om.writeValueAsString(content));
+    }
 
+    private File saveToFile(String filename, CkanDataset dataset, String content) throws IOException {
+        File file = getDatasetDownloadFolder(dataset)
+                .resolve(filename)
+                .toFile();
+        FileUtils.writeStringToFile(file, content);
+        return file;
+    }
+    
     protected List<String> getNonResourceDescriptionIds(SchemaDescriptor resourceDescription) {
         List<String> resourceIds = new ArrayList<>();
         JsonNode descriptionNode = resourceDescription.getNode();
@@ -173,7 +181,8 @@ public class CkanHarvestingService {
     }
 
     protected DataFile downloadCsvFile(CkanResource resource, Path datasetDownloadFolder) {
-        final String resourceName = extractFileName(resource);
+//        final String resourceName = extractFileName(resource);
+        final String resourceName = resource.getId() + ".csv";
         File file = datasetDownloadFolder.resolve(resourceName).toFile();
         
         // TODO download only when newer
