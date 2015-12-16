@@ -31,7 +31,13 @@ public interface CkanConstants {
 
     public static final String SCHEMA_DESCRIPTOR = "schema_descriptor";
     
-    public static final String CSV_OBSERVATIONS_COLLECTION = "csv-observations-collection";
+    public static final String SCHEMA_DESCRIPTOR_VERSION = "schema_descriptor_version";
+    
+    public static final String SCHEMA_DESCRIPTOR_ID = "schema_descriptor_id";
+    
+    public static final String SCHEMA_DESCRIPTOR_DESCRIPTION = "schema_descriptor_description";
+    
+    public static final String RESOURCE_TYPE_CSV_OBSERVATIONS_COLLECTION = "csv-observations-collection";
     
     public static final String RESOURCE_TYPE_PLATFORMS = "platforms";
     

@@ -30,7 +30,6 @@ package org.n52.series.ckan.da;
 import org.n52.series.ckan.cache.InMemoryCkanMetadataCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.CkanQuery;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -69,11 +68,12 @@ public class CkanHarvestingServiceTest {
     public void setUp() throws URISyntaxException {
         ckanMetadataCache = new InMemoryCkanMetadataCache();
         ckanDataCache = new InMemoryCkanDataCache();
-//        ckanHarvester = new CkanHarvestingService();
-        ckanHarvester = new SeamCkanHarvester();
         
-        ckanHarvester.setResourceClient(new ResourceClient()); // TODO load locally from seam
-        ckanHarvester.setCkanClient(new CkanClient("https://ckan.colabis.de")); // TODO load locally from seam
+        ckanHarvester = new SeamCkanHarvester("dwd");
+//        ckanHarvester = new CkanHarvestingService();
+//        ckanHarvester.setResourceClient(new ResourceClient());
+//        ckanHarvester.setCkanClient(new CkanClient("https://ckan.colabis.de"));
+        
         ckanHarvester.setResourceDownloadBaseFolder(testFolder.getRoot().toURI().toString());
         ckanHarvester.setMetadataCache(ckanMetadataCache);
         ckanHarvester.setDataCache(ckanDataCache);

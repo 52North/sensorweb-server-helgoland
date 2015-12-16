@@ -28,6 +28,10 @@
 package org.n52.series.ckan.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import org.n52.series.ckan.da.CkanConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +52,19 @@ public class JsonUtil {
                 ? field.asInt()
                 : -1;
     }
+    public static List<String> parseMissingToEmptyArray(JsonNode node, String fieldName, String... alternateFieldNames) {
+        List<String> values = new ArrayList<>();
+        JsonNode field = findField(node, fieldName, alternateFieldNames);
+        if ( !field.isMissingNode() && field.isArray()) {
+            final Iterator<JsonNode> iter = field.iterator();
+            while (iter.hasNext()) {
+                values.add(iter.next().asText());
+            }
+        }
+        return values;
+    }
     
-    private static JsonNode findField(JsonNode node, String fieldName, String[] alternateFieldNames) {
+    private static JsonNode findField(JsonNode node, String fieldName, String... alternateFieldNames) {
         JsonNode field = getNodeWithName(fieldName, node);
         field = tryLowerCasedIfMissing(field, fieldName, node);
         if (field.isMissingNode() && alternateFieldNames != null) {
@@ -78,6 +93,8 @@ public class JsonUtil {
     private static JsonNode getNodeWithLowerCasedName(String fieldName, JsonNode node) {
         return node.at("/" + fieldName.toLowerCase());
     }
+
+    
     
 
 }

@@ -27,18 +27,14 @@
  */
 package org.n52.series.ckan.beans;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.n52.series.ckan.da.CkanConstants;
-import static org.n52.series.ckan.util.JsonUtil.parseMissingToEmptyString;
-import static org.n52.series.ckan.util.JsonUtil.parseMissingToNegativeInt;
 
 public class CsvObservationsCollection {
     
@@ -46,42 +42,13 @@ public class CsvObservationsCollection {
     
     private final String description;
     
-    private final Map<ResourceMember, DataFile> dataCollection;
+    private final Map<ResourceMember, DataFile> dataCollection; // multiple data files
     
     public CsvObservationsCollection(String datasetId, DescriptionFile description, Map<String, DataFile> csvContents) {
         this.datasetId = datasetId;
-        JsonNode node = description.getNode();
-        this.description = node.at("/description").asText();
-        this.dataCollection = parseResourceMembers(node, csvContents);
-    }
-
-    private Map<ResourceMember, DataFile> parseResourceMembers(JsonNode resourceDescription, Map<String, DataFile> csvContents) {
-        Map<ResourceMember, DataFile> members = new HashMap<>();
-        final JsonNode membersNode = resourceDescription.findValue("members");
-        final Iterator<JsonNode> iter = membersNode.elements();
-        while (iter.hasNext()) {
-            JsonNode node = iter.next();
-            ResourceMember member = new ResourceMember();
-            // TODO missing ids will cause conflicts/inconsistencies
-            member.setId(parseMissingToEmptyString(node, CkanConstants.MEMBER_RESOURCE_NAME, CkanConstants.MEMBER_RESOURCEID));
-            member.setResourceType(parseMissingToEmptyString(node, CkanConstants.MEMBER_RESOURCE_TYPE, CkanConstants.MEMBER_RESOURCETYPE));
-            final int headerRows = parseMissingToNegativeInt(node, CkanConstants.MEMBER_HEADER_ROWS);
-            member.setHeaderRows(headerRows < 0 ? 1 : headerRows); // assume 1 header row by default
-            member.setResourceFields(parseResourceFields(node));
-            members.put(member, csvContents.get(member.getId()));
-        }
-        return members;
-    }
-    
-    private List<ResourceField> parseResourceFields(JsonNode member) {
-        List<ResourceField> fields = new ArrayList<>();
-        JsonNode fieldsNode = member.findValue("fields");
-        Iterator<JsonNode> iter = fieldsNode.elements();
-        while (iter.hasNext()) {
-            JsonNode node = iter.next();
-            fields.add(new ResourceField(node));
-        }
-        return fields;
+        SchemaDescriptor descriptor = description.getSchemaDescription();
+        this.dataCollection = descriptor.relateWithDataFiles(csvContents);
+        this.description = descriptor.getDescription();
     }
     
     public String getDatasetId() {

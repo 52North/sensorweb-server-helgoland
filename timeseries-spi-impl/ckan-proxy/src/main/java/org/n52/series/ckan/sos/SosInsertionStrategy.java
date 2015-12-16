@@ -1,4 +1,3 @@
-package org.n52.series.ckan.io;
 /**
  * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
@@ -26,6 +25,7 @@ package org.n52.series.ckan.io;
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+package org.n52.series.ckan.sos;
 
 public interface SosInsertionStrategy {
     

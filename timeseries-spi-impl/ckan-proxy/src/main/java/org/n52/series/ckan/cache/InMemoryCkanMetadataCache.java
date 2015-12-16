@@ -38,7 +38,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import org.n52.series.ckan.beans.SchemaDescriptor;
 import org.n52.series.ckan.da.CkanConstants;
+import org.n52.series.ckan.util.JsonUtil;
 import org.n52.sos.exception.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +92,7 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
             if (containsNewerThan(dataset)) {
                 LOGGER.info("No metadata updates on dataset {}.", dataset.getId());
             }
-            if (hasResourceDescription(dataset)) {
+            if (hasSchemaDescriptor(dataset)) {
                 datasets.put(dataset.getId(), dataset);
                 // TODO load resource files if newer and 
                   // TODO update metadata
@@ -124,28 +126,32 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
     }
     
     @Override
-    public JsonNode getSchemaDescription(String datasetId) {
-        return datasets.containsKey(datasetId)
-                ? getResourceDesciptionFor(getDataset(datasetId))
-                : null;
+    public SchemaDescriptor getSchemaDescription(String datasetId) {
+        return getSchemaDescriptor(getDataset(datasetId));
     }
 
     @Override
-    public boolean hasResourceDescription(CkanDataset dataset) {
-        return getResourceDesciptionFor(dataset) != null;
+    public boolean hasSchemaDescriptor(CkanDataset dataset) {
+        return getSchemaDescriptor(dataset) != null;
     }
 
-    private JsonNode getResourceDesciptionFor(CkanDataset dataset) {
-        for (CkanPair extras : dataset.getExtras()) {
-            if (extras.getKey().equalsIgnoreCase(CkanConstants.SCHEMA_DESCRIPTOR)) {
-                try {
-                    return om.readTree(extras.getValue());
-                } catch (IOException e) {
-                     LOGGER.error("Could not read schema_descriptor: {}", extras.getValue(), e);
+    private SchemaDescriptor getSchemaDescriptor(CkanDataset dataset) {
+        if (dataset != null && dataset.getExtras() != null) {
+            for (CkanPair extras : dataset.getExtras()) {
+                if (extras.getKey().equalsIgnoreCase(CkanConstants.SCHEMA_DESCRIPTOR)) {
+                    try {
+                        JsonNode schemaDescriptionNode = om.readTree(extras.getValue());
+                        String resourceType = JsonUtil.parseMissingToEmptyString(schemaDescriptionNode, CkanConstants.MEMBER_RESOURCE_TYPE);
+                        if (resourceType.equalsIgnoreCase(CkanConstants.RESOURCE_TYPE_CSV_OBSERVATIONS_COLLECTION)) {
+                            return new SchemaDescriptor(schemaDescriptionNode);
+                        }
+                    } catch (IOException e) {
+                         LOGGER.error("Could not read schema_descriptor: {}", extras.getValue(), e);
+                    }
                 }
             }
         }
-        return MissingNode.getInstance();
+        return null;
     }
     
 }

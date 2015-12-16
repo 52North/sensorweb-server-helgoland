@@ -27,10 +27,6 @@
  */
 package org.n52.series.ckan.table;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import org.n52.series.ckan.beans.ResourceMember;
 
@@ -38,11 +34,10 @@ public class ResourceKey {
     
     private final String keyId;
     
-    private final List<ResourceMember> members;
+    private final ResourceMember member;
 
     public ResourceKey(String keyId, ResourceMember member) {
-        this.members = new ArrayList<>();
-        this.members.add(member);
+        this.member = member;
         this.keyId = keyId;
     }
 
@@ -50,18 +45,10 @@ public class ResourceKey {
         return keyId;
     }
 
-    public List<ResourceMember> getMembers() {
-        return Collections.unmodifiableList(members);
+    public ResourceMember getMember() {
+        return member;
     }
 
-    public void addMember(ResourceMember member) {
-        members.add(member);
-    }
-    
-    public void addMembers(Collection<ResourceMember> members) {
-        members.addAll(members);
-    }
-    
     @Override
     public int hashCode() {
         int hash = 5;
@@ -80,7 +67,7 @@ public class ResourceKey {
         if (!Objects.equals(this.keyId, other.keyId)) {
             return false;
         }
-        if (!Objects.equals(this.members, other.members)) {
+        if (!Objects.equals(this.member, other.member)) {
             return false;
         }
         return true;
@@ -88,7 +75,7 @@ public class ResourceKey {
 
     @Override
     public String toString() {
-        return "ResourceKey{" + "keyId=" + keyId + ", members=" + members + '}';
+        return "ResourceKey{" + "keyId=" + keyId + ", member=" + member + '}';
     }
 
 }

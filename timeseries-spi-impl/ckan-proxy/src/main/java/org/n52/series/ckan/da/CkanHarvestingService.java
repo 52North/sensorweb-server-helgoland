@@ -51,6 +51,7 @@ import java.util.Map;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.DescriptionFile;
+import org.n52.series.ckan.beans.SchemaDescriptor;
 import org.n52.series.ckan.cache.CkanDataSink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,26 +111,28 @@ public class CkanHarvestingService {
     
     public void harvestResources() throws IOException {
         LOGGER.info("Start harvesting data resources.");
+        int observationCollectionCount = 0;
         for (CkanDataset dataset : metadataCache.getDatasets()) {
-            if (metadataCache.hasResourceDescription(dataset)) {
+            if (metadataCache.hasSchemaDescriptor(dataset)) {
                 LOGGER.info("Download resources for dataset {}.", dataset.getId());
-                DescriptionFile description = downloadResourceDescription(dataset);
+                DescriptionFile description = getSchemaDescription(dataset);
                 
                 String datasetId = dataset.getId();
-                List<String> resourceIds = getNonResourceDescriptionIds(description.getNode());
+                List<String> resourceIds = getNonResourceDescriptionIds(description.getSchemaDescription());
                 Map<String, DataFile> csvContents = downloadCsvFiles(dataset, resourceIds);
                 
                 // TODO check when to delete or update resource
                 
                 dataCache.insertOrUpdate(dataset, 
                         new CsvObservationsCollection(datasetId, description, csvContents));
+                observationCollectionCount++;
             }
         }
-        LOGGER.info("Finished harvesting data resources (got #{} resources).", dataCache.size());
+        LOGGER.info("Finished harvesting data resources (got #{} csv-observation-collections).", observationCollectionCount);
     }
     
-    private DescriptionFile downloadResourceDescription(CkanDataset dataset) throws IOException {
-        JsonNode schemaDescription = metadataCache.getSchemaDescription(dataset.getId());
+    private DescriptionFile getSchemaDescription(CkanDataset dataset) throws IOException {
+        SchemaDescriptor schemaDescription = metadataCache.getSchemaDescription(dataset.getId());
         final String resourceName = "dataset_" + dataset.getName();
         File file = getDatasetDownloadFolder(dataset)
                 .resolve(resourceName)
@@ -140,9 +143,10 @@ public class CkanHarvestingService {
         return new DescriptionFile(dataset, file, schemaDescription);
     }
 
-    protected List<String> getNonResourceDescriptionIds(JsonNode resourceDescription) {
+    protected List<String> getNonResourceDescriptionIds(SchemaDescriptor resourceDescription) {
         List<String> resourceIds = new ArrayList<>();
-        for (JsonNode node : resourceDescription.at("/members")) {
+        JsonNode descriptionNode = resourceDescription.getNode();
+        for (JsonNode node : descriptionNode.at("/members")) {
             JsonNode resourceId = node.findValue(CkanConstants.MEMBER_RESOURCE_NAME);
             if (resourceId.isArray()) {
                 Iterator<JsonNode> iter = resourceId.iterator();
@@ -161,17 +165,22 @@ public class CkanHarvestingService {
         Path datasetDownloadFolder = getDatasetDownloadFolder(dataset);
         for (CkanResource resource : dataset.getResources()) {
             if (resourceIds.contains(resource.getId())) {
-                final String resourceName = extractFileName(resource);
-                File file = datasetDownloadFolder.resolve(resourceName).toFile();
-                
-                // TODO download only when newer
-                
-                downloadToFile(resource.getUrl(), file);
-                LOGGER.info("Downloaded data to {}.", file.getAbsolutePath());
-                csvFiles.put(resource.getId(), new DataFile(resource, file));
+                DataFile datafile = downloadCsvFile(resource, datasetDownloadFolder);
+                csvFiles.put(resource.getId(), datafile);
             }
         }
         return csvFiles;
+    }
+
+    protected DataFile downloadCsvFile(CkanResource resource, Path datasetDownloadFolder) {
+        final String resourceName = extractFileName(resource);
+        File file = datasetDownloadFolder.resolve(resourceName).toFile();
+        
+        // TODO download only when newer
+        
+        downloadToFile(resource.getUrl(), file);
+        LOGGER.info("Downloaded data to {}.", file.getAbsolutePath());
+        return new DataFile(resource, file);
     }
 
     private String extractFileName(CkanResource resource) {

@@ -10,7 +10,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="org.n52" level="DEBUG" />
+	<logger name="org.n52" level="TRACE" />
 	<logger name="org.apache" level="WARN" />
 
 	<root level="INFO">

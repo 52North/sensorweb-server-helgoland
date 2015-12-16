@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import javax.servlet.ServletConfig;
 import org.n52.io.task.ScheduledJob;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
@@ -46,8 +45,6 @@ import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.context.ServletConfigAware;
 
 public class HarvestingJob extends ScheduledJob implements InterruptableJob {
 

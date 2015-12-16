@@ -32,8 +32,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.ResourceField;
 import org.n52.series.ckan.beans.ResourceMember;
@@ -61,23 +67,30 @@ public class ResourceTable extends DataTable {
         final Path filePath = dataFile.getFile().toPath();
         fieldIdsToIndex = lowerCaseFieldIds(fieldIdsToIndex);
         try {
-            List<String> allLines = Files.readAllLines(filePath, dataFile.getEncoding());
+            LOGGER.debug("loading table ...");
+            long start = System.currentTimeMillis();
+            CSVParser csvParser = CSVParser.parse(filePath.toFile(), dataFile.getEncoding(), CSVFormat.DEFAULT);
+            Iterator<CSVRecord> iterator = csvParser.iterator();
             List<String> columnHeaders = resourceMember.getColumnHeaders();
-            for (int i = resourceMember.getHeaderRows() ; i < allLines.size() ; i ++) {
-                String[] values = allLines.get(i).split(",");
-                if (values.length != columnHeaders.size()) {
+            for (int i = 0 ; i < resourceMember.getHeaderRows() ; i++) {
+                iterator.next(); // skip
+            }
+            int lineNbr = 0;
+            while (iterator.hasNext()) {
+                CSVRecord line = iterator.next();
+                if (line.size() != columnHeaders.size()) {
                     
                     // TODO choose csv parsing strategy
                     
                     LOGGER.warn("ignore line: #columnheaders != #csvValues");
                     LOGGER.debug("headers: {}", Arrays.toString(columnHeaders.toArray()));
-                    LOGGER.debug("line: {}", allLines.get(i));
+                    LOGGER.debug("line: {}", line);
                     continue;
                 }
-                ResourceKey id = new ResourceKey("" + i, resourceMember);
-                for (int j = 0 ; j < values.length ; j++) {
+                ResourceKey id = new ResourceKey("" + lineNbr++, resourceMember);
+                for (int j = 0 ; j < line.size() ; j++) {
                     final ResourceField field = resourceMember.getField(j);
-                    final String value = values[j];
+                    final String value = line.get(j);
                     table.put(id, field, value);
                     
                     if (fieldIdsToIndex.contains(field.getFieldId())) {
@@ -86,7 +99,9 @@ public class ResourceTable extends DataTable {
                 }
             }
             LOGGER.debug("Resource data '{}' loaded into memory (#{} lines a #{} columns)", 
-                    resourceMember.getId(), allLines.size(), columnHeaders.size());
+                    resourceMember.getId(), lineNbr, columnHeaders.size());
+            LOGGER.debug("Loading took {}s", (System.currentTimeMillis() - start)/1000);
+            logMemory();
         } catch (IOException e) {
             LOGGER.error("could not read data from {}", filePath, e);
         }

@@ -116,8 +116,9 @@ public class ResourceMember {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.id);
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.id);
+        hash = 17 * hash + Objects.hashCode(this.resourceType);
         return hash;
     }
 
@@ -133,8 +134,13 @@ public class ResourceMember {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
+        if (!Objects.equals(this.resourceType, other.resourceType)) {
+            return false;
+        }
         return true;
     }
+
+    
     
     
 }

@@ -27,8 +27,8 @@
  */
 package org.n52.series.ckan.cache;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import org.n52.series.ckan.beans.SchemaDescriptor;
 
 public interface CkanMetadataCache {
     
@@ -50,7 +50,7 @@ public interface CkanMetadataCache {
     
     public CkanDataset getDataset(String datasetId);
     
-    public boolean hasResourceDescription(CkanDataset datasetId);
+    public boolean hasSchemaDescriptor(CkanDataset datasetId);
     
-    public JsonNode getSchemaDescription(String datasetId);
+    public SchemaDescriptor getSchemaDescription(String datasetId);
 }

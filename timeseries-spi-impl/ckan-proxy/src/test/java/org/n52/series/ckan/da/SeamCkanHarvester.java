@@ -31,11 +31,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.CkanQuery;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import org.n52.series.ckan.beans.DataFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,22 +49,27 @@ public class SeamCkanHarvester extends CkanHarvestingService {
     
     private final ObjectMapper om = new ObjectMapper();
     
+    private final String contextPath;
+    
     {
         CkanClient.configureObjectMapper(om);
     }
 
+    public SeamCkanHarvester(String contextPath) {
+        this.contextPath = contextPath;
+    }
+    
     @Override
     public void harvestDatasets() {
-        final String path = TEST_FILES_BASE_PATH + "/dwd";
-        for (File file : getDatasets(path)) {
+        for (File file : getDatasets()) {
             CkanDataset dataset = parseDatasetTestFile(file);
             getMetadataCache().insertOrUpdate(dataset);
         }
     }
-    
-    private List<File> getDatasets(String baseFolder) {
+
+    private List<File> getDatasets() {
         List<File> datasets = new ArrayList<>();
-        File folder = new File(getClass().getResource(baseFolder).getFile());
+        File folder = getContextDataFolder();
         File[] datasetFiles = folder.listFiles();
         for (File file : datasetFiles) {
             if (file.isDirectory()) {
@@ -73,6 +80,11 @@ public class SeamCkanHarvester extends CkanHarvestingService {
         return datasets;
     }
 
+    private File getContextDataFolder() {
+        String baseFolder = TEST_FILES_BASE_PATH + "/" + contextPath;
+        return new File(getClass().getResource(baseFolder).getFile());
+    }
+
     private CkanDataset parseDatasetTestFile(File file) {
         try {
             return om.readValue(file, CkanDataset.class);
@@ -81,5 +93,21 @@ public class SeamCkanHarvester extends CkanHarvestingService {
             return new CkanDataset();
         }
     }
+
+    @Override
+    protected DataFile downloadCsvFile(CkanResource resource, Path datasetDownloadFolder) {
+        File folder = getContextDataFolder();
+        File[] dataFolders = folder.listFiles();
+        for (File file : dataFolders) {
+            if (file.isDirectory()) {
+                Path datapath = file.toPath().resolve(resource.getId() + ".csv");
+                if (datapath.toFile().exists()) {
+                    return new DataFile(resource, datapath.toFile());
+                }
+            }
+        } 
+        return new DataFile(resource, null);
+    }
+    
     
 }

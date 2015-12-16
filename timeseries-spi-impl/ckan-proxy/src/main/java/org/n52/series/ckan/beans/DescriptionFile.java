@@ -27,7 +27,6 @@
  */
 package org.n52.series.ckan.beans;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.File;
 import java.sql.Timestamp;
@@ -39,12 +38,12 @@ public class DescriptionFile {
     
     private final File file;
     
-    private final JsonNode node;
+    private final SchemaDescriptor schemaDescription;
     
-    public DescriptionFile(CkanDataset dataset, File file, JsonNode node) {
+    public DescriptionFile(CkanDataset dataset, File file, SchemaDescriptor node) {
         this.dataset = dataset;
         this.file = file;
-        this.node = node;
+        this.schemaDescription = node;
     }
     
     public CkanDataset getDataset() {
@@ -55,8 +54,8 @@ public class DescriptionFile {
         return file;
     }
 
-    public JsonNode getNode() {
-        return node;
+    public SchemaDescriptor getSchemaDescription() {
+        return schemaDescription;
     }
     
     public DateTime getLastModified() {

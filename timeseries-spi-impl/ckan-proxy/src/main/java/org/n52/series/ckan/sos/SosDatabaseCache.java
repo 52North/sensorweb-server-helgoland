@@ -1,4 +1,3 @@
-package org.n52.series.ckan.cache;
 /**
  * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
  * Software GmbH
@@ -26,11 +25,11 @@ package org.n52.series.ckan.cache;
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+package org.n52.series.ckan.sos;
 
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
-import org.n52.series.ckan.io.SosInsertionStrategy;
-import org.n52.series.ckan.io.SosModelMapper;
+import org.n52.series.ckan.cache.CkanDataSink;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
 

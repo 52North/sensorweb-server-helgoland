@@ -34,13 +34,18 @@ import org.joda.time.DateTime;
 
 public class DataFile {
     
-    private Charset encoding = Charset.forName("Cp1250"); // TODO 
+    private Charset encoding = Charset.forName("UTF-8");
     
     private final CkanResource resource;
     
     private final File file;
     
     public DataFile(CkanResource resource, File file) {
+        this(resource, file, "UTF-8");
+    }
+    
+    public DataFile(CkanResource resource, File file, String encoding) {
+        this.encoding = Charset.forName(encoding);
         this.resource = resource;
         this.file = file;
     }
