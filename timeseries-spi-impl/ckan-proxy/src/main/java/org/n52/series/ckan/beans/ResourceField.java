@@ -28,12 +28,17 @@
 package org.n52.series.ckan.beans;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import java.util.Iterator;
 import java.util.Objects;
 import org.n52.series.ckan.da.CkanConstants;
 import static org.n52.series.ckan.util.JsonUtil.parseMissingToEmptyString;
 
 public class ResourceField {
+
+    public static ResourceField copy(ResourceField field) {
+        return new ResourceField(field.node);
+    }
+    
+    private String qualifier;
     
     private final String fieldId;
     
@@ -50,14 +55,18 @@ public class ResourceField {
         this.fieldId = id.toLowerCase();
     }
     
-    public Iterator<String> getFieldNames() {
-        return node.fieldNames();
-    }
-
     public String getFieldId() {
         return fieldId;
     }
 
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
+    }
+    
     public String getShortName() {
         return parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_SHORT_NAME, CkanConstants.MEMBER_FIELD_SHORTNAME);
     }
@@ -81,8 +90,7 @@ public class ResourceField {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.fieldId);
+        int hash = 7;
         return hash;
     }
 
@@ -95,15 +103,18 @@ public class ResourceField {
             return false;
         }
         final ResourceField other = (ResourceField) obj;
-        if (this.fieldId == null || other.fieldId == null) {
+        if (!Objects.equals(this.qualifier, other.qualifier)) {
             return false;
         }
-        return Objects.equals(this.fieldId.toLowerCase(), other.fieldId.toLowerCase());
+        if (!Objects.equals(this.fieldId, other.fieldId)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "ResourceField{" + "fieldId=" + fieldId + '}';
+        return "ResourceField{" + "qualifier=" + qualifier + ", fieldId=" + fieldId + '}';
     }
-    
+
 }

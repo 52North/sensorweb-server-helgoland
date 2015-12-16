@@ -75,6 +75,7 @@ public class DataTable {
         }
         
         DataTable joinTable = new DataTable(this);
+        LOGGER.debug("joining on #{} left rows", joinKeys.size());
         for (JoinIndex joinOn : joinKeys.keySet()) {
             Map<ResourceField, Map<ResourceKey, String>> columnMap = other.table.columnMap();
             for (Map.Entry<ResourceField, Map<ResourceKey, String>> otherColumnEntry : columnMap.entrySet()) {
@@ -82,33 +83,24 @@ public class DataTable {
                     for (Map.Entry<ResourceKey, String> possibleJoinValue : otherColumnEntry.getValue().entrySet()) {
                         if (joinOn.getValue().equalsIgnoreCase(possibleJoinValue.getValue())) {
                             
-                            // TODO new resource key
+                            ResourceKey leftKey = joinKeys.get(joinOn);
+                            for (Map.Entry<ResourceField, String> leftValue : table.row(leftKey).entrySet()) {
+                                joinTable.table.put(leftKey, leftValue.getKey(), leftValue.getValue());
+                            }
                             
                             final ResourceKey rightKey = possibleJoinValue.getKey();
-                            LOGGER.trace("join key {}", joinOn);
                             for (Map.Entry<ResourceField, String> rightValue : other.table.row(rightKey).entrySet()) {
-                                // XXX user new resource key here
-                                joinTable.table.put(rightKey, rightValue.getKey(), rightValue.getValue());
+                                final ResourceField rightField = rightValue.getKey();
+                                ResourceField joinedField = ResourceField.copy(rightField);
+                                joinedField.setQualifier(rightKey.getMember().getId());
+                                joinTable.table.put(leftKey, joinedField, rightValue.getValue());
                             }
                         }
                     }
                 }
             }
-//            Map<ResourceKey, Map<ResourceField, String>> otherRows = other.table.rowMap();
-//            for (Map.Entry<ResourceKey, Map<ResourceField, String>> otherRowEntry : otherRows.entrySet()) {
-//                String value = otherRowEntry.getValue().get(joinOn.getField());
-//                if (joinOn.equals(new JoinIndex(joinOn.getField(), value))) {
-//                    LOGGER.trace("join key {}", joinOn);
-//                    final ResourceKey rightKey = otherRowEntry.getKey();
-//                    Map<ResourceField, String> rightValues = otherRowEntry.getValue();
-//                    for (Map.Entry<ResourceField, String> rightValue : rightValues.entrySet()) {
-//                        joinTable.table.put(rightKey, rightValue.getKey(), rightValue.getValue());
-//                    }
-//                    
-//                    // TODO update JoinIndex
-//                }
-//            }
         }
+        LOGGER.debug("joined table has #{} rows", joinTable.table.size());
         return joinTable;
     }
 
