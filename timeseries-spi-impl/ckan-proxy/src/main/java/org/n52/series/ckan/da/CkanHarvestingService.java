@@ -206,7 +206,7 @@ public class CkanHarvestingService {
     private void downloadToFile(String url, File file) {
         try {
             String csvContent = resourceClient.downloadTextResource(url);
-            FileUtils.writeStringToFile(file, csvContent);
+            FileUtils.writeStringToFile(file, csvContent, CkanConstants.DEFAULT_CHARSET);
         } catch (IOException e) {
             LOGGER.error("Could not download resource from {}.", url, e);
         }

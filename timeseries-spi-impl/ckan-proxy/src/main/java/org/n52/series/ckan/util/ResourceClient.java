@@ -30,6 +30,7 @@ package org.n52.series.ckan.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.ProxySelector;
+import java.nio.charset.Charset;
 import javax.net.ssl.SSLContext;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -52,6 +53,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.apache.http.util.EntityUtils;
+import org.n52.series.ckan.da.CkanConstants;
 
 public class ResourceClient {
         
@@ -73,7 +75,7 @@ public class ResourceClient {
                     int status = response.getStatusLine().getStatusCode();
                     if (status >= 200 && status < 300) {
                         HttpEntity entity = response.getEntity();
-                        return entity != null ? EntityUtils.toString(entity) : null;
+                        return entity != null ? EntityUtils.toString(entity, CkanConstants.DEFAULT_CHARSET) : null;
                     } else {
                         throw new ClientProtocolException("Unexpected response status: " + status);
                     }

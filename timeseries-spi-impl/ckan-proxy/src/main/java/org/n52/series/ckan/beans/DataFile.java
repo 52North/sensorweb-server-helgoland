@@ -31,23 +31,24 @@ import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.io.File;
 import java.nio.charset.Charset;
 import org.joda.time.DateTime;
+import org.n52.series.ckan.da.CkanConstants;
 
 public class DataFile {
     
-    private Charset encoding = Charset.forName("UTF-8");
+    private Charset encoding = CkanConstants.DEFAULT_CHARSET;
     
     private final CkanResource resource;
     
     private final File file;
     
     public DataFile(CkanResource resource, File file) {
-        this(resource, file, "UTF-8");
+        this.resource = resource;
+        this.file = file;
     }
     
     public DataFile(CkanResource resource, File file, String encoding) {
+        this(resource, file);
         this.encoding = Charset.forName(encoding);
-        this.resource = resource;
-        this.file = file;
     }
 
     public Charset getEncoding() {
