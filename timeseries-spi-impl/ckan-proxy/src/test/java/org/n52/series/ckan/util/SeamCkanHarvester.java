@@ -25,7 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.ckan.da;
+package org.n52.series.ckan.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.CkanClient;
@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import org.n52.series.ckan.beans.DataFile;
+import org.n52.series.ckan.da.CkanHarvestingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

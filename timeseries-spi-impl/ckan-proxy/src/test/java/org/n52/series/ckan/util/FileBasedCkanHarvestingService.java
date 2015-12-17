@@ -25,12 +25,12 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.ckan.da;
+package org.n52.series.ckan.util;
 
 import org.n52.series.ckan.cache.InMemoryCkanMetadataCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.trentorise.opendata.jackan.CkanClient;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
@@ -38,7 +38,6 @@ import java.util.Map;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -48,50 +47,42 @@ import org.n52.series.ckan.beans.ResourceMember;
 import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache.Entry;
-import org.n52.series.ckan.util.ResourceClient;
+import org.n52.series.ckan.da.CkanHarvestingService;
 
-//@Ignore
-public class CkanHarvestingServiceTest {
+public class FileBasedCkanHarvestingService {
     
-    private final ObjectMapper om = new ObjectMapper();
+    private final InMemoryCkanMetadataCache ckanMetadataCache;
     
-    @Rule
-    public TemporaryFolder testFolder = new TemporaryFolder();
+    private final InMemoryCkanDataCache ckanDataCache;
     
-    private InMemoryCkanMetadataCache ckanMetadataCache;
+    private final CkanHarvestingService ckanHarvester;
     
-    private InMemoryCkanDataCache ckanDataCache;
-    
-    private CkanHarvestingService ckanHarvester;
-    
-    @Before
-    public void setUp() throws URISyntaxException {
+    public FileBasedCkanHarvestingService(File folder) throws URISyntaxException, IOException {
         ckanMetadataCache = new InMemoryCkanMetadataCache();
         ckanDataCache = new InMemoryCkanDataCache();
         
         ckanHarvester = new SeamCkanHarvester("dwd");
-//        ckanHarvester = new CkanHarvestingService();
-//        ckanHarvester.setResourceClient(new ResourceClient());
-//        ckanHarvester.setCkanClient(new CkanClient("https://ckan.colabis.de"));
-        
-        ckanHarvester.setResourceDownloadBaseFolder(testFolder.getRoot().toURI().toString());
+        ckanHarvester.setResourceDownloadBaseFolder(folder.toURI().toString());
         ckanHarvester.setMetadataCache(ckanMetadataCache);
         ckanHarvester.setDataCache(ckanDataCache);
         
         MatcherAssert.assertThat(ckanMetadataCache.size(), CoreMatchers.is(0));
-//        CkanQuery query = CkanQuery.filter().byTagNames("DWD");
         ckanHarvester.harvestDatasets();
-    }
-    
-    @Test
-    public void harvestDatasets() {
+        MatcherAssert.assertThat(folder.list().length, CoreMatchers.is(0));
+        ckanHarvester.harvestResources();
         MatcherAssert.assertThat(ckanMetadataCache.size(), CoreMatchers.is(4));
     }
+
+    public InMemoryCkanMetadataCache getCkanMetadataCache() {
+        return ckanMetadataCache;
+    }
+
+    public InMemoryCkanDataCache getCkanDataCache() {
+        return ckanDataCache;
+    }
     
     @Test
-    public void harvestResources() throws IOException {
-        MatcherAssert.assertThat(testFolder.getRoot().list().length, CoreMatchers.is(0));
-        ckanHarvester.harvestResources();
+    public void testtablejoins() throws IOException {
         
         Entry<CkanDataset, CsvObservationsCollection> entry = ckanDataCache.getCollections().iterator().next();
         Map<ResourceMember, DataFile> metadataCollection = entry.getData().getMetadataCollection();
@@ -99,7 +90,7 @@ public class CkanHarvestingServiceTest {
         ResourceTable metadataTable = new ResourceTable(data.getKey(), data.getValue());
         metadataTable.readIntoMemory(Collections.singleton("stations_id"));
         
-        Map<ResourceMember, DataFile> observations = entry.getData().getObservationDataCollection();
+        Map<ResourceMember, DataFile> observations = entry.getData().getObservationDataCollections();
         for (Map.Entry<ResourceMember, DataFile> observationData : observations.entrySet()) {
             ResourceTable dataTable = new ResourceTable(observationData.getKey(), observationData.getValue());
             dataTable.readIntoMemory(null);
