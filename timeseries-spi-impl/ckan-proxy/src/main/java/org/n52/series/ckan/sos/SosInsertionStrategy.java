@@ -27,6 +27,8 @@
  */
 package org.n52.series.ckan.sos;
 
-public interface SosInsertionStrategy {
-    
+import org.n52.series.ckan.cache.CkanDataSink;
+
+public interface SosInsertionStrategy extends CkanDataSink {
+
 }
