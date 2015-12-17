@@ -132,7 +132,7 @@ public class CkanHarvestingService {
     }
     
     private DescriptionFile getSchemaDescription(CkanDataset dataset) throws IOException {
-        saveToFile("dataset_" + dataset.getName(), dataset, om.writeValueAsString(dataset));
+        saveToFile("dataset.json", dataset, om.writeValueAsString(dataset));
         SchemaDescriptor schemaDescription = metadataCache.getSchemaDescription(dataset.getId());
         File file = saveToFile("schema_descriptor.json", dataset, schemaDescription.getNode());
         LOGGER.info("Downloaded resource description to {}.", file.getAbsolutePath());
@@ -181,7 +181,6 @@ public class CkanHarvestingService {
     }
 
     protected DataFile downloadCsvFile(CkanResource resource, Path datasetDownloadFolder) {
-//        final String resourceName = extractFileName(resource);
         final String resourceName = resource.getId() + ".csv";
         File file = datasetDownloadFolder.resolve(resourceName).toFile();
         
