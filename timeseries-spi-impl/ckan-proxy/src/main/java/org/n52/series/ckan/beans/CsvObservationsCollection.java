@@ -101,7 +101,7 @@ public class CsvObservationsCollection {
         return typedCollection;
     }
     
-    public Set<String> getJoinFieldIds(Set<ResourceMember> members) {
+    public Set<ResourceField> getJoinFieldIds(Set<ResourceMember> members) {
         List<ResourceField> allFields = new ArrayList<>();
         FieldCounter counter = new FieldCounter();
         for (ResourceMember member : members) {
@@ -110,10 +110,15 @@ public class CsvObservationsCollection {
             allFields.addAll(fields);
         }
         
-        Set<String> joinColumns = new LinkedHashSet<>();
+        // XXX buggy as it contains fields of the same resource type
+        // this might lead (for example) to join columns of similar 
+        // structured resources (two observation tables containing
+        // both the field MESS_DATUM
+        
+        Set<ResourceField> joinColumns = new LinkedHashSet<>();
         for (ResourceField field : allFields) {
             if (counter.isJoinColumn(field)) {
-                joinColumns.add(field.getFieldId());
+                joinColumns.add(field);
             }
         }
         return joinColumns;

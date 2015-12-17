@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
+import org.n52.series.ckan.beans.ResourceField;
 import org.n52.series.ckan.beans.ResourceMember;
 
 
@@ -53,7 +54,7 @@ class TableMerger {
     
     private void joinResourceTables(CsvObservationsCollection observationCollection) {
         Map<ResourceMember, DataFile> dataCollection = observationCollection.getDataCollection();
-        Set<String> joinFields = observationCollection.getJoinFieldIds(dataCollection.keySet());
+        Set<ResourceField> joinFields = observationCollection.getJoinFieldIds(dataCollection.keySet());
         for (Map.Entry<ResourceMember, DataFile> entry : dataCollection.entrySet()) {
             
         }
