@@ -43,13 +43,14 @@ public class SosDatabaseCache implements CkanDataSink {
 
     @Override
     public void insertOrUpdate(CkanDataset dataset, CsvObservationsCollection csvObservationsCollection) {
-        SosModelMapper modelMapper = SosModelMapper.create()
-                .withData(csvObservationsCollection)
-                .setInsertSensorDao(insertSensorDao)
-                .setInsertObservationDao(insertObservationDao);
-        SosInsertionStrategy insertionStrategy = modelMapper.createInsertionStrategy();
+        SosStrategyFactory factory = SosStrategyFactory.create()
+                // TODO add what might help to get the right strategy
+                .withData(csvObservationsCollection);
         
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        factory.createInsertionStrategy()
+                .insertOrUpdate(dataset, csvObservationsCollection);
+        
+        // TODO decoupled deletion strategy?
     }
 
     public InsertSensorDAO getInsertSensorDao() {
