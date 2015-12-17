@@ -147,7 +147,7 @@ public class CkanHarvestingService {
         File file = getDatasetDownloadFolder(dataset)
                 .resolve(filename)
                 .toFile();
-        FileUtils.writeStringToFile(file, content);
+        FileUtils.writeStringToFile(file, content, CkanConstants.DEFAULT_CHARSET);
         return file;
     }
     
