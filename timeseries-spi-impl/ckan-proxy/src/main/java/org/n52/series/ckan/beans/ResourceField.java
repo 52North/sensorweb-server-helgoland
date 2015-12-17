@@ -51,7 +51,7 @@ public class ResourceField {
 
     public ResourceField(JsonNode node) {
         this.node = node;
-        String id = parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_ID);
+        String id = parseMissingToEmptyString(node, CkanConstants.MemberProperty.FIELD_ID);
         this.fieldId = id.toLowerCase();
     }
     
@@ -68,20 +68,20 @@ public class ResourceField {
     }
     
     public String getShortName() {
-        return parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_SHORT_NAME, CkanConstants.MEMBER_FIELD_SHORTNAME);
+        return parseMissingToEmptyString(node, CkanConstants.MemberProperty.SHORT_NAME, CkanConstants.MemberProperty.FIELD_SHORTNAME);
     }
 
 
     public String getLongName() {
-        return parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_LONG_NAME, CkanConstants.MEMBER_FIELD_LONGNAME);
+        return parseMissingToEmptyString(node, CkanConstants.MemberProperty.MEMBER_FIELD_LONG_NAME, CkanConstants.MemberProperty.FIELD_LONGNAME);
     }
 
     public String getDescription() {
-        return parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_DESCRIPTION);
+        return parseMissingToEmptyString(node, CkanConstants.MemberProperty.FIELD_DESCRIPTION);
     }
 
     public String getFieldType() {
-        return parseMissingToEmptyString(node, CkanConstants.MEMBER_FIELD_TYPE, CkanConstants.MEMBER_FIELDTYPE);
+        return parseMissingToEmptyString(node, CkanConstants.MemberProperty.FIELD_TYPE, CkanConstants.MemberProperty.FIELDTYPE);
     }
     
     public String getOther(String name) {

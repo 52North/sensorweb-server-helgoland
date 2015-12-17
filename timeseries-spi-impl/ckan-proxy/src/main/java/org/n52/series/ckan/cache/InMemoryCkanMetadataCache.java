@@ -29,11 +29,8 @@ package org.n52.series.ckan.cache;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.google.common.base.Strings;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanPair;
-import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -41,7 +38,6 @@ import java.util.Map;
 import org.n52.series.ckan.beans.SchemaDescriptor;
 import org.n52.series.ckan.da.CkanConstants;
 import org.n52.series.ckan.util.JsonUtil;
-import org.n52.sos.exception.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,12 +134,12 @@ public class InMemoryCkanMetadataCache implements CkanMetadataCache {
     private SchemaDescriptor getSchemaDescriptor(CkanDataset dataset) {
         if (dataset != null && dataset.getExtras() != null) {
             for (CkanPair extras : dataset.getExtras()) {
-                if (extras.getKey().equalsIgnoreCase(CkanConstants.SCHEMA_DESCRIPTOR)) {
+                if (extras.getKey().equalsIgnoreCase(CkanConstants.SchemaDescriptor.SCHEMA_DESCRIPTOR)) {
                     try {
                         JsonNode schemaDescriptionNode = om.readTree(extras.getValue());
-                        String resourceType = JsonUtil.parseMissingToEmptyString(schemaDescriptionNode, CkanConstants.MEMBER_RESOURCE_TYPE);
-                        if (resourceType.equalsIgnoreCase(CkanConstants.RESOURCE_TYPE_CSV_OBSERVATIONS_COLLECTION)) {
-                            return new SchemaDescriptor(schemaDescriptionNode);
+                        String resourceType = JsonUtil.parseMissingToEmptyString(schemaDescriptionNode, CkanConstants.SchemaDescriptor.RESOURCE_TYPE);
+                        if (resourceType.equalsIgnoreCase(CkanConstants.ResourceType.CSV_OBSERVATIONS_COLLECTION)) {
+                            return new SchemaDescriptor(dataset, schemaDescriptionNode);
                         }
                     } catch (IOException e) {
                          LOGGER.error("Could not read schema_descriptor: {}", extras.getValue(), e);

@@ -75,19 +75,19 @@ public class CsvObservationsCollection {
         for (Map.Entry<ResourceMember, DataFile> entry : dataCollection.entrySet()) {
             ResourceMember member = entry.getKey();
             final String resourceType = member.getResourceType();
-            if ( !resourceType.equalsIgnoreCase(CkanConstants.RESOURCE_TYPE_OBSERVATIONS)) {
+            if ( !resourceType.equalsIgnoreCase(CkanConstants.ResourceType.OBSERVATIONS)) {
                 typedCollection.put(member, entry.getValue());
             }
         }
         return typedCollection;
     }
     
-    public Map<ResourceMember, DataFile> getObservationDataCollection() {
-        return getDataCollectionsOfType(CkanConstants.RESOURCE_TYPE_OBSERVATIONS);
+    public Map<ResourceMember, DataFile> getObservationDataCollections() {
+        return getDataCollectionsOfType(CkanConstants.ResourceType.OBSERVATIONS);
     }
     
-    public Map<ResourceMember, DataFile> getPlatformDataCollection() {
-        return getDataCollectionsOfType(CkanConstants.RESOURCE_TYPE_PLATFORMS);
+    public Map<ResourceMember, DataFile> getPlatformDataCollections() {
+        return getDataCollectionsOfType(CkanConstants.ResourceType.PLATFORMS);
     }
     
     public Map<ResourceMember, DataFile> getDataCollectionsOfType(String type) {

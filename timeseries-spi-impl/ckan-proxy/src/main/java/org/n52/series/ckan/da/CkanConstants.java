@@ -27,53 +27,66 @@
  */
 package org.n52.series.ckan.da;
 
-public interface CkanConstants {
+import java.nio.charset.Charset;
 
-    public static final String SCHEMA_DESCRIPTOR = "schema_descriptor";
+public interface CkanConstants {
     
-    public static final String SCHEMA_DESCRIPTOR_VERSION = "schema_descriptor_version";
+    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
+    public interface SchemaDescriptor {
+        public static final String SCHEMA_DESCRIPTOR = "schema_descriptor";
+        public static final String VERSION = "schema_descriptor_version";
+        public static final String ID = "schema_descriptor_id";
+        public static final String DESCRIPTION = "schema_descriptor_description";
+        public static final String RESOURCE_TYPE = "resource_type";
+    }
     
-    public static final String SCHEMA_DESCRIPTOR_ID = "schema_descriptor_id";
+    public interface ResourceType {
+        public static final String CSV_OBSERVATIONS_COLLECTION = "csv-observations-collection";
+        public static final String PLATFORMS = "platforms";
+        public static final String OBSERVATIONS = "observations";
+    }
     
-    public static final String SCHEMA_DESCRIPTOR_DESCRIPTION = "schema_descriptor_description";
+    public interface MemberProperty {
+        
+        public static final String RESOURCE_NAME = "resource_name";
+        @Deprecated
+        public static final String RESOURCEID = "resourceId";
+        public static final String RESOURCE_TYPE = "resource_type";
+        @Deprecated
+        public static final String RESOURCETYPE = "resourcetype";
+        public static final String HEADER_ROWS = "headerrows";
+        public static final String FIELD_ID = "field_id";
+        @Deprecated
+        public static final String FIELDID = "fieldId";
+        public static final String SHORT_NAME = "short_name";
+        @Deprecated
+        public static final String FIELD_SHORTNAME = "shortName";
+        public static final String MEMBER_FIELD_LONG_NAME = "long_name";
+        @Deprecated
+        public static final String FIELD_LONGNAME = "longName";
+        public static final String FIELD_DESCRIPTION = "description";
+        public static final String FIELD_TYPE = "field_type";
+        @Deprecated
+        public static final String FIELDTYPE = "fieldType";
+    }
     
-    public static final String RESOURCE_TYPE_CSV_OBSERVATIONS_COLLECTION = "csv-observations-collection";
+    public interface KnownFieldId {
+        public static final String STATION_ID = "Stations_id";
+        public static final String CRS = "crs";
+        public static final String LATITUDE = "geoBreite";
+        public static final String LONGITUDE = "geoLaenge";
+        public static final String ALTITUDE = "Stationshoehe";
+        public static final String STATION_NAME = "Stationsname";
+        public static final String FIRST_DATE = "von_datum";
+        public static final String LAST_DATE = "bis_datum";
+        
+        public static final String RESULT_TIME = "MESS_DATUM";
+    }
     
-    public static final String RESOURCE_TYPE_PLATFORMS = "platforms";
+    public interface KnownFieldProperty {
+        public static final String PHENOMENON = "phenomenon";
+        public static final String UOM = "uom";
+    }
     
-    public static final String RESOURCE_TYPE_OBSERVATIONS = "observations";
-    
-    public static String MEMBER_RESOURCE_NAME = "resource_name";
-    
-    @Deprecated
-    public static String MEMBER_RESOURCEID = "resourceId";
-    
-    public static String MEMBER_RESOURCE_TYPE = "resource_type";
-    
-    @Deprecated
-    public static String MEMBER_RESOURCETYPE = "resourcetype";
-    
-    public static String MEMBER_HEADER_ROWS = "headerrows";
-    
-    public static String MEMBER_FIELD_ID = "field_id";
-    
-    @Deprecated
-    public static String MEMBER_FIELDID = "fieldId";
-    
-    public static String MEMBER_FIELD_SHORT_NAME = "short_name";
-    
-    @Deprecated
-    public static String MEMBER_FIELD_SHORTNAME = "shortName";
-    
-    public static String MEMBER_FIELD_LONG_NAME = "long_name";
-    
-    @Deprecated
-    public static String MEMBER_FIELD_LONGNAME = "longName";
-    
-    public static String MEMBER_FIELD_DESCRIPTION = "description";
-    
-    public static String MEMBER_FIELD_TYPE = "field_type";
-    
-    @Deprecated
-    public static String MEMBER_FIELDTYPE = "fieldType";
 }

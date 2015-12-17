@@ -47,11 +47,11 @@ public class SchemaDescriptor {
     }
 
     public String getVersion() {
-        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SCHEMA_DESCRIPTOR_VERSION);
+        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SchemaDescriptor.VERSION);
     }
 
     public String getDescription() {
-        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SCHEMA_DESCRIPTOR_DESCRIPTION);
+        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SchemaDescriptor.DESCRIPTION);
     }
     
     public JsonNode getNode() {
@@ -59,7 +59,7 @@ public class SchemaDescriptor {
     }
     
     public String getSchemaDescriptionType() {
-        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.MEMBER_RESOURCE_TYPE);
+        return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SchemaDescriptor.RESOURCE_TYPE);
     }
 
     public boolean hasDescription() {
@@ -72,11 +72,11 @@ public class SchemaDescriptor {
         final Iterator<JsonNode> iter = membersNode.elements();
         while (iter.hasNext()) {
             JsonNode memberNode = iter.next();
-            for (String id : JsonUtil.parseMissingToEmptyArray(memberNode, CkanConstants.MEMBER_RESOURCE_NAME, CkanConstants.MEMBER_RESOURCEID)) {
+            for (String id : JsonUtil.parseMissingToEmptyArray(memberNode, CkanConstants.MemberProperty.RESOURCE_NAME, CkanConstants.MemberProperty.RESOURCEID)) {
                 ResourceMember member = new ResourceMember();
                 member.setId(id); // TODO missing ids will cause conflicts/inconsistencies
-                member.setResourceType(parseMissingToEmptyString(memberNode, CkanConstants.MEMBER_RESOURCE_TYPE, CkanConstants.MEMBER_RESOURCETYPE));
-                final int headerRows = parseMissingToNegativeInt(memberNode, CkanConstants.MEMBER_HEADER_ROWS);
+                member.setResourceType(parseMissingToEmptyString(memberNode, CkanConstants.MemberProperty.RESOURCE_TYPE, CkanConstants.MemberProperty.RESOURCETYPE));
+                final int headerRows = parseMissingToNegativeInt(memberNode, CkanConstants.MemberProperty.HEADER_ROWS);
                 member.setHeaderRows(headerRows < 0 ? 1 : headerRows); // assume 1 header row by default
                 member.setResourceFields(parseResourceFields(memberNode));
                 members.put(member, csvContents.get(member.getId()));

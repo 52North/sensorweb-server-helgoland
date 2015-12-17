@@ -53,8 +53,8 @@ public class SosModelMapper {
     
     
     public SosInsertionStrategy createInsertionStrategy() {
-        Map<ResourceMember, DataFile> platformData = getDataOfType(CkanConstants.RESOURCE_TYPE_PLATFORMS);
-        Map<ResourceMember, DataFile> observationData = getDataOfType(CkanConstants.RESOURCE_TYPE_OBSERVATIONS);
+        Map<ResourceMember, DataFile> platformData = getDataOfType(CkanConstants.ResourceType.PLATFORMS);
+        Map<ResourceMember, DataFile> observationData = getDataOfType(CkanConstants.ResourceType.OBSERVATIONS);
         
         // TODO
         
