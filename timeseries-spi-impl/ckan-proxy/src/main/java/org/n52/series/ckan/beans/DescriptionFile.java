@@ -34,16 +34,16 @@ import org.joda.time.DateTime;
 
 public class DescriptionFile {
     
+    private final SchemaDescriptor schemaDescription;
+    
     private final CkanDataset dataset;
     
     private final File file;
     
-    private final SchemaDescriptor schemaDescription;
-    
     public DescriptionFile(CkanDataset dataset, File file, SchemaDescriptor node) {
+        this.schemaDescription = node;
         this.dataset = dataset;
         this.file = file;
-        this.schemaDescription = node;
     }
     
     public CkanDataset getDataset() {
