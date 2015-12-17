@@ -28,7 +28,9 @@
 package org.n52.series.ckan.beans;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,9 +43,15 @@ import static org.n52.series.ckan.util.JsonUtil.parseMissingToNegativeInt;
 public class SchemaDescriptor {
     
     private final JsonNode node;
+    
+    private final CkanDataset dataset;
+    
+    private final List<ResourceMember> members;
 
-    public SchemaDescriptor(JsonNode node) {
+    public SchemaDescriptor(CkanDataset dataset, JsonNode node) {
         this.node = node;
+        this.dataset = dataset;
+        members = parseMemberDescriptions();
     }
 
     public String getVersion() {
@@ -57,6 +65,14 @@ public class SchemaDescriptor {
     public JsonNode getNode() {
         return node;
     }
+
+    public CkanDataset getDataset() {
+        return dataset;
+    }
+    
+    public List<ResourceMember> getMembers() {
+        return Collections.unmodifiableList(members);
+    }
     
     public String getSchemaDescriptionType() {
         return JsonUtil.parseMissingToEmptyString(node, CkanConstants.SchemaDescriptor.RESOURCE_TYPE);
@@ -67,7 +83,15 @@ public class SchemaDescriptor {
     }
     
     public Map<ResourceMember, DataFile> relateWithDataFiles(Map<String, DataFile> csvContents) {
-        Map<ResourceMember, DataFile> members = new HashMap<>();
+        Map<ResourceMember, DataFile> memberRelations = new HashMap<>();
+        for (ResourceMember member : members) {
+            memberRelations.put(member, csvContents.get(member.getId()));
+        }
+        return memberRelations;
+    }
+    
+    private List<ResourceMember> parseMemberDescriptions() {
+        List<ResourceMember> resourceMembers = new ArrayList<>();
         final JsonNode membersNode = node.findValue("members");
         final Iterator<JsonNode> iter = membersNode.elements();
         while (iter.hasNext()) {
@@ -79,12 +103,12 @@ public class SchemaDescriptor {
                 final int headerRows = parseMissingToNegativeInt(memberNode, CkanConstants.MemberProperty.HEADER_ROWS);
                 member.setHeaderRows(headerRows < 0 ? 1 : headerRows); // assume 1 header row by default
                 member.setResourceFields(parseResourceFields(memberNode));
-                members.put(member, csvContents.get(member.getId()));
+                resourceMembers.add(member);
             }
         }
-        return members;
+        return resourceMembers;
     }
-    
+            
     private List<ResourceField> parseResourceFields(JsonNode member) {
         List<ResourceField> fields = new ArrayList<>();
         JsonNode fieldsNode = member.findValue("fields");
