@@ -45,6 +45,7 @@ public class ResourceField {
     private final JsonNode node;
     
     protected ResourceField(String fieldId) {
+        // just for testing
         this.fieldId = fieldId.toLowerCase();
         node = null;
     }
@@ -71,7 +72,6 @@ public class ResourceField {
         return parseMissingToEmptyString(node, CkanConstants.MemberProperty.SHORT_NAME, CkanConstants.MemberProperty.FIELD_SHORTNAME);
     }
 
-
     public String getLongName() {
         return parseMissingToEmptyString(node, CkanConstants.MemberProperty.MEMBER_FIELD_LONG_NAME, CkanConstants.MemberProperty.FIELD_LONGNAME);
     }
@@ -82,6 +82,14 @@ public class ResourceField {
 
     public String getFieldType() {
         return parseMissingToEmptyString(node, CkanConstants.MemberProperty.FIELD_TYPE, CkanConstants.MemberProperty.FIELDTYPE);
+    }
+    
+    public boolean isField(String knownFieldId) {
+        return getFieldId().equalsIgnoreCase(knownFieldId);
+    }
+    
+    public boolean hasProperty(String property) {
+        return !node.at("/" + property).isMissingNode();
     }
     
     public String getOther(String name) {
@@ -103,7 +111,7 @@ public class ResourceField {
             return false;
         }
         final ResourceField other = (ResourceField) obj;
-        if (!Objects.equals(this.qualifier, other.qualifier)) {
+        if (!Objects.equals(this.qualifier, other.qualifier)) { // TODO check if neccessary at all
             return false;
         }
         if (!Objects.equals(this.fieldId, other.fieldId)) {
