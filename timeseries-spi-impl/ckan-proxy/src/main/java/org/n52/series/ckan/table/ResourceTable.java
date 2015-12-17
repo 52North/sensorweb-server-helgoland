@@ -28,9 +28,9 @@
 package org.n52.series.ckan.table;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,8 +38,6 @@ import java.util.Set;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.ResourceField;
 import org.n52.series.ckan.beans.ResourceMember;
@@ -50,17 +48,16 @@ public class ResourceTable extends DataTable {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTable.class);
     
-    private final ResourceMember resourceMember;
     
     private final DataFile dataFile;
 
     public ResourceTable(ResourceMember resourceMember, DataFile dataFile) {
-        this.resourceMember = resourceMember;
+        super(resourceMember);
         this.dataFile = dataFile;
     }
     
     public void readIntoMemory() {
-        readIntoMemory(null);
+        readIntoMemory(Collections.<String>emptySet());
     }
     
     public void readIntoMemory(Set<String> fieldIdsToIndex) {
