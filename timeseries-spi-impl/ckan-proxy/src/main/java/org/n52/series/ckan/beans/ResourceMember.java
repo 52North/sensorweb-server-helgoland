@@ -110,6 +110,26 @@ public class ResourceMember {
         return fieldIds;
     }
 
+    public List<ResourceField> getJoinableFields(ResourceMember other) {
+        if ( !isJoinable(other)) {
+            return Collections.<ResourceField>emptyList();
+        }
+        // TODO remove actial join column(s)?!
+        return Collections.unmodifiableList(other.resourceFields);
+    }
+    
+    private boolean isJoinable(ResourceMember other) {
+        if (this == other || resourceType.equalsIgnoreCase(other.resourceType)) {
+            return false;
+        }
+        for (ResourceField otherField : other.resourceFields) {
+            if (resourceFields.contains(otherField)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void setResourceFields(List<ResourceField> resourceFields) {
         this.resourceFields = resourceFields;
     }
