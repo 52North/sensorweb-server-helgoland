@@ -40,8 +40,6 @@ public class CsvObservationsCollection {
     
     private final String datasetId;
     
-    private final String description;
-    
     private final Map<ResourceMember, DataFile> dataCollection;
     
     private final DescriptionFile schemaDescriptor;
@@ -50,7 +48,6 @@ public class CsvObservationsCollection {
         this.datasetId = datasetId;
         SchemaDescriptor descriptor = description.getSchemaDescription();
         this.dataCollection = descriptor.relateWithDataFiles(csvContents);
-        this.description = descriptor.getDescription();
         this.schemaDescriptor = description;
     }
     
@@ -59,7 +56,7 @@ public class CsvObservationsCollection {
     }
 
     public String getDescription() {
-        return description;
+        return schemaDescriptor.getSchemaDescription().getDescription();
     }
 
     public DescriptionFile getSchemaDescriptor() {
