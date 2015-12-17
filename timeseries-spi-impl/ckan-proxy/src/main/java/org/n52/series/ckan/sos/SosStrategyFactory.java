@@ -30,12 +30,13 @@ package org.n52.series.ckan.sos;
 import java.util.Map;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
+import org.n52.series.ckan.beans.DescriptionFile;
 import org.n52.series.ckan.beans.ResourceMember;
 import org.n52.series.ckan.da.CkanConstants;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
 
-public class SosModelMapper {
+public class SosStrategyFactory {
     
     private CsvObservationsCollection dataCollection;
     
@@ -43,12 +44,12 @@ public class SosModelMapper {
     
     private InsertObservationDAO insertObservationDao;
     
-    private SosModelMapper() {
+    private SosStrategyFactory() {
         
     }
     
-    public static SosModelMapper create() {
-        return new SosModelMapper();
+    public static SosStrategyFactory create() {
+        return new SosStrategyFactory();
     }
     
     
@@ -56,26 +57,31 @@ public class SosModelMapper {
         Map<ResourceMember, DataFile> platformData = getDataOfType(CkanConstants.ResourceType.PLATFORMS);
         Map<ResourceMember, DataFile> observationData = getDataOfType(CkanConstants.ResourceType.OBSERVATIONS);
         
-        // TODO
+        // depending on dataCollection structure we might have to choose a different insertion strategy
+        // TODO add analytic methods to CsvObservationCollection to decide which strategy will fit
         
-        return new DefaultSosInsertionStrategy(dataCollection);
+        // TODO might also help
+        DescriptionFile schemaDescriptor = dataCollection.getSchemaDescriptor();
+        
+        // TODO for now we just use a default strategy
+        return new DefaultSosInsertionStrategy(insertSensorDao, insertObservationDao);
     }
 
     private Map<ResourceMember, DataFile> getDataOfType(String type) {
         return dataCollection.getDataCollectionsOfType(type);
     }
     
-    public SosModelMapper withData(CsvObservationsCollection dataCollection) {
+    public SosStrategyFactory withData(CsvObservationsCollection dataCollection) {
         this.dataCollection = dataCollection;
         return this;
     }
 
-    public SosModelMapper setInsertSensorDao(InsertSensorDAO insertSensorDao) {
+    public SosStrategyFactory setInsertSensorDao(InsertSensorDAO insertSensorDao) {
         this.insertSensorDao = insertSensorDao;
         return this;
     }
 
-    public SosModelMapper setInsertObservationDao(InsertObservationDAO insertObservationDao) {
+    public SosStrategyFactory setInsertObservationDao(InsertObservationDAO insertObservationDao) {
         this.insertObservationDao = insertObservationDao;
         return this;
     }
