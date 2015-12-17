@@ -42,16 +42,6 @@ public class SosDatabaseCache implements CkanDataSink {
     // TODO ckanSosSyncDao
 
     @Override
-    public int size() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void insertOrUpdate(CkanDataset dataset, CsvObservationsCollection csvObservationsCollection) {
         SosModelMapper modelMapper = SosModelMapper.create()
                 .withData(csvObservationsCollection)
@@ -61,11 +51,6 @@ public class SosDatabaseCache implements CkanDataSink {
         
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-//    @Override
-//    public Iterable<InMemoryCkanDataCache.Entry<CkanDataset, CsvObservationsCollection>> getCollections() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     public InsertSensorDAO getInsertSensorDao() {
         return insertSensorDao;

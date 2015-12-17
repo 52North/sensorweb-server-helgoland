@@ -37,16 +37,6 @@ public class InMemoryCkanDataCache implements CkanDataSink {
     private final Map<String, Entry<CkanDataset, CsvObservationsCollection>> datasets = new HashMap<>();
 
     @Override
-    public int size() {
-        return datasets.size();
-    }
-
-    @Override
-    public void clear() {
-        datasets.clear();
-    }
-
-    @Override
     public void insertOrUpdate(CkanDataset dataset, CsvObservationsCollection csvObservationsCollection) {
         if (dataset == null) {
             return;
