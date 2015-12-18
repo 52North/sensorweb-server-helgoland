@@ -28,10 +28,15 @@
 package org.n52.series.ckan.da;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 
 public interface CkanConstants {
     
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    
+    public static final String DEFAULT_DATE_TIME_FORMAT_STRING = "YYYY-MM-dd'T'HH:mm:ss";
+    
+    public static final SimpleDateFormat DEFAULT_DATE_TIME_FORMAT = new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT_STRING);
 
     public interface SchemaDescriptor {
         public static final String SCHEMA_DESCRIPTOR = "schema_descriptor";
@@ -87,6 +92,7 @@ public interface CkanConstants {
     public interface KnownFieldProperty {
         public static final String PHENOMENON = "phenomenon";
         public static final String UOM = "uom";
+        public static final String DATE_FORMAT = "date_format";
     }
     
 }

@@ -1,5 +1,7 @@
 package org.n52.series.ckan.sos;
 
+import java.util.Objects;
+
 public class Phenomenon {
     
     private final String id;
@@ -30,6 +32,34 @@ public class Phenomenon {
         return uom;
     }
 
-    
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.id);
+        hash = 19 * hash + Objects.hashCode(this.label);
+        hash = 19 * hash + Objects.hashCode(this.uom);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Phenomenon other = (Phenomenon) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.label, other.label)) {
+            return false;
+        }
+        if (!Objects.equals(this.uom, other.uom)) {
+            return false;
+        }
+        return true;
+    }
     
 }

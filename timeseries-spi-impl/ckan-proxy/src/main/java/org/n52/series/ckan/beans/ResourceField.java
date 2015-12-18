@@ -28,6 +28,7 @@
 package org.n52.series.ckan.beans;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Date;
 import java.util.Objects;
 import org.n52.series.ckan.da.CkanConstants;
 import static org.n52.series.ckan.util.JsonUtil.parseMissingToEmptyString;
@@ -94,6 +95,32 @@ public class ResourceField {
     
     public String getOther(String name) {
         return node.at("/" + name).asText();
+    }
+    
+    public boolean isOfType(Class<?> clazz) {
+        final String fieldType = getFieldType();
+        if (clazz == Integer.class) {
+            return fieldType.equalsIgnoreCase("Integer")
+                    || fieldType.equalsIgnoreCase("int");
+        }
+        if (clazz == Boolean.class) {
+            return fieldType.equalsIgnoreCase("Boolean")
+                    || fieldType.equalsIgnoreCase("bool");
+        }
+        if (clazz == Date.class) {
+            return fieldType.equalsIgnoreCase("date")
+                    || fieldType.equalsIgnoreCase("datum");
+        }
+        if (clazz == Double.class) {
+            return fieldType.equalsIgnoreCase("float")
+                    || fieldType.equalsIgnoreCase("double")
+                    || fieldType.equalsIgnoreCase("decimal");
+        }
+        if (clazz == String.class) {
+            return fieldType.equalsIgnoreCase("String")
+                    || fieldType.equalsIgnoreCase("text");
+        }
+        return false;
     }
 
     @Override

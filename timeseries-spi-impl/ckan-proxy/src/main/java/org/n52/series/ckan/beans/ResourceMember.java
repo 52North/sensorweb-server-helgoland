@@ -130,7 +130,7 @@ public class ResourceMember {
             return Collections.<ResourceField>emptySet();
         }
         // TODO remove actial join column(s)?!
-        Set<ResourceField> fields = new HashSet<>(resourceFields);
+        Set<ResourceField> fields = new HashSet<>(other.resourceFields);
         return Collections.unmodifiableSet(fields);
     }
     

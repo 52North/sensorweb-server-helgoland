@@ -37,6 +37,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.n52.series.ckan.beans.CsvObservationsCollection;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.ResourceField;
@@ -49,17 +51,17 @@ import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.util.GeometryBuilder;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
-import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.exception.ows.concrete.InvalidSridException;
 import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.gml.AbstractFeature;
 import org.n52.sos.ogc.om.AbstractPhenomenon;
+import org.n52.sos.ogc.om.OmConstants;
 import org.n52.sos.ogc.om.OmObservableProperty;
 import org.n52.sos.ogc.om.OmObservation;
 import org.n52.sos.ogc.om.OmObservationConstellation;
+import org.n52.sos.ogc.om.SingleObservationValue;
 import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sensorML.SensorML20Constants;
 import org.n52.sos.ogc.sensorML.SmlContact;
 import org.n52.sos.ogc.sensorML.SmlContactList;
@@ -76,6 +78,9 @@ import org.n52.sos.ogc.swe.SweSimpleDataRecord;
 import org.n52.sos.ogc.swe.simpleType.SweObservableProperty;
 import org.n52.sos.ogc.swe.simpleType.SweQuantity;
 import org.n52.sos.ogc.swe.simpleType.SweText;
+import org.n52.sos.ogc.gml.time.TimeInstant;
+import org.n52.sos.ogc.om.values.QuantityValue;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.request.InsertObservationRequest;
 import org.n52.sos.request.InsertSensorRequest;
 import org.slf4j.Logger;
@@ -109,18 +114,16 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         final List<Phenomenon> phenomena = parseObservableProperties(platformTable, schemaDescription);
         Map<ResourceMember, DataFile> observationCollections = csvObservationsCollection.getObservationDataCollections();
         for (Map.Entry<ResourceKey, Map<ResourceField, String>> rowEntry : platformTable.getTable().rowMap().entrySet()) {
-//            try {
+            try {
                 final AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
                 for (Phenomenon phenomenon : phenomena) {
                     final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
-//                    insertSensorRequest.setRelatedFeature(feature); // via insert observation
                     insertSensorRequest.setObservableProperty(phenomenaToIdList(phenomena));
                     final SosProcedureDescription sml = parseProcedureDescription(feature, phenomenon, schemaDescription);
                     insertSensorRequest.setProcedureDescription(sml);
-                    //insertSensorDao.insertSensor(insertSensorRequest);
+                    insertSensorDao.insertSensor(insertSensorRequest);
                     
                     for (Map.Entry<ResourceMember, DataFile> observationEntry : observationCollections.entrySet()) {
-                        
                         ResourceTable observationTable = new ResourceTable(observationEntry.getKey(), observationEntry.getValue());
                         final ResourceMember leftMember = rowEntry.getKey().getMember();
                         observationTable.readIntoMemory(observationEntry.getKey().getJoinFields(leftMember));
@@ -132,12 +135,14 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                         constellation.setObservableProperty(createPhenomenon(phenomenon));
                         constellation.setFeatureOfInterest(feature);
                         constellation.setProcedure(sml);
+                        constellation.setObservationType(OmConstants.EN_MEASUREMENT);
                         insertObservationRequest.setObservation(createObservations(joinedTable, constellation, schemaDescription));
+                        insertObservationDao.insertObservation(insertObservationRequest);
                     }
                 }
-//            } catch (OwsExceptionReport e) {
-//                LOGGER.error("could not insert or update sensor", e);
-//            } 
+            } catch (OwsExceptionReport e) {
+                LOGGER.error("could not insert or update sensor", e);
+            } 
         }
     }
     
@@ -349,42 +354,76 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         List<OmObservation> observations = new ArrayList<>();
         Map<ResourceKey, Map<ResourceField, String>> rowMap = observationTable.getTable().rowMap();
         for (Map.Entry<ResourceKey, Map<ResourceField, String>> observationEntry : rowMap.entrySet()) {
+            SingleObservationValue<?> value = null;
+            TimeInstant timeInstant = null;
             OmObservation omObservation = new OmObservation();
-            for (Map.Entry<ResourceField, String> rowEntry : observationEntry.getValue().entrySet()) {
+            omObservation.setDefaultElementEncoding(CkanConstants.DEFAULT_CHARSET.toString());
+            for (Map.Entry<ResourceField, String> cells : observationEntry.getValue().entrySet()) {
                 ResourceKey key = observationEntry.getKey();
-                ResourceField field = rowEntry.getKey();
+                omObservation.setObservationID(key.getKeyId());
+                ResourceField field = cells.getKey();
                 String resourceType = field.getQualifier().getResourceType();
                 if (resourceType.equalsIgnoreCase(CkanConstants.ResourceType.OBSERVATIONS)) {
-                    parseObservationValue(key, omObservation, field, constellation);
-                } else if (resourceType.equalsIgnoreCase(CkanConstants.ResourceType.PLATFORMS)) {
-                    parsePlatformValue(key, omObservation, field, schemaDescription);
-                }
-                
+                    if (field.hasProperty(CkanConstants.KnownFieldProperty.PHENOMENON)) {
+                        String phenomenonField = field.getFieldId();
+                        String phenomenonId = constellation.getObservableProperty().getIdentifier();
+                        if (phenomenonField.equalsIgnoreCase(phenomenonId)) {
+                            value = createQuantityObservationValue(field, cells.getValue());
+                        }
+                    } else if (field.isField(CkanConstants.KnownFieldId.RESULT_TIME)) {
+                        timeInstant = parsePhenomenonTime(field, cells);
+                    }
+                } 
+            }
+            if (value != null) {
+                value.setPhenomenonTime(timeInstant);
+                omObservation.setValue(value);
+                observations.add(omObservation);
             }
         }
         return observations;
     }
 
-    private void parseObservationValue(ResourceKey key, OmObservation omObservation, ResourceField field, OmObservationConstellation constellation) {
-        if (field.hasProperty(CkanConstants.KnownFieldProperty.PHENOMENON)) {
-            String phenomenonField = field.getFieldId();
-            String phenomenonId = constellation.getObservableProperty().getIdentifier();
-            if (phenomenonField.equalsIgnoreCase(phenomenonId)) {
-                omObservation.setObservationID(key.getKeyId());
-                omObservation.setDefaultElementEncoding(CkanConstants.DEFAULT_CHARSET.toString());
-//                omObservation.setIdentifier(null)
-
-            }
-        }
+    private TimeInstant parsePhenomenonTime(ResourceField field, Map.Entry<ResourceField, String> cells) {
+        String dateFormat = parseDateFormat(field);
+        return parseDateValue(cells, dateFormat);
     }
 
-    private void parsePlatformValue(ResourceKey key, OmObservation omObservation, ResourceField field, SchemaDescriptor schemaDescription) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private String parseDateFormat(ResourceField field) {
+        String format = field.getOther(CkanConstants.KnownFieldProperty.DATE_FORMAT);
+        return  format.replace("DD", "dd"); // XXX hack to fix wrong format
+    }
+
+    private TimeInstant parseDateValue(Map.Entry<ResourceField, String> cells, String dateFormat) {
+        final String dateValue = cells.getValue();
+        final TimeInstant timeInstant = new TimeInstant();
+        try {
+            DateTime dateTime = DateTime.parse(dateValue, DateTimeFormat.forPattern(dateFormat));
+            timeInstant.setValue(dateTime);
+        } catch (Exception ex) {
+            LOGGER.error("Cannot parse date string {} with format {}", dateValue, dateFormat, ex);
+        }
+        return timeInstant;
+    }
+
+    private SingleObservationValue<Double> createQuantityObservationValue(ResourceField field, String value) {
+        try {
+            SingleObservationValue<Double> obsValue = new SingleObservationValue<>();
+            if (field.isOfType(Integer.class)
+                    || field.isOfType(Float.class)
+                    || field.isOfType(Double.class)) {
+                obsValue.setValue(new QuantityValue(Double.parseDouble(value)));
+                obsValue.setUnit(field.getOther(CkanConstants.KnownFieldProperty.UOM));
+                return obsValue;
+            }
+        } catch (Exception e) {
+            LOGGER.error("could not parse value {}", value, e);
+        }
+        return null;
     }
 
     private AbstractPhenomenon createPhenomenon(Phenomenon phenomenon) {
         return new OmObservableProperty(phenomenon.getId());
     }
-
     
 }
