@@ -29,8 +29,10 @@ package org.n52.series.ckan.beans;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ResourceMember {
     
@@ -109,13 +111,27 @@ public class ResourceMember {
         }
         return fieldIds;
     }
-
-    public List<ResourceField> getJoinableFields(ResourceMember other) {
+    
+    public Set<ResourceField> getJoinFields(ResourceMember other) {
         if ( !isJoinable(other)) {
-            return Collections.<ResourceField>emptyList();
+            return Collections.<ResourceField>emptySet();
+        }
+        Set<ResourceField> joinFields = new HashSet<>();
+        for (ResourceField otherField : other.resourceFields) {
+            if (resourceFields.contains(otherField)) {
+                joinFields.add(otherField);
+            }
+        }
+        return joinFields;
+    }
+
+    public Set<ResourceField> getJoinableFields(ResourceMember other) {
+        if ( !isJoinable(other)) {
+            return Collections.<ResourceField>emptySet();
         }
         // TODO remove actial join column(s)?!
-        return Collections.unmodifiableList(other.resourceFields);
+        Set<ResourceField> fields = new HashSet<>(resourceFields);
+        return Collections.unmodifiableSet(fields);
     }
     
     private boolean isJoinable(ResourceMember other) {

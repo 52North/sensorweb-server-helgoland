@@ -48,21 +48,22 @@ public class ResourceTable extends DataTable {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTable.class);
     
-    
     private final DataFile dataFile;
-
+    
     public ResourceTable(ResourceMember resourceMember, DataFile dataFile) {
         super(resourceMember);
         this.dataFile = dataFile;
     }
     
     public void readIntoMemory() {
-        readIntoMemory(Collections.<String>emptySet());
+        readIntoMemory(null);
     }
     
-    public void readIntoMemory(Set<String> fieldIdsToIndex) {
+    public void readIntoMemory(Set<ResourceField> indexFields) {
         final Path filePath = dataFile.getFile().toPath();
-        fieldIdsToIndex = lowerCaseFieldIds(fieldIdsToIndex);
+        indexFields = indexFields == null 
+                ? Collections.<ResourceField>emptySet()
+                : indexFields;
         try {
             LOGGER.debug("loading table ...");
             long start = System.currentTimeMillis();
@@ -90,8 +91,8 @@ public class ResourceTable extends DataTable {
                     final String value = line.get(j);
                     table.put(id, field, value);
                     
-                    if (fieldIdsToIndex.contains(field.getFieldId())) {
-                        addJoinIndexValue(id, new JoinIndex(field, value));
+                    if (indexFields.contains(field)) {
+                        addJoinIndexValue(new JoinIndex(field, value), id);
                     }
                 }
             }
@@ -102,16 +103,6 @@ public class ResourceTable extends DataTable {
         } catch (IOException e) {
             LOGGER.error("could not read data from {}", filePath, e);
         }
-    }
-
-    private Set<String> lowerCaseFieldIds(Set<String> fieldIdsToIndex) {
-        Set<String> lowercaseFieldIds = new HashSet<>();
-        if (fieldIdsToIndex != null) {
-            for (String fieldId : fieldIdsToIndex) {
-                lowercaseFieldIds.add(fieldId.toLowerCase());
-            }
-        }
-        return lowercaseFieldIds;
     }
 
 }

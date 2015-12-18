@@ -38,7 +38,7 @@ public class ResourceField {
         return new ResourceField(field.node);
     }
     
-    private String qualifier;
+    private ResourceMember qualifier;
     
     private final String fieldId;
     
@@ -60,11 +60,11 @@ public class ResourceField {
         return fieldId;
     }
 
-    public String getQualifier() {
+    public ResourceMember getQualifier() {
         return qualifier;
     }
 
-    public void setQualifier(String qualifier) {
+    public void setQualifier(ResourceMember qualifier) {
         this.qualifier = qualifier;
     }
     
@@ -93,7 +93,7 @@ public class ResourceField {
     }
     
     public String getOther(String name) {
-        return node.at(name).asText();
+        return node.at("/" + name).asText();
     }
 
     @Override
@@ -111,9 +111,6 @@ public class ResourceField {
             return false;
         }
         final ResourceField other = (ResourceField) obj;
-        if (!Objects.equals(this.qualifier, other.qualifier)) { // TODO check if neccessary at all
-            return false;
-        }
         if (!Objects.equals(this.fieldId, other.fieldId)) {
             return false;
         }

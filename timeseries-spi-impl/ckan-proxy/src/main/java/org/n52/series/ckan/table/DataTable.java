@@ -47,7 +47,7 @@ public class DataTable {
     
     protected final ResourceMember resourceMember;
 
-    private final Map<JoinIndex, ResourceKey> joinKeys;
+    private final Map<JoinIndex, List<ResourceKey>> joinKeys;
     
     private final List<ResourceField> joinableFields;
     
@@ -59,6 +59,11 @@ public class DataTable {
         this(table.copy(), resourceMember);
         this.joinKeys.putAll(table.joinKeys);
         this.joinableFields.addAll(table.joinableFields);
+    }
+    
+    private DataTable(Map<JoinIndex, List<ResourceKey>> joinKeys, ResourceMember resourceMember) {
+        this(resourceMember);
+        this.joinKeys.putAll(joinKeys);
     }
     
     private DataTable(Table table, ResourceMember resourceMember) {
@@ -98,30 +103,47 @@ public class DataTable {
         }
         
         DataTable joinTable = new DataTable(this, resourceMember);
-        LOGGER.debug("joining on #{} left rows", joinKeys.size());
+        LOGGER.debug("left join on #{} rows", joinKeys.size());
+        joinTable(joinTable, other);
+        return joinTable;
+    }
+    
+    public DataTable innerJoin(DataTable other) {
+        if ( !isJoinable(other)) {
+            return this;
+        }
+        
+        DataTable joinTable = new DataTable(joinKeys, resourceMember);
+        LOGGER.debug("inner joining on #{} rows", joinKeys.size());
+        joinTable(joinTable, other);
+        return joinTable;
+    }
+
+    private void joinTable(DataTable joinTable, DataTable other) {
         for (JoinIndex joinOn : joinKeys.keySet()) {
             Map<ResourceField, Map<ResourceKey, String>> columnMap = other.table.columnMap();
+            int i = 0;
             for (Map.Entry<ResourceField, Map<ResourceKey, String>> otherColumnEntry : columnMap.entrySet()) {
                 if (otherColumnEntry.getKey().equals(joinOn.getField())) {
                     for (Map.Entry<ResourceKey, String> possibleJoinValue : otherColumnEntry.getValue().entrySet()) {
                         if (joinOn.getValue().equalsIgnoreCase(possibleJoinValue.getValue())) {
-                            int i = 0;
-                            final ResourceKey rightKey = possibleJoinValue.getKey();
-                            for (Map.Entry<ResourceField, String> rightValue : other.table.row(rightKey).entrySet()) {
-                                ResourceKey leftKey = joinKeys.get(joinOn);
-                                final String newId = leftKey.getKeyId() + "_" + i++;
+                            for (ResourceKey key : joinKeys.get(joinOn)) {
+                                final ResourceKey otherKey = possibleJoinValue.getKey();
+                                final String newId = key.getKeyId() + "_" + i++;
                                 ResourceKey newKey = new ResourceKey(newId, resourceMember);
-                                 
-                                // add left values
-                                for (Map.Entry<ResourceField, String> leftValue : table.row(leftKey).entrySet()) {
-                                    joinTable.table.put(newKey, leftValue.getKey(), leftValue.getValue());
+
+                                // add other's values
+                                for (Map.Entry<ResourceField, String> otherValue : other.table.row(otherKey).entrySet()) {
+                                    final ResourceField rightField = otherValue.getKey();
+                                    ResourceField joinedField = ResourceField.copy(rightField);
+                                    joinedField.setQualifier(otherKey.getMember());
+                                    joinTable.table.put(newKey, joinedField, otherValue.getValue());
                                 }
-                                
-                                // add right values
-                                final ResourceField rightField = rightValue.getKey();
-                                ResourceField joinedField = ResourceField.copy(rightField);
-                                joinedField.setQualifier(rightKey.getMember().getId());
-                                joinTable.table.put(newKey, joinedField, rightValue.getValue());
+
+                                // add this instance's values
+                                for (Map.Entry<ResourceField, String> value : table.row(key).entrySet()) {
+                                    joinTable.table.put(newKey, value.getKey(), value.getValue());
+                                }
                             }
                         }
                     }
@@ -129,7 +151,6 @@ public class DataTable {
             }
         }
         LOGGER.debug("joined table has #{} rows", joinTable.table.size());
-        return joinTable;
     }
 
     /**
@@ -154,6 +175,11 @@ public class DataTable {
             return false;
         }
         
+        if (joinableFields.isEmpty()) {
+            // if no join fields have been set explicitly we focus all possible join columns
+            joinableFields.addAll(resourceMember.getJoinableFields(otherResourceMember));
+        }
+        
         // TODO multiple keys to join
         for (ResourceField possibleJoinColumn : other.table.columnKeySet()) {
             if (joinableFields.contains(possibleJoinColumn)) {
@@ -163,11 +189,12 @@ public class DataTable {
         return false;
     }
     
-    protected void addJoinIndexValue(ResourceKey rowKey, JoinIndex index) {
+    protected void addJoinIndexValue(JoinIndex index, ResourceKey rowKey) {
         if ( !joinKeys.containsKey(index)) {
             joinableFields.add(index.getField());
+            joinKeys.put(index, new ArrayList<ResourceKey>());
         }
-        joinKeys.put(index, rowKey);
+        joinKeys.get(index).add(rowKey);
     }
     
     protected void logMemory() {

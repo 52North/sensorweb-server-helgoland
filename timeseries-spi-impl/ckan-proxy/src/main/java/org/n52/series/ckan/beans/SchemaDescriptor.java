@@ -102,20 +102,22 @@ public class SchemaDescriptor {
                 member.setResourceType(parseMissingToEmptyString(memberNode, CkanConstants.MemberProperty.RESOURCE_TYPE, CkanConstants.MemberProperty.RESOURCETYPE));
                 final int headerRows = parseMissingToNegativeInt(memberNode, CkanConstants.MemberProperty.HEADER_ROWS);
                 member.setHeaderRows(headerRows < 0 ? 1 : headerRows); // assume 1 header row by default
-                member.setResourceFields(parseResourceFields(memberNode));
+                member.setResourceFields(parseResourceFields(member, memberNode));
                 resourceMembers.add(member);
             }
         }
         return resourceMembers;
     }
             
-    private List<ResourceField> parseResourceFields(JsonNode member) {
+    private List<ResourceField> parseResourceFields(ResourceMember qualifier, JsonNode member) {
         List<ResourceField> fields = new ArrayList<>();
         JsonNode fieldsNode = member.findValue("fields");
         Iterator<JsonNode> iter = fieldsNode.elements();
         while (iter.hasNext()) {
             JsonNode fieldNode = iter.next();
-            fields.add(new ResourceField(fieldNode));
+            final ResourceField resourceField = new ResourceField(fieldNode);
+            resourceField.setQualifier(qualifier);
+            fields.add(resourceField);
         }
         return fields;
     }

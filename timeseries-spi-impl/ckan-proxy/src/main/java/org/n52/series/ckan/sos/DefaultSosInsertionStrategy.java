@@ -43,14 +43,20 @@ import org.n52.series.ckan.beans.ResourceField;
 import org.n52.series.ckan.beans.ResourceMember;
 import org.n52.series.ckan.beans.SchemaDescriptor;
 import org.n52.series.ckan.da.CkanConstants;
+import org.n52.series.ckan.table.DataTable;
 import org.n52.series.ckan.table.ResourceKey;
 import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.util.GeometryBuilder;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
+import org.n52.sos.ds.hibernate.entities.ObservationConstellation;
 import org.n52.sos.exception.ows.concrete.InvalidSridException;
 import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.gml.AbstractFeature;
+import org.n52.sos.ogc.om.AbstractPhenomenon;
+import org.n52.sos.ogc.om.OmObservableProperty;
+import org.n52.sos.ogc.om.OmObservation;
+import org.n52.sos.ogc.om.OmObservationConstellation;
 import org.n52.sos.ogc.om.features.SfConstants;
 import org.n52.sos.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
@@ -63,12 +69,14 @@ import org.n52.sos.ogc.sensorML.elements.SmlCapabilities;
 import org.n52.sos.ogc.sensorML.elements.SmlClassifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIdentifier;
 import org.n52.sos.ogc.sensorML.elements.SmlIo;
+import org.n52.sos.ogc.sos.SosOffering;
 import org.n52.sos.ogc.sos.SosProcedureDescription;
 import org.n52.sos.ogc.swe.SweField;
 import org.n52.sos.ogc.swe.SweSimpleDataRecord;
 import org.n52.sos.ogc.swe.simpleType.SweObservableProperty;
 import org.n52.sos.ogc.swe.simpleType.SweQuantity;
 import org.n52.sos.ogc.swe.simpleType.SweText;
+import org.n52.sos.request.InsertObservationRequest;
 import org.n52.sos.request.InsertSensorRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,36 +101,58 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         for (Map.Entry<ResourceMember, DataFile> platformEntry : platformDataCollections.entrySet()) {
             ResourceTable platformTable = new ResourceTable(platformEntry.getKey(), platformEntry.getValue());
             platformTable.readIntoMemory();
-            insertAllPlatformsAsSensors(platformTable, schemaDescription);
-            
-            // TODO insertObservation mit Feature
+            insertData(platformTable, schemaDescription, csvObservationsCollection);
         }
     }
     
-    void insertAllPlatformsAsSensors(ResourceTable platformTable, SchemaDescriptor schemaDescription) {
-        final Map<ResourceKey, Map<ResourceField, String>> rows = platformTable.getTable().rowMap();
-        for (Map<ResourceField, String> row : rows.values()) {
-            try {
-                final AbstractFeature feature = createFeatureRelation(row);
-                final List<Phenomenon> phenomena = parseObservableProperies(platformTable, schemaDescription);
+    void insertData(ResourceTable platformTable, SchemaDescriptor schemaDescription, CsvObservationsCollection csvObservationsCollection) {
+        final List<Phenomenon> phenomena = parseObservableProperties(platformTable, schemaDescription);
+        Map<ResourceMember, DataFile> observationCollections = csvObservationsCollection.getObservationDataCollections();
+        for (Map.Entry<ResourceKey, Map<ResourceField, String>> rowEntry : platformTable.getTable().rowMap().entrySet()) {
+//            try {
+                final AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
                 for (Phenomenon phenomenon : phenomena) {
                     final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
 //                    insertSensorRequest.setRelatedFeature(feature); // via insert observation
-                    insertSensorRequest.setObservableProperty(toIdList(phenomena));
+                    insertSensorRequest.setObservableProperty(phenomenaToIdList(phenomena));
                     final SosProcedureDescription sml = parseProcedureDescription(feature, phenomenon, schemaDescription);
                     insertSensorRequest.setProcedureDescription(sml);
-                    insertSensorDao.insertSensor(insertSensorRequest);
+                    //insertSensorDao.insertSensor(insertSensorRequest);
+                    
+                    for (Map.Entry<ResourceMember, DataFile> observationEntry : observationCollections.entrySet()) {
+                        
+                        ResourceTable observationTable = new ResourceTable(observationEntry.getKey(), observationEntry.getValue());
+                        final ResourceMember leftMember = rowEntry.getKey().getMember();
+                        observationTable.readIntoMemory(observationEntry.getKey().getJoinFields(leftMember));
+                        InsertObservationRequest insertObservationRequest = new InsertObservationRequest();
+                        
+                        final DataTable joinedTable = observationTable.innerJoin(platformTable);
+                        OmObservationConstellation constellation = new OmObservationConstellation();
+                        constellation.setOfferings(offeringsToIdList(insertSensorRequest.getAssignedOfferings()));
+                        constellation.setObservableProperty(createPhenomenon(phenomenon));
+                        constellation.setFeatureOfInterest(feature);
+                        constellation.setProcedure(sml);
+                        insertObservationRequest.setObservation(createObservations(joinedTable, constellation, schemaDescription));
+                    }
                 }
-            } catch (OwsExceptionReport e) {
-                LOGGER.error("could not insert or update sensor", e);
-            } 
+//            } catch (OwsExceptionReport e) {
+//                LOGGER.error("could not insert or update sensor", e);
+//            } 
         }
     }
     
-    private List<String> toIdList(List<Phenomenon> phenomena) {
+    private List<String> phenomenaToIdList(List<Phenomenon> phenomena) {
         List<String> ids = new ArrayList<>();
         for (Phenomenon phenomenon : phenomena) {
             ids.add(phenomenon.getId());
+        }
+        return ids;
+    }
+    
+    private List<String> offeringsToIdList(List<SosOffering> offerings) {
+        List<String> ids = new ArrayList<>();
+        for (SosOffering offering : offerings) {
+            ids.add(offering.getIdentifier());
         }
         return ids;
     }
@@ -165,12 +195,12 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         }
     }
     
-    List<Phenomenon> parseObservableProperies(ResourceTable platformTable, SchemaDescriptor schemaDescription) {
+    List<Phenomenon> parseObservableProperties(ResourceTable platformTable, SchemaDescriptor schemaDescription) {
         ResourceMember resourceMember = platformTable.getResourceMember();
         List<ResourceMember> members = schemaDescription.getMembers();
         Set<Phenomenon> observableProperties = new HashSet<>();
         for (ResourceMember member : members) {
-            List<ResourceField> joinableFields = resourceMember.getJoinableFields(member);
+            Set<ResourceField> joinableFields = resourceMember.getJoinableFields(member);
             if ( !joinableFields.isEmpty()) {
                 for (ResourceField joinableField : joinableFields) {
                     if (joinableField.hasProperty(CkanConstants.KnownFieldProperty.PHENOMENON)) {
@@ -313,6 +343,47 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         
         contactList.addMember(responsibleParty);
         return contactList;
+    }
+
+    private List<OmObservation> createObservations(DataTable observationTable, OmObservationConstellation constellation, SchemaDescriptor schemaDescription) {
+        List<OmObservation> observations = new ArrayList<>();
+        Map<ResourceKey, Map<ResourceField, String>> rowMap = observationTable.getTable().rowMap();
+        for (Map.Entry<ResourceKey, Map<ResourceField, String>> observationEntry : rowMap.entrySet()) {
+            OmObservation omObservation = new OmObservation();
+            for (Map.Entry<ResourceField, String> rowEntry : observationEntry.getValue().entrySet()) {
+                ResourceKey key = observationEntry.getKey();
+                ResourceField field = rowEntry.getKey();
+                String resourceType = field.getQualifier().getResourceType();
+                if (resourceType.equalsIgnoreCase(CkanConstants.ResourceType.OBSERVATIONS)) {
+                    parseObservationValue(key, omObservation, field, constellation);
+                } else if (resourceType.equalsIgnoreCase(CkanConstants.ResourceType.PLATFORMS)) {
+                    parsePlatformValue(key, omObservation, field, schemaDescription);
+                }
+                
+            }
+        }
+        return observations;
+    }
+
+    private void parseObservationValue(ResourceKey key, OmObservation omObservation, ResourceField field, OmObservationConstellation constellation) {
+        if (field.hasProperty(CkanConstants.KnownFieldProperty.PHENOMENON)) {
+            String phenomenonField = field.getFieldId();
+            String phenomenonId = constellation.getObservableProperty().getIdentifier();
+            if (phenomenonField.equalsIgnoreCase(phenomenonId)) {
+                omObservation.setObservationID(key.getKeyId());
+                omObservation.setDefaultElementEncoding(CkanConstants.DEFAULT_CHARSET.toString());
+//                omObservation.setIdentifier(null)
+
+            }
+        }
+    }
+
+    private void parsePlatformValue(ResourceKey key, OmObservation omObservation, ResourceField field, SchemaDescriptor schemaDescription) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private AbstractPhenomenon createPhenomenon(Phenomenon phenomenon) {
+        return new OmObservableProperty(phenomenon.getId());
     }
 
     

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -32,7 +33,7 @@ public class ResourceMemberTest {
         List<ResourceMember> members = descriptor.getMembers();
         ResourceMember platformDescription = members.get(0);
         ResourceMember observationDescription = members.get(1);
-        List<ResourceField> joinableFields = platformDescription.getJoinableFields(observationDescription);
+        Set<ResourceField> joinableFields = platformDescription.getJoinableFields(observationDescription);
         MatcherAssert.assertThat(joinableFields.size(), CoreMatchers.is(6));
     }
 }
