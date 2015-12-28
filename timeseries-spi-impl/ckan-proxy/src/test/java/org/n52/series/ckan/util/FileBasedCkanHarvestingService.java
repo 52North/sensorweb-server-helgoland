@@ -79,20 +79,20 @@ public class FileBasedCkanHarvestingService {
         return ckanDataCache;
     }
     
-    @Test
+//    @Test
     public void testtablejoins() throws IOException {
         
         Entry<CkanDataset, CsvObservationsCollection> entry = ckanDataCache.getCollections().iterator().next();
         Map<ResourceMember, DataFile> metadataCollection = entry.getData().getMetadataCollection();
         Map.Entry<ResourceMember, DataFile> data = metadataCollection.entrySet().iterator().next();
         ResourceTable metadataTable = new ResourceTable(data.getKey(), data.getValue());
-        metadataTable.readIntoMemory(Collections.<ResourceField>singleton(new SeamResourceField("stations_id")));
+        metadataTable.readIntoMemory();
         
         Map<ResourceMember, DataFile> observations = entry.getData().getObservationDataCollections();
         for (Map.Entry<ResourceMember, DataFile> observationData : observations.entrySet()) {
             ResourceTable dataTable = new ResourceTable(observationData.getKey(), observationData.getValue());
-            dataTable.readIntoMemory(null);
-            metadataTable.leftJoin(dataTable);
+            dataTable.readIntoMemory();
+            metadataTable.innerJoin(dataTable);
         }
         
 //        for (Entry<CkanDataset, CsvObservationsCollection> entry : ckanDataCache.getCollections()) {

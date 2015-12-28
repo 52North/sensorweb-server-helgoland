@@ -29,14 +29,15 @@ package org.n52.series.ckan.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.trentorise.opendata.jackan.CkanClient;
-import eu.trentorise.opendata.jackan.CkanQuery;
 import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.da.CkanHarvestingService;
 import org.slf4j.Logger;
@@ -70,7 +71,7 @@ public class SeamCkanHarvester extends CkanHarvestingService {
 
     private List<File> getDatasets() {
         List<File> datasets = new ArrayList<>();
-        File folder = getContextDataFolder();
+        File folder = getSourceDataFolder();
         File[] datasetFiles = folder.listFiles();
         for (File file : datasetFiles) {
             if (file.isDirectory()) {
@@ -81,7 +82,7 @@ public class SeamCkanHarvester extends CkanHarvestingService {
         return datasets;
     }
 
-    private File getContextDataFolder() {
+    private File getSourceDataFolder() {
         String baseFolder = TEST_FILES_BASE_PATH + "/" + contextPath;
         return new File(getClass().getResource(baseFolder).getFile());
     }
@@ -97,7 +98,7 @@ public class SeamCkanHarvester extends CkanHarvestingService {
 
     @Override
     protected DataFile downloadCsvFile(CkanResource resource, Path datasetDownloadFolder) {
-        File folder = getContextDataFolder();
+        File folder = getSourceDataFolder();
         File[] dataFolders = folder.listFiles();
         for (File file : dataFolders) {
             if (file.isDirectory()) {

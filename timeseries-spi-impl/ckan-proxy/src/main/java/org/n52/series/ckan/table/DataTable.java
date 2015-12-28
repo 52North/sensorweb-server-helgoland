@@ -30,10 +30,10 @@ package org.n52.series.ckan.table;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import org.n52.series.ckan.beans.ResourceField;
 import org.n52.series.ckan.beans.ResourceMember;
 import org.slf4j.Logger;
@@ -47,29 +47,16 @@ public class DataTable {
     
     protected final ResourceMember resourceMember;
 
-    private final Map<JoinIndex, List<ResourceKey>> joinKeys;
-    
-    private final List<ResourceField> joinableFields;
-    
     protected DataTable(ResourceMember resourceMember) {
         this(HashBasedTable.create(), resourceMember);
     }
     
     private DataTable(DataTable table, ResourceMember resourceMember) {
         this(table.copy(), resourceMember);
-        this.joinKeys.putAll(table.joinKeys);
-        this.joinableFields.addAll(table.joinableFields);
-    }
-    
-    private DataTable(Map<JoinIndex, List<ResourceKey>> joinKeys, ResourceMember resourceMember) {
-        this(resourceMember);
-        this.joinKeys.putAll(joinKeys);
     }
     
     private DataTable(Table table, ResourceMember resourceMember) {
         this.table = table;
-        this.joinKeys = new HashMap<>();
-        this.joinableFields = new ArrayList<>();
         this.resourceMember = resourceMember;
     }
     
@@ -85,82 +72,77 @@ public class DataTable {
         return resourceMember;
     }
     
-    /**
-     * Creates a new table by doing a left join on this table instance. 
-     * Uses the {@link #joinKeys} as join index values. The returned 
-     * table will represent the same resource (and resource type) as 
-     * before the join, but leaves the actual table unchanged (i.e. returning 
-     * a new instance). The  {@link #joinKeys} and {@link #joinableFields} 
-     * from the table to join won't be copied, i.e. other joins on that 
-     * table have to be performed before this join.
-     *
-     * @param other the table to left join with.
-     * @return the joined table instance.
-     */
-    public DataTable leftJoin(DataTable other) {
+    public DataTable innerJoin(DataTable other, ResourceField... fields) {
+        DataTable outputTable = new DataTable(resourceMember);
         if ( !isJoinable(other)) {
-            return this;
+            return outputTable;
         }
         
-        DataTable joinTable = new DataTable(this, resourceMember);
-        LOGGER.debug("left join on #{} rows", joinKeys.size());
-        joinTable(joinTable, other);
-        return joinTable;
+        Collection<ResourceField> joinFields = fields == null || fields.length == 0
+                ? resourceMember.getJoinFields(other.resourceMember)
+                : Arrays.asList(fields);
+        
+        joinTable(other, outputTable, joinFields);
+        return outputTable;
     }
-    
-    public DataTable innerJoin(DataTable other) {
-        if ( !isJoinable(other)) {
-            return this;
+
+    private void joinTable(DataTable other, DataTable outputTable, Collection<ResourceField> joinFields) {
+        if (joinFields == null || joinFields.isEmpty()) {
+            return;
         }
         
-        DataTable joinTable = new DataTable(joinKeys, resourceMember);
-        LOGGER.debug("inner joining on #{} rows", joinKeys.size());
-        joinTable(joinTable, other);
-        return joinTable;
-    }
+        for (ResourceField field : joinFields) {
+            if ( !table.containsColumn(field)
+                    || !other.table.containsColumn(field)) {
+                return;
+            }
+        }
+        
+        LOGGER.debug("joining table {} (#{} rows) with table {} (#{} rows)", 
+                resourceMember.getId(), table.rowKeySet().size(), 
+                other.resourceMember.getId(), other.table.rowKeySet().size());
+        long start = System.currentTimeMillis();
+        for (ResourceField field : joinFields) {
+            final Map<ResourceKey, String> joinOnIndex = table.column(field);
+            for (Map.Entry<ResourceKey, String> joinOnIndexEntry : joinOnIndex.entrySet()) {
+                Map<ResourceKey, String> toJoinIndex = other.table.column(field);
+                int i = 0;
+                for (Map.Entry<ResourceKey, String> toJoinIndexEntry : toJoinIndex.entrySet()) {
+                    if ( !joinOnIndexEntry.getValue().equalsIgnoreCase(toJoinIndexEntry.getValue())) {
+                        break;
+                    } 
+                    final ResourceKey otherKey = toJoinIndexEntry.getKey();
+                    final String newId = joinOnIndexEntry.getKey() + "_" + i++;
+                    ResourceKey newKey = new ResourceKey(newId, outputTable.resourceMember);
 
-    private void joinTable(DataTable joinTable, DataTable other) {
-        for (JoinIndex joinOn : joinKeys.keySet()) {
-            Map<ResourceField, Map<ResourceKey, String>> columnMap = other.table.columnMap();
-            int i = 0;
-            for (Map.Entry<ResourceField, Map<ResourceKey, String>> otherColumnEntry : columnMap.entrySet()) {
-                if (otherColumnEntry.getKey().equals(joinOn.getField())) {
-                    for (Map.Entry<ResourceKey, String> possibleJoinValue : otherColumnEntry.getValue().entrySet()) {
-                        if (joinOn.getValue().equalsIgnoreCase(possibleJoinValue.getValue())) {
-                            for (ResourceKey key : joinKeys.get(joinOn)) {
-                                final ResourceKey otherKey = possibleJoinValue.getKey();
-                                final String newId = key.getKeyId() + "_" + i++;
-                                ResourceKey newKey = new ResourceKey(newId, resourceMember);
+                    // add other's values
+                    final Map<ResourceField, String> toJoinRow = other.table.row(otherKey);
+                    for (Map.Entry<ResourceField, String> otherValue : toJoinRow.entrySet()) {
+                        final ResourceField rightField = otherValue.getKey();
+                        ResourceField joinedField = ResourceField.copy(rightField);
+                        joinedField.setQualifier(otherKey.getMember());
+                        outputTable.table.put(newKey, joinedField, otherValue.getValue());
+                    }
 
-                                // add other's values
-                                for (Map.Entry<ResourceField, String> otherValue : other.table.row(otherKey).entrySet()) {
-                                    final ResourceField rightField = otherValue.getKey();
-                                    ResourceField joinedField = ResourceField.copy(rightField);
-                                    joinedField.setQualifier(otherKey.getMember());
-                                    joinTable.table.put(newKey, joinedField, otherValue.getValue());
-                                }
-
-                                // add this instance's values
-                                for (Map.Entry<ResourceField, String> value : table.row(key).entrySet()) {
-                                    joinTable.table.put(newKey, value.getKey(), value.getValue());
-                                }
-                            }
-                        }
+                    // add this instance's values
+                    Map<ResourceField, String> joinOnRow = table.row(joinOnIndexEntry.getKey());
+                    for (Map.Entry<ResourceField, String> value : joinOnRow.entrySet()) {
+                        outputTable.table.put(newKey, value.getKey(), value.getValue());
                     }
                 }
             }
         }
-        LOGGER.debug("joined table has #{} rows", joinTable.table.size());
+        LOGGER.debug("join took {}s", (System.currentTimeMillis() - start) / 1000d);
+        LOGGER.debug("joined table has #{} rows", outputTable.table.rowKeySet().size());
     }
 
     /**
      * Indicates if this instance is joinable with the passed table instance.
-     * Two indicators are used here:<br>
+     * Two indicators are used here:<br/>
      * <ul>
      * <li>Both {@link DataTable#resourceMember} are <b>not</b> of the 
      * same type</li>
-     * <li>at least one of the other's {@link ResourceField}s is contained 
-     * by the declared {@link #joinableFields} of this instance</li>
+     * <li>both share at least one {@link ResourceField}</li>
      * </ul>
      * 
      *
@@ -175,26 +157,13 @@ public class DataTable {
             return false;
         }
         
-        if (joinableFields.isEmpty()) {
-            // if no join fields have been set explicitly we focus all possible join columns
-            joinableFields.addAll(resourceMember.getJoinableFields(otherResourceMember));
-        }
-        
-        // TODO multiple keys to join
+        Set<ResourceField> joinableFields = resourceMember.getJoinableFields(otherResourceMember);
         for (ResourceField possibleJoinColumn : other.table.columnKeySet()) {
             if (joinableFields.contains(possibleJoinColumn)) {
                 return true;
             }
         }
         return false;
-    }
-    
-    protected void addJoinIndexValue(JoinIndex index, ResourceKey rowKey) {
-        if ( !joinKeys.containsKey(index)) {
-            joinableFields.add(index.getField());
-            joinKeys.put(index, new ArrayList<ResourceKey>());
-        }
-        joinKeys.get(index).add(rowKey);
     }
     
     protected void logMemory() {

@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -56,14 +55,8 @@ public class ResourceTable extends DataTable {
     }
     
     public void readIntoMemory() {
-        readIntoMemory(null);
-    }
-    
-    public void readIntoMemory(Set<ResourceField> indexFields) {
+        LOGGER.debug("Reading data file: " + dataFile.toString());
         final Path filePath = dataFile.getFile().toPath();
-        indexFields = indexFields == null 
-                ? Collections.<ResourceField>emptySet()
-                : indexFields;
         try {
             LOGGER.debug("loading table ...");
             long start = System.currentTimeMillis();
@@ -76,6 +69,7 @@ public class ResourceTable extends DataTable {
             int lineNbr = 0;
             while (iterator.hasNext()) {
                 CSVRecord line = iterator.next();
+                LOGGER.trace("parsing line '{}'", line.toString());
                 if (line.size() != columnHeaders.size()) {
                     
                     // TODO choose csv parsing strategy
@@ -90,10 +84,6 @@ public class ResourceTable extends DataTable {
                     final ResourceField field = resourceMember.getField(j);
                     final String value = line.get(j);
                     table.put(id, field, value);
-                    
-                    if (indexFields.contains(field)) {
-                        addJoinIndexValue(new JoinIndex(field, value), id);
-                    }
                 }
             }
             LOGGER.debug("Resource data '{}' loaded into memory (#{} lines a #{} columns)", 

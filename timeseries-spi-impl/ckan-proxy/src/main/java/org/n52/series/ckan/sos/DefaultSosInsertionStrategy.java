@@ -114,22 +114,22 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         final List<Phenomenon> phenomena = parseObservableProperties(platformTable, schemaDescription);
         Map<ResourceMember, DataFile> observationCollections = csvObservationsCollection.getObservationDataCollections();
         for (Map.Entry<ResourceKey, Map<ResourceField, String>> rowEntry : platformTable.getTable().rowMap().entrySet()) {
-            try {
-                final AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
+            final AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
+            for (Map.Entry<ResourceMember, DataFile> observationEntry : observationCollections.entrySet()) {
+                ResourceTable observationTable = new ResourceTable(observationEntry.getKey(), observationEntry.getValue());
+                observationTable.readIntoMemory();
+                
+                DataTable joinedTable = platformTable.innerJoin(observationTable);
                 for (Phenomenon phenomenon : phenomena) {
-                    final InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
-                    insertSensorRequest.setObservableProperty(phenomenaToIdList(phenomena));
-                    final SosProcedureDescription sml = parseProcedureDescription(feature, phenomenon, schemaDescription);
-                    insertSensorRequest.setProcedureDescription(sml);
-                    insertSensorDao.insertSensor(insertSensorRequest);
-                    
-                    for (Map.Entry<ResourceMember, DataFile> observationEntry : observationCollections.entrySet()) {
-                        ResourceTable observationTable = new ResourceTable(observationEntry.getKey(), observationEntry.getValue());
-                        final ResourceMember leftMember = rowEntry.getKey().getMember();
-                        observationTable.readIntoMemory(observationEntry.getKey().getJoinFields(leftMember));
+                    try {
                         InsertObservationRequest insertObservationRequest = new InsertObservationRequest();
-                        
-                        final DataTable joinedTable = observationTable.innerJoin(platformTable);
+                        InsertSensorRequest insertSensorRequest = new InsertSensorRequest();
+
+                        insertSensorRequest.setObservableProperty(phenomenaToIdList(phenomena));
+                        final SosProcedureDescription sml = parseProcedureDescription(feature, phenomenon, schemaDescription);
+                        insertSensorRequest.setProcedureDescription(sml);
+//                      insertSensorDao.insertSensor(insertSensorRequest);
+
                         OmObservationConstellation constellation = new OmObservationConstellation();
                         constellation.setOfferings(offeringsToIdList(insertSensorRequest.getAssignedOfferings()));
                         constellation.setObservableProperty(createPhenomenon(phenomenon));
@@ -137,12 +137,13 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                         constellation.setProcedure(sml);
                         constellation.setObservationType(OmConstants.EN_MEASUREMENT);
                         insertObservationRequest.setObservation(createObservations(joinedTable, constellation, schemaDescription));
-                        insertObservationDao.insertObservation(insertObservationRequest);
-                    }
+//                        insertObservationDao.insertObservation(insertObservationRequest);
+
+                    } catch (Exception e) {
+                        LOGGER.error("could not insert or update sensor", e);
+                    } 
                 }
-            } catch (OwsExceptionReport e) {
-                LOGGER.error("could not insert or update sensor", e);
-            } 
+            }
         }
     }
     
@@ -391,7 +392,7 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
 
     private String parseDateFormat(ResourceField field) {
         String format = field.getOther(CkanConstants.KnownFieldProperty.DATE_FORMAT);
-        return  format.replace("DD", "dd"); // XXX hack to fix wrong format
+        return format.replace("DD", "dd").replace("hh", "HH"); // XXX hack to fix wrong format
     }
 
     private TimeInstant parseDateValue(Map.Entry<ResourceField, String> cells, String dateFormat) {
