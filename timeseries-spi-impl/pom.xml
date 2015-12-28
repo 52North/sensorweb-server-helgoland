@@ -17,7 +17,7 @@
     </modules>
     
     <properties>
-        <sos.version>4.3.4</sos.version>
+        <sos.version>4.3.6</sos.version>
     </properties>
 
     <dependencyManagement>
