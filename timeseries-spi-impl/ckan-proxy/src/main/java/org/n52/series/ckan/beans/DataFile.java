@@ -79,4 +79,18 @@ public class DataFile {
         
     }
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("resourceId: ")
+                .append(resource.getId())
+                .append(", ")
+                .append("DataFile [file: ")
+                .append(file.getAbsolutePath())
+                .append(", ")
+                .append(" encoding: ")
+                .append(encoding.toString());
+        return sb.toString();
+    }
+    
 }
