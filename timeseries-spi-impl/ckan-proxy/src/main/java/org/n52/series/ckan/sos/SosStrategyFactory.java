@@ -40,10 +40,6 @@ public class SosStrategyFactory {
     
     private CsvObservationsCollection dataCollection;
     
-    private InsertSensorDAO insertSensorDao;
-    
-    private InsertObservationDAO insertObservationDao;
-    
     private SosStrategyFactory() {
         
     }
@@ -64,7 +60,10 @@ public class SosStrategyFactory {
         DescriptionFile schemaDescriptor = dataCollection.getSchemaDescriptor();
         
         // TODO for now we just use a default strategy
-        return new DefaultSosInsertionStrategy(insertSensorDao, insertObservationDao);
+        return new DefaultSosInsertionStrategy(
+                new InsertSensorDAO(),
+                new InsertObservationDAO()
+        );
     }
 
     private Map<ResourceMember, DataFile> getDataOfType(String type) {
@@ -76,13 +75,4 @@ public class SosStrategyFactory {
         return this;
     }
 
-    public SosStrategyFactory setInsertSensorDao(InsertSensorDAO insertSensorDao) {
-        this.insertSensorDao = insertSensorDao;
-        return this;
-    }
-
-    public SosStrategyFactory setInsertObservationDao(InsertObservationDAO insertObservationDao) {
-        this.insertObservationDao = insertObservationDao;
-        return this;
-    }
 }

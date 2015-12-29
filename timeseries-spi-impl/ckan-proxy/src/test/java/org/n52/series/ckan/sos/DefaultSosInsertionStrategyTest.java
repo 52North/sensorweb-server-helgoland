@@ -13,6 +13,8 @@ import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.beans.ResourceMember;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache;
 import org.n52.series.ckan.util.FileBasedCkanHarvestingService;
+import org.n52.sos.ds.hibernate.InsertObservationDAO;
+import org.n52.sos.ds.hibernate.InsertSensorDAO;
 
 public class DefaultSosInsertionStrategyTest {
     
@@ -33,7 +35,10 @@ public class DefaultSosInsertionStrategyTest {
     
     @Test
     public void parseSensorsFromObservationCollection() {
-        insertionStrategy = new DefaultSosInsertionStrategy(null, null);
+        insertionStrategy = new DefaultSosInsertionStrategy(
+                new InsertSensorDAO(), 
+                new InsertObservationDAO()
+        );
         for (InMemoryCkanDataCache.Entry<CkanDataset, CsvObservationsCollection> data : ckanDataCache.getCollections()) {
             insertionStrategy.insertOrUpdate(data.getDataset(), data.getData());
         }
