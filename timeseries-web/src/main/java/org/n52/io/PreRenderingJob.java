@@ -61,6 +61,7 @@ import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -73,14 +74,16 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
 
-    private final PrerenderingJobConfig taskConfigPrerendering;
-
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
+    private PrerenderingJobConfig taskConfigPrerendering;
+    
     private SeriesDataService timeseriesDataService;
 
     private String webappFolder;
 
+    private String configFile;
+    
     private String outputPath;
 
     private boolean enabled;
@@ -90,12 +93,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private String language = "en";
     private boolean showGrid = true;
 
-    public PreRenderingJob(String configFile) { // XXX
-        taskConfigPrerendering = readJobConfig(configFile);
-    }
-
     private PrerenderingJobConfig readJobConfig(String configFile) {
-        
         try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
             ObjectMapper om = new ObjectMapper();
             return om.readValue(taskConfig, PrerenderingJobConfig.class);
@@ -111,7 +109,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return JobBuilder.newJob(PreRenderingJob.class)
                 .withIdentity(getJobName())
                 .withDescription(getJobDescription())
-//                .usingJobData(REWRITE_AT_STARTUP, rewriteAtStartup)
+                .usingJobData("configFile", configFile)
                 .build();
     }
     
@@ -123,6 +121,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
         
         LOGGER.info("Start prerendering task");
+        final JobDetail details = context.getJobDetail();
+        JobDataMap jobDataMap = details.getJobDataMap();
+        taskConfigPrerendering = readJobConfig((String) jobDataMap.get("configFile"));
+        
         Map<String, ConfiguredStyle> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
         Map<String, ConfiguredStyle> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
         for (String phenomenonId : phenomenonStyles.keySet()) {
@@ -205,14 +207,14 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         webappFolder = servletConfig.getServletContext().getRealPath("/");
     }
 
-    public String getOutputPath() {
-        return outputPath;
+    public String getConfigFile() {
+        return configFile;
     }
 
-    public void setOutputPath(String outputPath) {
-        this.outputPath = outputPath;
+    public void setConfigFile(String configFile) {
+        this.configFile = configFile;
     }
-
+    
     public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
@@ -229,34 +231,52 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesDataService = timeseriesDataService;
     }
 
+    @Deprecated
+    public String getOutputPath() {
+        return outputPath;
+    }
+
+    @Deprecated
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
+    }
+
+    @Deprecated
     public int getWidth() {
         return width;
     }
 
+    @Deprecated
     public void setWidth(int width) {
         this.width = width;
     }
 
+    @Deprecated
     public int getHeight() {
         return height;
     }
 
+    @Deprecated
     public void setHeight(int height) {
         this.height = height;
     }
 
+    @Deprecated
     public String getLanguage() {
         return language;
     }
 
+    @Deprecated
     public void setLanguage(String language) {
         this.language = language;
     }
 
+    @Deprecated    
     public boolean isShowGrid() {
         return showGrid;
     }
 
+    @Deprecated
     public void setShowGrid(boolean showGrid) {
         this.showGrid = showGrid;
     }
@@ -352,7 +372,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         configuration.put("timespan", interval);
         configuration.put("locale", language);
 
-        // overrides the above parameters (from json config)
+        // overrides the above parameters (from json config) // TODO
         configuration.putAll(taskConfigPrerendering.getGeneralConfig());
         this.width = Integer.parseInt(configuration.get("width"));
         this.height = Integer.parseInt(configuration.get("height"));

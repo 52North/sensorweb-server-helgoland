@@ -1,4 +1,11 @@
 {
+    "generalConfig" : {
+        "outputPath" : "generated/prerendered/v2",
+        "width": "800",
+        "height": "500",
+        "language" : "de",
+        "showGrid" : true
+    },
     "phenomenonStyles": {
         "1": {
             "interval": [
