@@ -87,7 +87,7 @@ public class CkanHarvestingService {
     }
     
     public void harvestDatasets(CkanQuery query) {
-        LOGGER.info("Start harvesting CKAN datasets.");
+        LOGGER.info("Start harvesting CKAN datasets from '{}'", ckanClient.getCatalogUrl());
         int limit = pagingLimit;
         int offset = 0;
         int lastSize = -1;

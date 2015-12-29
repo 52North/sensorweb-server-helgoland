@@ -167,9 +167,9 @@ public class DataTable {
     }
     
     protected void logMemory() {
-        LOGGER.debug("Max Memory: {} Mb", Runtime.getRuntime().maxMemory() / 1048576);
-        LOGGER.debug("Total Memory: {} Mb", Runtime.getRuntime().totalMemory() / 1048576);
-        LOGGER.debug("Free Memory: {} Mb", Runtime.getRuntime().freeMemory() / 1048576);
+        LOGGER.trace("Max Memory: {} Mb", Runtime.getRuntime().maxMemory() / 1048576);
+        LOGGER.trace("Total Memory: {} Mb", Runtime.getRuntime().totalMemory() / 1048576);
+        LOGGER.trace("Free Memory: {} Mb", Runtime.getRuntime().freeMemory() / 1048576);
     }
 
 }

@@ -88,7 +88,7 @@ public class ResourceTable extends DataTable {
             }
             LOGGER.debug("Resource data '{}' loaded into memory (#{} lines a #{} columns)", 
                     resourceMember.getId(), lineNbr, columnHeaders.size());
-            LOGGER.debug("Loading took {}s", (System.currentTimeMillis() - start)/1000);
+            LOGGER.debug("Loading took {}s", (System.currentTimeMillis() - start)/1000d);
             logMemory();
         } catch (IOException e) {
             LOGGER.error("could not read data from {}", filePath, e);
