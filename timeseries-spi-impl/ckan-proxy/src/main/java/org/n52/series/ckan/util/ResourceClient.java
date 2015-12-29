@@ -27,32 +27,30 @@
  */
 package org.n52.series.ckan.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.Consts;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.HttpEntity;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.HttpResponse;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.client.ClientProtocolException;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.client.CredentialsProvider;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.client.ResponseHandler;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.client.config.RequestConfig;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.client.methods.HttpGet;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.config.ConnectionConfig;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.config.Registry;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.config.RegistryBuilder;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.conn.socket.ConnectionSocketFactory;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.conn.ssl.SSLContexts;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.impl.client.BasicCredentialsProvider;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.impl.client.CloseableHttpClient;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.impl.client.HttpClients;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.impl.conn.SystemDefaultRoutePlanner;
+import eu.trentorise.opendata.jackan.internal.org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.net.ProxySelector;
-import java.nio.charset.Charset;
 import javax.net.ssl.SSLContext;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
-import org.apache.http.util.EntityUtils;
 import org.n52.series.ckan.da.CkanConstants;
 
 public class ResourceClient {
