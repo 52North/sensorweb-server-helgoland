@@ -96,6 +96,10 @@ public class TimeseriesData implements Serializable {
         this.metadata = metadata;
     }
     
+    public long size() {
+        return values.size();
+    }
+    
     @JsonIgnore
     public boolean hasReferenceValues() {
         return metadata != null 

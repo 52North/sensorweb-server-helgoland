@@ -25,24 +25,8 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ConfigResultTime {
-    
-    private List<String> services = new ArrayList<String>();
-
-    public ConfigResultTime() {
-    }
-
-    public List<String> getServices() {
-        return services;
-    }
-
-    public void setServices(List<String> services) {
-        this.services = services;
-    }
+public class MetadataIntegerEntity extends MetadataEntity<Integer> {
     
 }

@@ -25,38 +25,76 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Date;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URISyntaxException;
-import org.apache.commons.io.FileUtils;
-import org.n52.io.v1.data.ParameterOutput;
+public abstract class MetadataEntity<T> {
+    
+    private Long pkid;
+    
+    private Long seriesId;
+    
+    private String name;
+    
+    private String type;
+    
+    private T value;
+    
+    private Date lastUpdated;
 
-public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseConfigApplier.class);
-
-    private static final String CONFIG_FILE = "/config-license.txt";
-
-    private String licenseText;
-
-    public LicenseConfigApplier() {
-        try {
-            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
-            this.licenseText = FileUtils.readFileToString(file);
-        } catch (URISyntaxException | IOException e) {
-            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
-        }
+    public Long getPkid() {
+        return pkid;
     }
 
-    @Override
-    public void applyConfigOn(ParameterOutput toApplyConfigOn) {
-        toApplyConfigOn.setLicense(licenseText);
+    public void setPkid(Long pkid) {
+        this.pkid = pkid;
     }
 
+    public Long getSeriesId() {
+        return seriesId;
+    }
+
+    public void setSeriesId(Long seriesId) {
+        this.seriesId = seriesId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+    
+    public DatabaseMetadataOutput<T> toOutput() {
+        return DatabaseMetadataOutput.<T>create()
+                .withValue(value)
+                .lastUpdatedAt(lastUpdated);
+    }
+    
 }

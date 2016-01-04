@@ -27,6 +27,7 @@
  */
 package org.n52.web.v1.ctrl;
 
+import com.fasterxml.jackson.databind.DeserializationConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,11 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.n52.io.ConfigApplier;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 
 import org.n52.io.IoParameters;
 import static org.n52.io.QueryParameters.createFromQuery;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.v1.data.ParameterOutput;
 import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
@@ -46,7 +46,7 @@ import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
 import org.n52.web.WebExceptionAdapter;
-import org.n52.web.v1.extension.MetadataExtension;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -63,18 +63,19 @@ public abstract class ParameterController extends BaseController implements Rest
 
     private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<MetadataExtension<ParameterOutput>>();
 
-    private List<ConfigApplier<ParameterOutput>> configAppliers = new ArrayList<ConfigApplier<ParameterOutput>>();
-
+    private ParameterService<ParameterOutput> parameterService;
+    
     private ServiceParameterService serviceParameterService;
 
-    private ParameterService<ParameterOutput> parameterService;
     @RequestMapping(value = "/{item}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable("item") String timeseriesId,
+    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        Map<String, Object> extras = new HashMap<String, Object>();
-        for (MetadataExtension<?> extension : metadataExtensions) {
-            final Map<String, Object> furtherExtras = extension.getData(queryMap, timeseriesId);
+        
+        Map<String, Object> extras = new HashMap<>();
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if ( !overridableKeys.isEmpty()) {
                 String[] keys = overridableKeys.toArray(new String[0]);
@@ -98,7 +99,7 @@ public abstract class ParameterController extends BaseController implements Rest
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            ParameterOutput[] result = doPostProcessOn(parameterService.getExpandedParameters(queryMap));
+            ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
@@ -118,7 +119,7 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = doPostProcessOn(parameterService.getParameter(id, queryMap));
+        ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
@@ -127,22 +128,19 @@ public abstract class ParameterController extends BaseController implements Rest
         return new ModelAndView().addObject(parameter);
     }
 
-    protected ParameterOutput[] doPostProcessOn(ParameterOutput[] toBeProcessed) {
-
+    protected ParameterOutput[] addExtensionInfos(ParameterOutput[] toBeProcessed) {
         for (ParameterOutput parameterOutput : toBeProcessed) {
-            doPostProcessOn(parameterOutput);
-        }
-
-        return toBeProcessed;
-    }
-
-    protected ParameterOutput doPostProcessOn(ParameterOutput toBeProcessed) {
-        for (ConfigApplier<ParameterOutput> applier : configAppliers) {
-            applier.applyConfigOn(toBeProcessed);
+            addExtensionInfo(parameterOutput);
         }
         return toBeProcessed;
     }
 
+    protected ParameterOutput addExtensionInfo(ParameterOutput output) {
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            extension.addExtraMetadataFieldNames(output);
+        }
+        return output;
+    }
 
     public ServiceParameterService getServiceParameterService() {
         return serviceParameterService;
@@ -159,14 +157,6 @@ public abstract class ParameterController extends BaseController implements Rest
     public void setParameterService(ParameterService<ParameterOutput> parameterService) {
         ParameterService<ParameterOutput> service = new WebExceptionAdapter<ParameterOutput>(parameterService);
         this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
-    }
-
-    public List<ConfigApplier<ParameterOutput>> getConfigAppliers() {
-        return configAppliers;
-    }
-
-    public void setConfigAppliers(List<ConfigApplier<ParameterOutput>> configAppliers) {
-        this.configAppliers = configAppliers;
     }
 
     public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {

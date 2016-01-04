@@ -139,6 +139,10 @@
               <th>When</th>
             </tr>
             <tr>
+              <td>Added <a href="#timeseries-urls">extras metadata</a>.</td>
+              <td>2015-12-14</td>
+            </tr>
+            <tr>
               <td>Added <a href="#generalization">generalization section</a>.</td>
               <td>2015-07-06</td>
             </tr>
@@ -886,6 +890,17 @@ Content-Type: application/json;charset=UTF-8
               </tr>
               <tr>
                 <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/extras</code></td>
+                <td><code>application/json</code></td>
+                <td>Lists extra metadata which may vary from instance to instance. The available metadata fields 
+                    are listed in the <code>extras</code> metadata section of a timeseries. You can query just
+                    the ones you are interested in by appending the <code>fields</code> query parameter and passing
+                    a comma-separated value list to it. For example 
+                    http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/{id}/extras?fields=license
+                </td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
                 <td><code>/api/v1/timeseries/{id}/{interval}</code></td>
                 <td><code>image/png</code></td>
                 <td>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
@@ -919,6 +934,12 @@ Content-Type: application/json;charset=UTF-8
                 <td><code>/api/v1/timeseries/{id}/getData</code></td>
                 <td><code>application/json</code></td>
                 <td><p>Lists the raw data of timeseries with id <code>{id}</code>.</p></td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/getData</code></td>
+                <td><code>image/png</code></td>
+                <td><p>Draws a graph of the data of timeseries with id <code>{id}</code>.</p></td>
               </tr>
               <tr>
                 <td><code>POST</code></td>
@@ -978,6 +999,28 @@ Content-Type: application/json;charset=UTF-8
                 </td>
                 <td>
                   An <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 formatted period</a>. Only backslash formatted values are supported.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>width</code>
+                </td>
+                <td>
+                  <pre>width=200</pre>
+                </td>
+                <td>
+                  If <code>image/png</code> is requested, <code>width</code> determines the width in pixels.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <code>height</code>
+                </td>
+                <td>
+                  <pre>height=200</pre>
+                </td>
+                <td>
+                  If <code>image/png</code> is requested, <code>height</code> determines the width in pixels.
                 </td>
               </tr>
               <tr>

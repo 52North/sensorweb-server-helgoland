@@ -25,10 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension.v1;
 
-public abstract class ConfigApplier<T> {
+import java.util.HashMap;
+import java.util.Map;
+
+import org.n52.io.v1.data.StyleProperties;
+
+public class RenderingHintsExtensionConfig {
     
-    public abstract void applyConfigOn(T toApplyConfigOn);
+	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();
+
+	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<>();
+
+	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+		return phenomenonStyles;
+	}
+
+	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+		this.phenomenonStyles = phenomenonStyles;
+	}
+
+	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+		return timeseriesStyles;
+	}
+
+	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+		this.timeseriesStyles = timeseriesStyles;
+	}
+
+	public static class ConfiguredStyle {
+
+		private StyleProperties style;
+
+		public StyleProperties getStyle() {
+			return style;
+		}
+
+		public void setStyle(StyleProperties style) {
+			this.style = style;
+		}
+
+	}
 
 }

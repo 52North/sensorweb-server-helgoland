@@ -1,0 +1,85 @@
+  README
+#########
+
+ Supported DBMS
+----------------
+
+- PostrgeSQL 9.x with PostGIS 2.x
+
+
+ Supported SOS versions
+------------------------
+
+This service supports the following 52N SOS versions with series or e-Reporting database concepts. 
+
+- series:		4.1.x, 4.2.x, 4.3.x, 4.4.x
+- ereporting:	4.3.x, 4.4.x
+
+The default configuration is series database concepts of 52N SOS versions 4.2.x and higher.
+How to configure support for 52N SOS 4.1.x or for the e-Reporting database concepts see below.
+
+
+ Database configuration
+------------------------
+
+The database configuration file is located in
+
+ [WEBAPP_NAME]\WEB-INF\classes\datasource.properties
+
+The properties that need to be changed:
+
+- Username: 		hibernate.connection.username	(default = postgres)
+- Password: 		hibernate.connection.password	(default = postgres)
+- Connection-URL:	hibernate.connection.url		(default = jdbc\:postgresql\://localhost\:5432/sos)
+
+
+ SOS version 4.1.x
+-------------------
+
+If you use the SOS 4.1.x with series database concept, you should modify the HIBERNATE_DIRECTORY property to
+
+HIBERNATE_DIRECTORY=/hbm/sos/v41
+
+
+ SOS e-Reporting database concept
+----------------------------------
+
+If you use the SOS e-Reporting database concept, you should modify the HIBERNATE_DIRECTORY property to
+
+HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/ereporting
+
+ Adding extra metadata fields
+----------------------------------
+
+Adding extra metadata to each series can be done by creating an extra metadata table. 
+Apply `src/extension/metadata/create_metadata_table.sql` and add some metadata to it.
+Add `/hbm/sos/metadata` to the HIBERNATE_DIRECTORY:
+
+HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/metadata
+
+Now configure the metadata extension to the Web interface so the data can be accessed. 
+Open the `timeseries-api_v1_web.xml` add the bean 
+`org.n52.io.extension.DatabaseMetadataExtension` to the `metadataExtensions` 
+property of a parameterController.
+
+For example
+```
+ <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController" parent="parameterController">
+    <property name="serviceParameterService" ref="serviceParameterService" />
+    <property name="parameterService" ref="timeseriesService" />
+    <property name="metadataExtensions">
+        <list merge="true">
+            <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
+            <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
+            <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+            <!-- Have a look at the README.md at TBD -->
+            <bean class="org.n52.io.extension.DatabaseMetadataExtension" />
+        </list>
+    </property>
+</bean>
+```
+
+After restart you should be able to review the extra metadata available in the 
+`extras` property array of a timeseries. To access them just call 
+`api/v1/timeseries/:id/extras` and optionally filter by adding query parameter 
+`fields` (takes a comma-separated list of metadata names).

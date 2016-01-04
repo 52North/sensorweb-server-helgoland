@@ -25,16 +25,30 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.n52.io.IoParameters;
+public class MetadataJsonEntity extends MetadataEntity<String> {
 
-public interface MetadataExtension<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetadataJsonEntity.class);
+    
+    @JsonGetter(value = "value")
+    public JsonNode getJsonValue() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readTree(getValue());
+        } catch (IOException e) {
+            LOGGER.error("Could not parse to json ({}): {}", getName(), getValue(), e);
+            return null;
+        }
+    }
 
-    public void applyExtensionOn(T toApplyExtensionOn);
-
-    public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
-
+    
 }
