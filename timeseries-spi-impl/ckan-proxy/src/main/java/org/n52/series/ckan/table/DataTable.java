@@ -30,8 +30,11 @@ package org.n52.series.ckan.table;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.n52.series.ckan.beans.ResourceField;
@@ -46,6 +49,8 @@ public class DataTable {
     protected final Table<ResourceKey,ResourceField,String> table;
     
     protected final ResourceMember resourceMember;
+    
+    private final List<ResourceMember> joinedMembers;
 
     protected DataTable(ResourceMember resourceMember) {
         this(HashBasedTable.create(), resourceMember);
@@ -58,6 +63,7 @@ public class DataTable {
     private DataTable(Table table, ResourceMember resourceMember) {
         this.table = table;
         this.resourceMember = resourceMember;
+        this.joinedMembers = new ArrayList<>();
     }
     
     private Table<ResourceKey,ResourceField,String> copy() {
@@ -65,7 +71,7 @@ public class DataTable {
     }
     
     public Table<ResourceKey,ResourceField,String> getTable() {
-        return ImmutableTable.copyOf(table);
+        return table; // TODO making immutable costs performance, consider delegate with getters returning immutable collections?
     }
     
     public ResourceMember getResourceMember() {
@@ -78,6 +84,7 @@ public class DataTable {
             return outputTable;
         }
         
+        outputTable.joinedMembers.add(other.resourceMember);
         Collection<ResourceField> joinFields = fields == null || fields.length == 0
                 ? resourceMember.getJoinFields(other.resourceMember)
                 : Arrays.asList(fields);
@@ -104,15 +111,15 @@ public class DataTable {
         long start = System.currentTimeMillis();
         for (ResourceField field : joinFields) {
             final Map<ResourceKey, String> joinOnIndex = table.column(field);
+            int i = 0;
             for (Map.Entry<ResourceKey, String> joinOnIndexEntry : joinOnIndex.entrySet()) {
                 Map<ResourceKey, String> toJoinIndex = other.table.column(field);
-                int i = 0;
                 for (Map.Entry<ResourceKey, String> toJoinIndexEntry : toJoinIndex.entrySet()) {
                     if ( !joinOnIndexEntry.getValue().equalsIgnoreCase(toJoinIndexEntry.getValue())) {
-                        break;
+                        continue;
                     } 
                     final ResourceKey otherKey = toJoinIndexEntry.getKey();
-                    final String newId = joinOnIndexEntry.getKey() + "_" + i++;
+                    final String newId = toJoinIndexEntry.getKey().getKeyId() + "_" + i++;
                     ResourceKey newKey = new ResourceKey(newId, outputTable.resourceMember);
 
                     // add other's values
@@ -132,8 +139,9 @@ public class DataTable {
                 }
             }
         }
-        LOGGER.debug("join took {}s", (System.currentTimeMillis() - start) / 1000d);
-        LOGGER.debug("joined table has #{} rows", outputTable.table.rowKeySet().size());
+        LOGGER.debug("joined table has #{} rows, took {}s", 
+                outputTable.table.rowKeySet().size(),
+                (System.currentTimeMillis() - start) / 1000d);
     }
 
     /**
@@ -164,6 +172,21 @@ public class DataTable {
             }
         }
         return false;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        return sb.append("DataTable(")
+                .append("size=")
+                .append(table.rowKeySet().size())
+                .append(" rows, ")
+                .append("resource=")
+                .append(resourceMember)
+                .append(". Joined resources: [")
+                .append(Arrays.toString(joinedMembers.toArray()))
+                .append(" ])")
+                .toString();
     }
     
     protected void logMemory() {
