@@ -28,23 +28,10 @@
 package org.n52.series.ckan.util;
 
 import org.n52.series.ckan.cache.InMemoryCkanMetadataCache;
-import eu.trentorise.opendata.jackan.model.CkanDataset;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.Map;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
-import org.junit.Test;
-import org.n52.series.ckan.beans.CsvObservationsCollection;
-import org.n52.series.ckan.beans.DataFile;
-import org.n52.series.ckan.beans.ResourceField;
-import org.n52.series.ckan.beans.ResourceMember;
-import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.cache.InMemoryCkanDataCache;
-import org.n52.series.ckan.cache.InMemoryCkanDataCache.Entry;
 import org.n52.series.ckan.da.CkanHarvestingService;
 
 public class FileBasedCkanHarvestingService {
@@ -59,16 +46,13 @@ public class FileBasedCkanHarvestingService {
         ckanMetadataCache = new InMemoryCkanMetadataCache();
         ckanDataCache = new InMemoryCkanDataCache();
         
-        ckanHarvester = new SeamCkanHarvester("dwd");
+        ckanHarvester = new FileBasedCkanHarvester("dwd");
         ckanHarvester.setResourceDownloadBaseFolder(folder.toURI().toString());
         ckanHarvester.setMetadataCache(ckanMetadataCache);
         ckanHarvester.setDataCache(ckanDataCache);
         
-        MatcherAssert.assertThat(ckanMetadataCache.size(), CoreMatchers.is(0));
         ckanHarvester.harvestDatasets();
-        MatcherAssert.assertThat(folder.list().length, CoreMatchers.is(0));
         ckanHarvester.harvestResources();
-        Assert.assertTrue(ckanMetadataCache.size() > 0);
     }
 
     public InMemoryCkanMetadataCache getCkanMetadataCache() {
@@ -77,38 +61,5 @@ public class FileBasedCkanHarvestingService {
 
     public InMemoryCkanDataCache getCkanDataCache() {
         return ckanDataCache;
-    }
-    
-//    @Test
-    public void testtablejoins() throws IOException {
-        
-        Entry<CkanDataset, CsvObservationsCollection> entry = ckanDataCache.getCollections().iterator().next();
-        Map<ResourceMember, DataFile> metadataCollection = entry.getData().getMetadataCollection();
-        Map.Entry<ResourceMember, DataFile> data = metadataCollection.entrySet().iterator().next();
-        ResourceTable metadataTable = new ResourceTable(data.getKey(), data.getValue());
-        metadataTable.readIntoMemory();
-        
-        Map<ResourceMember, DataFile> observations = entry.getData().getObservationDataCollections();
-        for (Map.Entry<ResourceMember, DataFile> observationData : observations.entrySet()) {
-            ResourceTable dataTable = new ResourceTable(observationData.getKey(), observationData.getValue());
-            dataTable.readIntoMemory();
-            metadataTable.innerJoin(dataTable);
-        }
-        
-//        for (Entry<CkanDataset, CsvObservationsCollection> entry : ckanDataCache.getCollections()) {
-//            TableMerger tableMerger = new TableMerger(entry.getData());
-//            System.out.println("#### DATASET: " + entry.getDataset().getId());
-//            tableMerger.printEachMemberIndividually(entry.getData());
-//        }
-        
-        // TODO
-    }
-    
-    private static class SeamResourceField extends ResourceField {
-
-        public SeamResourceField(String fieldId) {
-            super(fieldId);
-        }
-        
     }
 }
