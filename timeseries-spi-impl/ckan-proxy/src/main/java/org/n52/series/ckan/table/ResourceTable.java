@@ -55,10 +55,9 @@ public class ResourceTable extends DataTable {
     }
     
     public void readIntoMemory() {
-        LOGGER.debug("Reading data file: " + dataFile.toString());
+        LOGGER.debug("Load data file: " + dataFile.toString());
         final Path filePath = dataFile.getFile().toPath();
         try {
-            LOGGER.debug("loading table ...");
             long start = System.currentTimeMillis();
             CSVParser csvParser = CSVParser.parse(filePath.toFile(), dataFile.getEncoding(), CSVFormat.DEFAULT);
             Iterator<CSVRecord> iterator = csvParser.iterator();
@@ -86,9 +85,9 @@ public class ResourceTable extends DataTable {
                     table.put(id, field, value);
                 }
             }
-            LOGGER.debug("Resource data '{}' loaded into memory (#{} lines a #{} columns)", 
-                    resourceMember.getId(), lineNbr, columnHeaders.size());
-            LOGGER.debug("Loading took {}s", (System.currentTimeMillis() - start)/1000d);
+            LOGGER.debug("Resource data '{}' loaded into memory (#{} lines a #{} columns), took {}s", 
+                    resourceMember.getId(), lineNbr, columnHeaders.size(), 
+                    (System.currentTimeMillis() - start)/1000d);
             logMemory();
         } catch (IOException e) {
             LOGGER.error("could not read data from {}", filePath, e);
