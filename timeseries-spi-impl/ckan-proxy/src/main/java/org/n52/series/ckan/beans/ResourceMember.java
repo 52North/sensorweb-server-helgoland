@@ -176,7 +176,16 @@ public class ResourceMember {
         return true;
     }
 
-    
+    @Override 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        return sb.append("ResourceMember(")
+                .append("id=").append(id)
+                .append(", resourceType=")
+                .append(resourceType)
+                .append(")")
+                .toString();
+    }
     
     
 }
