@@ -33,19 +33,17 @@ import eu.trentorise.opendata.jackan.model.CkanDataset;
 import eu.trentorise.opendata.jackan.model.CkanResource;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.n52.series.ckan.beans.DataFile;
 import org.n52.series.ckan.da.CkanHarvestingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SeamCkanHarvester extends CkanHarvestingService {
+public class FileBasedCkanHarvester extends CkanHarvestingService {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeamCkanHarvester.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileBasedCkanHarvester.class);
     
     private static final String TEST_FILES_BASE_PATH = "/files";
     
@@ -57,7 +55,7 @@ public class SeamCkanHarvester extends CkanHarvestingService {
         CkanClient.configureObjectMapper(om);
     }
 
-    public SeamCkanHarvester(String contextPath) {
+    public FileBasedCkanHarvester(String contextPath) {
         this.contextPath = contextPath;
     }
     
@@ -84,6 +82,7 @@ public class SeamCkanHarvester extends CkanHarvestingService {
 
     private File getSourceDataFolder() {
         String baseFolder = TEST_FILES_BASE_PATH + "/" + contextPath;
+        LOGGER.debug("Source Data Folder: {}", baseFolder);
         return new File(getClass().getResource(baseFolder).getFile());
     }
 
