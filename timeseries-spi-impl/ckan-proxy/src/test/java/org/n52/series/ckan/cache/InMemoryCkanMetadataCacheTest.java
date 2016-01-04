@@ -65,7 +65,7 @@ public class InMemoryCkanMetadataCacheTest {
     @Test
     public void shouldReturnResourceDescription() {
         CkanDataset dataset = new CkanDataset("test-dataset");
-        CkanPair extras = new CkanPair(CkanConstants.SchemaDescriptor.SCHEMA_DESCRIPTOR, "{\"resource_type\":\"csv-observations-collection\",\"schema_descriptor_version\":\"0.1\"}");
+        CkanPair extras = new CkanPair(CkanConstants.SchemaDescriptor.SCHEMA_DESCRIPTOR, "{\"resource_type\":\"csv-observations-collection\",\"schema_descriptor_version\":\"0.1\",\"members\":[]}");
         dataset.setExtras(Collections.singletonList(extras));
         
         ckanCache.insertOrUpdate(dataset);
