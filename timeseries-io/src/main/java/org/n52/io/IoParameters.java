@@ -523,7 +523,10 @@ public class IoParameters {
     
     public String getRawFormat() {
         if (isSetRawFormat()) {
-        	return query.get(RAW_FORMAT);
+        	final JsonNode value = query.get(RAW_FORMAT);
+            return value != null
+                    ? value.asText()
+                    : null;
         }
         return null;
     }
