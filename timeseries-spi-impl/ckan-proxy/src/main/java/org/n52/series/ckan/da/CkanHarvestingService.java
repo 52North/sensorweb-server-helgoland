@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class CkanHarvestingService {
     
     private ObjectMapper om = new ObjectMapper(); // TODO use global om config
     
-    private URI resourceDownloadBaseFolder;
+    private Path resourceDownloadBaseFolder;
     
     private int pagingLimit = 20;
     
@@ -76,7 +77,7 @@ public class CkanHarvestingService {
 
     public CkanHarvestingService() {
         try {
-            this.resourceDownloadBaseFolder = getClass().getResource("/").toURI();
+            this.resourceDownloadBaseFolder = Paths.get(getClass().getResource("/").toURI());
         } catch (URISyntaxException e) {
             LOGGER.error("Could not set download base folder!", e);
         }
@@ -199,7 +200,7 @@ public class CkanHarvestingService {
     }
 
     private Path getDatasetDownloadFolder(CkanDataset dataset) {
-        return Paths.get(resourceDownloadBaseFolder).resolve(dataset.getName());
+        return resourceDownloadBaseFolder.resolve(dataset.getName());
     }
     
     private void downloadToFile(String url, File file) {
@@ -216,7 +217,19 @@ public class CkanHarvestingService {
     }
 
     public void setResourceDownloadBaseFolder(String resourceDownloadBaseFolder) throws URISyntaxException {
-        this.resourceDownloadBaseFolder = new URI(resourceDownloadBaseFolder);
+        if (new URI(resourceDownloadBaseFolder).isAbsolute()) {
+            this.resourceDownloadBaseFolder = Paths.get(new URI(resourceDownloadBaseFolder));
+        } else {
+            try {
+                final URL folder = getClass().getResource("/");
+//                resourceDownloadBaseFolder = resourceDownloadBaseFolder.startsWith("/")
+//                        ? resourceDownloadBaseFolder.substring(1)
+//                        : resourceDownloadBaseFolder;
+                this.resourceDownloadBaseFolder = Paths.get(folder.toURI()).resolve(resourceDownloadBaseFolder);
+            } catch (URISyntaxException e) {
+                LOGGER.error("Could not set download base folder!", e);
+            }
+        }
     }
     
     public int getPagingLimit() {
