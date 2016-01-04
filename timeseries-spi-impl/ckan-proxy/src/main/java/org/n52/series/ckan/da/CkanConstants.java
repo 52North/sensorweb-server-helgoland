@@ -74,6 +74,7 @@ public interface CkanConstants {
         public static final String FIELD_TYPE = "field_type";
         @Deprecated
         public static final String FIELDTYPE = "fieldType";
+        public static final String NO_DATA = "no_data";
     }
     
     public interface KnownFieldId {
