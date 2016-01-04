@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -16,6 +17,7 @@ import org.n52.series.ckan.util.FileBasedCkanHarvestingService;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
 
+@Ignore("Does not work as it needs to be run within a full SOS DAO environment at the moment")
 public class DefaultSosInsertionStrategyTest {
     
     @Rule
