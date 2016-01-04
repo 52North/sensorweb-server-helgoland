@@ -99,14 +99,13 @@
         </dependency>
     </dependencies>
     <build>
-        <plugins>
+<!--        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
-                        <!-- here the phase you need -->
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -114,14 +113,13 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
+        </plugins>-->
         
-        <pluginManagement>
+<!--        <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
                     <configuration>
                         <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
                         <resources>
@@ -135,8 +133,116 @@
                         </resources>
                     </configuration>
                 </plugin>
+                
             </plugins>
-        </pluginManagement>
+        </pluginManagement>-->
     </build>
+    
+    <profiles>
+        <profile>
+            <id>webapp-testing</id>
+            <properties>
+                <jetty.version>9.3.6.v20151106</jetty.version>
+                <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.n52.sensorweb.sos</groupId>
+                    <artifactId>webapp-bundle</artifactId>
+                    <version>${sos.version}</version>
+                    <type>war</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/test/resources</directory>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                       <groupId>org.apache.maven.plugins</groupId>
+                       <artifactId>maven-war-plugin</artifactId>
+                       <executions>
+                           <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>war</goal>
+                                </goals>
+                           </execution>
+                       </executions>
+                   </plugin>
+                   <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                   </plugin>
+                </plugins>
+                <pluginManagement>
+                    <plugins>
+                         <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-war-plugin</artifactId>
+                            <version>2.6</version>
+                            <configuration>
+                                <overlays>
+                                    <overlay>
+                                        <groupId>org.n52.sensorweb.sos</groupId>
+                                        <artifactId>webapp-bundle</artifactId>
+                                        <excludes>
+                                            <exclude>WEB-INF/spring</exclude>
+                                            <exclude>WEB-INF/classes/datasource.properties</exclude>
+                                            <exclude>WEB-INF/classes/logback.xml</exclude>
+                                            <exclude>WEB-INF/lib/ckan-proxy*.jar</exclude>
+                                            <exclude>WEB-INF/lib/logback*.jar</exclude>
+                                        </excludes>
+                                    </overlay>
+                                </overlays>
+                                <webAppSourceDirectory>src/test/webapp</webAppSourceDirectory>
+                                <webResources>
+                                    <resource>
+                                        <directory>src/test/webapp</directory>
+                                        <filtering>false</filtering>
+                                    </resource>
+                                </webResources>
+                            </configuration>
+                        </plugin>
+                        
+                        <plugin>
+                            <groupId>org.eclipse.jetty</groupId>
+                            <artifactId>jetty-maven-plugin</artifactId>
+                            <version>${jetty.version}</version>
+                            <configuration>
+                                <stopPort>9966</stopPort>
+                                <stopKey>jetty-stop</stopKey>
+                                <!--<scanIntervalSeconds>5</scanIntervalSeconds>-->
+                                <webAppSourceDirectory>src/test/webapp</webAppSourceDirectory>
+                                <classesDirectory>${webappDirectory}/WEB-INF/classes</classesDirectory>
+                                <scanTargetPatterns>
+                                   <scanTargetPattern>
+                                       <directory>src/test/resources</directory>
+                                        <excludes>
+                                            <exclude>logback.xml</exclude>
+                                        </excludes>
+                                   </scanTargetPattern>
+                                </scanTargetPatterns>
+                                <webApp>
+                                    <descriptor>src/test/webapp/WEB-INF/web.xml</descriptor>
+<!--                                    <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                                        <resourcesAsCSV>../main/src/java</resourcesAsCSV>
+                                    </baseResource>-->
+                                    <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+                                </webApp>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
 
