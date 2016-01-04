@@ -36,7 +36,7 @@ import static org.n52.series.ckan.util.JsonUtil.parseMissingToEmptyString;
 public class ResourceField {
 
     public static ResourceField copy(ResourceField field) {
-        return new ResourceField(field.node);
+        return new ResourceField(field.node, field.index);
     }
     
     private ResourceMember qualifier;
@@ -45,20 +45,28 @@ public class ResourceField {
     
     private final JsonNode node;
     
+    private final int index;
+    
     protected ResourceField(String fieldId) {
         // just for testing
         this.fieldId = fieldId.toLowerCase();
         node = null;
+        index = -1;
     }
 
-    public ResourceField(JsonNode node) {
+    public ResourceField(JsonNode node, int index) {
         this.node = node;
+        this.index = index;
         String id = parseMissingToEmptyString(node, CkanConstants.MemberProperty.FIELD_ID);
         this.fieldId = id.toLowerCase();
     }
     
     public String getFieldId() {
         return fieldId;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public ResourceMember getQualifier() {
@@ -146,7 +154,7 @@ public class ResourceField {
 
     @Override
     public String toString() {
-        return "ResourceField{" + "qualifier=" + qualifier + ", fieldId=" + fieldId + '}';
+        return "ResourceField{fieldId=" + fieldId + ", qualifier=" + qualifier + ", index=" + index + '}';
     }
 
 }

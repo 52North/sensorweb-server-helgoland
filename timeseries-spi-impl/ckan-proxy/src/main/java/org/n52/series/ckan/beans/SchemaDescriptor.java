@@ -113,11 +113,13 @@ public class SchemaDescriptor {
         List<ResourceField> fields = new ArrayList<>();
         JsonNode fieldsNode = member.findValue("fields");
         Iterator<JsonNode> iter = fieldsNode.elements();
+        int index = 0;
         while (iter.hasNext()) {
             JsonNode fieldNode = iter.next();
-            final ResourceField resourceField = new ResourceField(fieldNode);
+            ResourceField resourceField = new ResourceField(fieldNode, index);
             resourceField.setQualifier(qualifier);
             fields.add(resourceField);
+            index++;
         }
         return fields;
     }
