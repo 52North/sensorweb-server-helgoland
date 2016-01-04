@@ -38,7 +38,7 @@ public class ResourceKey {
 
     public ResourceKey(String keyId, ResourceMember member) {
         this.member = member;
-        this.keyId = keyId;
+        this.keyId = member.getId() + "_" + keyId;
     }
 
     public String getKeyId() {
