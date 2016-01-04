@@ -10,3 +10,4 @@ docs
 /scratchpad.txt
 *.swp
 *.swo
+/timeseries-spi-impl/ckan-proxy/src/test/resources/files/full_data/
