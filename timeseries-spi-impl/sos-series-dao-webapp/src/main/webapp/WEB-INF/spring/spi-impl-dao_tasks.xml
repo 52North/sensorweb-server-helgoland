@@ -26,38 +26,9 @@
         <property name="startupDelayInSeconds" value="5" />
         <property name="scheduledJobs">
             <list>
-                <ref bean="ckanHarvestingJob" />
+                <ref bean="preRenderingJobV1" />
+                <ref bean="preRenderingJobV2" />
             </list>
-        </property>
-    </bean>
-    
-    <bean id="ckanHarvestingJob" class="org.n52.series.ckan.da.HarvestingJob">
-        <property name="configFile" value="/config-ckan-harvesting.json" />
-        
-        <property name="jobName" value="CKAN Harvesting Job" />
-        <property name="jobDescription" value="Harvests CKAN resources." />
-        <property name="triggerName" value="ckanHarvesting_every5Minutes" />
-        <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
-        <property name="cronExpression" value="0 0/5 * * * ?" />
-        <property name="triggerAtStartup" value="true" />
-        
-        <property name="harvestingService" ref="ckanHarvestingService" />
-    </bean>
-    
-    <bean id="ckanHarvestingService" class="org.n52.series.ckan.da.CkanHarvestingService">
-        <property name="ckanClient">
-            <bean class="eu.trentorise.opendata.jackan.CkanClient">
-                <constructor-arg index="0" value="https://ckan.colabis.de" />
-            </bean>
-        </property>
-        <property name="metadataCache">
-            <bean class="org.n52.series.ckan.cache.InMemoryCkanMetadataCache" />
-        </property>
-        <property name="dataCache">
-            <bean class="org.n52.series.ckan.sos.SosDatabaseCache" />
-        </property>
-        <property name="resourceClient">
-            <bean class="org.n52.series.ckan.util.ResourceClient" />
         </property>
     </bean>
     
