@@ -144,6 +144,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
         CategoryOutput result = new CategoryOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setDomainId(entity.getDomainId());
         return result;
     }
 

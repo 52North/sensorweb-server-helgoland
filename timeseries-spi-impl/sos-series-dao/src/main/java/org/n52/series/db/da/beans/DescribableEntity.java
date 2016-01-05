@@ -41,7 +41,7 @@ public class DescribableEntity<T extends I18nEntity> {
     /**
      * Identification of the entity without special chars.
      */
-    private String canonicalId;
+    private String domainId;
     
     /**
      * Default name of the entity.
@@ -64,12 +64,12 @@ public class DescribableEntity<T extends I18nEntity> {
         this.pkid = pkid;
     }
 
-    public String getCanonicalId() {
-        return canonicalId;
+    public String getDomainId() {
+        return domainId;
     }
 
-    public void setCanonicalId(String canonicalId) {
-        this.canonicalId = canonicalId;
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
     }
 
     public String getName() {

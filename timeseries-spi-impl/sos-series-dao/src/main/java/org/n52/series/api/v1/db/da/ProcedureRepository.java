@@ -138,6 +138,7 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
         ProcedureOutput result = new ProcedureOutput();
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
+        result.setDomainId(entity.getDomainId());
         return result;
     }
     

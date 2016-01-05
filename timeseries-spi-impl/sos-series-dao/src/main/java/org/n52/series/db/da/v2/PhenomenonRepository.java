@@ -137,6 +137,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         PhenomenonOutput result = new PhenomenonOutput();
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
+        result.setDomainId(entity.getDomainId());
         return result;
     }
 
