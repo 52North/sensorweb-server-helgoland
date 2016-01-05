@@ -38,7 +38,7 @@
         <property name="jobDescription" value="Harvests CKAN resources." />
         <property name="triggerName" value="ckanHarvesting_everyHalfHour" />
         <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
-        <property name="cronExpression" value="0 0/30 * * * ?" />
+        <property name="cronExpression" value="0 0/30 23 * * ?" />
         <property name="triggerAtStartup" value="true" />
         <property name="enabled" value="true" />
         
