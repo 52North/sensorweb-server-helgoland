@@ -135,6 +135,7 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
             DataTable joinedTable = platformTable.innerJoin(observationTable);
             Map<String, SensorInsertion> sensorInsertions = new HashMap<>();
             try {
+                long start = System.currentTimeMillis();
                 for (Map.Entry<ResourceKey, Map<ResourceField, String>> rowEntry : joinedTable.getTable().rowMap().entrySet()) {
                     AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
                     for (Phenomenon phenomenon : phenomena) {
@@ -158,25 +159,28 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                             constellation.setOfferings(offerings);
                             constellation.setObservationType(OmConstants.OBS_TYPE_MEASUREMENT);
                             constellation.setProcedure(insertSensorRequest.getProcedureDescription());
-
-                            sensorInsertion.observations.add(createObservation(rowEntry, constellation, phenomenon));
+                            final OmObservation observation = createObservation(rowEntry, constellation, phenomenon);
+                            if (observation != null) {
+                                sensorInsertion.observations.add(observation);
+                            }
                         }
                     }
                 }
                 
                 for (Map.Entry<String, SensorInsertion> sensorEntries : sensorInsertions.entrySet()) {
-                    if (sensorEntries.getValue().observations.size() > 0) {
-                        LOGGER.debug("insert observations for sensor '{}'", sensorEntries.getKey());
+                    final List<OmObservation> observations = sensorEntries.getValue().observations;
+                    if (observations.size() > 0) {
+                        LOGGER.debug("insert #{} observations for sensor '{}'", observations.size(), sensorEntries.getKey());
                         InsertObservationRequest insertObservationRequest = new InsertObservationRequest();
-                        insertObservationRequest.setObservation(sensorEntries.getValue().observations);
                         final List<SosOffering> assignedOfferings = sensorEntries.getValue().request.getAssignedOfferings();
                         insertObservationRequest.setOfferings(offeringsToIdList(assignedOfferings));
+                        insertObservationRequest.setObservation(observations);
+                        
                         insertObservationDao.insertObservation(insertObservationRequest);
                         LOGGER.debug("Insertion of observations completed.");
                     } else {
                         LOGGER.debug("No observations to insert.");
                     }
-                
                 }
             } catch (Exception e) {
                 LOGGER.error("Could not insert or update procedure/observation data.", e);
