@@ -154,7 +154,7 @@ public class TimeseriesDataController extends BaseController {
 	public void getRawTimeseriesCollectionData(HttpServletResponse response,
 												@RequestBody UndesignedParameterSet parameters) throws Exception {
 		checkIfUnknownTimeseries(parameters.getTimeseries());
-		if (timeseriesDataService instanceof RawDataService && ((RawDataService) timeseriesDataService).supportsRawData()) {
+		if (timeseriesDataService instanceof RawDataService) {
 			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
 			if (inputStream == null) {
 				throw new ResourceNotFoundException("Found no data for timeseries.");
@@ -187,7 +187,7 @@ public class TimeseriesDataController extends BaseController {
     	checkIfUnknownTimeseries(timeseriesId);
         IoParameters map = createFromQuery(query);
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
-    	if (timeseriesDataService instanceof RawDataService && ((RawDataService)timeseriesDataService).supportsRawData()) {
+    	if (timeseriesDataService instanceof RawDataService ) {
     		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
     		if (inputStream == null) {
     			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");

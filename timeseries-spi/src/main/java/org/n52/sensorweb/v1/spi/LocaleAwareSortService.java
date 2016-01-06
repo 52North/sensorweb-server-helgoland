@@ -133,9 +133,4 @@ public class LocaleAwareSortService<T> implements ParameterService<T>, RawDataSe
 		return null;
 	}
 
-	@Override
-	public boolean supportsRawData() {
-		return composedService instanceof RawDataService && ((RawDataService)composedService).supportsRawData();
-	}
-
 }
