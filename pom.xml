@@ -46,12 +46,11 @@
         <connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
         <url>https://github.com/52North/timeseries-api</url>
-        <tag>1.6.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
         <org.springframework.version>3.2.6.RELEASE</org.springframework.version>
-        <sensorwebclient.version>3.2.0</sensorwebclient.version>
         <logback.version>1.1.3</logback.version>
         <jackson.version>2.6.2</jackson.version>
         <geotools.version>8.5</geotools.version>
@@ -261,6 +260,12 @@
                 <artifactId>commons-math</artifactId>
                 <version>2.2</version>
             </dependency>
+            
+            <dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
 
 
             <!-- LOGGING DEPENDENCIES -->

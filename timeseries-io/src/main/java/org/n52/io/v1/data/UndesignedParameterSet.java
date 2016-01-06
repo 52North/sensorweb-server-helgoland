@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,7 +27,6 @@
  */
 package org.n52.io.v1.data;
 
-import org.joda.time.Interval;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParameters;
 import org.n52.io.Utils;
@@ -41,7 +40,9 @@ public class UndesignedParameterSet extends ParameterSet {
     private String resultTime;
 
     private String format;
-
+    
+    private String rawFormat;
+    
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     /**
@@ -85,6 +86,31 @@ public class UndesignedParameterSet extends ParameterSet {
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+    
+    /**
+     * @return the raw output format the raw data shall have.
+     */
+    public String getRawFormat() {
+    	if ((rawFormat == null || (rawFormat != null && rawFormat.isEmpty())) 
+    			&& containsParameter(RawFormats.RAW_FORMAT.toLowerCase())) {
+    		setRawFormat(getAsString(RawFormats.RAW_FORMAT.toLowerCase()));
+    	}
+        return rawFormat;
+    }
+
+    /**
+     * @param format Which raw output format the raw data shall have.
+     */
+    public void setRawFormat(String rawFormat) {
+        this.rawFormat = rawFormat;
+    }
+    
+    /**
+     * @return <code>true</code> if rawFormat is set
+     */
+    public boolean isSetRawFormat() {
+    	return getRawFormat() != null && !getRawFormat().isEmpty();
     }
 
     public static UndesignedParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {

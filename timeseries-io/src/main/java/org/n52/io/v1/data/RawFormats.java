@@ -25,19 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.generalize;
+package org.n52.io.v1.data;
 
+import java.util.Collection;
 
-public class GeneralizerException extends Exception {
+public interface RawFormats {
+	
+	String RAW_FORMAT = "rawFormat";
 
-    private static final long serialVersionUID = 4770273399132586951L;
+	/**
+	 * @return the rawFormats
+	 */
+	String[] getRawFormats();
 
-    public GeneralizerException(String message) {
-        super(message);
-    }
+	/**
+	 * @param rawFormat
+	 *            the rawFormat to add
+	 */
+	void addRawFormat(String rawFormat);
 
-    public GeneralizerException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	/**
+	 * @param rawFormats
+	 *            the rawFormats to set
+	 */
+	void setRawFormats(Collection<String> rawFormats);
 
 }

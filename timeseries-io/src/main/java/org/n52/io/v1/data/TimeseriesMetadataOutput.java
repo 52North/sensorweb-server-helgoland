@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -28,11 +28,14 @@
 package org.n52.io.v1.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.n52.io.Utils;
 
-public class TimeseriesMetadataOutput extends ParameterOutput {
+public class TimeseriesMetadataOutput extends ParameterOutput implements RawFormats {
 
     private String uom;
 
@@ -53,6 +56,8 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     // TODO add as extra
     @Deprecated
     private StatusInterval[] statusIntervals;
+    
+    private Set<String> rawFormats;
 
     public String getUom() {
         return uom;
@@ -65,6 +70,36 @@ public class TimeseriesMetadataOutput extends ParameterOutput {
     public StationOutput getStation() {
         return station;
     }
+    
+    @Override
+	public String[] getRawFormats() {
+		if (rawFormats != null) {
+            return rawFormats.toArray(new String[0]);
+        }
+        return null;
+	}
+
+    @Override
+	public void addRawFormat(String format) {
+		if (format != null && !format.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+	        }
+			rawFormats.add(format);
+		}
+	}
+	
+    @Override
+	public void setRawFormats(Collection<String> formats) {
+		if (formats != null && !formats.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+			} else {
+				rawFormats.clear();
+			} 
+			this.rawFormats.addAll(formats);
+		}
+	}
 
     public void setStation(StationOutput station) {
         this.station = station;
