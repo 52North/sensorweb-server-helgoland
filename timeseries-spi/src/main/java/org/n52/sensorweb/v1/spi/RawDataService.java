@@ -32,12 +32,40 @@ import java.io.InputStream;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.UndesignedParameterSet;
 
+/**
+ * Interface for raw data output
+ * 
+ * @author Carsten Hollmann <c.hollmann@52north.org>
+ * @since 1.7.3
+ *
+ */
 public interface RawDataService {
-	
-	InputStream getRawData(String id, IoParameters query);
-	
-	InputStream getRawData(UndesignedParameterSet parameters);
-	
-	boolean supportsRawData();
+
+    /**
+     * Get raw data for
+     * 
+     * @param id
+     *            Resource id
+     * @param query
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    InputStream getRawData(String id, IoParameters query);
+
+    /**
+     * Get raw data for
+     * 
+     * @param query
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    InputStream getRawData(UndesignedParameterSet parameters);
+
+    /**
+     * Check if raw data output is supported
+     * 
+     * @return <code>true</code>, if raw data output is supported
+     */
+    boolean supportsRawData();
 
 }
