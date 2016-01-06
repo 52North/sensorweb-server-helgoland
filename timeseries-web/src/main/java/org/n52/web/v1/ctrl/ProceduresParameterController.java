@@ -61,7 +61,7 @@ public class ProceduresParameterController extends ParameterController {
 	public void getRawData(HttpServletResponse response,
 			@PathVariable("item") String id,
 			@RequestParam MultiValueMap<String, String> query) {
-		if (getParameterService() instanceof RawDataService && ((RawDataService)getParameterService()).supportsRawData()) {
+		if (getParameterService() instanceof RawDataService) {
 			IoParameters queryMap = createFromQuery(query);
 			InputStream inputStream = ((RawDataService)getParameterService()).getRawData(id, queryMap);
 			if (inputStream == null) {
