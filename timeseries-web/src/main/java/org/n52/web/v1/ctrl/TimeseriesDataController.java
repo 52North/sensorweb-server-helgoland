@@ -77,7 +77,6 @@ import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
-import org.n52.web.OptionNotSupported;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
@@ -176,7 +175,7 @@ public class TimeseriesDataController extends BaseController {
 			}
 
 		} else {
-	    	throw new OptionNotSupported(
+	    	throw new BadRequestException(
 					"Querying of raw timeseries data is not supported by the underlying service!");
 		}
 	}
@@ -207,7 +206,7 @@ public class TimeseriesDataController extends BaseController {
     			}
     		}
 		} else {
-	    	throw new OptionNotSupported(
+	    	throw new BadRequestException(
 					"Querying of raw timeseries data is not supported by the underlying service!");
 		}
     }

@@ -40,8 +40,8 @@ import org.apache.commons.io.IOUtils;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.v1.spi.RawDataService;
+import org.n52.web.BadRequestException;
 import org.n52.web.InternalServerException;
-import org.n52.web.OptionNotSupported;
 import org.n52.web.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +81,7 @@ public class ProceduresParameterController extends ParameterController {
 				}
 			}
 		} else {
-			throw new OptionNotSupported(
+			throw new BadRequestException(
 					"Querying of raw procedure data is not supported by the underlying service!");
 		}
 	}
