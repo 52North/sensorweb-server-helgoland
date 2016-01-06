@@ -139,6 +139,10 @@
               <th>When</th>
             </tr>
             <tr>
+              <td>Added raw data output for <a href="#nonpublic-timeseries">timeseries</a> and <a href="#nonpublic-procedures">procedures</a>.</td>
+              <td>2016-01-06</td>
+            </tr>
+            <tr>
               <td>Added <a href="#timeseries-urls">extras metadata</a>.</td>
               <td>2015-12-14</td>
             </tr>
@@ -2347,14 +2351,24 @@ Content-Type: application/json;charset=UTF-8
 								<td><code>offering</code><br /></td>
 								<td><pre>offering=off_fdoi23</pre></td>
 								<td>All resources where the given <a
-									href="#parameter-offerings">offering</a> id does match.
+									href="#nonpublic-offerings">offering</a> id does match.
 								</td>
 							</tr>
 							<tr>
 								<td><code>feature</code><br /></td>
 								<td><pre>feature=foi_adf092e</pre></td>
 								<td>All resources where the given <a
-									href="#parameter-features">feature</a> id does match.
+									href="#nonpublic-features">feature</a> id does match.
+								</td>
+							</tr>
+							<tr>
+								<td><code>rawFormat</code><br /></td>
+								<td><pre>rawFormat=http://www.opengis.net/sensorml/2.0</pre></td>
+								<td>Returns the requested item encoded in the queried format. 
+									The supported raw output formats are listed in the expanded resource (<a
+									href="#general-common-query-parameters"><code>expanded</code> query parameter</a>) as <code>rawFormats</code> list.
+									<br>
+									The example returns <a href="http://www.opengeospatial.org/standards/sensorml" target="_blank">OGC SensorML 2.0</a> encoded procedure.
 								</td>
 							</tr>
 						</table>
@@ -2441,6 +2455,16 @@ Content-Type: application/json;charset=UTF-8
 								<td>Responds the timeseries resource with a rendering hing, which describes how the
 									timeseries can look like. The styling options are similar to
 									the previous descripted <a href="#styles">Styles</a>.
+								</td>
+							</tr>
+							<tr>
+								<td><code>rawFormat</code><br /></td>
+								<td><pre>rawFormat=http://www.opengis.net/om/2.0</pre></td>
+								<td>Returns the requested item encoded in the queried format. 
+									The supported raw output formats are listed in the expanded resource (<a
+									href="#general-common-query-parameters"><code>expanded</code> query parameter</a>) as <code>rawFormats</code> list.
+									<br>
+									The example returns <a href="http://www.opengeospatial.org/standards/om" target="_blank">OGC O&amp;M 2.0</a> encoded observations.
 								</td>
 							</tr>
 						</table>
