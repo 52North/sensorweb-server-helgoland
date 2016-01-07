@@ -287,6 +287,16 @@ public class IoParameters {
     private static final boolean DEFAULT_FORCE_XY = false;
 
     /**
+     * Determines if filter shall match domain ids instead of global ids
+     */
+    static final String MATCH_DOMAIN_IDS = "matchDomainId";
+    
+    /**
+     * Default filter match property.
+     */
+    private static final boolean DEFAULT_MATCH_DOMAIN_IDS = false;
+    
+    /**
      * Determines the within filter
      */
     static final String NEAR = "near";
@@ -762,6 +772,13 @@ public class IoParameters {
             return DEFAULT_FORCE_XY;
         }
         return getAsBoolean(FORCE_XY);
+    }
+    
+    public boolean isMatchDomainIds() {
+        if ( !query.containsKey(MATCH_DOMAIN_IDS)) {
+            return DEFAULT_MATCH_DOMAIN_IDS;
+        }
+        return getAsBoolean(MATCH_DOMAIN_IDS);
     }
 
     /**
