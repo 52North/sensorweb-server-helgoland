@@ -35,7 +35,7 @@ public class CategoryEntity extends DescribableEntity<I18nCategoryEntity>{
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Canonical id: ").append(getCanonicalId());
+        sb.append(" Domain id: ").append(getDomainId());
         return sb.append(" ]").toString();
     }
 

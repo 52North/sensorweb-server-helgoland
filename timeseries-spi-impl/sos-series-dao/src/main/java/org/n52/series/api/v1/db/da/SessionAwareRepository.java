@@ -184,7 +184,7 @@ public abstract class SessionAwareRepository {
 		} else if (isNameAvailable(entity)) {
 			return entity.getName();
 		} else {
-			return entity.getCanonicalId();
+			return entity.getDomainId();
 		}
 	}
 
