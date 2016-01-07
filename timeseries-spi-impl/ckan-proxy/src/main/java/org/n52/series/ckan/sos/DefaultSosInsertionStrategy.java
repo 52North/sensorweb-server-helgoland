@@ -383,7 +383,7 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                         SensorML20Constants.FEATURE_OF_INTEREST_FIELD_NAME, 
                         SensorML20Constants.FEATURE_OF_INTEREST_FIELD_DEFINITION, 
                         feature.getIdentifier()));
-        return featuresCapabilities.addAbstractDataComponents(record);
+        return featuresCapabilities.setDataRecord(record);
     }
 
     private SmlCapabilities createOfferingCapabilities(AbstractFeature feature, Phenomenon phenomenon, SosOffering offering) {
@@ -394,7 +394,7 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                         "field_0",
                         SensorML20Constants.OFFERING_FIELD_DEFINITION, 
                         offering.getIdentifier()));
-        return offeringCapabilities.addAbstractDataComponents(record);
+        return offeringCapabilities.setDataRecord(record);
     }
 
     private SweField createTextField(String name, String definition, String value) {
