@@ -27,12 +27,24 @@
  */
 package org.n52.web.ctrl.v1;
 
-import org.n52.web.common.Stopwatch;
+import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.APPLICATION_ZIP;
+import static org.n52.io.MimeType.TEXT_CSV;
+import static org.n52.io.format.FormatterFactory.createFormatterFactory;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createContextWith;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -42,17 +54,11 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.IoParseException;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.APPLICATION_ZIP;
-import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.request.PreRenderingTask;
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
+import org.n52.io.request.PreRenderingTask;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
 import org.n52.io.response.TimeseriesMetadataOutput;
@@ -60,6 +66,7 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.v1.data.RawFormats;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.InternalServerException;
@@ -70,6 +77,8 @@ import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDat
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
+import org.n52.sensorweb.v1.spi.RawDataService;
+import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +86,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,6 +111,10 @@ public class TimeseriesDataController extends BaseController {
                                                     @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
         checkIfUnknownTimeseries(parameters.getTimeseries());
+        if (parameters.isSetRawFormat()) {
+        	getRawTimeseriesCollectionData(response, parameters);
+        	return null;
+        }
 
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
         TimeseriesDataCollection< ? > formattedDataCollection = format(timeseriesData, parameters.getFormat());
@@ -117,7 +128,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
@@ -138,7 +149,69 @@ public class TimeseriesDataController extends BaseController {
         Object formattedTimeseries = formattedDataCollection.getAllTimeseries().get(timeseriesId);
         return new ModelAndView().addObject(formattedTimeseries);
     }
+    
+    
+	@RequestMapping(value = "/getData", method = POST, params = { RawFormats.RAW_FORMAT })
+	public void getRawTimeseriesCollectionData(HttpServletResponse response,
+												@RequestBody RequestSimpleParameterSet parameters) throws Exception {
+		checkIfUnknownTimeseries(parameters.getTimeseries());
+		if (timeseriesDataService instanceof RawDataService && ((RawDataService) timeseriesDataService).supportsRawData()) {
+			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
+			if (inputStream == null) {
+				throw new ResourceNotFoundException("Found no data for timeseries.");
+			}
+			try {
+				IOUtils.copyLarge(inputStream, response.getOutputStream());
+			} catch (IOException e) {
+				throw new InternalServerException(
+						"Error while querying raw timeseries data", e);
+			} finally {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						LOGGER.error("Error while closing InputStream", e);
+					}
+				}
+			}
 
+		} else {
+	    	throw new BadRequestException(
+					"Querying of raw timeseries data is not supported by the underlying service!");
+		}
+	}
+
+    @RequestMapping(value = "/{timeseriesId}/getData", method = GET, params = { RawFormats.RAW_FORMAT })
+    public void getRawTimeseriesData(HttpServletResponse response,
+    									@PathVariable String timeseriesId,
+										@RequestParam MultiValueMap<String, String> query) {
+    	checkIfUnknownTimeseries(timeseriesId);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+    	if (timeseriesDataService instanceof RawDataService && ((RawDataService)timeseriesDataService).supportsRawData()) {
+    		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
+    		if (inputStream == null) {
+    			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");
+    		}
+    		try {
+    			IOUtils.copyLarge(inputStream, response.getOutputStream());
+    		} catch (IOException e) {
+    			throw new InternalServerException("Error while querying raw timeseries data", e);
+    		} finally {
+    			if (inputStream != null) {
+    				try {
+    					inputStream.close();
+    				} catch (IOException e) {
+    					LOGGER.error("Error while closing InputStream", e);
+    				}
+    			}
+    		}
+		} else {
+	    	throw new BadRequestException(
+					"Querying of raw timeseries data is not supported by the underlying service!");
+		}
+    }
+ 
     private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
         TimeseriesDataFormatter< ? > formatter = createFormatterFactory(format).create();
         return formatter.format(timeseriesData);
@@ -150,7 +223,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = QueryParameters.createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -173,7 +246,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -201,7 +274,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -226,7 +299,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = QueryParameters.createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -248,7 +321,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());

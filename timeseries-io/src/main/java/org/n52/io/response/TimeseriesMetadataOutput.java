@@ -27,11 +27,16 @@
  */
 package org.n52.io.response;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
 import org.n52.io.Utils;
+import org.n52.io.response.v1.StationOutput;
+import org.n52.io.v1.data.RawFormats;
 
-public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> extends ParameterOutput {
+public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> extends ParameterOutput implements RawFormats{
 
     private String uom;
 
@@ -50,6 +55,8 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> ext
     // TODO add as extra
     @Deprecated
     private StatusInterval[] statusIntervals;
+    
+    private Set<String> rawFormats;
 
     public String getUom() {
         return uom;
@@ -58,6 +65,36 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> ext
     public void setUom(String uom) {
         this.uom = uom;
     }
+
+    @Override
+	public String[] getRawFormats() {
+		if (rawFormats != null) {
+            return rawFormats.toArray(new String[0]);
+        }
+        return null;
+	}
+
+    @Override
+	public void addRawFormat(String format) {
+		if (format != null && !format.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+	        }
+			rawFormats.add(format);
+		}
+	}
+	
+    @Override
+	public void setRawFormats(Collection<String> formats) {
+		if (formats != null && !formats.isEmpty()) {
+			if (rawFormats == null) {
+				rawFormats = new HashSet<String>();
+			} else {
+				rawFormats.clear();
+			} 
+			this.rawFormats.addAll(formats);
+		}
+	}
 
     public ReferenceValueOutput[] getReferenceValues() {
         return Utils.copy(referenceValues);

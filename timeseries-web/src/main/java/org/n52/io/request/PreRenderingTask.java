@@ -61,10 +61,10 @@ import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
@@ -363,7 +363,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
                 for (String timeseriesId : timeseriesStyles.keySet()) {
                     SeriesMetadataV1Output metadata = timeseriesMetadataService.getParameter(timeseriesId);
-                    PhenomenonOutput phenomenon = metadata.getParameters().getPhenomenon();
+                    ParameterOutput phenomenon = metadata.getParameters().getPhenomenon();
                     if (!phenomenonStyles.containsKey(phenomenon.getId())) {
                         // overridden phenomena styles have been rendered already
                         ConfiguredStyle style = timeseriesStyles.get(timeseriesId);

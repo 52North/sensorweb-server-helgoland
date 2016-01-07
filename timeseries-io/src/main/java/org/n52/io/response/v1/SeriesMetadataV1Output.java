@@ -31,7 +31,7 @@ package org.n52.io.response.v1;
 import org.n52.io.response.*;
 import org.n52.io.request.StyleProperties;
 
-public class SeriesMetadataV1Output extends TimeseriesMetadataOutput<TimeseriesOutput> {
+public class SeriesMetadataV1Output extends TimeseriesMetadataOutput {
 
     private StationOutput station;
 

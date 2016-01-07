@@ -25,21 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.sensorweb.v1.spi;
 
+import java.io.InputStream;
 
-import org.n52.io.response.*;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
 
-public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
-    
-    private FeatureOutputCollection featureOutput;
+/**
+ * Interface for raw data output
+ * 
+ * @author Carsten Hollmann <c.hollmann@52north.org>
+ * @since 1.7.3
+ *
+ */
+public interface RawDataService {
 
-    public FeatureOutputCollection getFeatureOutput() {
-        return featureOutput;
-    }
+    /**
+     * Get raw data for
+     * 
+     * @param id
+     *            Resource id
+     * @param query
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    InputStream getRawData(String id, IoParameters query);
 
-    public void setFeatures(FeatureOutputCollection featureOutput) {
-        this.featureOutput = featureOutput;
-    }
+    /**
+     * Get raw data for
+     * 
+     * @param parameters
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    InputStream getRawData(RequestSimpleParameterSet parameters);
+
+    /**
+     * Check if raw data output is supported
+     * 
+     * @return <code>true</code>, if raw data output is supported
+     */
+    boolean supportsRawData();
 
 }

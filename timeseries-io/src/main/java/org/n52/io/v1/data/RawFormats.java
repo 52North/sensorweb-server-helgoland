@@ -25,21 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.io.v1.data;
 
+import java.util.Collection;
 
-import org.n52.io.response.*;
+public interface RawFormats {
+	
+	String RAW_FORMAT = "rawFormat";
 
-public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
-    
-    private FeatureOutputCollection featureOutput;
+	/**
+	 * @return the rawFormats
+	 */
+	String[] getRawFormats();
 
-    public FeatureOutputCollection getFeatureOutput() {
-        return featureOutput;
-    }
+	/**
+	 * @param rawFormat
+	 *            the rawFormat to add
+	 */
+	void addRawFormat(String rawFormat);
 
-    public void setFeatures(FeatureOutputCollection featureOutput) {
-        this.featureOutput = featureOutput;
-    }
+	/**
+	 * @param rawFormats
+	 *            the rawFormats to set
+	 */
+	void setRawFormats(Collection<String> rawFormats);
 
 }
