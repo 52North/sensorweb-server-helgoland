@@ -148,6 +148,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 		PlatformOutput result = getConcretePlatformOutput(entity, parameters);
 		result.setId(Long.toString(entity.getPkid()));
 		result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setDomainId(entity.getDomainId());
 		return result;
 	}
 	

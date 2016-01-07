@@ -131,6 +131,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setDomainId(entity.getDomainId());
         return result;
     }
     
