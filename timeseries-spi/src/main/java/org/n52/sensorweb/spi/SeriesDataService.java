@@ -27,25 +27,14 @@
  */
 package org.n52.sensorweb.spi;
 
+import org.n52.io.format.TvpDataCollection;
+import org.n52.io.request.RequestSimpleParameterSet;
+
 /**
- * Provides access to resource quantities available.
+ * Provides access to the actual raw timeseries data via {@link RequestSimpleParameterSet}.
  */
-public interface CountingMetadataService {
+public interface SeriesDataService {
 
-    int getServiceCount();
-
-    int getStationsCount();
-
-    int getSeriesCount();
-
-    int getOfferingsCount();
-
-    int getCategoriesCount();
-
-    int getFeaturesCount();
-
-    int getProceduresCount();
-
-    int getPhenomenaCount();
+    TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
 
 }

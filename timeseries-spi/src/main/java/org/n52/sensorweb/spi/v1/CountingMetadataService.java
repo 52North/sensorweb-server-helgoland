@@ -25,16 +25,27 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.sensorweb.spi;
-
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.request.RequestSimpleParameterSet;
+package org.n52.sensorweb.spi.v1;
 
 /**
- * Provides access to the actual raw timeseries data via {@link RequestSimpleParameterSet}.
+ * Provides access to resource quantities available.
  */
-public interface TimeseriesDataService {
+public interface CountingMetadataService {
 
-    TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters);
+    int getServiceCount();
+
+    int getStationsCount();
+
+    int getSeriesCount();
+
+    int getOfferingsCount();
+
+    int getCategoriesCount();
+
+    int getFeaturesCount();
+
+    int getProceduresCount();
+
+    int getPhenomenaCount();
 
 }
