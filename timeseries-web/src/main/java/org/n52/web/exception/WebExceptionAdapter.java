@@ -119,9 +119,4 @@ public class WebExceptionAdapter<T> implements ParameterService<T>, RawDataServi
 		return null;
 	}
 
-	@Override
-	public boolean supportsRawData() {
-		return composedService instanceof RawDataService && ((RawDataService)composedService).supportsRawData();
-	}
-
 }

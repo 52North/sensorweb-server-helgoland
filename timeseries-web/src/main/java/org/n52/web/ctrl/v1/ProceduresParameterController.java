@@ -61,8 +61,13 @@ public class ProceduresParameterController extends ParameterControllerV1Adapter 
 	public void getRawData(HttpServletResponse response,
 			@PathVariable("item") String id,
 			@RequestParam MultiValueMap<String, String> query) {
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/web/ctrl/v1/ProceduresParameterController.java
 		if (getParameterService() instanceof RawDataService && ((RawDataService)getParameterService()).supportsRawData()) {
 			IoParameters queryMap = QueryParameters.createFromQuery(query);
+=======
+		if (getParameterService() instanceof RawDataService) {
+			IoParameters queryMap = createFromQuery(query);
+>>>>>>> carsten/update/remove_supportsRawData_method:timeseries-web/src/main/java/org/n52/web/v1/ctrl/ProceduresParameterController.java
 			InputStream inputStream = ((RawDataService)getParameterService()).getRawData(id, queryMap);
 			if (inputStream == null) {
 				throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");

@@ -155,7 +155,7 @@ public class TimeseriesDataController extends BaseController {
 	public void getRawTimeseriesCollectionData(HttpServletResponse response,
 												@RequestBody RequestSimpleParameterSet parameters) throws Exception {
 		checkIfUnknownTimeseries(parameters.getTimeseries());
-		if (timeseriesDataService instanceof RawDataService && ((RawDataService) timeseriesDataService).supportsRawData()) {
+		if (timeseriesDataService instanceof RawDataService) {
 			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
 			if (inputStream == null) {
 				throw new ResourceNotFoundException("Found no data for timeseries.");
@@ -186,9 +186,15 @@ public class TimeseriesDataController extends BaseController {
     									@PathVariable String timeseriesId,
 										@RequestParam MultiValueMap<String, String> query) {
     	checkIfUnknownTimeseries(timeseriesId);
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/web/ctrl/v1/TimeseriesDataController.java
         IoParameters map = QueryParameters.createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
     	if (timeseriesDataService instanceof RawDataService && ((RawDataService)timeseriesDataService).supportsRawData()) {
+=======
+        IoParameters map = createFromQuery(query);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+    	if (timeseriesDataService instanceof RawDataService ) {
+>>>>>>> carsten/update/remove_supportsRawData_method:timeseries-web/src/main/java/org/n52/web/v1/ctrl/TimeseriesDataController.java
     		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
     		if (inputStream == null) {
     			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");

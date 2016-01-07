@@ -61,11 +61,4 @@ public interface RawDataService {
      */
     InputStream getRawData(RequestSimpleParameterSet parameters);
 
-    /**
-     * Check if raw data output is supported
-     * 
-     * @return <code>true</code>, if raw data output is supported
-     */
-    boolean supportsRawData();
-
 }
