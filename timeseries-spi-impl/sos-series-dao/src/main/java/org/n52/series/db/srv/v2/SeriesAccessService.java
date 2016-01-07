@@ -39,7 +39,7 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.io.response.v2.SeriesOutputCollection;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.ShutdownParameterService;
 import org.n52.series.db.da.v2.DbQuery;
@@ -48,7 +48,7 @@ import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
 public class SeriesAccessService extends ServiceInfoAccess
-		implements TimeseriesDataService, ShutdownParameterService<SeriesMetadataV2Output> {
+		implements SeriesDataService, ShutdownParameterService<SeriesMetadataV2Output> {
     
     private SeriesRepository repository;
 
@@ -67,7 +67,7 @@ public class SeriesAccessService extends ServiceInfoAccess
 	}
 
 	@Override
-	public TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
+	public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
 		try {
 			TvpDataCollection dataCollection = new TvpDataCollection();
 			for (String timeseriesId : parameters.getTimeseries()) {

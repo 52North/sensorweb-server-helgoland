@@ -27,7 +27,7 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.generalize.Generalizer;
@@ -39,21 +39,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Composes a {@link TimeseriesDataService} instance to generalize requested timeseries data.
+ * Composes a {@link SeriesDataService} instance to generalize requested timeseries data.
  */
-public class GeneralizingTimeseriesDataService implements TimeseriesDataService {
+public class GeneralizingTimeseriesDataService implements SeriesDataService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingTimeseriesDataService.class);
 
-    private final TimeseriesDataService composedService;
+    private final SeriesDataService composedService;
 
-    public GeneralizingTimeseriesDataService(TimeseriesDataService toCompose) {
+    public GeneralizingTimeseriesDataService(SeriesDataService toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
-        TvpDataCollection ungeneralizedData = composedService.getTimeseriesData(parameters);
+    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
+        TvpDataCollection ungeneralizedData = composedService.getSeriesData(parameters);
         try {
             Generalizer generalizer = createGeneralizer(createFromQuery(parameters));
             TvpDataCollection generalizedData = generalizer.generalize(ungeneralizedData);
@@ -79,7 +79,7 @@ public class GeneralizingTimeseriesDataService implements TimeseriesDataService 
         }
     }
 
-    public static TimeseriesDataService composeDataService(TimeseriesDataService toCompose) {
+    public static SeriesDataService composeDataService(SeriesDataService toCompose) {
         return new GeneralizingTimeseriesDataService(toCompose);
     }
 

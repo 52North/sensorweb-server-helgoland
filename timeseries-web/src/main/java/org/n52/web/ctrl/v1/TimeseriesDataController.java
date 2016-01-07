@@ -69,7 +69,7 @@ import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class TimeseriesDataController extends BaseController {
 
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
-    private TimeseriesDataService timeseriesDataService;
+    private SeriesDataService timeseriesDataService;
 
     private PreRenderingTask preRenderingTask;
 
@@ -331,8 +331,8 @@ public class TimeseriesDataController extends BaseController {
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-            ? composeDataService(timeseriesDataService).getTimeseriesData(parameters)
-            : timeseriesDataService.getTimeseriesData(parameters);
+            ? composeDataService(timeseriesDataService).getSeriesData(parameters)
+            : timeseriesDataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }
@@ -353,11 +353,11 @@ public class TimeseriesDataController extends BaseController {
         this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
     }
 
-    public TimeseriesDataService getTimeseriesDataService() {
+    public SeriesDataService getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(TimeseriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
