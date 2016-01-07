@@ -890,6 +890,17 @@ Content-Type: application/json;charset=UTF-8
               </tr>
               <tr>
                 <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/extras</code></td>
+                <td><code>application/json</code></td>
+                <td>Lists extra metadata which may vary from instance to instance. The available metadata fields 
+                    are listed in the <code>extras</code> metadata section of a timeseries. You can query just
+                    the ones you are interested in by appending the <code>fields</code> query parameter and passing
+                    a comma-separated value list to it. For example 
+                    http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/{id}/extras?fields=license
+                </td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
                 <td><code>/api/v1/timeseries/{id}/{interval}</code></td>
                 <td><code>image/png</code></td>
                 <td>Returns an image of timeseries with id <code>{id}</code> for the given <code>{interval}</code>. Allowed interval values are
