@@ -54,6 +54,7 @@ import org.n52.series.ckan.table.ResourceTable;
 import org.n52.series.ckan.util.GeometryBuilder;
 import org.n52.sos.ds.hibernate.InsertObservationDAO;
 import org.n52.sos.ds.hibernate.InsertSensorDAO;
+import org.n52.sos.encode.SensorMLEncoderv101;
 import org.n52.sos.exception.ows.concrete.InvalidSridException;
 import org.n52.sos.ogc.OGCConstants;
 import org.n52.sos.ogc.gml.AbstractFeature;
@@ -82,6 +83,7 @@ import org.n52.sos.ogc.swe.simpleType.SweText;
 import org.n52.sos.ogc.gml.time.TimeInstant;
 import org.n52.sos.ogc.gml.time.TimePeriod;
 import org.n52.sos.ogc.om.values.QuantityValue;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.ogc.sensorML.SensorML;
 import org.n52.sos.ogc.sos.SosInsertionMetadata;
 import org.n52.sos.request.InsertObservationRequest;
@@ -135,7 +137,6 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
             DataTable joinedTable = platformTable.innerJoin(observationTable);
             Map<String, SensorInsertion> sensorInsertions = new HashMap<>();
             try {
-                long start = System.currentTimeMillis();
                 for (Map.Entry<ResourceKey, Map<ResourceField, String>> rowEntry : joinedTable.getTable().rowMap().entrySet()) {
                     AbstractFeature feature = createFeatureRelation(rowEntry.getValue());
                     for (Phenomenon phenomenon : phenomena) {
@@ -284,14 +285,24 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
                 .setValidTime(createValidTimePeriod())
                 .setIdentifier(procedureId)
                 ;
-        system.setSensorDescriptionXmlString("");
+        
         SensorML sml = new SensorML();
         sml.addMember(system);
+        system.setSensorDescriptionXmlString(encodeToXml(sml));
         
         insertSensorRequest.setAssignedOfferings(Collections.singletonList(sosOffering));
         insertSensorRequest.setAssignedProcedureIdentifier(procedureId);
         insertSensorRequest.setProcedureDescription(sml);
         return insertSensorRequest;
+    }
+
+    private static String encodeToXml(final SensorML sml) {
+        try {
+            return new SensorMLEncoderv101().encode(sml).xmlText();
+        } catch (OwsExceptionReport ex) {
+            LOGGER.error("Could not encode SML to valid XML.", ex);
+            return "";  // TODO empty but valid sml
+        }
     }
     
     private SmlIo<?> createInput(Phenomenon phenomeon) {
@@ -361,7 +372,7 @@ class DefaultSosInsertionStrategy implements SosInsertionStrategy {
         List<SmlCapabilities> capabilities = new ArrayList<>();
         capabilities.add(createFeatureCapabilities(feature));
         capabilities.add(createOfferingCapabilities(feature, phenomenon, offering));
-        capabilities.add(createBboxCapabilities(feature));
+//        capabilities.add(createBboxCapabilities(feature)); // TODO
         return capabilities;
     }
     
