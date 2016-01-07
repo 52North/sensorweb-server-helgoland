@@ -77,7 +77,6 @@ import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDat
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.sensorweb.v1.spi.RawDataService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
@@ -155,8 +154,8 @@ public class TimeseriesDataController extends BaseController {
 	public void getRawTimeseriesCollectionData(HttpServletResponse response,
 												@RequestBody RequestSimpleParameterSet parameters) throws Exception {
 		checkIfUnknownTimeseries(parameters.getTimeseries());
-		if (timeseriesDataService instanceof RawDataService) {
-			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
+		if (timeseriesDataService.supportsRawData()) {
+			InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters);
 			if (inputStream == null) {
 				throw new ResourceNotFoundException("Found no data for timeseries.");
 			}
@@ -188,8 +187,8 @@ public class TimeseriesDataController extends BaseController {
     	checkIfUnknownTimeseries(timeseriesId);
         IoParameters map = QueryParameters.createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
-    	if (timeseriesDataService instanceof RawDataService ) {
-    		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
+    	if (timeseriesDataService.supportsRawData()) {
+    		InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters);
     		if (inputStream == null) {
     			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");
     		}
@@ -423,7 +422,7 @@ public class TimeseriesDataController extends BaseController {
     }
 
     public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
+        this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 
     public SeriesDataService getTimeseriesDataService() {

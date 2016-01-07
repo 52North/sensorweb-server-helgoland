@@ -33,8 +33,8 @@ import org.n52.io.request.RequestSimpleParameterSet;
 /**
  * Provides access to the actual raw timeseries data via {@link RequestSimpleParameterSet}.
  */
-public interface SeriesDataService {
+public interface SeriesDataService extends RawDataInfo {
 
-    TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
+    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
 
 }

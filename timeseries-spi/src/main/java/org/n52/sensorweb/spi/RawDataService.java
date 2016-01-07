@@ -25,11 +25,40 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da;
+package org.n52.sensorweb.spi;
 
-import org.n52.sensorweb.spi.ParameterService;
+import java.io.InputStream;
 
-public interface ShutdownParameterService<T> extends ParameterService<T> {
-    
-    public void shutdown();
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+
+/**
+ * Interface for raw data output
+ * 
+ * @author Carsten Hollmann <c.hollmann@52north.org>
+ * @since 1.7.3
+ *
+ */
+public interface RawDataService {
+
+    /**
+     * Get raw data for
+     * 
+     * @param id
+     *            Resource id
+     * @param query
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(String id, IoParameters query);
+
+    /**
+     * Get raw data for
+     * 
+     * @param parameters
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(RequestSimpleParameterSet parameters);
+
 }

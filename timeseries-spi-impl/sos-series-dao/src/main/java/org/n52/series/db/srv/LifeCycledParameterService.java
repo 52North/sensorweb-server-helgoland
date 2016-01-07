@@ -27,14 +27,17 @@
  */
 package org.n52.series.db.srv;
 
+import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.beans.ServiceInfo;
 
-public abstract class ServiceInfoAccess {
+public abstract class LifeCycledParameterService<T> extends ParameterService<T> {
     
     private ServiceInfo serviceInfo;
-    
+
     public abstract void init();
 
+    public abstract void shutdown();
+    
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
     }

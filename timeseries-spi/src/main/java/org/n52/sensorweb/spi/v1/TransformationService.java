@@ -27,7 +27,6 @@
  */
 package org.n52.sensorweb.spi.v1;
 
-import com.vividsolutions.jts.geom.Geometry;
 import org.n52.web.exception.BadQueryParameterException;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
@@ -41,8 +40,9 @@ import org.opengis.referencing.operation.TransformException;
 import com.vividsolutions.jts.geom.Point;
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.geojson.old.GeojsonPoint;
+import org.n52.sensorweb.spi.ParameterService;
 
-public abstract class TransformationService {
+public abstract class TransformationService<T> extends ParameterService<T> {
 
     /**
      * @param feature the feature to transform.

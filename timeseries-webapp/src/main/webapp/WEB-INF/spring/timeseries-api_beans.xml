@@ -14,8 +14,8 @@
         <property name="serviceDescription" value="My Timeseries Service." />
     </bean>
 
-    <bean id="serviceInfoAccess" class="org.n52.series.db.srv.ServiceInfoAccess"  init-method="init" abstract="true">
+    <bean id="lifeCycledService" class="org.n52.series.db.srv.LifeCycledParameterService" 
+          init-method="init" destroy-method="shutdown" abstract="true" >
         <property name="serviceInfo" ref="serviceInfo" />
     </bean>
-
 </beans>

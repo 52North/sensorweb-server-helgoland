@@ -38,13 +38,10 @@ import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.v1.data.RawFormats;
-import org.n52.sensorweb.v1.spi.RawDataService;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,30 +52,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = COLLECTION_PROCEDURES)
 public class ProceduresParameterController extends ParameterControllerV1Adapter {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(ProceduresParameterController.class);
-    
 	@RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
 	public void getRawData(HttpServletResponse response,
 			@PathVariable("item") String id,
 			@RequestParam MultiValueMap<String, String> query) {
-		if (getParameterService() instanceof RawDataService) {
+		if (getParameterService().supportsRawData()) {
 			IoParameters queryMap = QueryParameters.createFromQuery(query);
-			InputStream inputStream = ((RawDataService)getParameterService()).getRawData(id, queryMap);
-			if (inputStream == null) {
-				throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
-			}
-			try {
+			try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
+                if (inputStream == null) {
+                    throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+                }
 				IOUtils.copyLarge(inputStream, response.getOutputStream());
 			} catch (IOException e) {
 				throw new InternalServerException("Error while querying raw procedure data", e);
-			} finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						LOGGER.error("Error while closing InputStream", e);
-					}
-				}
 			}
 		} else {
 			throw new BadRequestException(

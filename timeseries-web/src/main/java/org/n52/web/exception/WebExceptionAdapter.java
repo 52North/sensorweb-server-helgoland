@@ -32,7 +32,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.v1.spi.RawDataService;
+import org.n52.sensorweb.spi.RawDataService;
 
 /**
  * Adapts SPI exceptions to HTTP specified Web exceptions.
@@ -41,7 +41,7 @@ import org.n52.sensorweb.v1.spi.RawDataService;
  *
  * @param <T> the parameter type of the service to adapt execptions for.
  */
-public class WebExceptionAdapter<T> implements ParameterService<T>, RawDataService {
+public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDataService {
 
     private final ParameterService<T> composedService;
 
@@ -105,16 +105,16 @@ public class WebExceptionAdapter<T> implements ParameterService<T>, RawDataServi
     
     @Override
 	public InputStream getRawData(String id, IoParameters query) {
-		if (composedService instanceof RawDataService) {
-			return ((RawDataService)composedService).getRawData(id, query);
+		if (composedService.supportsRawData()) {
+			return composedService.getRawDataService().getRawData(id, query);
 		}
 		return null;
 	}
 
 	@Override
 	public InputStream getRawData(RequestSimpleParameterSet parameters) {
-		if (composedService instanceof RawDataService) {
-			return ((RawDataService)composedService).getRawData(parameters);
+		if (composedService.supportsRawData()) {
+			return composedService.getRawDataService().getRawData(parameters);
 		}
 		return null;
 	}

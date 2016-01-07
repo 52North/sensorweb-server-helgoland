@@ -36,7 +36,7 @@ import org.n52.io.response.OutputCollection;
  * Composes a {@link ParameterService} for {@link GeojsonFeature}s to transform geometries to requested spatial
  * reference system.
  */
-public class TransformingGeojsonOutputService extends TransformationService implements ParameterService<GeojsonFeature> {
+public class TransformingGeojsonOutputService extends TransformationService<GeojsonFeature> {
 
     private final ParameterService<GeojsonFeature> composedService;
 

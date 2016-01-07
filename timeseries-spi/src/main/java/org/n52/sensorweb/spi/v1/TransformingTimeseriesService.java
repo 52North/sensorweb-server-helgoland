@@ -32,7 +32,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 
-public class TransformingTimeseriesService extends TransformationService implements ParameterService<SeriesMetadataV1Output> {
+public class TransformingTimeseriesService extends TransformationService<SeriesMetadataV1Output> {
 
     private final ParameterService<SeriesMetadataV1Output> composedService;
 
@@ -84,6 +84,11 @@ public class TransformingTimeseriesService extends TransformationService impleme
             transformInline(timeseriesMetadata.getStation(), query);
         }
         return metadata;
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return false;
     }
 
 }
