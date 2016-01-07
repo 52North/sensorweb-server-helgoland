@@ -188,10 +188,10 @@ public class StationRepository extends SessionAwareRepository implements OutputA
             }
         }
         catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId());
         }
         catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
         }
         return null;
     }
