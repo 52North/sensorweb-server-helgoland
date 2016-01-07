@@ -296,6 +296,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
 						result.addProperty(GeoJSONObject.LABEL, entity.getName());
 					}
 					result.addProperty("platform", entity.getPkid());
+                    result.setDomainId(entity.getDomainId());
 					return result;
 				}
 			} catch (GeoJSONException e) {

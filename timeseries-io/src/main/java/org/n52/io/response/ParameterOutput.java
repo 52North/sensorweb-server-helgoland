@@ -77,7 +77,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * @return the domain id.
      */
     public String getDomainId() {
-        return domainId;
+        return domainId; 
     }
 
     /**
@@ -86,7 +86,6 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      *
      * @param domainId the domain id of the parameter.
      */
-    @JsonIgnore
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
@@ -99,7 +98,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     @JsonIgnore
     public boolean isSetDomainId() {
         return getDomainId() != null && !getDomainId().isEmpty();
-    }
+    } 
 
     /**
      * @return the label or the id if label is not set.
