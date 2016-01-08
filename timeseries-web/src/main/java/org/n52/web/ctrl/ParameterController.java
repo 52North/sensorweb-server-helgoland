@@ -27,6 +27,8 @@
  */
 package org.n52.web.ctrl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.io.IOUtils;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.QueryParameters;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import org.n52.io.response.ParameterOutput;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -47,6 +52,9 @@ import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.v1.data.RawFormats;
+import org.n52.web.exception.BadRequestException;
+import org.n52.web.exception.InternalServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -67,6 +75,24 @@ public abstract class ParameterController extends BaseController {
 
     private ParameterService<ParameterOutput> parameterService;
     
+	@RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
+	public void getRawData(HttpServletResponse response,
+			@PathVariable("item") String id,
+			@RequestParam MultiValueMap<String, String> query) {
+		if ( !getParameterService().supportsRawData()) {
+			throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
+        }
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
+            if (inputStream == null) {
+                throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
+            }
+            IOUtils.copyLarge(inputStream, response.getOutputStream());
+        } catch (IOException e) {
+            throw new InternalServerException("Error while querying raw data", e);
+        }
+	}
+
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
