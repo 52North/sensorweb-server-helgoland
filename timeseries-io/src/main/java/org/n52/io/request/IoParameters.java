@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.n52.io.response.BBox;
+import org.n52.io.v1.data.RawFormats;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -223,6 +225,11 @@ public class IoParameters {
      * Determines how raw data shall be formatted.
      */
     static final String FORMAT = "format";
+    
+    /**
+     * Determines how raw data shall be queried from service.
+     */
+    static final String RAW_FORMAT = RawFormats.RAW_FORMAT;
 
     /**
      * The default format for raw data output.
@@ -512,6 +519,21 @@ public class IoParameters {
             return DEFAULT_FORMAT;
         }
         return getAsString(FORMAT);
+    }
+    
+    
+    public boolean isSetRawFormat() {
+    	return query.containsKey(RAW_FORMAT);
+    }
+    
+    public String getRawFormat() {
+        if (isSetRawFormat()) {
+        	final JsonNode value = query.get(RAW_FORMAT);
+            return value != null
+                    ? value.asText()
+                    : null;
+        }
+        return null;
     }
 
     /**

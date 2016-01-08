@@ -83,4 +83,16 @@ public class GeneralizingTimeseriesDataService implements SeriesDataService {
         return new GeneralizingTimeseriesDataService(toCompose);
     }
 
+    @Override
+    public boolean supportsRawData() {
+        return false;
+    }
+
+    @Override
+    public RawDataService getRawDataService() {
+        return null;
+    }
+    
+    
+
 }

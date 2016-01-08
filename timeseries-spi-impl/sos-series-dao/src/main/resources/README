@@ -48,6 +48,7 @@ If you use the SOS e-Reporting database concept, you should modify the HIBERNATE
 
 HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/ereporting
 
+
  Adding extra metadata fields
 ----------------------------------
 
@@ -55,7 +56,7 @@ Adding extra metadata to each series can be done by creating an extra metadata t
 Apply `src/extension/metadata/create_metadata_table.sql` and add some metadata to it.
 Add `/hbm/sos/metadata` to the HIBERNATE_DIRECTORY:
 
-HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/metadata
+HIBERNATE_DIRECTORY=/hbm/sos/core;/hbm/sos/series;/hbm/sos/metadata
 
 Now configure the metadata extension to the Web interface so the data can be accessed. 
 Open the `timeseries-api_v1_web.xml` add the bean 

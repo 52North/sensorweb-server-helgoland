@@ -25,21 +25,25 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.response.v2;
+package org.n52.series.db.srv;
 
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.db.da.beans.ServiceInfo;
 
-import org.n52.io.response.*;
-
-public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
+public abstract class LifeCycledParameterService<T> extends ParameterService<T> {
     
-    private FeatureOutputCollection featureOutput;
+    private ServiceInfo serviceInfo;
 
-    public FeatureOutputCollection getFeatureOutput() {
-        return featureOutput;
+    public abstract void init();
+
+    public abstract void shutdown();
+    
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
     }
 
-    public void setFeatures(FeatureOutputCollection featureOutput) {
-        this.featureOutput = featureOutput;
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
     }
-
+    
 }

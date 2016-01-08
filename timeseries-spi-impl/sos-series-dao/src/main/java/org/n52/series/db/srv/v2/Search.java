@@ -33,15 +33,15 @@ import java.util.List;
 
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
+import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.v2.CategoryRepository;
 import org.n52.series.db.da.v2.FeatureRepository;
 import org.n52.series.db.da.v2.PhenomenonRepository;
 import org.n52.series.db.da.v2.PlatformRepository;
 import org.n52.series.db.da.v2.ProcedureRepository;
 import org.n52.series.db.da.v2.SeriesRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
 
-public class Search extends ServiceInfoAccess implements SearchService {
+public class Search extends ServiceInfo implements SearchService {
 
     private ProcedureRepository procedureRepository;
 
@@ -55,7 +55,8 @@ public class Search extends ServiceInfoAccess implements SearchService {
     
     private SeriesRepository seriesRepository;
 
-    @Override
+    private ServiceInfo serviceInfo;
+
     public void init() {
         procedureRepository = new ProcedureRepository(getServiceInfo());
         phenomenonRepository = new PhenomenonRepository(getServiceInfo());
@@ -77,7 +78,6 @@ public class Search extends ServiceInfoAccess implements SearchService {
         return results;
     }
     
-    @Override
     public void shutdown() {
         phenomenonRepository.cleanup();
         procedureRepository.cleanup();
@@ -87,4 +87,12 @@ public class Search extends ServiceInfoAccess implements SearchService {
         seriesRepository.cleanup();
     }
 
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
+    }
+    
 }

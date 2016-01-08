@@ -34,13 +34,12 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.ProcedureOutput;
 import org.n52.io.response.v2.ProcedureOutputCollection;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.ProcedureRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ProceduresAccessService extends ServiceInfoAccess implements ShutdownParameterService<ProcedureOutput> {
+public class ProceduresAccessService extends LifeCycledParameterService<ProcedureOutput> {
     
     private ProcedureRepository repository;
 

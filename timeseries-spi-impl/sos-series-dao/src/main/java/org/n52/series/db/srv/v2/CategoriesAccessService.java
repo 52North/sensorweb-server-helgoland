@@ -36,13 +36,12 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v2.CategoryOutput;
 import org.n52.io.response.v2.CategoryOutputCollection;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.series.db.da.v2.CategoryRepository;
 import org.n52.series.db.da.v2.DbQuery;
-import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class CategoriesAccessService extends ServiceInfoAccess implements ShutdownParameterService<CategoryOutput> {
+public class CategoriesAccessService extends LifeCycledParameterService<CategoryOutput> {
     
     private CategoryRepository repository;
     
