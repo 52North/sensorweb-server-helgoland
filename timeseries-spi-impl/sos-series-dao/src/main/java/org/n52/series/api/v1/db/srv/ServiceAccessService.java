@@ -39,13 +39,11 @@ import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ServiceRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.web.exception.InternalServerException;
 
-public class ServiceAccessService extends ServiceInfoAccess implements 
-        ServiceParameterService<ServiceOutput>, 
-        ShutdownParameterService<ServiceOutput> {
+public class ServiceAccessService extends LifeCycledParameterService<ServiceOutput> implements 
+        ServiceParameterService {
     
     private ServiceRepository serviceRepository;
     

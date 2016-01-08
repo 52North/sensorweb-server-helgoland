@@ -38,11 +38,10 @@ import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.web.exception.InternalServerException;
 
-public class ProceduresAccessService extends ServiceInfoAccess implements ShutdownParameterService<ProcedureOutput> {
+public class ProceduresAccessService extends LifeCycledParameterService<ProcedureOutput> {
     
     private ProcedureRepository repository;
 
@@ -122,5 +121,5 @@ public class ProceduresAccessService extends ServiceInfoAccess implements Shutdo
     public void shutdown() {
         repository.cleanup();
     }
-
+    
 }

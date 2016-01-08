@@ -31,12 +31,13 @@ import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.sensorweb.spi.RawDataService;
 
 /**
  * Composes a {@link ParameterService} for {@link GeojsonFeature}s to transform geometries to requested spatial
  * reference system.
  */
-public class TransformingGeojsonOutputService extends TransformationService implements ParameterService<GeojsonFeature> {
+public class TransformingGeojsonOutputService extends TransformationService<GeojsonFeature> {
 
     private final ParameterService<GeojsonFeature> composedService;
 
@@ -91,4 +92,14 @@ public class TransformingGeojsonOutputService extends TransformationService impl
         return features;
     }
 
+    @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return composedService.supportsRawData();
+    }
+    
 }

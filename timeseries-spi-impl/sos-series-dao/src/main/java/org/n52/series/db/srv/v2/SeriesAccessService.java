@@ -41,14 +41,13 @@ import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.io.response.v2.SeriesOutputCollection;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.SeriesRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class SeriesAccessService extends ServiceInfoAccess
-		implements SeriesDataService, ShutdownParameterService<SeriesMetadataV2Output> {
+public class SeriesAccessService extends LifeCycledParameterService<SeriesMetadataV2Output>
+		implements SeriesDataService {
     
     private SeriesRepository repository;
 
@@ -151,5 +150,5 @@ public class SeriesAccessService extends ServiceInfoAccess
     public void shutdown() {
         repository.cleanup();
     }
-
+    
 }

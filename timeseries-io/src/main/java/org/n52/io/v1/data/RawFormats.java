@@ -25,11 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.da;
+package org.n52.io.v1.data;
 
-import org.n52.sensorweb.spi.ParameterService;
+import java.util.Collection;
 
-public interface ShutdownParameterService<T> extends ParameterService<T> {
-    
-    public void shutdown();
+public interface RawFormats {
+	
+	String RAW_FORMAT = "rawFormat";
+
+	/**
+	 * @return the rawFormats
+	 */
+	String[] getRawFormats();
+
+	/**
+	 * @param rawFormat
+	 *            the rawFormat to add
+	 */
+	void addRawFormat(String rawFormat);
+
+	/**
+	 * @param rawFormats
+	 *            the rawFormats to set
+	 */
+	void setRawFormats(Collection<String> rawFormats);
+
 }

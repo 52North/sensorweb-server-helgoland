@@ -33,7 +33,7 @@ import java.util.Locale;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 
-public class LocaleAwareSortService<T> implements ParameterService<T> {
+public class LocaleAwareSortService<T> extends ParameterService<T> {
 
     private final ParameterService<T> composedService;
 
@@ -77,6 +77,16 @@ public class LocaleAwareSortService<T> implements ParameterService<T> {
     @Override
     public T getParameter(String item, IoParameters query) {
         return composedService.getParameter(item, query);
+    }
+
+    @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return composedService.supportsRawData();
     }
 
 }

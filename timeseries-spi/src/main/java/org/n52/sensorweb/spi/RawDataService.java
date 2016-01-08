@@ -25,22 +25,40 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.srv;
+package org.n52.sensorweb.spi;
 
-import org.n52.series.db.da.beans.ServiceInfo;
+import java.io.InputStream;
 
-public abstract class ServiceInfoAccess {
-    
-    private ServiceInfo serviceInfo;
-    
-    public abstract void init();
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
 
-    public ServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
+/**
+ * Interface for raw data output
+ * 
+ * @author Carsten Hollmann <c.hollmann@52north.org>
+ * @since 1.7.3
+ *
+ */
+public interface RawDataService {
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-    
+    /**
+     * Get raw data for
+     * 
+     * @param id
+     *            Resource id
+     * @param query
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(String id, IoParameters query);
+
+    /**
+     * Get raw data for
+     * 
+     * @param parameters
+     *            Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(RequestSimpleParameterSet parameters);
+
 }

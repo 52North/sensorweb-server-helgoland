@@ -32,6 +32,7 @@ import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.request.IoParameters;
 import org.n52.io.Utils;
 import org.n52.io.Utils;
+import org.n52.io.v1.data.RawFormats;
 
 
 
@@ -42,7 +43,9 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     private String resultTime;
 
     private String format;
-
+    
+    private String rawFormat;
+    
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     /**
@@ -86,6 +89,31 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     public void setFormat(String format) {
         this.format = format;
+    }
+    
+    /**
+     * @return the raw output format the raw data shall have.
+     */
+    public String getRawFormat() {
+    	if ((rawFormat == null || (rawFormat != null && rawFormat.isEmpty())) 
+    			&& containsParameter(RawFormats.RAW_FORMAT.toLowerCase())) {
+    		setRawFormat(getAsString(RawFormats.RAW_FORMAT.toLowerCase()));
+    	}
+        return rawFormat;
+    }
+
+    /**
+     * @param format Which raw output format the raw data shall have.
+     */
+    public void setRawFormat(String rawFormat) {
+        this.rawFormat = rawFormat;
+    }
+    
+    /**
+     * @return <code>true</code> if rawFormat is set
+     */
+    public boolean isSetRawFormat() {
+    	return getRawFormat() != null && !getRawFormat().isEmpty();
     }
 
     public static RequestSimpleParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
