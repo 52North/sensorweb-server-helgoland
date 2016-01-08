@@ -79,4 +79,14 @@ public class LocaleAwareSortService<T> extends ParameterService<T> {
         return composedService.getParameter(item, query);
     }
 
+    @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return composedService.supportsRawData();
+    }
+
 }

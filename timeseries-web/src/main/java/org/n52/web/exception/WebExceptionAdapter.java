@@ -119,4 +119,14 @@ public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDa
 		return null;
 	}
 
+    @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return composedService.supportsRawData();
+    }
+    
 }

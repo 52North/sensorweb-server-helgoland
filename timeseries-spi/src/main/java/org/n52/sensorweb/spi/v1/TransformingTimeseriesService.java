@@ -31,6 +31,7 @@ import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.sensorweb.spi.RawDataService;
 
 public class TransformingTimeseriesService extends TransformationService<SeriesMetadataV1Output> {
 
@@ -87,8 +88,13 @@ public class TransformingTimeseriesService extends TransformationService<SeriesM
     }
 
     @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
     public boolean supportsRawData() {
-        return false;
+        return composedService.supportsRawData();
     }
 
 }
