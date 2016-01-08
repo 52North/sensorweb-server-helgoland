@@ -67,7 +67,7 @@ import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimese
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.TimeseriesDataService;
+import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.common.Stopwatch;
 import static org.n52.web.common.Stopwatch.startStopwatch;
@@ -83,7 +83,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private ParameterService<SeriesMetadataV1Output> timeseriesMetadataService;
 
-    private TimeseriesDataService timeseriesDataService;
+    private SeriesDataService timeseriesDataService;
 
     private final ConfigTaskPrerendering taskConfigPrerendering;
 
@@ -174,11 +174,11 @@ public class PreRenderingTask implements ServletConfigAware {
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public TimeseriesDataService getTimeseriesDataService() {
+    public SeriesDataService getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(TimeseriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
@@ -333,7 +333,7 @@ public class PreRenderingTask implements ServletConfigAware {
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = timeseriesDataService.getTimeseriesData(parameters);
+        TvpDataCollection timeseriesData = timeseriesDataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }
