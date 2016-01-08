@@ -1,3 +1,10 @@
+/timeseries-spi-impl/ckan-proxy/nbactions.xml
+/timeseries-spi-impl/ckan-proxy/src/test/webapp/cache.tmp
+/timeseries-spi-impl/ckan-proxy/src/test/webapp/configuration.db
+/timeseries-spi-impl/ckan-proxy/src/test/webapp/WEB-INF/datasource.properties
+/timeseries-webapp/nbactions.xml
+/logs/timeseries-webapp.log
+/timeseries-webapp/logs/timeseries-webapp.log
 target
 .settings
 .project
@@ -9,4 +16,4 @@ nbactions.xml
 *.swp
 *.swo
 nbactions.xml
-
+/timeseries-spi-impl/ckan-proxy/src/test/resources/files/full_data/

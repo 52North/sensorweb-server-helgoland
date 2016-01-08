@@ -32,10 +32,8 @@ import java.util.List;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import static org.quartz.TriggerBuilder.newTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,37 +46,29 @@ public class JobScheduler {
     private int startupDelayInSeconds = 5; // 5s
 
     private Scheduler scheduler;
+    
+    private boolean enabled = true;
 
     /**
      * Runs all scheduled tasks
      */
     public void init() {
-        if (scheduler == null) {
-            createDefaultScheduler();
-            if (scheduler == null) {
-                LOGGER.info("No scheduler configured.");
-                return;
+        if ( !enabled) {
+            LOGGER.info("Job schedular disabled. No jobs will be triggered. This is also true for particularly enabled jobs.");
+            return;
+        }
+        
+        for (ScheduledJob scheduledTask : scheduledJobs) {
+            if (scheduledTask.isEnabled()) {
+                scheduleJob(scheduledTask);
             }
         }
-
-        for (ScheduledJob scheduledTask : scheduledJobs) {
-            scheduleJob(scheduledTask);
-        }
-
+        
         try {
             scheduler.startDelayed(startupDelayInSeconds);
             LOGGER.info("Scheduler will start jobs in {}s ...", startupDelayInSeconds);
         } catch (SchedulerException e) {
             LOGGER.error("Could not start scheduler.", e);
-        }
-    }
-
-    private void createDefaultScheduler() {
-        try {
-            SchedulerFactory sf = new StdSchedulerFactory();
-            scheduler = sf.getScheduler();
-        } catch (SchedulerException e) {
-            LOGGER.error("Could create scheduler.", e);
         }
     }
 
@@ -132,6 +122,14 @@ public class JobScheduler {
 
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
 }

@@ -27,13 +27,11 @@
  */
 package org.n52.io.task;
 
-import java.util.Date;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import org.quartz.DateBuilder;
 import static org.quartz.DateBuilder.futureDate;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -44,6 +42,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
  *
  */
 public abstract class ScheduledJob {
+    
+    private boolean enabled = true;
 
     private String jobName;
 
@@ -115,5 +115,12 @@ public abstract class ScheduledJob {
         return tb.build();
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
 }

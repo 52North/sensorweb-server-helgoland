@@ -35,6 +35,6 @@ import org.n52.io.request.RequestSimpleParameterSet;
  */
 public interface SeriesDataService extends RawDataInfo {
 
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
+    TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
 
 }

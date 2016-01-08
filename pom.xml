@@ -10,7 +10,7 @@
     <artifactId>timeseries-api</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Sensor Web Timeseries API</name>
+    <name>RESTful Sensor Web API</name>
     <url>http://52north.org/communities/sensorweb/</url>
     <inceptionYear>2013</inceptionYear>
 
@@ -18,7 +18,6 @@
         <module>timeseries-io</module>
         <module>timeseries-spi</module>
         <module>timeseries-web</module>
-        <module>timeseries-webapp</module>
         <module>timeseries-spi-impl</module>
     </modules>
 
@@ -218,6 +217,16 @@
                 <artifactId>spring-oxm</artifactId>
                 <version>${org.springframework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${org.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${org.springframework.version}</version>
+            </dependency>
             
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -257,7 +266,12 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-
+            
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>1.2</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math</artifactId>
@@ -423,7 +437,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -438,7 +451,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -587,6 +599,23 @@
                         <descriptors>
                             <descriptor>src/main/assembly/release.xml</descriptor>
                         </descriptors>
+                    </configuration>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <excludes>
+                            <excludes>logback-test.xml</excludes>
+                        </excludes>
                     </configuration>
                 </plugin>
                 
