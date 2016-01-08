@@ -151,33 +151,20 @@ public class TimeseriesDataController extends BaseController {
     
     
 	@RequestMapping(value = "/getData", method = POST, params = { RawFormats.RAW_FORMAT })
-	public void getRawTimeseriesCollectionData(HttpServletResponse response,
-												@RequestBody RequestSimpleParameterSet parameters) throws Exception {
+	public void getRawTimeseriesCollectionData(HttpServletResponse response, @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 		checkIfUnknownTimeseries(parameters.getTimeseries());
-		if (timeseriesDataService.supportsRawData()) {
-			InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters);
-			if (inputStream == null) {
-				throw new ResourceNotFoundException("Found no data for timeseries.");
-			}
-			try {
-				IOUtils.copyLarge(inputStream, response.getOutputStream());
-			} catch (IOException e) {
-				throw new InternalServerException(
-						"Error while querying raw timeseries data", e);
-			} finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						LOGGER.error("Error while closing InputStream", e);
-					}
-				}
-			}
-
-		} else {
-	    	throw new BadRequestException(
-					"Querying of raw timeseries data is not supported by the underlying service!");
-		}
+		if ( !timeseriesDataService.supportsRawData()) {
+            throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
+        }
+        
+        try (InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters)) {
+            if (inputStream == null) {
+                throw new ResourceNotFoundException("No raw data found.");
+            }
+            IOUtils.copyLarge(inputStream, response.getOutputStream());
+        } catch (IOException e) {
+            throw new InternalServerException("Error while querying raw data", e);
+        }
 	}
 
     @RequestMapping(value = "/{timeseriesId}/getData", method = GET, params = { RawFormats.RAW_FORMAT })
@@ -187,28 +174,17 @@ public class TimeseriesDataController extends BaseController {
     	checkIfUnknownTimeseries(timeseriesId);
         IoParameters map = QueryParameters.createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
-    	if (timeseriesDataService.supportsRawData()) {
-    		InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters);
-    		if (inputStream == null) {
-    			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");
-    		}
-    		try {
-    			IOUtils.copyLarge(inputStream, response.getOutputStream());
-    		} catch (IOException e) {
-    			throw new InternalServerException("Error while querying raw timeseries data", e);
-    		} finally {
-    			if (inputStream != null) {
-    				try {
-    					inputStream.close();
-    				} catch (IOException e) {
-    					LOGGER.error("Error while closing InputStream", e);
-    				}
-    			}
-    		}
-		} else {
-	    	throw new BadRequestException(
-					"Querying of raw timeseries data is not supported by the underlying service!");
-		}
+    	if ( !timeseriesDataService.supportsRawData()) {
+			throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
+        }
+        try (InputStream inputStream = timeseriesDataService.getRawDataService().getRawData(parameters)) {
+            if (inputStream == null) {
+                throw new ResourceNotFoundException("No raw data found for id '" + timeseriesId + "'.");
+            }
+            IOUtils.copyLarge(inputStream, response.getOutputStream());
+        } catch (IOException e) {
+            throw new InternalServerException("Error while querying raw data", e);
+        }
     }
  
     private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
