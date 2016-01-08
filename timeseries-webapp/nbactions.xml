@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-jetty:run</actionName>
+            <displayName>jetty:run</displayName>
+            <goals>
+                <goal>war:exploded</goal>
+                <goal>jetty:run</goal>
+            </goals>
+            <properties>
+                <skipTests>true</skipTests>
+                <jpda.listen>maven</jpda.listen>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>development</activatedProfile>
+            </activatedProfiles>
+        </action>
+    </actions>

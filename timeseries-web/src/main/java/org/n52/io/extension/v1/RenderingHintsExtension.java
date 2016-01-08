@@ -79,7 +79,7 @@ public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataV1O
     }
 
     private boolean hasSeriesConfiguration(SeriesMetadataV1Output output) {
-        return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
+        return renderingConfig.getTimeseriesStyles().containsKey(output.getId());
     }
 
     private boolean hasPhenomenonConfiguration(SeriesMetadataV1Output output) {
