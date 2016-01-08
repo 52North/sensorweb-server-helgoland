@@ -101,7 +101,7 @@ public class TimeseriesDataController extends BaseController {
 
     private SeriesDataService timeseriesDataService;
 
-    private PreRenderingJob preRenderingTask;
+    private PreRenderingTask preRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -409,11 +409,11 @@ public class TimeseriesDataController extends BaseController {
         this.timeseriesDataService = timeseriesDataService;
     }
 
-    public PreRenderingJob getPreRenderingTask() {
+    public PreRenderingTask getPreRenderingTask() {
         return preRenderingTask;
     }
 
-    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
+    public void setPreRenderingTask(PreRenderingTask prerenderingTask) {
         this.preRenderingTask = prerenderingTask;
     }
 

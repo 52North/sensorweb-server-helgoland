@@ -392,14 +392,9 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             // do not fail on empty observations
             return null;
         }
-        Session session = getSession();
-        try {
-        List<ObservationEntityV2> observations = new ObservationDao(session).getInstancesFor(observation.getTimestamp(), series, query);
+        List<ObservationEntityV2> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
         if (observations != null && !observations.isEmpty()) {
         	 return createTimeseriesValueFor(observations.iterator().next(), series);
-        }
-        } finally {
-            returnSession(session);
         }
         return null;
     }

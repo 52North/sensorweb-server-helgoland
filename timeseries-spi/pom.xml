@@ -8,7 +8,7 @@
     </parent>
     <artifactId>timeseries-spi</artifactId>
     <packaging>jar</packaging>
-    <name>RESTful Sensor Web API - SPI</name>
+    <name>Sensor Web Timeseries API - SPI</name>
     <description>RESTful Sensor Web Client SPI</description>
     <dependencies>
 		<dependency>

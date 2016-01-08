@@ -7,35 +7,19 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>timeseries-spi-impl</artifactId>
-    <name>RESTful Sensor Web API - SPI Implementations</name>
+    <name>Sensor Web Timeseries API - SPI Implementations</name>
     <packaging>pom</packaging>
     
 
     <modules>
-        <module>ckan-proxy</module>
         <module>sos-series-dao</module>
-        <module>sos-series-dao-webapp</module>
     </modules>
-    
-    <properties>
-        <sos.version>4.3.6</sos.version>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.n52.sensorweb</groupId>
-                <artifactId>ckan-proxy</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.n52.sensorweb</groupId>
                 <artifactId>timeseries-series-dao</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.n52.sensorweb</groupId>
-                <artifactId>timeseries-webapp</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

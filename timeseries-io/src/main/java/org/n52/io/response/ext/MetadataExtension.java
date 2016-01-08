@@ -74,10 +74,5 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
         extras.put(getExtensionName(), metadata);
         return extras;
     }
-    
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
 
 }

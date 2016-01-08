@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>timeseries-web</artifactId>
 	<packaging>jar</packaging>
-	<name>RESTful Sensor Web API - REST Binding</name>
+	<name>Sensor Web Timeseries API - REST Binding</name>
 	<url>http://52north.org/communities/sensorweb/</url>
 	<dependencies>
 		<!-- ### 52n DEPENDENCIES ### -->

@@ -27,14 +27,11 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.request.RequestSimpleParameterSet;
+import java.util.ArrayList;
+import org.n52.io.request.IoParameters;
 
-/**
- * Provides access to the actual raw timeseries data via {@link RequestSimpleParameterSet}.
- */
-public interface SeriesDataService extends RawDataInfo {
-
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
-
+public interface ResultTimeService {
+    
+    ArrayList<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+    
 }

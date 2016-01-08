@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
@@ -52,15 +51,10 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     
     private String readLicenseText() {
         try {
-            URL configResource = getClass().getResource(CONFIG_FILE);
-            if (configResource == null) {
-                LOGGER.info("No license config found at '{}'. Using empty license.", CONFIG_FILE);
-                return null;
-            }
-            File file = new File(configResource.toURI());
+            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
             return FileUtils.readFileToString(file);
         } catch (URISyntaxException | IOException e) {
-            LOGGER.error("Could not load '{}'. Using empty license.", CONFIG_FILE, e);
+            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
         }
         return null;
     }

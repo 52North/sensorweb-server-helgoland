@@ -337,7 +337,6 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         TrackOutput result = new TrackOutput();
         result.setId(createUniqueId(entity.getPkid(), type));
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        result.setDomainId(entity.getDomainId());
         List<Long> platform = getPlatformIdForTrack(entity.getPkid(), session);
         if (platform != null && !platform.isEmpty()) {
             if (platform.size() == 1) { // XXX

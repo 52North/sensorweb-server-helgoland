@@ -16,12 +16,12 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
-    <bean class="org.n52.web.v1.ctrl.ResourcesController">
+    <bean class="org.n52.web.ctrl.v1.ResourcesController">
         <property name="metadataService" ref="metadataService" />
     </bean>
 
 
-    <bean class="org.n52.web.v1.ctrl.ParameterController" id="parameterController" abstract="true">
+    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
         <property name="metadataExtensions">
             <list>
                 <bean class="org.n52.io.response.ext.LicenseExtension" />
@@ -29,63 +29,57 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.OfferingsParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ServicesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ServicesParameterController" parent="parameterController">
         <property name="parameterService" ref="serviceParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.CategoriesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.CategoriesParameterController" parent="parameterController">
         <property name="parameterService" ref="categoryParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.FeaturesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.FeaturesParameterController" parent="parameterController">
         <property name="parameterService" ref="featureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.ProceduresParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ProceduresParameterController" parent="parameterController">
         <property name="parameterService" ref="procedureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.PhenomenaParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.PhenomenaParameterController" parent="parameterController">
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.StationsParameterController">
+    <bean class="org.n52.web.ctrl.v1.StationsParameterController">
         <property name="parameterService" ref="stationParameterService" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.TimeseriesMetadataController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.TimeseriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
         <property name="metadataExtensions">
             <list merge="true">
                 <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
                 <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
-                 <!--
-                <bean class="org.n52.io.extension.v1.ResultTimeExtension">
-                    <property name="resultTimeService" ref="resultTimeService"/>
-                </bean>
-                -->
+                <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+                <!-- Have a look at the README.md at TBD -->
+                <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
             </list>
         </property>
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.TimeseriesDataController">
+    <bean class="org.n52.web.ctrl.v1.TimeseriesDataController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
         <property name="preRenderingTask" ref="preRenderingTask" />
-        <!-- NOTE:
-            - P1Y means always 356 days (leap years do have 366 days)
-            - clients may extend the timespan a bit so allow a buffer
-        -->
-        <property name="requestIntervalRestriction" value="P367D" />
+        <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 
-    <bean id="preRenderingTask" class="org.n52.io.PreRenderingTask"
+    <bean id="preRenderingTask" class="org.n52.io.request.PreRenderingTask"
           destroy-method="shutdownTask" factory-method="createTask">
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
@@ -98,7 +92,7 @@
         <property name="enabled" value="false" />
     </bean>
 
-    <bean class="org.n52.web.v1.ctrl.SearchController">
+    <bean class="org.n52.web.ctrl.v1.SearchController">
         <property name="searchService" ref="searchService"/>
     </bean>
 

@@ -30,7 +30,6 @@ package org.n52.io.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,6 +45,8 @@ public abstract class RequestParameterSet {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
 
     private final Map<String, JsonNode> parameters;
+
+    private boolean generalize; // TODO add generelaize algorithm + extra parameters ??
 
     private boolean base64;
 
@@ -74,34 +75,16 @@ public abstract class RequestParameterSet {
      * @return If timeseries data shall be generalized or not.
      */
     public boolean isGeneralize() {
-        if ( !parameters.containsKey("generalize")) {
-            return false;
-        }
-        JsonNode node = parameters.get("generalize");
-        if (node.isBoolean()) {
-            return node.asBoolean();
-        } else {
-            // TODO
-//            ObjectMapper om = new ObjectMapper();
-//            GeneralizerConfig config = om.readValue(om.writeValueAsString(node), GeneralizerConfig.class);
-//            return config.isEnabled();
-            return false;
-        }
-    }
-
-    private void setGeneralize(JsonNode generalizeConfig) {
-        // TODO add generelaize algorithm + extra parameters ??
+        return generalize;
     }
 
     /**
      * @param generalize if output shall be generalized
      */
-    @Deprecated
     public void setGeneralize(boolean generalize) {
-        // TODO add generelaize algorithm + extra parameters ??
-        parameters.put("generalize", BooleanNode.valueOf(generalize));
+        this.generalize = generalize;
     }
-    
+
     /**
      * Sets the timespan of interest (as <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601
      * interval</a> excluding the Period only version).

@@ -44,7 +44,7 @@ import org.n52.io.IoParseException;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.PreRenderingJob;
+import org.n52.io.request.PreRenderingTask;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
@@ -93,7 +93,7 @@ public class SeriesDataController extends BaseController {
 
     private SeriesDataService seriesDataService;
 
-    private PreRenderingJob preRenderingTask;
+    private PreRenderingTask preRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -357,11 +357,11 @@ public class SeriesDataController extends BaseController {
         this.seriesDataService = timeseriesDataService;
     }
 
-    public PreRenderingJob getPreRenderingTask() {
+    public PreRenderingTask getPreRenderingTask() {
         return preRenderingTask;
     }
 
-    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
+    public void setPreRenderingTask(PreRenderingTask prerenderingTask) {
         this.preRenderingTask = prerenderingTask;
     }
 
