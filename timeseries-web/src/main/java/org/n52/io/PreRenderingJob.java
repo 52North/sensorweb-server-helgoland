@@ -48,6 +48,7 @@ import org.n52.io.img.ChartDimension;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.request.IoParameters;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/io/PreRenderingJob.java
 import org.n52.io.PrerenderingJobConfig.ConfiguredStyle;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.StyleProperties;
@@ -55,6 +56,12 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+=======
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
+>>>>>>> develop:timeseries-web/src/main/java/org/n52/io/request/PreRenderingTask.java
 import org.n52.io.task.ScheduledJob;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
@@ -72,6 +79,7 @@ import org.springframework.web.context.ServletConfigAware;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/io/PreRenderingJob.java
     private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
 
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
@@ -79,6 +87,17 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private PrerenderingJobConfig taskConfigPrerendering;
     
     private SeriesDataService timeseriesDataService;
+=======
+    private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingTask.class);
+
+    private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
+
+    private final ConfigTaskPrerendering taskConfigPrerendering = readTaskConfig();
+
+    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
+
+    private SeriesDataService seriesDataService;
+>>>>>>> develop:timeseries-web/src/main/java/org/n52/io/request/PreRenderingTask.java
 
     private String webappFolder;
 
@@ -214,7 +233,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
     }
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/io/PreRenderingJob.java
     
+=======
+
+>>>>>>> develop:timeseries-web/src/main/java/org/n52/io/request/PreRenderingTask.java
     public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
@@ -223,12 +246,21 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/io/PreRenderingJob.java
     public SeriesDataService getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
     public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
+=======
+    public SeriesDataService getSeriesDataService() {
+        return seriesDataService;
+    }
+
+    public void setSeriesDataService(SeriesDataService timeseriesDataService) {
+        this.seriesDataService = timeseriesDataService;
+>>>>>>> develop:timeseries-web/src/main/java/org/n52/io/request/PreRenderingTask.java
     }
 
     @Deprecated
@@ -390,6 +422,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
+<<<<<<< HEAD:timeseries-web/src/main/java/org/n52/io/PreRenderingJob.java
         return timeseriesDataService.getSeriesData(parameters);
     }
 
@@ -471,4 +504,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 //            }
 //        }
 //    }
+=======
+        Stopwatch stopwatch = startStopwatch();
+        TvpDataCollection timeseriesData = seriesDataService.getSeriesData(parameters);
+        LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
+        return timeseriesData;
+    }
+
+>>>>>>> develop:timeseries-web/src/main/java/org/n52/io/request/PreRenderingTask.java
 }

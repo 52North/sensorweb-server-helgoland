@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -32,16 +32,14 @@ import org.n52.io.response.v2.ServiceCollectionOutput;
 import org.n52.io.response.v2.ServiceOutput;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.SeriesRepository;
 import org.n52.series.db.da.v2.ServiceRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class ServiceAccessService extends ServiceInfoAccess implements 
-        ServiceParameterService<ServiceOutput>, 
-        ShutdownParameterService<ServiceOutput> {
+public class ServiceAccessService extends LifeCycledParameterService<ServiceOutput> implements 
+        ServiceParameterService {
 
     private ServiceRepository serviceRepository;
     

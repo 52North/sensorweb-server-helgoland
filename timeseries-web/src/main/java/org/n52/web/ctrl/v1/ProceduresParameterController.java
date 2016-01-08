@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -28,14 +28,12 @@
 package org.n52.web.ctrl.v1;
 
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_PROCEDURES)
 public class ProceduresParameterController extends ParameterControllerV1Adapter {
-    
+	
     // resource controller for procedures
-
 }

@@ -9,6 +9,7 @@
     <artifactId>timeseries-spi-impl</artifactId>
     <name>RESTful Sensor Web API - SPI Implementations</name>
     <packaging>pom</packaging>
+    
 
     <modules>
         <module>ckan-proxy</module>
@@ -38,7 +39,6 @@
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
-        
     </dependencyManagement>
 
 </project>

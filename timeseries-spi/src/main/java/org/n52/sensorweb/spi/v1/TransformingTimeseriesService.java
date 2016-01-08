@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,8 +31,9 @@ import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.sensorweb.spi.RawDataService;
 
-public class TransformingTimeseriesService extends TransformationService implements ParameterService<SeriesMetadataV1Output> {
+public class TransformingTimeseriesService extends TransformationService<SeriesMetadataV1Output> {
 
     private final ParameterService<SeriesMetadataV1Output> composedService;
 
@@ -84,6 +85,16 @@ public class TransformingTimeseriesService extends TransformationService impleme
             transformInline(timeseriesMetadata.getStation(), query);
         }
         return metadata;
+    }
+
+    @Override
+    public RawDataService getRawDataService() {
+        return composedService.getRawDataService();
+    }
+
+    @Override
+    public boolean supportsRawData() {
+        return composedService.supportsRawData();
     }
 
 }

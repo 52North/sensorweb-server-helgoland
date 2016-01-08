@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,7 +34,7 @@ import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.n52.sensorweb.spi.search.v1.CountingMetadataService;
+import org.n52.sensorweb.spi.v1.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

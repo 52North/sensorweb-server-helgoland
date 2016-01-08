@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -77,7 +77,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * @return the domain id.
      */
     public String getDomainId() {
-        return domainId;
+        return domainId; 
     }
 
     /**
@@ -86,7 +86,6 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      *
      * @param domainId the domain id of the parameter.
      */
-    @JsonIgnore
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
@@ -99,7 +98,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     @JsonIgnore
     public boolean isSetDomainId() {
         return getDomainId() != null && !getDomainId().isEmpty();
-    }
+    } 
 
     /**
      * @return the label or the id if label is not set.

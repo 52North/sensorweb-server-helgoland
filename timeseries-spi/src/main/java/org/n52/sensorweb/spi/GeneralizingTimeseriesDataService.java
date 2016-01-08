@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -82,5 +82,17 @@ public class GeneralizingTimeseriesDataService implements SeriesDataService {
     public static SeriesDataService composeDataService(SeriesDataService toCompose) {
         return new GeneralizingTimeseriesDataService(toCompose);
     }
+
+    @Override
+    public boolean supportsRawData() {
+        return false;
+    }
+
+    @Override
+    public RawDataService getRawDataService() {
+        return null;
+    }
+    
+    
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@ package org.n52.io.response.v2;
 
 import org.n52.io.response.*;
 
-public class SeriesMetadataV2Output extends TimeseriesMetadataOutput<SeriesOutput> {
+public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
     
     private FeatureOutputCollection featureOutput;
 

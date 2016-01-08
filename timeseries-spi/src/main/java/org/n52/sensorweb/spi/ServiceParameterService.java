@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,7 +31,7 @@ package org.n52.sensorweb.spi;
  * Extends the generic {@link ParameterService} interface to provide quick check if timeseries resources
  * exist.
  */
-public interface ServiceParameterService<T> extends ParameterService<T> {
+public interface ServiceParameterService {
 
-    public boolean isKnownTimeseries(String timeseriesId);
+    public abstract boolean isKnownTimeseries(String timeseriesId);
 }

@@ -139,6 +139,14 @@
               <th>When</th>
             </tr>
             <tr>
+              <td>Added raw data output for <a href="#nonpublic-timeseries">timeseries</a> and <a href="#nonpublic-procedures">procedures</a>.</td>
+              <td>2016-01-06</td>
+            </tr>
+            <tr>
+              <td>Added <a href="#timeseries-urls">extras metadata</a>.</td>
+              <td>2015-12-14</td>
+            </tr>
+            <tr>
               <td>Added <a href="#generalization">generalization section</a>.</td>
               <td>2015-07-06</td>
             </tr>
@@ -218,7 +226,7 @@
                   <td>
                     <pre>station=sta_sadf2d</pre>
                   </td>
-                  <td>All resources where the given <a href="#parameter-stations">station</a> id does match.</td>
+                  <td>All resources where the given <a href="#stations">station</a> id does match.</td>
                 </tr>
                 <tr>
                   <td>
@@ -887,6 +895,17 @@ Content-Type: application/json;charset=UTF-8
                 <td><code>/api/v1/timeseries/{id}</code></td>
                 <td><code>application/json</code></td>
                 <td><p>Lists the metadata of timeseries with id <code>{id}</code>.</p></td>
+              </tr>
+              <tr>
+                <td><code>GET</code></td>
+                <td><code>/api/v1/timeseries/{id}/extras</code></td>
+                <td><code>application/json</code></td>
+                <td>Lists extra metadata which may vary from instance to instance. The available metadata fields 
+                    are listed in the <code>extras</code> metadata section of a timeseries. You can query just
+                    the ones you are interested in by appending the <code>fields</code> query parameter and passing
+                    a comma-separated value list to it. For example 
+                    http://localhost:8080/sensorwebclient-webapp/api/v1/timeseries/{id}/extras?fields=license
+                </td>
               </tr>
               <tr>
                 <td><code>GET</code></td>
@@ -2118,7 +2137,7 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <pre>feature=foi_adf092e</pre>
                   </td>
-                  <td>All resources where the given <a href="#parameter-features">feature</a> id does match.</td>
+                  <td>All resources where the given <a href="#nonpublic-features">feature</a> id does match.</td>
                 </tr>
                 <tr>
                   <td>
@@ -2127,11 +2146,11 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <pre>procedure=pro_asd23</pre>
                   </td>
-                  <td>All resources where the given <a href="#parameter-procedures">procedure</a> id does match.</td>
+                  <td>All resources where the given <a href="#nonpublic-procedures">procedure</a> id does match.</td>
                 </tr>
               </table>
 
-              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
+              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
 
               <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
           </div>
@@ -2220,7 +2239,7 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <pre>offering=off_fdoi23</pre>
                   </td>
-                  <td>All resources where the given <a href="#parameter-offerings">offering</a> id does match.</td>
+                  <td>All resources where the given <a href="#nonpublic-offerings">offering</a> id does match.</td>
                 </tr>
                 <tr>
                   <td>
@@ -2229,11 +2248,11 @@ Content-Type: application/json;charset=UTF-8
                   <td>
                     <pre>procedure=pro_asd23</pre>
                   </td>
-                  <td>All resources where the given <a href="#parameter-procedures">procedure</a> id does match.</td>
+                  <td>All resources where the given <a href="#nonpublic-procedures">procedure</a> id does match.</td>
                 </tr>
               </table>
 
-              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">common query parameters</a> can be used.</div>
+              <div class="n52-callout n52-callout-info">For this resource <a href="#general-common-query-parameters">further common query parameters</a> can be used.</div>
 
               <div class="n52-callout n52-callout-info">Note that for <code>GET</code> requests the options have to be <b>URL-encoded</b> appropriately!</div>
           </div>
@@ -2336,20 +2355,30 @@ Content-Type: application/json;charset=UTF-8
 								<td><code>offering</code><br /></td>
 								<td><pre>offering=off_fdoi23</pre></td>
 								<td>All resources where the given <a
-									href="#parameter-offerings">offering</a> id does match.
+									href="#nonpublic-offerings">offering</a> id does match.
 								</td>
 							</tr>
 							<tr>
 								<td><code>feature</code><br /></td>
 								<td><pre>feature=foi_adf092e</pre></td>
 								<td>All resources where the given <a
-									href="#parameter-features">feature</a> id does match.
+									href="#nonpublic-features">feature</a> id does match.
+								</td>
+							</tr>
+							<tr>
+								<td><code>rawFormat</code><br /></td>
+								<td><pre>rawFormat=http://www.opengis.net/sensorml/2.0</pre></td>
+								<td>Returns the requested item encoded in the queried format. 
+									The supported raw output formats are listed in the expanded resource (<a
+									href="#general-common-query-parameters"><code>expanded</code> query parameter</a>) as <code>rawFormats</code> list.
+									<br>
+									The example returns <a href="http://www.opengeospatial.org/standards/sensorml" target="_blank">OGC SensorML 2.0</a> encoded procedure.
 								</td>
 							</tr>
 						</table>
 
 						<div class="n52-callout n52-callout-info">
-							For this resource <a href="#general-common-query-parameters">common
+							For this resource <a href="#general-common-query-parameters">further common
 								query parameters</a> can be used.
 						</div>
 
@@ -2430,6 +2459,16 @@ Content-Type: application/json;charset=UTF-8
 								<td>Responds the timeseries resource with a rendering hing, which describes how the
 									timeseries can look like. The styling options are similar to
 									the previous descripted <a href="#styles">Styles</a>.
+								</td>
+							</tr>
+							<tr>
+								<td><code>rawFormat</code><br /></td>
+								<td><pre>rawFormat=http://www.opengis.net/om/2.0</pre></td>
+								<td>Returns the requested item encoded in the queried format. 
+									The supported raw output formats are listed in the expanded resource (<a
+									href="#general-common-query-parameters"><code>expanded</code> query parameter</a>) as <code>rawFormats</code> list.
+									<br>
+									The example returns <a href="http://www.opengeospatial.org/standards/om" target="_blank">OGC O&amp;M 2.0</a> encoded observations.
 								</td>
 							</tr>
 						</table>

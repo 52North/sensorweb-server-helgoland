@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,7 +33,7 @@ import org.n52.io.request.RequestSimpleParameterSet;
 /**
  * Provides access to the actual raw timeseries data via {@link RequestSimpleParameterSet}.
  */
-public interface SeriesDataService {
+public interface SeriesDataService extends RawDataInfo {
 
     TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
 

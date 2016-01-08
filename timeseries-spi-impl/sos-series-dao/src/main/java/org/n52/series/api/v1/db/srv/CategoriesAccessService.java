@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,14 +38,13 @@ import org.n52.io.response.v1.CategoryOutput;
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.web.exception.InternalServerException;
 
-public class CategoriesAccessService extends ServiceInfoAccess implements ShutdownParameterService<CategoryOutput> {
+public class CategoriesAccessService extends LifeCycledParameterService<CategoryOutput> {
     
     private CategoryRepository repository;
-
+    
     @Override
     public void init() {
         repository = new CategoryRepository(getServiceInfo());

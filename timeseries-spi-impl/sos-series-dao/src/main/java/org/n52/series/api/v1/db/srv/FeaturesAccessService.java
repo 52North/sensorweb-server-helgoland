@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,11 +38,10 @@ import org.n52.io.response.v1.FeatureOutput;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.FeatureRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.web.exception.InternalServerException;
 
-public class FeaturesAccessService extends ServiceInfoAccess implements ShutdownParameterService<FeatureOutput> {
+public class FeaturesAccessService extends LifeCycledParameterService<FeatureOutput> {
     
     private FeatureRepository repository;
 
@@ -120,5 +119,5 @@ public class FeaturesAccessService extends ServiceInfoAccess implements Shutdown
     public void shutdown() {
         repository.cleanup();
     }
-
+    
 }

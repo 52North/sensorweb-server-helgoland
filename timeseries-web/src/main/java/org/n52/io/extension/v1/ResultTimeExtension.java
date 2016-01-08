@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.ServiceOutput;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class ResultTimeExtension extends MetadataExtension<SeriesMetadataV1Outpu
 
     @Override
     public void addExtraMetadataFieldNames(SeriesMetadataV1Output output) {
-        final ServiceOutput service = output.getParameters().getService();
+        final ParameterOutput service = output.getParameters().getService();
         if (isAvailableFor(service.getId())) {
             output.addExtra(EXTENSION_NAME);
         }

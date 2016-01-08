@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -29,19 +29,17 @@ package org.n52.series.db.srv.v2;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.PlatformOutputCollection;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.series.db.da.v2.DbQuery;
 import org.n52.series.db.da.v2.PlatformRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
 import org.n52.web.exception.InternalServerException;
 
-public class PlatformsAccessService extends ServiceInfoAccess implements ShutdownParameterService<PlatformOutput> {
+public class PlatformsAccessService extends LifeCycledParameterService<PlatformOutput> {
 
     private PlatformRepository repository;
 	

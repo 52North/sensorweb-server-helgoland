@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,9 +39,9 @@ import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.api.v1.db.da.TimeseriesRepository;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.da.beans.ServiceInfo;
 
-public class Search extends ServiceInfoAccess implements SearchService {
+public class Search extends ServiceInfo implements SearchService {
     
     private TimeseriesRepository timeseriesRepository;
     
@@ -54,8 +54,9 @@ public class Search extends ServiceInfoAccess implements SearchService {
     private FeatureRepository featureRepository;
     
     private CategoryRepository categoryRepository;
+    
+    private ServiceInfo serviceInfo;
 
-    @Override
     public void init() {
         timeseriesRepository = new TimeseriesRepository(getServiceInfo());
         procedureRepository = new ProcedureRepository(getServiceInfo());
@@ -88,4 +89,12 @@ public class Search extends ServiceInfoAccess implements SearchService {
         categoryRepository.cleanup();
     }
 
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
+    }
+    
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,15 +38,14 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.ShutdownParameterService;
-import org.n52.series.db.srv.ServiceInfoAccess;
+import org.n52.series.db.srv.LifeCycledParameterService;
 import org.n52.web.exception.InternalServerException;
 
-public class StationsAccessService extends ServiceInfoAccess implements ShutdownParameterService<StationOutput> {
+public class StationsAccessService extends LifeCycledParameterService<StationOutput> {
     
     private String dbSrid = "EPSG:4326";
     
-    private StationRepository repository = new StationRepository(getServiceInfo());
+    private StationRepository repository;
 
     @Override
     public void init() {
@@ -132,4 +131,9 @@ public class StationsAccessService extends ServiceInfoAccess implements Shutdown
         repository.cleanup();
     }
 
+    @Override
+    public boolean supportsRawData() {
+        return false;
+    }
+    
 }

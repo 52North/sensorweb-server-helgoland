@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,22 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.series.db.srv;
+package org.n52.io.v1.data;
 
-import org.n52.series.db.da.beans.ServiceInfo;
+import java.util.Collection;
 
-public abstract class ServiceInfoAccess {
-    
-    private ServiceInfo serviceInfo;
-    
-    public abstract void init();
+public interface RawFormats {
+	
+	String RAW_FORMAT = "rawFormat";
 
-    public ServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
+	/**
+	 * @return the rawFormats
+	 */
+	String[] getRawFormats();
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-    
+	/**
+	 * @param rawFormat
+	 *            the rawFormat to add
+	 */
+	void addRawFormat(String rawFormat);
+
+	/**
+	 * @param rawFormats
+	 *            the rawFormats to set
+	 */
+	void setRawFormats(Collection<String> rawFormats);
+
 }

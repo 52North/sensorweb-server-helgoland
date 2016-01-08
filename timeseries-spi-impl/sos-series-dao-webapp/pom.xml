@@ -103,15 +103,15 @@
                                 <artifactId>timeseries-series-dao</artifactId>
                                 <includes>hbm/**</includes>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                                <overWrite>false</overWrite>
+                                <overWrite>true</overWrite>
                             </artifactItem>
-                            <artifactItem>
+                            <!--                            <artifactItem>
                                 <groupId>org.n52.sensorweb</groupId>
                                 <artifactId>timeseries-series-dao</artifactId>
                                 <includes>datasource.properties</includes>
                                 <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF</outputDirectory>
                                 <overWrite>false</overWrite>
-                            </artifactItem>
+                            </artifactItem>-->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
@@ -160,4 +160,56 @@
             </plugins>
         </pluginManagement>
     </build>
+    
+    <profiles>
+        <profile>
+            <id>development</id>
+            <properties>
+                <jetty.version>9.3.6.v20151106</jetty.version>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-util</artifactId>
+                    <version>${jetty.version}</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.eclipse.jetty</groupId>
+                            <artifactId>jetty-maven-plugin</artifactId>
+                            <version>${jetty.version}</version>
+                            <configuration>
+                                <stopPort>9966</stopPort>
+                                <stopKey>jetty-stop</stopKey>
+                                <scanTargetPatterns>
+                                    <scanTargetPattern>
+                                        <directory>src/main/resources</directory>
+                                        <excludes>
+                                            <exclude>logback.xml</exclude>
+                                        </excludes>
+                                    </scanTargetPattern>
+                                </scanTargetPatterns>
+                                <webApp>
+                                    <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+                                </webApp>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>
