@@ -294,6 +294,16 @@ public class IoParameters {
     private static final boolean DEFAULT_FORCE_XY = false;
 
     /**
+     * Determines if filter shall match domain ids instead of global ids
+     */
+    static final String MATCH_DOMAIN_IDS = "matchDomainIds";
+    
+    /**
+     * Default filter match property.
+     */
+    private static final boolean DEFAULT_MATCH_DOMAIN_IDS = false;
+    
+    /**
      * Determines the within filter
      */
     static final String NEAR = "near";
@@ -322,8 +332,9 @@ public class IoParameters {
     protected IoParameters(Map<String, JsonNode> queryParameters) {
         query = readDefaultConfig();
         if (queryParameters != null) {
-            // override defaults
-            query.putAll(queryParameters);
+            for (Entry<String, JsonNode> entry : queryParameters.entrySet()) {
+                query.put(entry.getKey().toLowerCase(), entry.getValue());
+            }
         }
     }
 
@@ -346,7 +357,7 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public int getOffset() {
-        if ( !query.containsKey(OFFSET)) {
+        if ( !containsParameter(OFFSET)) {
             return DEFAULT_OFFSET;
         }
         return getAsInteger(OFFSET);
@@ -359,7 +370,7 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public int getLimit() {
-        if ( !query.containsKey(LIMIT)) {
+        if ( !containsParameter(LIMIT)) {
             return DEFAULT_LIMIT;
         }
         return getAsInteger(LIMIT);
@@ -382,7 +393,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     private int getWidth() {
-        if ( !query.containsKey(WIDTH)) {
+        if ( !containsParameter(WIDTH)) {
             return DEFAULT_WIDTH;
         }
         return getAsInteger(WIDTH);
@@ -396,7 +407,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     private int getHeight() {
-        if ( !query.containsKey(HEIGHT)) {
+        if ( !containsParameter(HEIGHT)) {
             return DEFAULT_HEIGHT;
         }
         return getAsInteger(HEIGHT);
@@ -410,7 +421,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isBase64() {
-        if ( !query.containsKey(BASE_64)) {
+        if ( !containsParameter(BASE_64)) {
             return DEFAULT_BASE_64;
         }
         return getAsBoolean(BASE_64);
@@ -422,7 +433,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isGrid() {
-        if ( !query.containsKey(GRID)) {
+        if ( !containsParameter(GRID)) {
             return DEFAULT_GRID;
         }
         return getAsBoolean(GRID);
@@ -434,7 +445,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isGeneralize() throws IoParseException {
-        if ( !query.containsKey(GENERALIZE)) {
+        if ( !containsParameter(GENERALIZE)) {
             return DEFAULT_GENERALIZE;
         }
         return getAsBoolean(GENERALIZE);
@@ -447,7 +458,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isLegend() {
-        if ( !query.containsKey(LEGEND)) {
+        if ( !containsParameter(LEGEND)) {
             return DEFAULT_LEGEND;
         }
         return getAsBoolean(LEGEND);
@@ -458,7 +469,7 @@ public class IoParameters {
      *         is returned.
      */
     public String getLocale() {
-        if ( !query.containsKey(LOCALE)) {
+        if ( !containsParameter(LOCALE)) {
             return DEFAULT_LOCALE;
         }
         return getAsString(LOCALE);
@@ -470,7 +481,7 @@ public class IoParameters {
      *         if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
-        if ( !query.containsKey(STYLE)) {
+        if ( !containsParameter(STYLE)) {
             return StyleProperties.createDefaults();
         }
         return parseStyleProperties(getAsString(STYLE));
@@ -505,7 +516,7 @@ public class IoParameters {
     }
 
     public String getFormat() {
-        if ( !query.containsKey(FORMAT)) {
+        if ( !containsParameter(FORMAT)) {
             return DEFAULT_FORMAT;
         }
         return getAsString(FORMAT);
@@ -513,7 +524,7 @@ public class IoParameters {
     
     
     public boolean isSetRawFormat() {
-    	return query.containsKey(RAW_FORMAT);
+    	return containsParameter(RAW_FORMAT);
     }
     
     public String getRawFormat() {
@@ -532,7 +543,7 @@ public class IoParameters {
      *         if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
-        if ( !query.containsKey(TIMESPAN)) {
+        if ( !containsParameter(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(getAsString(TIMESPAN));
@@ -553,7 +564,7 @@ public class IoParameters {
     }
 
     public Instant getResultTime() {
-        if (!query.containsKey(RESULTTIME)) {
+        if (!containsParameter(RESULTTIME)) {
             return null;
         }
         return validateTimestamp(getAsString(RESULTTIME));
@@ -597,19 +608,19 @@ public class IoParameters {
     }
     
     public Set<String> getPlatforms() {
-        return query.containsKey(PLATFORMS)
+        return containsParameter(PLATFORMS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(PLATFORMS)))
                 : null;
     }
     
     public Set<String> getFields() {
-        return query.containsKey(FIELDS)
+        return containsParameter(FIELDS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(FIELDS)))
                 : null;
     }
     
     public String getType() {
-        return query.containsKey(TYPE)
+        return containsParameter(TYPE)
                 ? getAsString(TYPE)
                 : null;
     }
@@ -632,7 +643,7 @@ public class IoParameters {
      *         if parsing parameters fails, or if a requested {@value #CRS} object could not be created.
      */
     public BoundingBox getSpatialFilter() {
-        if ( !query.containsKey(NEAR) && !query.containsKey(BBOX)) {
+        if ( !containsParameter(NEAR) && !containsParameter(BBOX)) {
             return null;
         }
 
@@ -690,7 +701,7 @@ public class IoParameters {
      *         if a requested {@value #CRS} object could not be created
      */
     private BBox createBbox() {
-        if ( !query.containsKey(BBOX)) {
+        if ( !containsParameter(BBOX)) {
             return null;
         }
         String bboxValue = getAsString(BBOX);
@@ -701,12 +712,12 @@ public class IoParameters {
     }
 
     private BoundingBox parseBoundsFromVicinity() {
-        if ( !query.containsKey(NEAR)) {
+        if ( !containsParameter(NEAR)) {
             return null;
         }
         String vicinityValue = getAsString(NEAR);
         Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
-        if (query.containsKey(CRS)) {
+        if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
         BoundingBox bounds = vicinity.calculateBounds();
@@ -773,17 +784,24 @@ public class IoParameters {
      *         interpreted as lon/lat ordered axes).
      */
     public String getCrs() {
-        if ( !query.containsKey(CRS)) {
+        if ( !containsParameter(CRS)) {
             return DEFAULT_CRS;
         }
         return getAsString(CRS);
     }
 
     public boolean isForceXY() {
-        if ( !query.containsKey(FORCE_XY)) {
+        if ( !containsParameter(FORCE_XY)) {
             return DEFAULT_FORCE_XY;
         }
         return getAsBoolean(FORCE_XY);
+    }
+    
+    public boolean isMatchDomainIds() {
+        if ( !containsParameter(MATCH_DOMAIN_IDS)) {
+            return DEFAULT_MATCH_DOMAIN_IDS;
+        }
+        return getAsBoolean(MATCH_DOMAIN_IDS);
     }
 
     /**
@@ -792,35 +810,35 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public boolean isExpanded() {
-        if ( !query.containsKey(EXPANDED)) {
+        if ( !containsParameter(EXPANDED)) {
             return DEFAULT_EXPANDED;
         }
         return getAsBoolean(EXPANDED);
     }
 
     public boolean isForceLatestValueRequests() {
-        if ( !query.containsKey(FORCE_LATEST_VALUE)) {
+        if ( !containsParameter(FORCE_LATEST_VALUE)) {
             return DEFAULT_FORCE_LATEST_VALUE;
         }
         return getAsBoolean(FORCE_LATEST_VALUE);
     }
 
     public boolean isStatusIntervalsRequests() {
-    	if ( !query.containsKey(STATUS_INTERVALS)) {
+    	if ( !containsParameter(STATUS_INTERVALS)) {
     		return DEFAULT_STATUS_INTERVALS;
     	}
     	return getAsBoolean(STATUS_INTERVALS);
     }
 
     public boolean isRenderingHintsRequests() {
-    	if ( !query.containsKey(RENDERING_HINTS)) {
+    	if ( !containsParameter(RENDERING_HINTS)) {
     		return DEFAULT_RENDERING_HINTS;
     	}
     	return getAsBoolean(RENDERING_HINTS);
     }
 
     public boolean containsParameter(String parameter) {
-        return query.containsKey(parameter);
+        return query.containsKey(parameter.toLowerCase());
     }
 
     public String getOther(String parameter) {
@@ -844,7 +862,7 @@ public class IoParameters {
         try {
             String value = getAsString(parameter);
             Integer.parseInt(value);
-            return query.get(parameter).asInt();
+            return query.get(parameter.toLowerCase()).asInt();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
@@ -862,7 +880,7 @@ public class IoParameters {
         try {
             String value = getAsString(parameter);
             Boolean.parseBoolean(value);
-            return query.get(parameter).asBoolean();
+            return query.get(parameter.toLowerCase()).asBoolean();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
