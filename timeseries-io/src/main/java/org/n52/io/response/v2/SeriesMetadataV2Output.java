@@ -28,14 +28,15 @@
 package org.n52.io.response.v2;
 
 
+import java.util.List;
 import org.n52.io.response.*;
 
 public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
     
     private FeatureOutputCollection featureOutput;
 
-    public FeatureOutputCollection getFeatureOutput() {
-        return featureOutput;
+    public List<FeatureOutput> getFeatures() {
+        return featureOutput.getItems();
     }
 
     public void setFeatures(FeatureOutputCollection featureOutput) {
