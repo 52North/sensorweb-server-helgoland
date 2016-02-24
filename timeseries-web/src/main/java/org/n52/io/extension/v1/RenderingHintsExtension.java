@@ -83,8 +83,11 @@ public class RenderingHintsExtension extends MetadataExtension<TimeseriesMetadat
     }
 	
     private boolean hasPhenomenonConfiguration(TimeseriesMetadataOutput output) {
-        String id = output.getParameters().getPhenomenon().getId();
-        return renderingConfig.getPhenomenonStyles().containsKey(id);
+        if (output.getParameters() != null && output.getParameters().getPhenomenon() != null) {
+            String id = output.getParameters().getPhenomenon().getId();
+            return renderingConfig.getPhenomenonStyles().containsKey(id);
+        }
+        return false;
     }
 
     @Override

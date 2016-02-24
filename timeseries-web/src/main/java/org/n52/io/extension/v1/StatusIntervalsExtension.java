@@ -84,8 +84,11 @@ public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetada
     }
 	
     private boolean hasPhenomenonConfiguration(TimeseriesMetadataOutput output) {
-        String id = output.getParameters().getPhenomenon().getId();
-        return intervalConfig.getPhenomenonIntervals().containsKey(id);
+        if (output.getParameters() != null && output.getParameters().getPhenomenon() != null) {
+            String id = output.getParameters().getPhenomenon().getId();
+            return intervalConfig.getPhenomenonIntervals().containsKey(id);
+        }
+        return false;
     }
 
     @Override
