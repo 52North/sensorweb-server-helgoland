@@ -111,10 +111,13 @@ public class StatusIntervalsExtension extends MetadataExtension<TimeseriesMetada
         return Collections.emptyMap();
     }
     
-    
     private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
-        return super.hasExtrasToReturn(output, parameters)
-                && hasStatusIntervals(output);
+        // isExpanded() and isStatusIntervalsRequests() to stay backward
+        // compatible
+        return hasStatusIntervals(output)
+                && ((output.getParameters() != null && (super.hasExtrasToReturn(output, parameters)))
+                        || ((parameters.isExpanded() || output.getParameters() != null)
+                                || parameters.isStatusIntervalsRequests()));
     }
     
     private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(TimeseriesMetadataOutput output) {

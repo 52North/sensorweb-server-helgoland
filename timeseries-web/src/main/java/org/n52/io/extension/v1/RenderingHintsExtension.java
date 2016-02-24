@@ -111,8 +111,11 @@ public class RenderingHintsExtension extends MetadataExtension<TimeseriesMetadat
     }
 
     private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
-        return super.hasExtrasToReturn(output, parameters)
-                && hasRenderingHints(output);
+        // isExpanded() and isRenderingHintsRequests() to stay backward compatible
+        return hasRenderingHints(output)
+                && ((output.getParameters() != null && (super.hasExtrasToReturn(output, parameters)))
+                        || ((parameters.isExpanded() || output.getParameters() != null)
+                                || parameters.isRenderingHintsRequests()));
     }
     
     private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(TimeseriesMetadataOutput output) {
