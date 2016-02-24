@@ -27,7 +27,6 @@
  */
 package org.n52.web.v1.ctrl;
 
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -102,13 +101,19 @@ public abstract class ParameterController extends BaseController implements Rest
             ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
+            // TODO remove in v2.0 
+            addExtrasForBackwardCompatiblity(result, queryMap);
+            
             // TODO add paging
 
             return new ModelAndView().addObject(result);
         }
         else {
             ParameterOutput[] results = parameterService.getCondensedParameters(queryMap);
-
+            
+            // TODO remove in v2.0 
+            addExtrasForBackwardCompatiblity(results, queryMap);
+            
             // TODO add paging
 
             return new ModelAndView().addObject(results);
@@ -124,7 +129,8 @@ public abstract class ParameterController extends BaseController implements Rest
         if (parameter == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
         }
-
+        addExtrasForBackwardCompatiblity(parameter, queryMap);
+        
         return new ModelAndView().addObject(parameter);
     }
 
@@ -138,6 +144,22 @@ public abstract class ParameterController extends BaseController implements Rest
     protected ParameterOutput addExtensionInfo(ParameterOutput output) {
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             extension.addExtraMetadataFieldNames(output);
+        }
+        return output;
+    }
+    
+    @Deprecated
+    protected ParameterOutput[] addExtrasForBackwardCompatiblity(ParameterOutput[] toBeProcessed, IoParameters queryMap) {
+        for (ParameterOutput parameterOutput : toBeProcessed) {
+            addExtrasForBackwardCompatiblity(parameterOutput, queryMap);
+        }
+        return toBeProcessed;
+    }
+
+    @Deprecated
+    protected ParameterOutput addExtrasForBackwardCompatiblity(ParameterOutput output, IoParameters queryMap) {
+        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+            extension.getExtras(output, queryMap);
         }
         return output;
     }
