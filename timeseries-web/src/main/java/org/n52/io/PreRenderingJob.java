@@ -79,9 +79,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletConfigAware;
 
-public class PreRenderingTask extends ScheduledJob implements InterruptableJob, ServletConfigAware {
+public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingTask.class);
 
     private static final String TASK_CONFIG_FILE = "/config-task-prerendering.json";
 
