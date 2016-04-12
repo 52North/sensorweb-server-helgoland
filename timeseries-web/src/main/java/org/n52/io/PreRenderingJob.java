@@ -96,6 +96,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private int height = 500;
     private String language = "en";
     private boolean showGrid = true;
+    private boolean legend = false;
 
     private PrerenderingJobConfig readJobConfig(String configFile) {
         try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
@@ -311,6 +312,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         configuration.put("width", Integer.toString(width));
         configuration.put("height", Integer.toString(height));
         configuration.put("grid", Boolean.toString(showGrid));
+        configuration.put("legend", Boolean.toString(legend));
         configuration.put("timespan", interval);
         configuration.put("locale", language);
 
@@ -319,6 +321,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.width = Integer.parseInt(configuration.get("width"));
         this.height = Integer.parseInt(configuration.get("height"));
         this.showGrid = Boolean.parseBoolean(configuration.get("grid"));
+        this.legend = Boolean.parseBoolean(configuration.get("legend"));
         this.language = configuration.get("locale");
 
         try {
