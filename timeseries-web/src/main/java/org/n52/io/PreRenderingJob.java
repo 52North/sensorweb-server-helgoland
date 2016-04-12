@@ -167,7 +167,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 renderWithStyle(timeseriesId, style.getStyle(), interval);
             }
         } catch (Throwable e) {
-            LOGGER.error("Error occured during prerendering.", e);
+            LOGGER.error("Error occured while prerendering timeseries {}.", timeseriesId, e);
         }
     }
 
