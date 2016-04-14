@@ -59,6 +59,8 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     private boolean grid = true;
 
     private boolean legend = false;
+    
+    private String title;
 
     /**
      * Creates an instance with non-null default values.
@@ -119,6 +121,18 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         this.legend = legend;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    public boolean hasTitle() {
+        return title != null && !title.isEmpty();
+    }
+    
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
         this.styleOptions = renderingOptions;
     }

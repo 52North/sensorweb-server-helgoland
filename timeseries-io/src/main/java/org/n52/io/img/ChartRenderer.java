@@ -228,6 +228,7 @@ public abstract class ChartRenderer implements IoHandler {
         configureDomainAxis(plot);
         showGridlinesOnChart(plot);
         configureTimeAxis(plot);
+        configureTitle(chart);
         addNotice(chart);
         return plot;
     }
@@ -308,6 +309,12 @@ public abstract class ChartRenderer implements IoHandler {
         return uom.toString();
     }
 
+    private void configureTitle(JFreeChart chart) {
+        if (getChartStyleDefinitions().hasTitle()) {
+            chart.setTitle(getChartStyleDefinitions().getTitle());
+        }
+    }
+    
     protected List<TimeseriesMetadataOutput> getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }
