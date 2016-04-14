@@ -44,7 +44,7 @@ import org.n52.io.IoParseException;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.request.PreRenderingTask;
+import org.n52.io.PreRenderingJob;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
@@ -93,7 +93,7 @@ public class SeriesDataController extends BaseController {
 
     private SeriesDataService seriesDataService;
 
-    private PreRenderingTask preRenderingTask;
+    private PreRenderingJob preRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -262,18 +262,18 @@ public class SeriesDataController extends BaseController {
         handleBinaryResponse(response, parameters, renderer);
     }
 
-    @RequestMapping(value = "/{timeseriesId}/{interval}", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{timeseriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getTimeseriesChartByInterval(HttpServletResponse response,
                                              @PathVariable String timeseriesId,
-                                             @PathVariable String interval,
+                                             @PathVariable String chartQualifier,
                                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
-        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
+        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
-        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, interval, response.getOutputStream());
+        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
@@ -357,11 +357,11 @@ public class SeriesDataController extends BaseController {
         this.seriesDataService = timeseriesDataService;
     }
 
-    public PreRenderingTask getPreRenderingTask() {
+    public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
     }
 
-    public void setPreRenderingTask(PreRenderingTask prerenderingTask) {
+    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
         this.preRenderingTask = prerenderingTask;
     }
 

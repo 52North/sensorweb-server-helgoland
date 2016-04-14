@@ -111,8 +111,10 @@ public abstract class ChartRenderer implements IoHandler {
         this.context = context;
     }
 
+    @Override
     public abstract void generateOutput(TvpDataCollection data) throws IoParseException;
 
+    @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
@@ -228,6 +230,7 @@ public abstract class ChartRenderer implements IoHandler {
         configureDomainAxis(plot);
         showGridlinesOnChart(plot);
         configureTimeAxis(plot);
+        configureTitle(chart);
         addNotice(chart);
         return plot;
     }
@@ -308,6 +311,12 @@ public abstract class ChartRenderer implements IoHandler {
         return uom.toString();
     }
 
+    private void configureTitle(JFreeChart chart) {
+        if (getChartStyleDefinitions().containsParameter("title")) {
+            chart.setTitle(getChartStyleDefinitions().getAsString("title"));
+        }
+    }
+    
     protected List<TimeseriesMetadataOutput> getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }

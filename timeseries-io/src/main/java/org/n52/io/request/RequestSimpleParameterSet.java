@@ -28,9 +28,6 @@
 package org.n52.io.request;
 
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.request.IoParameters;
-import org.n52.io.Utils;
 import org.n52.io.Utils;
 import org.n52.io.v1.data.RawFormats;
 
@@ -103,7 +100,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param format Which raw output format the raw data shall have.
+     * @param rawFormat Which raw output format the raw data shall have.
      */
     public void setRawFormat(String rawFormat) {
         this.rawFormat = rawFormat;
