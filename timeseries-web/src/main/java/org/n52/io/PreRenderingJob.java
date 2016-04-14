@@ -339,6 +339,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         try {
             ObjectMapper om = new ObjectMapper();
             configuration.put("style", om.writeValueAsString(renderingConfig.getStyle()));
+            configuration.put("title", renderingConfig.getTitle());
         } catch (JsonProcessingException e) {
             LOGGER.warn("Invalid rendering style.", e);
         }

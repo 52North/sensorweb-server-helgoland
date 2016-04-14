@@ -111,8 +111,10 @@ public abstract class ChartRenderer implements IoHandler {
         this.context = context;
     }
 
+    @Override
     public abstract void generateOutput(TvpDataCollection data) throws IoParseException;
 
+    @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
@@ -310,8 +312,8 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private void configureTitle(JFreeChart chart) {
-        if (getChartStyleDefinitions().hasTitle()) {
-            chart.setTitle(getChartStyleDefinitions().getTitle());
+        if (getChartStyleDefinitions().containsParameter("title")) {
+            chart.setTitle(getChartStyleDefinitions().getAsString("title"));
         }
     }
     
