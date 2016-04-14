@@ -78,6 +78,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
 
+    private static final int WIDTH_DEFAULT = 800;
+    private static final int HEIGHT_DEFAULT = 500;
+    private static final String LANGUAGE_DEFAULT = "en";
+    private static final boolean GRID_DEFAULT = true;
+    private static final boolean LEGEND_DEFAULT = false;
+    private static final boolean GENERALIZE_DEFAULT = false;
     @Autowired
     @Qualifier("timeseriesService")
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
@@ -93,13 +99,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private String configFile;
     
     private boolean interrupted;
-
-    private int width = 800;
-    private int height = 500;
-    private String language = "en";
-    private boolean showGrid = true;
-    private boolean legend = false;
-    private boolean generalize = false;
 
     private PrerenderingJobConfig readJobConfig(String configFile) {
         try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
@@ -183,6 +182,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
         RenderingContext context = createContextForSingleTimeseries(metadata, config);
+        int width = context.getChartStyleDefinitions().getWidth();
+        int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
         IoHandler renderer = IoFactory
@@ -319,22 +320,19 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         Map<String, String> configuration = new HashMap<>();
 
         // set defaults
-        configuration.put("width", Integer.toString(width));
-        configuration.put("height", Integer.toString(height));
-        configuration.put("grid", Boolean.toString(showGrid));
-        configuration.put("legend", Boolean.toString(legend));
-        configuration.put("generalize", Boolean.toString(generalize));
+        configuration.put("width", Integer.toString(WIDTH_DEFAULT));
+        configuration.put("height", Integer.toString(HEIGHT_DEFAULT));
+        configuration.put("grid", Boolean.toString(GRID_DEFAULT));
+        configuration.put("legend", Boolean.toString(LEGEND_DEFAULT));
+        configuration.put("generalize", Boolean.toString(GENERALIZE_DEFAULT));
+        configuration.put("locale", LANGUAGE_DEFAULT);
         configuration.put("timespan", interval);
-        configuration.put("locale", language);
 
         // overrides the above defaults (from json config)
-        Map<String, String> overriddenConfig = renderingConfig.getConfig();
-        this.width = Integer.parseInt(getConfigParameter("width", configuration, overriddenConfig));
-        this.height = Integer.parseInt(getConfigParameter("height", configuration, overriddenConfig));
-        this.showGrid = Boolean.parseBoolean(getConfigParameter("grid", configuration, overriddenConfig));
-        this.legend = Boolean.parseBoolean(getConfigParameter("legend", configuration, overriddenConfig));
-        this.generalize = Boolean.parseBoolean(getConfigParameter("generalize", configuration, overriddenConfig));
-        this.language = getConfigParameter("locale", configuration, overriddenConfig);
+        configuration.putAll(taskConfigPrerendering.getGeneralConfig());
+        if (renderingConfig.getConfig() != null) {
+            configuration.putAll(renderingConfig.getConfig());
+        }
 
         try {
             ObjectMapper om = new ObjectMapper();
@@ -347,14 +345,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return IoParameters.createFromQuery(configuration);
     }
     
-    private String getConfigParameter(String key, 
-            Map<String, String> generalConfig,
-            Map<String, String> overriddenConfig) {
-        if (overriddenConfig == null || overriddenConfig.isEmpty()) {
-            return generalConfig.get(key);
-        }
-        return overriddenConfig.containsKey(key)
-                ? overriddenConfig.get(key)
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         return timeseriesDataService.getSeriesData(parameters);
