@@ -57,6 +57,7 @@ import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimese
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.task.ScheduledJob;
+import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.common.Stopwatch;
@@ -84,6 +85,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private static final boolean GRID_DEFAULT = true;
     private static final boolean LEGEND_DEFAULT = false;
     private static final boolean GENERALIZE_DEFAULT = false;
+
     @Autowired
     @Qualifier("timeseriesService")
     private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
@@ -344,10 +346,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         return IoParameters.createFromQuery(configuration);
     }
-    
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
-        return timeseriesDataService.getSeriesData(parameters);
+        //return timeseriesDataService.getSeriesData(parameters);
+        return parameters.isGeneralize()
+            ? composeDataService(timeseriesDataService).getSeriesData(parameters)
+            : timeseriesDataService.getSeriesData(parameters);
     }
 
 }
