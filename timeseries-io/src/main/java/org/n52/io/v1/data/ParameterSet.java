@@ -47,16 +47,6 @@ public abstract class ParameterSet {
 
     private final Map<String, JsonNode> parameters;
 
-    private boolean generalize; // TODO add generelaize algorithm + extra parameters ??
-
-    private boolean base64;
-
-    private boolean expanded;
-
-    private String language = "en";
-
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-
     protected ParameterSet() {
         parameters = new HashMap<>();
         parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
@@ -76,14 +66,14 @@ public abstract class ParameterSet {
      * @return If timeseries data shall be generalized or not.
      */
     public boolean isGeneralize() {
-        return generalize;
+        return getAsBoolean("generalize", false);
     }
 
     /**
      * @param generalize if output shall be generalized
      */
     public void setGeneralize(boolean generalize) {
-        this.generalize = generalize;
+        parameters.put("generalize", IoParameters.getJsonNodeFrom(generalize));
     }
 
     /**
@@ -113,44 +103,45 @@ public abstract class ParameterSet {
      * @return if image shall be base64 encoded.
      */
     public boolean isBase64() {
-        return base64;
+        return getAsBoolean("base64", false);
 	}
 
     /**
      * @param base64 If the image shall be base64 encoded.
      */
 	public void setBase64(boolean base64) {
-        this.base64 = base64;
+        parameters.put("base64", IoParameters.getJsonNodeFrom(base64));
 	}
 
     /**
      * @return If reference values shall be appended to the timeseries data.
      */
 	public boolean isExpanded() {
-        return expanded;
+        return getAsBoolean("expanded", false);
     }
 
     /**
      * @param expanded verbose results.
      */
     public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
+        parameters.put("expanded", IoParameters.getJsonNodeFrom(expanded));
     }
 
     /**
      * @return A language code to determine the requested locale. "en" is the default.
      */
     public String getLanguage() {
-        return language;
+        return getAsString("language");
     }
 
     /**
      * @param language A language code to determine the requested locale.
      */
     public void setLanguage(String language) {
-        this.language = !(language == null || language.isEmpty())
-                ? language
-                : "en";
+        language = !(language == null || language.isEmpty())
+                 ? language
+                 : "en";
+        parameters.put("language", IoParameters.getJsonNodeFrom(language));
     }
 
     private String validateTimespan(String timespan) {
@@ -162,13 +153,14 @@ public abstract class ParameterSet {
     }
 
     public final boolean containsParameter(String parameter) {
-        return this.parameters.containsKey(parameter);
+        return this.parameters.containsKey(parameter)
+                && this.parameters.get(parameter) != null;
     }
 
     public final Object getParameter(String parameter) {
         return parameters.get(parameter);
     }
-
+ 
     public final void setParameters(Map<String, JsonNode> parameters) {
         if (parameters != null) {
             this.parameters.clear();
@@ -204,6 +196,12 @@ public abstract class ParameterSet {
         return this.parameters.get(parameter.toLowerCase());
     }
     
+    public final Object getAsObject(String parameter, Object defaultValue) {
+        return this.parameters.containsKey(parameter.toLowerCase())
+                ? this.parameters.get(parameter.toLowerCase())
+                : defaultValue;
+    }
+    
     public final JsonNode getAsJsonNode(String parameter) {
         return (JsonNode) this.parameters.get(parameter.toLowerCase());
     }
@@ -212,14 +210,32 @@ public abstract class ParameterSet {
         return this.parameters.get(parameter.toLowerCase()).asText();
     }
 
+    public final String getAsObject(String parameter, String defaultValue) {
+        return this.parameters.containsKey(parameter.toLowerCase())
+                ? this.parameters.get(parameter.toLowerCase()).asText()
+                : defaultValue;
+    }
+    
     public final int getAsInt(String parameter) {
         return this.parameters.get(parameter.toLowerCase()).asInt();
     }
 
+    public final int getAsInt(String parameter, int defaultValue) {
+        return this.parameters.containsKey(parameter.toLowerCase())
+                ? this.parameters.get(parameter.toLowerCase()).asInt()
+                : defaultValue;
+    }
+    
     public final boolean getAsBoolean(String parameter) {
         return this.parameters.get(parameter.toLowerCase()).asBoolean();
     }
-
+    
+    public final boolean getAsBoolean(String parameter, boolean defaultValue) {
+        return this.parameters.containsKey(parameter.toLowerCase())
+                ? this.parameters.get(parameter.toLowerCase()).asBoolean()
+                : defaultValue;
+    }
+    
     public abstract String[] getTimeseries();
 
 }

@@ -100,7 +100,7 @@ public class UndesignedParameterSet extends ParameterSet {
     }
 
     /**
-     * @param format Which raw output format the raw data shall have.
+     * @param rawFormat Which raw output format the raw data shall have.
      */
     public void setRawFormat(String rawFormat) {
         this.rawFormat = rawFormat;
