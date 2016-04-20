@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.n52.sensorweb</groupId>
     <artifactId>timeseries-api</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.8.0</version>
     <packaging>pom</packaging>
     <name>Sensor Web Timeseries API</name>
     <url>http://52north.org/communities/sensorweb/</url>
@@ -46,7 +46,7 @@
         <connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
         <url>https://github.com/52North/timeseries-api</url>
-        <tag>HEAD</tag>
+        <tag>1.8.0</tag>
     </scm>
 
     <properties>
