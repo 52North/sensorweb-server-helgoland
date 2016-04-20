@@ -27,17 +27,11 @@
  */
 package org.n52.io.request;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.IoParseException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.n52.io.IoParseException;
 
 /**
  * Represents a parameter object to request a rendered chart output from multiple timeseries.
@@ -129,25 +123,14 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     public StyleProperties getReferenceSeriesStyleOptions(String timeseriesId, String referenceSeriesId) {
-        try {
-            if ( !styleOptions.containsKey(timeseriesId)) {
-                return null;
-            }
-            StyleProperties styleProperties = styleOptions.get(timeseriesId);
-            Map<String, String> properties = styleProperties.getProperties();
-            return properties.containsKey(referenceSeriesId)
-                ? new ObjectMapper().readValue(properties.get(referenceSeriesId), StyleProperties.class)
-                : null;
+        if ( !styleOptions.containsKey(timeseriesId)) {
+            return null;
         }
-        catch (JsonMappingException e) {
-            throw new IoParseException("Unable to read style properties for reference series: " + referenceSeriesId, e);
-        }
-        catch (JsonParseException e) {
-            throw new IoParseException("Could not parse style properties.", e);
-        }
-        catch (IOException e) {
-            throw new IoParseException("Could handle I/O operations while parsing JSON properties.", e);
-        }
+        StyleProperties styleProperties = styleOptions.get(timeseriesId);
+        Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
+        return properties.containsKey(referenceSeriesId)
+            ? properties.get(referenceSeriesId)
+            : null;
     }
 
     public void addTimeseriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {
