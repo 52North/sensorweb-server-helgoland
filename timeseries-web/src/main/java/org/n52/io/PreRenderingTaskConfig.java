@@ -79,6 +79,8 @@ public class PreRenderingTaskConfig {
         private StyleProperties style;
         
         private Map<String, String> config;
+        
+        private Map<String, StyleProperties> refValues;
 
         public String getId() {
             return id;
@@ -126,6 +128,14 @@ public class PreRenderingTaskConfig {
 
         public void setConfig(Map<String, String> config) {
             this.config = config;
+        }
+
+        public Map<String, StyleProperties> getRefValues() {
+            return refValues;
+        }
+
+        public void setRefValues(Map<String, StyleProperties> refValues) {
+            this.refValues = refValues;
         }
         
     }

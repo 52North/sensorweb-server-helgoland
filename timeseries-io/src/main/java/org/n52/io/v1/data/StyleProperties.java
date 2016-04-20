@@ -40,7 +40,9 @@ public final class StyleProperties {
      */
     private String chartType = "line";
     
-    private Map<String, String> properties = new HashMap<String, String>();
+    private Map<String, String> properties = new HashMap<>();
+    
+    private Map<String, StyleProperties> referenceValueStyleProperties = new HashMap<>();
     
     private StyleProperties() {
         // use static constructor
@@ -64,7 +66,15 @@ public final class StyleProperties {
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
-    
+
+    public Map<String, StyleProperties> getReferenceValueStyleProperties() {
+        return referenceValueStyleProperties;
+    }
+
+    public void setReferenceValueStyleProperties(Map<String, StyleProperties> referenceValueStyleProperties) {
+        this.referenceValueStyleProperties = referenceValueStyleProperties;
+    }
+
     public static StyleProperties createDefaults() {
         return new StyleProperties();
     }

@@ -58,6 +58,7 @@ import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.compose
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.n52.web.ResourceNotFoundException;
+import org.n52.web.v1.ctrl.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletConfigAware;
@@ -292,7 +293,8 @@ public class PreRenderingTask implements ServletConfigAware {
 
         @Override
         public void run() {
-            LOGGER.info("Start prerendering task");
+            Stopwatch stopwatch = Stopwatch.startStopwatch();
+            LOGGER.info("Start prerendering task at '{}'", new DateTime(stopwatch.getStartInMillis()));
             List<RenderingConfig> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
             List<RenderingConfig> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
             for (RenderingConfig config : phenomenonStyles) {
@@ -310,6 +312,10 @@ public class PreRenderingTask implements ServletConfigAware {
             for (RenderingConfig config : timeseriesStyles) {
                 renderConfiguredIntervals(config.getId(), config);
             }
+            
+            DateTime startedAt = new DateTime(stopwatch.getStartInMillis());
+            LOGGER.info("Finished prerendering task (took '{}'s). Next run at '{}'", 
+                    stopwatch.stopInSeconds(), startedAt.plus(getPeriodInMilliseconds()).toString());
         }
 
         private void renderConfiguredIntervals(String timeseriesId, RenderingConfig renderingConfig) {

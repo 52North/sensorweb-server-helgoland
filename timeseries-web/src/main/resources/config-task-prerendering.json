@@ -4,7 +4,8 @@
         "height": "500",
         "language" : "de",
         "grid" : true,
-        "generalize" : false
+        "generalize" : false,
+        "expanded" : true
     },
     "phenomenonStyles": [
         {
@@ -78,16 +79,30 @@
     "timeseriesStyles": [
         {
             "id" : "16",
+            "title" : "A Timeseries with Reference Values",
             "interval": [
                 "lastWeek",
                 "lastMonth"
             ],
+            "config" :{
+                "legend" : true
+            },
             "style": {
                 "chartType": "bar",
                 "properties": {
                     "interval": "byDay",
                     "width": 0.8,
-                    "color": "#0000ff"
+                    "color": "#0000ff",
+                    "referenceValueStyleProperties" : {
+                        "305" : {
+                            "chartType": "line",
+                            "properties": {
+                                "color": "#ff0000",
+                                "lineType": "solid",
+                                "width": 2
+                            }
+                        }
+                    }
                 }
             }
         }

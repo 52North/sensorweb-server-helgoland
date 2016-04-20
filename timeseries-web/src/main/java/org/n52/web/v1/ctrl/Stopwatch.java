@@ -48,6 +48,10 @@ public class Stopwatch {
     public String stopInSeconds() {
         return secondsFormatter.format(stopInMillis() / 1000d);
     }
+    
+    public long getStartInMillis() {
+        return start;
+    }
 
     public static Stopwatch startStopwatch() {
         return new Stopwatch();
