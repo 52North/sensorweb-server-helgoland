@@ -51,6 +51,9 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     @Autowired
     private ServiceRepository serviceRepository;
     
+    @Autowired
+    private PlatformRepository platformRespository;
+    
     protected SeriesOutput createSeriesOutput(SeriesEntityV2 series, DbQuery parameters) throws DataAccessException {
     	SeriesOutput seriesOutput = new SeriesOutput();
     	seriesOutput.setService(getCondensedService());
@@ -91,9 +94,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     private PlatformOutput getCondensedPlatform(FeatureEntity entity, DbQuery parameters) {
-        PlatformRepository repository = new PlatformRepository();
-        repository.setServiceInfo(getServiceInfo());
-    	return repository.createCondensed(entity, parameters);
+    	return platformRespository.createCondensed(entity, parameters);
     }
     
     private CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
