@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.request;
 
@@ -44,13 +45,15 @@ import org.opengis.referencing.FactoryException;
 import com.vividsolutions.jts.geom.Point;
 
 /**
- * Represents the surrounding area based on a center and a radius. All coordinate calculations are based on a
- * EPSG:4326, lon-lat ordered reference frame.
+ * Represents the surrounding area based on a center and a radius. All
+ * coordinate calculations are based on a EPSG:4326, lon-lat ordered reference
+ * frame.
  */
 public class Vicinity {
 
     /**
-     * The coordinate reference system. Defaults to {@link CRSUtils#DEFAULT_CRS}.
+     * The coordinate reference system. Defaults to
+     * {@link CRSUtils#DEFAULT_CRS}.
      */
     private String crs = DEFAULT_CRS;
 
@@ -63,23 +66,21 @@ public class Vicinity {
     }
 
     /**
-     * @param center
-     *        the center point.
-     * @param radius
-     *        the distance around the center
+     * @param center the center point.
+     * @param radius the distance around the center
      */
     public Vicinity(GeojsonPoint center, String radius) {
         try {
             this.radius = parseDouble(radius);
             this.center = center;
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Could not parse radius.");
         }
     }
 
     /**
-     * @return calculates bounding box within WGS84 and strict EPSG axes order context.
+     * @return calculates bounding box within WGS84 and strict EPSG axes order
+     * context.
      */
     public BoundingBox calculateBounds() {
         return calculateBounds(createEpsgStrictAxisOrder());
@@ -88,11 +89,9 @@ public class Vicinity {
     /**
      * Calculates bounding box with the given CRS context.
      *
-     * @param crsUtils
-     *        the reference context.
+     * @param crsUtils the reference context.
      * @return a bounding rectangle.
-     * @throws IllegalStateException
-     *         if invalid crs was set.
+     * @throws IllegalStateException if invalid crs was set.
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
         Point center = createCenter(this.center, crsUtils);
@@ -111,17 +110,14 @@ public class Vicinity {
             Point ll = crsUtils.createPoint(llEasting, llNorthing, crs);
             Point ur = crsUtils.createPoint(urEasting, urNorthing, crs);
             return new BoundingBox(ll, ur, crs);
-        }
-        catch (FactoryException e) {
+        } catch (FactoryException e) {
             throw new IllegalStateException("Illegal CRS parameter: " + crs, e);
         }
     }
 
     /**
-     * @param center
-     *        the center point as GeoJSON point.
-     * @param crsUtils
-     *        the reference context.
+     * @param center the center point as GeoJSON point.
+     * @param crsUtils the reference context.
      * @return the center point.
      */
     private Point createCenter(GeojsonPoint center, CRSUtils crsUtils) {
@@ -131,8 +127,7 @@ public class Vicinity {
     }
 
     /**
-     * @param crs
-     *        sets the coordinate reference system, e.g. 'EPSG:25832'
+     * @param crs sets the coordinate reference system, e.g. 'EPSG:25832'
      */
     public void setCrs(String crs) {
         if (crs != null) {
@@ -141,8 +136,7 @@ public class Vicinity {
     }
 
     /**
-     * @param center
-     *        the center coordinates.
+     * @param center the center coordinates.
      */
     public void setCenter(GeojsonPoint center) {
         this.center = center;
@@ -153,10 +147,9 @@ public class Vicinity {
     }
 
     /**
-     * @param radius
-     *        the vicinity's radius.
-     * @throws NumberFormatException
-     *         if radius could not be parsed to a double value.
+     * @param radius the vicinity's radius.
+     * @throws NumberFormatException if radius could not be parsed to a double
+     * value.
      */
     public void setRadius(String radius) {
         this.radius = parseDouble(radius);

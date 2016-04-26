@@ -11,10 +11,10 @@
     <name>Series REST API - SPI module</name>
     <description>RESTful Sensor Web Client SPI</description>
     <dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>io</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>com.vividsolutions</groupId>

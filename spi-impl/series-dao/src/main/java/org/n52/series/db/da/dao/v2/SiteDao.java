@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da.dao.v2;
 
@@ -43,11 +44,11 @@ import org.n52.io.request.IoParameters;
 
 public class SiteDao extends AbstractDao<SiteEntity> {
 
-	public SiteDao(Session session) {
-		super(session);
-	}
+    public SiteDao(Session session) {
+        super(session);
+    }
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
     public List<SiteEntity> find(String search, DbQuery query) {
         Criteria criteria = getDefaultCriteria();
@@ -57,7 +58,7 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
     }
-    
+
     public SiteEntity getSite(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         final IoParameters parameter = query.getParameters();
@@ -68,12 +69,12 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         criteria.add(Restrictions.eq("pkid", Long.parseLong(platformId)));
         return (SiteEntity) criteria.uniqueResult();
     }
-    
+
     @Override
     public SiteEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (SiteEntity) session.get(SiteEntity.class, key);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public List<SiteEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
@@ -81,25 +82,25 @@ public class SiteDao extends AbstractDao<SiteEntity> {
         if (hasTranslation(parameters, I18nSiteEntity.class)) {
             parameters.addLocaleTo(criteria, I18nSiteEntity.class);
         }
-        
+
         // TODO add DetachedCriteria to DbQuery, is this required?
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
         criteria.add(Subqueries.propertyIn("s.pkid", filter));
-                
+
         parameters.addSpatialFilterTo(criteria, parameters);
         parameters.addPagingTo(criteria);
         return (List<SiteEntity>) criteria.list();
     }
-    
+
     @Override
     protected Criteria getDefaultCriteria() {
-    	return getDefaultCriteria(null);
+        return getDefaultCriteria(null);
     }
-    
+
     protected Criteria getDefaultCriteria(String alias) {
-    	Criteria criteria = super.getDefaultCriteria(alias, SiteEntity.class);
-    	criteria.add(Restrictions.isNotNull("geom"));
-    	return criteria;
+        Criteria criteria = super.getDefaultCriteria(alias, SiteEntity.class);
+        criteria.add(Restrictions.isNotNull("geom"));
+        return criteria;
     }
 
 }

@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da.v1;
 
@@ -66,7 +67,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TimeseriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
-    
+
     @Autowired
     private StationRepository stationRepository;
 
@@ -78,15 +79,14 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
             DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntity> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
 
     @Override
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
-                                                        String locale) {
+            String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<SearchResult>();
     }
@@ -104,7 +104,6 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return results;
     }
 
-
     @Override
     public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
@@ -112,18 +111,17 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (timeseries.getUnit() != null) {
-            		results.add(createCondensed(timeseries, query));
-            	}
+                /*
+                 *  ATM, the SWC REST API only supports numeric types
+                 *  We check for a unit to check for them
+                 */
+                if (timeseries.getUnit() != null) {
+                    results.add(createCondensed(timeseries, query));
+                }
             }
             return results;
 
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -135,19 +133,18 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
             for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (timeseries.getUnit() != null) {
-            		results.add(createExpanded(session, timeseries, query));
-            	} else {
+                /*
+                 *  ATM, the SWC REST API only supports numeric types
+                 *  We check for a unit to check for them
+                 */
+                if (timeseries.getUnit() != null) {
+                    results.add(createExpanded(session, timeseries, query));
+                } else {
                     LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
                 }
             }
             return results;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -158,17 +155,16 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-        	/*
-        	 *  ATM, the SWC REST API only supports numeric types
-        	 *  We check for a unit to check for them
-        	 */
+            /*
+             *  ATM, the SWC REST API only supports numeric types
+             *  We check for a unit to check for them
+             */
             if (result == null || result.getUnit() == null) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
             }
             return createExpanded(session, result, dbQuery);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -179,8 +175,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             return createTimeseriesData(timeseries, dbQuery, session);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -198,8 +193,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
                 result.setMetadata(metadata);
             }
             return result;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -214,7 +208,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntity series,
-                                                               DbQuery query) throws DataAccessException {
+            DbQuery query) throws DataAccessException {
         Set<SeriesEntity> referenceValues = series.getReferenceValues();
         List<ReferenceValueOutput> outputs = new ArrayList<ReferenceValueOutput>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
@@ -259,8 +253,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,
-                                                                DbQuery query,
-                                                                Session session) throws DataAccessException {
+            DbQuery query,
+            Session session) throws DataAccessException {
         Map<String, TimeseriesData> referenceSeries = new HashMap<String, TimeseriesData>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
@@ -282,7 +276,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         TimeseriesData result = new TimeseriesData();
         ObservationDao dao = new ObservationDao(session);
         List<ObservationEntity> observations = dao.getObservationsFor(seriesEntity, query);
-        if ( !hasValidEntriesWithinRequestedTimespan(observations)) {
+        if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             ObservationEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
         }
@@ -321,8 +315,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
         referenceEnd.setValue(entity.getValue());
-        return new TimeseriesValue[] {createTimeseriesValueFor(referenceStart, series),
-                                      createTimeseriesValueFor(referenceEnd, series)};
+        return new TimeseriesValue[]{createTimeseriesValueFor(referenceStart, series),
+            createTimeseriesValueFor(referenceEnd, series)};
 
     }
 
@@ -339,12 +333,12 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         value.setValue(observationValue);
         return value;
     }
-    
+
     private Double formatDecimal(Double value, SeriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
-            .setScale(scale, HALF_UP)
-            .doubleValue();
+                .setScale(scale, HALF_UP)
+                .doubleValue();
     }
 
 }

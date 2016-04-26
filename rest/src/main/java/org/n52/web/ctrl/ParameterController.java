@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.web.ctrl;
 
@@ -74,13 +75,13 @@ public abstract class ParameterController extends BaseController {
     private ServiceParameterService serviceParameterService;
 
     private ParameterService<ParameterOutput> parameterService;
-    
-	@RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
-	public void getRawData(HttpServletResponse response,
-			@PathVariable("item") String id,
-			@RequestParam MultiValueMap<String, String> query) {
-		if ( !getParameterService().supportsRawData()) {
-			throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
+
+    @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
+    public void getRawData(HttpServletResponse response,
+            @PathVariable("item") String id,
+            @RequestParam MultiValueMap<String, String> query) {
+        if (!getParameterService().supportsRawData()) {
+            throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
@@ -91,19 +92,19 @@ public abstract class ParameterController extends BaseController {
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
         }
-	}
+    }
 
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        
+
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
             ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
             final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
-            if ( !overridableKeys.isEmpty()) {
+            if (!overridableKeys.isEmpty()) {
                 String[] keys = overridableKeys.toArray(new String[0]);
                 LOGGER.warn("Metadata extension overrides existing extra data: {}", Arrays.toString(keys));
             }
@@ -111,7 +112,7 @@ public abstract class ParameterController extends BaseController {
         }
         return extras;
     }
-    
+
     private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
         Map<String, Object> currentData = new HashMap<>(data);
         Set<String> overridableKeys = currentData.keySet();
@@ -120,7 +121,7 @@ public abstract class ParameterController extends BaseController {
     }
 
     @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
         if (queryMap.isExpanded()) {
@@ -129,25 +130,22 @@ public abstract class ParameterController extends BaseController {
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
-
             return createModelAndView(result);
-        }
-        else {
+        } else {
             OutputCollection<ParameterOutput> results = parameterService.getCondensedParameters(queryMap);
 
             // TODO add paging
-
             return createModelAndView(results);
         }
     }
-    
+
     protected ModelAndView createModelAndView(OutputCollection<?> items) {
         return new ModelAndView().addObject(items);
     }
 
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
         ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
 
@@ -157,7 +155,7 @@ public abstract class ParameterController extends BaseController {
 
         return new ModelAndView().addObject(parameter);
     }
-    
+
     protected OutputCollection<ParameterOutput> addExtensionInfos(OutputCollection<ParameterOutput> toBeProcessed) {
         for (ParameterOutput parameterOutput : toBeProcessed) {
             addExtensionInfos(parameterOutput);

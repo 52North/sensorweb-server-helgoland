@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.request;
 
@@ -72,7 +73,6 @@ public class IoParameters {
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-
     /**
      * How detailed the output shall be.
      */
@@ -91,7 +91,8 @@ public class IoParameters {
     static final String FORCE_LATEST_VALUE = "force_latest_values";
 
     /**
-     * The default behaviour if latest value requests shall be invoked during a timeseries collection request.
+     * The default behaviour if latest value requests shall be invoked during a
+     * timeseries collection request.
      */
     private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
 
@@ -116,7 +117,8 @@ public class IoParameters {
     private static final boolean DEFAULT_RENDERING_HINTS = false;
 
     /**
-     * Determines the index of the first member of the response page (a.k.a. page offset).
+     * Determines the index of the first member of the response page (a.k.a.
+     * page offset).
      */
     static final String OFFSET = "offset";
 
@@ -271,7 +273,7 @@ public class IoParameters {
      */
     static final String STATION = "station";
 
-    static final String PLATFORMS= "platforms";
+    static final String PLATFORMS = "platforms";
 
     /**
      * Determines the category filter
@@ -323,12 +325,12 @@ public class IoParameters {
     private final Map<String, JsonNode> query;
 
     /**
-     * Use static constructor {@link IoParameters#createFromQuery(RequestParameterSet)} or
+     * Use static constructor
+     * {@link IoParameters#createFromQuery(RequestParameterSet)} or
      * {@link IoParameters#createFromQuery(java.util.Map)} .
      *
-     * @param queryParameters
-     *        containing query parameters. If <code>null</code>, all parameters are returned with default
-     *        values.
+     * @param queryParameters containing query parameters. If <code>null</code>,
+     * all parameters are returned with default values.
      */
     protected IoParameters(Map<String, JsonNode> queryParameters) {
         query = readDefaultConfig();
@@ -344,57 +346,54 @@ public class IoParameters {
             return om.readValue(taskConfig, TypeFactory
                     .defaultInstance()
                     .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", DEFAULT_CONFIG_FILE, e);
             return new HashMap<>();
         }
     }
 
     /**
-     * @return the value of {@value #OFFSET} parameter. If not present, the default {@value #DEFAULT_OFFSET}
-     *         is returned.
-     * @throws IoParseException
-     *         if parameter could not be parsed.
+     * @return the value of {@value #OFFSET} parameter. If not present, the
+     * default {@value #DEFAULT_OFFSET} is returned.
+     * @throws IoParseException if parameter could not be parsed.
      */
     public int getOffset() {
-        if ( !containsParameter(OFFSET)) {
+        if (!containsParameter(OFFSET)) {
             return DEFAULT_OFFSET;
         }
         return getAsInteger(OFFSET);
     }
 
     /**
-     * @return the value of {@value #LIMIT} parameter. If not present, the default {@value #DEFAULT_LIMIT} is
-     *         returned.
-     * @throws IoParseException
-     *         if parameter could not be parsed.
+     * @return the value of {@value #LIMIT} parameter. If not present, the
+     * default {@value #DEFAULT_LIMIT} is returned.
+     * @throws IoParseException if parameter could not be parsed.
      */
     public int getLimit() {
-        if ( !containsParameter(LIMIT)) {
+        if (!containsParameter(LIMIT)) {
             return DEFAULT_LIMIT;
         }
         return getAsInteger(LIMIT);
     }
 
     /**
-     * @return the chart dimensions. If {@value #WIDTH} and {@value #HEIGHT} parameters are missing the
-     *         defaults are used: <code>width=</code>{@value #DEFAULT_WIDTH}, <code>height=</code>
-     *         {@value #DEFAULT_HEIGHT}
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return the chart dimensions. If {@value #WIDTH} and {@value #HEIGHT}
+     * parameters are missing the defaults are used:
+     * <code>width=</code>{@value #DEFAULT_WIDTH}, <code>height=</code>
+     * {@value #DEFAULT_HEIGHT}
+     * @throws IoParseException if parsing parameter fails.
      */
     public ChartDimension getChartDimension() {
         return new ChartDimension(getWidth(), getHeight());
     }
 
     /**
-     * @return the requested chart width in pixels or the default {@value #DEFAULT_WIDTH}.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return the requested chart width in pixels or the default
+     * {@value #DEFAULT_WIDTH}.
+     * @throws IoParseException if parsing parameter fails.
      */
     private int getWidth() {
-        if ( !containsParameter(WIDTH)) {
+        if (!containsParameter(WIDTH)) {
             return DEFAULT_WIDTH;
         }
         return getAsInteger(WIDTH);
@@ -403,12 +402,12 @@ public class IoParameters {
     /**
      * Returns the requested chart height in pixels.
      *
-     * @return the requested chart height in pixels or the default {@value #DEFAULT_HEIGHT}.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return the requested chart height in pixels or the default
+     * {@value #DEFAULT_HEIGHT}.
+     * @throws IoParseException if parsing parameter fails.
      */
     private int getHeight() {
-        if ( !containsParameter(HEIGHT)) {
+        if (!containsParameter(HEIGHT)) {
             return DEFAULT_HEIGHT;
         }
         return getAsInteger(HEIGHT);
@@ -417,24 +416,24 @@ public class IoParameters {
     /**
      * Indicates if rendered chart shall be returned as Base64 encoded string.
      *
-     * @return the value of parameter {@value #BASE_64} or the default {@value #DEFAULT_BASE_64}.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return the value of parameter {@value #BASE_64} or the default
+     * {@value #DEFAULT_BASE_64}.
+     * @throws IoParseException if parsing parameter fails.
      */
     public boolean isBase64() {
-        if ( !containsParameter(BASE_64)) {
+        if (!containsParameter(BASE_64)) {
             return DEFAULT_BASE_64;
         }
         return getAsBoolean(BASE_64);
     }
 
     /**
-     * @return <code>true</code> if timeseries chart shall include a background grid.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return <code>true</code> if timeseries chart shall include a background
+     * grid.
+     * @throws IoParseException if parsing parameter fails.
      */
     public boolean isGrid() {
-        if ( !containsParameter(GRID)) {
+        if (!containsParameter(GRID)) {
             return DEFAULT_GRID;
         }
         return getAsBoolean(GRID);
@@ -442,95 +441,88 @@ public class IoParameters {
 
     /**
      * @return <code>true</code> if timeseries data shall be generalized.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @throws IoParseException if parsing parameter fails.
      */
     public boolean isGeneralize() throws IoParseException {
-        if ( !containsParameter(GENERALIZE)) {
+        if (!containsParameter(GENERALIZE)) {
             return DEFAULT_GENERALIZE;
         }
         return getAsBoolean(GENERALIZE);
     }
 
     /**
-     * @return <code>true</code> if a legend shall be included when rendering a chart, <code>false</code>
-     *         otherwise.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @return <code>true</code> if a legend shall be included when rendering a
+     * chart, <code>false</code> otherwise.
+     * @throws IoParseException if parsing parameter fails.
      */
     public boolean isLegend() {
-        if ( !containsParameter(LEGEND)) {
+        if (!containsParameter(LEGEND)) {
             return DEFAULT_LEGEND;
         }
         return getAsBoolean(LEGEND);
     }
 
     /**
-     * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
-     *         is returned.
+     * @return the value of {@value #LOCALE} parameter. If not present, the
+     * default {@value #DEFAULT_LOCALE} is returned.
      */
     public String getLocale() {
-        if ( !containsParameter(LOCALE)) {
+        if (!containsParameter(LOCALE)) {
             return DEFAULT_LOCALE;
         }
         return getAsString(LOCALE);
     }
 
     /**
-     * @return the value of {@value #STYLE} parameter. If not present, the default styles are returned.
-     * @throws IoParseException
-     *         if parsing style parameter failed.
+     * @return the value of {@value #STYLE} parameter. If not present, the
+     * default styles are returned.
+     * @throws IoParseException if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
-        if ( !containsParameter(STYLE)) {
+        if (!containsParameter(STYLE)) {
             return StyleProperties.createDefaults();
         }
         return parseStyleProperties(getAsString(STYLE));
     }
 
     /**
-     * Creates a generic {@link StyleProperties} instance which can be used to create more concrete
-     * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
+     * Creates a generic {@link StyleProperties} instance which can be used to
+     * create more concrete {@link Style}s. For example use
+     * {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
      * style view which can be used for lines.
      *
-     * @param style
-     *        the JSON style parameter to parse.
+     * @param style the JSON style parameter to parse.
      * @return a parsed {@link StyleProperties} instance.
-     * @throws IoParseException
-     *         if parsing parameter fails.
+     * @throws IoParseException if parsing parameter fails.
      */
     private StyleProperties parseStyleProperties(String style) {
         try {
             return style == null ? StyleProperties.createDefaults()
-                : new ObjectMapper().readValue(style, StyleProperties.class);
-        }
-        catch (JsonMappingException e) {
+                    : new ObjectMapper().readValue(style, StyleProperties.class);
+        } catch (JsonMappingException e) {
             throw new IoParseException("Could not read style properties: " + style, e);
-        }
-        catch (JsonParseException e) {
+        } catch (JsonParseException e) {
             throw new IoParseException("Could not parse style properties: " + style, e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("An error occured during request handling.", e);
         }
 
     }
 
     public String getFormat() {
-        if ( !containsParameter(FORMAT)) {
+        if (!containsParameter(FORMAT)) {
             return DEFAULT_FORMAT;
         }
         return getAsString(FORMAT);
     }
 
-
     public boolean isSetRawFormat() {
-    	return containsParameter(RAW_FORMAT);
+        return containsParameter(RAW_FORMAT);
     }
 
     public String getRawFormat() {
         if (isSetRawFormat()) {
-        	final JsonNode value = query.get(RAW_FORMAT);
+            final JsonNode value = query.get(RAW_FORMAT);
             return value != null
                     ? value.asText()
                     : null;
@@ -539,12 +531,12 @@ public class IoParameters {
     }
 
     /**
-     * @return the value of {@value #TIMESPAN} parameter. If not present, the default timespan is returned.
-     * @throws IoParseException
-     *         if timespan could not be parsed.
+     * @return the value of {@value #TIMESPAN} parameter. If not present, the
+     * default timespan is returned.
+     * @throws IoParseException if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
-        if ( !containsParameter(TIMESPAN)) {
+        if (!containsParameter(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(getAsString(TIMESPAN));
@@ -626,7 +618,7 @@ public class IoParameters {
                 : null;
     }
 
-    private Set<String> csvToLowerCasedSet(String csv){
+    private Set<String> csvToLowerCasedSet(String csv) {
         String[] values = csv.split(",");
         for (int i = 0; i < values.length; i++) {
             values[i] = values[i].toLowerCase();
@@ -635,16 +627,17 @@ public class IoParameters {
     }
 
     /**
-     * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting bounding
-     * box is the merged extent of all spatial filters given. For example if {@value #NEAR} and {@value #BBOX}
+     * Creates a {@link BoundingBox} instance from given spatial request
+     * parameters. The resulting bounding box is the merged extent of all
+     * spatial filters given. For example if {@value #NEAR} and {@value #BBOX}
      * exist, the returned bounding box includes both extents.
      *
      * @return a spatial filter created from given spatial parameters.
-     * @throws IoParseException
-     *         if parsing parameters fails, or if a requested {@value #CRS} object could not be created.
+     * @throws IoParseException if parsing parameters fails, or if a requested
+     * {@value #CRS} object could not be created.
      */
     public BoundingBox getSpatialFilter() {
-        if ( !containsParameter(NEAR) && !containsParameter(BBOX)) {
+        if (!containsParameter(NEAR) && !containsParameter(BBOX)) {
             return null;
         }
 
@@ -664,15 +657,13 @@ public class IoParameters {
         if (bounds == null) {
             bounds = new BoundingBox(lowerLeft, upperRight, DEFAULT_CRS);
             LOGGER.debug("Parsed bbox bounds: {}", bounds.toString());
-        }
-        else {
+        } else {
             extendBy(lowerLeft, bounds);
             extendBy(upperRight, bounds);
             LOGGER.debug("Merged bounds: {}", bounds.toString());
         }
         return bounds;
     }
-
 
     /**
      * Extends the bounding box with the given point. If point is contained by
@@ -695,14 +686,14 @@ public class IoParameters {
     }
 
     /**
-     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX} parameter is present.
-     * @throws IoParseException
-     *         if parsing parameter fails.
-     * @throws IoParseException
-     *         if a requested {@value #CRS} object could not be created
+     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX}
+     * parameter is present.
+     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException if a requested {@value #CRS} object could not be
+     * created
      */
     private BBox createBbox() {
-        if ( !containsParameter(BBOX)) {
+        if (!containsParameter(BBOX)) {
             return null;
         }
         String bboxValue = getAsString(BBOX);
@@ -713,7 +704,7 @@ public class IoParameters {
     }
 
     private BoundingBox parseBoundsFromVicinity() {
-        if ( !containsParameter(NEAR)) {
+        if (!containsParameter(NEAR)) {
             return null;
         }
         String vicinityValue = getAsString(NEAR);
@@ -727,79 +718,71 @@ public class IoParameters {
     }
 
     /**
-     * @param jsonString
-     *        the JSON string to parse.
-     * @param clazz
-     *        the type to serialize given JSON string to.
+     * @param jsonString the JSON string to parse.
+     * @param clazz the type to serialize given JSON string to.
      * @return a mapped instance parsed from JSON.
-     * @throws IoParseException
-     *         if JSON is invalid or does not map to given type.
+     * @throws IoParseException if JSON is invalid or does not map to given
+     * type.
      */
     private <T> T parseJson(String jsonString, Class<T> clazz) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(jsonString, clazz);
-        }
-        catch (JsonParseException e) {
+        } catch (JsonParseException e) {
             throw new IoParseException("The given parameter is invalid JSON." + jsonString, e);
-        }
-        catch (JsonMappingException e) {
+        } catch (JsonMappingException e) {
             throw new IoParseException("The given parameter could not been read: " + jsonString, e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Could not handle input to parse.", e);
         }
     }
 
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
         return isForceXY() // is strict XY axis order?!
-            ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
-            : transformToInnerCrs(point, createEpsgStrictAxisOrder());
+                ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
+                : transformToInnerCrs(point, createEpsgStrictAxisOrder());
     }
 
     /**
-     * @param point
-     *        a GeoJSON point to be transformed to internally used CRS:84.
-     * @param crsUtils
-     *        a reference helper.
+     * @param point a GeoJSON point to be transformed to internally used CRS:84.
+     * @param crsUtils a reference helper.
      * @return a transformed GeoJSON instance.
-     * @throws IoParseException
-     *         if point could not be transformed, or if requested CRS object could not be created.
+     * @throws IoParseException if point could not be transformed, or if
+     * requested CRS object could not be created.
      */
     private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
             Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
             return crsUtils.convertToGeojsonFrom(crs84Point);
-        }
-        catch (TransformException e) {
+        } catch (TransformException e) {
             throw new IoParseException("Could not transform to internally used CRS:84.", e);
-        }
-        catch (FactoryException e) {
+        } catch (FactoryException e) {
             throw new IoParseException("Check if 'crs' parameter is a valid EPSG CRS. Was: '" + getCrs() + "'.", e);
         }
     }
 
     /**
-     * @return the requested reference context, or the default ({@value CRSUtils#DEFAULT_CRS}) which will be
-     *         interpreted as lon/lat ordered axes).
+     * @return the requested reference context, or the default
+     * ({@value CRSUtils#DEFAULT_CRS}) which will be interpreted as lon/lat
+     * ordered axes).
      */
     public String getCrs() {
-        if ( !containsParameter(CRS)) {
+        if (!containsParameter(CRS)) {
             return DEFAULT_CRS;
         }
         return getAsString(CRS);
     }
 
     public boolean isForceXY() {
-        if ( !containsParameter(FORCE_XY)) {
+        if (!containsParameter(FORCE_XY)) {
             return DEFAULT_FORCE_XY;
         }
         return getAsBoolean(FORCE_XY);
     }
 
     public boolean isMatchDomainIds() {
-        if ( !containsParameter(MATCH_DOMAIN_IDS)) {
+        if (!containsParameter(MATCH_DOMAIN_IDS)) {
             return DEFAULT_MATCH_DOMAIN_IDS;
         }
         return getAsBoolean(MATCH_DOMAIN_IDS);
@@ -807,35 +790,34 @@ public class IoParameters {
 
     /**
      * @return the value of {@value #EXPANDED} parameter.
-     * @throws IoParseException
-     *         if parameter could not be parsed.
+     * @throws IoParseException if parameter could not be parsed.
      */
     public boolean isExpanded() {
-        if ( !containsParameter(EXPANDED)) {
+        if (!containsParameter(EXPANDED)) {
             return DEFAULT_EXPANDED;
         }
         return getAsBoolean(EXPANDED);
     }
 
     public boolean isForceLatestValueRequests() {
-        if ( !containsParameter(FORCE_LATEST_VALUE)) {
+        if (!containsParameter(FORCE_LATEST_VALUE)) {
             return DEFAULT_FORCE_LATEST_VALUE;
         }
         return getAsBoolean(FORCE_LATEST_VALUE);
     }
 
     public boolean isStatusIntervalsRequests() {
-    	if ( !containsParameter(STATUS_INTERVALS)) {
-    		return DEFAULT_STATUS_INTERVALS;
-    	}
-    	return getAsBoolean(STATUS_INTERVALS);
+        if (!containsParameter(STATUS_INTERVALS)) {
+            return DEFAULT_STATUS_INTERVALS;
+        }
+        return getAsBoolean(STATUS_INTERVALS);
     }
 
     public boolean isRenderingHintsRequests() {
-    	if ( !containsParameter(RENDERING_HINTS)) {
-    		return DEFAULT_RENDERING_HINTS;
-    	}
-    	return getAsBoolean(RENDERING_HINTS);
+        if (!containsParameter(RENDERING_HINTS)) {
+            return DEFAULT_RENDERING_HINTS;
+        }
+        return getAsBoolean(RENDERING_HINTS);
     }
 
     public boolean containsParameter(String parameter) {
@@ -853,37 +835,31 @@ public class IoParameters {
     }
 
     /**
-     * @param parameter
-     *        the parameter to parse to an <code>int</code> value.
+     * @param parameter the parameter to parse to an <code>int</code> value.
      * @return an integer value.
-     * @throws IoParseException
-     *         if parsing to <code>int</code> fails.
+     * @throws IoParseException if parsing to <code>int</code> fails.
      */
     public int getAsInteger(String parameter) {
         try {
             String value = getAsString(parameter);
             Integer.parseInt(value);
             return query.get(parameter.toLowerCase()).asInt();
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
         }
     }
 
     /**
-     * @param parameter
-     *        the parameter to parse to <code>boolean</code>.
+     * @param parameter the parameter to parse to <code>boolean</code>.
      * @return <code>true</code> or <code>false</code> as <code>boolean</code>.
-     * @throws IoParseException
-     *         if parsing to <code>boolean</code> fails.
+     * @throws IoParseException if parsing to <code>boolean</code> fails.
      */
     public boolean getAsBoolean(String parameter) {
         try {
             String value = getAsString(parameter);
             Boolean.parseBoolean(value);
             return query.get(parameter.toLowerCase()).asBoolean();
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
         }
     }
@@ -907,14 +883,12 @@ public class IoParameters {
         return parameterSet;
     }
 
-
     public static IoParameters createDefaults() {
         return new IoParameters(null);
     }
 
     /**
-     * @param queryParameters
-     *        the parameters sent via GET payload.
+     * @param queryParameters the parameters sent via GET payload.
      * @return a query map for convenient parameter access plus validation.
      */
     public static IoParameters createFromQuery(Map<String, String> queryParameters) {
@@ -944,8 +918,7 @@ public class IoParameters {
     }
 
     /**
-     * @param parameters
-     *        the parameters sent via POST payload.
+     * @param parameters the parameters sent via POST payload.
      * @return a query map for convenient parameter access plus validation.
      */
     public static IoParameters createFromQuery(RequestParameterSet parameters) {

@@ -108,9 +108,8 @@
             </dependency>
 
             <dependency>
-                <!-- ensure loading before ealier versions -->
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-opengis</artifactId>
+                <artifactId>gt-api</artifactId>
                 <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
@@ -124,8 +123,9 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <!-- ensure loading before ealier versions -->
                 <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
+                <artifactId>gt-opengis</artifactId>
                 <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>

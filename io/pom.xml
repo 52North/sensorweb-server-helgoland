@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.n52.series-api</groupId>
-		<artifactId>series-rest-api</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>io</artifactId>
-	<packaging>jar</packaging>
-	<name>Series REST API - IO module</name>
-	<url>http://52north.org/communities/sensorweb/</url>
-	<dependencies>
-		<dependency>
-			<!-- ensure loading before earlier versions -->
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-opengis</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.n52.sensorweb</groupId>
-			<artifactId>xml-pdf-format</artifactId>
-		</dependency>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.n52.series-api</groupId>
+        <artifactId>series-rest-api</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>io</artifactId>
+    <packaging>jar</packaging>
+    <name>Series REST API - IO module</name>
+    <url>http://52north.org/communities/sensorweb/</url>
+    <dependencies>
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>xml-pdf-format</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
+        </dependency>
         <dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
                 
         <dependency>
             <groupId>org.apache.avalon.framework</groupId>
@@ -55,9 +49,9 @@
         </dependency>
         
         <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -66,40 +60,50 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
         </dependency>
         
-		<dependency>
-			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
-			<exclusions>
-				<exclusion>
-					<!-- old version dependency causes conclicts -->
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+            <exclusions>
+                <exclusion>
+                    <!-- old version dependency causes conclicts -->
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-api</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-referencing</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-metadata</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-referencing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-metadata</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-opengis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-epsg-hsql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         
-		<dependency>
-			<groupId>org.jfree</groupId>
-			<artifactId>jfreechart</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jcommon</artifactId>
@@ -110,10 +114,10 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>fop</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+        </dependency>
         
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -136,6 +140,6 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>
 

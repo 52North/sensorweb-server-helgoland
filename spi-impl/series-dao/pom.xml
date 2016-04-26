@@ -13,7 +13,7 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-		<postgis.version>2.1.3</postgis.version>
+        <postgis.version>2.1.3</postgis.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate.spatial.version>4.3-52N</hibernate.spatial.version>
         <!--<hibernate.version>5.1.0.Final</hibernate.version>-->
@@ -31,16 +31,20 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>rest</artifactId>
         </dependency>
-        
+
         <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
         <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-		</dependency>
-        
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-opengis</artifactId>
@@ -49,7 +53,7 @@
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
         </dependency>
-            
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -62,7 +66,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -73,7 +77,7 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>  
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
@@ -89,12 +93,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
+
         <dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-        
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -107,7 +111,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
@@ -134,7 +138,7 @@
                 </executions>
             </plugin>
         </plugins>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>

@@ -53,17 +53,17 @@
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
-                     <!--SOS API uses higher version--> 
+                    <!--SOS API uses higher version--> 
                     <groupId>org.javassist</groupId>
                     <artifactId>javassist</artifactId>
                 </exclusion>
                 <exclusion>
-                     <!--SOS API uses higher version--> 
+                    <!--SOS API uses higher version--> 
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
                 <exclusion>
-                     <!--xmlgraphics uses higher version--> 
+                    <!--xmlgraphics uses higher version--> 
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>

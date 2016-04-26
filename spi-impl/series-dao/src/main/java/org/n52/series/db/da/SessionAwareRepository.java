@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da;
 
@@ -45,7 +46,7 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     @Autowired
     private HibernateSessionStore sessionStore;
-    
+
     @Autowired
     private ServiceInfo serviceInfo;
 
@@ -54,15 +55,15 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
 
     protected abstract ServiceOutput getServiceOutput() throws DataAccessException;
-    
+
     protected abstract DBQ getDbQuery(IoParameters parameters);
-    
+
     protected abstract DBQ getDbQuery(IoParameters parameters, String locale);
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
     }
-    
+
     @Deprecated
     protected AbstractDbQuery createDefaultsWithLocale(String locale) {
 //        if (locale == null) {
@@ -77,8 +78,7 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     protected Long parseId(String id) throws BadRequestException {
         try {
             return Long.parseLong(id);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
     }
@@ -90,28 +90,27 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     public Session getSession() {
         try {
             return sessionStore.getSession();
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             throw new IllegalStateException("Could not get hibernate session.", e);
         }
     }
 
-	protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
-		if (isi18nNameAvailable(entity, locale)) {
-			return entity.getNameI18n(locale);
-		} else if (isNameAvailable(entity)) {
-			return entity.getName();
-		} else {
-			return entity.getDomainId();
-		}
-	}
+    protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
+        if (isi18nNameAvailable(entity, locale)) {
+            return entity.getNameI18n(locale);
+        } else if (isNameAvailable(entity)) {
+            return entity.getName();
+        } else {
+            return entity.getDomainId();
+        }
+    }
 
-	private boolean isNameAvailable(DescribableEntity<?> entity) {
-		return entity.getName() != null && !entity.getName().isEmpty();
-	}
+    private boolean isNameAvailable(DescribableEntity<?> entity) {
+        return entity.getName() != null && !entity.getName().isEmpty();
+    }
 
-	private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
-		return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
-	}
-    
+    private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
+        return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
+    }
+
 }

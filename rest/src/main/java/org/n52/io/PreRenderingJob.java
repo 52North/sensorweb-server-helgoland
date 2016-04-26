@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io;
 
@@ -95,24 +96,23 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private SeriesDataService timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
-    
+
     private String webappFolder;
 
     private String configFile;
-    
+
     private boolean interrupted;
 
     private PrerenderingJobConfig readJobConfig(String configFile) {
         try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
             ObjectMapper om = new ObjectMapper();
             return om.readValue(taskConfig, PrerenderingJobConfig.class);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", configFile, e);
             return new PrerenderingJobConfig();
         }
     }
-    
+
     @Override
     public JobDetail createJobDetails() {
         return JobBuilder.newJob(PreRenderingJob.class)
@@ -155,7 +155,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 }
             }
         }
-        
+
         for (RenderingConfig config : timeseriesStyles) {
 //            RenderingConfig style = timeseriesStyles.get(timeseriesId);
             renderConfiguredIntervals(config.getId(), config);
@@ -164,7 +164,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 return;
             }
         }
-       
+
         LOGGER.debug("prerendering took '{}'", stopwatch.stopInSeconds());
     }
 
@@ -197,11 +197,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
-        try(FileOutputStream out = fos;) {
+        try (FileOutputStream out = fos;) {
             renderer.generateOutput(getTimeseriesData(parameters));
             renderer.encodeAndWriteTo(out);
-        }
-        catch (IoParseException | IOException e) {
+        } catch (IoParseException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }
     }
@@ -224,7 +223,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
     }
-    
+
     public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
@@ -248,8 +247,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     public void writePrerenderedGraphToOutputStream(String timeseriesId,
-                                                    String chartQualifier,
-                                                    OutputStream outputStream) {
+            String chartQualifier,
+            OutputStream outputStream) {
         try {
             BufferedImage image = loadImage(timeseriesId, chartQualifier);
             if (image == null) {
@@ -258,8 +257,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 throw ex;
             }
             ImageIO.write(image, "png", outputStream);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Error while loading pre rendered image", e);
         }
     }
@@ -273,16 +271,13 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         if (period.equals("lastDay")) {
             Interval interval = new Interval(now.minusDays(1), now);
             return new IntervalWithTimeZone(interval.toString());
-        }
-        else if (period.equals("lastWeek")) {
+        } else if (period.equals("lastWeek")) {
             Interval interval = new Interval(now.minusWeeks(1), now);
             return new IntervalWithTimeZone(interval.toString());
-        }
-        else if (period.equals("lastMonth")) {
+        } else if (period.equals("lastMonth")) {
             Interval interval = new Interval(now.minusMonths(1), now);
             return new IntervalWithTimeZone(interval.toString());
-        }
-        else {
+        } else {
             throw new ResourceNotFoundException("Unknown interval definition '" + period + "' for timeseriesId "
                     + timeseriesId);
         }
@@ -312,7 +307,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         String outputPath = generalConfig.get("outputPath");
         String outputDirectory = webappFolder + File.separator + outputPath + File.separator;
         File dir = new File(outputDirectory);
-        if ( !dir.exists()) {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
         return outputDirectory;
@@ -350,8 +345,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         //return timeseriesDataService.getSeriesData(parameters);
         return parameters.isGeneralize()
-            ? composeDataService(timeseriesDataService).getSeriesData(parameters)
-            : timeseriesDataService.getSeriesData(parameters);
+                ? composeDataService(timeseriesDataService).getSeriesData(parameters)
+                : timeseriesDataService.getSeriesData(parameters);
     }
 
 }

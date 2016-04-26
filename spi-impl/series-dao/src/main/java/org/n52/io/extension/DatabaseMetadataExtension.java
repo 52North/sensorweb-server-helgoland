@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.extension;
 
@@ -49,14 +50,14 @@ import org.n52.series.db.da.beans.I18nEntity;
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
     private static final String EXTENSION_NAME = "databaseMetadata";
-    
+
     private final MetadataRepository repository = new MetadataRepository();
 
     @Override
     public String getExtensionName() {
         return EXTENSION_NAME;
     }
-    
+
     @Override
     public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
         return repository.getExtras(output, parameters);
@@ -69,7 +70,7 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
             output.addExtra(fieldName);
         }
     }
-    
+
     private class MetadataRepository extends SessionAwareRepository<AbstractDbQuery> {
 
         @Override
@@ -91,13 +92,13 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
         protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
-        
+
         private List<String> getFieldNames(String id) {
             Session session = getSession();
             try {
                 DatabaseMetadataDao dao = new DatabaseMetadataDao(session);
                 return dao.getMetadataNames(parseId(id));
-            }finally {
+            } finally {
                 returnSession(session);
             }
         }
@@ -126,12 +127,12 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
             return outputs;
         }
 
-		@Override
-		protected ServiceOutput getServiceOutput() throws DataAccessException {
-			// not used here
-			return null;
-		}
-        
+        @Override
+        protected ServiceOutput getServiceOutput() throws DataAccessException {
+            // not used here
+            return null;
+        }
+
     }
 
 }

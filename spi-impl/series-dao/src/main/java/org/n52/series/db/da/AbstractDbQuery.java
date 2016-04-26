@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da;
 
@@ -71,7 +72,7 @@ public abstract class AbstractDbQuery {
             this.parameters = parameters;
         }
     }
-    
+
     public abstract DetachedCriteria createDetachedFilterCriteria(String propertyName);
 
     public void setDatabaseAuthorityCode(String code) {
@@ -94,11 +95,11 @@ public abstract class AbstractDbQuery {
         return criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().size() != 0;
     }
 
-    public Criteria addLocaleTo(Criteria criteria, Class< ? > clazz) {
+    public Criteria addLocaleTo(Criteria criteria, Class< ?> clazz) {
         if (getLocale() != null && isEntitySupported(clazz, criteria)) {
             criteria = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN)
                     .add(or(like(COLUMN_LOCALE, getCountryCode()),
-                            isNull(COLUMN_LOCALE)));
+                                    isNull(COLUMN_LOCALE)));
         }
         return criteria;
     }
@@ -128,16 +129,14 @@ public abstract class AbstractDbQuery {
     }
 
     /**
-     * @param id
-     *        the id string to parse.
-     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
-     *         long.
+     * @param id the id string to parse.
+     * @return the long value of given string or {@link Long#MIN_VALUE} if
+     * string could not be parsed to type long.
      */
     protected Long parseToId(String id) {
         try {
             return Long.parseLong(id);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return Long.MIN_VALUE;
         }
     }
@@ -152,19 +151,17 @@ public abstract class AbstractDbQuery {
                 Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
                 criteria.add(SpatialRestrictions.filter("geom", envelope, databaseSrid));
-            }
-            catch (FactoryException e) {
+            } catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
-            }
-            catch (TransformException e) {
+            } catch (TransformException e) {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
         return criteria;
     }
-    
+
     public IoParameters getParameters() {
-    	return parameters;
+        return parameters;
     }
-    
+
 }

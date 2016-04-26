@@ -1,74 +1,74 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Example requesting multiple timseries via Javascript</title>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Example requesting multiple timseries via Javascript</title>
 
-<script type='text/javascript' src='http://code.jquery.com/jquery-git2.js'></script>
+        <script type='text/javascript' src='http://code.jquery.com/jquery-git2.js'></script>
 
-<style type='text/css'>
-</style>
+        <style type='text/css'>
+        </style>
 
 
-<script type='text/javascript'>
-    function load() {
-        var body = {
-            "base64" : true,
-            "timespan" : "PT12H/" + new Date().toISOString(),
-            "width" : 800,
-            "height" : 400,
-            "language" : "nl",
-            "grid" : false,
-            "styleOptions" : {
-                "ts_c8ed5ddbb89c19b2e385de23eecbde98" : {
-                    "chartType" : "line",
-                    "properties" : {
-                        "color" : "#f2f2f2",
-                        "lineType" : "dashed",
-                        "width" : 4
+        <script type='text/javascript'>
+            function load() {
+                var body = {
+                    "base64": true,
+                    "timespan": "PT12H/" + new Date().toISOString(),
+                    "width": 800,
+                    "height": 400,
+                    "language": "nl",
+                    "grid": false,
+                    "styleOptions": {
+                        "ts_c8ed5ddbb89c19b2e385de23eecbde98": {
+                            "chartType": "line",
+                            "properties": {
+                                "color": "#f2f2f2",
+                                "lineType": "dashed",
+                                "width": 4
+                            }
+                        },
+                        "ts_684ec84ba41c6d64a6ccd18f40ae5a5d": {
+                            "chartType": "line",
+                            "properties": {
+                                "color": "#2f2f2f",
+                                "lineType": "solid",
+                                "width": 2
+                            }
+                        }
                     }
-                },
-                "ts_684ec84ba41c6d64a6ccd18f40ae5a5d" : {
-                    "chartType" : "line",
-                    "properties" : {
-                        "color" : "#2f2f2f",
-                        "lineType" : "solid",
-                        "width" : 2
-                    }
-                }
-            }
-        };
+                };
 
-        $.support.cors = true;
-        this.xhr = $
-                .ajax(
-                        {
-                            crossDomain : true,
-                            type : "POST",
-                            url : "http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/timeseries/getData",
-                            headers : {
-                                "accept" : "image/png",
-                                "content-Type" : "application/json",
-                            },
-                            data : JSON.stringify(body)
-                        }).done(function(data) {
+                $.support.cors = true;
+                this.xhr = $
+                        .ajax(
+                                {
+                                    crossDomain: true,
+                                    type: "POST",
+                                    url: "http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/timeseries/getData",
+                                    headers: {
+                                        "accept": "image/png",
+                                        "content-Type": "application/json",
+                                    },
+                                    data: JSON.stringify(body)
+                                }).done(function (data) {
                     $('#output').html('<img src="data:image/png;base64,' + data + '" />');
-                }).fail(function(xhr, textStatus) {
+                }).fail(function (xhr, textStatus) {
                     console.log(xhr);
                     $('#output').html(xhr.responseText);
-                }).always(function() {
+                }).always(function () {
 
                 });
-    }
-</script>
+            }
+        </script>
 
 
-</head>
-<body onload="load()">
+    </head>
+    <body onload="load()">
 
-    <div id="output"></div>
+        <div id="output"></div>
 
-</body>
+    </body>
 
 
 </html>

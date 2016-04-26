@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da.v2;
 
@@ -70,10 +71,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataV2Output> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesRepository.class);
-    
+
     @Autowired
     private FeatureRepository featureRepository;
-    
+
     @Autowired
     private PlatformRepository platformRepository;
 
@@ -85,15 +86,14 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<SeriesEntityV2> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
 
     @Override
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
-                                                        String locale) {
+            String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<>();
     }
@@ -111,7 +111,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return results;
     }
 
-
     @Override
     public List<SeriesMetadataV2Output> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
@@ -119,18 +118,17 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             SeriesDao seriesDao = new SeriesDao(session);
             List<SeriesMetadataV2Output> results = new ArrayList<>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (series.getUnit() != null) {
-            		results.add(createCondensed(series, query));
-            	}
+                /*
+                 *  ATM, the SWC REST API only supports numeric types
+                 *  We check for a unit to check for them
+                 */
+                if (series.getUnit() != null) {
+                    results.add(createCondensed(series, query));
+                }
             }
             return results;
 
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -142,19 +140,18 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             SeriesDao seriesDao = new SeriesDao(session);
             List<SeriesMetadataV2Output> results = new ArrayList<>();
             for (SeriesEntityV2 series : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (series.getUnit() != null) {
-            		results.add(createExpanded(session, series, query));
-            	} else {
+                /*
+                 *  ATM, the SWC REST API only supports numeric types
+                 *  We check for a unit to check for them
+                 */
+                if (series.getUnit() != null) {
+                    results.add(createExpanded(session, series, query));
+                } else {
                     LOGGER.debug("Series entry '{}' without UOM will be ignored!", series.getPkid());
                 }
             }
             return results;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -165,37 +162,35 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntityV2 result = seriesDao.getInstance(parseId(seriesId), dbQuery);
-        	/*
-        	 *  ATM, the SWC REST API only supports numeric types
-        	 *  We check for a unit to check for them
-        	 */
+            /*
+             *  ATM, the SWC REST API only supports numeric types
+             *  We check for a unit to check for them
+             */
             if (result == null || result.getUnit() == null) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", seriesId);
                 throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
             }
             return createExpanded(session, result, dbQuery);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
-    
+
     public boolean checkId(String seriesId, DbQuery dbQuery) throws DataAccessException {
-    	Session session = getSession();
+        Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntityV2 result = seriesDao.getInstance(parseId(seriesId), dbQuery);
-        	/*
-        	 *  ATM, the SWC REST API only supports numeric types
-        	 *  We check for a unit to check for them
-        	 */
+            /*
+             *  ATM, the SWC REST API only supports numeric types
+             *  We check for a unit to check for them
+             */
             if (result == null || result.getUnit() == null) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", seriesId);
                 throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
             }
             return true;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -209,12 +204,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 throw new ResourceNotFoundException("Resource with id '" + seriesId + "' and requested parameters could not be found.");
             }
             return createTimeseriesData(series, dbQuery, session);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
-    
+
     public TimeseriesData getDataWithReferenceValues(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
@@ -228,14 +222,13 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 result.setMetadata(metadata);
             }
             return result;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
 
     private SeriesMetadataV2Output createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
-    	SeriesMetadataV2Output output = createCondensed(series, query);
+        SeriesMetadataV2Output output = createCondensed(series, query);
         output.setParameters(createSeriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
@@ -243,8 +236,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return output;
     }
 
-	private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntityV2 series,
-                                                               DbQuery query) throws DataAccessException {
+    private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntityV2 series,
+            DbQuery query) throws DataAccessException {
         Set<SeriesEntityV2> referenceValues = series.getReferenceValues();
         List<ReferenceValueOutput> outputs = new ArrayList<ReferenceValueOutput>();
         for (SeriesEntityV2 referenceSeriesEntityV2 : referenceValues) {
@@ -285,9 +278,9 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     private FeatureOutputCollection createCondensedFeature(SeriesEntityV2 entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
-        
+
         PlatformOutput platform = platformRepository.getCondensedInstance(featurePkid, query);
-        
+
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("platform", platform.getId());
         queryParameters.put("series", Long.toString(entity.getPkid()));
@@ -301,8 +294,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntityV2> referenceValues,
-                                                                DbQuery query,
-                                                                Session session) throws DataAccessException {
+            DbQuery query,
+            Session session) throws DataAccessException {
         Map<String, TimeseriesData> referenceSeries = new HashMap<>();
         for (SeriesEntityV2 referenceSeriesEntityV2 : referenceValues) {
             if (referenceSeriesEntityV2.isPublished()) {
@@ -324,7 +317,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         TimeseriesData result = new TimeseriesData();
         ObservationDao dao = new ObservationDao(session);
         List<ObservationEntityV2> observations = dao.getObservationsFor(seriesEntity, query);
-        if ( !hasValidEntriesWithinRequestedTimespan(observations)) {
+        if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             ObservationEntityV2 lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
         }
@@ -363,8 +356,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
         referenceEnd.setValue(entity.getValue());
-        return new TimeseriesValue[] {createTimeseriesValueFor(referenceStart, series),
-                                      createTimeseriesValueFor(referenceEnd, series)};
+        return new TimeseriesValue[]{createTimeseriesValueFor(referenceStart, series),
+            createTimeseriesValueFor(referenceEnd, series)};
 
     }
 
@@ -381,7 +374,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
         return value;
     }
-    
+
     private TimeseriesValue queryObservationFor(ObservationEntityV2 observation, SeriesEntityV2 series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
@@ -389,7 +382,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
         List<ObservationEntityV2> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
         if (observations != null && !observations.isEmpty()) {
-        	 return createTimeseriesValueFor(observations.iterator().next(), series);
+            return createTimeseriesValueFor(observations.iterator().next(), series);
         }
         return null;
     }
@@ -397,8 +390,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     private Double formatDecimal(Double value, SeriesEntityV2 series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
-            .setScale(scale, HALF_UP)
-            .doubleValue();
+                .setScale(scale, HALF_UP)
+                .doubleValue();
     }
-    
+
 }

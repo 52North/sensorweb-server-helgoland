@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.img;
 
@@ -97,7 +98,6 @@ public class MultipleChartsRenderer extends ChartRenderer {
                  * Configure timeseries reference value renderers with the same metadata and add it at the end
                  * of the plot's renderer list.
                  */
-
                 TimeseriesDataMetadata metadata = timeseriesData.getMetadata();
                 Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, TimeseriesData> referencedTimeseries : referenceValues.entrySet()) {
@@ -107,7 +107,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
 
                     TimeseriesData referenceData = referenceValues.get(referenceTimeseriesId);
                     ChartIndexConfiguration referenceConfiguration = new ChartIndexConfiguration(referenceChartId,
-                                                                                                 referenceIndex);
+                            referenceIndex);
                     StyleProperties referenceStyle = getTimeseriesStyleFor(timeseriesId, referenceTimeseriesId);
                     referenceConfiguration.setReferenceData(referenceData, timeseriesMetadata, referenceStyle);
                     referenceConfiguration.setRenderer(createRenderer(referenceStyle));
@@ -202,18 +202,16 @@ public class MultipleChartsRenderer extends ChartRenderer {
                     for (TimeseriesValue value : timeseriesData.getValues()) {
                         if (isValueInInterval(value, timeinterval)) {
                             intervalSum += value.getValue();
-                        }
-                        else {
+                        } else {
                             timeseries.add(timeinterval, intervalSum);
                             timeinterval = determineTimeInterval(new Date(value.getTimestamp()), style);
                             intervalSum = value.getValue();
                         }
                     }
-                }
-                else if (isLineStyle(style)) {
+                } else if (isLineStyle(style)) {
                     for (TimeseriesValue value : timeseriesData.getValues()) {
                         Second second = new Second(new Date(value.getTimestamp()));
-                        if ( !value.getValue().isNaN()) {
+                        if (!value.getValue().isNaN()) {
                             timeseries.addOrUpdate(second, value.getValue());
                         } else {
                             timeseries.addOrUpdate(second, null);
@@ -233,11 +231,9 @@ public class MultipleChartsRenderer extends ChartRenderer {
                 String interval = styleProperties.getProperties().get("interval");
                 if (interval.equals("byHour")) {
                     return new Hour(date);
-                }
-                else if (interval.equals("byDay")) {
+                } else if (interval.equals("byDay")) {
                     return new Day(date);
-                }
-                else if (interval.equals("byMonth")) {
+                } else if (interval.equals("byMonth")) {
                     return new Month(date);
                 }
             }
@@ -245,12 +241,12 @@ public class MultipleChartsRenderer extends ChartRenderer {
         }
 
         /**
-         * @param interval
-         *        the interval to check.
-         * @return <code>true</code> if timestamp is within the given interval, otherwise <code>false</code>
-         *         is returned. If passed interval was <code>null</code> false will be returned.
-         * @throws IllegalArgumentException
-         *         if passed in value is <code>null</code>.
+         * @param interval the interval to check.
+         * @return <code>true</code> if timestamp is within the given interval,
+         * otherwise <code>false</code> is returned. If passed interval was
+         * <code>null</code> false will be returned.
+         * @throws IllegalArgumentException if passed in value is
+         * <code>null</code>.
          */
         private boolean isValueInInterval(TimeseriesValue value, RegularTimePeriod interval) {
             if (value == null) {

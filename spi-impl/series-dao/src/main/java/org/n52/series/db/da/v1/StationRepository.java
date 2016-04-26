@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.series.db.da.v1;
 
@@ -73,19 +74,18 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
             DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
             List<FeatureEntity> found = stationDao.find(searchString, parameters);
             return convertToSearchResults(found, locale);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
 
     @Override
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
-                                                        String locale) {
+            String locale) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult,locale);
+            String label = getLabelFrom(searchResult, locale);
             results.add(new StationSearchResult(pkid, label));
         }
         return results;
@@ -105,8 +105,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
             }
 
             return results;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -123,8 +122,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
                 results.add(createExpanded(featureEntity, parameters, session));
             }
             return results;
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -140,8 +138,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
             }
             return createExpanded(result, parameters, session);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -153,8 +150,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
             FeatureDao featureDao = new FeatureDao(session);
             FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
-        }
-        finally {
+        } finally {
             returnSession(session);
         }
     }
@@ -177,17 +173,15 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
         try {
-        	if (featureEntity.isSetGeom()) {
-	            Geometry geometry = featureEntity.getGeom();
-	            String fromCrs = "EPSG:" + geometry.getSRID();
-	            Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-	            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
-        	}
-        }
-        catch (FactoryException e) {
+            if (featureEntity.isSetGeom()) {
+                Geometry geometry = featureEntity.getGeom();
+                String fromCrs = "EPSG:" + geometry.getSRID();
+                Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+                return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            }
+        } catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId());
-        }
-        catch (TransformException e) {
+        } catch (TransformException e) {
             LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
         }
         return null;

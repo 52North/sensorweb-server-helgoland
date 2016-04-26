@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.web.ctrl.v2;
 
@@ -99,19 +100,19 @@ public class SeriesDataController extends BaseController {
 
     @RequestMapping(value = "/getData", produces = {"application/json"}, method = POST)
     public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
-                                                    @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
         checkIfUnknownTimeseries(parameters.getTimeseries());
 
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
-        TimeseriesDataCollection< ? > formattedDataCollection = format(timeseriesData, parameters.getFormat());
+        TimeseriesDataCollection< ?> formattedDataCollection = format(timeseriesData, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/json"}, method = GET)
     public ModelAndView getTimeseriesData(HttpServletResponse response,
-                                          @PathVariable String timeseriesId,
-                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
 
         checkIfUnknownTimeseries(timeseriesId);
 
@@ -127,9 +128,8 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         // TODO add paging
-
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
-        TimeseriesDataCollection< ? > formattedDataCollection = format(timeseriesData, map.getFormat());
+        TimeseriesDataCollection< ?> formattedDataCollection = format(timeseriesData, map.getFormat());
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
         }
@@ -137,14 +137,14 @@ public class SeriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
-    private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
-        TimeseriesDataFormatter< ? > formatter = createFormatterFactory(format).create();
+    private TimeseriesDataCollection< ?> format(TvpDataCollection timeseriesData, String format) {
+        TimeseriesDataFormatter< ?> formatter = createFormatterFactory(format).create();
         return formatter.format(timeseriesData);
     }
 
     @RequestMapping(value = "/getData", produces = {"application/pdf"}, method = POST)
     public void getTimeseriesCollectionReport(HttpServletResponse response,
-                                              @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
@@ -166,8 +166,8 @@ public class SeriesDataController extends BaseController {
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/pdf"}, method = GET)
     public void getTimeseriesReport(HttpServletResponse response,
-                                    @PathVariable String timeseriesId,
-                                    @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(timeseriesId);
 
@@ -188,14 +188,14 @@ public class SeriesDataController extends BaseController {
     public void getTimeseriesAsZippedCsv(HttpServletResponse response,
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-        query.put("zip", Arrays.asList(new String[] { Boolean.TRUE.toString() }));
+        query.put("zip", Arrays.asList(new String[]{Boolean.TRUE.toString()}));
         getTimeseriesAsCsv(response, timeseriesId, query);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"text/csv"}, method = GET)
     public void getTimeseriesAsCsv(HttpServletResponse response,
-                                    @PathVariable String timeseriesId,
-                                    @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(timeseriesId);
 
@@ -220,7 +220,7 @@ public class SeriesDataController extends BaseController {
 
     @RequestMapping(value = "/getData", produces = {"image/png"}, method = POST)
     public void getTimeseriesCollectionChart(HttpServletResponse response,
-                                             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
@@ -241,8 +241,8 @@ public class SeriesDataController extends BaseController {
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"image/png"}, method = GET)
     public void getTimeseriesChart(HttpServletResponse response,
-                                   @PathVariable String timeseriesId,
-                                   @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+            @PathVariable String timeseriesId,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(timeseriesId);
 
@@ -264,13 +264,13 @@ public class SeriesDataController extends BaseController {
 
     @RequestMapping(value = "/{timeseriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getTimeseriesChartByInterval(HttpServletResponse response,
-                                             @PathVariable String timeseriesId,
-                                             @PathVariable String chartQualifier,
-                                             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+            @PathVariable String timeseriesId,
+            @PathVariable String chartQualifier,
+            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
-        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
+        if (!preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
         preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
@@ -286,25 +286,21 @@ public class SeriesDataController extends BaseController {
 
     private void checkIfUnknownTimeseries(String... timeseriesIds) {
         for (String timeseriesId : timeseriesIds) {
-            if ( !serviceParameterService.isKnownTimeseries(timeseriesId)) {
+            if (!serviceParameterService.isKnownTimeseries(timeseriesId)) {
                 throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
             }
         }
     }
 
     /**
-     * @param response
-     *        the response to write binary on.
-     * @param parameters
-     *        the timeseries parameter to request raw data.
-     * @param renderer
-     *        an output renderer.
-     * @throws InternalServerException
-     *         if data processing fails for some reason.
+     * @param response the response to write binary on.
+     * @param parameters the timeseries parameter to request raw data.
+     * @param renderer an output renderer.
+     * @throws InternalServerException if data processing fails for some reason.
      */
     private void handleBinaryResponse(HttpServletResponse response,
-                                      RequestSimpleParameterSet parameters,
-                                      IoHandler renderer) {
+            RequestSimpleParameterSet parameters,
+            IoHandler renderer) {
         try {
             renderer.generateOutput(getTimeseriesData(parameters));
             if (parameters.isBase64()) {
@@ -313,23 +309,20 @@ public class SeriesDataController extends BaseController {
                 byte[] imageData = baos.toByteArray();
                 byte[] encode = Base64.encodeBase64(imageData);
                 response.getOutputStream().write(encode);
-            }
-            else {
+            } else {
                 renderer.encodeAndWriteTo(response.getOutputStream());
             }
-        }
-        catch (IOException e) { // handled by BaseController
+        } catch (IOException e) { // handled by BaseController
             throw new InternalServerException("Error handling output stream.", e);
-        }
-        catch (IoParseException e) { // handled by BaseController
+        } catch (IoParseException e) { // handled by BaseController
             throw new InternalServerException("Could not write binary to stream.", e);
         }
     }
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-            ? composeDataService(seriesDataService).getSeriesData(parameters)
-            : seriesDataService.getSeriesData(parameters);
+                ? composeDataService(seriesDataService).getSeriesData(parameters)
+                : seriesDataService.getSeriesData(parameters);
         return timeseriesData;
     }
 

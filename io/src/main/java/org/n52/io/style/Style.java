@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.style;
 
@@ -38,7 +39,8 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Aggregates common style options of multiple timeseries to render them on one chart.
+ * Aggregates common style options of multiple timeseries to render them on one
+ * chart.
  */
 public abstract class Style {
 
@@ -82,13 +84,11 @@ public abstract class Style {
     }
 
     /**
-     * @param property
-     *        the property name.
+     * @param property the property name.
      * @return the property value as double.
-     * @throws NullPointerException
-     *         if properties were not set (which means that default values should be expected).
-     * @throws NumberFormatException
-     *         if property value is not a double.
+     * @throws NullPointerException if properties were not set (which means that
+     * default values should be expected).
+     * @throws NumberFormatException if property value is not a double.
      * @see #hasProperty(String)
      */
     double getPropertyAsDouble(String property) {
@@ -99,13 +99,11 @@ public abstract class Style {
     }
 
     /**
-     * @param property
-     *        the property name.
+     * @param property the property name.
      * @return the property value as int.
-     * @throws NullPointerException
-     *         if properties were not set (which means that default values should be expected).
-     * @throws NumberFormatException
-     *         if property value is not an integer.
+     * @throws NullPointerException if properties were not set (which means that
+     * default values should be expected).
+     * @throws NumberFormatException if property value is not an integer.
      * @see #hasProperty(String)
      */
     int getPropertyAsInt(String property) {
@@ -116,11 +114,10 @@ public abstract class Style {
     }
 
     /**
-     * @param property
-     *        the property name.
+     * @param property the property name.
      * @return the property value as boolean.
-     * @throws NullPointerException
-     *         if properties were not set (which means that default values should be expected).
+     * @throws NullPointerException if properties were not set (which means that
+     * default values should be expected).
      * @see #hasProperty(String)
      */
     boolean getPropertyAsBoolean(String property) {
@@ -147,11 +144,12 @@ public abstract class Style {
     }
 
     /**
-     * Sets the style properties. If not set or <code>null</code> the default properties are used. However,
-     * default styles can be random values and should not be expected to be reproducable.
+     * Sets the style properties. If not set or <code>null</code> the default
+     * properties are used. However, default styles can be random values and
+     * should not be expected to be reproducable.
      *
-     * @param properties
-     *        style options. If <code>null</code> or not set default values are chose.
+     * @param properties style options. If <code>null</code> or not set default
+     * values are chose.
      */
     void setProperties(Map<String, String> properties) {
         this.properties = properties;

@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.report;
 
@@ -110,7 +111,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new IoParseException("Error handling (temp) file!", e);
         }
     }
@@ -123,7 +124,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
             stream = new FileOutputStream(tmpFile);
             renderer.encodeAndWriteTo(stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-        }  finally {
+        } finally {
             if (stream != null) {
                 stream.close();
             }
@@ -150,10 +151,8 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
 
 //            FopFactory fopFactory = FopFactory.newInstance(cfg);
 //            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-
 //            FopFactory fopFactory = fopFactoryBuilder.build();
 //            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-
             // Create PDF via XSLT transformation
             TransformerFactory transFact = TransformerFactory.newInstance();
             StreamSource transformationRule = getTransforamtionRule();
@@ -162,23 +161,19 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
             Source source = new StreamSource(document.newInputStream());
             Result result = new SAXResult(fop.getDefaultHandler());
             transformer.transform(source, result);
-        }
-        catch (FOPException e) {
+        } catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
-        }
-        catch (SAXException | ConfigurationException | IOException e) {
+        } catch (SAXException | ConfigurationException | IOException e) {
             throw new IoParseException("Failed to read config for Formatting Object Processor (FOP)", e);
-        }
-        catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e) {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new IoParseException("Could not generate PDF report!", e);
         } finally {
             try {
                 stream.flush();
                 stream.close();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
             }
         }
@@ -219,18 +214,16 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         // if (attributeVal.equals("urn:ogc:identifier:sensorType")) {
         //            name = "Sensor"; //$NON-NLS-1$
         // }
-
         return metadata;
 
     }
 
     private void addDataTable(TimeSeries timeseries,
-                              TimeseriesMetadataOutput metadata,
-                              TvpDataCollection dataCollection) {
+            TimeseriesMetadataOutput metadata,
+            TvpDataCollection dataCollection) {
         TableType dataTable = timeseries.addNewTable();
 
         // TODO add language context
-
         dataTable.setLeftColHeader("Date");
         dataTable.setRightColHeader(createValueTableHeader(metadata));
 

@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,30 +16,30 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.request;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a parameter object to request a rendered chart output from multiple timeseries.
+ * Represents a parameter object to request a rendered chart output from
+ * multiple timeseries.
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-
     /**
      * Style options for each timeseriesId of interest.
      */
@@ -92,15 +92,16 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param grid
-     *        <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
+     * @param grid <code>true</code> if charts shall be rendered on a grid,
+     * <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
         this.grid = grid;
     }
 
     /**
-     * @return <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
+     * @return <code>true</code> if charts shall be rendered on a grid,
+     * <code>false</code> otherwise.
      */
     public boolean isGrid() {
         return grid;
@@ -123,14 +124,14 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     public StyleProperties getReferenceSeriesStyleOptions(String timeseriesId, String referenceSeriesId) {
-        if ( !styleOptions.containsKey(timeseriesId)) {
+        if (!styleOptions.containsKey(timeseriesId)) {
             return null;
         }
         StyleProperties styleProperties = styleOptions.get(timeseriesId);
         Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
         return properties.containsKey(referenceSeriesId)
-            ? properties.get(referenceSeriesId)
-            : null;
+                ? properties.get(referenceSeriesId)
+                : null;
     }
 
     public void addTimeseriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {

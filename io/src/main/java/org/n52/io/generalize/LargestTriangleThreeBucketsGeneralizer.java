@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.generalize;
 
@@ -42,7 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of a generalizer using the Largest-Triangle-Three-Buckets algorithm
+ * Implementation of a generalizer using the Largest-Triangle-Three-Buckets
+ * algorithm
  *
  * https://github.com/sveinn-steinarsson/flot-downsample/
  */
@@ -77,8 +79,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
     public String getName() {
         return "LargestTriangleThreeBuckets";
     }
-
-
 
     @Override
     public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
@@ -139,7 +139,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 //                }
 //            }
 //        }
-
         return generalizeData(data);
     }
 
@@ -153,11 +152,11 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
         TimeseriesData sampled = new TimeseriesData();
         sampled.addValues(data[pointIndex]);
 
-        for (int bucketIndex =  0; bucketIndex  < maxOutputValues - 2; bucketIndex++) {
+        for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2; bucketIndex++) {
 
             // get the range for this bucket
-            int rangeOff = (int) Math.floor((bucketIndex  + 0) * bucketSize) + 1;
-            int rangeTo = (int) Math.floor((bucketIndex  + 1) * bucketSize) + 1;
+            int rangeOff = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
+            int rangeTo = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
 
             // first point of triangle
             TimeseriesValue triangleLeft = data[pointIndex];
@@ -185,7 +184,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 //                if (triangleRight.isNoDataBucket()) {
 //                    triangleRight = // TODO
 //                }
-
                 // calculate triangle area over three buckets
                 final TimeseriesValue triangleMiddle = data[rangeOff];
 
@@ -242,7 +240,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 
         int dataLength = data.length;
 
-
         int avgRangeStart = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
         int avgRangeEnd = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
         avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
@@ -275,15 +272,19 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
     }
 
     private class BucketAverage {
+
         private Double timestamp;
         private Double value;
+
         BucketAverage(Double timestamp, Double value) {
             this.timestamp = timestamp;
             this.value = value;
         }
+
         boolean isNoDataBucket() {
             return value.isNaN();
         }
+
         TimeseriesValue toTimeseriesValue() {
             return new TimeseriesValue(timestamp.longValue(), value);
         }

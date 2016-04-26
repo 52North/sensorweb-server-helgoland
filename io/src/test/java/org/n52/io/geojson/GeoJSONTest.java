@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.geojson;
 
@@ -61,11 +62,13 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import org.n52.io.crs.CRSUtils;
 
 /**
- * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json/src/test/java/org/n52/sos/coding/json/impl/GeoJSONTest.java
+ * borrowed from
+ * https://github.com/52North/SOS/blob/4.3.4/coding/json/src/test/java/org/n52/sos/coding/json/impl/GeoJSONTest.java
  *
  * @since 2.0
  */
 public class GeoJSONTest {
+
     @Rule
     public final ErrorCollector errors = new ErrorCollector();
 
@@ -82,16 +85,16 @@ public class GeoJSONTest {
     }
 
     private LineString randomLineString(int srid) {
-        LineString geometry =
-                geometryFactory.createLineString(new Coordinate[] { randomCoordinate(), randomCoordinate(),
-                        randomCoordinate() });
+        LineString geometry
+                = geometryFactory.createLineString(new Coordinate[]{randomCoordinate(), randomCoordinate(),
+                    randomCoordinate()});
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiLineString randomMultiLineString(int srid) {
-        return geometryFactory.createMultiLineString(new LineString[] { randomLineString(srid),
-                randomLineString(srid), randomLineString(srid) });
+        return geometryFactory.createMultiLineString(new LineString[]{randomLineString(srid),
+            randomLineString(srid), randomLineString(srid)});
     }
 
     private Point randomPoint(int srid) {
@@ -102,57 +105,57 @@ public class GeoJSONTest {
 
     private LinearRing randomLinearRing(int srid) {
         Coordinate p = randomCoordinate();
-        LinearRing geometry =
-                geometryFactory.createLinearRing(new Coordinate[] { p, randomCoordinate(), randomCoordinate(),
-                        randomCoordinate(), p });
+        LinearRing geometry
+                = geometryFactory.createLinearRing(new Coordinate[]{p, randomCoordinate(), randomCoordinate(),
+                    randomCoordinate(), p});
         geometry.setSRID(srid);
         return geometry;
     }
 
     private Polygon randomPolygon(int srid) {
-        Polygon geometry =
-                geometryFactory.createPolygon(randomLinearRing(srid), new LinearRing[] { randomLinearRing(srid),
-                        randomLinearRing(srid), randomLinearRing(srid) });
+        Polygon geometry
+                = geometryFactory.createPolygon(randomLinearRing(srid), new LinearRing[]{randomLinearRing(srid),
+                    randomLinearRing(srid), randomLinearRing(srid)});
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiPoint randomMultiPoint(int srid) {
-        MultiPoint geometry =
-                geometryFactory.createMultiPoint(new Coordinate[] { randomCoordinate(), randomCoordinate(),
-                        randomCoordinate(), randomCoordinate(), randomCoordinate(), randomCoordinate() });
+        MultiPoint geometry
+                = geometryFactory.createMultiPoint(new Coordinate[]{randomCoordinate(), randomCoordinate(),
+                    randomCoordinate(), randomCoordinate(), randomCoordinate(), randomCoordinate()});
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiPolygon randomMultiPolygon(int srid) {
-        MultiPolygon geometry =
-                geometryFactory.createMultiPolygon(new Polygon[] { randomPolygon(srid), randomPolygon(srid),
-                        randomPolygon(srid) });
+        MultiPolygon geometry
+                = geometryFactory.createMultiPolygon(new Polygon[]{randomPolygon(srid), randomPolygon(srid),
+                    randomPolygon(srid)});
         geometry.setSRID(srid);
         return geometry;
     }
 
     private GeometryCollection randomGeometryCollection(int srid) {
-        GeometryCollection geometry =
-                geometryFactory.createGeometryCollection(new Geometry[] { randomPoint(srid), randomMultiPoint(srid),
-                        randomLineString(srid), randomMultiLineString(srid), randomPolygon(srid),
-                        randomMultiPolygon(srid) });
+        GeometryCollection geometry
+                = geometryFactory.createGeometryCollection(new Geometry[]{randomPoint(srid), randomMultiPoint(srid),
+                    randomLineString(srid), randomMultiLineString(srid), randomPolygon(srid),
+                    randomMultiPolygon(srid)});
         geometry.setSRID(srid);
         return geometry;
     }
 
     @Test
     public void testGeometryCollection() throws GeoJSONException, IOException {
-        readWriteTest(geometryFactory.createGeometryCollection(new Geometry[] { randomGeometryCollection(CRSUtils.EPSG_WGS84),
-                randomGeometryCollection(2000) }));
+        readWriteTest(geometryFactory.createGeometryCollection(new Geometry[]{randomGeometryCollection(CRSUtils.EPSG_WGS84),
+            randomGeometryCollection(2000)}));
     }
 
     @Test
     public void testGeometryCollectionWithZCoordinate() throws GeoJSONException, IOException {
-        GeometryCollection geometry =
-                geometryFactory.createGeometryCollection(new Geometry[] { randomGeometryCollection(CRSUtils.EPSG_WGS84),
-                        randomGeometryCollection(2000) });
+        GeometryCollection geometry
+                = geometryFactory.createGeometryCollection(new Geometry[]{randomGeometryCollection(CRSUtils.EPSG_WGS84),
+                    randomGeometryCollection(2000)});
         geometry.apply(new RandomZCoordinateFilter());
         geometry.geometryChanged();
         readWriteTest(geometry);
@@ -203,7 +206,7 @@ public class GeoJSONTest {
     }
 
     private void testCrs(int parent, int child) {
-        final GeometryCollection col = geometryFactory.createGeometryCollection(new Geometry[] { randomPoint(child) });
+        final GeometryCollection col = geometryFactory.createGeometryCollection(new Geometry[]{randomPoint(child)});
         col.setSRID(parent);
         readWriteTest(col);
     }
@@ -286,6 +289,7 @@ public class GeoJSONTest {
     }
 
     private class RandomZCoordinateFilter implements CoordinateFilter {
+
         @Override
         public void filter(Coordinate coord) {
             coord.z = random.nextInt(1000);
@@ -293,6 +297,7 @@ public class GeoJSONTest {
     }
 
     private class UnknownGeometry extends Geometry {
+
         private static final long serialVersionUID = 1L;
 
         private final String type = "geom";
@@ -396,6 +401,7 @@ public class GeoJSONTest {
     }
 
     private class EmptyGeometry extends UnknownGeometry {
+
         private static final long serialVersionUID = 1L;
 
         EmptyGeometry(GeometryFactory factory) {

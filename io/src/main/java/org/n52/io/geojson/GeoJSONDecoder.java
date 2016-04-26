@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.geojson;
 
@@ -60,16 +61,17 @@ import static org.n52.io.geojson.JSONConstants.TYPE;
 
 /**
  *
- * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json/src/main/java/org/n52/sos/decode/json/impl/GeoJSONDecoder.java
+ * borrowed from
+ * https://github.com/52North/SOS/blob/4.3.4/coding/json/src/main/java/org/n52/sos/decode/json/impl/GeoJSONDecoder.java
  *
  * @since 2.0
  */
 public class GeoJSONDecoder {
 
-	private static final String[] SRS_LINK_PREFIXES = { "http://www.opengis.net/def/crs/EPSG/0/",
-            "http://spatialreference.org/ref/epsg/" };
+    private static final String[] SRS_LINK_PREFIXES = {"http://www.opengis.net/def/crs/EPSG/0/",
+        "http://spatialreference.org/ref/epsg/"};
 
-    private static final String[] SRS_NAME_PREFIXES = { "urn:ogc:def:crs:EPSG::", "EPSG::", "EPSG:" };
+    private static final String[] SRS_NAME_PREFIXES = {"urn:ogc:def:crs:EPSG::", "EPSG::", "EPSG:"};
 
     private static final int DEFAULT_SRID = CRSUtils.EPSG_WGS84;
 
@@ -82,14 +84,13 @@ public class GeoJSONDecoder {
 
     public static final int DIM_3D = 3;
 
-
-	public Geometry decodeGeometry(JsonNode node) throws GeoJSONException {
-		if (node == null || node.isNull() || node.isMissingNode()) {
-			return null;
-		} else {
-			return decodeGeometry(node, DEFAULT_GEOMETRY_FACTORY);
-		}
-	}
+    public Geometry decodeGeometry(JsonNode node) throws GeoJSONException {
+        if (node == null || node.isNull() || node.isMissingNode()) {
+            return null;
+        } else {
+            return decodeGeometry(node, DEFAULT_GEOMETRY_FACTORY);
+        }
+    }
 
     protected Geometry decodeGeometry(Object o, GeometryFactory parentFactory) throws GeoJSONException {
         if (!(o instanceof JsonNode)) {
@@ -117,7 +118,7 @@ public class GeoJSONDecoder {
         }
     }
 
-	protected Coordinate[] decodeCoordinates(JsonNode node) throws GeoJSONException {
+    protected Coordinate[] decodeCoordinates(JsonNode node) throws GeoJSONException {
         if (!node.isArray()) {
             throw new GeoJSONException("expected array");
         }

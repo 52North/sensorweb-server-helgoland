@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ctx="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
         http://www.springframework.org/schema/context
@@ -41,7 +41,7 @@
 
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
-<!--        <property name="outputPath" value="generated/prerendered/v1" />
+        <!--        <property name="outputPath" value="generated/prerendered/v1" />
         <property name="width" value="800" />
         <property name="height" value="500" />
         <property name="language" value="de" />

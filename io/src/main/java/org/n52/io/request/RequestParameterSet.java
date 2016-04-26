@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.request;
 
@@ -47,7 +48,6 @@ public abstract class RequestParameterSet {
     private final Map<String, JsonNode> parameters;
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-
     protected RequestParameterSet() {
         parameters = new HashMap<>();
         parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
@@ -78,7 +78,8 @@ public abstract class RequestParameterSet {
     }
 
     /**
-     * Sets the timespan of interest (as <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601
+     * Sets the timespan of interest (as
+     * <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601
      * interval</a> excluding the Period only version).
      *
      * @return the timespan in ISO-8601
@@ -99,25 +100,26 @@ public abstract class RequestParameterSet {
     }
 
     /**
-     * If image data shall be encoded in Base64 to be easily embedded in HTML by JS clients.
+     * If image data shall be encoded in Base64 to be easily embedded in HTML by
+     * JS clients.
      *
      * @return if image shall be base64 encoded.
      */
     public boolean isBase64() {
         return getAsBoolean("base64", false);
-	}
+    }
 
     /**
      * @param base64 If the image shall be base64 encoded.
      */
-	public void setBase64(boolean base64) {
+    public void setBase64(boolean base64) {
         parameters.put("base64", IoParameters.getJsonNodeFrom(base64));
-	}
+    }
 
     /**
      * @return If reference values shall be appended to the timeseries data.
      */
-	public boolean isExpanded() {
+    public boolean isExpanded() {
         return getAsBoolean("expanded", false);
     }
 
@@ -129,7 +131,8 @@ public abstract class RequestParameterSet {
     }
 
     /**
-     * @return A language code to determine the requested locale. "en" is the default.
+     * @return A language code to determine the requested locale. "en" is the
+     * default.
      */
     public String getLanguage() {
         return getAsString("language");
@@ -181,7 +184,7 @@ public abstract class RequestParameterSet {
 
     public final <T> T getAs(Class<T> clazz, String parameter) {
         try {
-            if ( !parameters.containsKey(parameter.toLowerCase())) {
+            if (!parameters.containsKey(parameter.toLowerCase())) {
                 LOGGER.debug("parameter '{}' is not available.", parameter);
                 return null;
             }

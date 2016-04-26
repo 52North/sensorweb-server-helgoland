@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io.extension.v1;
 
@@ -34,38 +35,37 @@ import org.n52.io.response.StatusInterval;
 
 public class StatusIntervalsExtensionConfig {
 
-	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
-	
-	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
-	
-	public Map<String, ConfigInterval> getPhenomenonIntervals() {
-		return phenomenonIntervals;
-	}
+    private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
 
-	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
-		this.phenomenonIntervals = phenomenonIntervals;
-	}
+    private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
 
-	public Map<String, ConfigInterval> getTimeseriesIntervals() {
-		return timeseriesIntervals;
-	}
+    public Map<String, ConfigInterval> getPhenomenonIntervals() {
+        return phenomenonIntervals;
+    }
 
-	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
-		this.timeseriesIntervals = timeseriesIntervals;
-	}
+    public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
+        this.phenomenonIntervals = phenomenonIntervals;
+    }
 
-	public static class ConfigInterval {
-		
-		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+    public Map<String, ConfigInterval> getTimeseriesIntervals() {
+        return timeseriesIntervals;
+    }
 
-		public Map<String, StatusInterval> getStatusIntervals() {
-			return statusIntervals;
-		}
+    public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
+        this.timeseriesIntervals = timeseriesIntervals;
+    }
 
-		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
-			this.statusIntervals = statusIntervals;
-		}
+    public static class ConfigInterval {
 
-		
-	}
+        private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+
+        public Map<String, StatusInterval> getStatusIntervals() {
+            return statusIntervals;
+        }
+
+        public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
+            this.statusIntervals = statusIntervals;
+        }
+
+    }
 }

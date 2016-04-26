@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:ctx="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
            http://www.springframework.org/schema/jee
     	   http://www.springframework.org/schema/jee/spring-jee-4.2.xsd
@@ -19,18 +19,18 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
-	<!-- ############################## JDBC MANAGED DATASOURCE ####################################### -->
+    <!-- ############################## JDBC MANAGED DATASOURCE ####################################### -->
 
-	<bean id="seriesDatasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-		<property name="jdbcUrl" value="${series.database.url}" />
-		<property name="user" value="${series.database.username}" />
-		<property name="password" value="${series.database.password}" />
-		<property name="driverClass" value="${series.database.driver}" />
-	</bean>
+    <bean id="seriesDatasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="jdbcUrl" value="${series.database.url}" />
+        <property name="user" value="${series.database.username}" />
+        <property name="password" value="${series.database.password}" />
+        <property name="driverClass" value="${series.database.driver}" />
+    </bean>
 
-	<bean id="seriesSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="configLocation" value="classpath:series-hibernate.cfg.xml" />
-		<property name="dataSource" ref="seriesDatasource" />
+    <bean id="seriesSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="configLocation" value="classpath:series-hibernate.cfg.xml" />
+        <property name="dataSource" ref="seriesDatasource" />
         <property name="mappingDirectoryLocations">
             <list>
                 <value>classpath:hbm/sos/core</value>
@@ -41,40 +41,40 @@
                 <!--<value>classpath:hbm/sos/v41</value>-->
             </list>
         </property>
-	</bean>
+    </bean>
 
     <tx:annotation-driven />
 
-	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="seriesSessionFactory" />
-	</bean>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="seriesSessionFactory" />
+    </bean>
 
-	<!-- ############################## JTA JAVA EE MANAGED DATASOURCE ################################## -->
+    <!-- ############################## JTA JAVA EE MANAGED DATASOURCE ################################## -->
 
-	<!--
-	<jee:jndi-lookup id="seriesDatasource" jndi-name="jdbc/series-datasource"/>
-	<bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
-	-->
+    <!--
+    <jee:jndi-lookup id="seriesDatasource" jndi-name="jdbc/series-datasource"/>
+    <bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
+    -->
 
-	<!-- #################################### AOP CONFIGURATION ######################################### -->
+    <!-- #################################### AOP CONFIGURATION ######################################### -->
 
     <!-- http://docs.spring.io/autorepo/docs/spring/4.2.x/spring-framework-reference/html/transaction.html#transaction-declarative -->
 
-	<!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
-	<tx:advice id="txAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="get*" read-only="true" />
-			<tx:method name="searchFor" read-only="true" />
-			<!--<tx:method name="*" />-->
-		</tx:attributes>
-	</tx:advice>
+    <!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="searchFor" read-only="true" />
+            <!--<tx:method name="*" />-->
+        </tx:attributes>
+    </tx:advice>
 
-	<!-- ensure that the above transactional advices run for any execution of an operation defined by the DAO interfaces -->
-	<aop:config>
-		<aop:pointcut id="serviceOperation" expression="execution(* org.n52.series.db.da.dao.v1.*Dao.*(..))" />
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
-	</aop:config>
+    <!-- ensure that the above transactional advices run for any execution of an operation defined by the DAO interfaces -->
+    <aop:config>
+        <aop:pointcut id="serviceOperation" expression="execution(* org.n52.series.db.da.dao.v1.*Dao.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
+    </aop:config>
 
-	<!-- ############################################################################################### -->
+    <!-- ############################################################################################### -->
 
 </beans>

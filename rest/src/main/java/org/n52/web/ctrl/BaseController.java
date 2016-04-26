@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.web.ctrl;
 
@@ -62,12 +63,16 @@ import org.n52.web.exception.WebException;
 import org.springframework.web.context.ServletConfigAware;
 
 /**
- * Serves as central {@link ExceptionHandler} for all Web bindings inheriting from this class.
- * {@link WebException}s indicate an expected workflows while unexpected exceptions are automatically wrapped
- * to {@link InternalServerException}s as fallback.<br/>
- * <br/>
- * Developers should consider to add hints via {@link WebException#addHint(String)} so that as much
- * information is communicated to the caller as possible.
+ * <p>
+ * Serves as central {@link ExceptionHandler} for all Web bindings inheriting
+ * from this class. {@link WebException}s indicate an expected workflows while
+ * unexpected exceptions are automatically wrapped to
+ * {@link InternalServerException}s as fallback.</p>
+ *
+ * <p>
+ * Developers should consider to add hints via
+ * {@link WebException#addHint(String)} so that as much information is
+ * communicated to the caller as possible.</p>
  */
 @Controller
 public abstract class BaseController implements ServletConfigAware {
@@ -75,7 +80,7 @@ public abstract class BaseController implements ServletConfigAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
     private ServletConfig servletConfig;
-    
+
     @Override
     public void setServletConfig(ServletConfig servletConfig) {
         this.servletConfig = servletConfig;
@@ -84,7 +89,7 @@ public abstract class BaseController implements ServletConfigAware {
     public ServletConfig getServletConfig() {
         return servletConfig;
     }
-    
+
     protected boolean isRequestingJsonData(HttpServletRequest request) {
         return APPLICATION_JSON.getMimeType().equals(request.getHeader("Accept"));
     }
@@ -118,8 +123,7 @@ public abstract class BaseController implements ServletConfigAware {
             WebException wrappedException = new BadRequestException("The request could not been read.", e);
             wrappedException.addHint("Check the message which has been sent to the server. Probably it is not valid.");
             writeExceptionResponse(wrappedException, response, BAD_REQUEST);
-        }
-        else {
+        } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
             writeExceptionResponse(wrappedException, response, INTERNAL_SERVER_ERROR);
         }
@@ -134,7 +138,6 @@ public abstract class BaseController implements ServletConfigAware {
         }
 
         // TODO consider using a 'suppress_response_codes=true' parameter and always return 200 OK
-
         response.setStatus(status.value());
         response.setContentType(APPLICATION_JSON.getMimeType());
         ObjectMapper objectMapper = createObjectMapper();
@@ -142,8 +145,7 @@ public abstract class BaseController implements ServletConfigAware {
         ExceptionResponse exceptionResponse = createExceptionResponse(e, status);
         try (OutputStream outputStream = response.getOutputStream()) {
             writer.writeValue(outputStream, exceptionResponse);
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             LOGGER.error("Could not process error message.", ioe);
         }
     }

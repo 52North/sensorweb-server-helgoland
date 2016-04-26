@@ -2,13 +2,13 @@
  * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License version 2 as publishedby the Free
- * Software Foundation.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
  *
- * If the program is linked with libraries which are licensed under one of the
- * following licenses, the combination of the program with the linked library is
- * not considered a "derivative work" of the program:
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
  *
  *     - Apache License, version 2.0
  *     - Apache Software License, version 1.0
@@ -16,14 +16,15 @@
  *     - Mozilla Public License, versions 1.0, 1.1 and 2.0
  *     - Common Development and Distribution License (CDDL), version 1.0
  *
- * Therefore the distribution of the program linked with libraries licensed under
- * the aforementioned licenses, is permitted by the copyright holders if the
- * distribution is compliant with both the GNU General Public License version 2
- * and the aforementioned licenses.
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public License
+ * version 2 and the aforementioned licenses.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
  */
 package org.n52.io;
 
@@ -95,7 +96,7 @@ public final class I18N {
         }
         String[] localeParts;
         if (language.contains("_")) {
-            localeParts  = language.split("_");
+            localeParts = language.split("_");
         } else {
             localeParts = language.split("-");
         }
@@ -105,18 +106,18 @@ public final class I18N {
         }
         if (localeParts.length == 1) {
             return new Locale(localeParts[0]);
-        }
-        else if (localeParts.length == 2) {
+        } else if (localeParts.length == 2) {
             return new Locale(localeParts[0], localeParts[1]);
-        }
-        else {
+        } else {
             return new Locale(localeParts[0], localeParts[1], localeParts[2]);
         }
     }
 
     /**
-     * Overrides {@link Control#newBundle(String, Locale, String, ClassLoader, boolean)} as given in
-     * {@link Control}'s JavaDoc example to handle UTF-8 localization bundles.
+     * Overrides
+     * {@link Control#newBundle(String, Locale, String, ClassLoader, boolean)}
+     * as given in {@link Control}'s JavaDoc example to handle UTF-8
+     * localization bundles.
      */
     private static class UTF8Control extends Control {
 
@@ -134,7 +135,7 @@ public final class I18N {
          * java.lang.String, java.lang.ClassLoader, boolean)
          */
         public ResourceBundle newBundle(String baseName, Locale locale, String format,
-                                        ClassLoader loader, boolean reload)
+                ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
             if (baseName == null || locale == null || format == null || loader == null) {
                 throw new NullPointerException();
@@ -157,21 +158,18 @@ public final class I18N {
                             stream = connection.getInputStream();
                         }
                     }
-                }
-                else {
+                } else {
                     stream = classLoader.getResourceAsStream(resourceName);
                 }
                 if (stream != null) {
                     try {
                         InputStreamReader utf8StreamReader = new InputStreamReader(stream, "UTF-8");
                         bundle = new PropertyResourceBundle(utf8StreamReader);
-                    }
-                    finally {
+                    } finally {
                         stream.close();
                     }
                 }
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Only java.properties format allowed! Was: " + format);
             }
             return bundle;
