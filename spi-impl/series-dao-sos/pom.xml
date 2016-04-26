@@ -39,25 +39,31 @@
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.reflections</groupId>
+                    <artifactId>reflections</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.9-RC1</version>
+            <!-- 'runtime' to be able excluding dependencyConvergence conflicts -->
+            <scope>runtime</scope>
             <exclusions>
                 <exclusion>
-                    <!-- SOS API suses higher version -->
+                     <!--SOS API uses higher version--> 
                     <groupId>org.javassist</groupId>
                     <artifactId>javassist</artifactId>
                 </exclusion>
                 <exclusion>
-                    <!-- SOS API uses higher version -->
+                     <!--SOS API uses higher version--> 
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
                 <exclusion>
-                    <!-- xmlgraphics uses higher version -->
+                     <!--xmlgraphics uses higher version--> 
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
@@ -65,9 +71,16 @@
         </dependency>
         
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.11.Final</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
+    
 </project>
 
