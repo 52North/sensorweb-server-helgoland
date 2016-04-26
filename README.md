@@ -1,5 +1,5 @@
-# Sensor Web REST API
-The Sensor Web REST API (formaly known as timeseries-api) provides a thin 
+# 52n Series REST API
+The 52n Series REST API (formaly known as timeseries-api) provides a thin 
 access layer to sensor data via RESTful Web binding with different output 
 formats like json, pdf or png.
 
@@ -17,7 +17,7 @@ most common workflows.
 
 ## Documentation
 The API documentation can be found here:
-https://52north.github.io/sensorweb-rest-api
+https://52north.github.io/series-api
 
 ~~The API documentation is in the 52°North wiki:
 https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
