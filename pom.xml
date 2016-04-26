@@ -6,20 +6,20 @@
         <artifactId>52-North</artifactId>
         <version>5.6.10</version>
     </parent>
-    <groupId>org.n52.sensorweb</groupId>
-    <artifactId>timeseries-api</artifactId>
+    <groupId>org.n52.series-api</groupId>
+    <artifactId>series-rest-api</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Sensor Web Timeseries API</name>
+    <name>Series REST API</name>
     <url>http://52north.org/communities/sensorweb/</url>
     <inceptionYear>2013</inceptionYear>
 
     <modules>
-        <module>timeseries-io</module>
-        <module>timeseries-spi</module>
-        <module>timeseries-web</module>
-        <module>timeseries-webapp</module>
-        <module>timeseries-spi-impl</module>
+        <module>io</module>
+        <module>spi</module>
+        <module>rest</module>
+        <!--<module>webapp</module>-->
+        <module>spi-impl</module>
     </modules>
 
     <organization>
@@ -53,7 +53,7 @@
         <sensorwebclient.version>3.2.0</sensorwebclient.version>
         <org.springframework.version>4.2.2.RELEASE</org.springframework.version> 
         <logback.version>1.1.3</logback.version>
-        <jackson.version>2.6.3</jackson.version>
+        <jackson.version>2.7.3</jackson.version>
         <geotools.version>14.0</geotools.version>
         <slf4j.version>1.7.12</slf4j.version>
         
@@ -68,18 +68,18 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.n52.sensorweb</groupId>
-                <artifactId>timeseries-io</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.n52.sensorweb</groupId>
-                <artifactId>timeseries-spi</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.n52.sensorweb</groupId>
-                <artifactId>timeseries-web</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -249,15 +249,32 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>1.0</version>
+                <version>2.1</version>
                 <exclusions>
                     <exclusion>
-                        <!-- jcl-over-slf4j is used instead -->
+                         <!--jcl-over-slf4j is used instead--> 
                         <groupId>commons-logging</groupId>
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>commons-io</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>xalan</groupId>
+                <artifactId>xalan</artifactId>
+                <version>2.7.0</version>
+                <exclusions>
+                    <exclusion>
+                        <!-- uses older xml-apis than other fop dependencies -->
+                        <groupId>xml-apis</groupId>
+                        <artifactId>xml-apis</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
@@ -338,7 +355,7 @@
         <!-- LOGGING DEPENDENCIES -->
         
     </dependencies>
-
+ 
     <build>
         <resources>
             <resource>
