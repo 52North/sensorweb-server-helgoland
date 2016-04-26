@@ -49,9 +49,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/52North/timeseries-api.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/52North/timeseries-api.git</developerConnection>
-        <url>https://github.com/52North/timeseries-api</url>
+        <connection>scm:git:git://github.com/52North/series-api.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/52North/series-api.git</developerConnection>
+        <url>https://github.com/52North/series-api</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -647,7 +647,7 @@
             <properties>
                 <env>dev</env>
                 <!-- externalize build parameters for productive environment -->
-                <local.configfile>${user.home}/timeseries-api-${env}.properties</local.configfile>
+                <local.configfile>${user.home}/series-api-${env}.properties</local.configfile>
             </properties>
             <build>
                 <filters>
