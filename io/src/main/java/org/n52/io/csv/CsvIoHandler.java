@@ -28,18 +28,13 @@
 package org.n52.io.csv;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.hsqldb.util.CSVWriter;
 import org.joda.time.DateTime;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
