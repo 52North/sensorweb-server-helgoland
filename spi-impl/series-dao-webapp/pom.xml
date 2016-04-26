@@ -13,7 +13,6 @@
 
     <properties>
         <aspectj.version>1.8.9</aspectj.version>
-        
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
         <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
     </properties>
@@ -22,18 +21,14 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>rest</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>series-dao</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${org.springframework.version}</version>
             <scope>runtime</scope>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -42,6 +37,12 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${org.springframework.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -61,22 +62,24 @@
             <version>${org.springframework.version}</version>
             <scope>runtime</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
             <version>${aspectj.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.1.1</version>
-            <scope>runtime</scope>
-        </dependency>
+        
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4.1208.jre7</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.1</version>
             <scope>runtime</scope>
         </dependency>
 
