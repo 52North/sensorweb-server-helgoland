@@ -55,7 +55,7 @@ public abstract class TimeseriesDataCollection<T> {
 
     /**
      * Returns all timeseries mapped by timeseriesId.
-     * 
+     *
      * @return all timeseries hold by this data collection.
      */
     public Map<String, T> getAllTimeseries() {
@@ -63,11 +63,11 @@ public abstract class TimeseriesDataCollection<T> {
     }
 
     /**
-     * Returns all timeseries as simple collection. This method is intended only for output serialization.<br/>
-     * <br/>
-     * <b>Note:</b> Depending on the actual timeseries data type no reference can be made to the concrete
-     * timeseries anymore! Use {@link #getAllTimeseries()} if you need to keep reference.
-     * 
+     * <p>Returns all timeseries as simple collection. This method is intended only for output serialization.
+     * </p>
+     * <p><b>Note:</b> Depending on the actual timeseries data type no reference can be made to the concrete
+     * timeseries anymore! Use {@link #getAllTimeseries()} if you need to keep reference.</p>
+     *
      * @return the timeseries hold by this data collection.
      */
     public abstract Object getTimeseriesOutput();

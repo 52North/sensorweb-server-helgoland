@@ -30,5 +30,5 @@ package org.n52.io.response.v1;
 import org.n52.io.response.AbstractOutput;
 
 public class OfferingOutput extends AbstractOutput {
-	
+
 }

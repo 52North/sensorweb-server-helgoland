@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:ctx="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
@@ -13,7 +13,7 @@
 
     <mvc:annotation-driven />
     <ctx:annotation-config />
-    
+
     <bean class="org.n52.series.db.da.v2.CategoryRepository" />
     <bean class="org.n52.series.db.da.v2.FeatureRepository" />
     <bean class="org.n52.series.db.da.v2.PhenomenonRepository" />
@@ -21,7 +21,7 @@
     <bean class="org.n52.series.db.da.v2.ProcedureRepository" />
     <bean class="org.n52.series.db.da.v2.SeriesRepository" />
     <bean class="org.n52.series.db.da.v2.ServiceRepository" />
-    
+
     <!-- inject implementation of the Timeseries API's SPI version 2 -->
 
     <bean id="searchServiceV2" class="org.n52.series.db.srv.v2.Search" />

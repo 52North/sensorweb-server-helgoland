@@ -61,14 +61,14 @@ import static org.n52.io.geojson.JSONConstants.TYPE;
 /**
  *
  * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json/src/main/java/org/n52/sos/decode/json/impl/GeoJSONDecoder.java
- * 
+ *
  * @since 2.0
  */
 public class GeoJSONDecoder {
 
 	private static final String[] SRS_LINK_PREFIXES = { "http://www.opengis.net/def/crs/EPSG/0/",
             "http://spatialreference.org/ref/epsg/" };
-    
+
     private static final String[] SRS_NAME_PREFIXES = { "urn:ogc:def:crs:EPSG::", "EPSG::", "EPSG:" };
 
     private static final int DEFAULT_SRID = CRSUtils.EPSG_WGS84;
@@ -81,8 +81,8 @@ public class GeoJSONDecoder {
     public static final int DIM_2D = 2;
 
     public static final int DIM_3D = 3;
-	
-	
+
+
 	public Geometry decodeGeometry(JsonNode node) throws GeoJSONException {
 		if (node == null || node.isNull() || node.isMissingNode()) {
 			return null;

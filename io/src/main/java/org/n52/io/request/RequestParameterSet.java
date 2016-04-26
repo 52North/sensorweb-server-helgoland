@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class RequestParameterSet {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
 
     private final Map<String, JsonNode> parameters;
@@ -178,7 +178,7 @@ public abstract class RequestParameterSet {
     public final void addParameter(String parameter, JsonNode value) {
         this.parameters.put(parameter.toLowerCase(), value);
     }
-    
+
     public final <T> T getAs(Class<T> clazz, String parameter) {
         try {
             if ( !parameters.containsKey(parameter.toLowerCase())) {
@@ -196,13 +196,13 @@ public abstract class RequestParameterSet {
     public final Object getAsObject(String parameter) {
         return this.parameters.get(parameter.toLowerCase());
     }
-    
+
     public final Object getAsObject(String parameter, Object defaultValue) {
         return this.parameters.containsKey(parameter.toLowerCase())
                 ? this.parameters.get(parameter.toLowerCase())
                 : defaultValue;
     }
-    
+
     public final JsonNode getAsJsonNode(String parameter) {
         return (JsonNode) this.parameters.get(parameter.toLowerCase());
     }
@@ -210,7 +210,7 @@ public abstract class RequestParameterSet {
     public final String getAsString(String parameter) {
         return this.parameters.get(parameter.toLowerCase()).asText();
     }
-    
+
     public final String getAsString(String parameter, String defaultValue) {
         return this.parameters.containsKey(parameter.toLowerCase())
                 ? this.parameters.get(parameter.toLowerCase()).asText()
@@ -220,7 +220,7 @@ public abstract class RequestParameterSet {
     public final int getAsInt(String parameter) {
         return this.parameters.get(parameter.toLowerCase()).asInt();
     }
-    
+
     public final int getAsInt(String parameter, int defaultValue) {
         return this.parameters.containsKey(parameter.toLowerCase())
                 ? this.parameters.get(parameter.toLowerCase()).asInt()
@@ -230,7 +230,7 @@ public abstract class RequestParameterSet {
     public final boolean getAsBoolean(String parameter) {
         return this.parameters.get(parameter.toLowerCase()).asBoolean();
     }
-    
+
     public final boolean getAsBoolean(String parameter, boolean defaultValue) {
         return this.parameters.containsKey(parameter.toLowerCase())
                 ? this.parameters.get(parameter.toLowerCase()).asBoolean()

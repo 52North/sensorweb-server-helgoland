@@ -38,7 +38,7 @@ public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
     public FeatureOutputCollection() {
         // empty collection
     }
-            
+
     public FeatureOutputCollection(List<FeatureOutput> items) {
 		super(items);
 	}
@@ -48,10 +48,10 @@ public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
     public List<FeatureOutput> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<FeatureOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
 }
- 
+

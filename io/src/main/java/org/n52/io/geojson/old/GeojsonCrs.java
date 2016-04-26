@@ -33,23 +33,23 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class GeojsonCrs extends GeojsonObject {
-    
+
     private static final long serialVersionUID = 5964748458745655509L;
 
     private static final String TYPE_NAME = "name";
-    
+
     private Map<String, String> properties;
 
     private String type = TYPE_NAME;
-    
+
     GeojsonCrs() {
         this.properties = new HashMap<>();
     }
-    
+
     public void addProperty(String key, String value) {
         properties.put(key, value);
     }
-    
+
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -57,7 +57,7 @@ public class GeojsonCrs extends GeojsonObject {
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
-    
+
     void setType(String type) {
         this.type = type;
     }
@@ -66,12 +66,12 @@ public class GeojsonCrs extends GeojsonObject {
     public String getType() {
         return type;
     }
-    
+
     @JsonIgnore
     public String getName() {
         return properties.get("name");
     }
-    
+
     public static GeojsonCrs createNamedCRS(String name) {
         if (name == null) {
             throw new NullPointerException("Argument 'name' must not be null.");
@@ -81,5 +81,5 @@ public class GeojsonCrs extends GeojsonObject {
         namedCrs.setType(TYPE_NAME);
         return namedCrs;
     }
-    
+
 }

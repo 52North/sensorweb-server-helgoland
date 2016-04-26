@@ -33,36 +33,36 @@ import org.n52.io.response.ParameterOutput;
 public abstract class PlatformOutput extends ParameterOutput {
 
     private static final long serialVersionUID = -2868469756939569521L;
-    
+
     private FeatureOutputCollection features;
-    
+
     private PlatformType type;
-    
+
     public enum PlatformType {
         STATIONARY, MOBILE;
         public String getType() {
             return name().toLowerCase();
         }
     }
-    
+
     public PlatformOutput(PlatformType type) {
         if (type == null) {
             throw new NullPointerException("Type is null.");
         }
         this.type = type;
     }
-    
+
     public PlatformOutput setFeatures(FeatureOutputCollection features) {
     	this.features = features;
     	return this;
     }
-    
+
     public Collection<FeatureOutput> getFeatures() {
-        return features != null ? 
+        return features != null ?
                 this.features.getItems()
                 : null;
     }
-    
+
     public String getType() {
         return type.getType();
     }

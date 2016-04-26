@@ -46,7 +46,7 @@ public class StationOutput extends GeojsonFeature implements CollatorComparable<
         String otherLabel = (String) o.getProperties().get("label");
         return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
     }
-    
+
     @Override
     public GeojsonPoint getGeometry() {
         return (GeojsonPoint) super.getGeometry();

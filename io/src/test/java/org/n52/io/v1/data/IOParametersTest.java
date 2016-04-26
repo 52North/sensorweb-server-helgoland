@@ -34,24 +34,24 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 
 public class IOParametersTest {
-    
+
     @Test
     public void testJsonOverriddenWidthConfigParameter() {
         IoParameters parameters = IoParameters.createDefaults();
         Assert.assertThat(parameters.getChartDimension().getWidth(), Matchers.is(2000));
     }
-    
+
     @Test
     public void testBooleanValue() {
         IoParameters parameters = IoParameters.createDefaults();
         Assert.assertTrue(parameters.isGeneralize());
     }
-    
+
     @Test
     public void testAfterConvertedFromParameterSet() {
         RequestSimpleParameterSet set = RequestSimpleParameterSet.createForSingleTimeseries("1", IoParameters.createDefaults());
         IoParameters parameters = IoParameters.createFromQuery(set);
         Assert.assertTrue(parameters.isGeneralize());
     }
-    
+
 }

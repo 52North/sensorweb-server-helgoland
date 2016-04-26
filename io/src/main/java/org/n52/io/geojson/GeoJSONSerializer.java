@@ -42,9 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GeoJSONSerializer extends JsonSerializer<FeatureOutput> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GeoJSONSerializer.class);
-    
+
     // TODO transform to requested crs
     // configure encoder
 
@@ -100,5 +100,5 @@ public class GeoJSONSerializer extends JsonSerializer<FeatureOutput> {
         properties.putAll(value.getProperties());
         return properties;
     }
-    
+
 }

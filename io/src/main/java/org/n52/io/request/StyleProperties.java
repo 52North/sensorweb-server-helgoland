@@ -34,16 +34,16 @@ import java.util.Map;
  * The chart style options for a timeseries.
  */
 public final class StyleProperties {
-    
+
     /**
      * The chart type, e.g. <code>line</code>, <code>bar</code>, ...
      */
     private String chartType = "line";
-    
+
     private Map<String, String> properties = new HashMap<>();
-    
+
     private Map<String, StyleProperties> referenceValueStyleProperties = new HashMap<>();
-    
+
     private StyleProperties() {
         // use static constructor
     }
@@ -58,7 +58,7 @@ public final class StyleProperties {
     public void setChartType(String type) {
         this.chartType = type;
     }
-    
+
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -74,7 +74,7 @@ public final class StyleProperties {
     public void setReferenceValueStyleProperties(Map<String, StyleProperties> referenceValueStyleProperties) {
         this.referenceValueStyleProperties = referenceValueStyleProperties;
     }
-    
+
     public static StyleProperties createDefaults() {
         return new StyleProperties();
     }

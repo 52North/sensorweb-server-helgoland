@@ -35,5 +35,5 @@ public class FlotDataCollection extends TimeseriesDataCollection<FlotSeries>{
     public Object getTimeseriesOutput() {
         return getAllTimeseries();
     }
-    
+
 }

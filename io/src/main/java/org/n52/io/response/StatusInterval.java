@@ -28,13 +28,13 @@
 package org.n52.io.response;
 
 public class StatusInterval {
-	
+
 	private String lower;
-	
+
 	private String upper;
-	
+
 	private String name;
-	
+
 	private String color;
 
 	public String getLower() {
@@ -68,5 +68,5 @@ public class StatusInterval {
 	public void setColor(String color) {
 		this.color = color;
 	}
-	
+
 }

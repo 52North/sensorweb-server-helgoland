@@ -58,7 +58,7 @@ import static org.n52.io.geojson.JSONConstants.TYPE;
 
 /**
  * borrwoed from https://github.com/52North/SOS/blob/4.3.4/coding/json/src/main/java/org/n52/sos/encode/json/impl/GeoJSONEncoder.java
- * 
+ *
  * @since 2.0
  */
 public class GeoJSONEncoder {
@@ -76,7 +76,7 @@ public class GeoJSONEncoder {
             return encodeGeometry(value, DEFAULT_SRID);
         }
     }
-    
+
     public ObjectNode encodeGeometry(Geometry geometry, int parentSrid) throws GeoJSONException {
         checkNotNull(geometry);
         if (geometry.isEmpty()) {
@@ -217,7 +217,7 @@ public class GeoJSONEncoder {
             return srid;
         }
     }
-    
+
     private <T> T checkNotNull(T object) {
         if (object == null) {
             throw new NullPointerException(String.valueOf(object) + " was null.");

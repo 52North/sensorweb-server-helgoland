@@ -28,7 +28,7 @@
 package org.n52.io.response.v1;
 
 public class ServiceOutput extends org.n52.io.response.ServiceOutput {
-	
+
 	private ParameterCount quantities;
 
     public ParameterCount getQuantities() {
@@ -42,17 +42,17 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
     public static class ParameterCount {
 
         private int amountOfferings;
-        
+
         private int amountFeatures;
-        
+
         private int amountProcedures;
-        
+
         private int amountPhenomena;
-        
+
         private int amountStations;
 
         private int amountTimeseries;
-        
+
         private int amountCategories;
 
         public int getOfferings() {
@@ -98,7 +98,7 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
         public void setTimeseriesSize(int countTimeseries) {
             this.amountTimeseries = countTimeseries;
         }
-        
+
         public int getTimeseries() {
             return this.amountTimeseries;
         }
@@ -111,5 +111,5 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
             this.amountCategories = amountCategories;
         }
     }
-	
+
 }

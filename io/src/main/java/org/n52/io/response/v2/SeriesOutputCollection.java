@@ -35,24 +35,24 @@ import java.util.List;
 
 
 public class SeriesOutputCollection extends OutputCollection<SeriesMetadataV2Output> {
-	
+
     public SeriesOutputCollection() {
         // empty collection
     }
-    
+
 	public SeriesOutputCollection(List<SeriesMetadataV2Output> items) {
 		super(items);
 	}
-    
+
     @Override
     @JsonProperty(value = "series")
     public List<SeriesMetadataV2Output> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<SeriesMetadataV2Output> getComparator() {
         return ParameterOutput.defaultComparator();
     }
-    
+
 }

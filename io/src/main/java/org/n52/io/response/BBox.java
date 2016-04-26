@@ -30,9 +30,9 @@ package org.n52.io.response;
 import org.n52.io.geojson.old.GeojsonPoint;
 
 public class BBox {
-    
+
     private GeojsonPoint ll;
-    
+
     private GeojsonPoint ur;
 
     public BBox(GeojsonPoint ll, GeojsonPoint ur) {
@@ -55,5 +55,5 @@ public class BBox {
     public void setUr(GeojsonPoint ur) {
         this.ur = ur;
     }
-    
+
 }

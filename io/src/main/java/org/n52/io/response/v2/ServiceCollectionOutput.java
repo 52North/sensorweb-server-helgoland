@@ -34,25 +34,25 @@ import java.util.List;
 import org.n52.io.response.ParameterOutput;
 
 public class ServiceCollectionOutput extends OutputCollection<ServiceOutput> {
-	
+
 	public ServiceCollectionOutput() {
 		// empty collection
 	}
-	
+
 	public ServiceCollectionOutput(ServiceOutput item) {
 		super(item);
 	}
-	
+
 	public ServiceCollectionOutput(List<ServiceOutput> items) {
 		super(items);
 	}
-	
+
     @Override
     @JsonProperty(value = "services")
     public List<ServiceOutput> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<ServiceOutput> getComparator() {
         return ParameterOutput.defaultComparator();

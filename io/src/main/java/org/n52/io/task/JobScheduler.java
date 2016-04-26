@@ -46,7 +46,7 @@ public class JobScheduler {
     private int startupDelayInSeconds = 5; // 5s
 
     private Scheduler scheduler;
-    
+
     private boolean enabled = true;
 
     /**
@@ -57,13 +57,13 @@ public class JobScheduler {
             LOGGER.info("Job schedular disabled. No jobs will be triggered. This is also true for particularly enabled jobs.");
             return;
         }
-        
+
         for (ScheduledJob scheduledJob : scheduledJobs) {
             if (scheduledJob.isEnabled()) {
                 scheduleJob(scheduledJob);
             }
         }
-        
+
         try {
             scheduler.startDelayed(startupDelayInSeconds);
             LOGGER.info("Scheduler will start jobs in {}s ...", startupDelayInSeconds);

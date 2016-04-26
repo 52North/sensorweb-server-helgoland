@@ -52,7 +52,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /**
  * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json-common/src/main/java/org/n52/sos/coding/json/JSONUtils.java
- * 
+ *
  * @since 2.0
  */
 public class JSONUtils {

@@ -28,13 +28,13 @@
 package org.n52.io.response;
 
 public class ReferenceValueOutput {
-    
+
     private String referenceValueId;
-    
+
     private String label;
-    
+
     private TimeseriesValue lastValue;
-    
+
     public String getReferenceValueId() {
         return referenceValueId;
     }
@@ -58,5 +58,5 @@ public class ReferenceValueOutput {
     public void setLastValue(TimeseriesValue lastValue) {
         this.lastValue = lastValue;
     }
-    
+
 }

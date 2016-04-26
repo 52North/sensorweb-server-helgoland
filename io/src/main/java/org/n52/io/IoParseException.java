@@ -38,5 +38,5 @@ public class IoParseException extends RuntimeException {
     public IoParseException(String message) {
         super(message);
     }
-    
+
 }

@@ -52,7 +52,7 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
             TimeseriesData seriesToFormat = toFormat.getTimeseries(timeseriesId);
             HighchartSeries series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewTimeseries(timeseriesId, series);
-            
+
             TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
             if (metadata != null) {
                 Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();

@@ -57,7 +57,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     }
 
     public Double getValue() {
-        return value == null 
+        return value == null
                 ? Double.NaN
                 : value;
     }
@@ -65,7 +65,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     public void setValue(Double value) {
         this.value = value;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TimeseriesValue [ ");

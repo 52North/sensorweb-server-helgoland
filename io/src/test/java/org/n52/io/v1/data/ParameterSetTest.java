@@ -34,7 +34,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 
 public class ParameterSetTest {
-    
+
     @Test
     public void testJsonObjectInGeneralConfig() {
         IoParameters parameters = IoParameters.createDefaults();
@@ -43,7 +43,7 @@ public class ParameterSetTest {
         Assert.assertNotNull(config);
         Assert.assertThat(config.getDefaultGeneralizer(), Matchers.is("lttb"));
     }
-    
+
     @Test
     public void testNotAvailableJsonObjectInGeneralConfig() {
         IoParameters parameters = IoParameters.createDefaults();
@@ -51,7 +51,7 @@ public class ParameterSetTest {
         GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "doesnotexist");
         Assert.assertNull(config);
     }
-    
+
     private static class GeneralizerConfig {
         private String defaultGeneralizer;
         private String noDataGapThreshold;

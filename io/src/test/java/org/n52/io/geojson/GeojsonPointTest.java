@@ -37,16 +37,16 @@ import org.junit.Test;
 
 public class GeojsonPointTest {
 
-    @Test(expected = NullPointerException.class) public void 
+    @Test(expected = NullPointerException.class) public void
     shouldThrowIAEIfNullCoordinatesShallBeSet()
     {
         GeojsonPoint.createWithCoordinates(null);
     }
-    
+
     @Test(expected = IllegalArgumentException.class) public void
-    shouldThrowIAEIfCoordinatesOfDifferentDimensionShallBeSet() 
+    shouldThrowIAEIfCoordinatesOfDifferentDimensionShallBeSet()
     {
         createWithCoordinates(new Double[0]);
     }
-    
+
 }

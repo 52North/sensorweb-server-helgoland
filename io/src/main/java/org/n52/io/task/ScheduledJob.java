@@ -36,13 +36,8 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-/**
- *
- * @author Henning Bredel <h.bredel@52north.org>
- *
- */
 public abstract class ScheduledJob {
-    
+
     private boolean enabled = true;
 
     private String jobName;

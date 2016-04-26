@@ -59,13 +59,13 @@ public class CRSUtilsTest {
 //        EastingNorthing ur = new EastingNorthing(8.9, 53.4, DEFAULT_CRS);
         bbox = new BoundingBox(ll, ur, DEFAULT_CRS);
     }
-    
+
     @Test
     public void shouldIndicateLatLonOrder() throws FactoryException {
         referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
         assertThat(referenceHelper.isLatLonAxesOrder("EPSG:4326"), is(true));
     }
-    
+
     @Test
     public void shouldIndicateLonLatOrder() throws FactoryException {
         referenceHelper = CRSUtils.createEpsgForcedXYAxisOrder();
@@ -121,11 +121,11 @@ public class CRSUtilsTest {
         assertValidEpsgShortCut("EPSG:4324336", capitalEpsgLink);
         assertValidEpsgShortCut("EPSG:4326", smallCaseEpsgLink);
     }
-    
+
     private void assertValidEpsgShortCut(String expected, String epsgCode) {
         assertEquals("Unexpected EPSG string!", expected, referenceHelper.extractSRSCode(epsgCode));
     }
-    
+
     // TODO add tests for creating coordinates
     // TODO add tests for transform coordinates
 

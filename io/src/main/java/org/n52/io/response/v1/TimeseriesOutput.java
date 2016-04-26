@@ -30,17 +30,17 @@ package org.n52.io.response.v1;
 import org.n52.io.response.CommonSeriesOutput;
 
 public class TimeseriesOutput implements CommonSeriesOutput {
-    
+
     private ServiceOutput service;
-    
+
     private OfferingOutput offering;
-    
+
     private FeatureOutput feature;
-    
+
     private ProcedureOutput procedure;
-    
+
     private PhenomenonOutput phenomenon;
-    
+
     private CategoryOutput category;
 
     @Override
@@ -94,5 +94,5 @@ public class TimeseriesOutput implements CommonSeriesOutput {
     public void setCategory(CategoryOutput category) {
         this.category = category;
     }
-    
+
 }

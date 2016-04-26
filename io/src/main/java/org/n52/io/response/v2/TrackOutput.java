@@ -34,9 +34,9 @@ public class TrackOutput extends FeatureOutput {
 	public TrackOutput() {
         super("track");
     }
-	
+
     public TrackOutput(Geometry geometry) {
         super("track", geometry);
     }
-    
+
 }

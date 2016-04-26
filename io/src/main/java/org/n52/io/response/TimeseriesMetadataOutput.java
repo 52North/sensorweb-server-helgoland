@@ -55,7 +55,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> ext
     // TODO add as extra
     @Deprecated
     private StatusInterval[] statusIntervals;
-    
+
     private Set<String> rawFormats;
 
     public String getUom() {
@@ -83,7 +83,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> ext
 			rawFormats.add(format);
 		}
 	}
-	
+
     @Override
 	public void setRawFormats(Collection<String> formats) {
 		if (formats != null && !formats.isEmpty()) {
@@ -91,7 +91,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> ext
 				rawFormats = new HashSet<String>();
 			} else {
 				rawFormats.clear();
-			} 
+			}
 			this.rawFormats.addAll(formats);
 		}
 	}

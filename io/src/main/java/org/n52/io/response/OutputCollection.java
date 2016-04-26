@@ -37,13 +37,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class OutputCollection<T> implements Iterable<T> {
-    
+
     private final List<T> items;
-    
+
     protected OutputCollection() {
         this.items = new ArrayList<>();
     }
-    
+
     protected OutputCollection(T item) {
     	this();
         if (item != null) {
@@ -56,43 +56,43 @@ public abstract class OutputCollection<T> implements Iterable<T> {
                 ? new ArrayList<T>()
                 : items;
     }
-    
+
     @JsonIgnore
     public boolean isEmpty() {
         return items.isEmpty();
     }
-    
+
     public final void addItem(T item) {
         items.add(item);
     }
-    
+
     public final void addItems(Collection<T> items) {
         this.items.addAll(items);
     }
-    
+
     public void removeItem(T item) {
         items.remove(item);
     }
-    
+
     public T getItem(int i) {
         return items.get(i);
     }
-    
+
     public List<T> getItems() {
         return Collections.unmodifiableList(items);
     }
-    
+
     public int size() {
         return items.size();
     }
-    
+
     public OutputCollection<T> withSortedItems() {
         Collections.sort(items, getComparator());
         return this;
     }
-    
+
     public OutputCollection<T> withSortedItems(Collator collator) {
-        return collator != null && isCollatorComparable() 
+        return collator != null && isCollatorComparable()
                 ? collatorSort(collator)
                 : withSortedItems();
     }
@@ -119,17 +119,17 @@ public abstract class OutputCollection<T> implements Iterable<T> {
         items.add(i, items.get(j));
         items.add(j, tmp);
     }
-    
+
     protected abstract Comparator<T> getComparator();
-    
+
     public boolean containsItem(T item) {
         return items.contains(item);
     }
-    
+
     @Override
     public Iterator<T> iterator() {
         return items.iterator();
     }
-    
-    
+
+
 }

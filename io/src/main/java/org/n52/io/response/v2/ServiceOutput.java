@@ -32,11 +32,11 @@ import java.util.List;
 
 public class ServiceOutput extends org.n52.io.response.ServiceOutput {
 
-    private final List<String> filters = Arrays.asList(new String[]{ 
+    private final List<String> filters = Arrays.asList(new String[]{
         "features, procedures, phenomena, categories, services, platforms"} );
-    
+
 	private ParameterCount quantities;
-    
+
     public ParameterCount getQuantities() {
         return quantities;
     }
@@ -44,17 +44,17 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
     public void setQuantities(ParameterCount countedParameters) {
         this.quantities = countedParameters;
     }
-    
+
     public void removeFilter(String filter) {
         filters.remove(filter);
     }
-    
+
     public void addFilter(String filter) {
         if ( !filters.contains(filter)) {
             filters.add(filter);
         }
     }
-    
+
     public String[] getFilters() {
         return filters.toArray(new String[0]);
     }
@@ -62,15 +62,15 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
     public static class ParameterCount {
 
         private int amountFeatures;
-        
+
         private int amountProcedures;
-        
+
         private int amountPhenomena;
-        
+
         private int amountPlatforms;
 
         private int amountSeries;
-        
+
         private int amountCategories;
 
         public int getFeatures() {
@@ -108,7 +108,7 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
         public void setSeriesSize(int countSeries) {
             this.amountSeries = countSeries;
         }
-        
+
         public int getSeries() {
             return this.amountSeries;
         }
@@ -121,5 +121,5 @@ public class ServiceOutput extends org.n52.io.response.ServiceOutput {
             this.amountCategories = amountCategories;
         }
     }
-	
+
 }

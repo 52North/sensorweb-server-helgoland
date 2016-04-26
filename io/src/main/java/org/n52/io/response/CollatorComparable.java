@@ -34,7 +34,7 @@ public interface CollatorComparable<T> {
     /**
      * Compares natural ordering of this instance to another. Reuses concept of {@link Comparable} interface
      * but indicates ordering locale dependend by means of a {@link Collator}.
-     * 
+     *
      * @param collator
      *        a collator used to compare. If <code>null</code> a collator is created dependend on the default
      *        locale.

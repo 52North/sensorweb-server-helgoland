@@ -149,7 +149,7 @@ public abstract class Style {
     /**
      * Sets the style properties. If not set or <code>null</code> the default properties are used. However,
      * default styles can be random values and should not be expected to be reproducable.
-     * 
+     *
      * @param properties
      *        style options. If <code>null</code> or not set default values are chose.
      */

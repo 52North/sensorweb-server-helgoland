@@ -33,7 +33,7 @@ import java.util.Set;
 import org.n52.io.v1.data.RawFormats;
 
 public class ProcedureOutput extends OfferingOutput implements RawFormats {
-	
+
 	private Set<String> rawFormats;
 
 	@Override
@@ -53,7 +53,7 @@ public class ProcedureOutput extends OfferingOutput implements RawFormats {
 			rawFormats.add(format);
 		}
 	}
-	
+
 	@Override
 	public void setRawFormats(Collection<String> formats) {
 		if (formats != null && !formats.isEmpty()) {
@@ -65,5 +65,5 @@ public class ProcedureOutput extends OfferingOutput implements RawFormats {
 			this.rawFormats.addAll(formats);
 		}
 	}
-	
+
 }

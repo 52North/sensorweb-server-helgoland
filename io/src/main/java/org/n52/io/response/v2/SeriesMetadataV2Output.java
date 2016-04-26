@@ -32,7 +32,7 @@ import java.util.List;
 import org.n52.io.response.*;
 
 public class SeriesMetadataV2Output extends TimeseriesMetadataOutput {
-    
+
     private FeatureOutputCollection featureOutput;
 
     public List<FeatureOutput> getFeatures() {

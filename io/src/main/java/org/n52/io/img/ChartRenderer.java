@@ -316,7 +316,7 @@ public abstract class ChartRenderer implements IoHandler {
             chart.setTitle(getChartStyleDefinitions().getAsString("title"));
         }
     }
-    
+
     protected List<TimeseriesMetadataOutput> getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }

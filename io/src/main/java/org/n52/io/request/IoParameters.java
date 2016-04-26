@@ -68,7 +68,7 @@ public class IoParameters {
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
     private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
-    
+
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
@@ -77,7 +77,7 @@ public class IoParameters {
      * How detailed the output shall be.
      */
     static final String EXPANDED = "expanded";
-    
+
     /**
      * The default expansion of collection items.
      *
@@ -225,7 +225,7 @@ public class IoParameters {
      * Determines how raw data shall be formatted.
      */
     static final String FORMAT = "format";
-    
+
     /**
      * Determines how raw data shall be queried from service.
      */
@@ -270,7 +270,7 @@ public class IoParameters {
      * Determines the station filter
      */
     static final String STATION = "station";
-    
+
     static final String PLATFORMS= "platforms";
 
     /**
@@ -297,12 +297,12 @@ public class IoParameters {
      * Determines if filter shall match domain ids instead of global ids
      */
     static final String MATCH_DOMAIN_IDS = "matchDomainIds";
-    
+
     /**
      * Default filter match property.
      */
     private static final boolean DEFAULT_MATCH_DOMAIN_IDS = false;
-    
+
     /**
      * Determines the within filter
      */
@@ -312,18 +312,19 @@ public class IoParameters {
      * Determines the bbox filter
      */
     static final String BBOX = "bbox";
-    
+
     /**
      * Determines the fields filter
      */
     static final String FIELDS = "fields";
-    
+
     static final String TYPE = "type";
 
     private final Map<String, JsonNode> query;
 
     /**
-     * Use static constructor {@link #createFromQuery(MultiValueMap)}.
+     * Use static constructor {@link IoParameters#createFromQuery(RequestParameterSet)} or
+     * {@link IoParameters#createFromQuery(java.util.Map)} .
      *
      * @param queryParameters
      *        containing query parameters. If <code>null</code>, all parameters are returned with default
@@ -521,12 +522,12 @@ public class IoParameters {
         }
         return getAsString(FORMAT);
     }
-    
-    
+
+
     public boolean isSetRawFormat() {
     	return containsParameter(RAW_FORMAT);
     }
-    
+
     public String getRawFormat() {
         if (isSetRawFormat()) {
         	final JsonNode value = query.get(RAW_FORMAT);
@@ -606,25 +607,25 @@ public class IoParameters {
     public String getStation() {
         return getAsString(STATION);
     }
-    
+
     public Set<String> getPlatforms() {
         return containsParameter(PLATFORMS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(PLATFORMS)))
                 : null;
     }
-    
+
     public Set<String> getFields() {
         return containsParameter(FIELDS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(FIELDS)))
                 : null;
     }
-    
+
     public String getType() {
         return containsParameter(TYPE)
                 ? getAsString(TYPE)
                 : null;
     }
-    
+
     private Set<String> csvToLowerCasedSet(String csv){
         String[] values = csv.split(",");
         for (int i = 0; i < values.length; i++) {
@@ -671,8 +672,8 @@ public class IoParameters {
         }
         return bounds;
     }
-    
-    
+
+
     /**
      * Extends the bounding box with the given point. If point is contained by
      * this instance nothing is changed.
@@ -780,7 +781,7 @@ public class IoParameters {
     }
 
     /**
-     * @return the requested reference context, or the default ({@value #DEFAULT_CRS} which will be
+     * @return the requested reference context, or the default ({@value CRSUtils#DEFAULT_CRS}) which will be
      *         interpreted as lon/lat ordered axes).
      */
     public String getCrs() {
@@ -796,7 +797,7 @@ public class IoParameters {
         }
         return getAsBoolean(FORCE_XY);
     }
-    
+
     public boolean isMatchDomainIds() {
         if ( !containsParameter(MATCH_DOMAIN_IDS)) {
             return DEFAULT_MATCH_DOMAIN_IDS;
@@ -844,7 +845,7 @@ public class IoParameters {
     public String getOther(String parameter) {
         return getAsString(parameter);
     }
-    
+
     public String getAsString(String parameter) {
         return containsParameter(parameter)
                 ? query.get(parameter.toLowerCase()).asText()
@@ -929,7 +930,7 @@ public class IoParameters {
         }
         return parameters;
     }
-    
+
     public static JsonNode getJsonNodeFrom(Object object) {
         if (object == null) {
             return null;

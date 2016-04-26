@@ -34,11 +34,11 @@ import java.util.List;
 import org.n52.io.response.ParameterOutput;
 
 public class PlatformOutputCollection extends OutputCollection<PlatformOutput> {
-    
+
     public PlatformOutputCollection() {
         // empty collection
     }
-    
+
     public PlatformOutputCollection(List<PlatformOutput> results) {
 		super(results);
 	}
@@ -48,7 +48,7 @@ public class PlatformOutputCollection extends OutputCollection<PlatformOutput> {
     public List<PlatformOutput> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<PlatformOutput> getComparator() {
         return ParameterOutput.defaultComparator();

@@ -30,11 +30,11 @@ package org.n52.io.geojson.old;
 import java.io.Serializable;
 
 public abstract class GeojsonObject implements Serializable {
-    
+
     private static final long serialVersionUID = -6879838545330014414L;
-    
+
     private GeojsonCrs crs;
-    
+
     public void setCrs(GeojsonCrs crs) {
         this.crs = crs;
     }

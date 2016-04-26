@@ -62,7 +62,7 @@ import org.n52.io.crs.CRSUtils;
 
 /**
  * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json/src/test/java/org/n52/sos/coding/json/impl/GeoJSONTest.java
- * 
+ *
  * @since 2.0
  */
 public class GeoJSONTest {

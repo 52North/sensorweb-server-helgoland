@@ -84,7 +84,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     private final DocumentStructureDocument document;
 
     private final ChartRenderer renderer;
-    
+
     private URI baseURI;
 
     public PDFReportGenerator(ChartRenderer renderer, String locale) {
@@ -93,7 +93,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         this.document.addNewDocumentStructure();
         this.renderer = configureRenderer(renderer);
     }
-    
+
     public void setBaseURI(URI baseURI) {
         this.baseURI = baseURI;
     }
@@ -147,10 +147,10 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
                     .setConfiguration(cfg)
                     .build();
             Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-            
+
 //            FopFactory fopFactory = FopFactory.newInstance(cfg);
 //            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-            
+
 //            FopFactory fopFactory = fopFactoryBuilder.build();
 //            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
 

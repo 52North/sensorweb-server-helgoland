@@ -32,11 +32,11 @@ public class ServiceOutput extends ParameterOutput {
 	private String serviceUrl;
 
 	private String version;
-	
+
 	private String type;
-	
+
 	private Boolean supportsFirstLatest;
-	
+
 	public String getServiceUrl() {
 		return serviceUrl;
 	}
@@ -60,7 +60,7 @@ public class ServiceOutput extends ParameterOutput {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
 	public Boolean isSupportsFirstLatest() {
         return supportsFirstLatest;
     }
@@ -68,7 +68,7 @@ public class ServiceOutput extends ParameterOutput {
     public void setSupportsFirstLatest(boolean supportsFirstLatest) {
         this.supportsFirstLatest = Boolean.valueOf(supportsFirstLatest);
     }
-    
+
 	@Override
     public int hashCode() {
         final int prime = 31;

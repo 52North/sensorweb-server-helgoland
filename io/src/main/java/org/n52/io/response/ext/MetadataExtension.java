@@ -34,16 +34,16 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 
 public abstract class MetadataExtension<T extends ParameterOutput> {
-    
+
     public abstract String getExtensionName();
-    
+
     /**
-     * Gets the extra metadata as simple <code>key=value</code> mapping. 
-     * The value is of kind object, so the implementation is free to put 
-     * any data structure which might make sense to serialize.<br/>
-     * <br/>
-     * Implementation is responsible to respect selected fields from the 
-     * query which can be obtained by {@link IoParameters#getFields() }.
+     * <p>Gets the extra metadata as simple <code>key=value</code> mapping.
+     * The value is of kind object, so the implementation is free to put
+     * any data structure which might make sense to serialize.
+     * </p>
+     * <p>Implementation is responsible to respect selected fields from the
+     * query which can be obtained by {@link IoParameters#getFields() }.</p>
      *
      * @param output the actual parameter output to get extra metadata for.
      * @param parameters I/O parameters to fine grain extra metadata assembly.
@@ -52,12 +52,12 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
     public abstract Map<String, Object> getExtras(T output, IoParameters parameters);
 
     public abstract void addExtraMetadataFieldNames(T output);
-    
+
     protected boolean hasExtrasToReturn(ParameterOutput output, IoParameters parameters) {
-        return parameters.getFields() == null 
+        return parameters.getFields() == null
                 || containsIgnoreCase(parameters.getFields());
     }
-    
+
     private boolean containsIgnoreCase(Set<String> fields) {
         for (String field : fields) {
             final String fieldName = field.toLowerCase();
@@ -68,7 +68,7 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
         }
         return false;
     }
-    
+
     protected Map<String, Object> wrapSingleIntoMap(Object metadata) {
         Map<String, Object> extras = new HashMap<>();
         extras.put(getExtensionName(), metadata);

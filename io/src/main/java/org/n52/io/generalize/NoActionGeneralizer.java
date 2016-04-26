@@ -36,10 +36,6 @@ package org.n52.io.generalize;
 import org.n52.io.request.IoParameters;
 import org.n52.io.format.TvpDataCollection;
 
-/**
- *
- * @author Henning Bredel <h.bredel@52north.org>
- */
 public class NoActionGeneralizer extends Generalizer {
 
     public NoActionGeneralizer(IoParameters parameters) {

@@ -44,11 +44,11 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
     private static final String CONFIG_FILE = "/config-license.txt";
-    
+
     private static final String EXTENSION_NAME = "license";
 
     private final String licenseText = readLicenseText();
-    
+
     private String readLicenseText() {
         try {
             File file = new File(getClass().getResource(CONFIG_FILE).toURI());
@@ -63,7 +63,7 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     public String getExtensionName() {
         return EXTENSION_NAME;
     }
-    
+
     @Override
     public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
         return hasExtrasToReturn(output, parameters)

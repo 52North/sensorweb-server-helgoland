@@ -30,7 +30,7 @@ package org.n52.io.response.v2;
 public class StationaryPlatformOutput extends PlatformOutput {
 
     private static final long serialVersionUID = -2868469756939569521L;
-    
+
     public StationaryPlatformOutput() {
         super(PlatformType.STATIONARY);
     }

@@ -29,7 +29,7 @@ package org.n52.io.geojson;
 
 /**
  * borrowed from https://github.com/52North/SOS/blob/4.3.4/coding/json-common/src/main/java/org/n52/sos/coding/json/JSONConstants.java
- * 
+ *
  * @since 2.0
  */
 public interface JSONConstants {
@@ -55,7 +55,7 @@ public interface JSONConstants {
     String MULTI_POINT = "MultiPoint";
 
     String MULTI_POLYGON = "MultiPolygon";
-    
+
     String NAME = "name";
 
     String POINT = "Point";
@@ -65,5 +65,5 @@ public interface JSONConstants {
     String PROPERTIES = "properties";
 
     String TYPE = "type";
-	
+
 }

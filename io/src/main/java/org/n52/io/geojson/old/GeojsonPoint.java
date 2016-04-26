@@ -33,18 +33,18 @@ import java.util.Arrays;
 public class GeojsonPoint extends GeojsonGeometry {
 
     private static final long serialVersionUID = 4348077077881433456L;
-    
+
     private static final String GEOJSON_TYPE_POINT = "Point";
 
     protected Double[] coordinates;
-    
+
     public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
         GeojsonPoint sfGeometry = new GeojsonPoint();
         //sfGeometry.setCoordinates(Utils.copy(coordinates));
         sfGeometry.setCoordinates(Arrays.copyOf(coordinates, coordinates.length));
         return sfGeometry;
     }
-    
+
     public void setCoordinates(Double[] coordinates) {
         //this.coordinates = checkCoordinates(Utils.copy(coordinates));
         this.coordinates = assertCoordinates(Arrays.copyOf(coordinates, coordinates.length));
@@ -57,7 +57,7 @@ public class GeojsonPoint extends GeojsonGeometry {
     public String getType() {
         return GEOJSON_TYPE_POINT;
     }
-    
+
     public Double[] getCoordinates() {
         return Arrays.copyOf(coordinates, coordinates.length);
 //        return Utils.copy(coordinates);

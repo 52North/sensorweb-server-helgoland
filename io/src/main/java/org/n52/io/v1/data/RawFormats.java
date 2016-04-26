@@ -30,7 +30,7 @@ package org.n52.io.v1.data;
 import java.util.Collection;
 
 public interface RawFormats {
-	
+
 	String RAW_FORMAT = "rawFormat";
 
 	/**

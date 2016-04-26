@@ -43,15 +43,15 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class VicinityTest {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(VicinityTest.class);
-    
+
     private static final double ERROR_DELTA = 0.1;
 
     private String circleAroundNorthPole =  "{ \"center\": {  \"type\": \"Point\", \"coordinates\": [-89.99,89.999] }, \"radius\": 500  }";
-    
+
     private String circleAroundSouthPole = "{ \"center\": { \"type\": \"Point\", \"coordinates\": [-89.99,89.999] }, \"radius\": 500}";
-    
+
     private String circleCenterAtGreenwhichAndEquator = "{ \"center\": { \"type\": \"Point\", \"coordinates\": [ 0,0 ] },\"radius\": 500 }";
 
     @Test
@@ -75,7 +75,7 @@ public class VicinityTest {
         double urLongitudeOnGreatCircle = bounds.getUpperRight().getX();
         assertThat(llLongitudeOfGreatCircle, closeTo(-urLongitudeOnGreatCircle, ERROR_DELTA));
     }
-    
+
     @Test
     public void
     shouldHaveCommonLatitudeCircleWhenCenterIsNorthPole()
@@ -112,5 +112,5 @@ public class VicinityTest {
         }
         return null;
     }
-    
+
 }

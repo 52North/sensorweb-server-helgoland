@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GeojsonFeature extends GeojsonObject {
-    
+
     public static <T extends GeojsonFeature> Comparator<T> defaultComparator() {
         return new Comparator<T>() {
                 @Override
@@ -56,18 +56,18 @@ public class GeojsonFeature extends GeojsonObject {
     private static final long serialVersionUID = 863297394860249486L;
 
     private static final String GEOJSON_TYPE_FEATURE = "Feature";
-    
+
     protected Map<String, Object> properties = null;
-    
+
     private GeojsonGeometry geometry;
-    
+
     private String id;
-    
+
     @Override
     public String getType() {
         return GEOJSON_TYPE_FEATURE;
     }
-    
+
     public GeojsonGeometry getGeometry() {
         return geometry;
     }
@@ -75,7 +75,7 @@ public class GeojsonFeature extends GeojsonObject {
     public void setGeometry(GeojsonGeometry geometry) {
         this.geometry = geometry;
     }
-    
+
     public void addProperty(String property, Object value) {
         if (properties == null) {
             properties = new HashMap<>();
@@ -90,12 +90,12 @@ public class GeojsonFeature extends GeojsonObject {
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
     }
-    
+
     public boolean hasProperty(String property) {
         return this.properties != null
                 && this.properties.containsKey(property);
     }
-    
+
     public String getId() {
         if (this.id == null || this.id.isEmpty()) {
             if (properties != null) {
@@ -104,9 +104,9 @@ public class GeojsonFeature extends GeojsonObject {
         }
         return this.id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
 }

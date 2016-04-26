@@ -38,7 +38,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     /**
      * Takes the labels to compare.
-     * 
+     *
      * @param <T> the actual type.
      * @return a label comparing {@link Comparator}
      */
@@ -56,12 +56,12 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     private String domainId;
 
     private String label;
-    
+
     @Deprecated
     private String license;
 
     private List<String> extras;
-    
+
     public String getId() {
         return id;
     }
@@ -77,7 +77,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * @return the domain id.
      */
     public String getDomainId() {
-        return domainId; 
+        return domainId;
     }
 
     /**
@@ -89,16 +89,16 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     public void setDomainId(String domainId) {
         this.domainId = domainId;
     }
-    
+
     /**
      * Check if the domainId is set and not empty
-     * 
+     *
      * @return <code>true</code> if domainId is set and not empty
      */
     @JsonIgnore
     public boolean isSetDomainId() {
         return getDomainId() != null && !getDomainId().isEmpty();
-    } 
+    }
 
     /**
      * @return the label or the id if label is not set.

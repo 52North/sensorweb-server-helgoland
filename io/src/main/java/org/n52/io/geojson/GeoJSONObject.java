@@ -37,32 +37,32 @@ import java.util.Map;
  * @since 2.0
  */
 public class GeoJSONObject {
-    
+
     public enum GeoJSONType {
         Feature,
         FeatureCollection;
     }
-    
+
     public static final String LABEL = "label";
-    
+
     private GeoJSONType type;
-    
+
 //    private String crs; // TODO
-    
+
 //    private double[] bbox; // TODO
-    
+
     @JsonSerialize(keyAs = String.class, contentAs = Object.class)
     private Map<String, Object> members = new HashMap<>();
-    
+
     public GeoJSONObject(String type) {
         this.type = GeoJSONType.valueOf(type);
     }
-    
+
     @JsonIgnore
     public Object getProperty(String key) {
         return this.members.get(key);
     }
-    
+
     public boolean hasProperty(String key) {
         return this.members.containsKey(key);
     }
@@ -74,13 +74,13 @@ public class GeoJSONObject {
     public void setMembers(Map<String, Object> members) {
         this.members = members;
     }
-    
+
     public void setType(String type) {
         this.type = GeoJSONType.valueOf(type);
     }
-    
+
     public String getType() {
         return this.type.name();
     }
-    
+
 }

@@ -31,13 +31,13 @@ import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONException;
 
 public class SiteOutput extends FeatureOutput {
-	
+
 	public SiteOutput() throws GeoJSONException {
         super("site");
     }
-	
+
     public SiteOutput(String type, Geometry geometry) throws GeoJSONException {
         super("site", geometry);
     }
-    
+
 }

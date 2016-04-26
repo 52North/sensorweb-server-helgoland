@@ -33,15 +33,15 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 
 public class SeriesOutput implements CommonSeriesOutput {
-	
+
 	private ServiceOutput service;
-    
+
     private PlatformOutput platform;
-    
+
     private ProcedureOutput procedure;
-    
+
     private PhenomenonOutput phenomenon;
-    
+
     private CategoryOutput category;
 
     @Override

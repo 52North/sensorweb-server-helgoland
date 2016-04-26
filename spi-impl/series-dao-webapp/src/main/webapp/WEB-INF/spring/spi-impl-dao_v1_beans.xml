@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:ctx="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
@@ -13,7 +13,7 @@
 
     <mvc:annotation-driven />
     <ctx:annotation-config />
-    
+
     <bean class="org.n52.series.db.da.v1.CategoryRepository" />
     <bean class="org.n52.series.db.da.v1.FeatureRepository" />
     <bean class="org.n52.series.db.da.v1.PhenomenonRepository" />
@@ -21,7 +21,7 @@
     <bean class="org.n52.series.db.da.v1.StationRepository" />
     <bean class="org.n52.series.db.da.v1.TimeseriesRepository" />
     <bean class="org.n52.series.db.da.v1.ServiceRepository" />
-    
+
     <!-- For SOS Bundles -->
     <!--<bean class="org.n52.series.db.da.sos.SOSHibernateSessionHolder" destroy-method="shutdown" />-->
     <bean class="org.n52.series.db.da.SeriesHibernateSessionHolder" destroy-method="shutdown" />

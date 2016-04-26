@@ -33,28 +33,28 @@ import org.n52.io.request.StyleProperties;
 public class BarStyle extends Style {
 
 	private static final String BAR_INTERVAL = "interval";
-	
+
 	private static final String BAR_WIDTH = "width";
-    
+
 	private static final String DEFAULT_BAR_INTERVAL = "byDay";
-	
+
 	private static final double DEFAULT_BAR_WIDTH = 0.8;
-    
+
     public String getBarInterval() {
     	if (hasProperty(BAR_INTERVAL)) {
     		return getPropertyAsString(BAR_INTERVAL);
     	}
     	return DEFAULT_BAR_INTERVAL;
     }
-    
+
     public double getBarMargin() {
-    	// API parameter width is more intuitive than margin parameter internally used by jFreeChart 
+    	// API parameter width is more intuitive than margin parameter internally used by jFreeChart
 		if (hasProperty(BAR_WIDTH)) {
 			return 1.0 - getPropertyAsDouble(BAR_WIDTH);
 		}
 		return DEFAULT_BAR_WIDTH;
 	}
-    
+
     public static BarStyle createBarStyle(StyleProperties options) {
         if (options == null || options.getProperties().isEmpty()) {
             return createDefaultBarStyle();
@@ -67,5 +67,5 @@ public class BarStyle extends Style {
     public static BarStyle createDefaultBarStyle() {
         return new BarStyle();
     }
-    
+
 }

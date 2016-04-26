@@ -43,9 +43,9 @@ public class TimeseriesData implements Serializable {
     private static final long serialVersionUID = 4717558247670336015L;
 
     private List<TimeseriesValue> values = new ArrayList<>();
-    
+
     private TimeseriesDataMetadata metadata;
-    
+
     public void addValues(TimeseriesValue... values) {
         if (values != null && values.length > 0) {
             this.values.addAll(Arrays.asList(values));
@@ -64,7 +64,7 @@ public class TimeseriesData implements Serializable {
         }
         return timeseries;
     }
-    
+
     public static TimeseriesData newTimeseriesData(TimeseriesValue... values) {
         TimeseriesData timeseries = new TimeseriesData();
         timeseries.addValues(values);
@@ -74,7 +74,7 @@ public class TimeseriesData implements Serializable {
     private void addNewValue(Long timestamp, Double value) {
         values.add(new TimeseriesValue(timestamp, value));
     }
-    
+
     /**
      * @return a sorted list of timeseries values.
      */
@@ -86,25 +86,25 @@ public class TimeseriesData implements Serializable {
     void setValues(TimeseriesValue[] values) {
         this.values = Arrays.asList(values);
     }
-    
+
     @JsonProperty("extra")
     public TimeseriesDataMetadata getMetadata() {
         return metadata;
     }
-    
+
     public void setMetadata(TimeseriesDataMetadata metadata) {
         this.metadata = metadata;
     }
-    
+
     public long size() {
         return values.size();
     }
-    
+
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return metadata != null 
+        return metadata != null
                 && metadata.getReferenceValues() != null
                 && !metadata.getReferenceValues().isEmpty();
     }
-    
+
 }

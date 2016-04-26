@@ -63,7 +63,7 @@ public class WGS84UtilTest {
 
     @Test
     public void
-    shouldCalculateShortestDistanceFromStatueOfLibertyToEiffelTower() throws FactoryException 
+    shouldCalculateShortestDistanceFromStatueOfLibertyToEiffelTower() throws FactoryException
     {
         Point statueOfLiberty = createXYOrderedWgs84Point(-74.0444, 40.6892);
         Point tourDeEiffel = createXYOrderedWgs84Point(2.2945, 48.8583);
@@ -73,7 +73,7 @@ public class WGS84UtilTest {
     private Point createXYOrderedWgs84Point(double lon, double lat) throws FactoryException {
         return helper.createPoint(lon, lat, EPSG_4326);
     }
-    
+
     @Test
     public void
             shouldGetLongitudeDelta() throws FactoryException
@@ -97,7 +97,7 @@ public class WGS84UtilTest {
         assertThat(getLatitutesCircleRadius(toRadians(-90d)), closeTo(0.0, ERROR_DELTA));
         assertThat(getLatitutesCircleRadius(toRadians(270d)), closeTo(0.0, ERROR_DELTA));
     }
-    
+
     @Test public void
     shouldNormlizeLatitudesBiggerThan90Degrees()
     {
@@ -105,7 +105,7 @@ public class WGS84UtilTest {
         double normalized = WGS84Util.normalizeLatitude(toNormalize);
         assertThat(normalized, closeTo(88.6, ERROR_DELTA));
     }
-    
+
 
     @Test public void
     shouldNormlizeLatitudesSmallerThanMinus90Degrees()
@@ -114,7 +114,7 @@ public class WGS84UtilTest {
         double normalized = WGS84Util.normalizeLatitude(toNormalize);
         assertThat(normalized, closeTo(-88.6, ERROR_DELTA));
     }
-    
+
     @Test public void
     shouldNotChangeZeroLatitudeDegrees()
     {
@@ -122,7 +122,7 @@ public class WGS84UtilTest {
         double normalized = WGS84Util.normalizeLatitude(toNormalize);
         assertThat(normalized, closeTo(0, ERROR_DELTA));
     }
-    
+
     @Test public void
     shouldNormlizeLongitudesBiggerThan180Degrees()
     {
@@ -130,7 +130,7 @@ public class WGS84UtilTest {
         double normalized = WGS84Util.normalizeLongitude(toNormalize);
         assertThat(normalized, closeTo(-177.7, ERROR_DELTA));
     }
-    
+
 
     @Test public void
     shouldNormlizeLongitudesSmallerThan180Degrees()
@@ -139,7 +139,7 @@ public class WGS84UtilTest {
         double normalized = WGS84Util.normalizeLongitude(toNormalize);
         assertThat(normalized, closeTo(177.7, ERROR_DELTA));
     }
-    
+
     @Test public void
     shouldNotChangeZeroLongitudeDegrees()
     {
@@ -148,14 +148,14 @@ public class WGS84UtilTest {
         assertThat(normalized, closeTo(0, ERROR_DELTA));
     }
 
-    
+
 //    @Test
 //    public void
 //            shouldReturnMajorAxisDistanceAtEquator() throws FactoryException
 //    {
 //        assertThat(getLatitutesCircleRadius(0d), closeTo(MEAN_RADIUS, DELTA));
 //    }
-//    
+//
 //    @Test
 //    public void
 //    shouldNormalizeLatitude()

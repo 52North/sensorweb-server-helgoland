@@ -87,7 +87,7 @@ public class Vicinity {
 
     /**
      * Calculates bounding box with the given CRS context.
-     * 
+     *
      * @param crsUtils
      *        the reference context.
      * @return a bounding rectangle.

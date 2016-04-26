@@ -31,7 +31,6 @@ import java.util.List;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 
-import java.util.Locale;
 
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
@@ -43,12 +42,11 @@ public abstract class ReportGenerator implements IoHandler {
     protected I18N i18n = getDefaultLocalizer();
 
     private RenderingContext context;
-    
+
     /**
+     * @param context the rendering context.
      * @param language
      *        the ISO639 locale to be used.
-     * 
-     * @see Locale
      */
     public ReportGenerator(RenderingContext context, String language) {
         if (language != null) {
@@ -56,12 +54,12 @@ public abstract class ReportGenerator implements IoHandler {
         }
         this.context = context;
     }
-    
+
 
     public RenderingContext getContext() {
         return context;
     }
-    
+
     protected List<TimeseriesMetadataOutput> getTimeseriesMetadatas() {
         return getContext().getTimeseriesMetadatas();
     }

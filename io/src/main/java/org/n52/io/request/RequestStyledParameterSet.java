@@ -53,7 +53,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     private boolean grid = true;
 
     private boolean legend = false;
-    
+
     /**
      * Creates an instance with non-null default values.
      */

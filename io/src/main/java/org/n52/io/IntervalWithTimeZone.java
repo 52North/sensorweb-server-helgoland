@@ -32,12 +32,12 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 
 /**
- *
+ * <p>
  * Wraps a JodaTime Interval to retain timezone information. The API needs the given timezone information as a best
  * guess to respond timeseries data in a proper manner. JodaTime stores time instants (having no timezone per se) along
  * the interval, so timezone information is available once the timespan string has been parsed.
- *
- * @see http://stackoverflow.com/questions/18404433/joda-interval-losing-timezone-information
+ * </p>
+ * @see <a href="http://stackoverflow.com/questions/18404433/joda-interval-losing-timezone-information"></a>
  */
 public class IntervalWithTimeZone {
 

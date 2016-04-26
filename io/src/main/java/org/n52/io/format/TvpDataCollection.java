@@ -32,7 +32,7 @@ import org.n52.io.response.TimeseriesDataCollection;
 
 /**
  * Represents a time value pair data format. This class acts as a convenience class to encapsulate
- * <code>TimeseriesDataCollection&lt;TimeseriesData></code>.
+ * <code>TimeseriesDataCollection&lt;TimeseriesData&gt;</code>.
  */
 public final class TvpDataCollection extends TimeseriesDataCollection<TimeseriesData> {
 

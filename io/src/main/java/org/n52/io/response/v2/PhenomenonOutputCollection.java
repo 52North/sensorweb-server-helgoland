@@ -36,25 +36,25 @@ import org.n52.io.response.ParameterOutput;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PhenomenonOutputCollection  extends OutputCollection<PhenomenonOutput> {
-	
+
     public PhenomenonOutputCollection() {
         // empty collection
     }
-    
+
 	public PhenomenonOutputCollection(PhenomenonOutput item) {
 		super(item);
 	}
-	
+
 	public PhenomenonOutputCollection(List<PhenomenonOutput> items) {
 		super(items);
 	}
-    
+
     @Override
     @JsonProperty(value = "phenomena")
     public List<PhenomenonOutput> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<PhenomenonOutput> getComparator() {
         return ParameterOutput.defaultComparator();

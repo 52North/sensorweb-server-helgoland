@@ -87,7 +87,7 @@ public final class IoFactory {
             MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(imgRenderer, config.getLocale());
             reportGenerator.setBaseURI(servletContextRoot);
-            
+
             // TODO
 
             return reportGenerator;

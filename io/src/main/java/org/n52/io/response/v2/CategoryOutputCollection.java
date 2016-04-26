@@ -34,11 +34,11 @@ import java.util.List;
 import org.n52.io.response.ParameterOutput;
 
 public class CategoryOutputCollection extends OutputCollection<CategoryOutput> {
-    
+
     public CategoryOutputCollection() {
         // empty collection
     }
-    
+
     public CategoryOutputCollection(List<CategoryOutput> results) {
 		super(results);
 	}
@@ -53,6 +53,6 @@ public class CategoryOutputCollection extends OutputCollection<CategoryOutput> {
     protected Comparator<CategoryOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
-    
-    
+
+
 }

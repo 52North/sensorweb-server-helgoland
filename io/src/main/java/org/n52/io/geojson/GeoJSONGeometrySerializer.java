@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class GeoJSONGeometrySerializer extends JsonSerializer<Geometry> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeoJSONGeometrySerializer.class);
-    
+
     @Override
     public void serialize(Geometry geometry, JsonGenerator gen, SerializerProvider serializers)
             throws IOException, JsonProcessingException {
@@ -51,7 +51,7 @@ public class GeoJSONGeometrySerializer extends JsonSerializer<Geometry> {
         } catch (GeoJSONException e) {
             LOGGER.error("could not properly encode geometry.", e);
         }
-        
+
     }
 
 }

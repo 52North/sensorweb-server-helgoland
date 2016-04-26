@@ -35,28 +35,28 @@ import java.util.List;
 
 
 public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput> {
-	
+
     public ProcedureOutputCollection() {
         // empty collection
     }
-    
+
 	public ProcedureOutputCollection(ProcedureOutput item) {
 		super(item);
 	}
-	
+
 	public ProcedureOutputCollection(List<ProcedureOutput> items) {
 		super(items);
 	}
-    
+
     @Override
     @JsonProperty(value = "procedures")
     public List<ProcedureOutput> getItems() {
         return super.getItems();
     }
-    
+
     @Override
     protected Comparator<ProcedureOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
-    
+
 }

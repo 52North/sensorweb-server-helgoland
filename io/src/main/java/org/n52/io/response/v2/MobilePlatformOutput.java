@@ -28,7 +28,7 @@
 package org.n52.io.response.v2;
 
 public class MobilePlatformOutput extends PlatformOutput {
-    
+
     private static final long serialVersionUID = -3480429803691543536L;
 
     public MobilePlatformOutput() {

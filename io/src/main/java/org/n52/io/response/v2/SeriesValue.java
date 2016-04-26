@@ -37,17 +37,17 @@ import com.vividsolutions.jts.geom.Geometry;
 public class SeriesValue extends TimeseriesValue {
 
     private static final long serialVersionUID = 4735920096822181576L;
-    
+
     private Geometry geometry;
-    
+
     public SeriesValue() {
         // for serialization
     }
-    
+
     public SeriesValue(long timestamp, Double value) {
         super(timestamp, value);
     }
-    
+
     public SeriesValue(long timestamp, Double value, Geometry geometry) {
         super(timestamp, value);
         this.geometry = geometry;
@@ -62,7 +62,7 @@ public class SeriesValue extends TimeseriesValue {
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
-    
+
     @JsonIgnore
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();

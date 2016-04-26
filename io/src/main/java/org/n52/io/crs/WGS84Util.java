@@ -51,7 +51,7 @@ public class WGS84Util {
 
     /**
      * Calculates the shortest distance between two points on a great circle.
-     * 
+     *
      * @param a
      *        a point.
      * @param b
@@ -69,7 +69,7 @@ public class WGS84Util {
 
     /**
      * Calculates the longitude delta for a given distance.
-     * 
+     *
      * @param latitude
      *        the latitude in radians to calculate the distance delta from.
      * @param distance
@@ -82,7 +82,7 @@ public class WGS84Util {
 
     /**
      * Calculates the latitude delta from a point from a given distance.
-     * 
+     *
      * @param distance
      *        the distance in kilometer.
      * @return the latitude delta in degrees.
@@ -102,7 +102,7 @@ public class WGS84Util {
 
     /**
      * Normalizes given longitude to bounds [-180.0,180.0].
-     * 
+     *
      * @param longitude
      *        in degrees.
      * @return the normalized longitude.
@@ -120,7 +120,7 @@ public class WGS84Util {
 
     /**
      * Normalizes given latitude to bounds [-90.0,90.0].
-     * 
+     *
      * @param latitude
      *        in degrees.
      * @return the normalized latitude.

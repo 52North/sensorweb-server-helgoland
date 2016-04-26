@@ -36,11 +36,12 @@ public final class Utils {
     }
 
     /**
-     * Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
-     * encapsulating arrays from being externally modified.<br/>
-     * <br/>
-     * <b>Note:</b> No deep copy is made.
-     * 
+     * <p>Copies an array via {@link System#arraycopy(Object, int, Object, int, int)}. This is useful for objects
+     * encapsulating arrays from being externally modified.
+     * </p>
+     * <p><b>Note:</b> No deep copy is made.</p>
+     *
+     * @param <T> the source's type
      * @param source the array to copy.
      * @return a copied instance of the array.
      */

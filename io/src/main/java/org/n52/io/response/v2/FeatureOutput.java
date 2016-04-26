@@ -43,32 +43,32 @@ import com.vividsolutions.jts.geom.Geometry;
 public class FeatureOutput extends AbstractOutput {
 
     private final Map<String, Object> members = new HashMap<>();
-    
+
     private final String featureType;
-    
+
     private Geometry geometry;
-    
+
     public FeatureOutput(String featureType) {
         this.featureType = featureType;
     }
-    
+
     public FeatureOutput(String featureType, Geometry geometry) {
         this(featureType);
         this.geometry = geometry;
     }
-    
+
     public String getFeatureType() {
         return featureType;
     }
-    
+
     public void addProperty(String key, Object value) {
         this.members.put(key, value);
     }
-    
+
     public void removeProperty(String key) {
         this.members.remove(key);
     }
-    
+
     public Map<String, Object> getProperties() {
         return Collections.unmodifiableMap(members);
     }
@@ -88,6 +88,6 @@ public class FeatureOutput extends AbstractOutput {
     public boolean isSetGeometry() {
         return getGeometry() != null && !getGeometry().isEmpty();
     }
-    
-    
+
+
 }

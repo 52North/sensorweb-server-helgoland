@@ -30,9 +30,9 @@ package org.n52.io.img;
 public class ChartDimension {
 
     private int height;
-    
+
     private int width;
-    
+
     public ChartDimension(int width, int height) {
         this.height = height;
         this.width = width;
@@ -53,5 +53,5 @@ public class ChartDimension {
     public void setWidth(int width) {
         this.width = width;
     }
-    
+
 }

@@ -28,15 +28,15 @@
 package org.n52.io.response;
 
 public interface CommonSeriesOutput {
-    
+
     public ParameterOutput getService();
 
     public ParameterOutput getProcedure();
-    
+
     public ParameterOutput getFeature();
 
     public ParameterOutput getPhenomenon();
 
     public ParameterOutput getCategory();
-    
+
 }
