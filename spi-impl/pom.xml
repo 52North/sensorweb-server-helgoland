@@ -9,12 +9,16 @@
     <artifactId>spi-impl</artifactId>
     <name>Series REST API - SPI implementations</name>
     <packaging>pom</packaging>
-    
+
     <modules>
         <module>series-dao</module>
         <module>series-dao-sos</module>
         <module>series-dao-webapp</module>
     </modules>
+
+    <properties>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
