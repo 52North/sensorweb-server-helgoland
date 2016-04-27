@@ -36,11 +36,11 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.series.db.da.v1.CategoryRepository;
+import org.n52.series.db.da.v1.FeatureRepository;
 import org.n52.series.db.da.v1.PhenomenonRepository;
 import org.n52.series.db.da.v1.ProcedureRepository;
 import org.n52.series.db.da.v1.StationRepository;
 import org.n52.series.db.da.v1.TimeseriesRepository;
-import org.n52.series.db.da.v2.FeatureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Search extends ServiceInfo implements SearchService {

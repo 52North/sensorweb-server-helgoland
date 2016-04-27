@@ -49,7 +49,7 @@ import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+//@Repository
 @Transactional
 public class SeriesDao extends AbstractDao<SeriesEntity> {
 

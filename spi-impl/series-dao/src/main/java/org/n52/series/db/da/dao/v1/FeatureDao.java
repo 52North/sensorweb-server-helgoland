@@ -42,7 +42,7 @@ import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+//@Repository
 @Transactional
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
