@@ -711,6 +711,36 @@
             </build>
         </profile>
 
+        <profile>
+            <id>snapshot-dist</id>
+            <distributionManagement>
+                <repository>
+                    <id>n52-releases-dist</id>
+                    <name>repository for 52North releases</name>
+                    <url>dav:https://52north.org/maven/repo/releases</url>
+                </repository>
+                <snapshotRepository>
+                    <id>n52-snapshots-dist</id>
+                    <name>repository for 52North snapshots</name>
+                    <url>dav:https://52north.org/maven/repo/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>disable-notice</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jasig.maven</groupId>
+                        <artifactId>maven-notice-plugin</artifactId>
+                        <configuration>
+                            <skipChecks>true</skipChecks>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>
@@ -726,7 +756,6 @@
             <!--<url>https://boundless.artifactoryonline.com/boundless/main</url>-->
             <!--<url>http://repo.boundlessgeo.com/main/</url>-->
         </repository>
-
     </repositories>
 
 </project>
