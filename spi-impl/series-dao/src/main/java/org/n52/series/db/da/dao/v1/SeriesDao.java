@@ -46,10 +46,8 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Repository
 @Transactional
 public class SeriesDao extends AbstractDao<SeriesEntity> {
 

@@ -41,10 +41,8 @@ import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Repository
 @Transactional
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 

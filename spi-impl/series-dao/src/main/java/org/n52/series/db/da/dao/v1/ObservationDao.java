@@ -42,10 +42,8 @@ import org.n52.series.db.da.beans.v1.ObservationEntity;
 import org.n52.series.db.da.beans.v1.SeriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Repository
 @Transactional
 public class ObservationDao extends AbstractDao<ObservationEntity> {
 
