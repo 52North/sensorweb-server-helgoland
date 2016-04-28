@@ -42,6 +42,7 @@ This project includes:
   Core Hibernate O/RM functionality under GNU Lesser General Public License
   CORS Filter under The Apache Software License, Version 2.0
   dom4j under DOM4J license, http://dom4j.sourceforge.net/dom4j-1.6.1/license.html (BSD style)
+  Ehcache Core under The Apache Software License, Version 2.0
   EJML under The Apache Software License, Version 2.0
   EPSG Authority Service using HSQL database under GNU Lesser General Public License (LGPL) version 2.1
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
@@ -50,6 +51,7 @@ This project includes:
   Hibernate Commons Annotations under GNU Lesser General Public License
   hibernate-spatial under GNU Lesser General Public License (LGPL) version 2.1
   Hibernate/c3p0 Integration under GNU Lesser General Public License
+  Hibernate/Ehcache Integration under GNU Lesser General Public License
   HyperSQL Database under HSQLDB License, a BSD open source license
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
@@ -79,6 +81,8 @@ This project includes:
   Mockito under The MIT License
   Objenesis under MIT License
   Open GIS Interfaces under GNU Lesser General Public License (LGPL) version 2.1
+  Postgis JDBC Driver under GNU Lesser General Public License
+  PostgreSQL JDBC Driver under BSD License
   PostgreSQL JDBC Driver - JDBC 4.1 under The PostgreSQL License
   Quartz Enterprise Job Scheduler under Apache 2.0
   Referencing services under GNU Lesser General Public License (LGPL) version 2.1
