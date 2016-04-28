@@ -34,6 +34,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
@@ -44,20 +47,36 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
-    private static final String CONFIG_FILE = "/config-license.txt";
+    private static final String CONFIG_FILE = "config-license.txt";
 
     private static final String EXTENSION_NAME = "license";
 
-    private final String licenseText = readLicenseText();
+    private final String licenseText;
 
-    private String readLicenseText() {
+    public LicenseExtension() {
+        this(CONFIG_FILE);
+    }
+
+    public LicenseExtension(String configFile) {
+        this.licenseText = readLicenseText(configFile);
+    }
+
+    private String readLicenseText(String configFile) {
         try {
-            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
+            Path root = Paths.get(getClass().getResource("/").toURI());
+            final Path target = Paths.get(configFile);
+            File file = !Files.exists(target)
+                    ? root.resolve(configFile).toFile()
+                    : target.toFile();
+            if (!file.exists()) {
+                LOGGER.error("Could not find license config file '{}'", file.getPath());
+                return "";
+            }
             return FileUtils.readFileToString(file);
         } catch (URISyntaxException | IOException e) {
             LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
         }
-        return null;
+        return "";
     }
 
     @Override
