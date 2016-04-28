@@ -56,7 +56,7 @@ public class SOSHibernateSessionHolder implements HibernateSessionStore {
             try (InputStream inputStream = SOSHibernateSessionHolder.class.getResourceAsStream(DATASOURCE_PROPERTIES)) {
                 LOGGER.debug("SOS Configurator not present, trying to load DB config from '{}'", DATASOURCE_PROPERTIES);
                 if (inputStream == null) {
-                    LOGGER.error("No DB config found to configure SessionFactory!");
+                    LOGGER.error("DB config '{}' is missing!", DATASOURCE_PROPERTIES);
                     throw new RuntimeException("Could not establish database connection.");
                 }
                 Properties connectionProviderConfig = new Properties();
