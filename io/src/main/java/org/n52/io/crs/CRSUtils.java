@@ -54,6 +54,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public final class CRSUtils {
 
@@ -265,6 +267,15 @@ public final class CRSUtils {
     private Geometry transform(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
             TransformException {
         return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
+    }
+
+    public Geometry parseWkt(String wkt) {
+        try {
+            return new WKTReader().read(wkt);
+        } catch (ParseException e) {
+            LOGGER.error("Invalid WKT '{}'", wkt, e);
+            return null;
+        }
     }
 
     /**
