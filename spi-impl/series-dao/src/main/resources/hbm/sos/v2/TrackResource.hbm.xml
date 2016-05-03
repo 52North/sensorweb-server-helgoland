@@ -1,25 +1,21 @@
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.da.beans.v2">
-    <class name="TrackEntity" table="offering">
-        <id name="pkid" type="long">
-            <column name="offeringId" />
-            <generator class="assigned" />
-        </id>
-        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
-        <property name="name" column="name" type="string" />
-        <property name="description" column="description" type="string"/>
-        <set name="trackLocations"
-             table="observationHasOffering"
-             inverse="false"
-             fetch="select" >
-            <key>
-                <column name="offeringId" not-null="true" />
-            </key>
-            <many-to-many entity-name="org.n52.series.db.da.beans.v2.TrackLocationEntity" >
-                <column name="observationId"  not-null="true" />
-            </many-to-many>
-        </set>
-    </class>
+  <class name="TrackEntity" table="offering">
+    <id name="pkid" type="long">
+      <column name="offeringId"/>
+      <generator class="assigned"/>
+    </id>
+    <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
+    <property column="name" name="name" type="string"/>
+    <property column="description" name="description" type="string"/>
+    <set fetch="select" inverse="false" name="trackLocations" table="observationHasOffering">
+      <key>
+        <column name="offeringId" not-null="true"/>
+      </key>
+      <many-to-many entity-name="org.n52.series.db.da.beans.v2.TrackLocationEntity">
+        <column name="observationId" not-null="true"/>
+      </many-to-many>
+    </set>
+  </class>
 </hibernate-mapping>

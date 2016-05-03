@@ -1,31 +1,30 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.da.beans.v2">
-    <class name="SeriesEntityV2" table="series">
-        <id name="pkid" type="long">
-            <column name="seriesid" />
-            <generator class="assigned" />
-        </id>
-        <many-to-one name="category" class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" insert="false" update="false" />
-        <many-to-one name="procedure" class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" />
-        <many-to-one name="phenomenon" class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" insert="false" update="false"  />
-        <many-to-one name="feature" class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" />
-        <many-to-one name="unit" class="org.n52.series.db.da.beans.UnitEntity" column="unitid" />
-        <property name="numberOfDecimals" formula="3" type="int" />
-        <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
-
-        <component name="firstValue" class="ObservationEntityV2">
-            <property name="timestamp" column="firsttimestamp" type="timestamp" />
-            <property name="value" column="firstnumericvalue" type="double" />
-        </component>
-        <component name="lastValue" class="ObservationEntityV2">
-            <property name="timestamp" column="lasttimestamp" type="timestamp" />
-            <property name="value" column="lastnumericvalue" type="double" />
-        </component>
-        <list name="observations" table="observation" fetch="select" inverse="true">
-            <key column="observationid" />
-            <index column="seriesid" />
-            <one-to-many class="ObservationEntityV2" />
-        </list>
-    </class>
+  <class name="SeriesEntityV2" table="series">
+    <id name="pkid" type="long">
+      <column name="seriesid"/>
+      <generator class="assigned"/>
+    </id>
+    <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
+    <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure"/>
+    <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
+    <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature"/>
+    <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="unitid" name="unit"/>
+    <property formula="3" name="numberOfDecimals" type="int"/>
+    <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
+    <component class="ObservationEntityV2" name="firstValue">
+      <property column="firsttimestamp" name="timestamp" type="timestamp"/>
+      <property column="firstnumericvalue" name="value" type="double"/>
+    </component>
+    <component class="ObservationEntityV2" name="lastValue">
+      <property column="lasttimestamp" name="timestamp" type="timestamp"/>
+      <property column="lastnumericvalue" name="value" type="double"/>
+    </component>
+    <list fetch="select" inverse="true" name="observations" table="observation">
+      <key column="observationid"/>
+      <index column="seriesid"/>
+      <one-to-many class="ObservationEntityV2"/>
+    </list>
+  </class>
 </hibernate-mapping>
