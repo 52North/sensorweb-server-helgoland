@@ -50,10 +50,6 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     @Autowired
     private ServiceInfo serviceInfo;
 
-    public abstract Collection<SearchResult> searchFor(String queryString, String locale);
-
-    protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
-
     protected abstract ServiceOutput getServiceOutput() throws DataAccessException;
 
     protected abstract DBQ getDbQuery(IoParameters parameters);

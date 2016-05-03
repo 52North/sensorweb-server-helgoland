@@ -31,37 +31,38 @@ package org.n52.series.db.srv.v1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.CategoryOutput;
+import org.n52.io.response.v1.FeatureOutput;
+import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.response.v1.ProcedureOutput;
+import org.n52.io.response.v1.StationOutput;
 
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.series.db.da.v1.CategoryRepository;
-import org.n52.series.db.da.v1.FeatureRepository;
-import org.n52.series.db.da.v1.PhenomenonRepository;
-import org.n52.series.db.da.v1.ProcedureRepository;
-import org.n52.series.db.da.v1.StationRepository;
-import org.n52.series.db.da.v1.TimeseriesRepository;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Search extends ServiceInfo implements SearchService {
 
     @Autowired
-    private TimeseriesRepository timeseriesRepository;
+    private OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository;
 
     @Autowired
-    private ProcedureRepository procedureRepository;
+    private OutputAssembler<ProcedureOutput> procedureRepository;
 
     @Autowired
-    private PhenomenonRepository phenomenonRepository;
+    private OutputAssembler<PhenomenonOutput> phenomenonRepository;
 
     @Autowired
-    private StationRepository stationRepository;
+    private OutputAssembler<StationOutput> stationRepository;
 
     @Autowired
-    private FeatureRepository featureRepository;
+    private OutputAssembler<FeatureOutput> featureRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private OutputAssembler<CategoryOutput> categoryRepository;
 
     @Override
     public Collection<SearchResult> searchResources(String search, String locale) {

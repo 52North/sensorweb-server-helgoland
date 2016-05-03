@@ -38,15 +38,15 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.v1.ProcedureRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProceduresAccessService extends ParameterService<ProcedureOutput> {
 
     @Autowired
-    private ProcedureRepository repository;
+    private OutputAssembler<ProcedureOutput> repository;
 
     private OutputCollection<ProcedureOutput> createOutputCollection(List<ProcedureOutput> results) {
         return new OutputCollection<ProcedureOutput>(results) {

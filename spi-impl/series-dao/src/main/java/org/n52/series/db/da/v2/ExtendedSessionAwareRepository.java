@@ -76,7 +76,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
 
     @Override
     protected ServiceOutput getServiceOutput() throws DataAccessException {
-        List<org.n52.io.response.v2.ServiceOutput> all = serviceRepository.getAllCondensed(null);
+        List<org.n52.io.response.v2.ServiceOutput> all = serviceRepository.getAllCondensed((DbQuery) null);
         return all.get(0); // only this service available
     }
 

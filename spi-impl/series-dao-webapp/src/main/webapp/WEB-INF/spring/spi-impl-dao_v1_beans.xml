@@ -18,7 +18,9 @@
     <bean class="org.n52.series.db.da.v1.FeatureRepository" />
     <bean class="org.n52.series.db.da.v1.PhenomenonRepository" />
     <bean class="org.n52.series.db.da.v1.ProcedureRepository" />
-    <bean class="org.n52.series.db.da.v1.StationRepository" />
+    <bean class="org.n52.series.db.da.v1.StationRepository">
+        <property name="atabaseSrid" value="EPSG:4326" />
+    </bean>
     <bean class="org.n52.series.db.da.v1.TimeseriesRepository" />
     <bean class="org.n52.series.db.da.v1.ServiceRepository" />
 
@@ -32,9 +34,7 @@
     <bean id="categoryParameterService" class="org.n52.series.db.srv.v1.CategoriesAccessService" />
     <bean id="featureParameterService" class="org.n52.series.db.srv.v1.FeaturesAccessService" />
     <bean id="procedureParameterService" class="org.n52.series.db.srv.v1.ProceduresAccessService" />
-    <bean id="stationParameterService" class="org.n52.series.db.srv.v1.StationsAccessService" >
-        <constructor-arg name="dbSrid" value="EPSG:4326" />
-    </bean>
+    <bean id="stationParameterService" class="org.n52.series.db.srv.v1.StationsAccessService" />
     <bean id="phenomenonParameterService" class="org.n52.series.db.srv.v1.PhenomenaAccessService"  />
     <bean id="timeseriesService" class="org.n52.series.db.srv.v1.TimeseriesAccessService" />
     <bean id="metadataService" class="org.n52.series.db.srv.v1.MetadataAccessService" />

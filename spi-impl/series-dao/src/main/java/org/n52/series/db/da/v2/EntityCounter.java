@@ -28,20 +28,14 @@
  */
 package org.n52.series.db.da.v2;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.dao.v1.CategoryDao;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.PhenomenonDao;
 import org.n52.series.db.da.dao.v1.ProcedureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
-import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.dao.v2.SeriesDao;
 import org.n52.series.db.da.dao.v2.SiteDao;
 import org.n52.series.db.da.dao.v2.TrackDao;
@@ -49,23 +43,6 @@ import org.n52.series.db.da.dao.v2.TrackDao;
 public class EntityCounter {
 
     private final SessionAwareRepository<DbQuery> repository = new ExtendedSessionAwareRepository() {
-        /**
-         * Not for use in this context
-         */
-        @Override
-        public Collection<SearchResult> searchFor(String searchString, String locale) {
-            return null;
-        }
-
-        /**
-         * Not for use in this context
-         */
-        @Override
-        protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
-                String locale) {
-            return null;
-        }
-
         @Override
         protected DbQuery getDbQuery(IoParameters parameters) {
             return DbQuery.createFrom(parameters);

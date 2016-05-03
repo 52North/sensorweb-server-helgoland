@@ -31,7 +31,6 @@ package org.n52.series.db.srv.v1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.PostConstruct;
 
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.io.request.IoParameters;
@@ -39,28 +38,15 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.v1.StationRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class StationsAccessService extends ParameterService<StationOutput> {
 
-    private String dbSrid = "EPSG:4326";
-
     @Autowired
-    private StationRepository repository;
-
-    public StationsAccessService(String dbSrid) {
-        this.dbSrid = dbSrid;
-    }
-
-    @PostConstruct
-    public void init() {
-        if (repository != null) {
-            repository.setDatabaseSrid(dbSrid);
-        }
-    }
+    private OutputAssembler<StationOutput> repository;
 
     private OutputCollection<StationOutput> createOutputCollection(List<StationOutput> results) {
         return new OutputCollection<StationOutput>(results) {

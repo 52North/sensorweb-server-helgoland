@@ -66,9 +66,25 @@ import org.slf4j.LoggerFactory;
 import org.n52.io.response.v2.FeatureOutputCollection;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.sensorweb.spi.search.v2.SeriesSearchResult;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataV2Output> {
+
+    @Override
+    public List<SeriesMetadataV2Output> getAllCondensed(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<SeriesMetadataV2Output> getAllExpanded(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public SeriesMetadataV2Output getInstance(String id, org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesRepository.class);
 
@@ -92,7 +108,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
             String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<>();
@@ -111,7 +127,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return results;
     }
 
-    @Override
+//    @Override
     public List<SeriesMetadataV2Output> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
@@ -133,7 +149,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    @Override
+//    @Override
     public List<SeriesMetadataV2Output> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
@@ -156,7 +172,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    @Override
+//    @Override
     public SeriesMetadataV2Output getInstance(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {

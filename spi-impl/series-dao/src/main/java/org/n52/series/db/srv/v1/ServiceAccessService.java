@@ -34,23 +34,27 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.v1.ServiceRepository;
-import org.n52.series.db.da.v1.TimeseriesRepository;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceAccessService extends ParameterService<ServiceOutput> implements ServiceParameterService {
 
     @Autowired
-    private ServiceRepository serviceRepository;
+    private ServiceInfo serviceInfo;
 
     @Autowired
-    private TimeseriesRepository timeseriesRepository;
+    private OutputAssembler<ServiceOutput> serviceRepository;
+
+    @Autowired
+    private OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository;
 
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
         return new OutputCollection<ServiceOutput>(result) {
@@ -116,7 +120,7 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
     @Override
     public ServiceOutput getParameter(String item, IoParameters query) {
         try {
-            String serviceId = serviceRepository.getServiceId();
+            String serviceId = serviceInfo.getServiceId();
             return serviceId.equals(item)
                     ? serviceRepository.getInstance(serviceId, DbQuery.createFrom(query))
                     : null;

@@ -62,8 +62,24 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import java.util.LinkedList;
+import org.n52.series.db.da.v1.OutputAssembler;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput> {
+
+    @Override
+    public List<FeatureOutput> getAllCondensed(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<FeatureOutput> getAllExpanded(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public FeatureOutput getInstance(String id, org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     private static final String SITE_PREFIX = "site_";
 
@@ -99,7 +115,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
             String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<SearchResult>();
@@ -116,7 +132,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         return results;
     }
 
-    @Override
+//    @Override
     public List<FeatureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -140,7 +156,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         }
     }
 
-    @Override
+//    @Override
     public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -164,7 +180,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         }
     }
 
-    @Override
+//    @Override
     public FeatureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {

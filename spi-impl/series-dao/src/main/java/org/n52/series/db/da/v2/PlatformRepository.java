@@ -49,9 +49,25 @@ import org.n52.web.exception.ResourceNotFoundException;
 import com.vividsolutions.jts.geom.Point;
 import java.util.HashMap;
 import org.n52.sensorweb.spi.search.v2.PlatformSearchResult;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
+
+    @Override
+    public List<PlatformOutput> getAllCondensed(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<PlatformOutput> getAllExpanded(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PlatformOutput getInstance(String id, org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Autowired
     private FeatureRepository featureRepository;
@@ -70,7 +86,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
             String locale) {
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity<? extends I18nEntity> searchResult : found) {
@@ -81,7 +97,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         return results;
     }
 
-    @Override
+//    @Override
     public List<PlatformOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -96,7 +112,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         }
     }
 
-    @Override
+//    @Override
     public List<PlatformOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -111,7 +127,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         }
     }
 
-    @Override
+//    @Override
     public PlatformOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {

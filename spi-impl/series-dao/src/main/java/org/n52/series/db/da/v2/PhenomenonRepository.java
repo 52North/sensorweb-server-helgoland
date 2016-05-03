@@ -42,9 +42,25 @@ import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.dao.v2.PhenomenonDao;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class PhenomenonRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
+
+    @Override
+    public List<PhenomenonOutput> getAllCondensed(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<PhenomenonOutput> getAllExpanded(org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PhenomenonOutput getInstance(String id, org.n52.series.db.da.v1.DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
     @Override
     public Collection<SearchResult> searchFor(String searchString, String locale) {
@@ -60,7 +76,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
             String locale) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (DescribableEntity<? extends I18nEntity> searchResult : found) {
@@ -71,7 +87,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         return results;
     }
 
-    @Override
+//    @Override
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -85,7 +101,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         }
     }
 
-    @Override
+//    @Override
     public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -99,7 +115,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         }
     }
 
-    @Override
+//    @Override
     public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
