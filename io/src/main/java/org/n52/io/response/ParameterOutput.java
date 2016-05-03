@@ -59,6 +59,8 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     private String id;
 
+    private String href;
+
     private String domainId;
 
     private String label;
@@ -77,6 +79,15 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
     }
 
     /**
