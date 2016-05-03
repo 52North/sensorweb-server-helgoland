@@ -2,13 +2,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:ctx="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
     <mvc:annotation-driven />
+    <ctx:annotation-config />
+
+    <bean class="org.n52.web.ctrl.v1.ext.ExtResourcesController">
+        <property name="metadataService" ref="metadataService" />
+    </bean>
+
+    <import resource="api_v1_mvc.xml"/>
+    <!--<import resource="api_v1_ext_mvc.xml"/>-->
+    <!--<import resource="api_v2_mvc.xml"/>-->
 
     <bean id="contentNegotiationManager"
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">

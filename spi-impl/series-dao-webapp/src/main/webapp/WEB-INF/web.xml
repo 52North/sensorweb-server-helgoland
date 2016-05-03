@@ -47,17 +47,17 @@
 
     <!-- Spring dispatcher servlet -->
     <servlet>
-        <servlet-name>rest-dispatcher</servlet-name>
+        <servlet-name>api-dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/spring/dispatcher-service.xml</param-value>
+            <param-value>/WEB-INF/spring/dispatcher-servlet.xml</param-value>
         </init-param>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>rest-dispatcher</servlet-name>
+        <servlet-name>api-dispatcher</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
