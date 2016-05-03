@@ -63,13 +63,15 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class TimeseriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 
     @Autowired
-    private StationRepository stationRepository;
+    @Qualifier(value = "stationRepository")
+    private OutputAssembler<StationOutput> stationRepository;
 
     @Override
     public Collection<SearchResult> searchFor(String searchString, String locale) {
@@ -249,7 +251,9 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
-        return stationRepository.getCondensedInstance(featurePkid, query);
+
+        // XXX explicit cast here
+        return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query);
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,

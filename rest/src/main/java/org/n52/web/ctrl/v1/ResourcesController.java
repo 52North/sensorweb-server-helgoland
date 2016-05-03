@@ -44,7 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
-public final class ResourcesController {
+public class ResourcesController {
 
     private CountingMetadataService metadataService;
 
@@ -53,7 +53,7 @@ public final class ResourcesController {
         return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
     }
 
-    private ResourceCollection[] createResources(boolean expanded) {
+    protected ResourceCollection[] createResources(boolean expanded) {
         List<ResourceCollection> resources = new ArrayList<>();
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");
