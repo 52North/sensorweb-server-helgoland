@@ -77,7 +77,7 @@ import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
 import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.CommonSeriesOutput;
+import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
@@ -301,7 +301,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     protected String createRangeLabel(TimeseriesMetadataOutput timeseriesMetadata) {
-        CommonSeriesOutput parameters = timeseriesMetadata.getParameters();
+        CommonSeriesParameters parameters = timeseriesMetadata.getParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
         uom.append(phenomenon.getLabel());

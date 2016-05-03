@@ -33,13 +33,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.n52.io.geojson.GeoJSONObject;
-import org.n52.io.geojson.GeoJSONSerializer;
+import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.response.AbstractOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
-@JsonSerialize(using = GeoJSONSerializer.class, as = GeoJSONObject.class)
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class FeatureOutput extends AbstractOutput {
 
     private final Map<String, Object> members = new HashMap<>();

@@ -42,9 +42,9 @@ import org.n52.io.response.v2.FeatureOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GeoJSONSerializer extends JsonSerializer<FeatureOutput> {
+public class FeatureOutputSerializer extends JsonSerializer<FeatureOutput> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeoJSONSerializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureOutputSerializer.class);
 
     // TODO transform to requested crs
     // configure encoder
