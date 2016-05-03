@@ -28,7 +28,6 @@
  */
 package org.n52.io.extension;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,12 +39,9 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ext.MetadataExtension;
-import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.SessionAwareRepository;
-import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
@@ -80,16 +76,6 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
 
         @Override
         protected AbstractDbQuery getDbQuery(IoParameters parameters, String locale) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public Collection<SearchResult> searchFor(String queryString, String locale) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        protected List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
