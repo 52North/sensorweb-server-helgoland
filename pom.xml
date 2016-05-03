@@ -463,6 +463,7 @@
             <plugin>
                 <groupId>org.jasig.maven</groupId>
                 <artifactId>maven-notice-plugin</artifactId>
+                <inherited>false</inherited>
                 <executions>
                     <execution>
                         <id>check-license</id>
@@ -590,6 +591,7 @@
                     <configuration>
                         <noticeTemplate>misc/NOTICE.template</noticeTemplate>
                         <licenseMapping>
+                            <param>misc/license-mappings.xml</param>
                             <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
                         </licenseMapping>
                         <generateChildNotices>false</generateChildNotices>
