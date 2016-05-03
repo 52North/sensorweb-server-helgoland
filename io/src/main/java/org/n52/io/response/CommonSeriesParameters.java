@@ -28,16 +28,20 @@
  */
 package org.n52.io.response;
 
-public interface CommonSeriesOutput {
+import org.n52.io.response.v1.OfferingOutput;
 
-    public ParameterOutput getService();
+public interface CommonSeriesParameters {
 
-    public ParameterOutput getProcedure();
+    ParameterOutput getService();
 
-    public ParameterOutput getFeature();
+    ParameterOutput getProcedure();
 
-    public ParameterOutput getPhenomenon();
+    ParameterOutput getFeature();
 
-    public ParameterOutput getCategory();
+    ParameterOutput getPhenomenon();
+
+    OfferingOutput getOffering();
+
+    ParameterOutput getCategory();
 
 }

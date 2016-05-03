@@ -28,9 +28,9 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.response.CommonSeriesOutput;
+import org.n52.io.response.CommonSeriesParameters;
 
-public class TimeseriesOutput implements CommonSeriesOutput {
+public class TimeseriesOutput implements CommonSeriesParameters {
 
     private ServiceOutput service;
 
@@ -61,6 +61,7 @@ public class TimeseriesOutput implements CommonSeriesOutput {
         this.offering = offering;
     }
 
+    @Override
     public FeatureOutput getFeature() {
         return feature;
     }

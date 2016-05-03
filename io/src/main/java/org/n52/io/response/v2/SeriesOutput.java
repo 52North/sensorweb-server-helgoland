@@ -29,11 +29,12 @@
 package org.n52.io.response.v2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.n52.io.response.CommonSeriesOutput;
+import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
+import org.n52.io.response.v1.OfferingOutput;
 
-public class SeriesOutput implements CommonSeriesOutput {
+public class SeriesOutput implements CommonSeriesParameters {
 
     private ServiceOutput service;
 
@@ -89,6 +90,11 @@ public class SeriesOutput implements CommonSeriesOutput {
 
     public void setCategory(CategoryOutput category) {
         this.category = category;
+    }
+
+    @Override
+    public OfferingOutput getOffering() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
