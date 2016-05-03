@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.api.b1.db.da.beans;
+package org.n52.series.db.da.beans;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
