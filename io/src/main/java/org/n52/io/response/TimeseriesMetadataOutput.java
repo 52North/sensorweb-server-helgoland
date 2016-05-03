@@ -34,10 +34,8 @@ import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
 import org.n52.io.Utils;
-import org.n52.io.response.v1.StationOutput;
-import org.n52.io.v1.data.RawFormats;
 
-public abstract class TimeseriesMetadataOutput<T extends CommonSeriesOutput> extends ParameterOutput implements RawFormats {
+public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters> extends ParameterOutput {
 
     private String uom;
 

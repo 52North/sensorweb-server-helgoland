@@ -34,8 +34,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.n52.io.response.v2.test.CondensedParameterOutput;
+import org.n52.io.v1.data.RawFormats;
 
-public abstract class ParameterOutput implements CollatorComparable<ParameterOutput> {
+public abstract class ParameterOutput implements CondensedParameterOutput, CollatorComparable<ParameterOutput>, RawFormats {
 
     /**
      * Takes the labels to compare.
@@ -43,7 +48,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * @param <T> the actual type.
      * @return a label comparing {@link Comparator}
      */
-    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+    public static <T extends CondensedParameterOutput> Comparator<T> defaultComparator() {
         return new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
@@ -63,6 +68,9 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     private List<String> extras;
 
+    private Set<String> rawFormats;
+
+    @Override
     public String getId() {
         return id;
     }
@@ -106,6 +114,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     /**
      * @return the label or the id if label is not set.
      */
+    @Override
     public String getLabel() {
         // ensure that label is never null
         return label == null ? id : label;
@@ -141,6 +150,36 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
             extras = new ArrayList<>();
         }
         extras.add(extra);
+    }
+
+    @Override
+    public void addRawFormat(String format) {
+        if (format != null && !format.isEmpty()) {
+            if (rawFormats == null) {
+                rawFormats = new HashSet<>();
+            }
+            rawFormats.add(format);
+        }
+    }
+
+    @Override
+    public String[] getRawFormats() {
+        if (rawFormats != null) {
+            return rawFormats.toArray(new String[0]);
+        }
+        return null;
+    }
+
+    @Override
+    public void setRawFormats(Collection<String> formats) {
+        if (formats != null && !formats.isEmpty()) {
+            if (rawFormats == null) {
+                rawFormats = new HashSet<>();
+            } else {
+                rawFormats.clear();
+            }
+            this.rawFormats.addAll(formats);
+        }
     }
 
     @Override
