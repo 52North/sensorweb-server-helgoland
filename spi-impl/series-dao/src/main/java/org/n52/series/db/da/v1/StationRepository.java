@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.da.v1;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
@@ -159,30 +157,31 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         SeriesDao seriesDao = new SeriesDao(session);
         List<SeriesEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
-        stationOutput.addProperty("timeseries", createTimeseriesList(series, parameters));
+        stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;
     }
 
     private StationOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
-        stationOutput.addProperty("id", Long.toString(entity.getPkid()));
-        stationOutput.addProperty("label", getLabelFrom(entity, parameters.getLocale()));
+        stationOutput.setId(Long.toString(entity.getPkid()));
+        stationOutput.setLabel(getLabelFrom(entity, parameters.getLocale()));
         return stationOutput;
     }
 
-    private GeojsonPoint createPoint(FeatureEntity featureEntity) {
+    private Geometry createPoint(FeatureEntity featureEntity) {
         try {
             if (featureEntity.isSetGeom()) {
                 Geometry geometry = featureEntity.getGeom();
                 String fromCrs = "EPSG:" + geometry.getSRID();
                 Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-                return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+                //return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+                return location;
             }
         } catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId());
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId(), e);
         } catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
+            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId(), e);
         }
         return null;
     }

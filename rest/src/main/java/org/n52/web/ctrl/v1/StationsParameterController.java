@@ -28,7 +28,7 @@
  */
 package org.n52.web.ctrl.v1;
 
-import org.n52.io.geojson.old.GeojsonFeature;
+import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.web.common.Stopwatch;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
@@ -57,7 +57,7 @@ public class StationsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<GeojsonFeature> parameterService;
+    private ParameterService<GeoJSONFeature> parameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -97,12 +97,12 @@ public class StationsParameterController {
         return new ModelAndView().addObject(result);
     }
 
-    public ParameterService<GeojsonFeature> getParameterService() {
+    public ParameterService<GeoJSONFeature> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<GeojsonFeature> stationParameterService) {
-        ParameterService<GeojsonFeature> service = new TransformingGeojsonOutputService(stationParameterService);
+    public void setParameterService(ParameterService<GeoJSONFeature> stationParameterService) {
+        ParameterService<GeoJSONFeature> service = new TransformingGeojsonOutputService(stationParameterService);
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 

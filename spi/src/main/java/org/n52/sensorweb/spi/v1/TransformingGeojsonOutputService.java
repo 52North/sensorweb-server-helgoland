@@ -28,6 +28,7 @@
  */
 package org.n52.sensorweb.spi.v1;
 
+import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.old.GeojsonFeature;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
@@ -35,58 +36,58 @@ import org.n52.io.response.OutputCollection;
 import org.n52.sensorweb.spi.RawDataService;
 
 /**
- * Composes a {@link ParameterService} for {@link GeojsonFeature}s to transform
+ * Composes a {@link ParameterService} for {@link GeoJSONFeature}s to transform
  * geometries to requested spatial reference system.
  */
-public class TransformingGeojsonOutputService extends TransformationService<GeojsonFeature> {
+public class TransformingGeojsonOutputService extends TransformationService<GeoJSONFeature> {
 
-    private final ParameterService<GeojsonFeature> composedService;
+    private final ParameterService<GeoJSONFeature> composedService;
 
-    public TransformingGeojsonOutputService(ParameterService<GeojsonFeature> toCompose) {
+    public TransformingGeojsonOutputService(ParameterService<GeoJSONFeature> toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public OutputCollection<GeojsonFeature> getExpandedParameters(IoParameters query) {
-        OutputCollection<GeojsonFeature> features = composedService.getExpandedParameters(query);
+    public OutputCollection<GeoJSONFeature> getExpandedParameters(IoParameters query) {
+        OutputCollection<GeoJSONFeature> features = composedService.getExpandedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public OutputCollection<GeojsonFeature> getCondensedParameters(IoParameters query) {
-        OutputCollection<GeojsonFeature> features = composedService.getCondensedParameters(query);
+    public OutputCollection<GeoJSONFeature> getCondensedParameters(IoParameters query) {
+        OutputCollection<GeoJSONFeature> features = composedService.getCondensedParameters(query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public OutputCollection<GeojsonFeature> getParameters(String[] items) {
-        OutputCollection<GeojsonFeature> features = composedService.getParameters(items);
+    public OutputCollection<GeoJSONFeature> getParameters(String[] items) {
+        OutputCollection<GeoJSONFeature> features = composedService.getParameters(items);
         return transformFeatures(IoParameters.createDefaults(), features);
     }
 
     @Override
-    public OutputCollection<GeojsonFeature> getParameters(String[] items, IoParameters query) {
-        OutputCollection<GeojsonFeature> features = composedService.getParameters(items, query);
+    public OutputCollection<GeoJSONFeature> getParameters(String[] items, IoParameters query) {
+        OutputCollection<GeoJSONFeature> features = composedService.getParameters(items, query);
         return transformFeatures(query, features);
     }
 
     @Override
-    public GeojsonFeature getParameter(String item) {
-        GeojsonFeature feature = composedService.getParameter(item);
+    public GeoJSONFeature getParameter(String item) {
+        GeoJSONFeature feature = composedService.getParameter(item);
         transformInline(feature, IoParameters.createDefaults());
         return feature;
     }
 
     @Override
-    public GeojsonFeature getParameter(String item, IoParameters query) {
-        GeojsonFeature feature = composedService.getParameter(item, query);
+    public GeoJSONFeature getParameter(String item, IoParameters query) {
+        GeoJSONFeature feature = composedService.getParameter(item, query);
         transformInline(feature, query);
         return feature;
     }
 
-    private OutputCollection<GeojsonFeature> transformFeatures(IoParameters query, OutputCollection<GeojsonFeature> features) {
+    private OutputCollection<GeoJSONFeature> transformFeatures(IoParameters query, OutputCollection<GeoJSONFeature> features) {
         if (features != null) {
-            for (GeojsonFeature feature : features) {
+            for (GeoJSONFeature feature : features) {
                 transformInline(feature, query);
             }
         }

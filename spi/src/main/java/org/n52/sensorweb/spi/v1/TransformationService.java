@@ -28,6 +28,7 @@
  */
 package org.n52.sensorweb.spi.v1;
 
+import com.vividsolutions.jts.geom.Geometry;
 import org.n52.web.exception.BadQueryParameterException;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
@@ -38,9 +39,7 @@ import org.n52.io.crs.CRSUtils;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import com.vividsolutions.jts.geom.Point;
-import org.n52.io.geojson.old.GeojsonFeature;
-import org.n52.io.geojson.old.GeojsonPoint;
+import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.sensorweb.spi.ParameterService;
 
 public abstract class TransformationService<T> extends ParameterService<T> {
@@ -50,7 +49,7 @@ public abstract class TransformationService<T> extends ParameterService<T> {
      * @param query the query containing CRS and how to handle axes order.
      * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
-    protected void transformInline(GeojsonFeature feature, IoParameters query) {
+    protected void transformInline(GeoJSONFeature feature, IoParameters query) {
         String crs = query.getCrs();
         if (DEFAULT_CRS.equals(crs)) {
             return; // no need to transform
@@ -59,9 +58,8 @@ public abstract class TransformationService<T> extends ParameterService<T> {
             CRSUtils crsUtils = query.isForceXY()
                     ? createEpsgForcedXYAxisOrder()
                     : createEpsgStrictAxisOrder();
-            GeojsonPoint geojsonPoint = (GeojsonPoint) feature.getGeometry();
-            Point point = crsUtils.convertToPointFrom(geojsonPoint);
-            feature.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+            Geometry geometry = feature.getGeometry();
+            feature.setGeometry(crsUtils.transformInnerToOuter(geometry, crs));
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {

@@ -38,9 +38,10 @@ import org.n52.io.response.AbstractOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.geojson.GeoJSONFeature;
 
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class FeatureOutput extends AbstractOutput {
+public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
 
     private final Map<String, Object> members = new HashMap<>();
 
@@ -69,6 +70,7 @@ public class FeatureOutput extends AbstractOutput {
         this.members.remove(key);
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         return Collections.unmodifiableMap(members);
     }
@@ -77,6 +79,7 @@ public class FeatureOutput extends AbstractOutput {
         this.members.putAll(properties);
     }
 
+    @Override
     public Geometry getGeometry() {
         return geometry;
     }
@@ -85,6 +88,7 @@ public class FeatureOutput extends AbstractOutput {
         this.geometry = geometry;
     }
 
+    @Override
     public boolean isSetGeometry() {
         return getGeometry() != null && !getGeometry().isEmpty();
     }

@@ -28,29 +28,64 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.response.CollatorComparable;
-import java.text.Collator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
+import java.util.HashMap;
+import java.util.Map;
+import org.n52.io.geojson.FeatureOutputSerializer;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
 
-import org.n52.io.geojson.old.GeojsonFeature;
-import org.n52.io.geojson.old.GeojsonPoint;
+import org.n52.io.response.AbstractOutput;
 
-public class StationOutput extends GeojsonFeature implements CollatorComparable<StationOutput> {
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
+public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     private static final long serialVersionUID = -2868469756939569521L;
 
-    @Override
-    public int compare(Collator collator, StationOutput o) {
-        if (collator == null) {
-            collator = Collator.getInstance();
-        }
-        String thisLabel = (String) getProperties().get("label");
-        String otherLabel = (String) o.getProperties().get("label");
-        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
+    private Map<String, TimeseriesOutput> timeseries;
+
+    private Geometry geometry;
+
+    public Map<String, TimeseriesOutput> getTimeseries() {
+        return timeseries;
+    }
+
+    public void setTimeseries(Map<String, TimeseriesOutput> timeseries) {
+        this.timeseries = timeseries;
     }
 
     @Override
-    public GeojsonPoint getGeometry() {
-        return (GeojsonPoint) super.getGeometry();
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    @Override
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
+    @Override
+    public boolean isSetGeometry() {
+        return geometry != null && !geometry.isEmpty();
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        nullSafePut("id", getId(), properties);
+        nullSafePut("label", getLabel(), properties);
+        nullSafePut("domainId", getDomainId(), properties);
+        nullSafePut("href", getHref(), properties);
+        nullSafePut("rawFormats", getRawFormats(), properties);
+        nullSafePut("timeseries", timeseries, properties);
+        return properties;
+    }
+
+    private void nullSafePut(String key, Object value, Map<String, Object> container) {
+        if (value != null) {
+            container.put(key, value);
+        }
     }
 
 }
