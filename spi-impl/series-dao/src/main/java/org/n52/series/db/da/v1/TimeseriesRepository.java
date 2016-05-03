@@ -85,7 +85,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
             String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<SearchResult>();

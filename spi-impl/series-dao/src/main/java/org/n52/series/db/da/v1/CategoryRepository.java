@@ -60,7 +60,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     }
 
     @Override
-    protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
             String locale) {
         List<SearchResult> results = new ArrayList<SearchResult>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
