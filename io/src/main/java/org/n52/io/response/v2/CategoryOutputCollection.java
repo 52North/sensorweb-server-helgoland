@@ -30,6 +30,7 @@ package org.n52.io.response.v2;
 
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
@@ -40,7 +41,7 @@ public class CategoryOutputCollection extends OutputCollection<CategoryOutput> {
         // empty collection
     }
 
-    public CategoryOutputCollection(List<CategoryOutput> results) {
+    public CategoryOutputCollection(Collection<CategoryOutput> results) {
         super(results);
     }
 

@@ -30,6 +30,7 @@ package org.n52.io.response.v2;
 
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 import java.util.Comparator;
 import org.n52.io.response.ParameterOutput;
 import java.util.List;
@@ -44,7 +45,11 @@ public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput>
         super(item);
     }
 
-    public ProcedureOutputCollection(List<ProcedureOutput> items) {
+    public ProcedureOutputCollection(Collection<ProcedureOutput> items) {
+        super(items);
+    }
+
+    public ProcedureOutputCollection(ProcedureOutput... items) {
         super(items);
     }
 

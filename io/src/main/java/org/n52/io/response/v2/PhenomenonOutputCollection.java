@@ -35,6 +35,7 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 
 public class PhenomenonOutputCollection extends OutputCollection<PhenomenonOutput> {
 
@@ -46,7 +47,7 @@ public class PhenomenonOutputCollection extends OutputCollection<PhenomenonOutpu
         super(item);
     }
 
-    public PhenomenonOutputCollection(List<PhenomenonOutput> items) {
+    public PhenomenonOutputCollection(Collection<PhenomenonOutput> items) {
         super(items);
     }
 
