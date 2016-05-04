@@ -51,7 +51,7 @@ import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.db.da.beans.v1.ObservationEntity;
-import org.n52.series.db.da.beans.v1.SeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
@@ -79,7 +79,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<SeriesEntity> found = seriesDao.find(searchString, parameters);
+            List<TimeseriesEntity> found = seriesDao.find(searchString, parameters);
             return convertToResults(found, locale);
         } finally {
             returnSession(session);
@@ -93,9 +93,9 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return new ArrayList<SearchResult>();
     }
 
-    private List<SearchResult> convertToResults(List<SeriesEntity> found, String locale) {
+    private List<SearchResult> convertToResults(List<TimeseriesEntity> found, String locale) {
         List<SearchResult> results = new ArrayList<SearchResult>();
-        for (SeriesEntity searchResult : found) {
+        for (TimeseriesEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
             String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
@@ -112,7 +112,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
-            for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them
@@ -134,7 +134,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
-            for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them
@@ -156,7 +156,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+            TimeseriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             /*
              *  ATM, the SWC REST API only supports numeric types
              *  We check for a unit to check for them
@@ -175,7 +175,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+            TimeseriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             return createTimeseriesData(timeseries, dbQuery, session);
         } finally {
             returnSession(session);
@@ -186,9 +186,9 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+            TimeseriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             TimeseriesData result = createTimeseriesData(timeseries, dbQuery, session);
-            Set<SeriesEntity> referenceValues = timeseries.getReferenceValues();
+            Set<TimeseriesEntity> referenceValues = timeseries.getReferenceValues();
             if (referenceValues != null && !referenceValues.isEmpty()) {
                 TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
                 metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
@@ -200,7 +200,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, SeriesEntity series, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createExpanded(Session session, TimeseriesEntity series, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
@@ -209,11 +209,11 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return output;
     }
 
-    private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntity series,
+    private ReferenceValueOutput[] createReferenceValueOutputs(TimeseriesEntity series,
             DbQuery query) throws DataAccessException {
-        Set<SeriesEntity> referenceValues = series.getReferenceValues();
+        Set<TimeseriesEntity> referenceValues = series.getReferenceValues();
         List<ReferenceValueOutput> outputs = new ArrayList<ReferenceValueOutput>();
-        for (SeriesEntity referenceSeriesEntity : referenceValues) {
+        for (TimeseriesEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 ReferenceValueOutput refenceValueOutput = new ReferenceValueOutput();
                 ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
@@ -228,7 +228,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(TimeseriesEntity entity, DbQuery query) throws DataAccessException {
         SeriesMetadataV1Output output = new SeriesMetadataV1Output();
         String locale = query.getLocale();
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
@@ -248,7 +248,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return sb.append(station).toString();
     }
 
-    private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(TimeseriesEntity entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 
@@ -256,11 +256,11 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query);
     }
 
-    private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,
+    private Map<String, TimeseriesData> assembleReferenceSeries(Set<TimeseriesEntity> referenceValues,
             DbQuery query,
             Session session) throws DataAccessException {
         Map<String, TimeseriesData> referenceSeries = new HashMap<String, TimeseriesData>();
-        for (SeriesEntity referenceSeriesEntity : referenceValues) {
+        for (TimeseriesEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 TimeseriesData referenceSeriesData = createTimeseriesData(referenceSeriesEntity, query, session);
                 if (haveToExpandReferenceData(referenceSeriesData)) {
@@ -276,7 +276,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return referenceSeriesData.getValues().length <= 1;
     }
 
-    private TimeseriesData expandReferenceDataIfNecessary(SeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private TimeseriesData expandReferenceDataIfNecessary(TimeseriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
         ObservationDao dao = new ObservationDao(session);
         List<ObservationEntity> observations = dao.getObservationsFor(seriesEntity, query);
@@ -300,7 +300,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return observations.size() == 1;
     }
 
-    private TimeseriesData createTimeseriesData(SeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private TimeseriesData createTimeseriesData(TimeseriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
         ObservationDao dao = new ObservationDao(session);
         List<ObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
@@ -312,7 +312,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return result;
     }
 
-    private TimeseriesValue[] expandToInterval(Interval interval, ObservationEntity entity, SeriesEntity series) {
+    private TimeseriesValue[] expandToInterval(Interval interval, ObservationEntity entity, TimeseriesEntity series) {
         ObservationEntity referenceStart = new ObservationEntity();
         ObservationEntity referenceEnd = new ObservationEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
@@ -324,7 +324,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     }
 
-    private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, SeriesEntity series) {
+    private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, TimeseriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -338,7 +338,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return value;
     }
 
-    private Double formatDecimal(Double value, SeriesEntity series) {
+    private Double formatDecimal(Double value, TimeseriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
                 .setScale(scale, HALF_UP)

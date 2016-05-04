@@ -37,7 +37,7 @@ import java.util.Map;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
-import org.n52.series.db.da.beans.v1.SeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.AbstractDbQuery;
 
 public class DbQuery extends AbstractDbQuery {
@@ -48,7 +48,7 @@ public class DbQuery extends AbstractDbQuery {
 
     @Override
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
+        DetachedCriteria filter = DetachedCriteria.forClass(TimeseriesEntity.class);
 
         if (getParameters().getPhenomenon() != null) {
             filter.createCriteria("phenomenon")

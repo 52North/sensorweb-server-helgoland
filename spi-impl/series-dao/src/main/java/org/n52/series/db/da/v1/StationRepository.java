@@ -40,7 +40,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.StationSearchResult;
-import org.n52.series.db.da.beans.v1.SeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
@@ -155,7 +155,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
-        List<SeriesEntity> series = seriesDao.getInstancesWith(feature);
+        List<TimeseriesEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;

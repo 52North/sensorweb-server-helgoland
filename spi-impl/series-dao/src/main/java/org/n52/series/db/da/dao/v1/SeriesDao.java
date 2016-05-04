@@ -41,7 +41,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.beans.v1.SeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
@@ -49,7 +49,7 @@ import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class SeriesDao extends AbstractDao<SeriesEntity> {
+public class SeriesDao extends AbstractDao<TimeseriesEntity> {
 
     private static final String COLUMN_PKID = "pkid";
 
@@ -59,14 +59,14 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> find(String search, DbQuery query) {
+    public List<TimeseriesEntity> find(String search, DbQuery query) {
 
         /*
          * Timeseries labels are constructed from labels of related feature
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-        List<SeriesEntity> series = new ArrayList<>();
+        List<TimeseriesEntity> series = new ArrayList<>();
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria());
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
@@ -87,17 +87,17 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @Override
-    public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+    public TimeseriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
-        return (SeriesEntity) criteria.uniqueResult();
+        return (TimeseriesEntity) criteria.uniqueResult();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
+    public List<TimeseriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = session.createCriteria(TimeseriesEntity.class, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("procedure")
                 .add(eq("reference", false));
@@ -106,16 +106,16 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         criteria.add(Subqueries.propertyIn("s.pkid", filter));
 
         parameters.addPagingTo(criteria);
-        return (List<SeriesEntity>) criteria.list();
+        return (List<TimeseriesEntity>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
+    public List<TimeseriesEntity> getInstancesWith(FeatureEntity feature) {
+        Criteria criteria = session.createCriteria(TimeseriesEntity.class, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
-        return (List<SeriesEntity>) criteria.list();
+        return (List<TimeseriesEntity>) criteria.list();
     }
 
     @Override
@@ -141,7 +141,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(SeriesEntity.class);
+        return session.createCriteria(TimeseriesEntity.class);
     }
 
 }

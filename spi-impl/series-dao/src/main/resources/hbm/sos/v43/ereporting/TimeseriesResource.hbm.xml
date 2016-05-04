@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.da.beans.v1">
-    <class name="SeriesEntity" table="series">
+    <class name="TimeseriesEntity" table="series">
         <id name="pkid" type="long">
             <column name="seriesid"/>
             <generator class="assigned"/>
@@ -9,7 +9,7 @@
         <many-to-one class="org.n52.series.db.da.beans.v1.CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
         <many-to-one class="org.n52.series.db.da.beans.v1.ProcedureEntity" column="procedureid" name="procedure"/>
         <many-to-one class="org.n52.series.db.da.beans.v1.PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
-        <many-to-one class="org.n52.series.db.da.beans.v1.FeatureEntity" formula="(select s.stationid from station s, samplingpoint sp where s.stationid = sp.station                                  and sp.samplingpointid = samplingpointid)" name="feature"/>
+        <many-to-one class="org.n52.series.db.da.beans.v1.FeatureEntity" formula="(select s.stationid from station s, samplingpoint sp where s.stationid = sp.station and sp.samplingpointid = samplingpointid)" name="feature"/>
         <many-to-one class="org.n52.series.db.da.beans.v1.UnitEntity" column="unitid" name="unit"/>
         <property formula="3" name="numberOfDecimals" type="int"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>

@@ -39,6 +39,7 @@ import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.UnitEntity;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public class SeriesEntity {
 
@@ -51,6 +52,7 @@ public class SeriesEntity {
     private ProcedureEntity procedure;
 
     private FeatureEntity feature;
+public class TimeseriesEntity extends AbstractSeriesEntity {
 
     private int numberOfDecimals;
 
@@ -114,11 +116,11 @@ public class SeriesEntity {
         this.observations = observations;
     }
 
-    public Set<SeriesEntity> getReferenceValues() {
+    public Set<TimeseriesEntity> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Set<SeriesEntity> referenceValues) {
+    public void setReferenceValues(Set<TimeseriesEntity> referenceValues) {
         this.referenceValues = referenceValues;
     }
 
