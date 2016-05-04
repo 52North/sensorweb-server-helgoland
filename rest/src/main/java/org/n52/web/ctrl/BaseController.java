@@ -47,7 +47,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,6 +59,8 @@ import org.n52.web.exception.ExceptionResponse;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebException;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletConfigAware;
 
 /**
@@ -74,7 +75,7 @@ import org.springframework.web.context.ServletConfigAware;
  * {@link WebException#addHint(String)} so that as much information is
  * communicated to the caller as possible.</p>
  */
-@Controller
+@RestController
 public abstract class BaseController implements ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
