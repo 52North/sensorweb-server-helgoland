@@ -5,11 +5,11 @@ Apply `src/extension/metadata/create_metadata_table.sql` and add some metadata t
 Add `/hbm/sos/metadata` to the `seriesSessionFactory` bean in
 `WEB-INF/spring/series-database-config.xml` like
 ```
-<property name="mappingDirectoryLocations">
+<property name="mappingLocations">
   <list>
-    <value>classpath:hbm/sos/v42</value>
-    <value>classpath:hbm/sos/v42/series</value>
-    <value>classpath:hbm/sos/metadata</value>
+    <value>classpath:hbm/sos/v42/*.hbm.xml</value>
+    <value>classpath:hbm/sos/v42/series/*.hbm.xml</value>
+    <value>classpath:hbm/sos/metadata/*.hbm.xml</value>
   </list>
 </property>
 ```

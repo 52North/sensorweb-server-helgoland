@@ -39,10 +39,10 @@ for your database model (see below).
 
 ### 52°North SOS v4.3.x with `series` profile
 ```
-<property name="mappingDirectoryLocations">
+<property name="mappingLocations">
   <list>
-    <value>classpath:hbm/sos/v42</value>
-    <value>classpath:hbm/sos/v42/series</value>
+    <value>classpath:hbm/sos/v42/*.hbm.xml</value>
+    <value>classpath:hbm/sos/v42/series/*.hbm.xml</value>
   </list>
 </property>
 ```
@@ -52,10 +52,10 @@ Note that the mappings under `v42` are also valid for 52°North SOS v4.3.x datam
 
 ### 52°North SOS v4.3.x with `e-reporting` profile
 ```
-<property name="mappingDirectoryLocations">
+<property name="mappingLocations">
   <list>
-    <value>classpath:hbm/sos/v42</value>
-    <value>classpath:hbm/sos/v43/ereporting</value>
+    <value>classpath:hbm/sos/v42/*.hbm.xml</value>
+    <value>classpath:hbm/sos/v43/ereporting/*.hbm.xml</value>
   </list>
 </property>
 ```
