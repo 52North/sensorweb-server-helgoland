@@ -31,7 +31,7 @@ package org.n52.series.db.da.beans.v2;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.n52.series.db.da.beans.AbstractObservationEntity;
+import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 
 import com.vividsolutions.jts.geom.Geometry;
 

@@ -26,21 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.beans.v1;
+package org.n52.series.db.da.beans.ext;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
-import org.n52.series.db.da.beans.UnitEntity;
 
-public class SeriesEntity {
+public abstract class AbstractSeriesEntity {
 
     private Long pkid;
 
@@ -52,19 +48,9 @@ public class SeriesEntity {
 
     private FeatureEntity feature;
 
-    private int numberOfDecimals;
-
-    private UnitEntity unit;
-
     private boolean published;
 
-    private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
-
-    private Set<SeriesEntity> referenceValues = new HashSet<SeriesEntity>();
-
-    private ObservationEntity firstValue;
-
-    private ObservationEntity lastValue;
+    private List<AbstractObservationEntity> observations = new ArrayList<>();
 
     public Long getPkid() {
         return pkid;
@@ -106,36 +92,12 @@ public class SeriesEntity {
         this.feature = feature;
     }
 
-    public List<ObservationEntity> getObservations() {
+    public List<AbstractObservationEntity> getObservations() {
         return observations;
     }
 
-    public void setObservations(List<ObservationEntity> observations) {
+    public void setObservations(List<AbstractObservationEntity> observations) {
         this.observations = observations;
-    }
-
-    public Set<SeriesEntity> getReferenceValues() {
-        return referenceValues;
-    }
-
-    public void setReferenceValues(Set<SeriesEntity> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
-    public int getNumberOfDecimals() {
-        return numberOfDecimals;
-    }
-
-    public void setNumberOfDecimals(int numberOfDecimals) {
-        this.numberOfDecimals = numberOfDecimals;
-    }
-
-    public UnitEntity getUnit() {
-        return unit;
-    }
-
-    public void setUnit(UnitEntity unit) {
-        this.unit = unit;
     }
 
     public Boolean isPublished() {
@@ -144,36 +106,6 @@ public class SeriesEntity {
 
     public void setPublished(Boolean published) {
         this.published = published;
-    }
-
-    public ObservationEntity getFirstValue() {
-        if (firstValue != null) {
-            Date when = firstValue.getTimestamp();
-            Double value = firstValue.getValue();
-            if (when == null || value == null) {
-                return null; // empty component
-            }
-        }
-        return firstValue;
-    }
-
-    public void setFirstValue(ObservationEntity firstValue) {
-        this.firstValue = firstValue;
-    }
-
-    public ObservationEntity getLastValue() {
-        if (lastValue != null) {
-            Date when = lastValue.getTimestamp();
-            Double value = lastValue.getValue();
-            if (when == null || value == null) {
-                return null; // empty component
-            }
-        }
-        return lastValue;
-    }
-
-    public void setLastValue(ObservationEntity lastValue) {
-        this.lastValue = lastValue;
     }
 
     @Override

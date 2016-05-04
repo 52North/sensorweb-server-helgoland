@@ -28,93 +28,24 @@
  */
 package org.n52.series.db.da.beans.v1;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.n52.series.db.da.beans.CategoryEntity;
-import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.PhenomenonEntity;
-import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.UnitEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
-public class SeriesEntity {
-
-    private Long pkid;
-
-    private CategoryEntity category;
-
-    private PhenomenonEntity phenomenon;
-
-    private ProcedureEntity procedure;
-
-    private FeatureEntity feature;
 public class TimeseriesEntity extends AbstractSeriesEntity {
 
     private int numberOfDecimals;
 
     private UnitEntity unit;
 
-    private boolean published;
-
-    private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
-
-    private Set<SeriesEntity> referenceValues = new HashSet<SeriesEntity>();
+    private Set<TimeseriesEntity> referenceValues = new HashSet<>();
 
     private ObservationEntity firstValue;
 
     private ObservationEntity lastValue;
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public CategoryEntity getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryEntity category) {
-        this.category = category;
-    }
-
-    public PhenomenonEntity getPhenomenon() {
-        return phenomenon;
-    }
-
-    public void setPhenomenon(PhenomenonEntity phenomenon) {
-        this.phenomenon = phenomenon;
-    }
-
-    public ProcedureEntity getProcedure() {
-        return procedure;
-    }
-
-    public void setProcedure(ProcedureEntity procedure) {
-        this.procedure = procedure;
-    }
-
-    public FeatureEntity getFeature() {
-        return feature;
-    }
-
-    public void setFeature(FeatureEntity feature) {
-        this.feature = feature;
-    }
-
-    public List<ObservationEntity> getObservations() {
-        return observations;
-    }
-
-    public void setObservations(List<ObservationEntity> observations) {
-        this.observations = observations;
-    }
 
     public Set<TimeseriesEntity> getReferenceValues() {
         return referenceValues;
@@ -138,14 +69,6 @@ public class TimeseriesEntity extends AbstractSeriesEntity {
 
     public void setUnit(UnitEntity unit) {
         this.unit = unit;
-    }
-
-    public Boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(Boolean published) {
-        this.published = published;
     }
 
     public ObservationEntity getFirstValue() {
@@ -176,19 +99,6 @@ public class TimeseriesEntity extends AbstractSeriesEntity {
 
     public void setLastValue(ObservationEntity lastValue) {
         this.lastValue = lastValue;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" id: ").append(pkid);
-        sb.append(" , category: ").append(category);
-        sb.append(" , phenomenon: ").append(phenomenon);
-        sb.append(" , procedure: ").append(procedure);
-        sb.append(" , feature: ").append(feature);
-        sb.append(" , #observations: ").append(observations.size());
-        return sb.append(" ]").toString();
     }
 
 }

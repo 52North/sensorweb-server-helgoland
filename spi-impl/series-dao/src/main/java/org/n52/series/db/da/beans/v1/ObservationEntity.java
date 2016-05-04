@@ -28,7 +28,7 @@
  */
 package org.n52.series.db.da.beans.v1;
 
-import org.n52.series.db.da.beans.AbstractObservationEntity;
+import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 
 public class ObservationEntity extends AbstractObservationEntity {
 

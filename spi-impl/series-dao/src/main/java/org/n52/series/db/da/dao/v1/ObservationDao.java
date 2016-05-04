@@ -39,7 +39,7 @@ import org.hibernate.criterion.Projections;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.beans.v1.ObservationEntity;
-import org.n52.series.db.da.beans.v1.SeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,7 +73,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      * @throws org.n52.series.db.da.DataAccessException if accessing database
      * fails.
      */
-    public List<ObservationEntity> getAllInstancesFor(SeriesEntity series) throws DataAccessException {
+    public List<ObservationEntity> getAllInstancesFor(TimeseriesEntity series) throws DataAccessException {
         return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
@@ -106,7 +106,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked")
-    public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, AbstractDbQuery parameters) throws DataAccessException {
+    public List<ObservationEntity> getAllInstancesFor(TimeseriesEntity series, AbstractDbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
@@ -116,7 +116,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ObservationEntity> getObservationsFor(SeriesEntity series, AbstractDbQuery query) {
+    public List<ObservationEntity> getObservationsFor(TimeseriesEntity series, AbstractDbQuery query) {
         Criteria criteria = query.addTimespanTo(getDefaultCriteria())
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));

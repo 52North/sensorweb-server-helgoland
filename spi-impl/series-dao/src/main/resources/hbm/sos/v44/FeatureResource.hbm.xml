@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.n52.series.db.da.beans.v1">
-    <class name="FeatureEntity" table="featureofinterest">
+<hibernate-mapping>
+    <class abstract="true" name="org.n52.series.db.da.beans.FeatureEntity" table="featureofinterest">
         <id name="pkid" type="long">
             <column name="featureofinterestid"/>
             <generator class="assigned"/>
         </id>
+
+        <discriminator column="featureconcept" type="string" />
+
         <property column="identifier" name="name" type="string"/>
         <property column="geom" name="geom" type="org.hibernate.spatial.GeometryType"/>
+
+        <property column="featureconcept" name="featureConcept" type="string" insert="false" update="false" />
+
+        <subclass name="org.n52.series.db.da.beans.ext.SiteFeatureEntity" discriminator-value="stationary/insitu">
+
+        </subclass>
+        <subclass name="org.n52.series.db.da.beans.ext.TrackFeatureEntity" discriminator-value="mobile/insitu">
+
+        </subclass>
     </class>
 </hibernate-mapping>
