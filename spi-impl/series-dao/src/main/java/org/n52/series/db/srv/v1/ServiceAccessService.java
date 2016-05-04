@@ -50,11 +50,14 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
     @Autowired
     private ServiceInfo serviceInfo;
 
-    @Autowired
-    private OutputAssembler<ServiceOutput> serviceRepository;
+    private final OutputAssembler<ServiceOutput> serviceRepository;
 
-    @Autowired
-    private OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository;
+    private final OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository;
+
+    public ServiceAccessService(OutputAssembler<ServiceOutput> serviceRepository, OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository) {
+        this.serviceRepository = serviceRepository;
+        this.timeseriesRepository = timeseriesRepository;
+    }
 
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
         return new OutputCollection<ServiceOutput>(result) {

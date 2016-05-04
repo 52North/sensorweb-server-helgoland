@@ -29,7 +29,6 @@
 package org.n52.web.ctrl.v2;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
@@ -39,6 +38,7 @@ import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.SeriesOutputCollection;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
