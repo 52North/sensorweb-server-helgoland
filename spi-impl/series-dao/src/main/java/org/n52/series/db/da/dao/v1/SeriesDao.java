@@ -86,10 +86,6 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         return series;
     }
 
-//    @Override
-//    public SeriesEntity getInstance(Long key) throws DataAccessException {
-//        return getInstance(key, DbQueryV1.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
@@ -98,10 +94,6 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         return (SeriesEntity) criteria.uniqueResult();
     }
 
-//    @Override
-//    public List<SeriesEntity> getAllInstances() throws DataAccessException {
-//        return getAllInstances(DbQueryV1.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     @SuppressWarnings("unchecked")
     public List<SeriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
