@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.da.v1.ext;
 
-import org.n52.series.db.da.v1.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,6 +42,8 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.I18nEntity;
+import org.n52.series.db.da.v1.CategoryRepository;
+import org.n52.series.db.da.v1.DbQuery;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class ExtCategoryRepository extends CategoryRepository {
