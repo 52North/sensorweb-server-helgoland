@@ -34,6 +34,11 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
 
     private Geometry geom;
 
+    /**
+     * @since 2.0.0, supports foi concepts supported since SOS v4.4.x
+     */
+    private String featureConcept;
+
     public Geometry getGeom() {
         return geom;
     }
@@ -44,6 +49,14 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
 
     public boolean isSetGeom() {
         return getGeom() != null && !getGeom().isEmpty();
+    }
+
+    public String getFeatureConcept() {
+        return featureConcept;
+    }
+
+    public void setFeatureConcept(String featureConcept) {
+        this.featureConcept = featureConcept;
     }
 
     @Override
