@@ -87,6 +87,7 @@
             <groupId>net.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
             <version>${postgis.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
