@@ -37,6 +37,7 @@ import org.n52.series.db.da.dao.v1.ProcedureDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 
 public class EntityCounter {
 
@@ -100,7 +101,8 @@ public class EntityCounter {
     public int countTimeseries() throws DataAccessException {
         Session session = repository.getSession();
         try {
-            return new SeriesDao(session).getCount();
+//            return new SeriesDao<>(session, MeasurementSeriesEntity.class).getCount();
+            return new SeriesDao<MeasurementSeriesEntity>(session).getCount();
         } finally {
             repository.returnSession(session);
         }

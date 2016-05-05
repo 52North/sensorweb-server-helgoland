@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.v1.ObservationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,8 +81,9 @@ public class ServiceInfo {
         this.type = type;
     }
 
+    // TODO add further observation types
     @JsonIgnore
-    public boolean hasNoDataValue(ObservationEntity observation) {
+    public boolean isNoDataValue(MeasurementEntity observation) {
         Double value = observation.getValue();
         return value == null
                 || Double.isNaN(value)

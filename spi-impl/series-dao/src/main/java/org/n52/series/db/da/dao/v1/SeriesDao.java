@@ -41,32 +41,40 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class SeriesDao extends AbstractDao<TimeseriesEntity> {
+public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     private static final String COLUMN_PKID = "pkid";
 
+    private final Class<T> entityType;
+
+    private SeriesDao(Session session, Class<T> clazz) {
+        super(session);
+        this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
+    }
+
     public SeriesDao(Session session) {
         super(session);
+        this.entityType = (Class<T>) AbstractSeriesEntity.class;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TimeseriesEntity> find(String search, DbQuery query) {
+    public List<T> find(String search, DbQuery query) {
 
         /*
          * Timeseries labels are constructed from labels of related feature
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-        List<TimeseriesEntity> series = new ArrayList<>();
+        List<T> series = new ArrayList<>();
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria());
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
@@ -87,17 +95,17 @@ public class SeriesDao extends AbstractDao<TimeseriesEntity> {
     }
 
     @Override
-    public TimeseriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
-        return (TimeseriesEntity) criteria.uniqueResult();
+        return entityType.cast(criteria.uniqueResult());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TimeseriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(TimeseriesEntity.class, "s");
+    public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = session.createCriteria(entityType, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("procedure")
                 .add(eq("reference", false));
@@ -106,16 +114,16 @@ public class SeriesDao extends AbstractDao<TimeseriesEntity> {
         criteria.add(Subqueries.propertyIn("s.pkid", filter));
 
         parameters.addPagingTo(criteria);
-        return (List<TimeseriesEntity>) criteria.list();
+        return (List<T>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
-    public List<TimeseriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = session.createCriteria(TimeseriesEntity.class, "s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+    public List<T> getInstancesWith(FeatureEntity feature) {
+        Criteria criteria = session.createCriteria(entityType, "s");
+//        addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
-        return (List<TimeseriesEntity>) criteria.list();
+        return (List<T>) criteria.list();
     }
 
     @Override
@@ -129,6 +137,7 @@ public class SeriesDao extends AbstractDao<TimeseriesEntity> {
         return addIgnoreNonPublishedSeriesTo(criteria, null);
     }
 
+    // TODO
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
         alias = alias == null ? "" : alias + ".";
         criteria.add(Restrictions.and(
@@ -141,7 +150,7 @@ public class SeriesDao extends AbstractDao<TimeseriesEntity> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(TimeseriesEntity.class);
+        return session.createCriteria(AbstractSeriesEntity.class);
     }
 
 }

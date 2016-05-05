@@ -85,10 +85,4 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         return getDefaultCriteria(null, FeatureEntity.class);
     }
 
-//    @Override
-//    protected Criteria getDefaultCriteria(String alias, Class<FeatureEntity> clazz) {
-//        Criteria criteria = super.getDefaultCriteria(alias, clazz);
-//        criteria.add(Restrictions.isNotNull("geom"));
-//        return criteria;
-//    }
 }

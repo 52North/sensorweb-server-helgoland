@@ -10,7 +10,7 @@
         <property column="seriesid" name="seriesPkid" type="long"/>
         <property column="phenomenontimeend" name="timestamp" type="timestamp"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
-        <subclass discriminator-value="measurement" name="MeasurementEntity">
+        <subclass name="MeasurementEntity" discriminator-value="measurement" >
             <join fetch="join" table="numericvalue">
                 <key column="observationid" foreign-key="observationid"/>
                 <property name="value" type="double"/>

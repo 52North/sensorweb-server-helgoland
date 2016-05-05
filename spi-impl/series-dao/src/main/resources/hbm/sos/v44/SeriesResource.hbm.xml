@@ -9,19 +9,14 @@
 
         <discriminator column="observationconcept" type="string" />
 
-        <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
+        <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" name="category" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure"/>
-        <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
+        <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" name="phenomenon" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature"/>
-
-        <property name="published" formula="true"/>
-        <!--<property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>-->
-
+        <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">
-            <!--<property name="unit" type="string" formula="select unit as name from series" />-->
-            <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="unitid" name="unit"/>
-
             <property name="numberOfDecimals" type="int" formula="3" />
+            <property column="unit" name="simpleUnit" type="string" />
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
                 <property column="firstnumericvalue" name="value" type="double"/>

@@ -33,7 +33,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.series.db.da.beans.UnitEntity;
-import org.n52.series.db.da.beans.v1.ObservationEntity;
 
 public class MeasurementSeriesEntity extends AbstractSeriesEntity {
 
@@ -41,11 +40,13 @@ public class MeasurementSeriesEntity extends AbstractSeriesEntity {
 
     private UnitEntity unit;
 
+    private String simpleUnit;
+
     private Set<MeasurementSeriesEntity> referenceValues = new HashSet<>();
 
-    private ObservationEntity firstValue;
+    private MeasurementEntity firstValue;
 
-    private ObservationEntity lastValue;
+    private MeasurementEntity lastValue;
 
     public Set<MeasurementSeriesEntity> getReferenceValues() {
         return referenceValues;
@@ -71,7 +72,30 @@ public class MeasurementSeriesEntity extends AbstractSeriesEntity {
         this.unit = unit;
     }
 
-    public ObservationEntity getFirstValue() {
+    public String getSimpleUnit() {
+        return simpleUnit;
+    }
+
+    public boolean hasUnit() {
+        return unit != null || simpleUnit != null;
+    }
+
+    public String getUnitI18nName(String locale) {
+        String name = null;
+        if (unit != null) {
+            name = unit.getNameI18n(locale);
+        }
+        if (simpleUnit != null) {
+            name = simpleUnit;
+        }
+        return name;
+    }
+
+    public void setSimpleUnit(String simpleUnit) {
+        this.simpleUnit = simpleUnit;
+    }
+
+    public MeasurementEntity getFirstValue() {
         if (firstValue != null) {
             Date when = firstValue.getTimestamp();
             Double value = firstValue.getValue();
@@ -82,11 +106,11 @@ public class MeasurementSeriesEntity extends AbstractSeriesEntity {
         return firstValue;
     }
 
-    public void setFirstValue(ObservationEntity firstValue) {
+    public void setFirstValue(MeasurementEntity firstValue) {
         this.firstValue = firstValue;
     }
 
-    public ObservationEntity getLastValue() {
+    public MeasurementEntity getLastValue() {
         if (lastValue != null) {
             Date when = lastValue.getTimestamp();
             Double value = lastValue.getValue();
@@ -97,7 +121,7 @@ public class MeasurementSeriesEntity extends AbstractSeriesEntity {
         return lastValue;
     }
 
-    public void setLastValue(ObservationEntity lastValue) {
+    public void setLastValue(MeasurementEntity lastValue) {
         this.lastValue = lastValue;
     }
 

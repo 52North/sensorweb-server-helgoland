@@ -28,8 +28,14 @@
  */
 package org.n52.series.db.da.beans.v1;
 
-import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
+import org.n52.series.db.da.beans.ext.MeasurementEntity;
 
-public class ObservationEntity extends AbstractObservationEntity {
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated use {@link MeasurementEntity} instead.
+ */
+@Deprecated
+public class ObservationEntity extends MeasurementEntity {
 
 }

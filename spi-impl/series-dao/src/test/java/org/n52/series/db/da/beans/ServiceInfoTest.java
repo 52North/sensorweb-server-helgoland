@@ -54,14 +54,14 @@ public class ServiceInfoTest {
     public void shouldTreatNullAsNoDataValue() {
         ObservationEntity entity = new ObservationEntity();
         entity.setValue(null);
-        MatcherAssert.assertThat(serviceInfo.hasNoDataValue(entity), Is.is(true));
+        MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
     }
 
     @Test
     public void shouldTreatNaNAsNoDataValue() {
         ObservationEntity entity = new ObservationEntity();
         entity.setValue(Double.NaN);
-        MatcherAssert.assertThat(serviceInfo.hasNoDataValue(entity), Is.is(true));
+        MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
     }
 
     @Test
@@ -69,9 +69,9 @@ public class ServiceInfoTest {
         serviceInfo.setNoDataValues("4.3,9,invalid");
         ObservationEntity entity = new ObservationEntity();
         entity.setValue(new Double(9));
-        MatcherAssert.assertThat(serviceInfo.hasNoDataValue(entity), Is.is(true));
+        MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
 
         entity.setValue(4.30);
-        MatcherAssert.assertThat(serviceInfo.hasNoDataValue(entity), Is.is(true));
+        MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
     }
 }

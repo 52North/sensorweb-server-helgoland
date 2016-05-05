@@ -36,7 +36,7 @@ import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 
-public abstract class AbstractSeriesEntity {
+public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> {
 
     private Long pkid;
 
@@ -50,7 +50,13 @@ public abstract class AbstractSeriesEntity {
 
     private boolean published;
 
-    private List<AbstractObservationEntity> observations = new ArrayList<>();
+    private List<T> observations = new ArrayList<>();
+
+    private Class<T> entityType;
+
+    public AbstractSeriesEntity() {
+        this.entityType = (Class<T>) AbstractObservationEntity.class;
+    }
 
     public Long getPkid() {
         return pkid;
@@ -92,11 +98,11 @@ public abstract class AbstractSeriesEntity {
         this.feature = feature;
     }
 
-    public List<AbstractObservationEntity> getObservations() {
+    public List<T> getObservations() {
         return observations;
     }
 
-    public void setObservations(List<AbstractObservationEntity> observations) {
+    public void setObservations(List<T> observations) {
         this.observations = observations;
     }
 

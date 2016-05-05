@@ -40,7 +40,6 @@ import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.TimeseriesOutput;
-import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
@@ -48,6 +47,7 @@ import org.n52.series.db.da.beans.I18nCategoryEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nPhenomenonEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
+import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ExtendedSessionAwareRepository extends SessionAwareRepository<DbQuery> {
@@ -55,9 +55,9 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     @Autowired
     private ServiceRepository serviceRepository;
 
-    protected Map<String, TimeseriesOutput> createTimeseriesList(List<TimeseriesEntity> series, DbQuery parameters) throws DataAccessException {
+    protected Map<String, TimeseriesOutput> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<>();
-        for (TimeseriesEntity timeseries : series) {
+        for (MeasurementSeriesEntity timeseries : series) {
             if (!timeseries.getProcedure().isReference()) {
                 String timeseriesId = timeseries.getPkid().toString();
                 timeseriesOutputs.put(timeseriesId, createTimeseriesOutput(timeseries, parameters));
@@ -66,7 +66,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutputs;
     }
 
-    protected TimeseriesOutput createTimeseriesOutput(TimeseriesEntity timeseries, DbQuery parameters) throws DataAccessException {
+    protected TimeseriesOutput createTimeseriesOutput(MeasurementSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
         TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
         timeseriesOutput.setService(getCondensedService());
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));

@@ -40,7 +40,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.StationSearchResult;
-import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
@@ -55,12 +54,13 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 
 public class StationRepository extends ExtendedSessionAwareRepository implements OutputAssembler<StationOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationRepository.class);
 
-    private CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
+    private final CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
 
     private String dbSrid = "EPSG:4326";
 
@@ -80,7 +80,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
             String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
+        List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
@@ -97,7 +97,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
             FeatureDao featureDao = new FeatureDao(session);
             List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
 
-            List<StationOutput> results = new ArrayList<StationOutput>();
+            List<StationOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : allFeatures) {
                 results.add(createCondensed(featureEntity, parameters));
             }
@@ -115,7 +115,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
             parameters.setDatabaseAuthorityCode(dbSrid);
             FeatureDao featureDao = new FeatureDao(session);
             List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
-            List<StationOutput> results = new ArrayList<StationOutput>();
+            List<StationOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : allFeatures) {
                 results.add(createExpanded(featureEntity, parameters, session));
             }
@@ -154,8 +154,8 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     }
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        SeriesDao seriesDao = new SeriesDao(session);
-        List<TimeseriesEntity> series = seriesDao.getInstancesWith(feature);
+        SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+        List<MeasurementSeriesEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;
