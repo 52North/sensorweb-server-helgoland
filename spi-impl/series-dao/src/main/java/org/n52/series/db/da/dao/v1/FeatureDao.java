@@ -75,8 +75,15 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
         criteria.add(Subqueries.propertyIn("f.pkid", filter));
 
+        criteria = parameters.addPagingTo(criteria);
         parameters.addSpatialFilterTo(criteria, parameters);
-        parameters.addPagingTo(criteria);
+
+        // XXX refactor
+        if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
+                && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
+            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+        }
+
         return (List<FeatureEntity>) criteria.list();
     }
 

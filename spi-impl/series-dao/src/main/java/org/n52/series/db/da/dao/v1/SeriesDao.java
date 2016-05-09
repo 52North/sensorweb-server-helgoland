@@ -114,6 +114,13 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         criteria.add(Subqueries.propertyIn("s.pkid", filter));
 
         parameters.addPagingTo(criteria);
+
+        // XXX refactor
+        if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
+                && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
+            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+        }
+
         return (List<T>) criteria.list();
     }
 

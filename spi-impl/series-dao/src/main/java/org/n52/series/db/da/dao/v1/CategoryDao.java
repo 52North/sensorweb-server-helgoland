@@ -83,7 +83,8 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("category");
         criteria.add(Subqueries.propertyIn("c.pkid", filter));
 
-        parameters.addPagingTo(criteria);
+        criteria = parameters.addPagingTo(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
         return criteria.list();
     }
 

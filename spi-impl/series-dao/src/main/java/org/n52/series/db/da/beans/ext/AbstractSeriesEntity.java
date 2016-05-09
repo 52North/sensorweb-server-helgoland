@@ -48,7 +48,7 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
 
     private FeatureEntity feature;
 
-    private boolean published;
+    private Boolean published;
 
     private List<T> observations = new ArrayList<>();
 

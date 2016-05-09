@@ -71,7 +71,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("p", ProcedureEntity.class)
+        Criteria criteria = getDefaultCriteria("p")
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
@@ -80,13 +80,18 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
         criteria.add(Subqueries.propertyIn("p.pkid", filter));
 
-        parameters.addPagingTo(criteria);
+        criteria = parameters.addPagingTo(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
         return (List<ProcedureEntity>) criteria.list();
     }
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null, ProcedureEntity.class);
+        return getDefaultCriteria(null);
+    }
+
+    private Criteria getDefaultCriteria(String alias) {
+        return super.getDefaultCriteria(alias, ProcedureEntity.class);
     }
 
 }

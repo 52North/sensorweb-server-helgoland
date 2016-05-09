@@ -92,14 +92,16 @@ public abstract class AbstractDbQuery {
     }
 
     public boolean checkTranslationForLocale(Criteria criteria) {
-        return criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().size() != 0;
+        return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode()))
+                .list()
+                .isEmpty();
     }
 
     public Criteria addLocaleTo(Criteria criteria, Class< ?> clazz) {
         if (getLocale() != null && isEntitySupported(clazz, criteria)) {
             criteria = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN)
                     .add(or(like(COLUMN_LOCALE, getCountryCode()),
-                                    isNull(COLUMN_LOCALE)));
+                            isNull(COLUMN_LOCALE)));
         }
         return criteria;
     }
@@ -124,6 +126,17 @@ public abstract class AbstractDbQuery {
             Date start = interval.getStart().toDate();
             Date end = interval.getEnd().toDate();
             criteria.add(between(COLUMN_TIMESTAMP, start, end));
+        }
+        return criteria;
+    }
+
+    public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria) {
+        if (parameters.containsParameter("pureStationTimeseriesConcept")
+                && parameters.getAsBoolean("pureStationTimeseriesConcept")) {
+            criteria
+                    .createCriteria("series", "s", JoinType.INNER_JOIN)
+                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
+                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
         }
         return criteria;
     }

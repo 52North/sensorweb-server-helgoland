@@ -59,19 +59,11 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
         return criteria.list();
     }
 
-//    @Override
-//    public PhenomenonEntity getInstance(Long key) throws DataAccessException {
-//        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     public PhenomenonEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         return (PhenomenonEntity) session.get(PhenomenonEntity.class, key);
     }
 
-//    @Override
-//    public List<PhenomenonEntity> getAllInstances() throws DataAccessException {
-//        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
@@ -83,7 +75,8 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
         criteria.add(Subqueries.propertyIn("p.pkid", filter));
 
-        parameters.addPagingTo(criteria);
+        criteria = parameters.addPagingTo(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
         return (List<PhenomenonEntity>) criteria.list();
     }
 
