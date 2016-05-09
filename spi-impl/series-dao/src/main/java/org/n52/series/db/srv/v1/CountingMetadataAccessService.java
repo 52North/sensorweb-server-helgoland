@@ -33,7 +33,7 @@ import org.n52.series.db.da.v1.EntityCounter;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.web.exception.InternalServerException;
 
-public class MetadataAccessService implements CountingMetadataService {
+public class CountingMetadataAccessService implements CountingMetadataService {
 
     private final EntityCounter repository = new EntityCounter();
 
