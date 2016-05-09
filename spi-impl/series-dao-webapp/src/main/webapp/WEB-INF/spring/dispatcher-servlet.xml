@@ -31,7 +31,7 @@
     </bean>
 
     <import resource="api_v1_mvc.xml"/>
-    <!--<import resource="api_v1_ext_mvc.xml"/>-->
+    <import resource="api_v1_mvc_ext.xml"/>
     <!--<import resource="api_v2_mvc.xml"/>-->
 
     <bean id="contentNegotiationManager"

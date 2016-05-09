@@ -26,13 +26,13 @@
 
     <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
     <bean id="timeseriesService" class="org.n52.series.db.srv.v1.TimeseriesAccessService" />
-    <bean id="metadataService" class="org.n52.series.db.srv.v1.MetadataAccessService" />
+    <bean id="metadataService" class="org.n52.series.db.srv.v1.CountingMetadataAccessService" />
 
     <bean id="serviceParameterService" class="org.n52.series.db.srv.v1.ServiceAccessService">
         <constructor-arg index="0" ref="serviceRepository" />
         <constructor-arg index="1" ref="timeseriesRepository" />
     </bean>
-    <bean id="offeringParameterService" class="org.n52.series.db.srv.v1.AccessService">
+    <bean id="offeringParameterService" class="org.n52.series.db.srv.v1.ext.SeriesAccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
     <bean id="categoryParameterService" class="org.n52.series.db.srv.v1.AccessService">

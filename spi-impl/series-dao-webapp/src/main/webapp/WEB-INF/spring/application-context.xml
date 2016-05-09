@@ -27,7 +27,7 @@
 
     <!-- timeseries api web controller bindings -->
     <import resource="spi-impl-dao_v1_beans.xml"/>
-    <!--<import resource="spi-impl-dao_v1_ext_beans.xml"/>-->
+    <!--<import resource="spi-impl-dao_v1_beans_ext.xml"/>-->
     <!--<import resource="spi-impl-dao_v2_beans.xml"/>-->
 
 
