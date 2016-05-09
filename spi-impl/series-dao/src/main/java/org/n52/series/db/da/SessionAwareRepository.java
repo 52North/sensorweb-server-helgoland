@@ -28,15 +28,10 @@
  */
 package org.n52.series.db.da;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
-import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;

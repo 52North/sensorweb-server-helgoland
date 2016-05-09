@@ -14,6 +14,8 @@
         <property name="description" column="description" type="string"/>
         <property column="featureconcept" name="featureConcept" type="string" insert="false" update="false" />
 
+        <one-to-one class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity" foreign-key="seriesid" name="series" />
+
         <subclass name="org.n52.series.db.da.beans.ext.SiteFeatureEntity" discriminator-value="stationary/insitu">
 
         </subclass>
