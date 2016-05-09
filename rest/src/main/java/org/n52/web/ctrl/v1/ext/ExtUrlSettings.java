@@ -44,32 +44,32 @@ public interface ExtUrlSettings extends RestfulUrls {
     /**
      * Subpath identifying a collection of services availabe.
      */
-    static final String EXT_COLLECTION_SERVICES = API_VERSION_PATH + "/services/ext";
+    static final String EXT_COLLECTION_SERVICES = API_VERSION_PATH + "/ext/services";
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    String EXT_COLLECTION_CATEGORIES = API_VERSION_PATH + "/categories/ext";
+    String EXT_COLLECTION_CATEGORIES = API_VERSION_PATH + "/ext/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    String EXT_COLLECTION_OFFERINGS = API_VERSION_PATH + "/offerings/ext";
+    String EXT_COLLECTION_OFFERINGS = API_VERSION_PATH + "/ext/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    String EXT_COLLECTION_FEATURES = API_VERSION_PATH + "/features/ext";
+    String EXT_COLLECTION_FEATURES = API_VERSION_PATH + "/ext/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    String EXT_COLLECTION_PROCEDURES = API_VERSION_PATH + "/procedures/ext";
+    String EXT_COLLECTION_PROCEDURES = API_VERSION_PATH + "/ext/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    String EXT_COLLECTION_PHENOMENA = API_VERSION_PATH + "/phenomena/ext";
+    String EXT_COLLECTION_PHENOMENA = API_VERSION_PATH + "/ext/phenomena";
 
     /**
      * Subpath identifying a collection of platforms available.
