@@ -37,7 +37,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.n52.io.response.v2.test.CondensedParameterOutput;
+import org.n52.io.response.v1.ext.CondensedParameterOutput;
 import org.n52.io.v1.data.RawFormats;
 
 public abstract class ParameterOutput implements CondensedParameterOutput, CollatorComparable<ParameterOutput>, RawFormats {

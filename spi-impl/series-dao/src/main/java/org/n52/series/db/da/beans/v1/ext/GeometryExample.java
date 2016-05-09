@@ -30,9 +30,9 @@ package org.n52.series.db.da.beans.v1.ext;
 
 import java.util.UUID;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.response.v2.test.GeometryCategory;
-import org.n52.io.response.v2.test.GeometryInfo;
-import org.n52.io.response.v2.test.PlatformItemOutput;
+import org.n52.io.response.v1.ext.GeometryCategory;
+import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.io.response.v1.ext.PlatformItemOutput;
 
 /**
  * TODO: JavaDoc

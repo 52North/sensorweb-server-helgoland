@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v2.test;
+package org.n52.io.response.v1.ext;
 
 import org.n52.io.response.OutputCollection;
 import com.fasterxml.jackson.annotation.JsonProperty;

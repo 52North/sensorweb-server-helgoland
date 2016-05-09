@@ -38,17 +38,17 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.io.response.v2.test.FeatureOutputCollection;
-import org.n52.io.response.v2.test.GeometryOutputCollection;
-import org.n52.io.response.v2.test.MeasurementSeriesOutput;
-import org.n52.io.response.v2.test.ObservationType;
-import org.n52.io.response.v2.test.PhenomenonOutputCollection;
-import org.n52.io.response.v2.test.PlatformOutput;
-import org.n52.io.response.v2.test.PlatformType;
-import org.n52.io.response.v2.test.ProcedureOutputCollection;
-import org.n52.io.response.v2.test.SeriesMetadataOutput;
-import org.n52.io.response.v2.test.SeriesParameters;
-import org.n52.io.response.v2.test.SeriesOutputCollection;
+import org.n52.io.response.v1.ext.FeatureOutputCollection;
+import org.n52.io.response.v1.ext.GeometryOutputCollection;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.v1.ext.ObservationType;
+import org.n52.io.response.v1.ext.PhenomenonOutputCollection;
+import org.n52.io.response.v1.ext.PlatformOutput;
+import org.n52.io.response.v1.ext.PlatformType;
+import org.n52.io.response.v1.ext.ProcedureOutputCollection;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.SeriesParameters;
+import org.n52.io.response.v1.ext.SeriesOutputCollection;
 
 /**
  * TODO: JavaDoc
