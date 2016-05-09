@@ -30,11 +30,17 @@ package org.n52.web.ctrl.v1;
 
 import org.n52.io.response.OutputCollection;
 import org.n52.web.ctrl.ParameterController;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
 public abstract class ParameterControllerV1Adapter extends ParameterController {
+
+    @Override
+    protected void hookQueryParameters(MultiValueMap<String, String> query) {
+        query.add("pureStationTimeseriesConcept", "true");
+    }
 
     @Override
     protected ModelAndView createModelAndView(OutputCollection<?> items) {

@@ -78,8 +78,8 @@ public abstract class ParameterController extends BaseController {
 
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
-            @PathVariable("item") String id,
-            @RequestParam MultiValueMap<String, String> query) {
+            @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
@@ -97,6 +97,7 @@ public abstract class ParameterController extends BaseController {
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
 
         Map<String, Object> extras = new HashMap<>();
@@ -121,7 +122,8 @@ public abstract class ParameterController extends BaseController {
     }
 
     @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
 
         if (queryMap.isExpanded()) {
@@ -139,13 +141,9 @@ public abstract class ParameterController extends BaseController {
         }
     }
 
-    protected ModelAndView createModelAndView(OutputCollection<?> items) {
-        return new ModelAndView().addObject(items);
-    }
-
     @RequestMapping(value = "/{item}", method = GET)
-    public ModelAndView getItem(@PathVariable("item") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
+    public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
         ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
 
@@ -168,6 +166,14 @@ public abstract class ParameterController extends BaseController {
             extension.addExtraMetadataFieldNames(output);
         }
         return output;
+    }
+
+    protected void hookQueryParameters(MultiValueMap<String, String> query) {
+        // override to add/change query flags, e.g. for backward compatible behaviour
+    }
+
+    protected ModelAndView createModelAndView(OutputCollection<?> items) {
+        return new ModelAndView().addObject(items);
     }
 
     public ServiceParameterService getServiceParameterService() {
