@@ -50,7 +50,6 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
-import org.n52.series.db.da.dao.v1.MeasurementDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
@@ -59,6 +58,7 @@ import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -278,7 +278,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     private TimeseriesData expandReferenceDataIfNecessary(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
-        MeasurementDao dao = new MeasurementDao(session);
+        ObservationDao<MeasurementEntity> dao = new ObservationDao(session);
         List<MeasurementEntity> observations = dao.getObservationsFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             MeasurementEntity lastValidEntity = seriesEntity.getLastValue();
@@ -302,7 +302,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     private TimeseriesData createTimeseriesData(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
-        MeasurementDao dao = new MeasurementDao(session);
+        ObservationDao<MeasurementEntity> dao = new ObservationDao(session);
         List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (MeasurementEntity observation : observations) {
             if (observation != null) {

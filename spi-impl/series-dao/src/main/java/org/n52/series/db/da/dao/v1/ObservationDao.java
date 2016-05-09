@@ -12,6 +12,7 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.v1.DbQuery;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * TODO: JavaDoc
@@ -19,7 +20,8 @@ import org.n52.series.db.da.v1.DbQuery;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  * @param <T>
  */
-public abstract class AbstractObservationDao<T extends AbstractObservationEntity> extends AbstractDao<T> {
+@Transactional
+public class ObservationDao<T extends AbstractObservationEntity> extends AbstractDao<T> {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -27,7 +29,7 @@ public abstract class AbstractObservationDao<T extends AbstractObservationEntity
 
     private final Class<T> entityType;
 
-    public AbstractObservationDao(Session session) {
+    public ObservationDao(Session session) {
         super(session);
         this.entityType = (Class<T>) AbstractObservationEntity.class;
     }

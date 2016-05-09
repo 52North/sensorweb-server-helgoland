@@ -175,7 +175,6 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
                 Geometry geometry = featureEntity.getGeom();
                 String fromCrs = "EPSG:" + geometry.getSRID();
                 Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-                //return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
                 return location;
             }
         } catch (FactoryException e) {
