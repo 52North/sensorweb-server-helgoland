@@ -56,6 +56,12 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0.
+ */
+@Deprecated
 public class StationRepository extends ExtendedSessionAwareRepository implements OutputAssembler<StationOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationRepository.class);

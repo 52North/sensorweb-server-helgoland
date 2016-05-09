@@ -65,6 +65,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0
+ */
+@Deprecated
 public class TimeseriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
