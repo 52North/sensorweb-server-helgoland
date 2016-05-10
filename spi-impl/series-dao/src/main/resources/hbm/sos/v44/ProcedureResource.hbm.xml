@@ -11,7 +11,5 @@
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
         <property name="reference" column="referenceflag" type="org.hibernate.type.TrueFalseType" />
-
-        <one-to-one class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity" foreign-key="seriesid" name="series" />
     </class>
 </hibernate-mapping>

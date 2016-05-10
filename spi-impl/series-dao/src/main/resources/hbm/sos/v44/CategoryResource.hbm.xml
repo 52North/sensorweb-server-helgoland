@@ -10,7 +10,5 @@
         <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
-
-        <one-to-one class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity" foreign-key="seriesid" name="series" />
     </class>
 </hibernate-mapping>

@@ -67,18 +67,17 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("f", FeatureEntity.class);
+        Criteria criteria = getDefaultCriteria("feature", FeatureEntity.class);
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
-        criteria.add(Subqueries.propertyIn("f.pkid", filter));
+        criteria.add(Subqueries.propertyIn("feature.pkid", filter));
 
         criteria = parameters.addPagingTo(criteria);
         parameters.addSpatialFilterTo(criteria, parameters);
 
-        // XXX refactor
         if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
                 && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
             criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));

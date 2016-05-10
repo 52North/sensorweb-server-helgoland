@@ -52,6 +52,9 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Subqueries;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public abstract class AbstractDbQuery {
 
@@ -130,13 +133,17 @@ public abstract class AbstractDbQuery {
         return criteria;
     }
 
-    public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria) {
+    public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria, String parameter) {
         if (parameters.containsParameter("pureStationTimeseriesConcept")
                 && parameters.getAsBoolean("pureStationTimeseriesConcept")) {
-            criteria
-                    .createCriteria("series", "s", JoinType.INNER_JOIN)
-                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
-                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
+            if (parameters.containsParameter("pureStationTimeseriesConcept")
+                    && parameters.getAsBoolean("pureStationTimeseriesConcept")) {
+                DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
+                        .createCriteria("feature", JoinType.INNER_JOIN)
+                        .add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+                c.setProjection(Projections.projectionList().add(Projections.property(String.format("series.%s.pkid", parameter))));
+                criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
+            }
         }
         return criteria;
     }

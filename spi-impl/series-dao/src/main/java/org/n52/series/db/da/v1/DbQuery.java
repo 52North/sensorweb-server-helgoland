@@ -64,7 +64,8 @@ public class DbQuery extends AbstractDbQuery {
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
         }
         if (getParameters().getFeature() != null) {
-            filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
+            filter.createCriteria("feature")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
         }
         if (getParameters().getStation() != null) {
             // here feature == station

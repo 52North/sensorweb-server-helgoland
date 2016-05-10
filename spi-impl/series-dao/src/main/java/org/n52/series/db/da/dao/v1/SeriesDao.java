@@ -40,6 +40,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -105,20 +106,21 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(entityType, "s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = session.createCriteria(entityType, "series");
+        addIgnoreNonPublishedSeriesTo(criteria, "series");
         criteria.createCriteria("procedure")
                 .add(eq("reference", false));
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn("s.pkid", filter));
+        criteria.add(Subqueries.propertyIn("series.pkid", filter));
 
         parameters.addPagingTo(criteria);
 
-        // XXX refactor
         if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
                 && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
-            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+            criteria
+                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
+                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
         }
 
         return (List<T>) criteria.list();

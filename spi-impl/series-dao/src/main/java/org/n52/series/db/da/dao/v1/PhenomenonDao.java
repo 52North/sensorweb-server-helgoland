@@ -67,16 +67,16 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("p", PhenomenonEntity.class);
+        Criteria criteria = getDefaultCriteria("phenomenon", PhenomenonEntity.class);
         if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
+        criteria.add(Subqueries.propertyIn("phenomenon.pkid", filter));
 
         criteria = parameters.addPagingTo(criteria);
-        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria, "phenomenon");
         return (List<PhenomenonEntity>) criteria.list();
     }
 

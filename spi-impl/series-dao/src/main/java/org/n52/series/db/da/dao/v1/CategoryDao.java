@@ -75,16 +75,16 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("c", CategoryEntity.class);
+        Criteria criteria = getDefaultCriteria("category", CategoryEntity.class);
         if (hasTranslation(parameters, I18nCategoryEntity.class)) {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("category");
-        criteria.add(Subqueries.propertyIn("c.pkid", filter));
+        criteria.add(Subqueries.propertyIn("category.pkid", filter));
 
         criteria = parameters.addPagingTo(criteria);
-        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria, "category");
         return criteria.list();
     }
 

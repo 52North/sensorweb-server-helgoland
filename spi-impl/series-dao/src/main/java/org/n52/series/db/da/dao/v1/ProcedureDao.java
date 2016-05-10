@@ -35,12 +35,17 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -71,17 +76,17 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("p")
+        Criteria criteria = getDefaultCriteria("procedure")
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
+        criteria.add(Subqueries.propertyIn("procedure.pkid", filter));
 
         criteria = parameters.addPagingTo(criteria);
-        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria);
+        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria, "procedure");
         return (List<ProcedureEntity>) criteria.list();
     }
 
