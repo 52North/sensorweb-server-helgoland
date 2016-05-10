@@ -30,13 +30,12 @@ package org.n52.web.ctrl.v1.ext;
 
 import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES)
-public class SeriesParameterController extends ParameterController {
+public class MeasurementSeriesMetadataController extends ParameterController {
 
-    // resource controller for phenomena
+    // resource controller for timeseries metadata
 }
