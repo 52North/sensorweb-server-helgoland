@@ -33,19 +33,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
-import org.n52.io.Utils;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
-public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters> extends ParameterOutput {
-
-    private String uom;
-
-    private ReferenceValueOutput[] referenceValues;
-
-    private TimeseriesValue firstValue;
-
-    private TimeseriesValue lastValue;
-
-    private T parameters;
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0. use {@link MeasurementSeriesOutput} instead.
+ */
+@Deprecated
+public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
 
     // TODO add as extra
     @Deprecated
@@ -56,14 +52,6 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
     private StatusInterval[] statusIntervals;
 
     private Set<String> rawFormats;
-
-    public String getUom() {
-        return uom;
-    }
-
-    public void setUom(String uom) {
-        this.uom = uom;
-    }
 
     @Override
     public String[] getRawFormats() {
@@ -77,7 +65,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
     public void addRawFormat(String format) {
         if (format != null && !format.isEmpty()) {
             if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
+                rawFormats = new HashSet<>();
             }
             rawFormats.add(format);
         }
@@ -87,7 +75,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
     public void setRawFormats(Collection<String> formats) {
         if (formats != null && !formats.isEmpty()) {
             if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
+                rawFormats = new HashSet<>();
             } else {
                 rawFormats.clear();
             }
@@ -95,57 +83,21 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
         }
     }
 
-    public ReferenceValueOutput[] getReferenceValues() {
-        return Utils.copy(referenceValues);
-    }
-
-    public void setReferenceValues(ReferenceValueOutput[] referenceValues) {
-        this.referenceValues = Utils.copy(referenceValues);
-    }
-
-    public TimeseriesValue getFirstValue() {
-        return firstValue;
-    }
-
-    public void setFirstValue(TimeseriesValue firstValue) {
-        this.firstValue = firstValue;
-    }
-
-    public TimeseriesValue getLastValue() {
-        return lastValue;
-    }
-
-    public void setLastValue(TimeseriesValue lastValue) {
-        this.lastValue = lastValue;
-    }
-
-    public T getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(T seriesOutput) {
-        this.parameters = seriesOutput;
-    }
-
-    // TODO add as extra
     @Deprecated
     public StyleProperties getRenderingHints() {
         return this.renderingHints;
     }
 
-    // TODO add as extra
     @Deprecated
     public void setRenderingHints(StyleProperties renderingHints) {
         this.renderingHints = renderingHints;
     }
 
-    // TODO add as extra
     @Deprecated
     public StatusInterval[] getStatusIntervals() {
         return statusIntervals;
     }
 
-    // TODO add as extra
     @Deprecated
     public void setStatusIntervals(StatusInterval[] statusIntervals) {
         this.statusIntervals = statusIntervals;

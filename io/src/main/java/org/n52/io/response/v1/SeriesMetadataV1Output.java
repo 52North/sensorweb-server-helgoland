@@ -32,23 +32,14 @@ import org.n52.io.request.StyleProperties;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.TimeseriesMetadataOutput;
 
+@Deprecated
 public class SeriesMetadataV1Output extends TimeseriesMetadataOutput {
-
-    private StationOutput station;
 
     @Deprecated
     private StyleProperties renderingHints;
 
     @Deprecated
     private StatusInterval[] statusIntervals;
-
-    public StationOutput getStation() {
-        return station;
-    }
-
-    public void setStation(StationOutput station) {
-        this.station = station;
-    }
 
     @Deprecated
     public StyleProperties getRenderingHints() {

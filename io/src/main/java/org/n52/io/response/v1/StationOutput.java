@@ -37,21 +37,28 @@ import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
 
 import org.n52.io.response.AbstractOutput;
+import org.n52.io.response.CommonSeriesParameters;
 
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0
+ */
+@Deprecated
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     private static final long serialVersionUID = -2868469756939569521L;
 
-    private Map<String, TimeseriesOutput> timeseries;
+    private Map<String, CommonSeriesParameters> timeseries;
 
     private Geometry geometry;
 
-    public Map<String, TimeseriesOutput> getTimeseries() {
+    public Map<String, CommonSeriesParameters> getTimeseries() {
         return timeseries;
     }
 
-    public void setTimeseries(Map<String, TimeseriesOutput> timeseries) {
+    public void setTimeseries(Map<String, CommonSeriesParameters> timeseries) {
         this.timeseries = timeseries;
     }
 
