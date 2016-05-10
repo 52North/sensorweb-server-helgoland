@@ -31,6 +31,7 @@ package org.n52.io.response.v1.ext;
 import org.n52.io.Utils;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.StationOutput;
 
 /**
  * TODO: JavaDoc
@@ -46,6 +47,8 @@ public class MeasurementSeriesOutput extends SeriesMetadataOutput<SeriesParamete
     private TimeseriesValue firstValue;
 
     private TimeseriesValue lastValue;
+
+    private StationOutput station;
 
     public MeasurementSeriesOutput() {
         super(ObservationType.MEASUREMENT);
@@ -81,6 +84,14 @@ public class MeasurementSeriesOutput extends SeriesMetadataOutput<SeriesParamete
 
     public void setLastValue(TimeseriesValue lastValue) {
         this.lastValue = lastValue;
+    }
+
+    public StationOutput getStation() {
+        return station;
+    }
+
+    public void setStation(StationOutput station) {
+        this.station = station;
     }
 
 }
