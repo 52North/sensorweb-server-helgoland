@@ -29,7 +29,6 @@
 package org.n52.series.db.da.beans;
 
 import java.util.Set;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public class DescribableEntity<T extends I18nEntity> {
 
@@ -54,11 +53,6 @@ public class DescribableEntity<T extends I18nEntity> {
     private String description;
 
     private Set<T> translations;
-
-    /**
-     * @since 2.0.0
-     */
-    private AbstractSeriesEntity series;
 
     public Long getPkid() {
         return pkid;
@@ -129,14 +123,6 @@ public class DescribableEntity<T extends I18nEntity> {
                 || locale == null
                 || translations.isEmpty()
                 || locale.isEmpty();
-    }
-
-    public AbstractSeriesEntity getSeries() {
-        return series;
-    }
-
-    public void setSeries(AbstractSeriesEntity series) {
-        this.series = series;
     }
 
     private String getCountryCode(String locale) {

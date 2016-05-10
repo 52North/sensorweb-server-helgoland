@@ -149,7 +149,7 @@ public class SeriesEntityV2 {
     public ObservationEntityV2 getFirstValue() {
         if (firstValue != null) {
             Date when = firstValue.getTimestamp();
-            Double value = firstValue.getValue();
+            Double value = (Double) firstValue.getValue();
             if (when == null || value == null) {
                 return null; // empty component
             }
@@ -164,7 +164,7 @@ public class SeriesEntityV2 {
     public ObservationEntityV2 getLastValue() {
         if (lastValue != null) {
             Date when = lastValue.getTimestamp();
-            Double value = lastValue.getValue();
+            Double value = (Double) lastValue.getValue();
             if (when == null || value == null) {
                 return null; // empty component
             }

@@ -30,15 +30,17 @@ package org.n52.series.db.da.beans.ext;
 
 import java.util.Date;
 
-public abstract class AbstractObservationEntity {
+public abstract class AbstractObservationEntity<T> {
 
     private Long pkid;
 
     private Date timestamp;
 
-    private Double value;
+    private T value;
 
     private Long seriesPkid;
+
+    private GeometryEntity geometry;
 
     private Boolean deleted;
 
@@ -58,11 +60,11 @@ public abstract class AbstractObservationEntity {
         this.timestamp = timestamp;
     }
 
-    public Double getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Double value) {
+    public void setValue(T value) {
         this.value = value;
     }
 
@@ -72,6 +74,14 @@ public abstract class AbstractObservationEntity {
 
     public void setSeriesPkid(Long seriesPkid) {
         this.seriesPkid = seriesPkid;
+    }
+
+    public GeometryEntity getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(GeometryEntity geometry) {
+        this.geometry = geometry;
     }
 
     public boolean getDeleted() {
