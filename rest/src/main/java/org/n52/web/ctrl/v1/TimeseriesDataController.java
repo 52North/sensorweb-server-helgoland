@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
@@ -65,11 +64,11 @@ import org.n52.io.PreRenderingJob;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.ctrl.BaseController;
@@ -101,7 +100,7 @@ public class TimeseriesDataController extends BaseController {
 
     private ServiceParameterService serviceParameterService;
 
-    private ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
+    private ParameterService<MeasurementSeriesOutput> timeseriesMetadataService;
 
     private SeriesDataService timeseriesDataService;
 
@@ -207,7 +206,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler renderer = IoFactory
@@ -232,7 +231,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = QueryParameters.createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -264,7 +263,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = QueryParameters.createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -296,7 +295,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
 
         String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<TimeseriesMetadataOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
+        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
@@ -311,7 +310,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = QueryParameters.createFromQuery(query);
-        TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
+        MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
@@ -400,11 +399,11 @@ public class TimeseriesDataController extends BaseController {
         this.serviceParameterService = serviceParameterService;
     }
 
-    public ParameterService<TimeseriesMetadataOutput> getTimeseriesMetadataService() {
+    public ParameterService<MeasurementSeriesOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<MeasurementSeriesOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 

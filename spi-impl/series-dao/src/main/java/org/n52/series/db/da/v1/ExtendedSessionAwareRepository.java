@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
@@ -40,6 +41,7 @@ import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
@@ -55,8 +57,8 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     @Autowired
     private ServiceRepository serviceRepository;
 
-    protected Map<String, TimeseriesOutput> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<>();
+    protected Map<String, CommonSeriesParameters> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
+        Map<String, CommonSeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementSeriesEntity timeseries : series) {
             if (!timeseries.getProcedure().isReference()) {
                 String timeseriesId = timeseries.getPkid().toString();
@@ -66,7 +68,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutputs;
     }
 
-    protected TimeseriesOutput createTimeseriesOutput(MeasurementSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createTimeseriesOutput(MeasurementSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
         TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
         timeseriesOutput.setService(getCondensedService());
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));

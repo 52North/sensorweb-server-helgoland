@@ -134,7 +134,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
                 : null;
     }
 
-    public void addTimeseriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {
+    public void addSeriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {
         this.styleOptions.put(timeseriesId, styleOptions);
     }
 

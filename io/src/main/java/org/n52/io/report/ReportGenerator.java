@@ -35,7 +35,7 @@ import static org.n52.io.I18N.getMessageLocalizer;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.img.RenderingContext;
-import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 public abstract class ReportGenerator implements IoHandler {
 
@@ -58,8 +58,8 @@ public abstract class ReportGenerator implements IoHandler {
         return context;
     }
 
-    protected List<TimeseriesMetadataOutput> getTimeseriesMetadatas() {
-        return getContext().getTimeseriesMetadatas();
+    protected List<MeasurementSeriesOutput> getTimeseriesMetadatas() {
+        return getContext().getSeriesMetadatas();
     }
 
 }

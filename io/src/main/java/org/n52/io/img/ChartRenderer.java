@@ -45,9 +45,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -79,9 +77,11 @@ import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 public abstract class ChartRenderer implements IoHandler {
 
@@ -291,7 +291,7 @@ public abstract class ChartRenderer implements IoHandler {
         return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
-    public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
+    public ValueAxis createRangeAxis(MeasurementSeriesOutput metadata) {
         NumberAxis axis = new NumberAxis(createRangeLabel(metadata));
         axis.setTickLabelFont(FONT_LABEL);
         axis.setLabelFont(FONT_LABEL);
@@ -300,7 +300,7 @@ public abstract class ChartRenderer implements IoHandler {
         return axis;
     }
 
-    protected String createRangeLabel(TimeseriesMetadataOutput timeseriesMetadata) {
+    protected String createRangeLabel(MeasurementSeriesOutput timeseriesMetadata) {
         CommonSeriesParameters parameters = timeseriesMetadata.getParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
@@ -318,8 +318,8 @@ public abstract class ChartRenderer implements IoHandler {
         }
     }
 
-    protected List<TimeseriesMetadataOutput> getTimeseriesMetadataOutputs() {
-        return context.getTimeseriesMetadatas();
+    protected List<MeasurementSeriesOutput> getTimeseriesMetadataOutputs() {
+        return context.getSeriesMetadatas();
     }
 
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId) {

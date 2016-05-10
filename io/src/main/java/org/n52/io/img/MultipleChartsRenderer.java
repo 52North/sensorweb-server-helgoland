@@ -51,14 +51,13 @@ import org.jfree.data.time.Week;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
-import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesDataMetadata;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 public class MultipleChartsRenderer extends ChartRenderer {
 
@@ -69,7 +68,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
     @Override
     public void generateOutput(TvpDataCollection data) {
         Map<String, TimeseriesData> allTimeseries = data.getAllTimeseries();
-        List<TimeseriesMetadataOutput> timeseriesMetadatas = getTimeseriesMetadataOutputs();
+        List<MeasurementSeriesOutput> timeseriesMetadatas = getTimeseriesMetadataOutputs();
 
         int rendererCount = timeseriesMetadatas.size();
         for (int rendererIndex = 0; rendererIndex < timeseriesMetadatas.size(); rendererIndex++) {
@@ -80,7 +79,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
              * As each timeseries may define its custom styling and different chart types we have to loop over
              * all timeseries to configure chart rendering.
              */
-            TimeseriesMetadataOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
+            MeasurementSeriesOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
 
             String timeseriesId = timeseriesMetadata.getId();
             StyleProperties style = getTimeseriesStyleFor(timeseriesId);
@@ -117,11 +116,11 @@ public class MultipleChartsRenderer extends ChartRenderer {
         }
     }
 
-    private String createChartId(TimeseriesMetadataOutput metadata) {
+    private String createChartId(MeasurementSeriesOutput metadata) {
         return createChartId(metadata, null);
     }
 
-    private String createChartId(TimeseriesMetadataOutput metadata, String referenceId) {
+    private String createChartId(MeasurementSeriesOutput metadata, String referenceId) {
         ParameterOutput feature = metadata.getParameters().getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
@@ -143,7 +142,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
         return createStyledLineRenderer(lineStyle);
     }
 
-    private ReferenceValueOutput getReferenceValue(String id, TimeseriesMetadataOutput timeseriesMetadata) {
+    private ReferenceValueOutput getReferenceValue(String id, MeasurementSeriesOutput timeseriesMetadata) {
         for (ReferenceValueOutput referenceOutput : timeseriesMetadata.getReferenceValues()) {
             if (referenceOutput.getReferenceValueId().equals(id)) {
                 return referenceOutput;
@@ -172,14 +171,14 @@ public class MultipleChartsRenderer extends ChartRenderer {
             renderer.setColorForSeries();
         }
 
-        public void setData(TimeseriesData data, TimeseriesMetadataOutput timeMetadata, StyleProperties style) {
+        public void setData(TimeseriesData data, MeasurementSeriesOutput timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
             ValueAxis rangeAxis = createRangeAxis(timeMetadata);
             getXYPlot().setRangeAxis(timeseriesIndex, rangeAxis);
             getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
-        public void setReferenceData(TimeseriesData data, TimeseriesMetadataOutput timeMetadata, StyleProperties style) {
+        public void setReferenceData(TimeseriesData data, MeasurementSeriesOutput timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
         }
 

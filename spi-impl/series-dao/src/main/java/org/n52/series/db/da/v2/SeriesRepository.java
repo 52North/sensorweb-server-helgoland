@@ -45,6 +45,7 @@ import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.TimeseriesDataMetadata;
+import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.SeriesValue;
@@ -161,7 +162,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                  *  We check for a unit to check for them
                  */
                 if (series.getUnit() != null) {
-                    results.add(createExpanded(session, series, query));
+//                    results.add(createExpanded(session, series, query));
                 } else {
                     LOGGER.debug("Series entry '{}' without UOM will be ignored!", series.getPkid());
                 }
@@ -186,7 +187,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", seriesId);
                 throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
             }
-            return createExpanded(session, result, dbQuery);
+//            return createExpanded(session, result, dbQuery);
+            return null;
         } finally {
             returnSession(session);
         }
@@ -243,13 +245,14 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    private SeriesMetadataV2Output createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
-        SeriesMetadataV2Output output = createCondensed(series, query);
-        output.setParameters(createSeriesOutput(series, query));
-        output.setReferenceValues(createReferenceValueOutputs(series, query));
-        output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
-        output.setLastValue(queryObservationFor(series.getLastValue(), series, query));
-        return output;
+    private SeriesParameters createExpanded(Session session, SeriesEntityV2 series, DbQuery query) throws DataAccessException {
+//        SeriesMetadataV2Output output = createCondensed(series, query);
+//        output.setParameters(createSeriesOutput(series, query));
+//        output.setReferenceValues(createReferenceValueOutputs(series, query));
+//        output.setFirstValue(queryObservationFor(series.getFirstValue(), series, query));
+//        output.setLastValue(queryObservationFor(series.getLastValue(), series, query));
+//        return output;
+        return null;
     }
 
     private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntityV2 series,
@@ -384,7 +387,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
         SeriesValue value = new SeriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(formatDecimal(observation.getValue(), series));
         if (observation.isSetGeom()) {
             value.setGeometry(observation.getGeom());
         }

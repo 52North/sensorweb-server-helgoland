@@ -34,30 +34,30 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 public final class RenderingContext {
 
     private final RequestStyledParameterSet chartStyleDefinitions;
 
-    private final List<TimeseriesMetadataOutput> timeseriesMetadatas;
+    private final List<MeasurementSeriesOutput> seriesMetadatas;
 
     // use static constructors
-    private RenderingContext(RequestStyledParameterSet timeseriesStyles, List<TimeseriesMetadataOutput> timeseriesMetadatas) {
-        this.timeseriesMetadatas = timeseriesMetadatas.isEmpty()
-                ? Collections.<TimeseriesMetadataOutput>emptyList()
-                : timeseriesMetadatas;
+    private RenderingContext(RequestStyledParameterSet timeseriesStyles, List<MeasurementSeriesOutput> metadatas) {
+        this.seriesMetadatas = metadatas.isEmpty()
+                ? Collections.<MeasurementSeriesOutput>emptyList()
+                : metadatas;
         this.chartStyleDefinitions = timeseriesStyles;
     }
 
     public static RenderingContext createEmpty() {
-        List<TimeseriesMetadataOutput> emptyList = Collections.emptyList();
+        List<MeasurementSeriesOutput> emptyList = Collections.emptyList();
         return new RenderingContext(new RequestStyledParameterSet(), emptyList);
     }
 
     /**
-     * @param timeseriesStyles the style definitions for each timeseries.
-     * @param timeseriesMetadatas the metadata for each timeseries.
+     * @param styles the style definitions.
+     * @param metadatas the metadata for each timeseries.
      * @throws NullPointerException if any of the given arguments is
      * <code>null</code>.
      * @throws IllegalStateException if amount of timeseries described by the
@@ -65,28 +65,27 @@ public final class RenderingContext {
      * @return a rendering context to be used by {@link IoFactory} to create an
      * {@link IoHandler}.
      */
-    public static RenderingContext createContextWith(RequestStyledParameterSet timeseriesStyles,
-            List<TimeseriesMetadataOutput> timeseriesMetadatas) {
-        if (timeseriesStyles == null || timeseriesMetadatas == null) {
+    public static RenderingContext createContextWith(RequestStyledParameterSet styles,
+            List<MeasurementSeriesOutput> metadatas) {
+        if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
-        String[] timeseriesIds = timeseriesStyles.getTimeseries();
-        if (timeseriesIds.length != timeseriesMetadatas.size()) {
-            int amountTimeseries = timeseriesIds.length;
-            int amountMetadatas = timeseriesMetadatas.size();
+        String[] seriesIds = styles.getTimeseries();
+        if (seriesIds.length != metadatas.size()) {
+            int amountTimeseries = seriesIds.length;
+            int amountMetadatas = metadatas.size();
             StringBuilder sb = new StringBuilder();
             sb.append("Size of designs and metadatas do not match: ");
             sb.append("#Timeseries: ").append(amountTimeseries).append(" vs. ");
             sb.append("#Metadatas: ").append(amountMetadatas);
             throw new IllegalStateException(sb.toString());
         }
-        return new RenderingContext(timeseriesStyles, timeseriesMetadatas);
+        return new RenderingContext(styles, metadatas);
     }
 
-    public static RenderingContext createContextForSingleTimeseries(TimeseriesMetadataOutput metadata,
-            IoParameters ioConfig) {
+    public static RenderingContext createContextForSingleTimeseries(MeasurementSeriesOutput metadata, IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
-        parameters.addTimeseriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
+        parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
     }
 
@@ -99,8 +98,8 @@ public final class RenderingContext {
         return chartStyleDefinitions;
     }
 
-    public List<TimeseriesMetadataOutput> getTimeseriesMetadatas() {
-        return timeseriesMetadatas;
+    public List<MeasurementSeriesOutput> getSeriesMetadatas() {
+        return seriesMetadatas;
     }
 
     public String getTimeAxisFormat() {

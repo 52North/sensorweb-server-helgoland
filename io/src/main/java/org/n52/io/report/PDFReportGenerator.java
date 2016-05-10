@@ -63,6 +63,7 @@ import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
 import org.n52.oxf.DocumentStructureType.TimeSeries;
@@ -132,7 +133,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     private void generateTimeseriesMetadata() {
-        for (TimeseriesMetadataOutput metadata : getTimeseriesMetadatas()) {
+        for (MeasurementSeriesOutput metadata : getTimeseriesMetadatas()) {
             TimeSeries timeseries = addTimeseries(metadata);
             // addDataTable(timeseries, metadata, data);
             addMetadata(timeseries, metadata);
@@ -184,7 +185,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 
-    private TimeSeries addTimeseries(TimeseriesMetadataOutput metadata) {
+    private TimeSeries addTimeseries(MeasurementSeriesOutput metadata) {
         DocumentStructureType report = document.getDocumentStructure();
         TimeSeries timeseries = report.addNewTimeSeries();
 
@@ -195,7 +196,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         return timeseries;
     }
 
-    private MetadataType addMetadata(TimeSeries timeseries, TimeseriesMetadataOutput timeseriesMetadata) {
+    private MetadataType addMetadata(TimeSeries timeseries, MeasurementSeriesOutput timeseriesMetadata) {
         MetadataType metadata = timeseries.addNewMetadata();
         GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
 

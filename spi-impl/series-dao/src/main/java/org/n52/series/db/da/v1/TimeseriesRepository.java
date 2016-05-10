@@ -48,6 +48,8 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.db.da.dao.v1.SeriesDao;
@@ -58,6 +60,7 @@ import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -117,8 +120,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
-            for (MeasurementSeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            SeriesDao<TimeseriesEntity> seriesDao = new SeriesDao<>(session);
+            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them
@@ -139,8 +142,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
-            for (MeasurementSeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            SeriesDao<TimeseriesEntity> seriesDao = new SeriesDao<>(session);
+            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them
@@ -207,7 +210,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private TimeseriesMetadataOutput createExpanded(Session session, MeasurementSeriesEntity series, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = createCondensed(series, query);
+        SeriesMetadataV1Output output = createCondensed(series, query);
         output.setParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(createTimeseriesValueFor(series.getFirstValue(), series));
@@ -234,7 +237,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(MeasurementSeriesEntity entity, DbQuery query) throws DataAccessException {
+    private SeriesMetadataV1Output createCondensed(MeasurementSeriesEntity entity, DbQuery query) throws DataAccessException {
         SeriesMetadataV1Output output = new SeriesMetadataV1Output();
         String locale = query.getLocale();
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
