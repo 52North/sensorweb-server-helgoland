@@ -14,20 +14,10 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean name="platformRepository" class="org.n52.series.db.da.v1.ext.PlatformRepository">
-        <property name="platformRepository">
-            <bean class="org.n52.series.db.da.v1.PlatformRepository" />
-        </property>
-    </bean>
-    <bean name="seriesRepository" class="org.n52.series.db.da.v1.ext.SeriesRepository">
-        <property name="seriesRepository">
-            <bean class="org.n52.series.db.da.v1.SeriesRepository" />
-        </property>
-    </bean>
+    <bean name="platformRepository" class="org.n52.series.db.da.v1.ext.PlatformRepository" />
+    <bean name="seriesRepository" class="org.n52.series.db.da.v1.ext.SeriesRepository" />
 
-    <!--<bean id="extServiceParameterService" class="org.n52.series.db.srv.v1.ext.ServiceAccessService" />-->
     <bean id="seriesService" class="org.n52.series.db.srv.v1.ext.SeriesAccessService" />
-    <!--<bean id="extMetadataService" class="org.n52.series.db.srv.v1.ext.ExtCountingMetadataAccessService" />-->
 
     <bean id="platformParameterService" class="org.n52.series.db.srv.v1.AccessService">
         <constructor-arg index="0" ref="platformRepository" />

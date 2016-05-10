@@ -49,10 +49,10 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.PlatformsParameterController">
-        <!--<property name="parameterService" ref="stationParameterService" />-->
+        <property name="parameterService" ref="platformParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.SeriesMetadataController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="seriesService" />
         <property name="metadataExtensions">
@@ -66,10 +66,10 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
+    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesDataController">
         <property name="serviceParameterService" ref="serviceParameterService" />
-        <property name="seriesMetadataService" ref="seriesService" />
-        <property name="seriesDataService" ref="seriesService" />
+        <property name="metadataService" ref="seriesService" />
+        <property name="dataService" ref="seriesService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 

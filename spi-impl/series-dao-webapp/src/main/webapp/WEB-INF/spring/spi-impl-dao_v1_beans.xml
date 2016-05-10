@@ -32,7 +32,7 @@
         <constructor-arg index="0" ref="serviceRepository" />
         <constructor-arg index="1" ref="timeseriesRepository" />
     </bean>
-    <bean id="offeringParameterService" class="org.n52.series.db.srv.v1.ext.SeriesAccessService">
+    <bean id="offeringParameterService" class="org.n52.series.db.srv.v1.AccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
     <bean id="categoryParameterService" class="org.n52.series.db.srv.v1.AccessService">
