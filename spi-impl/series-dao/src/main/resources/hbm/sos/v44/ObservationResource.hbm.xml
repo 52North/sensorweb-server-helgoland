@@ -10,6 +10,11 @@
         <property column="seriesid" name="seriesPkid" type="long"/>
         <property column="phenomenontimeend" name="timestamp" type="timestamp"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
+        <!--        <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
+            <property column="lat" name="lat" type="double" />
+            <property column="lon" name="lon" type="double" />
+            <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
+        </component>-->
         <subclass name="MeasurementEntity" discriminator-value="measurement" >
             <join fetch="join" table="numericvalue">
                 <key column="observationid" foreign-key="observationid"/>
