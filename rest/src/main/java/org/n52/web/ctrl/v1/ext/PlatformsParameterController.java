@@ -29,7 +29,7 @@
 package org.n52.web.ctrl.v1.ext;
 
 import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +38,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = COLLECTION_PLATFORMS)
 public class PlatformsParameterController extends ParameterController {
 
-    // resource controller for phenomena
+    // resource controller for platforms
 }
