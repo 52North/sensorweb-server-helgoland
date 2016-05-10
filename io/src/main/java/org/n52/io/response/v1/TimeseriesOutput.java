@@ -28,73 +28,14 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.response.CommonSeriesParameters;
+import org.n52.io.response.v1.ext.SeriesParameters;
 
-public class TimeseriesOutput implements CommonSeriesParameters {
-
-    private ServiceOutput service;
-
-    private OfferingOutput offering;
-
-    private FeatureOutput feature;
-
-    private ProcedureOutput procedure;
-
-    private PhenomenonOutput phenomenon;
-
-    private CategoryOutput category;
-
-    @Override
-    public ServiceOutput getService() {
-        return service;
-    }
-
-    public void setService(ServiceOutput service) {
-        this.service = service;
-    }
-
-    public OfferingOutput getOffering() {
-        return offering;
-    }
-
-    public void setOffering(OfferingOutput offering) {
-        this.offering = offering;
-    }
-
-    @Override
-    public FeatureOutput getFeature() {
-        return feature;
-    }
-
-    public void setFeature(FeatureOutput feature) {
-        this.feature = feature;
-    }
-
-    @Override
-    public ProcedureOutput getProcedure() {
-        return procedure;
-    }
-
-    public void setProcedure(ProcedureOutput procedure) {
-        this.procedure = procedure;
-    }
-
-    @Override
-    public PhenomenonOutput getPhenomenon() {
-        return phenomenon;
-    }
-
-    public void setPhenomenon(PhenomenonOutput phenomenon) {
-        this.phenomenon = phenomenon;
-    }
-
-    @Override
-    public CategoryOutput getCategory() {
-        return category;
-    }
-
-    public void setCategory(CategoryOutput category) {
-        this.category = category;
-    }
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0
+ */
+@Deprecated
+public class TimeseriesOutput extends SeriesParameters {
 
 }
