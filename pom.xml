@@ -691,7 +691,7 @@
             <properties>
                 <env>dev</env>
                 <!-- externalize build parameters for productive environment -->
-                <local.configfile>${user.home}/series-api-${env}.properties</local.configfile>
+                <local.configfile>${user.home}/series-rest-api-${env}.properties</local.configfile>
             </properties>
             <build>
                 <filters>
