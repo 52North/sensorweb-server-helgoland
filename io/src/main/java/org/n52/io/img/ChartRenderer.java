@@ -28,24 +28,36 @@
  */
 package org.n52.io.img;
 
-import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
-import java.awt.Font;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
+import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
+import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
+import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -61,27 +73,18 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
-import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
-import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 public abstract class ChartRenderer implements IoHandler {
 

@@ -46,10 +46,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -59,9 +59,9 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.ChartRenderer;
+import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.TimeseriesData;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.oxf.DocumentStructureDocument;

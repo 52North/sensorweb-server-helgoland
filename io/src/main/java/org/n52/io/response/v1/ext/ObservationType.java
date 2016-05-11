@@ -43,8 +43,4 @@ public enum ObservationType {
         return name().toLowerCase();
     }
 
-    @Override
-    public String toString() {
-        return getObservationType();
-    }
 }
