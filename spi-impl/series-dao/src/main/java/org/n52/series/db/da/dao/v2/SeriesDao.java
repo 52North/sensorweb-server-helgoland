@@ -56,7 +56,7 @@ public class SeriesDao extends AbstractDao<SeriesEntityV2> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SeriesEntityV2> find(String search, DbQuery query) {
+    public List<SeriesEntityV2> find(DbQuery query) {
 
         /*
          * Timeseries labels are constructed from labels of related feature
@@ -71,13 +71,13 @@ public class SeriesDao extends AbstractDao<SeriesEntityV2> {
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
         }
-        featureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        featureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         series.addAll(featureCriteria.list());
 
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
         }
-        procedureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        procedureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         series.addAll(procedureCriteria.list());
 
         return series;

@@ -45,10 +45,6 @@ import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nCategoryEntity;
-import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.beans.I18nPhenomenonEntity;
-import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -94,35 +90,35 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return serviceOutput;
     }
 
-    protected PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
+    protected PhenomenonOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
         PhenomenonOutput outputvalue = new PhenomenonOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
-    protected OfferingOutput getCondensedOffering(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
+    protected OfferingOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
         OfferingOutput outputvalue = new OfferingOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
-    protected ProcedureOutput getCondensedProcedure(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
+    protected ProcedureOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
         ProcedureOutput outputvalue = new ProcedureOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
-    protected FeatureOutput getCondensedFeature(DescribableEntity<I18nFeatureEntity> entity, DbQuery parameters) {
+    protected FeatureOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
         FeatureOutput outputvalue = new FeatureOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
-    protected CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
+    protected CategoryOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
         CategoryOutput outputvalue = new CategoryOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
@@ -132,11 +128,6 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     @Override
     protected DbQuery getDbQuery(IoParameters parameters) {
         return DbQuery.createFrom(parameters);
-    }
-
-    @Override
-    protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-        return DbQuery.createFrom(parameters, locale);
     }
 
 }

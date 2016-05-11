@@ -35,7 +35,7 @@ import org.n52.series.db.da.beans.DescribableEntity;
 
 import java.util.TreeSet;
 
-public class TrackEntity extends DescribableEntity<I18nTrackEntity> {
+public class TrackEntity extends DescribableEntity {
 
     private Set<TrackLocationEntity> trackLocations;
 

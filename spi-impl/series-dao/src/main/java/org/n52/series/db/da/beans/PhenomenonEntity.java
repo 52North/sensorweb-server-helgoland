@@ -28,7 +28,7 @@
  */
 package org.n52.series.db.da.beans;
 
-public class PhenomenonEntity extends DescribableEntity<I18nPhenomenonEntity> {
+public class PhenomenonEntity extends DescribableEntity {
 
     @Override
     public String toString() {

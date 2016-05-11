@@ -50,12 +50,12 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonEntity> find(String search, DbQuery query) {
+    public List<PhenomenonEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nPhenomenonEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

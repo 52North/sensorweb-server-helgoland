@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl.v2;
 
-import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v2.ResourcesController.ResourceCollection.createResource;
 import static org.n52.web.ctrl.v2.RestfulUrls.API_VERSION_PATH;
 
@@ -41,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})

@@ -48,7 +48,6 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.beans.v2.TrackEntity;
 import org.n52.series.db.da.beans.v2.TrackLocationEntity;
@@ -95,16 +94,17 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     }
 
     @Override
-    public Collection<SearchResult> searchFor(String queryString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             List<SearchResult> results = new ArrayList<>();
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            Collection<SiteEntity> sites = new SiteDao(session).find(queryString, parameters);
+            DbQuery query = DbQuery.createFrom(parameters);
+            Collection<SiteEntity> sites = new SiteDao(session).find(query);
+            String locale = query.getLocale();
             if (sites != null) {
                 results.addAll(convertToResults(sites, locale, FeatureType.SITE));
             }
-            Collection<TrackEntity> tracks = new TrackDao(session).find(queryString, parameters);
+            Collection<TrackEntity> tracks = new TrackDao(session).find(query);
             if (tracks != null) {
                 results.addAll(convertToResults(tracks, locale, FeatureType.TRACK_FROM_OFFERING));
             }
@@ -115,16 +115,16 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             String locale) {
         // not needed, use #convertToResults() instead
-        return new ArrayList<SearchResult>();
+        return new ArrayList<>();
     }
 
-    private List<SearchResult> convertToResults(Collection<? extends DescribableEntity<? extends I18nEntity>> found,
+    private List<SearchResult> convertToResults(Collection<? extends DescribableEntity> found,
             String locale, FeatureType type) {
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = createUniqueId(searchResult.getPkid(), type);
             String label = getLabelFrom(searchResult, locale);
             results.add(new FeatureSearchResult(pkid, label));

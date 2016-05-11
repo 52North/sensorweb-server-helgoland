@@ -42,13 +42,13 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.dao.v2.FeatureDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
 import com.vividsolutions.jts.geom.Point;
 import java.util.HashMap;
 import org.n52.sensorweb.spi.search.v2.PlatformSearchResult;
+import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
 import org.n52.series.db.da.v1.OutputAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -73,23 +73,23 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private FeatureRepository featureRepository;
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<FeatureEntity> found = featureDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = DbQuery.createFrom(parameters);
+            List<FeatureEntity> found = featureDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             String locale) {
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableEntity<? extends I18nEntity> searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new PlatformSearchResult(pkid, label));
@@ -146,7 +146,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
+            FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
             return createCondensed(result, parameters);
         } finally {
             returnSession(session);
@@ -155,7 +155,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private PlatformOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
-        addFeatures(result);
+        addFeatures(result, parameters);
         return result;
     }
 
@@ -168,16 +168,18 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private PlatformOutput getConcretePlatformOutput(FeatureEntity entity, DbQuery parameters) {
-        if (entity.isSetGeom() && entity.getGeom() instanceof Point) {
-            return new StationaryPlatformOutput();
+        if (entity instanceof SiteFeatureEntity) {
+            SiteFeatureEntity site = (SiteFeatureEntity) entity;
+            if (site.isSetGeometry() && site.getGeometry().getGeometry() instanceof Point) {
+                return new StationaryPlatformOutput();
+            }
         }
         return new MobilePlatformOutput();
     }
 
-    private void addFeatures(PlatformOutput result) throws DataAccessException {
+    private void addFeatures(PlatformOutput result, DbQuery parameters) throws DataAccessException {
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("platform", result.getId());
-        DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
         if (result instanceof StationaryPlatformOutput) {
             result.setFeatures(featureRepository.getSites(parameters));
         } else if (result instanceof MobilePlatformOutput) {

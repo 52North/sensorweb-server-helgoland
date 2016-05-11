@@ -28,7 +28,7 @@
  */
 package org.n52.series.db.da.beans;
 
-public class ProcedureEntity extends DescribableEntity<I18nProcedureEntity> {
+public class ProcedureEntity extends DescribableEntity {
 
     private boolean reference;
 

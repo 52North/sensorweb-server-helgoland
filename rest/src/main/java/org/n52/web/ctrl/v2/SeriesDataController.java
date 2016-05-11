@@ -46,7 +46,6 @@ import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.PreRenderingJob;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
@@ -55,7 +54,6 @@ import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.request.RequestSimpleParameterSet;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
@@ -81,10 +79,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromQuery;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES, produces = {"application/json"})

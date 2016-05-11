@@ -32,7 +32,7 @@ import org.n52.series.db.da.beans.DescribableEntity;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class SiteEntity extends DescribableEntity<I18nSiteEntity> {
+public class SiteEntity extends DescribableEntity {
 
     private Geometry geom;
 

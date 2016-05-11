@@ -35,6 +35,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
@@ -54,7 +55,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PlatformEntity> find(String search, DbQuery query) {
+    public List<PlatformEntity> find(DbQuery query) {
         throw new UnsupportedOperationException("not implemented yet.");
     }
 
@@ -86,7 +87,8 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(AbstractSeriesEntity.class);
+        return session.createCriteria(PlatformEntity.class)
+                .add(Restrictions.isNotEmpty("series"));
     }
 
 }

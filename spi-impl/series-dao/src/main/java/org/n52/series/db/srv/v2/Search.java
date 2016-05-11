@@ -31,6 +31,7 @@ package org.n52.series.db.srv.v2;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.n52.io.request.IoParameters;
 
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.SearchService;
@@ -64,14 +65,14 @@ public class Search extends ServiceInfo implements SearchService {
     private SeriesRepository seriesRepository;
 
     @Override
-    public Collection<SearchResult> searchResources(String search, String locale) {
+    public Collection<SearchResult> searchResources(IoParameters parameters) {
         List<SearchResult> results = new ArrayList<>();
-        results.addAll(seriesRepository.searchFor(search, locale));
-        results.addAll(phenomenonRepository.searchFor(search, locale));
-        results.addAll(procedureRepository.searchFor(search, locale));
-        results.addAll(platformRepository.searchFor(search, locale));
-        results.addAll(featureRepository.searchFor(search, locale));
-        results.addAll(categoryRepository.searchFor(search, locale));
+        results.addAll(seriesRepository.searchFor(parameters));
+        results.addAll(phenomenonRepository.searchFor(parameters));
+        results.addAll(procedureRepository.searchFor(parameters));
+        results.addAll(platformRepository.searchFor(parameters));
+        results.addAll(featureRepository.searchFor(parameters));
+        results.addAll(categoryRepository.searchFor(parameters));
         return results;
     }
 

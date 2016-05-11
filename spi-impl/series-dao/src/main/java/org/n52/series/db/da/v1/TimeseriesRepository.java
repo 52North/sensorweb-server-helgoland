@@ -48,15 +48,12 @@ import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
-import org.n52.io.response.v1.TimeseriesOutput;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
@@ -83,20 +80,20 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     private OutputAssembler<StationOutput> stationRepository;
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<MeasurementSeriesEntity> found = seriesDao.find(searchString, parameters);
-            return convertToResults(found, locale);
+            DbQuery query = DbQuery.createFrom(parameters);
+            List<MeasurementSeriesEntity> found = seriesDao.find(query);
+            return convertToResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<>();
@@ -287,7 +284,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     private TimeseriesData expandReferenceDataIfNecessary(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
-        ObservationDao<MeasurementEntity> dao = new ObservationDao(session);
+        ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
         List<MeasurementEntity> observations = dao.getObservationsFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             MeasurementEntity lastValidEntity = seriesEntity.getLastValue();
@@ -311,7 +308,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     private TimeseriesData createTimeseriesData(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
-        ObservationDao<MeasurementEntity> dao = new ObservationDao(session);
+        ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
         List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (MeasurementEntity observation : observations) {
             if (observation != null) {

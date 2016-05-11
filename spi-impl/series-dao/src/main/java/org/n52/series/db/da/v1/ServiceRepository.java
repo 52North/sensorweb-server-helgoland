@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.n52.io.request.IoParameters;
 
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ServiceOutput.ParameterCount;
@@ -39,7 +40,6 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.ServiceSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,15 +56,16 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     }
 
     @Override
-    public Collection<SearchResult> searchFor(String queryString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         final ServiceSearchResult result = new ServiceSearchResult(serviceInfo.getServiceId(), serviceInfo.getServiceDescription());
+        String queryString = DbQuery.createFrom(parameters).getSearchTerm();
         return serviceInfo.getServiceDescription().contains(queryString)
                 ? Collections.<SearchResult>singletonList(result)
                 : Collections.<SearchResult>emptyList();
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

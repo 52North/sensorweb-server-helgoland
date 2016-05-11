@@ -34,7 +34,7 @@ import java.util.Set;
 
 import org.n52.series.db.da.beans.UnitEntity;
 
-public class MeasurementSeriesEntity extends AbstractSeriesEntity {
+public class MeasurementSeriesEntity extends AbstractSeriesEntity<MeasurementEntity> {
 
     private int numberOfDecimals;
 

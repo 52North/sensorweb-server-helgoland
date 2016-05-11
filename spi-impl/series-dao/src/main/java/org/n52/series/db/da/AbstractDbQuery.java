@@ -54,6 +54,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Subqueries;
+import org.n52.io.request.Parameters;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public abstract class AbstractDbQuery {
@@ -82,8 +83,16 @@ public abstract class AbstractDbQuery {
         this.sridAuthorityCode = code;
     }
 
+    public String getHrefBase() {
+        return parameters.getAsString(Parameters.HREF_BASE);
+    }
+
     public String getLocale() {
         return parameters.getLocale();
+    }
+
+    public String getSearchTerm() {
+        return parameters.getAsString(Parameters.SEARCH_TERM);
     }
 
     public Interval getTimespan() {
@@ -134,18 +143,20 @@ public abstract class AbstractDbQuery {
     }
 
     public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria, String parameter) {
-        if (parameters.containsParameter("pureStationTimeseriesConcept")
-                && parameters.getAsBoolean("pureStationTimeseriesConcept")) {
-            if (parameters.containsParameter("pureStationTimeseriesConcept")
-                    && parameters.getAsBoolean("pureStationTimeseriesConcept")) {
-                DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
-                        .createCriteria("feature", JoinType.INNER_JOIN)
-                        .add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
-                c.setProjection(Projections.projectionList().add(Projections.property(String.format("series.%s.pkid", parameter))));
-                criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
-            }
+        if (isPureStationInsituConcept()) {
+            DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
+                    .createCriteria("feature", JoinType.INNER_JOIN)
+                    .add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+            c.setProjection(Projections.projectionList()
+                    .add(Projections.property(String.format("series.%s.pkid", parameter))));
+            criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
         }
         return criteria;
+    }
+
+    public boolean isPureStationInsituConcept() {
+        return parameters.containsParameter(Parameters.PURE_STATION_INSITU_CONCEPT)
+                && parameters.getAsBoolean(Parameters.PURE_STATION_INSITU_CONCEPT);
     }
 
     /**

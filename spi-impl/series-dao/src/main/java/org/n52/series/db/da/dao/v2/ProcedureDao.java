@@ -52,12 +52,12 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> find(String search, DbQuery query) {
+    public List<ProcedureEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

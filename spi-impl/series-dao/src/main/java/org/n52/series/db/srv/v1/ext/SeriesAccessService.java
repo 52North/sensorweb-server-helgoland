@@ -7,7 +7,7 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.series.db.da.v1.ext.SeriesRepository;
+import org.n52.series.db.da.v1.SeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

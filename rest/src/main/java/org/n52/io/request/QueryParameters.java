@@ -28,17 +28,21 @@
  */
 package org.n52.io.request;
 
-import org.n52.io.request.IoParameters;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.joda.time.Interval;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.img.ChartDimension;
-import org.n52.io.request.StyleProperties;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
+import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.WebException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
@@ -47,27 +51,32 @@ import org.springframework.util.MultiValueMap;
  */
 public final class QueryParameters extends IoParameters {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(QueryParameters.class);
+
+    public static IoParameters createFromQuery(Map<String, String> query) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.setAll(query);
+        return createFromQuery(parameters);
+    }
+
     /**
-     * Creates an simple view on given query. The {@link MultiValueMap} is
-     * flattened to a single value map.
-     *
      * @param query the incoming query parameters.
      * @return a query parameters instance handling Web exceptions.
      * @see WebException
      */
     public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
-        return createFromQuery(query.toSingleValueMap());
+        try {
+            query.add(HREF_BASE, RequestUtils.resolveFullRequestUrl());
+
+        } catch (IOException | URISyntaxException e) {
+            LOGGER.error("could not resolve href base URL.", e);
+            query.add(HREF_BASE, "http://localhost/");
+        }
+        return new QueryParameters(query);
     }
 
-    /**
-     * Creates an simple view on given query.
-     *
-     * @param query the incoming query parameters.
-     * @return a query parameters instance handling Web exceptions.
-     * @see WebException
-     */
-    public static IoParameters createFromQuery(Map<String, String> query) {
-        return new QueryParameters(query);
+    private QueryParameters(MultiValueMap<String, String> query) {
+        super(convertValuesToJsonNodes(query));
     }
 
     private QueryParameters(Map<String, String> query) {
@@ -156,6 +165,7 @@ public final class QueryParameters extends IoParameters {
         return super.getFormat();
     }
 
+    @Override
     public IntervalWithTimeZone getTimespan() {
         try {
             return super.getTimespan();

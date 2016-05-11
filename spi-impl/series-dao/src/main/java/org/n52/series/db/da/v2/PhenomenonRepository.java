@@ -39,7 +39,6 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.PhenomenonSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.dao.v2.PhenomenonDao;
 import org.n52.series.db.da.v1.OutputAssembler;
@@ -63,23 +62,23 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     }
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             PhenomenonDao phenomenonDao = new PhenomenonDao(session);
-            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
-            List<PhenomenonEntity> found = phenomenonDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = getDbQuery(parameters);
+            List<PhenomenonEntity> found = phenomenonDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
-        for (DescribableEntity<? extends I18nEntity> searchResult : found) {
+        List<SearchResult> results = new ArrayList<>();
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new PhenomenonSearchResult(pkid, label));
@@ -91,7 +90,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
+            List<PhenomenonOutput> results = new ArrayList<>();
             for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(phenomenonEntity, parameters));
             }
@@ -105,7 +104,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
+            List<PhenomenonOutput> results = new ArrayList<>();
             for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(phenomenonEntity, parameters));
             }

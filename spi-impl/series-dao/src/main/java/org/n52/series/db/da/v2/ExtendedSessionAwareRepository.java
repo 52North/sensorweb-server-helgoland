@@ -41,9 +41,6 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nCategoryEntity;
-import org.n52.series.db.da.beans.I18nPhenomenonEntity;
-import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -80,14 +77,14 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return all.get(0); // only this service available
     }
 
-    private PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
+    private PhenomenonOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
         PhenomenonOutput outputvalue = new PhenomenonOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
         return outputvalue;
     }
 
-    private ProcedureOutput getCondensedProcedure(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
+    private ProcedureOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
         ProcedureOutput outputvalue = new ProcedureOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
@@ -98,7 +95,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return platformRespository.createCondensed(entity, parameters);
     }
 
-    private CategoryOutput getCondensedCategory(DescribableEntity<I18nCategoryEntity> entity, DbQuery parameters) {
+    private CategoryOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
         CategoryOutput outputvalue = new CategoryOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
@@ -108,11 +105,6 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     @Override
     protected DbQuery getDbQuery(IoParameters parameters) {
         return DbQuery.createFrom(parameters);
-    }
-
-    @Override
-    protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-        return DbQuery.createFrom(parameters, locale);
     }
 
 }

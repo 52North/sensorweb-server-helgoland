@@ -31,6 +31,11 @@ package org.n52.web.ctrl.v1;
 import static org.n52.web.ctrl.v1.RestfulUrls.SEARCH;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.ctrl.BaseController;
@@ -49,14 +54,17 @@ public class SearchController extends BaseController {
     private SearchService searchService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView searchResources(@RequestParam String q,
-            @RequestParam(defaultValue = "en") String locale) {
+    public ModelAndView searchResources(@RequestParam String q, @RequestParam(defaultValue = "en") String locale) {
 
         if (q == null) {
             throw new BadRequestException("Use parameter 'q' with search string to define your search term.");
         }
 
-        Collection<SearchResult> result = searchService.searchResources(q, locale);
+        Map<String, String> query = new HashMap<>();
+        query.put(Parameters.SEARCH_TERM, q);
+        query.put(Parameters.LOCALE, locale);
+        final IoParameters parameters = QueryParameters.createFromQuery(query);
+        Collection<SearchResult> result = searchService.searchResources(parameters);
         return new ModelAndView().addObject(result);
     }
 

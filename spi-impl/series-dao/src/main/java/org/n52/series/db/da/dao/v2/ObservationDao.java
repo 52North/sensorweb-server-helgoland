@@ -30,7 +30,6 @@ package org.n52.series.db.da.dao.v2;
 
 import static org.hibernate.criterion.Restrictions.eq;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +61,7 @@ public class ObservationDao extends AbstractDao<ObservationEntityV2> {
     }
 
     @Override
-    public List<ObservationEntityV2> find(String search, DbQuery query) {
+    public List<ObservationEntityV2> find(DbQuery query) {
         return Collections.emptyList();
     }
 

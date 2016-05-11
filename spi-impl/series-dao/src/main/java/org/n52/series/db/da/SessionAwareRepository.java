@@ -32,6 +32,7 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -49,21 +50,8 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     protected abstract DBQ getDbQuery(IoParameters parameters);
 
-    protected abstract DBQ getDbQuery(IoParameters parameters, String locale);
-
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
-    }
-
-    @Deprecated
-    protected AbstractDbQuery createDefaultsWithLocale(String locale) {
-//        if (locale == null) {
-//            return DbQuery.createFrom(IoParameters.createDefaults());
-//        }
-//        Map<String, String> parameters = new HashMap<String, String>();
-//        parameters.put("locale", locale);
-//        return DbQuery.createFrom(createFromQuery(parameters));
-        return getDbQuery(IoParameters.createDefaults(), locale);
     }
 
     protected Long parseId(String id) throws BadRequestException {
@@ -86,7 +74,7 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
         }
     }
 
-    protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
+    protected String getLabelFrom(DescribableEntity entity, String locale) {
         if (isi18nNameAvailable(entity, locale)) {
             return entity.getNameI18n(locale);
         } else if (isNameAvailable(entity)) {
@@ -96,11 +84,11 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
         }
     }
 
-    private boolean isNameAvailable(DescribableEntity<?> entity) {
+    private boolean isNameAvailable(DescribableEntity entity) {
         return entity.getName() != null && !entity.getName().isEmpty();
     }
 
-    private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
+    private boolean isi18nNameAvailable(DescribableEntity entity, String locale) {
         return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
     }
 

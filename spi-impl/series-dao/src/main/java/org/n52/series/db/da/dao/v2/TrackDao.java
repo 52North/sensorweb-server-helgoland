@@ -54,14 +54,14 @@ public class TrackDao extends AbstractDao<TrackEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TrackEntity> find(String search, DbQuery query) {
+    public List<TrackEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         addIgnoreEmptyTrackGeomsCriteria(criteria);
 
         if (hasTranslation(query, I18nTrackEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nTrackEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

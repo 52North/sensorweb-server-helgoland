@@ -38,8 +38,10 @@ import com.vividsolutions.jts.geom.Point;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -57,14 +59,14 @@ import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.n52.io.response.BBox;
-import org.n52.io.v1.data.RawFormats;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-public class IoParameters {
+public class IoParameters implements Parameters {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
@@ -72,273 +74,34 @@ public class IoParameters {
 
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
-    /**
-     * How detailed the output shall be.
-     */
-    static final String EXPANDED = "expanded";
+    private final MultiValueMap<String, JsonNode> query;
+
+    private IoParameters() {
+        query = new LinkedMultiValueMap<>();
+        query.setAll(readDefaultConfig());
+    }
+
+    protected IoParameters(IoParameters parameters) {
+        this();
+        if (parameters != null) {
+            query.putAll(parameters.query);
+        }
+    }
+
+    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
+        this();
+        if (queryParameters != null) {
+            query.putAll(queryParameters);
+        }
+    }
 
     /**
-     * The default expansion of collection items.
-     *
-     * @see #EXPANDED
-     */
-    private static final boolean DEFAULT_EXPANDED = false;
-
-    /**
-     * If latest values shall be requested in a bulk timeseries request.
-     */
-    static final String FORCE_LATEST_VALUE = "force_latest_values";
-
-    /**
-     * The default behaviour if latest value requests shall be invoked during a
-     * timeseries collection request.
-     */
-    private static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
-
-    /**
-     * If status intervals section is requested.
-     */
-    static final String STATUS_INTERVALS = "status_intervals";
-
-    /**
-     * The default behaviour for status intervals.
-     */
-    private static final boolean DEFAULT_STATUS_INTERVALS = false;
-
-    /**
-     * If rendering hints are requested for a timeseries
-     */
-    static final String RENDERING_HINTS = "rendering_hints";
-
-    /**
-     * The default behaviour for rendering hints.
-     */
-    private static final boolean DEFAULT_RENDERING_HINTS = false;
-
-    /**
-     * Determines the index of the first member of the response page (a.k.a.
-     * page offset).
-     */
-    static final String OFFSET = "offset";
-
-    /**
-     * The default page offset.
-     *
-     * @see #OFFSET
-     */
-    private static final int DEFAULT_OFFSET = -1;
-
-    /**
-     * Determines the limit of the page to be returned.
-     */
-    static final String LIMIT = "limit";
-
-    /**
-     * The default page size limit.
-     *
-     * @see #LIMIT
-     */
-    private static final int DEFAULT_LIMIT = -1;
-
-    /**
-     * Determines the locale the output shall have.
-     */
-    static final String LOCALE = "locale";
-
-    /**
-     * The default locale.
-     *
-     * @see #LOCALE
-     */
-    private static final String DEFAULT_LOCALE = "en";
-
-    /**
-     * Determines the timespan parameter
-     */
-    static final String TIMESPAN = "timespan";
-
-    /**
-     * Parameter to specify the timeseries data with a result time
-     */
-    static final String RESULTTIME = "resultTime";
-
-    /**
-     * The width in px of the image to be rendered.
-     */
-    static final String WIDTH = "width";
-
-    /**
-     * The default width of the chart image to render.
-     */
-    private static final int DEFAULT_WIDTH = 800;
-
-    /**
-     * The height in px of the image to be rendered.
-     */
-    static final String HEIGHT = "height";
-
-    /**
-     * The default height of the chart image to render.
-     */
-    private static final int DEFAULT_HEIGHT = 500;
-
-    /**
-     * If a chart shall be rendered with a background grid.
-     */
-    static final String GRID = "grid";
-
-    /**
-     * Defaults to a background grid in a rendered chart.
-     */
-    private static final boolean DEFAULT_GRID = true;
-
-    /**
-     * If a legend shall be drawn on the chart.
-     */
-    static final String LEGEND = "legend";
-
-    /**
-     * Defaults to a not drawn legend.
-     */
-    private static final boolean DEFAULT_LEGEND = false;
-
-    /**
-     * If a rendered chart shall be written as base64 encoded string.
-     */
-    static final String BASE_64 = "base64";
-
-    /**
-     * Defaults to binary output.
-     */
-    private static final boolean DEFAULT_BASE_64 = false;
-
-    /**
-     * Determines the generalize flag.
-     */
-    static final String GENERALIZE = "generalize";
-
-    /**
-     * The default (no generalization) behaviour.
-     */
-    private static final boolean DEFAULT_GENERALIZE = false;
-
-    /**
-     * Determines how raw data shall be formatted.
-     */
-    static final String FORMAT = "format";
-
-    /**
-     * Determines how raw data shall be queried from service.
-     */
-    static final String RAW_FORMAT = RawFormats.RAW_FORMAT;
-
-    /**
-     * The default format for raw data output.
-     */
-    private static final String DEFAULT_FORMAT = "tvp";
-
-    /**
-     * Determines the style parameter
-     */
-    static final String STYLE = "style";
-
-    /**
-     * Determines the service filter
-     */
-    static final String SERVICE = "service";
-
-    /**
-     * Determines the feature filter
-     */
-    static final String FEATURE = "feature";
-
-    /**
-     * Determines the service filter
-     */
-    static final String OFFERING = "offering";
-
-    /**
-     * Determines the procedure filter
-     */
-    static final String PROCEDURE = "procedure";
-
-    /**
-     * Determines the phenomenon filter
-     */
-    static final String PHENOMENON = "phenomenon";
-
-    /**
-     * Determines the station filter
-     */
-    static final String STATION = "station";
-
-    static final String PLATFORMS = "platforms";
-
-    /**
-     * Determines the category filter
-     */
-    static final String CATEGORY = "category";
-
-    /**
-     * Determines the reference system to be used for input/output coordinates.
-     */
-    static final String CRS = "crs";
-
-    /**
-     * Determines if CRS axes order shall always be XY, i.e. lon/lat.
-     */
-    static final String FORCE_XY = "forceXY";
-
-    /**
-     * Default axes order respects EPSG axes ordering.
-     */
-    private static final boolean DEFAULT_FORCE_XY = false;
-
-    /**
-     * Determines if filter shall match domain ids instead of global ids
-     */
-    static final String MATCH_DOMAIN_IDS = "matchDomainIds";
-
-    /**
-     * Default filter match property.
-     */
-    private static final boolean DEFAULT_MATCH_DOMAIN_IDS = false;
-
-    /**
-     * Determines the within filter
-     */
-    static final String NEAR = "near";
-
-    /**
-     * Determines the bbox filter
-     */
-    static final String BBOX = "bbox";
-
-    /**
-     * Determines the fields filter
-     */
-    static final String FIELDS = "fields";
-
-    static final String TYPE = "type";
-
-    private final Map<String, JsonNode> query;
-
-    /**
-     * Use static constructor
-     * {@link IoParameters#createFromQuery(RequestParameterSet)} or
-     * {@link IoParameters#createFromQuery(java.util.Map)} .
-     *
      * @param queryParameters containing query parameters. If <code>null</code>,
      * all parameters are returned with default values.
      */
     protected IoParameters(Map<String, JsonNode> queryParameters) {
-        query = readDefaultConfig();
-        if (queryParameters != null) {
-            for (Entry<String, JsonNode> entry : queryParameters.entrySet()) {
-                query.put(entry.getKey().toLowerCase(), entry.getValue());
-            }
-        }
+        this();
+        query.setAll(queryParameters);
     }
 
     private Map<String, JsonNode> readDefaultConfig() {
@@ -522,7 +285,7 @@ public class IoParameters {
 
     public String getRawFormat() {
         if (isSetRawFormat()) {
-            final JsonNode value = query.get(RAW_FORMAT);
+            final JsonNode value = query.getFirst(RAW_FORMAT);
             return value != null
                     ? value.asText()
                     : null;
@@ -830,7 +593,7 @@ public class IoParameters {
 
     public String getAsString(String parameter) {
         return containsParameter(parameter)
-                ? query.get(parameter.toLowerCase()).asText()
+                ? query.getFirst(parameter.toLowerCase()).asText()
                 : null;
     }
 
@@ -843,7 +606,7 @@ public class IoParameters {
         try {
             String value = getAsString(parameter);
             Integer.parseInt(value);
-            return query.get(parameter.toLowerCase()).asInt();
+            return query.getFirst(parameter.toLowerCase()).asInt();
         } catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
         }
@@ -858,7 +621,7 @@ public class IoParameters {
         try {
             String value = getAsString(parameter);
             Boolean.parseBoolean(value);
-            return query.get(parameter.toLowerCase()).asBoolean();
+            return query.getFirst(parameter.toLowerCase()).asBoolean();
         } catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
         }
@@ -877,22 +640,24 @@ public class IoParameters {
     }
 
     private RequestParameterSet addValuesToParameterSet(RequestParameterSet parameterSet) {
-        for (Entry<String, JsonNode> entry : query.entrySet()) {
+
+        // TODO keep multi value map
+        for (Entry<String, JsonNode> entry : query.toSingleValueMap().entrySet()) {
             parameterSet.addParameter(entry.getKey().toLowerCase(), entry.getValue());
         }
         return parameterSet;
     }
 
     public static IoParameters createDefaults() {
-        return new IoParameters(null);
+        return new IoParameters(Collections.<String, JsonNode>emptyMap());
     }
 
     /**
-     * @param queryParameters the parameters sent via GET payload.
+     * @param parameters the parameters to override
      * @return a query map for convenient parameter access plus validation.
      */
-    public static IoParameters createFromQuery(Map<String, String> queryParameters) {
-        return new IoParameters(convertValuesToJsonNodes(queryParameters));
+    public static IoParameters extendWith(IoParameters parameters) {
+        return new IoParameters(parameters);
     }
 
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
@@ -901,6 +666,17 @@ public class IoParameters {
             String key = entry.getKey();
             String value = entry.getValue();
             parameters.put(key, getJsonNodeFrom(value));
+        }
+        return parameters;
+    }
+
+    protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(MultiValueMap<String, String> queryParameters) {
+        MultiValueMap<String, JsonNode> parameters = new LinkedMultiValueMap<>();
+        final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
+        for (Entry<String, List<String>> entry : entrySet) {
+            for (String value : entry.getValue()) {
+                parameters.add(entry.getKey(), getJsonNodeFrom(value));
+            }
         }
         return parameters;
     }

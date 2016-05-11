@@ -40,30 +40,29 @@ import org.n52.sensorweb.spi.search.ProcedureSearchResult;
 import org.n52.series.db.da.dao.v1.ProcedureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class ProcedureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<ProcedureOutput> {
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             ProcedureDao procedureDao = new ProcedureDao(session);
-            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
-            List<ProcedureEntity> found = procedureDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = getDbQuery(parameters);
+            List<ProcedureEntity> found = procedureDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
-        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+        List<SearchResult> results = new ArrayList<>();
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new ProcedureSearchResult(pkid, label));
@@ -75,7 +74,7 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
+            List<ProcedureOutput> results = new ArrayList<>();
             for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(procedureEntity, parameters));
             }
@@ -89,7 +88,7 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
+            List<ProcedureOutput> results = new ArrayList<>();
             for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(procedureEntity, parameters));
             }

@@ -34,6 +34,13 @@ import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
+import static org.n52.web.common.Stopwatch.startStopwatch;
+import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -55,32 +62,26 @@ import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.request.IoParameters;
 import org.n52.io.IoParseException;
+import org.n52.io.PreRenderingJob;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
-import org.n52.io.PreRenderingJob;
-import org.n52.io.request.QueryParameters;
-import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
-import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.TimeseriesDataCollection;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.v1.data.RawFormats;
-import org.n52.web.exception.BadRequestException;
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.sensorweb.spi.SeriesDataService;
+import org.n52.sensorweb.spi.ServiceParameterService;
+import org.n52.web.common.Stopwatch;
 import org.n52.web.ctrl.BaseController;
+import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
-import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,8 +131,8 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
-        IntervalWithTimeZone timespan = map.getTimespan();
+        IoParameters map = createFromQuery(query);
+        IntervalWithTimeZone timespan = map.getTimespan();	
         checkAgainstTimespanRestriction(timespan.toString());
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (map.getResultTime() != null) {
@@ -173,7 +174,7 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam MultiValueMap<String, String> query) {
         checkIfUnknownTimeseries(timeseriesId);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (!timeseriesDataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -199,7 +200,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = QueryParameters.createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -230,7 +231,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -262,7 +263,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -287,7 +288,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = QueryParameters.createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -309,7 +310,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());

@@ -68,7 +68,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> find(String search, DbQuery query) {
+    public List<T> find(DbQuery query) {
 
         /*
          * Timeseries labels are constructed from labels of related feature
@@ -83,13 +83,13 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
         }
-        featureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        featureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         series.addAll(featureCriteria.list());
 
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
         }
-        procedureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        procedureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         series.addAll(procedureCriteria.list());
 
         return series;
@@ -116,8 +116,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
         parameters.addPagingTo(criteria);
 
-        if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
-                && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
+        if (parameters.isPureStationInsituConcept()) {
             criteria
                     .createCriteria("feature", "f", JoinType.INNER_JOIN)
                     .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
@@ -129,7 +128,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(FeatureEntity feature) {
         Criteria criteria = session.createCriteria(entityType, "s");
-//        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
         return (List<T>) criteria.list();

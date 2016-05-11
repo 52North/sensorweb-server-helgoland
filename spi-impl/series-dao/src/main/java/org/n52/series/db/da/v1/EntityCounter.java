@@ -46,11 +46,6 @@ public class EntityCounter {
         protected DbQuery getDbQuery(IoParameters parameters) {
             return DbQuery.createFrom(parameters);
         }
-
-        @Override
-        protected DbQuery getDbQuery(IoParameters parameters, String locale) {
-            return DbQuery.createFrom(parameters, locale);
-        }
     };
 
     public int countStations() throws DataAccessException {

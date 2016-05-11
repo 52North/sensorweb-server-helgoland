@@ -28,6 +28,7 @@
  */
 package org.n52.web.ctrl.v1;
 
+import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.web.ctrl.ParameterController;
 import org.springframework.util.MultiValueMap;
@@ -39,7 +40,7 @@ public abstract class ParameterControllerV1Adapter extends ParameterController {
 
     @Override
     protected void hookQueryParameters(MultiValueMap<String, String> query) {
-        query.add("pureStationTimeseriesConcept", "true");
+        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
     }
 
     @Override

@@ -31,6 +31,7 @@ package org.n52.series.db.srv.v1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
@@ -65,15 +66,15 @@ public class Search extends ServiceInfo implements SearchService {
     private OutputAssembler<CategoryOutput> categoryRepository;
 
     @Override
-    public Collection<SearchResult> searchResources(String search, String locale) {
+    public Collection<SearchResult> searchResources(IoParameters parameters) {
         List<SearchResult> results = new ArrayList<>();
-        results.addAll(timeseriesRepository.searchFor(search, locale));
-        results.addAll(phenomenonRepository.searchFor(search, locale));
-        results.addAll(procedureRepository.searchFor(search, locale));
-        results.addAll(procedureRepository.searchFor(search, locale)); // XXX vorher getOfferingRepository
-        results.addAll(stationRepository.searchFor(search, locale));
-        results.addAll(featureRepository.searchFor(search, locale));
-        results.addAll(categoryRepository.searchFor(search, locale));
+        results.addAll(timeseriesRepository.searchFor(parameters));
+        results.addAll(phenomenonRepository.searchFor(parameters));
+        results.addAll(procedureRepository.searchFor(parameters));
+        results.addAll(procedureRepository.searchFor(parameters)); // XXX vorher getOfferingRepository
+        results.addAll(stationRepository.searchFor(parameters));
+        results.addAll(featureRepository.searchFor(parameters));
+        results.addAll(categoryRepository.searchFor(parameters));
         return results;
     }
 

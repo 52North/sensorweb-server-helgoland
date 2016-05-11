@@ -28,7 +28,7 @@
  */
 package org.n52.series.db.da.beans;
 
-public class CategoryEntity extends DescribableEntity<I18nCategoryEntity> {
+public class CategoryEntity extends DescribableEntity {
 
     @Override
     public String toString() {

@@ -30,12 +30,12 @@ package org.n52.web.ctrl.v1;
 
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.web.common.Stopwatch;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
@@ -61,6 +62,7 @@ public class StationsParameterController {
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         IoParameters map = createFromQuery(query);
 
         if (map.isExpanded()) {
@@ -83,6 +85,7 @@ public class StationsParameterController {
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
+        hookQueryParameters(query);
         IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
@@ -95,6 +98,10 @@ public class StationsParameterController {
         }
 
         return new ModelAndView().addObject(result);
+    }
+
+    protected void hookQueryParameters(MultiValueMap<String, String> query) {
+        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
     }
 
     public ParameterService<GeoJSONFeature> getParameterService() {

@@ -40,7 +40,6 @@ import org.n52.sensorweb.spi.search.CategorySearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.dao.v2.CategoryDao;
 import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -63,23 +62,23 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     }
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             CategoryDao categoryDao = new CategoryDao(session);
-            DbQuery parameters = getDbQuery(IoParameters.createDefaults(), locale);
-            List<CategoryEntity> found = categoryDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = getDbQuery(parameters);
+            List<CategoryEntity> found = categoryDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
-        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+        List<SearchResult> results = new ArrayList<>();
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new CategorySearchResult(pkid, label));
@@ -91,7 +90,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<CategoryOutput> results = new ArrayList<CategoryOutput>();
+            List<CategoryOutput> results = new ArrayList<>();
             for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(categoryEntity, parameters));
             }
@@ -105,7 +104,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     public List<CategoryOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<CategoryOutput> results = new ArrayList<CategoryOutput>();
+            List<CategoryOutput> results = new ArrayList<>();
             for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(categoryEntity, parameters));
             }

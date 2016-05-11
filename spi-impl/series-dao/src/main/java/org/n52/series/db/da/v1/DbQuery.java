@@ -31,9 +31,6 @@ package org.n52.series.db.da.v1;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
@@ -81,15 +78,6 @@ public class DbQuery extends AbstractDbQuery {
 
     public static DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
-    }
-
-    public static DbQuery createFrom(IoParameters parameters, String locale) {
-        if (locale == null) {
-            return new DbQuery(parameters);
-        }
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("locale", locale);
-        return new DbQuery(IoParameters.createFromQuery(params));
     }
 
 }

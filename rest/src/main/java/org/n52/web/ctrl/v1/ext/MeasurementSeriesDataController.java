@@ -61,7 +61,6 @@ import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.TimeseriesDataCollection;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -91,6 +90,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES, produces = {"application/json"})
@@ -132,7 +132,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(seriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
@@ -176,7 +176,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
             @PathVariable String seriesId,
             @RequestParam MultiValueMap<String, String> query) {
         checkIfUnknownTimeseries(seriesId);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         if (!dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -202,7 +202,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = QueryParameters.createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -233,7 +233,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(seriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -265,7 +265,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(seriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -290,7 +290,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = QueryParameters.createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -312,7 +312,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         checkIfUnknownTimeseries(seriesId);
 
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());

@@ -50,12 +50,12 @@ public class SiteDao extends AbstractDao<SiteEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SiteEntity> find(String search, DbQuery query) {
+    public List<SiteEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nSiteEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nSiteEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

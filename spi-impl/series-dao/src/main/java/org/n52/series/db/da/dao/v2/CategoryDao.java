@@ -48,12 +48,12 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryEntity> find(String search, DbQuery query) {
+    public List<CategoryEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nCategoryEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

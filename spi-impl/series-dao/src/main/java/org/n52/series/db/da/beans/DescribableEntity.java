@@ -30,7 +30,7 @@ package org.n52.series.db.da.beans;
 
 import java.util.Set;
 
-public class DescribableEntity<T extends I18nEntity> {
+public class DescribableEntity {
 
     /**
      * A serial primary key.
@@ -52,7 +52,7 @@ public class DescribableEntity<T extends I18nEntity> {
      */
     private String description;
 
-    private Set<T> translations;
+    private Set<I18nEntity> translations;
 
     public Long getPkid() {
         return pkid;
@@ -90,11 +90,11 @@ public class DescribableEntity<T extends I18nEntity> {
         this.description = description;
     }
 
-    public Set<T> getTranslations() {
+    public Set<I18nEntity> getTranslations() {
         return translations;
     }
 
-    public void setTranslations(Set<T> translations) {
+    public void setTranslations(Set<I18nEntity> translations) {
         this.translations = translations;
     }
 
@@ -104,7 +104,7 @@ public class DescribableEntity<T extends I18nEntity> {
         }
         String candidate = name;
         String countryCode = getCountryCode(locale);
-        for (T translation : translations) {
+        for (I18nEntity translation : translations) {
             String translatedLocale = translation.getLocale();
             if (translatedLocale.equals(locale)) {
                 // locale matches exactly

@@ -51,12 +51,11 @@ import org.n52.io.img.RenderingContext;
 import org.n52.io.request.IoParameters;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.request.StyleProperties;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.task.ScheduledJob;
 import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
@@ -141,7 +140,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
-            IoParameters query = IoParameters.createFromQuery(parameters);
+            IoParameters query = QueryParameters.createFromQuery(parameters);
             OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
                 String timeseriesId = metadata.getId();
@@ -339,7 +338,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             LOGGER.warn("Invalid rendering style.", e);
         }
 
-        return IoParameters.createFromQuery(configuration);
+        return QueryParameters.createFromQuery(configuration);
     }
 
     private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {

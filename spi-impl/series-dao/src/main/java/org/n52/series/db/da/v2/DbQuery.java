@@ -28,9 +28,6 @@
  */
 package org.n52.series.db.da.v2;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -106,13 +103,12 @@ public class DbQuery extends AbstractDbQuery {
         return new DbQuery(parameters);
     }
 
-    public static DbQuery createFrom(IoParameters parameters, String locale) {
-        if (locale == null) {
-            return new DbQuery(parameters);
-        }
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("locale", locale);
-        return new DbQuery(IoParameters.createFromQuery(params));
-    }
-
+//    public static DbQuery createFrom(IoParameters parameters, String locale) {
+//        if (locale == null) {
+//            return new DbQuery(parameters);
+//        }
+//        Map<String, String> params = new HashMap<String, String>();
+//        params.put("locale", locale);
+//        return new DbQuery(IoParameters.createFromQuery(params));
+//    }
 }

@@ -54,7 +54,6 @@ import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.v2.ObservationEntityV2;
 import org.n52.series.db.da.beans.v2.SeriesEntityV2;
@@ -96,20 +95,20 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     private PlatformRepository platformRepository;
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<SeriesEntityV2> found = seriesDao.find(searchString, parameters);
-            return convertToResults(found, locale);
+            DbQuery query = DbQuery.createFrom(parameters);
+            List<SeriesEntityV2> found = seriesDao.find(query);
+            return convertToResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             String locale) {
         // not needed, use #convertToResults() instead
         return new ArrayList<>();
@@ -303,11 +302,10 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Map<String, String> queryParameters = new HashMap<>();
         queryParameters.put("platform", platform.getId());
         queryParameters.put("series", Long.toString(entity.getPkid()));
-        DbQuery parameters = DbQuery.createFrom(IoParameters.createFromQuery(queryParameters));
         if (platform instanceof StationaryPlatformOutput) {
-            return featureRepository.getSites(parameters);
+            return featureRepository.getSites(query);
         } else if (platform instanceof MobilePlatformOutput) {
-            return featureRepository.getTracks(parameters);
+            return featureRepository.getTracks(query);
         }
         return null;
     }

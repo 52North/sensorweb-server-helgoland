@@ -1,16 +1,12 @@
-package org.n52.series.db.da.v1.ext;
+package org.n52.series.db.da.v1;
 
 import java.util.Collection;
 import java.util.List;
-import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
-import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.v1.ExtendedSessionAwareRepository;
-import org.n52.series.db.da.v1.OutputAssembler;
 
 /**
  * TODO: JavaDoc
@@ -35,12 +31,12 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     @Override
-    public Collection<SearchResult> searchFor(String queryString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters paramters) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

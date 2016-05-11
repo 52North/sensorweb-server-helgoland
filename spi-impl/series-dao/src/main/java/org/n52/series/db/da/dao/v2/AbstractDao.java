@@ -53,7 +53,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
         this.session = session;
     }
 
-    public abstract List<T> find(String search, DbQuery query);
+    public abstract List<T> find(DbQuery query);
 
     protected abstract Criteria getDefaultCriteria();
 

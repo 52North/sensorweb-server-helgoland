@@ -1,6 +1,6 @@
 package org.n52.series.db.da.dao.v1;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <T>
  */
 @Transactional
-public class ObservationDao<T extends AbstractObservationEntity> extends AbstractDao<T> {
+public class ObservationDao<T extends AbstractObservationEntity<?>> extends AbstractDao<T> {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -35,8 +35,8 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     }
 
     @Override
-    public List<T> find(String search, DbQuery query) {
-        return new ArrayList<>();
+    public List<T> find(DbQuery query) {
+        return Collections.emptyList();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
      * @throws org.n52.series.db.da.DataAccessException if accessing database
      * fails.
      */
-    public List<T> getAllInstancesFor(AbstractSeriesEntity series) throws DataAccessException {
+    public List<T> getAllInstancesFor(AbstractSeriesEntity<T> series) throws DataAccessException {
         return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
@@ -85,7 +85,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked")
-    public List<T> getAllInstancesFor(AbstractSeriesEntity series, AbstractDbQuery parameters) throws DataAccessException {
+    public List<T> getAllInstancesFor(AbstractSeriesEntity<?> series, AbstractDbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
@@ -95,7 +95,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getObservationsFor(AbstractSeriesEntity series, AbstractDbQuery query) {
+    public List<T> getObservationsFor(AbstractSeriesEntity<T> series, AbstractDbQuery query) {
         Criteria criteria = query.addTimespanTo(getDefaultCriteria())
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));

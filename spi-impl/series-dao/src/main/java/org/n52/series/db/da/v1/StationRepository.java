@@ -45,7 +45,6 @@ import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -54,7 +53,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
+import org.n52.web.exception.BadRequestException;
 
 /**
  *
@@ -71,23 +73,23 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     private String dbSrid = "EPSG:4326";
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             FeatureDao stationDao = new FeatureDao(session);
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<FeatureEntity> found = stationDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = DbQuery.createFrom(parameters);
+            List<FeatureEntity> found = stationDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             String locale) {
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new StationSearchResult(pkid, label));
@@ -100,8 +102,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(dbSrid);
-            FeatureDao featureDao = new FeatureDao(session);
-            List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
+            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
 
             List<StationOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : allFeatures) {
@@ -119,8 +120,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(dbSrid);
-            FeatureDao featureDao = new FeatureDao(session);
-            List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
+            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
             List<StationOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : allFeatures) {
                 results.add(createExpanded(featureEntity, parameters, session));
@@ -131,13 +131,16 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         }
     }
 
+    List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+        FeatureDao featureDao = new FeatureDao(session);
+        return featureDao.getAllInstances(parameters);
+    }
+
     @Override
     public StationOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            parameters.setDatabaseAuthorityCode(dbSrid);
-            FeatureDao featureDao = new FeatureDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
+            FeatureEntity result = getInstance(id, parameters, session);
             if (result == null) {
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
             }
@@ -145,6 +148,12 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         } finally {
             returnSession(session);
         }
+    }
+
+    FeatureEntity getInstance(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
+        parameters.setDatabaseAuthorityCode(dbSrid);
+        FeatureDao featureDao = new FeatureDao(session);
+        return featureDao.getInstance(parseId(id), parameters);
     }
 
     public StationOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
@@ -177,11 +186,16 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     private Geometry createPoint(FeatureEntity featureEntity) {
         try {
-            if (featureEntity.isSetGeom()) {
-                Geometry geometry = featureEntity.getGeom();
-                String fromCrs = "EPSG:" + geometry.getSRID();
-                Point location = (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-                return location;
+            if (featureEntity instanceof SiteFeatureEntity) {
+                SiteFeatureEntity entity = (SiteFeatureEntity) featureEntity;
+                if (entity.isSetGeometry()) {
+                    Geometry geometry = entity.getGeometry().getGeometry();
+                    String fromCrs = getCrs(geometry);
+                    return (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+                } else if (entity.isSetLonLat()) {
+                    final GeometryEntity geometry = entity.getGeometry();
+                    return crsUtil.createPoint(geometry.getLon(), geometry.getLat(), geometry.getAlt(), dbSrid);
+                }
             }
         } catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId(), e);
@@ -190,6 +204,12 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         }
         return null;
     }
+
+	private String getCrs(Geometry geometry) {
+		return geometry.getSRID() != 0
+				? "EPSG:" + geometry.getSRID()
+				: CRSUtils.DEFAULT_CRS;
+	}
 
     public void setDatabaseSrid(String dbSrid) {
         this.dbSrid = dbSrid;

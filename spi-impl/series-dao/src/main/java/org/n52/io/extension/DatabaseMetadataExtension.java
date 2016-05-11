@@ -74,11 +74,6 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
-        @Override
-        protected AbstractDbQuery getDbQuery(IoParameters parameters, String locale) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
         private List<String> getFieldNames(String id) {
             Session session = getSession();
             try {

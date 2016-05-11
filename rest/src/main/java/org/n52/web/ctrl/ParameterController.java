@@ -43,8 +43,6 @@ import org.apache.commons.io.IOUtils;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 import org.n52.io.response.ParameterOutput;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
@@ -64,6 +62,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import org.n52.io.request.Parameters;
 
 @RequestMapping(produces = {"application/json"})
 public abstract class ParameterController extends BaseController {
@@ -83,7 +83,7 @@ public abstract class ParameterController extends BaseController {
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        IoParameters queryMap = createFromQuery(query);
         try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");

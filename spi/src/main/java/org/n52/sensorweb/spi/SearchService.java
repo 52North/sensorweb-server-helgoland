@@ -29,6 +29,7 @@
 package org.n52.sensorweb.spi;
 
 import java.util.Collection;
+import org.n52.io.request.IoParameters;
 
 /**
  * Serves search requests on the underlying data access implementation(s).
@@ -36,10 +37,9 @@ import java.util.Collection;
 public interface SearchService {
 
     /**
-     * @param search a search string.
-     * @param locale a locale indicating the expected language.
+     * @param parameters the query parameters.
      * @return a collection of matching results.
      */
-    Collection<SearchResult> searchResources(String search, String locale);
+    Collection<SearchResult> searchResources(IoParameters parameters);
 
 }
