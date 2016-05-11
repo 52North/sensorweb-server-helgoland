@@ -6,20 +6,21 @@
             <column name="observationid"/>
             <generator class="assigned"/>
         </id>
-        <discriminator column="observationconcept" formula="(select s.observationconcept from series s where s.seriesid = seriesid)" type="string"/>
+        <discriminator column="observationconcept" formula="(select s.observationconcept from hzg.series s where s.seriesid = seriesid)" type="string"/>
         <property column="seriesid" name="seriesPkid" type="long"/>
-        <property column="phenomenontimeend" name="timestamp" type="timestamp"/>
-        <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
+        <property column="phenomenontime" name="timestamp" type="timestamp"/>
+        <property name="deleted" type="org.hibernate.type.TrueFalseType" formula="'F'" />
         <!--        <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
             <property column="lat" name="lat" type="double" />
             <property column="lon" name="lon" type="double" />
             <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>-->
         <subclass name="MeasurementEntity" discriminator-value="measurement" >
-            <join fetch="join" table="numericvalue">
-                <key column="observationid" foreign-key="observationid"/>
-                <property name="value" type="double"/>
-            </join>
+        	<property name="value" type="double"/>
+<!--             <join fetch="join" table="numericvalue"> -->
+<!--                 <key column="observationid" foreign-key="observationid"/> -->
+<!--                 <property name="value" type="double"/> -->
+<!--             </join> -->
         </subclass>
     </class>
 </hibernate-mapping>

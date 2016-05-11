@@ -20,15 +20,15 @@
             <property column="unit" name="simpleUnit" type="string" />
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
-                <property column="firstnumericvalue" name="value" type="double"/>
+                <property column="firstvalue" name="value" type="double"/>
             </component>
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="lastValue">
                 <property column="lasttimestamp" name="timestamp" type="timestamp"/>
-                <property column="lastnumericvalue" name="value" type="double"/>
+                <property column="lastvalue" name="value" type="double"/>
             </component>
             <list fetch="select" inverse="true" name="observations" table="observation">
-                <key column="observationid"/>
-                <index column="seriesid"/>
+                <key column="seriesid"/>
+                <index column="phenomenontime"/>
                 <one-to-many class="org.n52.series.db.da.beans.ext.MeasurementEntity"/>
             </list>
         </subclass>

@@ -11,9 +11,10 @@
         <property name="name" column="name" type="string" />
 
         <set fetch="select" inverse="true" name="series" table="observation">
-            <key column="seriesid" />
+            <key column="offeringid" />
             <many-to-many class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity"
-                          column="observationid" />
+                          column="seriesid" />
         </set>
+
     </class>
 </hibernate-mapping>

@@ -15,7 +15,11 @@
         <property column="featureconcept" name="featureConcept" type="string" insert="false" update="false" />
 
         <subclass name="org.n52.series.db.da.beans.ext.SiteFeatureEntity" discriminator-value="stationary/insitu">
-
+            <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
+                <property column="lat" name="lat" type="double" />
+                <property column="lon" name="lon" type="double" />
+                <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
+            </component>
         </subclass>
         <subclass name="org.n52.series.db.da.beans.ext.TrackFeatureEntity" discriminator-value="mobile/insitu">
 
