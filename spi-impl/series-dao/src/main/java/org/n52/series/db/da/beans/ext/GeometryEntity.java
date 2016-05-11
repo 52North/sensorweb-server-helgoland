@@ -15,8 +15,10 @@ public class GeometryEntity {
 
     private Double lat;
 
+    private Double alt;
+
     public boolean isSetGeometry() {
-        return geometry != null;
+        return geometry != null && !geometry.isEmpty();
     }
 
     public boolean isSetLonLat() {
@@ -45,6 +47,14 @@ public class GeometryEntity {
 
     public void setLat(Double lat) {
         this.lat = lat;
+    }
+
+    public Double getAlt() {
+        return alt;
+    }
+
+    public void setAlt(Double alt) {
+        this.alt = alt;
     }
 
 }

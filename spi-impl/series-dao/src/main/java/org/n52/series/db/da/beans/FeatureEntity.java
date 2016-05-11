@@ -28,31 +28,19 @@
  */
 package org.n52.series.db.da.beans;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.response.v1.ext.PlatformType;
 
-public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
-
-    private Geometry geom;
+public class FeatureEntity extends DescribableEntity {
 
     /**
      * @since 2.0.0, supports foi concepts supported since SOS v4.4.x
      */
     private String featureConcept;
 
-    public Geometry getGeom() {
-        return geom;
-    }
-
-    public void setGeom(Geometry geom) {
-        this.geom = geom;
-    }
-
-    public boolean isSetGeom() {
-        return getGeom() != null && !getGeom().isEmpty();
-    }
-
     public String getFeatureConcept() {
-        return featureConcept;
+        return featureConcept == null || featureConcept.isEmpty()
+                ? PlatformType.STATIONARY_INSITU.getTypeName()
+                : featureConcept;
     }
 
     public void setFeatureConcept(String featureConcept) {
