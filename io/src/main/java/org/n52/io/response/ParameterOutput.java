@@ -101,7 +101,7 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
     public void setHrefBase(String hrefBase) {
         this.hrefBase = hrefBase;
     }
-    
+
     @JsonIgnore
     public String getHrefBase() {
         return hrefBase;

@@ -164,7 +164,7 @@ public enum PlatformExample {
         PlatformOutput condensed = new PlatformOutput(type);
         condensed.setId(id);
         condensed.setLabel(label);
-        condensed.setHref(ExampleConstants.BASE_URL + "/platforms/" + condensed.getId());
+        condensed.setHrefBase(ExampleConstants.BASE_URL + "/platforms/" + condensed.getId());
         return condensed;
     }
 
@@ -196,7 +196,7 @@ public enum PlatformExample {
                 MeasurementSeriesOutput output = new MeasurementSeriesOutput();
                 output.setId(UUID.randomUUID().toString());
                 output.setLabel(phenomenon.getLabel() + "@" + feature.getLabel());
-                output.setHref(ExampleConstants.BASE_URL + "/series/" + output.getObservationType() + "/" + output.getId());
+                output.setHrefBase(ExampleConstants.BASE_URL + "/series/" + output.getObservationType() + "/" + output.getId());
 
                 SeriesParameters parameters = new SeriesParameters();
                 parameters.setService(ExampleConstants.service);

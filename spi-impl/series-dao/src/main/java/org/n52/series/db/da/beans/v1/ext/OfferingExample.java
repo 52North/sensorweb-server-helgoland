@@ -71,7 +71,7 @@ public enum OfferingExample {
         OfferingOutput condensed = new OfferingOutput();
         condensed.setId(id);
         condensed.setLabel(label);
-        condensed.setHref(ExampleConstants.BASE_URL + "/categories/ext/" + condensed.getId());
+        condensed.setHrefBase(ExampleConstants.BASE_URL + "/categories/ext/" + condensed.getId());
         return condensed;
     }
 }

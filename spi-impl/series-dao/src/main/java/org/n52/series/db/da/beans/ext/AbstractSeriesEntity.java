@@ -36,7 +36,7 @@ import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
 
-public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity<?>> {
+public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> {
 
     private Long pkid;
 

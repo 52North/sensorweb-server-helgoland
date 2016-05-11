@@ -45,7 +45,7 @@ public class ExampleConstants {
         ServiceOutput serviceoutput = new ServiceOutput();
         serviceoutput.setId("1");
         serviceoutput.setLabel("Mocked Series REST API");
-        serviceoutput.setHref(BASE_URL + "/services/1");
+        serviceoutput.setHrefBase(BASE_URL + "/services/1");
         return serviceoutput;
     }
 }

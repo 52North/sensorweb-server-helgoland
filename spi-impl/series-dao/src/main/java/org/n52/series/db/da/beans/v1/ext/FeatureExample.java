@@ -70,7 +70,7 @@ public enum FeatureExample {
         FeatureOutput condensed = new FeatureOutput();
         condensed.setId(id);
         condensed.setLabel(label);
-        condensed.setHref(ExampleConstants.BASE_URL + "/features/ext/" + condensed.getId());
+        condensed.setHrefBase(ExampleConstants.BASE_URL + "/features/ext/" + condensed.getId());
         return condensed;
     }
 }

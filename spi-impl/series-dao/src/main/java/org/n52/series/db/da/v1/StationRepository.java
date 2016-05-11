@@ -205,11 +205,11 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         return null;
     }
 
-	private String getCrs(Geometry geometry) {
-		return geometry.getSRID() != 0
-				? "EPSG:" + geometry.getSRID()
-				: CRSUtils.DEFAULT_CRS;
-	}
+    private String getCrs(Geometry geometry) {
+        return geometry.getSRID() != 0
+                ? "EPSG:" + geometry.getSRID()
+                : CRSUtils.DEFAULT_CRS;
+    }
 
     public void setDatabaseSrid(String dbSrid) {
         this.dbSrid = dbSrid;

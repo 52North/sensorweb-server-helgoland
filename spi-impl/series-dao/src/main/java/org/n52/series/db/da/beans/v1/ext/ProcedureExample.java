@@ -71,7 +71,7 @@ public enum ProcedureExample {
         ProcedureOutput condensed = new ProcedureOutput();
         condensed.setId(id);
         condensed.setLabel(label);
-        condensed.setHref(ExampleConstants.BASE_URL + "/procedures/ext/" + condensed.getId());
+        condensed.setHrefBase(ExampleConstants.BASE_URL + "/procedures/ext/" + condensed.getId());
         return condensed;
     }
 }

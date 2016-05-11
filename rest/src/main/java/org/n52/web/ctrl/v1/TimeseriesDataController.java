@@ -132,7 +132,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(timeseriesId);
 
         IoParameters map = createFromQuery(query);
-        IntervalWithTimeZone timespan = map.getTimespan();	
+        IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         if (map.getResultTime() != null) {

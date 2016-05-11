@@ -52,32 +52,32 @@ public class PlatformsParameterController extends ParameterController {
         query.add(Parameters.PLATFORMS_INCLUDE_STATIONARY, "true");
         return super.getCollection(query);
     }
-    
-    @RequestMapping(method = GET, path="/stationary_insitu")
+
+    @RequestMapping(method = GET, path = "/stationary_insitu")
     public ModelAndView getStationaryInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_STATIONARY, "true");
         return super.getCollection(query);
     }
-    
-    @RequestMapping(method = GET, path="/stationary_insitu/{id}")
-    public ModelAndView getStationaryInsituPlatform(@PathVariable("id") String id, 
-    		@RequestParam(required = false) MultiValueMap<String, String> query) {
+
+    @RequestMapping(method = GET, path = "/stationary_insitu/{id}")
+    public ModelAndView getStationaryInsituPlatform(@PathVariable("id") String id,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_STATIONARY, "true");
         return super.getItem("stationary_insitu/" + id, query);
     }
-    
-    @RequestMapping(method = GET, path="/mobile_insitu")
+
+    @RequestMapping(method = GET, path = "/mobile_insitu")
     public ModelAndView getMobileInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
         return super.getCollection(query);
     }
-    
-    @RequestMapping(method = GET, path="/mobile_insitu/{id}")
-    public ModelAndView getMobileInsituPlatform(@PathVariable("id") String id, 
-    		@RequestParam(required = false) MultiValueMap<String, String> query) {
+
+    @RequestMapping(method = GET, path = "/mobile_insitu/{id}")
+    public ModelAndView getMobileInsituPlatform(@PathVariable("id") String id,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
         return super.getItem("mobile_insitu/" + id, query);

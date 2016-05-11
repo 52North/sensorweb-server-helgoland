@@ -70,7 +70,7 @@ public enum PhenomenonExample {
         PhenomenonOutput condensed = new PhenomenonOutput();
         condensed.setId(id);
         condensed.setLabel(label);
-        condensed.setHref(ExampleConstants.BASE_URL + "/phenomena/ext/" + condensed.getId());
+        condensed.setHrefBase(ExampleConstants.BASE_URL + "/phenomena/ext/" + condensed.getId());
         return condensed;
     }
 }

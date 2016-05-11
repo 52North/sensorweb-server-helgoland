@@ -58,19 +58,19 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
     public PlatformOutput(PlatformType platformType) {
         this.platformType = platformType;
     }
-    
+
     @Override
     public String getHrefBase() {
-    	String base = super.getHrefBase();
-    	String suffix = getUrlIdSuffix();
+        String base = super.getHrefBase();
+        String suffix = getUrlIdSuffix();
         return base != null && base.endsWith(suffix)
-        		? base.substring(0, base.lastIndexOf(suffix) - 1)
-        		: base;
+                ? base.substring(0, base.lastIndexOf(suffix) - 1)
+                : base;
     }
 
-	private String getUrlIdSuffix() {
-		return getType().getTypeName();
-	}
+    private String getUrlIdSuffix() {
+        return getType().getTypeName();
+    }
 
     @Override
     public String getPlatformType() {
