@@ -30,8 +30,8 @@ package org.n52.io.response.v1.ext;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
+import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
@@ -41,7 +41,7 @@ import org.n52.io.response.v1.ProcedureOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class PlatformOutput extends ParameterOutput implements PlatformItemOutput {
+public class PlatformOutput extends AbstractOutput implements PlatformItemOutput {
 
     private final PlatformType platformType;
 
@@ -58,20 +58,36 @@ public class PlatformOutput extends ParameterOutput implements PlatformItemOutpu
     public PlatformOutput(PlatformType platformType) {
         this.platformType = platformType;
     }
+    
+    @Override
+    public String getHrefBase() {
+    	String base = super.getHrefBase();
+    	String suffix = getUrlIdSuffix();
+        return base != null && base.endsWith(suffix)
+        		? base.substring(0, base.lastIndexOf(suffix) - 1)
+        		: base;
+    }
+
+	private String getUrlIdSuffix() {
+		return getType().getTypeName();
+	}
 
     @Override
     public String getPlatformType() {
-        return platformType.getTypeName();
+        return getType().getFeatureConcept();
     }
 
     @JsonIgnore
     public PlatformType getType() {
-        return platformType;
+        return platformType != null
+                ? platformType
+                // stay backward compatible
+                : PlatformType.STATIONARY_INSITU;
     }
 
     @Override
     public void setId(String id) {
-        super.setId(getPlatformType() + "/" + id);
+        super.setId(getUrlIdSuffix() + "/" + id);
     }
 
     public Collection<SeriesMetadataOutput<SeriesParameters>> getSeries() {

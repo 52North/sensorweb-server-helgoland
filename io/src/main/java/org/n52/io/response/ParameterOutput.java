@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,6 +62,8 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     private String href;
 
+    private String hrefBase;
+
     private String domainId;
 
     private String label;
@@ -83,11 +86,25 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     @Override
     public String getHref() {
-        return href;
+        if (getHrefBase() == null && href == null) {
+            return null;
+        }
+        return href == null && getHrefBase() != null
+                ? getHrefBase() + "/" + getId()
+                : href;
     }
 
     public void setHref(String href) {
         this.href = href;
+    }
+
+    public void setHrefBase(String hrefBase) {
+        this.hrefBase = hrefBase;
+    }
+    
+    @JsonIgnore
+    public String getHrefBase() {
+        return hrefBase;
     }
 
     /**

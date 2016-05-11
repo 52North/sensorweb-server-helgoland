@@ -40,18 +40,68 @@ public enum PlatformType {
     MOBILE_INSITU("mobile/insitu"),
     MOBILE_REMOTE("mobile/remote");
 
-    private final String typeName;
+    private final String featureConcept;
 
-    private PlatformType(String typeName) {
-        this.typeName = typeName;
+    private PlatformType(String featureConcept) {
+        this.featureConcept = featureConcept;
     }
 
     public String getTypeName() {
-        return this.typeName;
+        return this.name().toLowerCase();
     }
 
-    @Override
-    public String toString() {
-        return getTypeName();
+    public String getFeatureConcept() {
+        return featureConcept;
+    }
+
+    public static String extractId(String id) {
+        if (isStationaryId(id)) {
+            if (isInsitu(id)) {
+                return id.substring(STATIONARY_INSITU.getTypeName().length() + 1);
+            } else {
+                return id.substring(STATIONARY_REMOTE.getTypeName().length() + 1);
+            }
+        } else if (isMobileId(id)) {
+            if (isInsitu(id)) {
+                return id.substring(MOBILE_INSITU.getTypeName().length() + 1);
+            } else {
+                return id.substring(MOBILE_REMOTE.getTypeName().length() + 1);
+            }
+        }
+        return id;
+    }
+
+    public static boolean isStationaryId(String id) {
+        return id.startsWith("stationary");
+    }
+
+    public static boolean isMobileId(String id) {
+        return id.startsWith("mobile");
+    }
+
+    public static boolean isRemoteId(String id) {
+        return id.endsWith("remote");
+    }
+
+    public static boolean isInsitu(String id) {
+        return id.endsWith("insitu");
+    }
+
+    public static boolean isKnownType(String featureConcept) {
+        for (PlatformType type : values()) {
+            if (type.getFeatureConcept().equalsIgnoreCase(featureConcept)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static PlatformType toInstance(String featureConcept) {
+        for (PlatformType type : values()) {
+            if (type.getFeatureConcept().equalsIgnoreCase(featureConcept)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("no type for '" + featureConcept + "'.");
     }
 }
