@@ -48,12 +48,12 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> find(String search, DbQuery query) {
+    public List<FeatureEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 

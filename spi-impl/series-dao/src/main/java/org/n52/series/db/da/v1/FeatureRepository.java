@@ -41,29 +41,28 @@ import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput> {
 
     @Override
-    public Collection<SearchResult> searchFor(String searchString, String locale) {
+    public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            DbQuery parameters = DbQuery.createFrom(IoParameters.createDefaults(), locale);
-            List<FeatureEntity> found = featureDao.find(searchString, parameters);
-            return convertToSearchResults(found, locale);
+            DbQuery query = DbQuery.createFrom(parameters);
+            List<FeatureEntity> found = featureDao.find(query);
+            return convertToSearchResults(found, query.getLocale());
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
-        for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
+        List<SearchResult> results = new ArrayList<>();
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult, locale);
             results.add(new FeatureSearchResult(pkid, label));
@@ -76,7 +75,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+            List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createCondensed(featureEntity, parameters));
             }
@@ -91,7 +90,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             FeatureDao featureDao = new FeatureDao(session);
-            List<FeatureOutput> results = new ArrayList<FeatureOutput>();
+            List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createExpanded(featureEntity, parameters));
             }

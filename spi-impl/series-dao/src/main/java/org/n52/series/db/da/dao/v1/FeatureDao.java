@@ -33,12 +33,16 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
+import org.n52.io.request.Parameters;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -50,12 +54,12 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> find(String search, DbQuery query) {
+    public List<FeatureEntity> find(DbQuery query) {
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
-        criteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return criteria.list();
     }
 
@@ -67,23 +71,39 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = createFeatureListCriteria(parameters);
+        if (parameters.isPureStationInsituConcept()) {
+            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+        }
+        return (List<FeatureEntity>) criteria.list();
+    }
+
+    /**
+     *
+     * @param parameters
+     * @return a list of features related to stationary-featureConcept
+     * @since 2.0.0
+     * @throws DataAccessException
+     */
+    public List<FeatureEntity> getAllStations(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = createFeatureListCriteria(parameters);
+        criteria.add(Restrictions.or(
+                Restrictions.isNull("featureConcept"),
+                Restrictions.ilike("featureConcept", "stationary/%"))
+        );
+        return (List<FeatureEntity>) criteria.list();
+    }
+
+    private Criteria createFeatureListCriteria(DbQuery parameters) {
         Criteria criteria = getDefaultCriteria("feature", FeatureEntity.class);
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
-
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
         criteria.add(Subqueries.propertyIn("feature.pkid", filter));
-
         criteria = parameters.addPagingTo(criteria);
         parameters.addSpatialFilterTo(criteria, parameters);
-
-        if (parameters.getParameters().containsParameter("pureStationTimeseriesConcept")
-                && parameters.getParameters().getAsBoolean("pureStationTimeseriesConcept")) {
-            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
-        }
-
-        return (List<FeatureEntity>) criteria.list();
+        return criteria;
     }
 
     @Override
