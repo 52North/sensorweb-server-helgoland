@@ -33,13 +33,9 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.AbstractDao;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,11 +65,9 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(PlatformEntity.class, "platform");
-
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn("platform.pkid", filter));
-
+        Criteria criteria = getDefaultCriteria("platform"); // TODO filter
+//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
+//        criteria.add(Subqueries.propertyIn("platform", filter));
         parameters.addPagingTo(criteria);
         return (List<PlatformEntity>) criteria.list();
     }
@@ -87,8 +81,11 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(PlatformEntity.class)
-                .add(Restrictions.isNotEmpty("series"));
+        return getDefaultCriteria(null);
+    }
+
+    private Criteria getDefaultCriteria(String alias) {
+        return session.createCriteria(PlatformEntity.class, alias);
     }
 
 }

@@ -104,4 +104,16 @@ public enum PlatformType {
         }
         throw new IllegalArgumentException("no type for '" + featureConcept + "'.");
     }
+
+    public static PlatformType toInstance(boolean mobile, boolean insitu) {
+        if (mobile) {
+            return insitu
+                    ? MOBILE_INSITU
+                    : MOBILE_REMOTE;
+        } else {
+            return insitu
+                    ? STATIONARY_INSITU
+                    : STATIONARY_REMOTE;
+        }
+    }
 }

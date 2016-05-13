@@ -47,6 +47,7 @@ import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
+import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -131,6 +132,15 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
+        return (List<T>) criteria.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<T> getInstancesWith(PlatformEntity platform) {
+        Criteria criteria = session.createCriteria(entityType, "s");
+        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
+                .add(eq(COLUMN_PKID, platform.getPkid()));
         return (List<T>) criteria.list();
     }
 

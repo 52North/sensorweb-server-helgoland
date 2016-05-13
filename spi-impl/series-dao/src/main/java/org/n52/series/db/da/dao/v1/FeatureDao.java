@@ -33,16 +33,13 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.hibernate.sql.JoinType;
-import org.n52.io.request.Parameters;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
+import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -71,9 +68,14 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = createFeatureListCriteria(parameters);
+        Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
         if (parameters.isPureStationInsituConcept()) {
-            criteria.add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
+            criteria.createCriteria("series")
+                    .add(Restrictions.and(
+                            Restrictions.eq("mobile", false),
+                            Restrictions.eq("insitu", true))
+                    );
+            //add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
         }
         return (List<FeatureEntity>) criteria.list();
     }
@@ -86,16 +88,13 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
      * @throws DataAccessException
      */
     public List<FeatureEntity> getAllStations(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = createFeatureListCriteria(parameters);
-        criteria.add(Restrictions.or(
-                Restrictions.isNull("featureConcept"),
-                Restrictions.ilike("featureConcept", "stationary/%"))
-        );
+        Criteria criteria = createFeatureListCriteria(parameters, SiteFeatureEntity.class);
+        parameters.filterMobileInsitu("feature", criteria, false, true);
         return (List<FeatureEntity>) criteria.list();
     }
 
-    private Criteria createFeatureListCriteria(DbQuery parameters) {
-        Criteria criteria = getDefaultCriteria("feature", FeatureEntity.class);
+    private Criteria createFeatureListCriteria(DbQuery parameters, Class<? extends FeatureEntity> featureType) {
+        Criteria criteria = getDefaultCriteria("feature", featureType);
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }

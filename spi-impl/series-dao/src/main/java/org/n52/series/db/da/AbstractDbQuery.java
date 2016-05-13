@@ -144,14 +144,20 @@ public abstract class AbstractDbQuery {
 
     public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria, String parameter) {
         if (isPureStationInsituConcept()) {
-            DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
-                    .createCriteria("feature", JoinType.INNER_JOIN)
-                    .add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
-            c.setProjection(Projections.projectionList()
-                    .add(Projections.property(String.format("series.%s.pkid", parameter))));
-            criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
+            filterMobileInsitu(parameter, criteria, false, true);
         }
         return criteria;
+    }
+
+    public void filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
+        DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
+                .add(Restrictions.and(
+                        Restrictions.eq("mobile", mobile),
+                        Restrictions.eq("insitu", insitu))
+                );
+        c.setProjection(Projections.projectionList()
+                .add(Projections.property(String.format("series.%s.pkid", parameter))));
+        criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
     }
 
     public boolean isPureStationInsituConcept() {

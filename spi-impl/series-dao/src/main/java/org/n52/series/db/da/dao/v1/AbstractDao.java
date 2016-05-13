@@ -66,7 +66,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
-    protected Criteria getDefaultCriteria(String alias, Class<T> clazz) {
+    protected Criteria getDefaultCriteria(String alias, Class<? extends T> clazz) {
         Criteria criteria;
         if (alias == null || alias.isEmpty()) {
             criteria = session.createCriteria(clazz);

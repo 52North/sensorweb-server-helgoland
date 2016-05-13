@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.CommonSeriesParameters;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
@@ -41,11 +42,14 @@ import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class ExtendedSessionAwareRepository extends SessionAwareRepository<DbQuery> {
@@ -64,8 +68,19 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutputs;
     }
 
-    protected SeriesParameters createTimeseriesOutput(MeasurementSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
-        TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
+    protected Map<String, CommonSeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
+        Map<String, CommonSeriesParameters> outputs = new HashMap<>();
+        for (AbstractSeriesEntity entity : series) {
+            String seriesId = entity.getPkid().toString();
+            SeriesParameters output = createTimeseriesOutput(entity, parameters);
+            output.setPlatform(getCondensedPlatform(entity.getPlatform(), parameters));
+            outputs.put(seriesId, output);
+        }
+        return outputs;
+    }
+
+    protected SeriesParameters createTimeseriesOutput(AbstractSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
+        SeriesParameters timeseriesOutput = new SeriesParameters();
         timeseriesOutput.setService(getCondensedService());
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
         timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
@@ -97,32 +112,32 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return outputvalue;
     }
 
-    protected OfferingOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
-        OfferingOutput outputvalue = new OfferingOutput();
+    protected ParameterOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
+        return createCondensed(new OfferingOutput(), entity, parameters);
+    }
+
+    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
+        final String id = entity.getPkid().toString();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
+        outputvalue.setHref(parameters.getHrefBase() + "/" + id);
+        outputvalue.setId(id);
         return outputvalue;
     }
 
-    protected ProcedureOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
-        ProcedureOutput outputvalue = new ProcedureOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
+    protected ParameterOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
+        return createCondensed(new ProcedureOutput(), entity, parameters);
     }
 
-    protected FeatureOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
-        FeatureOutput outputvalue = new FeatureOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
+    protected ParameterOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
+        return createCondensed(new FeatureOutput(), entity, parameters);
     }
 
-    protected CategoryOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
-        CategoryOutput outputvalue = new CategoryOutput();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(entity.getPkid().toString());
-        return outputvalue;
+    protected ParameterOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
+        return createCondensed(new CategoryOutput(), entity, parameters);
+    }
+
+    protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
+        return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters);
     }
 
     @Override

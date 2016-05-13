@@ -10,9 +10,13 @@
         <discriminator column="observationconcept" type="string" />
 
         <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" name="category" insert="false" update="false" />
-        <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure" />
+        <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" name="phenomenon" insert="false" update="false" />
-        <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature"/>
+        <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature" insert="false" update="false" />
+
+        <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform"/>
+        <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
+        <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
 
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">

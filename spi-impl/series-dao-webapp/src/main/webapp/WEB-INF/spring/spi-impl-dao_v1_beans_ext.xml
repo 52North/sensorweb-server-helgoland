@@ -14,8 +14,8 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean name="platformRepository" class="org.n52.series.db.da.v1.ext.PlatformRepository" />
-    <bean name="seriesRepository" class="org.n52.series.db.da.v1.ext.SeriesRepository" />
+    <bean name="platformRepository" class="org.n52.series.db.da.v1.PlatformRepository" />
+    <bean name="seriesRepository" class="org.n52.series.db.da.v1.SeriesRepository" />
 
     <bean id="seriesService" class="org.n52.series.db.srv.v1.ext.SeriesAccessService" />
 

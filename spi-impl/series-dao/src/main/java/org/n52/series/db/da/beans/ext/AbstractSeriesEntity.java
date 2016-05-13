@@ -30,6 +30,7 @@ package org.n52.series.db.da.beans.ext;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.n52.io.response.v1.ext.PlatformType;
 
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -48,14 +49,29 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
 
     private FeatureEntity feature;
 
+    private PlatformEntity platform;
+
     private Boolean published;
 
     private List<T> observations = new ArrayList<>();
+
+    private boolean mobile = false;
+
+    private boolean insitu = true;
 
     private Class<T> entityType;
 
     public AbstractSeriesEntity() {
         this.entityType = (Class<T>) AbstractObservationEntity.class;
+    }
+
+    /**
+     *
+     * @return the platform type
+     * @since 2.0.0
+     */
+    public PlatformType getPlatformType() {
+        return PlatformType.toInstance(mobile, insitu);
     }
 
     public Long getPkid() {
@@ -98,12 +114,36 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
         this.feature = feature;
     }
 
+    public PlatformEntity getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(PlatformEntity platform) {
+        this.platform = platform;
+    }
+
     public List<T> getObservations() {
         return observations;
     }
 
     public void setObservations(List<T> observations) {
         this.observations = observations;
+    }
+
+    public boolean isMobile() {
+        return mobile;
+    }
+
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
+    public boolean isInsitu() {
+        return insitu;
+    }
+
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
     }
 
     public Boolean isPublished() {

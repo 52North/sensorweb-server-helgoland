@@ -2,19 +2,22 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class name="org.n52.series.db.da.beans.ext.PlatformEntity" table="offering">
+    <class name="org.n52.series.db.da.beans.ext.PlatformEntity" table="procedure">
         <id name="pkid" type="long">
-            <column name="offeringid" />
+            <column name="procedureid" />
             <generator class="assigned" />
         </id>
+
         <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
 
-        <set fetch="select" inverse="true" name="series" table="observation">
-            <key column="offeringid" />
-            <many-to-many class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity"
-                          column="seriesid" />
-        </set>
+        <property name="mobile" formula="(select distinct s.mobile from hzg.series s where s.procedureid = procedureid)" type="org.hibernate.type.TrueFalseType" />
+        <property name="insitu" formula="(select distinct s.insitu from hzg.series s where s.procedureid = procedureid)" type="org.hibernate.type.TrueFalseType" />
+
+        <!--        <set name="series" table="series">
+            <key column="procedureid" />
+            <one-to-many class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity" />
+        </set>-->
 
     </class>
 </hibernate-mapping>

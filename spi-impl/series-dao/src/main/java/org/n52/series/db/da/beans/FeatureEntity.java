@@ -33,18 +33,33 @@ import org.n52.io.response.v1.ext.PlatformType;
 public class FeatureEntity extends DescribableEntity {
 
     /**
-     * @since 2.0.0, supports foi concepts supported since SOS v4.4.x
+     * @since 2.0.0
      */
-    private String featureConcept;
+    private boolean mobile = false;
 
-    public String getFeatureConcept() {
-        return featureConcept == null || featureConcept.isEmpty()
-                ? PlatformType.STATIONARY_INSITU.getTypeName()
-                : featureConcept;
+    /**
+     * @since 2.0.0
+     */
+    private boolean insitu = true;
+
+    public PlatformType getPlatformType() {
+        return PlatformType.toInstance(mobile, insitu);
     }
 
-    public void setFeatureConcept(String featureConcept) {
-        this.featureConcept = featureConcept;
+    public boolean isMobile() {
+        return mobile;
+    }
+
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
+    public boolean isInsitu() {
+        return insitu;
+    }
+
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
     }
 
     @Override

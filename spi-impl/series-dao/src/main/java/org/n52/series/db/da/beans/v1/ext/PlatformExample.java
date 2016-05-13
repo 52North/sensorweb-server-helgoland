@@ -128,7 +128,7 @@ public enum PlatformExample {
             default:
         }
 
-        output.setSeries(createSeriesCollectionFor(output));
+//        output.setSeries(createSeriesCollectionFor(output)); // TODO
         return output;
     }
 

@@ -7,22 +7,27 @@
             <generator class="assigned"/>
         </id>
 
-        <discriminator column="featureconcept" type="string" />
+        <!--        <discriminator column="mobile" formula="(select s.mobile from hzg.series s where s.featureofinterestid = featureofinterestid)" type="org.hibernate.type.TrueFalseType" />-->
+        <discriminator column="platformtype" force="true" formula="(select distinct featureconcept from hzg.series s where s.featureofinterestid = featureofinterestid)" type="string" />
 
-        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
+        <property name="domainId" column="identifier" type="string" insert="false" update="true"/>
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
-        <property column="featureconcept" name="featureConcept" type="string" insert="false" update="false" />
 
         <subclass name="org.n52.series.db.da.beans.ext.SiteFeatureEntity" discriminator-value="stationary/insitu">
+            <property name="mobile" formula="'F'" type="org.hibernate.type.TrueFalseType" />
+            <property name="insitu" formula="'T'" type="org.hibernate.type.TrueFalseType" />
             <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
                 <property column="lat" name="lat" type="double" />
                 <property column="lon" name="lon" type="double" />
                 <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
             </component>
         </subclass>
-        <subclass name="org.n52.series.db.da.beans.ext.TrackFeatureEntity" discriminator-value="mobile/insitu">
 
+
+        <subclass name="org.n52.series.db.da.beans.ext.TrackFeatureEntity" discriminator-value="mobile/insitu">
+            <property name="mobile" formula="'T'" type="org.hibernate.type.TrueFalseType" />
+            <property name="insitu" formula="'T'" type="org.hibernate.type.TrueFalseType" />
         </subclass>
     </class>
 </hibernate-mapping>

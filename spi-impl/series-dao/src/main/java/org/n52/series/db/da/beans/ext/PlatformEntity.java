@@ -28,10 +28,8 @@
  */
 package org.n52.series.db.da.beans.ext;
 
-import java.util.Set;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.FeatureEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,21 +37,27 @@ import org.slf4j.LoggerFactory;
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @since 2.0.0
  */
 public class PlatformEntity extends DescribableEntity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformEntity.class);
 
-    private Set<AbstractSeriesEntity> series;
+    private boolean mobile = false;
 
-    private PlatformType platformType;
+    private boolean insitu = true;
 
-    public void setPlatformType(String platformType) {
-        this.platformType = PlatformType.isKnownType(platformType)
-                ? PlatformType.toInstance(platformType)
-                : null;
+    public PlatformType getPlatformType() {
+        return PlatformType.toInstance(mobile, insitu);
     }
 
+//    private PlatformType platformType;
+//    public void setPlatformType(String platformType) {
+//        this.platformType = PlatformType.isKnownType(platformType)
+//                ? PlatformType.toInstance(platformType)
+//                : null;
+//    }
+/*
     public PlatformType getPlatformType() {
         PlatformType type = platformType;
         if (series == null) {
@@ -80,13 +84,20 @@ public class PlatformEntity extends DescribableEntity {
                 ? PlatformType.STATIONARY_INSITU
                 : type;
     }
-
-    public Set<AbstractSeriesEntity> getSeries() {
-        return series;
+     */
+    public boolean isMobile() {
+        return mobile;
     }
 
-    public void setSeries(Set<AbstractSeriesEntity> series) {
-        this.series = series;
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
     }
 
+    public boolean isInsitu() {
+        return insitu;
+    }
+
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
+    }
 }
