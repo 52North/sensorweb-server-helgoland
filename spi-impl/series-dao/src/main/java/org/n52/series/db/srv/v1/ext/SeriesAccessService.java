@@ -28,14 +28,23 @@
  */
 package org.n52.series.db.srv.v1.ext;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.v1.SeriesRepository;
+import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -48,34 +57,68 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataOutput> 
     @Autowired
     private SeriesRepository seriesRepository;
 
+    private OutputCollection<SeriesMetadataOutput> createOutputCollection(List<SeriesMetadataOutput> results) {
+        return new OutputCollection<SeriesMetadataOutput>(results) {
+            @Override
+            protected Comparator<SeriesMetadataOutput> getComparator() {
+                return ParameterOutput.defaultComparator();
+            }
+        };
+    }
+
     @Override
     public OutputCollection<SeriesMetadataOutput> getExpandedParameters(IoParameters query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<SeriesMetadataOutput> results = seriesRepository.getAllExpanded(dbQuery);
+            return createOutputCollection(results);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get timeseries metadata from database.", e);
+        }
     }
 
     @Override
     public OutputCollection<SeriesMetadataOutput> getCondensedParameters(IoParameters query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<SeriesMetadataOutput> results = seriesRepository.getAllCondensed(dbQuery);
+            return createOutputCollection(results);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get timeseries metadata from database.", e);
+        }
     }
 
     @Override
     public OutputCollection<SeriesMetadataOutput> getParameters(String[] items) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getParameters(items, IoParameters.createDefaults());
     }
 
     @Override
     public OutputCollection<SeriesMetadataOutput> getParameters(String[] items, IoParameters query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            DbQuery dbQuery = DbQuery.createFrom(query);
+            List<SeriesMetadataOutput> results = new ArrayList<>();
+            for (String timeseriesId : items) {
+                results.add(seriesRepository.getInstance(timeseriesId, dbQuery));
+            }
+            return createOutputCollection(results);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get series data.", e);
+        }
     }
 
     @Override
     public SeriesMetadataOutput getParameter(String item) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getParameter(item, IoParameters.createDefaults());
     }
 
     @Override
     public SeriesMetadataOutput getParameter(String item, IoParameters query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            return seriesRepository.getInstance(item, DbQuery.createFrom(query));
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not get series data for '" + item + "'.", e);
+        }
     }
 
     @Override

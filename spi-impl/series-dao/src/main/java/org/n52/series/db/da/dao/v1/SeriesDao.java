@@ -118,9 +118,10 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         parameters.addPagingTo(criteria);
 
         if (parameters.isPureStationInsituConcept()) {
-            criteria
-                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
-                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
+            criteria.add(Restrictions.and(Restrictions.eq("mobile", false), Restrictions.eq("insitu", true)));
+//            criteria
+//                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
+//                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
         }
 
         return (List<T>) criteria.list();
