@@ -165,6 +165,26 @@ public abstract class AbstractDbQuery {
                 && parameters.getAsBoolean(Parameters.PURE_STATION_INSITU_CONCEPT);
     }
 
+    public boolean isMobileConcept() {
+        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
+                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
+    }
+
+    public boolean isStationaryConcept() {
+        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
+                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
+    }
+
+    public boolean isInsituConcept() {
+        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
+                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
+    }
+
+    public boolean isRemoteConcept() {
+        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
+                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
+    }
+
     /**
      * @param id the id string to parse.
      * @return the long value of given string or {@link Long#MIN_VALUE} if

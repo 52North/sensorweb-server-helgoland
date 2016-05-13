@@ -69,6 +69,25 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 //        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
 //        criteria.add(Subqueries.propertyIn("platform", filter));
         parameters.addPagingTo(criteria);
+        if (parameters.isStationaryConcept()) {
+            // hier holt es einen wieder ein, wie man performant
+            // von den offerings (oder der Plattform allgemein)
+            // auf das featureconcept zugreifen kann.
+            // der link über die observation table ist nicht
+            // wirklich performant und sinnvoll. eine alternative
+            // muss her und getestet werden.
+            //
+            // siehe auch PlatformEntity#getPlatformType
+        }
+        if (parameters.isMobileConcept()) {
+
+        }
+        if (parameters.isInsituConcept()) {
+
+        }
+        if (parameters.isRemoteConcept()) {
+
+        }
         return (List<PlatformEntity>) criteria.list();
     }
 
