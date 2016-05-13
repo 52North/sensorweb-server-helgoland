@@ -47,6 +47,11 @@ public class SeriesOutput implements CommonSeriesParameters {
     private CategoryOutput category;
 
     @Override
+    public ParameterOutput getPlatform() {
+        return null;
+    }
+
+    @Override
     public ParameterOutput getService() {
         return service;
     }

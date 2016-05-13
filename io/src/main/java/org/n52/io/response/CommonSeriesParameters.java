@@ -40,8 +40,10 @@ public interface CommonSeriesParameters {
 
     ParameterOutput getPhenomenon();
 
-    OfferingOutput getOffering();
+    ParameterOutput getOffering();
 
     ParameterOutput getCategory();
+
+    ParameterOutput getPlatform();
 
 }

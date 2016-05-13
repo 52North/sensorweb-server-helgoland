@@ -29,12 +29,9 @@
 package org.n52.io.response.v1.ext;
 
 import org.n52.io.response.CommonSeriesParameters;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
-import org.n52.io.response.v1.CategoryOutput;
-import org.n52.io.response.v1.FeatureOutput;
-import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.v1.ProcedureOutput;
 
 /**
  * TODO: JavaDoc
@@ -43,22 +40,22 @@ import org.n52.io.response.v1.ProcedureOutput;
  */
 public class SeriesParameters implements CommonSeriesParameters {
 
-    private PhenomenonOutput phenomenon;
+    private ParameterOutput phenomenon;
 
-    private ProcedureOutput procedure;
+    private ParameterOutput procedure;
 
-    private CategoryOutput category;
+    private ParameterOutput category;
 
-    private OfferingOutput offering;
+    private ParameterOutput offering;
 
-    private FeatureOutput feature;
+    private ParameterOutput feature;
 
-    private ServiceOutput service;
+    private ParameterOutput service;
 
-    private PlatformOutput platform;
+    private ParameterOutput platform;
 
     @Override
-    public PhenomenonOutput getPhenomenon() {
+    public ParameterOutput getPhenomenon() {
         return phenomenon;
     }
 
@@ -67,43 +64,43 @@ public class SeriesParameters implements CommonSeriesParameters {
     }
 
     @Override
-    public ProcedureOutput getProcedure() {
+    public ParameterOutput getProcedure() {
         return procedure;
     }
 
-    public void setProcedure(ProcedureOutput procedure) {
+    public void setProcedure(ParameterOutput procedure) {
         this.procedure = procedure;
     }
 
     @Override
-    public CategoryOutput getCategory() {
+    public ParameterOutput getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryOutput category) {
+    public void setCategory(ParameterOutput category) {
         this.category = category;
     }
 
     @Override
-    public OfferingOutput getOffering() {
+    public ParameterOutput getOffering() {
         return offering;
     }
 
-    public void setOffering(OfferingOutput offering) {
+    public void setOffering(ParameterOutput offering) {
         this.offering = offering;
     }
 
     @Override
-    public FeatureOutput getFeature() {
+    public ParameterOutput getFeature() {
         return feature;
     }
 
-    public void setFeature(FeatureOutput feature) {
+    public void setFeature(ParameterOutput feature) {
         this.feature = feature;
     }
 
     @Override
-    public ServiceOutput getService() {
+    public ParameterOutput getService() {
         return service;
     }
 
@@ -111,11 +108,12 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.service = service;
     }
 
-    public PlatformOutput getPlatform() {
+    @Override
+    public ParameterOutput getPlatform() {
         return platform;
     }
 
-    public void setPlatform(PlatformOutput platform) {
+    public void setPlatform(ParameterOutput platform) {
         this.platform = platform;
     }
 
