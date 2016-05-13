@@ -119,7 +119,10 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
         final String id = entity.getPkid().toString();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
+
+        // XXX only set real href base and let UrlHelper create context/collection based urls
         outputvalue.setHref(parameters.getHrefBase() + "/" + id);
+
         outputvalue.setId(id);
         return outputvalue;
     }

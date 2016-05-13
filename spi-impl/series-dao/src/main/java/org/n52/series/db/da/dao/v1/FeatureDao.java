@@ -35,6 +35,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -70,11 +71,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
         if (parameters.isPureStationInsituConcept()) {
-            criteria.createCriteria("series")
-                    .add(Restrictions.and(
-                            Restrictions.eq("mobile", false),
-                            Restrictions.eq("insitu", true))
-                    );
+            parameters.filterMobileInsitu("feature", criteria, false, true);
             //add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
         }
         return (List<FeatureEntity>) criteria.list();
