@@ -44,6 +44,11 @@ public interface ExtUrlSettings extends RestfulUrls {
     /**
      * Subpath identifying a collection of services availabe.
      */
+    static final String EXT = "/ext";
+
+    /**
+     * Subpath identifying a collection of services availabe.
+     */
     static final String EXT_COLLECTION_SERVICES = API_VERSION_PATH + "/ext/services";
 
     /**
@@ -77,7 +82,7 @@ public interface ExtUrlSettings extends RestfulUrls {
     String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
 
     /**
-     * Subpath identifying a collection of timeseries metadata available.
+     * Subpath identifying a collection of series metadata available.
      */
     String COLLECTION_SERIES = API_VERSION_PATH + "/series";
 
