@@ -84,6 +84,10 @@ public abstract class AbstractObservationEntity<T> {
         this.geometry = geometry;
     }
 
+    public boolean hasGeometry() {
+        return geometry != null && !geometry.isEmpty();
+    }
+
     public boolean getDeleted() {
         return deleted;
     }

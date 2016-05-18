@@ -85,4 +85,8 @@ public class GeometryEntity {
         this.alt = alt;
     }
 
+    public boolean isEmpty() {
+        return !isSetGeometry() && !isSetLonLat();
+    }
+
 }
