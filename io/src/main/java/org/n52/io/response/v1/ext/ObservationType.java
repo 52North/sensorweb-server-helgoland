@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Locale;
+
 /**
  * TODO: JavaDoc
  *
@@ -41,6 +43,14 @@ public enum ObservationType {
 
     public String getObservationType() {
         return name().toLowerCase();
+    }
+
+    public static String extractId(String id) {
+        String temp = id;
+        for (ObservationType observationType : ObservationType.values()) {
+            temp = temp.replaceAll(observationType.name().toLowerCase(Locale.ROOT) + "/", "");
+        }
+        return temp;
     }
 
 }
