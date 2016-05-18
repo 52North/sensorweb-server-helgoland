@@ -8,7 +8,7 @@
     </id>
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
     <property column="name" name="name" type="string"/>
-    <property column="description" name="description" type="string"/>
+    <property column="description" name="name" type="string" insert="false" update="false"/>
     <set fetch="select" inverse="false" name="trackLocations" table="observationHasOffering">
       <key>
         <column name="offeringId" not-null="true"/>
