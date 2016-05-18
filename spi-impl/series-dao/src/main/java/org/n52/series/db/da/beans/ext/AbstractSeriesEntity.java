@@ -36,6 +36,7 @@ import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
+import org.n52.series.db.da.beans.UnitEntity;
 
 public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> {
 
@@ -60,6 +61,10 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
     private boolean insitu = true;
 
     private Class<T> entityType;
+
+    private UnitEntity unit;
+
+    private String observationtype;
 
     public AbstractSeriesEntity() {
         this.entityType = (Class<T>) AbstractObservationEntity.class;
@@ -152,6 +157,34 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean hasUnit() {
+        return unit != null;
+    }
+
+    public String getObservationtype() {
+        return observationtype;
+    }
+
+    public void setObservationtype(String observationType) {
+        this.observationtype = observationType;
+    }
+
+    public String getUnitI18nName(String locale) {
+        String name = null;
+        if (unit != null) {
+            name = unit.getNameI18n(locale);
+        }
+        return name;
     }
 
     @Override
