@@ -41,6 +41,7 @@ import org.n52.series.db.da.dao.v1.PhenomenonDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
+import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class PhenomenonRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
@@ -133,6 +134,13 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
+        checkForHref(result, parameters);
         return result;
+    }
+
+    private void checkForHref(PhenomenonOutput result, DbQuery parameters) {
+        if (parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+            result.setHrefBase(urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
+        }
     }
 }

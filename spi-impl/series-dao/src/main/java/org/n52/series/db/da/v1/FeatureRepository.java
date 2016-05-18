@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
@@ -41,6 +42,7 @@ import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput> {
@@ -126,7 +128,14 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setDomainId(entity.getDomainId());
+        checkForHref(result, parameters);
         return result;
+    }
+
+    private void checkForHref(FeatureOutput result, DbQuery parameters) {
+        if (parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+            result.setHrefBase(urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
+        }
     }
 
 }

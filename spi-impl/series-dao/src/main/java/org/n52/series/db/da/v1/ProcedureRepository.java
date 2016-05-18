@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.ProcedureSearchResult;
@@ -41,6 +42,7 @@ import org.n52.series.db.da.dao.v1.ProcedureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.ProcedureEntity;
+import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class ProcedureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<ProcedureOutput> {
@@ -133,7 +135,14 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
+        checkForHref(result, parameters);
         return result;
+    }
+
+    private void checkForHref(ProcedureOutput result, DbQuery parameters) {
+        if (parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+            result.setHrefBase(urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
+        }
     }
 
 }
