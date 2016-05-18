@@ -38,6 +38,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.response.v1.ext.SeriesOutputCollection;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
@@ -46,11 +47,11 @@ import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.dao.v1.ext.PlatformDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * TODO: JavaDoc
@@ -60,6 +61,9 @@ import org.slf4j.LoggerFactory;
 public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
+
+    @Autowired
+    private SeriesRepository seriesRepository;
 
     @Override
     public List<PlatformOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
@@ -200,8 +204,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
 
-        SeriesDao<AbstractSeriesEntity> dao = new SeriesDao<>(session);
-        result.setSeries(createSeriesList(dao.getInstancesWith(entity), parameters));
+        result.setSeries(seriesRepository.getAllCondensed(parameters));
         // TODO
         LOGGER.warn("TODO expanded output.");
         return result;

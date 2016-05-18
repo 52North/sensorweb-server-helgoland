@@ -30,12 +30,30 @@ package org.n52.web.ctrl.v1.ext;
 
 import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import org.n52.io.request.Parameters;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES)
 public class MeasurementSeriesMetadataController extends ParameterController {
 
-    // resource controller for timeseries metadata
+    @RequestMapping(method = GET, path = "/measurement")
+    public ModelAndView getStationaryInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.OBSERVATION_TYPE, "measurement");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(method = GET, path = "/measurement/{id}")
+    public ModelAndView getStationaryInsituPlatform(@PathVariable("id") String id,
+            @RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.OBSERVATION_TYPE, "measurement");
+        return super.getItem("measurement/" + id, query);
+    }
 }

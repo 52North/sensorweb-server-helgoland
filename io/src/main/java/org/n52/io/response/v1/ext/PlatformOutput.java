@@ -30,9 +30,9 @@ package org.n52.io.response.v1.ext;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+
 import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
@@ -48,7 +48,7 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
 
     private final PlatformType platformType;
 
-    private Map<String, CommonSeriesParameters> series;
+    private Collection<SeriesMetadataOutput> series;
 
     private GeometryOutputCollection geometries; // TODO
 
@@ -93,11 +93,11 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
         super.setId(getUrlIdSuffix() + "/" + id);
     }
 
-    public Map<String, CommonSeriesParameters> getSeries() {
-        return this.series;
+    public Collection<SeriesMetadataOutput> getSeries() {
+        return series;
     }
 
-    public void setSeries(Map<String, CommonSeriesParameters> series) {
+    public void setSeries(List<SeriesMetadataOutput> series) {
         this.series = series;
     }
 

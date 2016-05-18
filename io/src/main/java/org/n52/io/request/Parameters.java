@@ -300,4 +300,8 @@ public interface Parameters {
 
     public static final String PLATFORMS_INCLUDE_MOBILE = "internal.include.mobile";
 
+    public static final String SERIES_INCLUDE_MEASUREMENT = "internal.include.measurement";
+
+    public static final String OBSERVATION_TYPE = "observationtype";
+
 }
