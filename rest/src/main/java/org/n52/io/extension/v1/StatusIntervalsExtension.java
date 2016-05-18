@@ -42,8 +42,9 @@ import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
-public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataV1Output> {
+public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataOutput> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 
@@ -69,28 +70,28 @@ public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataV1
     }
 
     @Override
-    public void addExtraMetadataFieldNames(SeriesMetadataV1Output output) {
+    public void addExtraMetadataFieldNames(SeriesMetadataOutput output) {
         if (hasStatusIntervals(output)) {
             output.addExtra(EXTENSION_NAME);
         }
     }
 
-    private boolean hasStatusIntervals(SeriesMetadataV1Output output) {
+    private boolean hasStatusIntervals(SeriesMetadataOutput output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(SeriesMetadataV1Output output) {
+    private boolean hasSeriesConfiguration(SeriesMetadataOutput output) {
         String id = output.getId();
         return intervalConfig.getTimeseriesIntervals().containsKey(id);
     }
 
-    private boolean hasPhenomenonConfiguration(SeriesMetadataV1Output output) {
+    private boolean hasPhenomenonConfiguration(SeriesMetadataOutput output) {
         String id = output.getId();
         return intervalConfig.getPhenomenonIntervals().containsKey(id);
     }
 
     @Override
-    public Map<String, Object> getExtras(SeriesMetadataV1Output output, IoParameters parameters) {
+    public Map<String, Object> getExtras(SeriesMetadataOutput output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
@@ -109,16 +110,16 @@ public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataV1
         return Collections.emptyMap();
     }
 
-    private boolean hasExtrasToReturn(SeriesMetadataV1Output output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(SeriesMetadataOutput output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasStatusIntervals(output);
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(SeriesMetadataV1Output output) {
+    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(SeriesMetadataOutput output) {
         return intervalConfig.getTimeseriesIntervals().get(output.getId());
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(SeriesMetadataV1Output output) {
+    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(SeriesMetadataOutput output) {
         String id = output.getParameters().getPhenomenon().getId();
         return intervalConfig.getPhenomenonIntervals().get(id);
     }

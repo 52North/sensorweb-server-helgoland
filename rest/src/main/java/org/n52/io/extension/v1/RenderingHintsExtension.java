@@ -42,8 +42,10 @@ import java.util.Collections;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
-public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataV1Output> {
+public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RenderingHintsExtension.class);
 
@@ -69,27 +71,27 @@ public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataV1O
     }
 
     @Override
-    public void addExtraMetadataFieldNames(SeriesMetadataV1Output output) {
+    public void addExtraMetadataFieldNames(SeriesMetadataOutput output) {
         if (hasRenderingHints(output)) {
             output.addExtra(EXTENSION_NAME);
         }
     }
 
-    private boolean hasRenderingHints(SeriesMetadataV1Output output) {
+    private boolean hasRenderingHints(SeriesMetadataOutput output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(SeriesMetadataV1Output output) {
+    private boolean hasSeriesConfiguration(SeriesMetadataOutput output) {
         return renderingConfig.getTimeseriesStyles().containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(SeriesMetadataV1Output output) {
+    private boolean hasPhenomenonConfiguration(SeriesMetadataOutput output) {
         String id = output.getParameters().getPhenomenon().getId();
         return renderingConfig.getPhenomenonStyles().containsKey(id);
     }
 
     @Override
-    public Map<String, Object> getExtras(SeriesMetadataV1Output output, IoParameters parameters) {
+    public Map<String, Object> getExtras(SeriesMetadataOutput output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
@@ -108,16 +110,16 @@ public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataV1O
         return Collections.emptyMap();
     }
 
-    private boolean hasExtrasToReturn(SeriesMetadataV1Output output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(SeriesMetadataOutput output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasRenderingHints(output);
     }
 
-    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(TimeseriesMetadataOutput output) {
+    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(SeriesMetadataOutput output) {
         return renderingConfig.getTimeseriesStyles().get(output.getId());
     }
 
-    private RenderingHintsExtensionConfig.ConfiguredStyle getPhenomenonStyle(SeriesMetadataV1Output output) {
+    private RenderingHintsExtensionConfig.ConfiguredStyle getPhenomenonStyle(SeriesMetadataOutput output) {
         String id = output.getParameters().getPhenomenon().getId();
         return renderingConfig.getPhenomenonStyles().get(id);
     }
