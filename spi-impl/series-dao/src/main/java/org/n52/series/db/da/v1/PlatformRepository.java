@@ -36,6 +36,8 @@ import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
@@ -203,10 +205,9 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
-
-        result.setSeries(seriesRepository.getAllCondensed(parameters));
-        // TODO
-        LOGGER.warn("TODO expanded output.");
+        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
+        simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(entity.getPkid()));
+        result.setSeries(seriesRepository.getAllCondensed(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet))));
         return result;
     }
 
