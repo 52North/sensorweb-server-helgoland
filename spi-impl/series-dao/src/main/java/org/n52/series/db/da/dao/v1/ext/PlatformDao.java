@@ -58,7 +58,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @Override
     public PlatformEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
-                .add(eq("pkid", key));
+                .add(eq(COLUMN_PKID, key));
         return (PlatformEntity) criteria.uniqueResult();
     }
 
