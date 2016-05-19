@@ -66,15 +66,23 @@ public class DbQuery extends AbstractDbQuery {
         }
         if (getParameters().getStation() != null) {
             // here feature == station
-            filter.createCriteria("feature").add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
+            filter.createCriteria("feature")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
         }
         if (getParameters().getCategory() != null) {
             filter.createCriteria("category")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
         }
 
+        if (getParameters().getPlatforms() != null) {
+            filter.createCriteria("platform")
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPlatforms())));
+        }
+
         return filter.setProjection(projectionList().add(property(propertyName)));
     }
+
+
 
     public static DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
