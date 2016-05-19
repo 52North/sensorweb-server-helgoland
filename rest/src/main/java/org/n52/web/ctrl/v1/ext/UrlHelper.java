@@ -31,7 +31,7 @@ package org.n52.web.ctrl.v1.ext;
 public class UrlHelper {
 
     public String getServicesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_SERVICES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERVICES);
     }
 
     public String getCategoriesHrefBaseUrl(String hrefBase) {

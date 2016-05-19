@@ -29,7 +29,6 @@
 package org.n52.web.ctrl.v1.ext;
 
 import org.n52.web.ctrl.v1.RestfulUrls;
-import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
 
 /**
  * <p>
