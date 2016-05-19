@@ -35,6 +35,8 @@ import static org.hibernate.criterion.Restrictions.or;
 import static org.n52.series.db.da.beans.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
@@ -190,12 +192,20 @@ public abstract class AbstractDbQuery {
      * @return the long value of given string or {@link Long#MIN_VALUE} if
      * string could not be parsed to type long.
      */
-    protected Long parseToId(String id) {
+    public Long parseToId(String id) {
         try {
             return Long.parseLong(id);
         } catch (NumberFormatException e) {
             return Long.MIN_VALUE;
         }
+    }
+
+    public Set<Long> parseToIds(Set<String> ids) {
+        Set<Long> parsedIds = new HashSet<>(ids.size());
+        for (String id : ids) {
+            parsedIds.add(parseToId(id));
+        }
+        return parsedIds;
     }
 
     public Criteria addSpatialFilterTo(Criteria criteria, AbstractDbQuery parameters) {
