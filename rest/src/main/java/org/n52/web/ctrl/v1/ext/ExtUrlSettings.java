@@ -85,4 +85,10 @@ public interface ExtUrlSettings extends RestfulUrls {
      */
     String COLLECTION_SERIES = API_VERSION_PATH + "/series";
 
+    /**
+     * Subpath identifying a collection of series metadata available.
+     */
+    String COLLECTION_OBSERVED_GEOMETRIES = API_VERSION_PATH + "/observedGeometries";
+
+
 }
