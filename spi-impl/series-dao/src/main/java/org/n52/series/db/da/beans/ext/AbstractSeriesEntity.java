@@ -40,6 +40,13 @@ import org.n52.series.db.da.beans.UnitEntity;
 
 public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> {
 
+    public static final String PROCEDURE = "procedure";
+    public static final String CATEGORY = "category";
+    public static final String PHENOMENON = "phenomenon";
+    public static final String FEATURE = "feature";
+    public static final String PLATFORM = "platform";
+    public static final String OBSERVATION_TYPE = "observationtype";
+
     private Long pkid;
 
     private CategoryEntity category;
