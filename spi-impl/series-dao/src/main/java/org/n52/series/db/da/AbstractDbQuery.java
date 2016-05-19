@@ -187,6 +187,10 @@ public abstract class AbstractDbQuery {
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
     }
 
+    public boolean isAllConcepts() {
+        return isStationaryConcept() && isInsituConcept() && isMobileConcept() && isRemoteConcept();
+    }
+
     /**
      * @param id the id string to parse.
      * @return the long value of given string or {@link Long#MIN_VALUE} if

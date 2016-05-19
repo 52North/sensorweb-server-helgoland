@@ -34,6 +34,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
@@ -42,8 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class PlatformDao extends AbstractDao<PlatformEntity> {
-
-    private static final String COLUMN_PKID = "pkid";
 
     public PlatformDao(Session session) {
         super(session);
@@ -58,7 +57,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @Override
     public PlatformEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
-                .add(eq(COLUMN_PKID, key));
+                .add(eq(PlatformEntity.COLUMN_PKID, key));
         return (PlatformEntity) criteria.uniqueResult();
     }
 
@@ -69,24 +68,27 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 //        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
 //        criteria.add(Subqueries.propertyIn("platform", filter));
         parameters.addPagingTo(criteria);
-        if (parameters.isStationaryConcept()) {
-            // hier holt es einen wieder ein, wie man performant
-            // von den offerings (oder der Plattform allgemein)
-            // auf das featureconcept zugreifen kann.
-            // der link über die observation table ist nicht
-            // wirklich performant und sinnvoll. eine alternative
-            // muss her und getestet werden.
-            //
-            // siehe auch PlatformEntity#getPlatformType
-        }
-        if (parameters.isMobileConcept()) {
-
-        }
-        if (parameters.isInsituConcept()) {
-
-        }
-        if (parameters.isRemoteConcept()) {
-
+        if (!parameters.isAllConcepts()) {
+            if (parameters.isStationaryConcept()) {
+                // hier holt es einen wieder ein, wie man performant
+                // von den offerings (oder der Plattform allgemein)
+                // auf das featureconcept zugreifen kann.
+                // der link über die observation table ist nicht
+                // wirklich performant und sinnvoll. eine alternative
+                // muss her und getestet werden.
+                //
+                // siehe auch PlatformEntity#getPlatformType
+                criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
+            }
+            if (parameters.isMobileConcept()) {
+                criteria.add(Restrictions.eq(PlatformEntity.MOBILE, true));
+            }
+            if (parameters.isInsituConcept() || parameters.isStationaryConcept()) {
+                criteria.add(Restrictions.eq(PlatformEntity.INSITU, true));
+            }
+            if (parameters.isRemoteConcept()) {
+                criteria.add(Restrictions.eq(PlatformEntity.INSITU, false));
+            }
         }
         return (List<PlatformEntity>) criteria.list();
     }

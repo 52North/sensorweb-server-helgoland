@@ -43,6 +43,10 @@ public class PlatformEntity extends DescribableEntity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformEntity.class);
 
+    public static final String COLUMN_PKID = "pkid";
+    public static final String INSITU = "insitu";
+    public static final String MOBILE = "mobile";
+
     private boolean mobile = false;
 
     private boolean insitu = true;
