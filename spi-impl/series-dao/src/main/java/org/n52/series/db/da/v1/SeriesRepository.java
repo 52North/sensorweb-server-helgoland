@@ -167,7 +167,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     }
 
     private SeriesParameters getParameters(AbstractSeriesEntity<?> series, DbQuery query) throws DataAccessException {
-        return createTimeseriesOutput(series, query);
+        return createSeriesParameters(series, query);
     }
 
     private String createSeriesLabel(AbstractSeriesEntity<?> series, String locale) {
