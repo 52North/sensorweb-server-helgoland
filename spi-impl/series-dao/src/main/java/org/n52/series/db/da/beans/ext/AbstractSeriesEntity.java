@@ -63,27 +63,12 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
 
     private List<T> observations = new ArrayList<>();
 
-    private boolean mobile = false;
-
-    private boolean insitu = true;
-
     private Class<T> entityType;
-
-    private UnitEntity unit;
 
     private String observationtype;
 
     public AbstractSeriesEntity() {
         this.entityType = (Class<T>) AbstractObservationEntity.class;
-    }
-
-    /**
-     *
-     * @return the platform type
-     * @since 2.0.0
-     */
-    public PlatformType getPlatformType() {
-        return PlatformType.toInstance(mobile, insitu);
     }
 
     public Long getPkid() {
@@ -142,22 +127,6 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
         this.observations = observations;
     }
 
-    public boolean isMobile() {
-        return mobile;
-    }
-
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
-
-    public boolean isInsitu() {
-        return insitu;
-    }
-
-    public void setInsitu(boolean insitu) {
-        this.insitu = insitu;
-    }
-
     public Boolean isPublished() {
         return published;
     }
@@ -166,17 +135,7 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
         this.published = published;
     }
 
-    public UnitEntity getUnit() {
-        return unit;
-    }
 
-    public void setUnit(UnitEntity unit) {
-        this.unit = unit;
-    }
-
-    public boolean hasUnit() {
-        return unit != null;
-    }
 
     public String getObservationtype() {
         return observationtype;
@@ -184,14 +143,6 @@ public abstract class AbstractSeriesEntity<T extends AbstractObservationEntity> 
 
     public void setObservationtype(String observationType) {
         this.observationtype = observationType;
-    }
-
-    public String getUnitI18nName(String locale) {
-        String name = null;
-        if (unit != null) {
-            name = unit.getNameI18n(locale);
-        }
-        return name;
     }
 
     @Override
