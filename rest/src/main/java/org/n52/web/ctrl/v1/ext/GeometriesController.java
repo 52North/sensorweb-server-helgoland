@@ -28,14 +28,14 @@
  */
 package org.n52.web.ctrl.v1.ext;
 
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_OBSERVED_GEOMETRIES;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_GEOMETRIES;
 
 import org.n52.web.ctrl.ParameterController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = COLLECTION_OBSERVED_GEOMETRIES)
-public class ObservedGeometriesController extends ParameterController {
+@RequestMapping(value = COLLECTION_GEOMETRIES)
+public class GeometriesController extends ParameterController {
 
 }

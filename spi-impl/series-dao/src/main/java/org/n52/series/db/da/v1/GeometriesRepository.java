@@ -31,13 +31,20 @@ package org.n52.series.db.da.v1;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.v1.ext.GeometryCategory;
 import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.ext.GeometryEntity;
+import org.n52.series.db.da.beans.ext.PlatformEntity;
 
-public class ObservedGeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
+public class GeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
     @Override
     public List<GeometryInfo> getAllCondensed(DbQuery parameters) throws DataAccessException {
@@ -67,6 +74,20 @@ public class ObservedGeometriesRepository extends ExtendedSessionAwareRepository
     public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    private GeometryInfo createExpanded(GeometryEntity entity, DbQuery parameters, Session session) throws DataAccessException {
+        GeometryInfo result = createCondensed(entity, parameters);
+//        result.setGeometry(geometry);
+        return result;
+    }
+
+    private GeometryInfo createCondensed(GeometryEntity entity, DbQuery parameters) {
+        GeometryInfo result = new GeometryInfo(GeometryCategory.PLATFORM_SITE);
+//        result.setId(Long.toString(entity.getPkid()));
+//        result.setHrefBase(parameters.getHrefBase());
+//        result.setPlatform(platform);
+        return result;
     }
 
 }

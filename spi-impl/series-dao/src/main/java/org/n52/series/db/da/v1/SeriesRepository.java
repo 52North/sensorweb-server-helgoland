@@ -37,13 +37,9 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.sensorweb.spi.SearchResult;
@@ -53,9 +49,8 @@ import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
-import org.n52.series.db.da.beans.ext.PlatformEntity;
-import org.n52.series.db.da.dao.v1.ext.SeriesDao;
-import org.n52.web.ctrl.v1.ext.UrlHelper;
+import org.n52.series.db.da.dao.v1.ObservationDao;
+import org.n52.series.db.da.dao.v1.SeriesDao;
 
 /**
  * TODO: JavaDoc
@@ -69,15 +64,10 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao seriesDao = new SeriesDao(session);
-            for (AbstractSeriesEntity<AbstractObservationEntity> series : seriesDao.getAllInstances(query)) {
-                /*
-                 *  ATM, the SWC REST API only supports numeric types
-                 *  We check for a unit to check for them
-                 */
-//                if (timeseries.hasUnit()) {
-                    results.add(createCondensed(series, query));
-//                }
+            // TODO backward compatibility (only MeasurementSeriesEntity)
+            SeriesDao<AbstractSeriesEntity<AbstractObservationEntity>> seriesDao = new SeriesDao(session);
+            for (AbstractSeriesEntity series : seriesDao.getAllInstances(query)) {
+                results.add(createCondensed(series, query));
             }
             return results;
 
@@ -91,15 +81,10 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao seriesDao = new SeriesDao(session);
+            // TODO backward compatibility (only MeasurementSeriesEntity)
+            SeriesDao<AbstractSeriesEntity<AbstractObservationEntity>>  seriesDao = new SeriesDao(session);
             for (AbstractSeriesEntity<AbstractObservationEntity> series : seriesDao.getAllInstances(query)) {
-                /*
-                 *  ATM, the SWC REST API only supports numeric types
-                 *  We check for a unit to check for them
-                 */
-//                if (timeseries.hasUnit()) {
-                    results.add(createExpanded(series, query, session));
-//                }
+                results.add(createExpanded(series, query, session));
             }
             return results;
 
@@ -116,13 +101,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             SeriesDao seriesDao = new SeriesDao(session);
             String seriesId = ObservationType.extractId(id);
             AbstractSeriesEntity<AbstractObservationEntity> series = seriesDao.getInstance(Long.parseLong(seriesId), query);
-                /*
-                 *  ATM, the SWC REST API only supports numeric types
-                 *  We check for a unit to check for them
-                 */
-//                if (timeseries.hasUnit()) {
-//                    results.add();
-//                }
             return createExpanded(series, query, session);
         } finally {
             returnSession(session);
@@ -154,12 +132,10 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     private SeriesMetadataOutput createExpanded(AbstractSeriesEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         SeriesMetadataOutput result = createCondensed(series, query);
         result.setParameters(getParameters(series, query));
-        if (series.hasUnit()) {
-            result.setUom(series.getUnitI18nName(query.getLocale()));
-        }
         if (series instanceof MeasurementSeriesEntity && result instanceof MeasurementSeriesOutput) {
             MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
             MeasurementSeriesOutput output = (MeasurementSeriesOutput) result;
+            output.setUom(measurementSeries.getUnitI18nName(query.getLocale()));
             output.setFirstValue(createTimeseriesValueFor(measurementSeries.getFirstValue(), measurementSeries));
             output.setLastValue(createTimeseriesValueFor(measurementSeries.getLastValue(), measurementSeries));
         }
@@ -192,6 +168,27 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 : Double.NaN;
         value.setValue(observationValue);
         return value;
+    }
+
+    /**
+     * Query observations for timestamp
+     * @param observation
+     * @param series
+     * @param query
+     * @return
+     */
+    private TimeseriesValue queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity series, DbQuery query) {
+        if (observation == null) {
+            // do not fail on empty observations
+            return null;
+        }
+        List<AbstractObservationEntity> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
+        if (observations != null && !observations.isEmpty()) {
+            if (series instanceof MeasurementSeriesEntity) {
+                return createTimeseriesValueFor((MeasurementEntity)observations.iterator().next(), (MeasurementSeriesEntity)series);
+            }
+        }
+        return null;
     }
 
     private Double formatDecimal(Double value, MeasurementSeriesEntity series) {

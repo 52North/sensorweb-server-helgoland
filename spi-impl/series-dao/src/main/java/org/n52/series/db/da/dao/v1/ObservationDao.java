@@ -29,16 +29,23 @@
 package org.n52.series.db.da.dao.v1;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+
 import static org.hibernate.criterion.Restrictions.eq;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
+import org.n52.series.db.da.beans.v2.ObservationEntityV2;
+import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.n52.series.db.da.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +61,8 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
     private static final String COLUMN_DELETED = "deleted";
+
+    private static final String COLUMN_TIMESTAMP = "timestamp";
 
     private final Class<T> entityType;
 
@@ -148,6 +157,17 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @Override
     protected Criteria getDefaultCriteria() {
         return session.createCriteria(entityType);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<AbstractObservationEntity> getInstancesFor(Date timestamp, AbstractSeriesEntity series, DbQuery parameters) {
+        Criteria criteria = getDefaultCriteria()
+                .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
+                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
+
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        return criteria.list();
     }
 
 }

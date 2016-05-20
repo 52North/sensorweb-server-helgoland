@@ -33,6 +33,12 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.CriteriaImpl;
+import org.hibernate.loader.criteria.CriteriaJoinWalker;
+import org.hibernate.loader.criteria.CriteriaQueryTranslator;
+import org.hibernate.persister.entity.OuterJoinLoadable;
 import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
@@ -74,5 +80,21 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
             criteria = session.createCriteria(clazz, alias);
         }
         return criteria;
+    }
+
+    protected String getSqlString(Criteria criteria) {
+        CriteriaImpl criteriaImpl = (CriteriaImpl) criteria;
+        SessionImplementor session = criteriaImpl.getSession();
+        SessionFactoryImplementor factory = session.getFactory();
+        CriteriaQueryTranslator translator =
+                new CriteriaQueryTranslator(factory, criteriaImpl, criteriaImpl.getEntityOrClassName(),
+                        CriteriaQueryTranslator.ROOT_SQL_ALIAS);
+        String[] implementors = factory.getImplementors(criteriaImpl.getEntityOrClassName());
+
+        CriteriaJoinWalker walker =
+                new CriteriaJoinWalker((OuterJoinLoadable) factory.getEntityPersister(implementors[0]), translator,
+                        factory, criteriaImpl, criteriaImpl.getEntityOrClassName(), session.getLoadQueryInfluencers());
+
+        return walker.getSQLString();
     }
 }

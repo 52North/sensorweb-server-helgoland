@@ -62,25 +62,25 @@ public class MeasurementSeriesEntity extends AbstractSeriesEntity<MeasurementEnt
         this.numberOfDecimals = numberOfDecimals;
     }
 
-//    public UnitEntity getUnit() {
-//        return unit;
-//    }
-//
-//    public void setUnit(UnitEntity unit) {
-//        this.unit = unit;
-//    }
-//
-//    public boolean hasUnit() {
-//        return unit != null;
-//    }
-//
-//    public String getUnitI18nName(String locale) {
-//        String name = null;
-//        if (unit != null) {
-//            name = unit.getNameI18n(locale);
-//        }
-//        return name;
-//    }
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean hasUnit() {
+        return unit != null;
+    }
+
+    public String getUnitI18nName(String locale) {
+        String name = null;
+        if (unit != null) {
+            name = unit.getNameI18n(locale);
+        }
+        return name;
+    }
 
     public MeasurementEntity getFirstValue() {
         if (firstValue != null) {

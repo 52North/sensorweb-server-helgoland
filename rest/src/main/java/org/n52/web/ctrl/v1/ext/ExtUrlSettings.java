@@ -41,39 +41,44 @@ import org.n52.web.ctrl.v1.RestfulUrls;
 public interface ExtUrlSettings extends RestfulUrls {
 
     /**
-     * Subpath identifying a collection of services availabe.
+     * Subpath identifying the extension.
      */
     static final String EXT = "/ext";
+    
+    /**
+     * Subpath identifying the api version and extension.
+     */
+    static final String API_VERSION_EXTENSION_PATH = API_VERSION_PATH + EXT;
 
     /**
-     * Subpath identifying a collection of services availabe.
+     * Subpath identifying a collection of services available.
      */
-    static final String EXT_COLLECTION_SERVICES = API_VERSION_PATH + "/ext/services";
+    static final String EXT_COLLECTION_SERVICES = API_VERSION_EXTENSION_PATH + "/services";
 
     /**
-     * Subpath identifying a collection of categories availabe.
+     * Subpath identifying a collection of categories available.
      */
-    String EXT_COLLECTION_CATEGORIES = API_VERSION_PATH + "/ext/categories";
+    String EXT_COLLECTION_CATEGORIES = API_VERSION_EXTENSION_PATH + "/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    String EXT_COLLECTION_OFFERINGS = API_VERSION_PATH + "/ext/offerings";
+    String EXT_COLLECTION_OFFERINGS = API_VERSION_EXTENSION_PATH + "/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    String EXT_COLLECTION_FEATURES = API_VERSION_PATH + "/ext/features";
+    String EXT_COLLECTION_FEATURES = API_VERSION_EXTENSION_PATH + "/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    String EXT_COLLECTION_PROCEDURES = API_VERSION_PATH + "/ext/procedures";
+    String EXT_COLLECTION_PROCEDURES = API_VERSION_EXTENSION_PATH + "/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    String EXT_COLLECTION_PHENOMENA = API_VERSION_PATH + "/ext/phenomena";
+    String EXT_COLLECTION_PHENOMENA = API_VERSION_EXTENSION_PATH + "/phenomena";
 
     /**
      * Subpath identifying a collection of platforms available.
@@ -88,7 +93,7 @@ public interface ExtUrlSettings extends RestfulUrls {
     /**
      * Subpath identifying a collection of series metadata available.
      */
-    String COLLECTION_OBSERVED_GEOMETRIES = API_VERSION_PATH + "/observedGeometries";
+    String COLLECTION_GEOMETRIES = API_VERSION_PATH + "/geometries";
 
 
 }

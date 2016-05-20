@@ -52,8 +52,8 @@
         <property name="parameterService" ref="platformParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.ObservedGeometriesController">
-        <property name="parameterService" ref="observedGeometriesService" />
+    <bean class="org.n52.web.ctrl.v1.ext.GeometriesController">
+        <property name="parameterService" ref="geometriesService" />
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesMetadataController" parent="parameterController">

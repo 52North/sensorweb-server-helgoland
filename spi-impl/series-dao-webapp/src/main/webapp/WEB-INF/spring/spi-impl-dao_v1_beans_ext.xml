@@ -16,7 +16,7 @@
 
     <bean name="platformRepository" class="org.n52.series.db.da.v1.PlatformRepository" />
     <bean name="seriesRepository" class="org.n52.series.db.da.v1.SeriesRepository" />
-    <bean name="observedGeometriesRepository" class="org.n52.series.db.da.v1.ObservedGeometriesRepository" />
+    <bean name="geometriesRepository" class="org.n52.series.db.da.v1.GeometriesRepository" />
 
     <bean id="seriesService" class="org.n52.series.db.srv.v1.ext.SeriesAccessService" />
 
@@ -24,7 +24,7 @@
         <constructor-arg index="0" ref="platformRepository" />
     </bean>
 
-    <bean id="observedGeometriesService" class="org.n52.series.db.srv.v1.AccessService">
-        <constructor-arg index="0" ref="observedGeometriesRepository" />
+    <bean id="geometriesService" class="org.n52.series.db.srv.v1.AccessService">
+        <constructor-arg index="0" ref="geometriesRepository" />
     </bean>
 </beans>

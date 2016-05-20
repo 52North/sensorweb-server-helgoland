@@ -42,6 +42,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.hibernate.sql.JoinType;
 import org.n52.series.db.da.v1.DbQuery;
+import org.n52.io.request.Parameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
@@ -109,8 +110,8 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = session.createCriteria(entityType, "series");
         addIgnoreNonPublishedSeriesTo(criteria, "series");
-        criteria.createCriteria("procedure")
-                .add(eq("reference", false));
+        Criteria procedureCreateria = criteria.createCriteria("procedure");
+        procedureCreateria.add(eq("reference", false));
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria.add(Subqueries.propertyIn("series.pkid", filter));
@@ -118,10 +119,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         parameters.addPagingTo(criteria);
 
         if (parameters.isPureStationInsituConcept()) {
-            criteria.add(Restrictions.and(Restrictions.eq("mobile", false), Restrictions.eq("insitu", true)));
-//            criteria
-//                    .createCriteria("feature", "f", JoinType.INNER_JOIN)
-//                    .add(Restrictions.eqOrIsNull("f.featureConcept", "stationary/insitu"));
+            procedureCreateria.add(Restrictions.and(Restrictions.eq("mobile", false), Restrictions.eq("insitu", true)));
         }
 
         return (List<T>) criteria.list();
@@ -172,4 +170,30 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         return session.createCriteria(AbstractSeriesEntity.class);
     }
 
+    private void addRestrictions(Criteria criteria, DbQuery parameters) {
+        if (parameters.getParameters().containsParameter(Parameters.OBSERVATION_TYPE)) {
+            criteria.add(Restrictions.eq(AbstractSeriesEntity.OBSERVATION_TYPE,
+                    parameters.getParameters().getAsString(Parameters.OBSERVATION_TYPE)));
+        }
+        if (parameters.getParameters().containsParameter(Parameters.PLATFORMS)) {
+            criteria.createCriteria(AbstractSeriesEntity.PLATFORM).add(
+                    Restrictions.in(COLUMN_PKID, parameters.parseToIds(parameters.getParameters().getPlatforms())));
+        }
+        if (parameters.getParameters().containsParameter(Parameters.PROCEDURE)) {
+            criteria.createCriteria(AbstractSeriesEntity.PROCEDURE)
+                    .add(Restrictions.eq(COLUMN_PKID, parameters.parseToId(parameters.getParameters().getProcedure())));
+        }
+        if (parameters.getParameters().containsParameter(Parameters.PHENOMENON)) {
+            criteria.createCriteria(AbstractSeriesEntity.PHENOMENON).add(
+                    Restrictions.eq(COLUMN_PKID, parameters.parseToId(parameters.getParameters().getPhenomenon())));
+        }
+        if (parameters.getParameters().containsParameter(Parameters.FEATURE)) {
+            criteria.createCriteria(AbstractSeriesEntity.FEATURE)
+                    .add(Restrictions.eq(COLUMN_PKID, parameters.parseToId(parameters.getParameters().getFeature())));
+        }
+        if (parameters.getParameters().containsParameter(Parameters.CATEGORY)) {
+            criteria.createCriteria(AbstractSeriesEntity.CATEGORY)
+                    .add(Restrictions.eq(COLUMN_PKID, parameters.parseToId(parameters.getParameters().getCategory())));
+        }
+    }
 }

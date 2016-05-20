@@ -37,7 +37,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;

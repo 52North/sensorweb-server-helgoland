@@ -62,8 +62,8 @@ public class UrlHelper {
         return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERIES);
     }
 
-    public String getObservedGeometriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_OBSERVED_GEOMETRIES);
+    public String getGeometriesHrefBaseUrl(String hrefBase) {
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_GEOMETRIES);
     }
 
     public String getVersionLessHrefBaseURl(String hrefBase) {
