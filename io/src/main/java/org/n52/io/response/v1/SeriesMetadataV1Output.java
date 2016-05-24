@@ -28,37 +28,10 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.request.StyleProperties;
-import org.n52.io.response.StatusInterval;
 import org.n52.io.response.TimeseriesMetadataOutput;
 
 @Deprecated
 public class SeriesMetadataV1Output extends TimeseriesMetadataOutput {
 
-    @Deprecated
-    private StyleProperties renderingHints;
-
-    @Deprecated
-    private StatusInterval[] statusIntervals;
-
-    @Deprecated
-    public StyleProperties getRenderingHints() {
-        return this.renderingHints;
-    }
-
-    @Deprecated
-    public void setRenderingHints(StyleProperties renderingHints) {
-        this.renderingHints = renderingHints;
-    }
-
-    @Deprecated
-    public StatusInterval[] getStatusIntervals() {
-        return statusIntervals;
-    }
-
-    @Deprecated
-    public void setStatusIntervals(StatusInterval[] statusIntervals) {
-        this.statusIntervals = statusIntervals;
-    }
 
 }
