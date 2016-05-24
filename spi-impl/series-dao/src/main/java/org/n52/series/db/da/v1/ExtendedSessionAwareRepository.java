@@ -46,7 +46,11 @@ import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.PhenomenonEntity;
+import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
@@ -71,18 +75,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutputs;
     }
 
-    protected Map<String, CommonSeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, CommonSeriesParameters> outputs = new HashMap<>();
-        for (AbstractSeriesEntity entity : series) {
-            String seriesId = entity.getPkid().toString();
-            SeriesParameters output = createTimeseriesOutput(entity, parameters);
-            output.setPlatform(getCondensedPlatform(entity.getPlatform(), parameters));
-            outputs.put(seriesId, output);
-        }
-        return outputs;
-    }
-
-    protected SeriesParameters createTimeseriesOutput(AbstractSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createTimeseriesOutput(MeasurementSeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
         SeriesParameters timeseriesOutput = new SeriesParameters();
         timeseriesOutput.setService(getCondensedService(parameters));
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
@@ -93,8 +86,25 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutput;
     }
 
+    protected Map<String, CommonSeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
+        Map<String, CommonSeriesParameters> outputs = new HashMap<>();
+        for (AbstractSeriesEntity entity : series) {
+            String seriesId = entity.getPkid().toString();
+            SeriesParameters output = createSeriesParameters(entity, parameters);
+            output.setPlatform(getCondensedPlatform(entity.getPlatform(), parameters));
+            outputs.put(seriesId, output);
+        }
+        return outputs;
+    }
+
     protected SeriesParameters createSeriesParameters(AbstractSeriesEntity series, DbQuery parameters) throws DataAccessException {
-        SeriesParameters seriesParameter = createTimeseriesOutput(series, parameters);
+        SeriesParameters seriesParameter = new SeriesParameters();
+        seriesParameter.setService(getCondensedExtendedService(parameters));
+        seriesParameter.setOffering(getCondensedExtendedOffering(series.getProcedure(), parameters));
+        seriesParameter.setProcedure(getCondensedExtendedProcedure(series.getProcedure(), parameters));
+        seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
+        seriesParameter.setFeature(getCondensedExtendedFeature(series.getFeature(), parameters));
+        seriesParameter.setCategory(getCondensedExtendedCategory(series.getCategory(), parameters));
         seriesParameter.setPlatform(getCondensedPlatform(series.getPlatform(), parameters));
         return seriesParameter;
     }
@@ -105,13 +115,21 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return all.get(0); // only this service available
     }
 
-    protected ServiceOutput getCondensedService(DbQuery parameters) throws DataAccessException {
+    protected ServiceOutput getCondensedService(DbQuery parameters ) throws DataAccessException {
         String serviceId = serviceRepository.getServiceId();
         ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
         ServiceOutput serviceOutput = new ServiceOutput();
         serviceOutput.setLabel(instance.getLabel());
         serviceOutput.setId(instance.getId());
-        // XXX only set real href base and let UrlHelper create context/collection based urls
+        return serviceOutput;
+    }
+
+    private org.n52.io.response.ServiceOutput getCondensedExtendedService(DbQuery parameters) {
+        String serviceId = serviceRepository.getServiceId();
+        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
+        ServiceOutput serviceOutput = new ServiceOutput();
+        serviceOutput.setLabel(instance.getLabel());
+        serviceOutput.setId(instance.getId());
         serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + instance.getId());
         return serviceOutput;
     }
@@ -121,36 +139,61 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         final String id = entity.getPkid().toString();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(id);
-        // XXX only set real href base and let UrlHelper create context/collection based urls
-        outputvalue.setHref(urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()) + "/" + id);
+        return outputvalue;
+    }
+
+    protected PhenomenonOutput getCondensedExtendedPhenomenon(DescribableEntity entity, DbQuery parameters) {
+        PhenomenonOutput outputvalue = getCondensedPhenomenon(entity, parameters);
+        outputvalue.setHref(entity.getPkid().toString());
         return outputvalue;
     }
 
     protected ParameterOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
-        return createCondensed(new OfferingOutput(), entity, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new OfferingOutput(), entity, parameters);
     }
 
-    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters, String hrefBase) {
+    protected ParameterOutput getCondensedExtendedOffering(DescribableEntity entity, DbQuery parameters) {
+        return createCondensedExtended(new OfferingOutput(), entity, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
+    }
+
+    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(Long.toString(entity.getPkid()));
+        return outputvalue;
+    }
+
+    private ParameterOutput createCondensedExtended(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters, String hrefBase) {
+        createCondensed(outputvalue, entity, parameters);
         outputvalue.setHref(hrefBase + "/" + outputvalue.getId());
         return outputvalue;
     }
 
     protected ParameterOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
-        return createCondensed(new ProcedureOutput(), entity, parameters, urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new ProcedureOutput(), entity, parameters);
+    }
+
+    protected ParameterOutput getCondensedExtendedProcedure(DescribableEntity entity, DbQuery parameters) {
+        return createCondensedExtended(new ProcedureOutput(), entity, parameters, urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
-        return createCondensed(new FeatureOutput(), entity, parameters, urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new FeatureOutput(), entity, parameters);
+    }
+
+    protected ParameterOutput getCondensedExtendedFeature(DescribableEntity entity, DbQuery parameters) {
+        return createCondensedExtended(new FeatureOutput(), entity, parameters, urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
-        return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new CategoryOutput(), entity, parameters);
+    }
+
+    protected ParameterOutput getCondensedExtendedCategory(DescribableEntity entity, DbQuery parameters) {
+        return createCondensedExtended(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
-        return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensedExtended(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
     }
 
     @Override
