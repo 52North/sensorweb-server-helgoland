@@ -45,7 +45,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
-public class RenderingHintsExtension extends MetadataExtension<ParameterOutput> {
+public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RenderingHintsExtension.class);
 
@@ -71,54 +71,51 @@ public class RenderingHintsExtension extends MetadataExtension<ParameterOutput> 
     }
 
     @Override
-    public void addExtraMetadataFieldNames(ParameterOutput output) {
-        if (output instanceof TimeseriesMetadataOutput && hasRenderingHints((TimeseriesMetadataOutput)output)) {
+    public void addExtraMetadataFieldNames(SeriesMetadataOutput output) {
+        if (hasRenderingHints(output)) {
             output.addExtra(EXTENSION_NAME);
         }
     }
 
-    private boolean hasRenderingHints(TimeseriesMetadataOutput output) {
+    private boolean hasRenderingHints(SeriesMetadataOutput output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(TimeseriesMetadataOutput output) {
+    private boolean hasSeriesConfiguration(SeriesMetadataOutput output) {
         return renderingConfig.getTimeseriesStyles().containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(TimeseriesMetadataOutput output) {
+    private boolean hasPhenomenonConfiguration(SeriesMetadataOutput output) {
         String id = output.getParameters().getPhenomenon().getId();
         return renderingConfig.getPhenomenonStyles().containsKey(id);
     }
 
     @Override
-    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
-        if (output instanceof TimeseriesMetadataOutput) {
-            TimeseriesMetadataOutput metaOutput = (TimeseriesMetadataOutput) output;
-            if (!hasExtrasToReturn(metaOutput, parameters)) {
-                return Collections.emptyMap();
-            }
+    public Map<String, Object> getExtras(SeriesMetadataOutput output, IoParameters parameters) {
+        if (!hasExtrasToReturn(output, parameters)) {
+            return Collections.emptyMap();
+        }
 
-            if (hasSeriesConfiguration(metaOutput)) {
-                final StyleProperties style = createStyle(getSeriesStyle(metaOutput));
-                metaOutput.setRenderingHints(style); // stay backward compatible
-                return wrapSingleIntoMap(style);
-            } else if (hasPhenomenonConfiguration(metaOutput)) {
-                final StyleProperties style = createStyle(getPhenomenonStyle(metaOutput));
-                metaOutput.setRenderingHints(style); // stay backward compatible
-                return wrapSingleIntoMap(style);
-            }
+        if (hasSeriesConfiguration(output)) {
+            final StyleProperties style = createStyle(getSeriesStyle(output));
+            checkForBackwardCompatiblity(output, style);// stay backward compatible
+            return wrapSingleIntoMap(style);
+        } else if (hasPhenomenonConfiguration(output)) {
+            final StyleProperties style = createStyle(getPhenomenonStyle(output));
+            checkForBackwardCompatiblity(output, style);// stay backward compatible
+            return wrapSingleIntoMap(style);
         }
 
         LOGGER.error("No rendering style found for {} (id={})", output, output.getId());
         return Collections.emptyMap();
     }
 
-    private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(SeriesMetadataOutput output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasRenderingHints(output);
     }
 
-    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(TimeseriesMetadataOutput output) {
+    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(SeriesMetadataOutput output) {
         return renderingConfig.getTimeseriesStyles().get(output.getId());
     }
 
@@ -129,6 +126,13 @@ public class RenderingHintsExtension extends MetadataExtension<ParameterOutput> 
 
     private StyleProperties createStyle(RenderingHintsExtensionConfig.ConfiguredStyle configuredStyle) {
         return configuredStyle.getStyle();
+    }
+
+    private void checkForBackwardCompatiblity(SeriesMetadataOutput output, StyleProperties style) {
+        if (output instanceof TimeseriesMetadataOutput) {
+            ((TimeseriesMetadataOutput) output).setRenderingHints(style);
+        }
+
     }
 
 }

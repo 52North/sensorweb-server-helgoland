@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import org.n52.io.response.ext.MetadataExtension;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.sensorweb.spi.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResultTimeExtension extends MetadataExtension<ParameterOutput> {
+public class ResultTimeExtension extends MetadataExtension<SeriesMetadataOutput> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ResultTimeExtension.class);
 
@@ -70,12 +70,10 @@ public class ResultTimeExtension extends MetadataExtension<ParameterOutput> {
     }
 
     @Override
-    public void addExtraMetadataFieldNames(ParameterOutput output) {
-        if (output instanceof TimeseriesMetadataOutput) {
-            final ParameterOutput service = ((TimeseriesMetadataOutput)output).getParameters().getService();
-            if (isAvailableFor(service.getId())) {
-                output.addExtra(EXTENSION_NAME);
-            }
+    public void addExtraMetadataFieldNames(SeriesMetadataOutput output) {
+        final ParameterOutput service = output.getParameters().getService();
+        if (isAvailableFor(service.getId())) {
+            output.addExtra(EXTENSION_NAME);
         }
     }
 
@@ -84,18 +82,18 @@ public class ResultTimeExtension extends MetadataExtension<ParameterOutput> {
     }
 
     @Override
-    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
-        if (output instanceof TimeseriesMetadataOutput && hasExtrasToReturn((TimeseriesMetadataOutput)output, parameters)) {
-            return  wrapSingleIntoMap(getResultTimes(parameters, (TimeseriesMetadataOutput)output));
+    public Map<String, Object> getExtras(SeriesMetadataOutput output, IoParameters parameters) {
+        if ( hasExtrasToReturn(output, parameters)) {
+            return wrapSingleIntoMap(getResultTimes(parameters, output));
         }
         return Collections.<String, Object>emptyMap();
     }
 
-    private ArrayList<String> getResultTimes(IoParameters parameters, TimeseriesMetadataOutput output) {
+    private ArrayList<String> getResultTimes(IoParameters parameters, SeriesMetadataOutput output) {
         return resultTimeService.getResultTimeList(parameters, output.getId());
     }
 
-    private boolean hasExtrasToReturn(TimeseriesMetadataOutput output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(SeriesMetadataOutput output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasResultTimeRequestParameter(parameters);
     }
