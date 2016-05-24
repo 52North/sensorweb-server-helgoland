@@ -128,7 +128,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         if (parameters == null) {
             parameters = DbQuery.createFrom(QueryParameters.createFromQuery(new HashMap<String, String>()));
         }
-        if (parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
             result.setHrefBase(new UrlHelper().getServicesHrefBaseUrl(parameters.getHrefBase()));
         }
     }
