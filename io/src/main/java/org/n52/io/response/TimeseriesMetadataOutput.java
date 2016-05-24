@@ -35,6 +35,8 @@ import java.util.Set;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
@@ -52,6 +54,17 @@ public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
     private StatusInterval[] statusIntervals;
 
     private Set<String> rawFormats;
+
+    @JsonIgnore
+    @Override
+    public String getObservationType() {
+        return super.getObservationType();
+    }
+
+    @Override
+    public String getId() {
+        return super.getId().replace(getUrlIdSuffix() + "/", "");
+    }
 
     @Override
     public String[] getRawFormats() {

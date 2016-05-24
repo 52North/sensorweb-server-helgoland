@@ -61,7 +61,7 @@ public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> ext
         return getType().toString();
     }
 
-    private String getUrlIdSuffix() {
+    protected String getUrlIdSuffix() {
         return getType().getObservationType();
     }
 
