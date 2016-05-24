@@ -49,4 +49,6 @@ public interface GenericDao<T, PK extends Serializable, DBQ extends AbstractDbQu
 
     int getCount(/*PK key*/) throws DataAccessException;
 
+    boolean hasInstance(Long id, Class<? extends T> clazz) throws DataAccessException;
+
 }

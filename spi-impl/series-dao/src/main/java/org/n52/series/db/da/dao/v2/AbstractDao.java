@@ -78,4 +78,9 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
         }
         return criteria;
     }
+
+    @Override
+    public boolean hasInstance(Long id, Class<? extends T> clazz) {
+        return session.get(clazz, id) != null;
+    }
 }
