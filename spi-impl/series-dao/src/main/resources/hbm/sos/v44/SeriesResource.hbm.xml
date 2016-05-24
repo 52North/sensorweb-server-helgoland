@@ -16,12 +16,10 @@
         <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform"/>
         <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
-        <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="seriesid" name="unit" insert="false" update="false" />
-        <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
-        <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
         <property column="observationtype" name="observationtype" type="string"/>
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">
             <property name="numberOfDecimals" type="int" formula="3" />
+            <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="seriesid" name="unit" insert="false" update="false" />
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
                 <property column="firstvalue" name="value" type="double"/>
