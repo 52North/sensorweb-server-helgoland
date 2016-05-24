@@ -28,16 +28,14 @@
  */
 package org.n52.io.response.v1.ext;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.n52.io.request.StyleProperties;
 import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.StatusInterval;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // TODO consider using SeriesMetadataOutput<CommonSeriesParameters> instaead of T extends
 public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> extends ParameterOutput {
@@ -47,14 +45,6 @@ public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> ext
     private T parameters;
 
     private String uom;
-
-    // TODO add as extra
-    @Deprecated
-    private StyleProperties renderingHints;
-
-    // TODO add as extra
-    @Deprecated
-    private StatusInterval[] statusIntervals;
 
     private Set<String> rawFormats;
 
@@ -124,26 +114,6 @@ public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> ext
             }
             this.rawFormats.addAll(formats);
         }
-    }
-
-    @Deprecated
-    public StyleProperties getRenderingHints() {
-        return this.renderingHints;
-    }
-
-    @Deprecated
-    public void setRenderingHints(StyleProperties renderingHints) {
-        this.renderingHints = renderingHints;
-    }
-
-    @Deprecated
-    public StatusInterval[] getStatusIntervals() {
-        return statusIntervals;
-    }
-
-    @Deprecated
-    public void setStatusIntervals(StatusInterval[] statusIntervals) {
-        this.statusIntervals = statusIntervals;
     }
 
 }
