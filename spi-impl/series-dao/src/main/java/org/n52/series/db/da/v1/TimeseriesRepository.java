@@ -43,14 +43,13 @@ import org.joda.time.Interval;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ReferenceValueOutput;
 import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.TimeseriesDataMetadata;
 import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.TimeseriesSearchResult;
-import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
@@ -59,6 +58,7 @@ import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.beans.v1.TimeseriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
+import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,8 +117,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<TimeseriesEntity> seriesDao = new SeriesDao<>(session);
-            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            for (MeasurementSeriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them
