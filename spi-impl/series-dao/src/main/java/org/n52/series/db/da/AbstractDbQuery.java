@@ -199,9 +199,18 @@ public abstract class AbstractDbQuery {
     }
     
     public ObservationType getObservationType() {
-        return parameters.containsParameter(Parameters.OBSERVATION_TYPE)
-                ? ObservationType.toInstance(parameters.getAsString(Parameters.OBSERVATION_TYPE))
-                : null;
+        String observationType = parameters.containsParameter(Parameters.OBSERVATION_TYPE)
+            ? parameters.getAsString(Parameters.OBSERVATION_TYPE)
+            : null;
+        try {
+            return observationType != null
+                ? ObservationType.toInstance(observationType)
+                : ObservationType.MEASUREMENT;
+        }
+        catch (IllegalArgumentException e) {
+            LOGGER.debug("unknown observation type: {}", observationType);
+            throw new ResourceNotFoundException("Could not find resource under observation type '" + observationType + "'.");
+        }
     }
 
     /**
