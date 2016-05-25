@@ -28,9 +28,12 @@
  */
 package org.n52.web.ctrl;
 
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.web.common.Stopwatch.startStopwatch;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import java.io.IOException;
 import java.io.InputStream;
-import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,32 +41,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
-import static org.n52.web.common.Stopwatch.startStopwatch;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.io.response.ext.MetadataExtension;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.web.exception.WebExceptionAdapter;
-import org.n52.io.response.ext.MetadataExtension;
-import org.n52.io.response.OutputCollection;
-import org.n52.io.v1.data.RawFormats;
+import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
+import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import org.n52.io.request.Parameters;
 
 @RequestMapping(produces = {"application/json"})
 public abstract class ParameterController extends BaseController {
@@ -76,9 +75,7 @@ public abstract class ParameterController extends BaseController {
 
     private ParameterService<ParameterOutput> parameterService;
 
-    @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
-    public void getRawData(HttpServletResponse response,
-            @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+    public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         hookQueryParameters(query);
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -94,9 +91,7 @@ public abstract class ParameterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/{item}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
+    public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
         hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
 
@@ -141,8 +136,7 @@ public abstract class ParameterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/{item}", method = GET)
-    public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+    public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
         hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
         ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
