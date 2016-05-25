@@ -28,31 +28,33 @@
  */
 package org.n52.io.response.v1.ext;
 
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 
-public class SeriesOutputCollection extends OutputCollection<SeriesMetadataOutput<SeriesParameters>> {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class SeriesOutputCollection extends OutputCollection<SeriesMetadataOutput> {
 
     public SeriesOutputCollection() {
         // empty collection
     }
 
-    public SeriesOutputCollection(Collection<SeriesMetadataOutput<SeriesParameters>> results) {
+    public SeriesOutputCollection(Collection<SeriesMetadataOutput> results) {
         super(results);
     }
 
     @Override
     @JsonProperty(value = "series")
-    public List<SeriesMetadataOutput<SeriesParameters>> getItems() {
+    public List<SeriesMetadataOutput> getItems() {
         return super.getItems();
     }
 
     @Override
-    protected Comparator<SeriesMetadataOutput<SeriesParameters>> getComparator() {
+    protected Comparator<SeriesMetadataOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
 

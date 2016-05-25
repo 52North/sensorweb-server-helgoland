@@ -208,7 +208,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
 
     private TimeseriesMetadataOutput createExpanded(Session session, MeasurementSeriesEntity series, DbQuery query) throws DataAccessException {
         SeriesMetadataV1Output output = createCondensed(series, query);
-        output.setParameters(createTimeseriesOutput(series, query));
+        output.setSeriesParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(createTimeseriesValueFor(series.getFirstValue(), series));
         output.setLastValue(createTimeseriesValueFor(series.getLastValue(), series));

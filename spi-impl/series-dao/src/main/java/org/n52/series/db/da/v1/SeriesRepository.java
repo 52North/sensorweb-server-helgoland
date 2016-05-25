@@ -87,7 +87,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 results.add(createExpanded(series, query, session));
             }
             return results;
-
         } finally {
             returnSession(session);
         }
@@ -131,7 +130,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
 
     private SeriesMetadataOutput createExpanded(AbstractSeriesEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         SeriesMetadataOutput result = createCondensed(series, query);
-        result.setParameters(getParameters(series, query));
+        result.setSeriesParameters(getParameters(series, query));
         if (series instanceof MeasurementSeriesEntity && result instanceof MeasurementSeriesOutput) {
             MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
             MeasurementSeriesOutput output = (MeasurementSeriesOutput) result;

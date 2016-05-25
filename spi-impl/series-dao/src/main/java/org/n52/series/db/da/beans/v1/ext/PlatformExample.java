@@ -29,26 +29,24 @@
 package org.n52.series.db.da.beans.v1.ext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.n52.io.response.OutputCollection;
+
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.ext.FeatureOutputCollection;
 import org.n52.io.response.v1.ext.GeometryOutputCollection;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.PhenomenonOutputCollection;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.io.response.v1.ext.ProcedureOutputCollection;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
-import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.io.response.v1.ext.SeriesOutputCollection;
+import org.n52.io.response.v1.ext.SeriesParameters;
 
 /**
  * TODO: JavaDoc
@@ -188,8 +186,8 @@ public enum PlatformExample {
         return seriesCollection;
     }
 
-    private Collection<SeriesMetadataOutput<SeriesParameters>> createStationryInsituSeries(PlatformOutput platform) {
-        List<SeriesMetadataOutput<SeriesParameters>> series = new ArrayList<>();
+    private Collection<SeriesMetadataOutput> createStationryInsituSeries(PlatformOutput platform) {
+        List<SeriesMetadataOutput> series = new ArrayList<>();
         FeatureOutput feature = new FeatureOutputCollection(platform.getFeatures()).getItem(0);
         for (PhenomenonOutput phenomenon : platform.getPhenomena()) {
             for (ProcedureOutput procedure : platform.getProcedures()) {
@@ -204,15 +202,15 @@ public enum PlatformExample {
                 parameters.setPhenomenon(phenomenon);
                 parameters.setFeature(feature);
                 parameters.setProcedure(procedure);
-                output.setParameters(parameters);
+                output.setSeriesParameters(parameters);
                 series.add(output);
             }
         }
         return series;
     }
 
-    private Collection<SeriesMetadataOutput<SeriesParameters>> createMobileInsituSeries(PlatformOutput platform) {
-        List<SeriesMetadataOutput<SeriesParameters>> series = new ArrayList<>();
+    private Collection<SeriesMetadataOutput> createMobileInsituSeries(PlatformOutput platform) {
+        List<SeriesMetadataOutput> series = new ArrayList<>();
         for (FeatureOutput feature : platform.getFeatures()) {
             for (PhenomenonOutput phenomenon : platform.getPhenomena()) {
                 for (ProcedureOutput procedure : platform.getProcedures()) {
@@ -226,7 +224,7 @@ public enum PlatformExample {
                     parameters.setPhenomenon(phenomenon);
                     parameters.setFeature(feature);
                     parameters.setProcedure(procedure);
-                    output.setParameters(parameters);
+                    output.setSeriesParameters(parameters);
                     series.add(output);
                 }
             }

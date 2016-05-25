@@ -121,7 +121,7 @@ public class StatusIntervalsExtension extends MetadataExtension<SeriesMetadataOu
     }
 
     private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(SeriesMetadataOutput output) {
-        String id = output.getParameters().getPhenomenon().getId();
+        String id = output.getSeriesParameters().getPhenomenon().getId();
         return intervalConfig.getPhenomenonIntervals().get(id);
     }
 

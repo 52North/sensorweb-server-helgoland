@@ -86,7 +86,7 @@ public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataOut
     }
 
     private boolean hasPhenomenonConfiguration(SeriesMetadataOutput output) {
-        String id = output.getParameters().getPhenomenon().getId();
+        String id = output.getSeriesParameters().getPhenomenon().getId();
         return renderingConfig.getPhenomenonStyles().containsKey(id);
     }
 
@@ -120,7 +120,7 @@ public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataOut
     }
 
     private RenderingHintsExtensionConfig.ConfiguredStyle getPhenomenonStyle(SeriesMetadataOutput output) {
-        String id = output.getParameters().getPhenomenon().getId();
+        String id = output.getSeriesParameters().getPhenomenon().getId();
         return renderingConfig.getPhenomenonStyles().get(id);
     }
 

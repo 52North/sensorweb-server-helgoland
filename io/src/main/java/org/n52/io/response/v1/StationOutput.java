@@ -28,16 +28,17 @@
  */
 package org.n52.io.response.v1;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.Geometry;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
-
 import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.CommonSeriesParameters;
+import org.n52.io.response.v1.ext.SeriesParameters;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  *
@@ -50,15 +51,15 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     private static final long serialVersionUID = -2868469756939569521L;
 
-    private Map<String, CommonSeriesParameters> timeseries;
+    private Map<String, SeriesParameters> timeseries;
 
     private Geometry geometry;
 
-    public Map<String, CommonSeriesParameters> getTimeseries() {
+    public Map<String, SeriesParameters> getTimeseries() {
         return timeseries;
     }
 
-    public void setTimeseries(Map<String, CommonSeriesParameters> timeseries) {
+    public void setTimeseries(Map<String, SeriesParameters> timeseries) {
         this.timeseries = timeseries;
     }
 

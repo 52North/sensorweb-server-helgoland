@@ -32,17 +32,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-// TODO consider using SeriesMetadataOutput<CommonSeriesParameters> instaead of T extends
-public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> extends ParameterOutput {
+public abstract class SeriesMetadataOutput extends ParameterOutput {
 
     private final ObservationType observationType;
 
-    private T parameters;
+    private SeriesParameters seriesParameters;
 
     private String uom;
 
@@ -70,12 +68,12 @@ public abstract class SeriesMetadataOutput<T extends CommonSeriesParameters> ext
         return observationType;
     }
 
-    public T getParameters() {
-        return parameters;
+    public SeriesParameters getSeriesParameters() {
+        return seriesParameters;
     }
 
-    public void setParameters(T parameters) {
-        this.parameters = parameters;
+    public void setSeriesParameters(SeriesParameters parameters) {
+        this.seriesParameters = parameters;
     }
 
     public String getUom() {

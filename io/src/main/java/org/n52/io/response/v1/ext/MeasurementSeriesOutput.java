@@ -38,7 +38,7 @@ import org.n52.io.response.v1.StationOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class MeasurementSeriesOutput extends SeriesMetadataOutput<SeriesParameters> {
+public class MeasurementSeriesOutput extends SeriesMetadataOutput    {
 
     private String uom;
 

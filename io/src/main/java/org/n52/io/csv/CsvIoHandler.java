@@ -144,7 +144,7 @@ public class CsvIoHandler implements IoHandler {
             String station = metadata instanceof SeriesMetadataV1Output // XXX hack
                     ? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
                     : ((SeriesMetadataV2Output) metadata).getLabel();
-            String phenomenon = metadata.getParameters().getPhenomenon().getLabel();
+            String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
             String uom = metadata.getUom();
 
             for (TimeseriesValue timeseriesValue : timeseries.getValues()) {
