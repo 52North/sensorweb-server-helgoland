@@ -7,9 +7,13 @@
             <column name="procedureid" />
             <generator class="assigned" />
         </id>
-        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
+        <property name="domainId" column="identifier" type="string" insert="false" update="false" />
         <property name="name" column="name" type="string" />
-        <property name="description" column="name" type="string" insert="false" update="false"/>
+        <property name="description" column="name" type="string" insert="false" update="false" />
         <property name="reference" formula="'F'" type="org.hibernate.type.TrueFalseType" />
+
+        <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType" />
+        <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType" />
+
     </class>
 </hibernate-mapping>

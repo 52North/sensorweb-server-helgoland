@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.da;
 
 import static org.hibernate.criterion.Restrictions.between;
@@ -40,13 +41,17 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -54,10 +59,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Subqueries;
-import org.n52.io.request.Parameters;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public abstract class AbstractDbQuery {
 
@@ -106,16 +107,13 @@ public abstract class AbstractDbQuery {
     }
 
     public boolean checkTranslationForLocale(Criteria criteria) {
-        return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode()))
-                .list()
-                .isEmpty();
+        return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
     }
 
-    public Criteria addLocaleTo(Criteria criteria, Class< ?> clazz) {
+    public Criteria addLocaleTo(Criteria criteria, Class< ? > clazz) {
         if (getLocale() != null && isEntitySupported(clazz, criteria)) {
-            criteria = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN)
-                    .add(or(like(COLUMN_LOCALE, getCountryCode()),
-                            isNull(COLUMN_LOCALE)));
+            Criteria translations = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN);
+            criteria = translations.add(or(like(COLUMN_LOCALE, getCountryCode()), isNull(COLUMN_LOCALE)));
         }
         return criteria;
     }
@@ -153,12 +151,11 @@ public abstract class AbstractDbQuery {
 
     public void filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
         DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
-                .add(Restrictions.and(
-                        Restrictions.eq("mobile", mobile),
-                        Restrictions.eq("insitu", insitu))
-                );
+                .createCriteria("procedure", "p")
+                .add(Restrictions.and(Restrictions.eq("p.mobile",mobile),
+                                      Restrictions.eq("p.insitu",insitu)));
         c.setProjection(Projections.projectionList()
-                .add(Projections.property(String.format("series.%s.pkid", parameter))));
+                        .add(Projections.property(String.format("series.%s.pkid", parameter))));
         criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
     }
 
@@ -192,14 +189,16 @@ public abstract class AbstractDbQuery {
     }
 
     /**
-     * @param id the id string to parse.
-     * @return the long value of given string or {@link Long#MIN_VALUE} if
-     * string could not be parsed to type long.
+     * @param id
+     *        the id string to parse.
+     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
+     *         long.
      */
     public Long parseToId(String id) {
         try {
             return Long.parseLong(id);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return Long.MIN_VALUE;
         }
     }
@@ -222,9 +221,11 @@ public abstract class AbstractDbQuery {
                 Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
                 criteria.add(SpatialRestrictions.filter("geom", envelope, databaseSrid));
-            } catch (FactoryException e) {
+            }
+            catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
-            } catch (TransformException e) {
+            }
+            catch (TransformException e) {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }

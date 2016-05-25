@@ -26,11 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.da.beans;
 
 public class ProcedureEntity extends DescribableEntity {
 
     private boolean reference;
+
+    private boolean mobile;
+
+    private boolean insitu;
 
     public boolean isReference() {
         return reference;
@@ -38,6 +43,22 @@ public class ProcedureEntity extends DescribableEntity {
 
     public void setReference(boolean reference) {
         this.reference = reference;
+    }
+
+    public boolean isMobile() {
+        return mobile;
+    }
+
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
+    public boolean isInsitu() {
+        return insitu;
+    }
+
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
     }
 
     @Override

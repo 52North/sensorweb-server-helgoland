@@ -44,7 +44,7 @@ public interface ExtUrlSettings extends RestfulUrls {
      * Subpath identifying the extension.
      */
     static final String EXT = "/ext";
-    
+
     /**
      * Subpath identifying the api version and extension.
      */
