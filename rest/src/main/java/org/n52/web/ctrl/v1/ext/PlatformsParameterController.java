@@ -46,10 +46,11 @@ public class PlatformsParameterController extends ParameterController {
     @Override
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
-        query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
-        query.add(Parameters.PLATFORMS_INCLUDE_REMOTE, "true");
-        query.add(Parameters.PLATFORMS_INCLUDE_STATIONARY, "true");
+        
+        // TODO mobile_remote
+        // TODO stationary_remote
+        
+        query.add(Parameters.PLATFORMS_INCLUDE_ALL, "true");
         return super.getCollection(query);
     }
 
