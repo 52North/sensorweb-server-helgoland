@@ -64,7 +64,7 @@ public class SeriesMetadataController extends ParameterController {
                                           @PathVariable String observationType,
                                           @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.OBSERVATION_TYPE, observationType);
-        return super.getItem("series_measurement/" + id, query);
+        return super.getItem(id, query);
     }
 
 }
