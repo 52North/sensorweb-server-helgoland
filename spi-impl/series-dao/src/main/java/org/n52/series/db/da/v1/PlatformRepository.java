@@ -70,7 +70,6 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
             List<PlatformOutput> results = new ArrayList<>();
             for (PlatformEntity entity : getAllInstances(parameters, session)) {
                 final PlatformOutput result = createCondensed(entity, parameters);
-                result.setHrefBase(parameters.getHrefBase());
                 results.add(result);
             }
             return results;
@@ -212,6 +211,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         result.setLabel(getLabelFrom(entity, parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
+        result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
         return result;
     }
 
