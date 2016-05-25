@@ -57,7 +57,7 @@ public abstract class SeriesMetadataOutput extends ParameterOutput {
     }
 
     public String getObservationType() {
-        return getType().toString();
+        return getType().getObservationType();
     }
 
     protected String getUrlIdSuffix() {
