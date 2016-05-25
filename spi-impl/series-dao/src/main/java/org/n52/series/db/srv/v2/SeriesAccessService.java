@@ -67,7 +67,7 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
     public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
         try {
             TvpDataCollection dataCollection = new TvpDataCollection();
-            for (String timeseriesId : parameters.getTimeseries()) {
+            for (String timeseriesId : parameters.getSeriesIds()) {
                 TimeseriesData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewTimeseries(timeseriesId, data);

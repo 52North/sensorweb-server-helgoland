@@ -34,7 +34,7 @@ import org.n52.io.v1.data.RawFormats;
 
 public class RequestSimpleParameterSet extends RequestParameterSet {
 
-    private String[] timeseries;
+    private String[] seriesIds;
 
     private String resultTime;
 
@@ -42,20 +42,19 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     private String rawFormat;
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
     /**
-     * @return the timeseries ids
+     * @return the series ids
      */
     @Override
-    public String[] getTimeseries() {
-        return Utils.copy(timeseries);
+    public String[] getSeriesIds() {
+        return Utils.copy(seriesIds);
     }
 
     /**
-     * @param timeseries The timeseriesIds of interest.
+     * @param seriesIds The series ids of interest.
      */
-    void setTimeseries(String[] timeseries) {
-        this.timeseries = Utils.copy(timeseries);
+    void setSeriesIds(String[] seriesIds) {
+        this.seriesIds = Utils.copy(seriesIds);
     }
 
     /**
@@ -114,7 +113,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     public static RequestSimpleParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
         RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
-        parameterSet.setTimeseries(new String[]{timeseriesId});
+        parameterSet.setSeriesIds(new String[]{timeseriesId});
         IntervalWithTimeZone timespan = parameters.getTimespan();
         parameterSet.setTimespan(timespan.toString());
         return parameterSet;
@@ -122,7 +121,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     public static RequestSimpleParameterSet createFromDesignedParameters(RequestStyledParameterSet designedSet) {
         RequestSimpleParameterSet parameters = new RequestSimpleParameterSet();
-        parameters.setTimeseries(designedSet.getTimeseries());
+        parameters.setSeriesIds(designedSet.getSeriesIds());
         parameters.setTimespan(designedSet.getTimespan());
         return parameters;
     }

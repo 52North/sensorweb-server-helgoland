@@ -103,7 +103,7 @@ public class SeriesDataController extends BaseController {
     public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
             @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
-        checkIfUnknownTimeseries(parameters.getTimeseries());
+        checkIfUnknownTimeseries(parameters.getSeriesIds());
 
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
         TimeseriesDataCollection< ?> formattedDataCollection = format(timeseriesData, parameters.getFormat());
@@ -147,7 +147,7 @@ public class SeriesDataController extends BaseController {
     public void getTimeseriesCollectionReport(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -155,7 +155,7 @@ public class SeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        String[] timeseriesIds = parameters.getTimeseries();
+        String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
@@ -223,7 +223,7 @@ public class SeriesDataController extends BaseController {
     public void getTimeseriesCollectionChart(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -232,7 +232,7 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String[] timeseriesIds = parameters.getTimeseries();
+        String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);

@@ -33,24 +33,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.OfferingOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.io.response.v1.TimeseriesOutput;
+import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
-import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.PhenomenonEntity;
-import org.n52.series.db.da.beans.ProcedureEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
@@ -64,8 +58,8 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
 
     protected UrlHelper urHelper = new UrlHelper();
 
-    protected Map<String, CommonSeriesParameters> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, CommonSeriesParameters> timeseriesOutputs = new HashMap<>();
+    protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
+        Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementSeriesEntity timeseries : series) {
             if (!timeseries.getProcedure().isReference()) {
                 String timeseriesId = timeseries.getPkid().toString();
@@ -86,8 +80,8 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutput;
     }
 
-    protected Map<String, CommonSeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, CommonSeriesParameters> outputs = new HashMap<>();
+    protected Map<String, SeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
+        Map<String, SeriesParameters> outputs = new HashMap<>();
         for (AbstractSeriesEntity entity : series) {
             String seriesId = entity.getPkid().toString();
             SeriesParameters output = createSeriesParameters(entity, parameters);

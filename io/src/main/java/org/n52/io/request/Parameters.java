@@ -329,16 +329,20 @@ public interface Parameters {
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";
 
-    public static final String PLATFORMS_INCLUDE_INSITU = "internal.include.insitu";
+    public static final String PLATFORMS_INCLUDE_ALL = "internal.include.platforms.all";
+    
+    public static final String PLATFORMS_INCLUDE_INSITU = "internal.include.platforms.insitu";
 
-    public static final String PLATFORMS_INCLUDE_REMOTE = "internal.include.remote";
+    public static final String PLATFORMS_INCLUDE_REMOTE = "internal.include.platforms.remote";
 
-    public static final String PLATFORMS_INCLUDE_STATIONARY = "internal.include.stationary";
+    public static final String PLATFORMS_INCLUDE_STATIONARY = "internal.include.platforms.stationary";
 
-    public static final String PLATFORMS_INCLUDE_MOBILE = "internal.include.mobile";
+    public static final String PLATFORMS_INCLUDE_MOBILE = "internal.include.platforms.mobile";
 
-    public static final String SERIES_INCLUDE_MEASUREMENT = "internal.include.measurement";
+    public static final String SERIES_INCLUDE_ALL = "internal.include.series.all";
 
+    public static final String SERIES_INCLUDE_MEASUREMENT = "internal.include.series.measurement";
+    
     public static final String OBSERVATION_TYPE = "observationtype";
 
 }

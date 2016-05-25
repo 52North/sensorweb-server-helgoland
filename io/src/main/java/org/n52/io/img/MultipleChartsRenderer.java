@@ -121,7 +121,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
     }
 
     private String createChartId(MeasurementSeriesOutput metadata, String referenceId) {
-        ParameterOutput feature = metadata.getParameters().getFeature();
+        ParameterOutput feature = metadata.getSeriesParameters().getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
         if (referenceId != null) {

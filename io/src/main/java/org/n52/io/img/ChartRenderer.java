@@ -80,9 +80,9 @@ import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.v1.ext.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -304,7 +304,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     protected String createRangeLabel(MeasurementSeriesOutput timeseriesMetadata) {
-        CommonSeriesParameters parameters = timeseriesMetadata.getParameters();
+        SeriesParameters parameters = timeseriesMetadata.getSeriesParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
         uom.append(phenomenon.getLabel());

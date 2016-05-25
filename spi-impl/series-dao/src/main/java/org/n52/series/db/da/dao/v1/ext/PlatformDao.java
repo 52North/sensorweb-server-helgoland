@@ -29,16 +29,17 @@
 package org.n52.series.db.da.dao.v1.ext;
 
 import static org.hibernate.criterion.Restrictions.eq;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.AbstractDao;
+import org.n52.series.db.da.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -70,14 +71,6 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         parameters.addPagingTo(criteria);
         if (!parameters.isAllConcepts()) {
             if (parameters.isStationaryConcept()) {
-                // hier holt es einen wieder ein, wie man performant
-                // von den offerings (oder der Plattform allgemein)
-                // auf das featureconcept zugreifen kann.
-                // der link über die observation table ist nicht
-                // wirklich performant und sinnvoll. eine alternative
-                // muss her und getestet werden.
-                //
-                // siehe auch PlatformEntity#getPlatformType
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
             }
             if (parameters.isMobileConcept()) {

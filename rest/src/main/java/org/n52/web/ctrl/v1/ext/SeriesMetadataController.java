@@ -26,13 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.v1.ext;
 
-import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.Parameters;
+import org.n52.web.ctrl.ParameterController;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,18 +43,28 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES)
-public class MeasurementSeriesMetadataController extends ParameterController {
+public class SeriesMetadataController extends ParameterController {
 
-    @RequestMapping(method = GET, path = "/measurement")
-    public ModelAndView getStationaryInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.OBSERVATION_TYPE, "measurement");
+    @Override
+    @RequestMapping(method = GET)
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+         query.add(Parameters.SERIES_INCLUDE_ALL, "true");
+         return super.getCollection(query);
+    }
+
+    @RequestMapping(method = GET, path = "/{observationType}")
+    public ModelAndView getMeasurementSeriesMetadataCollection(@PathVariable String observationType,
+                                                               @RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.OBSERVATION_TYPE, observationType);
         return super.getCollection(query);
     }
 
-    @RequestMapping(method = GET, path = "/measurement/{id}")
-    public ModelAndView getStationaryInsituPlatform(@PathVariable("id") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.OBSERVATION_TYPE, "measurement");
-        return super.getItem("measurement/" + id, query);
+    @RequestMapping(method = GET, path = "/{observationType}/{id}")
+    public ModelAndView getSeriesMetadata(@PathVariable String id,
+                                          @PathVariable String observationType,
+                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.OBSERVATION_TYPE, observationType);
+        return super.getItem("series_measurement/" + id, query);
     }
+
 }

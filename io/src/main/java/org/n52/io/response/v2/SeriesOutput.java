@@ -28,13 +28,13 @@
  */
 package org.n52.io.response.v2;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.v1.OfferingOutput;
 
-public class SeriesOutput implements CommonSeriesParameters {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class SeriesOutput {
 
     private ServiceOutput service;
 
@@ -46,12 +46,10 @@ public class SeriesOutput implements CommonSeriesParameters {
 
     private CategoryOutput category;
 
-    @Override
     public ParameterOutput getPlatform() {
         return null;
     }
 
-    @Override
     public ParameterOutput getService() {
         return service;
     }
@@ -60,7 +58,6 @@ public class SeriesOutput implements CommonSeriesParameters {
         this.service = service;
     }
 
-    @Override
     public ParameterOutput getProcedure() {
         return procedure;
     }
@@ -69,7 +66,6 @@ public class SeriesOutput implements CommonSeriesParameters {
         this.procedure = procedure;
     }
 
-    @Override
     public ParameterOutput getPhenomenon() {
         return phenomenon;
     }
@@ -78,7 +74,6 @@ public class SeriesOutput implements CommonSeriesParameters {
         this.phenomenon = phenomenon;
     }
 
-    @Override
     @JsonProperty(value = "platform")
     public ParameterOutput getFeature() {
         return platform;
@@ -88,7 +83,6 @@ public class SeriesOutput implements CommonSeriesParameters {
         this.platform = platform;
     }
 
-    @Override
     public ParameterOutput getCategory() {
         return category;
     }
@@ -97,7 +91,6 @@ public class SeriesOutput implements CommonSeriesParameters {
         this.category = category;
     }
 
-    @Override
     public OfferingOutput getOffering() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

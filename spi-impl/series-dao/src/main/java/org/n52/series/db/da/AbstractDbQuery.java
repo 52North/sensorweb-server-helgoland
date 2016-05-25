@@ -165,27 +165,32 @@ public abstract class AbstractDbQuery {
     }
 
     public boolean isMobileConcept() {
-        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
+        return isAllConcepts()
+                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
     }
 
     public boolean isStationaryConcept() {
-        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
+        return isAllConcepts()
+                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
     }
 
     public boolean isInsituConcept() {
-        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
+        return isAllConcepts()
+                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
     }
 
     public boolean isRemoteConcept() {
-        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
+        return isAllConcepts()
+                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
     }
 
     public boolean isAllConcepts() {
-        return isStationaryConcept() && isInsituConcept() && isMobileConcept() && isRemoteConcept();
+        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
+                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
     }
 
     /**

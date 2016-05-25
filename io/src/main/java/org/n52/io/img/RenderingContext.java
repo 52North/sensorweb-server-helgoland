@@ -70,7 +70,7 @@ public final class RenderingContext {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
-        String[] seriesIds = styles.getTimeseries();
+        String[] seriesIds = styles.getSeriesIds();
         if (seriesIds.length != metadatas.size()) {
             int amountTimeseries = seriesIds.length;
             int amountMetadatas = metadatas.size();

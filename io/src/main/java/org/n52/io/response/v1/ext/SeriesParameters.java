@@ -28,7 +28,6 @@
  */
 package org.n52.io.response.v1.ext;
 
-import org.n52.io.response.CommonSeriesParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
@@ -38,7 +37,7 @@ import org.n52.io.response.v1.PhenomenonOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class SeriesParameters implements CommonSeriesParameters {
+public class SeriesParameters {
 
     private ParameterOutput phenomenon;
 
@@ -54,7 +53,6 @@ public class SeriesParameters implements CommonSeriesParameters {
 
     private ParameterOutput platform;
 
-    @Override
     public ParameterOutput getPhenomenon() {
         return phenomenon;
     }
@@ -63,7 +61,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.phenomenon = phenomenon;
     }
 
-    @Override
     public ParameterOutput getProcedure() {
         return procedure;
     }
@@ -72,7 +69,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.procedure = procedure;
     }
 
-    @Override
     public ParameterOutput getCategory() {
         return category;
     }
@@ -81,7 +77,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.category = category;
     }
 
-    @Override
     public ParameterOutput getOffering() {
         return offering;
     }
@@ -90,7 +85,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.offering = offering;
     }
 
-    @Override
     public ParameterOutput getFeature() {
         return feature;
     }
@@ -99,7 +93,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.feature = feature;
     }
 
-    @Override
     public ParameterOutput getService() {
         return service;
     }
@@ -108,7 +101,6 @@ public class SeriesParameters implements CommonSeriesParameters {
         this.service = service;
     }
 
-    @Override
     public ParameterOutput getPlatform() {
         return platform;
     }

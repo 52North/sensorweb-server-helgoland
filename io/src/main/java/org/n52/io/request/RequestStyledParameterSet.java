@@ -39,7 +39,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
     /**
      * Style options for each timeseriesId of interest.
      */
@@ -87,7 +86,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     @Override
-    public String[] getTimeseries() {
+    public String[] getSeriesIds() {
         return styleOptions.keySet().toArray(new String[0]);
     }
 

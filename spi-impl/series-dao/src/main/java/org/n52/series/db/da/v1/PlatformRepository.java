@@ -142,7 +142,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
-        LOGGER.warn("not implemented yet.");
+        LOGGER.warn("getAllStationaryRemote() not implemented yet.");
         return Collections.emptyList();
     }
 
@@ -188,13 +188,12 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
-        LOGGER.warn("not implemented yet.");
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(parameters);
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
-        LOGGER.warn("not implemented yet.");
+        LOGGER.warn("getAllMobileRemote() not implemented yet.");
         return Collections.emptyList();
     }
 
