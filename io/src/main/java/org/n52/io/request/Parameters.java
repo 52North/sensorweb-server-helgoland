@@ -212,31 +212,39 @@ public interface Parameters {
     /**
      * Determines the service filter
      */
+    @Deprecated
     public static final String SERVICE = "service";
 
     /**
      * Determines the feature filter
      */
+    @Deprecated
     public static final String FEATURE = "feature";
 
     /**
      * Determines the service filter
      */
+    @Deprecated
     public static final String OFFERING = "offering";
 
     /**
      * Determines the procedure filter
      */
+    @Deprecated
     public static final String PROCEDURE = "procedure";
 
     /**
      * Determines the phenomenon filter
      */
+    @Deprecated
     public static final String PHENOMENON = "phenomenon";
 
+    public static final String PHENOMENA = "phenomena";
+    
     /**
      * Determines the station filter
      */
+    @Deprecated
     public static final String STATION = "station";
 
     public static final String PLATFORMS = "platforms";
@@ -244,6 +252,7 @@ public interface Parameters {
     /**
      * Determines the category filter
      */
+    @Deprecated
     public static final String CATEGORY = "category";
 
     /**
