@@ -113,7 +113,7 @@ public class TimeseriesDataController extends BaseController {
     public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
             @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
-        checkIfUnknownTimeseries(parameters.getTimeseries());
+        checkIfUnknownTimeseries(parameters.getSeriesIds());
         if (parameters.isSetRawFormat()) {
             getRawTimeseriesCollectionData(response, parameters);
             return null;
@@ -154,7 +154,7 @@ public class TimeseriesDataController extends BaseController {
 
     @RequestMapping(value = "/getData", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawTimeseriesCollectionData(HttpServletResponse response, @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkIfUnknownTimeseries(parameters.getTimeseries());
+        checkIfUnknownTimeseries(parameters.getSeriesIds());
         if (!timeseriesDataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
@@ -198,7 +198,7 @@ public class TimeseriesDataController extends BaseController {
     public void getTimeseriesCollectionReport(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -206,7 +206,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        String[] timeseriesIds = parameters.getTimeseries();
+        String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
@@ -286,7 +286,7 @@ public class TimeseriesDataController extends BaseController {
     public void getTimeseriesCollectionChart(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -295,7 +295,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String[] timeseriesIds = parameters.getTimeseries();
+        String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);

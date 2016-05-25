@@ -44,10 +44,9 @@ import org.slf4j.LoggerFactory;
 public abstract class RequestParameterSet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
-
+    
     private final Map<String, JsonNode> parameters;
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
     protected RequestParameterSet() {
         parameters = new HashMap<>();
         parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
@@ -240,6 +239,6 @@ public abstract class RequestParameterSet {
                 : defaultValue;
     }
 
-    public abstract String[] getTimeseries();
+    public abstract String[] getSeriesIds();
 
 }
