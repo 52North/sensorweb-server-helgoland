@@ -56,7 +56,7 @@
         <property name="parameterService" ref="geometriesService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesMetadataController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ext.SeriesMetadataController" parent="parameterController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="seriesService" />
         <property name="metadataExtensions">
@@ -70,7 +70,7 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesDataController">
+    <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
         <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="metadataService" ref="seriesService" />
         <property name="dataService" ref="seriesService" />
