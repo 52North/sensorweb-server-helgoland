@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.n52.io.response.SeriesParameters;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
@@ -46,7 +47,6 @@ import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.io.response.v1.ext.ProcedureOutputCollection;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.response.v1.ext.SeriesOutputCollection;
-import org.n52.io.response.v1.ext.SeriesParameters;
 
 /**
  * TODO: JavaDoc

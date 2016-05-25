@@ -61,7 +61,7 @@ public abstract class ParameterControllerV1Adapter extends ParameterController {
     public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
         return super.getItem(id, query);
     }
-    
+
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {

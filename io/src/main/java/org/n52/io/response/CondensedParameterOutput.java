@@ -26,16 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
-
-import org.n52.io.response.OutputCollection;
+package org.n52.io.response;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public interface MobilePlatform {
+public interface CondensedParameterOutput {
 
-    public OutputCollection<GeometryInfo> getTracks();
+    String getId();
+
+    String getHref();
+
+    String getLabel();
 }

@@ -44,7 +44,7 @@ public class RequestUtils {
 
     /**
      * Get the full request {@link URL} including the query parameter
-     * 
+     *
      * @return Request {@link URL} with query parameter
      * @throws IOException
      * @throws URISyntaxException
@@ -73,7 +73,7 @@ public class RequestUtils {
 
     /**
      * Get the request {@link URL} without the query parameter
-     * 
+     *
      * @return Request {@link URL} without query parameter
      * @throws IOException
      * @throws URISyntaxException

@@ -37,11 +37,11 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.SeriesParameters;
 import org.n52.io.response.TimeseriesValue;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
-import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;

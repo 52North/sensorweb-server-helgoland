@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.SeriesParameters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
