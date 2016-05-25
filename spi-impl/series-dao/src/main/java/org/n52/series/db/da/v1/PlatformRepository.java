@@ -183,8 +183,8 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private static boolean shallInclude(String parameter, DbQuery parameters) {
-        return parameters.getParameters().containsParameter(parameter)
-                && parameters.getParameters().getAsBoolean(parameter);
+        return (parameters.getParameters().containsParameter(parameter)
+                && parameters.getParameters().getAsBoolean(parameter)) || parameters.isAllConcepts();
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
