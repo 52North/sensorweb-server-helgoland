@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.v1.ext;
 
 import static org.n52.io.MimeType.APPLICATION_PDF;
@@ -34,6 +35,13 @@ import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
+import static org.n52.web.common.Stopwatch.startStopwatch;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -55,31 +63,26 @@ import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.request.IoParameters;
 import org.n52.io.IoParseException;
+import org.n52.io.PreRenderingJob;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
-import org.n52.io.PreRenderingJob;
-import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
-import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.TimeseriesDataCollection;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.v1.data.RawFormats;
-import org.n52.web.exception.BadRequestException;
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.sensorweb.spi.SeriesDataService;
+import org.n52.sensorweb.spi.ServiceParameterService;
+import org.n52.web.common.Stopwatch;
 import org.n52.web.ctrl.BaseController;
+import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
-import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.web.common.Stopwatch;
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,13 +93,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES, produces = {"application/json"})
-public class MeasurementSeriesDataController extends BaseController implements SeriesDataController {
+public class SeriesDataController extends BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MeasurementSeriesDataController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SeriesDataController.class);
 
     private ServiceParameterService serviceParameterService;
 
@@ -108,27 +110,26 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     private String requestIntervalRestriction;
 
-    @Override
-//    @RequestMapping(value = "/data", produces = {"application/json"}, method = POST)
+    @RequestMapping(value = "/data", produces = {"application/json"}, method = POST)
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
-            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+                                                @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
-        checkIfUnknownTimeseries(parameters.getTimeseries());
+        checkIfUnknownTimeseries(parameters.getSeriesIds());
         if (parameters.isSetRawFormat()) {
             getRawSeriesCollectionData(response, parameters);
             return null;
         }
 
         TvpDataCollection data = getSeriesData(parameters);
-        TimeseriesDataCollection< ?> formattedDataCollection = format(data, parameters.getFormat());
+        TimeseriesDataCollection< ? > formattedDataCollection = format(data, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
     }
 
-    @Override
-//    @RequestMapping(value = "/{seriesId}/data", produces = {"application/json"}, method = GET)
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/json"}, method = GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
+                                      @PathVariable String observationType,
+                                      @PathVariable String seriesId,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query) {
 
         checkIfUnknownTimeseries(seriesId);
 
@@ -145,7 +146,7 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
         // TODO add paging
         TvpDataCollection data = getSeriesData(parameters);
-        TimeseriesDataCollection< ?> formattedDataCollection = format(data, map.getFormat());
+        TimeseriesDataCollection< ? > formattedDataCollection = format(data, map.getFormat());
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
         }
@@ -155,9 +156,9 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesCollectionData(HttpServletResponse response,
-            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkIfUnknownTimeseries(parameters.getTimeseries());
-        if (!dataService.supportsRawData()) {
+                                           @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+        checkIfUnknownTimeseries(parameters.getSeriesIds());
+        if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
 
@@ -166,19 +167,20 @@ public class MeasurementSeriesDataController extends BaseController implements S
                 throw new ResourceNotFoundException("No raw data found.");
             }
             IOUtils.copyLarge(inputStream, response.getOutputStream());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
         }
     }
 
     @RequestMapping(value = "/{seriesId}/data", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesData(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam MultiValueMap<String, String> query) {
+                                 @PathVariable String seriesId,
+                                 @RequestParam MultiValueMap<String, String> query) {
         checkIfUnknownTimeseries(seriesId);
         IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
-        if (!dataService.supportsRawData()) {
+        if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
         try (InputStream inputStream = dataService.getRawDataService().getRawData(parameters)) {
@@ -186,21 +188,22 @@ public class MeasurementSeriesDataController extends BaseController implements S
                 throw new ResourceNotFoundException("No raw data found for id '" + seriesId + "'.");
             }
             IOUtils.copyLarge(inputStream, response.getOutputStream());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
         }
     }
 
-    private TimeseriesDataCollection< ?> format(TvpDataCollection timeseriesData, String format) {
-        TimeseriesDataFormatter< ?> formatter = createFormatterFactory(format).create();
+    private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
+        TimeseriesDataFormatter< ? > formatter = createFormatterFactory(format).create();
         return formatter.format(timeseriesData);
     }
 
     @RequestMapping(value = "/data", produces = {"application/pdf"}, method = POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
-            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                          @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -208,15 +211,12 @@ public class MeasurementSeriesDataController extends BaseController implements S
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds, map);
+        String[] timeseriesIds = parameters.getSeriesIds();
+        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
+                                                                                                      map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
-        IoHandler renderer = IoFactory
-                .createWith(map)
-                .forMimeType(APPLICATION_PDF)
-                .withServletContextRoot(getRootResource())
-                .createIOHandler(context);
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
 
@@ -228,8 +228,8 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"application/pdf"}, method = GET)
     public void getSeriesReport(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+                                @PathVariable String seriesId,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(seriesId);
 
@@ -241,27 +241,24 @@ public class MeasurementSeriesDataController extends BaseController implements S
         parameters.setExpanded(map.isExpanded());
 
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler renderer = IoFactory
-                .createWith(map)
-                .forMimeType(APPLICATION_PDF)
-                .withServletContextRoot(getRootResource())
-                .createIOHandler(context);
+        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"application/zip"}, method = GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-        query.put("zip", Arrays.asList(new String[]{Boolean.TRUE.toString()}));
+                                     @PathVariable String seriesId,
+                                     @RequestParam(required = false) MultiValueMap<String, String> query)
+                                             throws Exception {
+        query.put("zip", Arrays.asList(new String[] {Boolean.TRUE.toString()}));
         geSeriesAsCsv(response, seriesId, query);
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"text/csv"}, method = GET)
     public void geSeriesAsCsv(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+                              @PathVariable String seriesId,
+                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(seriesId);
 
@@ -278,7 +275,8 @@ public class MeasurementSeriesDataController extends BaseController implements S
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
             response.setContentType(APPLICATION_ZIP.toString());
-        } else {
+        }
+        else {
             response.setContentType(TEXT_CSV.toString());
         }
         handleBinaryResponse(response, parameters, renderer);
@@ -286,9 +284,9 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     @RequestMapping(value = "/data", produces = {"image/png"}, method = POST)
     public void getSeriesCollectionChart(HttpServletResponse response,
-            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                         @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getTimeseries());
+        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -297,8 +295,9 @@ public class MeasurementSeriesDataController extends BaseController implements S
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String[] timeseriesIds = parameters.getTimeseries();
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds, map);
+        String[] timeseriesIds = parameters.getSeriesIds();
+        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
+                                                                                                      map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
@@ -307,8 +306,8 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"image/png"}, method = GET)
     public void getSeriesChart(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+                               @PathVariable String seriesId,
+                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         checkIfUnknownTimeseries(seriesId);
 
@@ -330,13 +329,14 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     @RequestMapping(value = "/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
-            @PathVariable String seriesId,
-            @PathVariable String chartQualifier,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+                                         @PathVariable String seriesId,
+                                         @PathVariable String chartQualifier,
+                                         @RequestParam(required = false) MultiValueMap<String, String> query)
+                                                 throws Exception {
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
-        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
+        if ( !preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
         }
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
@@ -352,21 +352,25 @@ public class MeasurementSeriesDataController extends BaseController implements S
 
     private void checkIfUnknownTimeseries(String... timeseriesIds) {
         for (String timeseriesId : timeseriesIds) {
-            if (!serviceParameterService.isKnownTimeseries(timeseriesId)) {
+            if ( !serviceParameterService.isKnownTimeseries(timeseriesId)) {
                 throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
             }
         }
     }
 
     /**
-     * @param response the response to write binary on.
-     * @param parameters the timeseries parameter to request raw data.
-     * @param renderer an output renderer.
-     * @throws InternalServerException if data processing fails for some reason.
+     * @param response
+     *        the response to write binary on.
+     * @param parameters
+     *        the timeseries parameter to request raw data.
+     * @param renderer
+     *        an output renderer.
+     * @throws InternalServerException
+     *         if data processing fails for some reason.
      */
     private void handleBinaryResponse(HttpServletResponse response,
-            RequestSimpleParameterSet parameters,
-            IoHandler renderer) {
+                                      RequestSimpleParameterSet parameters,
+                                      IoHandler renderer) {
         try {
             renderer.generateOutput(getSeriesData(parameters));
             if (parameters.isBase64()) {
@@ -375,12 +379,15 @@ public class MeasurementSeriesDataController extends BaseController implements S
                 byte[] imageData = baos.toByteArray();
                 byte[] encode = Base64.encodeBase64(imageData);
                 response.getOutputStream().write(encode);
-            } else {
+            }
+            else {
                 renderer.encodeAndWriteTo(response.getOutputStream());
             }
-        } catch (IOException e) { // handled by BaseController
+        }
+        catch (IOException e) { // handled by BaseController
             throw new InternalServerException("Error handling output stream.", e);
-        } catch (IoParseException e) { // handled by BaseController
+        }
+        catch (IoParseException e) { // handled by BaseController
             throw new InternalServerException("Could not write binary to stream.", e);
         }
     }
@@ -388,8 +395,8 @@ public class MeasurementSeriesDataController extends BaseController implements S
     private TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
         TvpDataCollection timeseriesData = parameters.isGeneralize()
-                ? composeDataService(dataService).getSeriesData(parameters)
-                : dataService.getSeriesData(parameters);
+            ? composeDataService(dataService).getSeriesData(parameters)
+            : dataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
     }
