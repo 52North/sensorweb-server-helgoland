@@ -65,19 +65,15 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
     @Override
     public String getHrefBase() {
         String base = super.getHrefBase();
-        String suffix = getUrlIdSuffix();
+        String suffix = getIdPrefix();
         return base != null && base.endsWith(suffix)
                 ? base.substring(0, base.lastIndexOf(suffix) - 1)
                 : base;
     }
 
-    private String getUrlIdSuffix() {
-        return getType().getTypeName();
-    }
-
     @Override
     public String getPlatformType() {
-        return getType().getFeatureConcept();
+        return getType().getPlatformType();
     }
 
     @JsonIgnore
@@ -90,8 +86,13 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
 
     @Override
     public void setId(String id) {
-        super.setId(getUrlIdSuffix() + "/" + id);
+        super.setId(getIdPrefix() + "/" + id);
     }
+
+    private String getIdPrefix() {
+        return getType().getIdPrefix();
+    }
+
 
     public Collection<SeriesMetadataOutput> getSeries() {
         return series;

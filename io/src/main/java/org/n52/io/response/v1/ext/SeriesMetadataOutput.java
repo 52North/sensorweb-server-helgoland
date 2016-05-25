@@ -35,8 +35,6 @@ import java.util.Set;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.SeriesParameters;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public abstract class SeriesMetadataOutput extends ParameterOutput {
 
     private final ObservationType observationType;
@@ -53,20 +51,15 @@ public abstract class SeriesMetadataOutput extends ParameterOutput {
 
     @Override
     public void setId(String id) {
-        super.setId(getUrlIdSuffix() + "/" + id);
+        super.setId(getIdPrefix() + "/" + id);
     }
 
     public String getObservationType() {
-        return getType().getObservationType();
+        return observationType.getObservationType();
     }
 
-    protected String getUrlIdSuffix() {
-        return getType().getObservationType();
-    }
-
-    @JsonIgnore
-    public ObservationType getType() {
-        return observationType;
+    protected String getIdPrefix() {
+        return observationType.getIdPrefix();
     }
 
     public SeriesParameters getSeriesParameters() {

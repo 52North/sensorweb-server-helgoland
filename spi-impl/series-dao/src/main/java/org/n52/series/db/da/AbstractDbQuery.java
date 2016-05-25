@@ -51,6 +51,7 @@ import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -191,6 +192,16 @@ public abstract class AbstractDbQuery {
     public boolean isAllConcepts() {
         return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
+    }
+    
+    public boolean hasObservationType() {
+        return parameters.containsParameter(Parameters.OBSERVATION_TYPE);
+    }
+    
+    public ObservationType getObservationType() {
+        return parameters.containsParameter(Parameters.OBSERVATION_TYPE)
+                ? ObservationType.toInstance(parameters.getAsString(Parameters.OBSERVATION_TYPE))
+                : null;
     }
 
     /**

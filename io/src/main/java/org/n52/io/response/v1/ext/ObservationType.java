@@ -41,6 +41,10 @@ public enum ObservationType {
     PROFILE,
     TEXT, URI;
 
+    public String getIdPrefix() {
+        return name().toLowerCase();
+    }
+
     public String getObservationType() {
         return name().toLowerCase();
     }
@@ -51,6 +55,15 @@ public enum ObservationType {
             temp = temp.replaceAll(observationType.name().toLowerCase(Locale.ROOT) + "/", "");
         }
         return temp;
+    }
+    
+    public static ObservationType toInstance(String typeName) {
+        for (ObservationType type : values()) {
+            if (type.getObservationType().equalsIgnoreCase(typeName)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("no type for '" + typeName + "'.");
     }
 
 }

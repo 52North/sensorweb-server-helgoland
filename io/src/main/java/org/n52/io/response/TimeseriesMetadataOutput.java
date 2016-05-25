@@ -56,15 +56,15 @@ public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
 
     private Set<String> rawFormats;
 
-    @JsonIgnore
     @Override
+    @JsonIgnore
     public String getObservationType() {
         return super.getObservationType();
     }
 
     @Override
     public String getId() {
-        return super.getId().replace(getUrlIdSuffix() + "/", "");
+        return super.getId().replace(getIdPrefix() + "/", "");
     }
 
     public StationOutput getStation() {

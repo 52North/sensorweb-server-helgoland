@@ -96,7 +96,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     public SeriesMetadataOutput getInstance(String id, DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<SeriesMetadataOutput> results = new ArrayList<>();
             SeriesDao seriesDao = new SeriesDao(session);
             String seriesId = ObservationType.extractId(id);
             AbstractSeriesEntity<AbstractObservationEntity> series = seriesDao.getInstance(Long.parseLong(seriesId), query);

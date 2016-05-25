@@ -40,32 +40,32 @@ public enum PlatformType {
     MOBILE_INSITU("mobile/insitu"),
     MOBILE_REMOTE("mobile/remote");
 
-    private final String featureConcept;
+    private final String typeName;
 
-    private PlatformType(String featureConcept) {
-        this.featureConcept = featureConcept;
+    private PlatformType(String typeName) {
+        this.typeName = typeName;
     }
 
-    public String getTypeName() {
+    public String getIdPrefix() {
         return this.name().toLowerCase();
     }
 
-    public String getFeatureConcept() {
-        return featureConcept;
+    public String getPlatformType() {
+        return typeName;
     }
 
     public static String extractId(String id) {
         if (isStationaryId(id)) {
             if (isInsitu(id)) {
-                return id.substring(STATIONARY_INSITU.getTypeName().length() + 1);
+                return id.substring(STATIONARY_INSITU.getIdPrefix().length() + 1);
             } else {
-                return id.substring(STATIONARY_REMOTE.getTypeName().length() + 1);
+                return id.substring(STATIONARY_REMOTE.getIdPrefix().length() + 1);
             }
         } else if (isMobileId(id)) {
             if (isInsitu(id)) {
-                return id.substring(MOBILE_INSITU.getTypeName().length() + 1);
+                return id.substring(MOBILE_INSITU.getIdPrefix().length() + 1);
             } else {
-                return id.substring(MOBILE_REMOTE.getTypeName().length() + 1);
+                return id.substring(MOBILE_REMOTE.getIdPrefix().length() + 1);
             }
         }
         return id;
@@ -87,22 +87,22 @@ public enum PlatformType {
         return id.endsWith("insitu");
     }
 
-    public static boolean isKnownType(String featureConcept) {
+    public static boolean isKnownType(String typeName) {
         for (PlatformType type : values()) {
-            if (type.getFeatureConcept().equalsIgnoreCase(featureConcept)) {
+            if (type.getPlatformType().equalsIgnoreCase(typeName)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static PlatformType toInstance(String featureConcept) {
+    public static PlatformType toInstance(String typeName) {
         for (PlatformType type : values()) {
-            if (type.getFeatureConcept().equalsIgnoreCase(featureConcept)) {
+            if (type.getPlatformType().equalsIgnoreCase(typeName)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("no type for '" + featureConcept + "'.");
+        throw new IllegalArgumentException("no type for '" + typeName + "'.");
     }
 
     public static PlatformType toInstance(boolean mobile, boolean insitu) {
