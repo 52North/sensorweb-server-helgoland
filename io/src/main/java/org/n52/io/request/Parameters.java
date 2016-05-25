@@ -216,10 +216,20 @@ public interface Parameters {
     public static final String SERVICE = "service";
 
     /**
+     * Determines the services filter
+     */
+    public static final String SERVICES = "services";
+
+    /**
      * Determines the feature filter
      */
     @Deprecated
     public static final String FEATURE = "feature";
+
+    /**
+     * Determines the features filter
+     */
+    public static final String FEATURES = "features";
 
     /**
      * Determines the service filter
@@ -228,10 +238,20 @@ public interface Parameters {
     public static final String OFFERING = "offering";
 
     /**
+     * Determines the offerings filter
+     */
+    public static final String OFFERINGS = "offerings";
+
+    /**
      * Determines the procedure filter
      */
     @Deprecated
     public static final String PROCEDURE = "procedure";
+
+    /**
+     * Determines the procedures filter
+     */
+    public static final String PROCEDURES = "procedures";
 
     /**
      * Determines the phenomenon filter
@@ -239,8 +259,11 @@ public interface Parameters {
     @Deprecated
     public static final String PHENOMENON = "phenomenon";
 
+    /**
+     * Determines the phenomena filter
+     */
     public static final String PHENOMENA = "phenomena";
-    
+
     /**
      * Determines the station filter
      */
@@ -254,6 +277,11 @@ public interface Parameters {
      */
     @Deprecated
     public static final String CATEGORY = "category";
+
+    /**
+     * Determines the categories filter
+     */
+    public static final String CATEGORIES = "categories";
 
     /**
      * Determines the reference system to be used for input/output coordinates.

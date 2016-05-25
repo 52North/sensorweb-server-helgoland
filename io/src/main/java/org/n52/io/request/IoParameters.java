@@ -337,24 +337,80 @@ public class IoParameters implements Parameters {
         }
     }
 
+    /**
+     * @return the category filter
+     * @deprecated use {@link #getCategories()}
+     */
+    @Deprecated
     public String getCategory() {
         return getAsString(CATEGORY);
     }
 
+    public Set<String> getCategories() {
+        return containsParameter(CATEGORIES)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(CATEGORIES)))
+                : null;
+    }
+
+    /**
+     * @return the service filter
+     * @deprecated use {@link #getServices()}
+     */
+    @Deprecated
     public String getService() {
         return getAsString(SERVICE);
     }
 
+    public Set<String> getServices() {
+        return containsParameter(SERVICES)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(SERVICES)))
+                : null;
+    }
+
+    /**
+     * @return the offering filter
+     * @deprecated use {@link #getOfferings()}
+     */
+    @Deprecated
     public String getOffering() {
         return getAsString(OFFERING);
     }
 
+    public Set<String> getOfferings() {
+        return containsParameter(OFFERINGS)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(OFFERINGS)))
+                : null;
+    }
+
+    /**
+     * @return the feature filter
+     * @deprecated use {@link #getFeatures()}
+     */
+    @Deprecated
     public String getFeature() {
         return getAsString(FEATURE);
     }
 
+    public Set<String> getFeatures() {
+        return containsParameter(FEATURES)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(FEATURES)))
+                : null;
+    }
+
+
+    /**
+     * @return the procedure filter
+     * @deprecated use {@link #getProcedures()}
+     */
+    @Deprecated
     public String getProcedure() {
         return getAsString(PROCEDURE);
+    }
+
+    public Set<String> getProcedures() {
+        return containsParameter(PROCEDURES)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(PROCEDURES)))
+                : null;
     }
 
     /**
@@ -365,7 +421,7 @@ public class IoParameters implements Parameters {
     public String getPhenomenon() {
         return getAsString(PHENOMENON);
     }
-    
+
     public Set<String> getPhenomena() {
         return containsParameter(PHENOMENA)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(PHENOMENA)))

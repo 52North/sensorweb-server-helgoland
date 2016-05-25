@@ -37,6 +37,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public class DbQuery extends AbstractDbQuery {
 
     private DbQuery(IoParameters parameters) {
@@ -47,6 +49,7 @@ public class DbQuery extends AbstractDbQuery {
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
         DetachedCriteria filter = DetachedCriteria.forClass(AbstractSeriesEntity.class);
 
+        // old query parameter to stay backward compatible
         if (getParameters().getPhenomenon() != null) {
             filter.createCriteria("phenomenon")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getPhenomenon())));
@@ -74,6 +77,28 @@ public class DbQuery extends AbstractDbQuery {
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
         }
 
+        // new query parameters
+        if (getParameters().getPhenomena() != null) {
+            filter.createCriteria("phenomenon")
+            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
+        }
+        if (getParameters().getProcedures() != null) {
+            filter.createCriteria("procedure")
+            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getProcedures())));
+        }
+        if (getParameters().getOfferings() != null) {
+            // here procedure == offering
+            filter.createCriteria("procedure")
+            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getOfferings())));
+        }
+        if (getParameters().getFeatures() != null) {
+            filter.createCriteria("feature")
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getFeatures())));
+        }
+        if (getParameters().getCategories() != null) {
+            filter.createCriteria("category")
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getCategories())));
+        }
         if (getParameters().getPlatforms() != null) {
             filter.createCriteria("platform")
                     .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPlatforms())));
