@@ -96,10 +96,17 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     public SeriesMetadataOutput getInstance(String id, DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao seriesDao = new SeriesDao(session);
-            String seriesId = ObservationType.extractId(id);
-            AbstractSeriesEntity<AbstractObservationEntity> series = seriesDao.getInstance(Long.parseLong(seriesId), query);
-            return createExpanded(series, query, session);
+            switch (query.getObservationType()) {
+            
+            // TODO other obesrvation types
+            
+            case MEASUREMENT:
+            default:
+                SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+                String seriesId = ObservationType.extractId(id);
+                MeasurementSeriesEntity series = seriesDao.getInstance(Long.parseLong(seriesId), query);
+                return createExpanded(series, query, session);
+            }
         } finally {
             returnSession(session);
         }
@@ -117,8 +124,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
 
     private SeriesMetadataOutput createCondensed(AbstractSeriesEntity<?> series, DbQuery query) throws DataAccessException {
         if (series instanceof MeasurementSeriesEntity) {
-            MeasurementSeriesOutput output = new MeasurementSeriesOutput();
             MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
+            MeasurementSeriesOutput output = new MeasurementSeriesOutput();
             output.setLabel(createSeriesLabel(series, query.getLocale()));
             output.setId(series.getPkid().toString());
             output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
