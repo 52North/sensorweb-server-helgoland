@@ -81,8 +81,8 @@ import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.SeriesParameters;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
-import org.n52.io.response.v1.ext.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

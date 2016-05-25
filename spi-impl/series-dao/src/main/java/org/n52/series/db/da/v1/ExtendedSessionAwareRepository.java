@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.SeriesParameters;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.OfferingOutput;
@@ -41,7 +42,6 @@ import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.io.response.v1.ext.SeriesParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.da.beans.DescribableEntity;

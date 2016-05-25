@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.v1.ext;
 
+import org.n52.io.response.CondensedParameterOutput;
+
 /**
  * TODO: JavaDoc
  *

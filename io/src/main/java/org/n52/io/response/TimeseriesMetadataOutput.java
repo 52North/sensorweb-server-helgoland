@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
+import org.n52.io.response.v1.StationOutput;
 import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,13 +46,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Deprecated
 public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
 
-    // TODO add as extra
     @Deprecated
     private StyleProperties renderingHints;
 
-    // TODO add as extra
     @Deprecated
     private StatusInterval[] statusIntervals;
+
+    private StationOutput station;
 
     private Set<String> rawFormats;
 
@@ -64,6 +65,14 @@ public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
     @Override
     public String getId() {
         return super.getId().replace(getUrlIdSuffix() + "/", "");
+    }
+
+    public StationOutput getStation() {
+        return station;
+    }
+
+    public void setStation(StationOutput station) {
+        this.station = station;
     }
 
     @Override
