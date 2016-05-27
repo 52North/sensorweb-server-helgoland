@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public abstract class RequestParameterSet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
-    
+
     private final Map<String, JsonNode> parameters;
 
     protected RequestParameterSet() {
