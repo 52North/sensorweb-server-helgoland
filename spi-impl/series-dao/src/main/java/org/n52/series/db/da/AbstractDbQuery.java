@@ -193,6 +193,41 @@ public abstract class AbstractDbQuery {
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
     }
 
+    public boolean isAllGeomentries() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_ALL)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_ALL);
+    }
+
+    public boolean isAllPlatformLocations() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL);
+    }
+
+    public boolean isSites() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES);
+    }
+
+    public boolean isTracks() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS);
+    }
+
+    public boolean isAllObservedGeometries() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL);
+    }
+
+    public boolean isStaticObservedGeometries() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC);
+    }
+
+    public boolean isDynamicObservedGeometries() {
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC);
+    }
+
     /**
      * @param id
      *        the id string to parse.
