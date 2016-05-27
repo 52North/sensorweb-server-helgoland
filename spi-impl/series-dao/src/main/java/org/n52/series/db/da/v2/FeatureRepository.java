@@ -392,4 +392,8 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
         }
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

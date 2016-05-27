@@ -152,4 +152,8 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
         return result;
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

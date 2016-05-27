@@ -102,4 +102,8 @@ public class ProceduresAccessService extends ParameterService<ProcedureOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

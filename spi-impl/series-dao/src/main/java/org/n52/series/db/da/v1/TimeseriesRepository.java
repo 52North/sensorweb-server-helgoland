@@ -78,12 +78,27 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     @Autowired
     @Qualifier(value = "stationRepository")
     private OutputAssembler<StationOutput> stationRepository;
+    
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            SeriesDao<MeasurementSeriesEntity> dao = createDao(session);
+            return dao.hasInstance(parseId(id), MeasurementSeriesEntity.class);
+        } finally {
+            returnSession(session);
+        }
+    }
 
+    private SeriesDao<MeasurementSeriesEntity> createDao(Session session) {
+        return new SeriesDao<>(session);
+    }
+    
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<MeasurementSeriesEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
@@ -117,7 +132,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
             for (MeasurementSeriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
@@ -161,7 +176,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
             MeasurementSeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             /*
              *  ATM, the SWC REST API only supports numeric types
@@ -180,7 +195,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     public TimeseriesData getData(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
             MeasurementSeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             return createTimeseriesData(timeseries, dbQuery, session);
         } finally {
@@ -191,7 +206,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     public TimeseriesData getDataWithReferenceValues(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
             MeasurementSeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             TimeseriesData result = createTimeseriesData(timeseries, dbQuery, session);
             Set<MeasurementSeriesEntity> referenceValues = timeseries.getReferenceValues();

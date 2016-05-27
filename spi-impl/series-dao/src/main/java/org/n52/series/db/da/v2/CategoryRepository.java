@@ -155,4 +155,8 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
         return result;
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

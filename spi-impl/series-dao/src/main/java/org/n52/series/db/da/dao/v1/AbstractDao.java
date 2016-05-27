@@ -33,17 +33,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.internal.CriteriaImpl;
-import org.hibernate.loader.criteria.CriteriaJoinWalker;
-import org.hibernate.loader.criteria.CriteriaQueryTranslator;
-import org.hibernate.persister.entity.OuterJoinLoadable;
-import org.n52.series.db.da.v1.DbQuery;
-import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
+import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.I18nEntity;
 import org.n52.series.db.da.dao.GenericDao;
+import org.n52.series.db.da.v1.DbQuery;
 
 public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
 

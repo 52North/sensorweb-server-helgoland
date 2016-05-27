@@ -34,13 +34,13 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.v1.ServiceOutput;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ServiceInfo;
+import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +52,11 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
 
     private final OutputAssembler<ServiceOutput> serviceRepository;
 
-    private final OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository;
+    private final OutputAssembler<SeriesMetadataOutput> seriesRepository;
 
-    public ServiceAccessService(OutputAssembler<ServiceOutput> serviceRepository, OutputAssembler<TimeseriesMetadataOutput> timeseriesRepository) {
+    public ServiceAccessService(OutputAssembler<ServiceOutput> serviceRepository, OutputAssembler<SeriesMetadataOutput> timeseriesRepository) {
         this.serviceRepository = serviceRepository;
-        this.timeseriesRepository = timeseriesRepository;
+        this.seriesRepository = timeseriesRepository;
     }
 
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
@@ -136,10 +136,15 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
     public boolean isKnownTimeseries(String timeseriesId) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());
-            return timeseriesRepository.getInstance(timeseriesId, dbQuery) != null;
+            return seriesRepository.getInstance(timeseriesId, dbQuery) != null;
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not determine if timeseries '" + timeseriesId + "' is known.");
         }
+    }
+
+    @Override
+    public boolean exists(String id) {
+        return serviceInfo.getServiceId().equals(id);
     }
 
 }

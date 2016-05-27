@@ -33,9 +33,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
-import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ServiceOutput.ParameterCount;
 import org.n52.sensorweb.spi.SearchResult;
@@ -57,6 +57,11 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     public String getServiceId() {
         return serviceInfo.getServiceId();
+    }
+
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return getServiceId().equals(id);
     }
 
     @Override

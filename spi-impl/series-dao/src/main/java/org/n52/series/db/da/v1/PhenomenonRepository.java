@@ -37,20 +37,35 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.PhenomenonSearchResult;
-import org.n52.series.db.da.dao.v1.PhenomenonDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.PhenomenonEntity;
+import org.n52.series.db.da.dao.v1.PhenomenonDao;
 import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class PhenomenonRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 
     @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            PhenomenonDao dao = createDao(session);
+            return dao.hasInstance(parseId(id), PhenomenonEntity.class);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private PhenomenonDao createDao(Session session) {
+        return new PhenomenonDao(session);
+    }
+
+    @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+            PhenomenonDao phenomenonDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
             List<PhenomenonEntity> found = phenomenonDao.find(query);
             return convertToSearchResults(found, query.getLocale());
@@ -111,11 +126,11 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     }
 
     protected List<PhenomenonEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
-        return new PhenomenonDao(session).getAllInstances(parameters);
+        return createDao(session).getAllInstances(parameters);
     }
 
     protected PhenomenonEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
-        PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+        PhenomenonDao phenomenonDao = createDao(session);
         PhenomenonEntity result = phenomenonDao.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");

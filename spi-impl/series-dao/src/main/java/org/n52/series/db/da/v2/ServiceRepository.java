@@ -143,4 +143,8 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

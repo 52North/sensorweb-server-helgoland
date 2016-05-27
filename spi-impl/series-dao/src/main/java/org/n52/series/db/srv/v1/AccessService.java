@@ -115,4 +115,13 @@ public class AccessService extends ParameterService<AbstractOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        try {
+            return repository.exists(id);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
+        }
+    }
+
 }

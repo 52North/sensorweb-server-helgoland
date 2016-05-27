@@ -95,6 +95,11 @@ public class TransformingGeojsonOutputService extends TransformationService<GeoJ
     }
 
     @Override
+    public boolean exists(String id) {
+        return composedService.exists(id);
+    }
+
+    @Override
     public RawDataService getRawDataService() {
         return composedService.getRawDataService();
     }

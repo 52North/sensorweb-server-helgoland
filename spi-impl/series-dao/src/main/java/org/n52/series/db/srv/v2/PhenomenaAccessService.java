@@ -113,4 +113,8 @@ public class PhenomenaAccessService extends ParameterService<PhenomenonOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

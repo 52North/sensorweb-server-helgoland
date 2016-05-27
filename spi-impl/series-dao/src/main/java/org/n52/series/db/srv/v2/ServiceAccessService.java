@@ -112,4 +112,8 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

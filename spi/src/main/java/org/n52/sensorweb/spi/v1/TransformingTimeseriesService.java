@@ -89,6 +89,11 @@ public class TransformingTimeseriesService extends TransformationService<SeriesM
     }
 
     @Override
+    public boolean exists(String id) {
+        return composedService.exists(id);
+    }
+
+    @Override
     public RawDataService getRawDataService() {
         return composedService.getRawDataService();
     }

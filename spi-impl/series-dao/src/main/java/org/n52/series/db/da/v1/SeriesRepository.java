@@ -60,6 +60,17 @@ import org.n52.series.db.da.dao.v1.SeriesDao;
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
 
     @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            SeriesDao<AbstractSeriesEntity> dao = new SeriesDao<>(session);
+            return dao.hasInstance(parseId(id), AbstractSeriesEntity.class);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    @Override
     public List<SeriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
@@ -97,9 +108,9 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             switch (query.getObservationType()) {
-            
+
             // TODO other obesrvation types
-            
+
             case MEASUREMENT:
             default:
                 SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);

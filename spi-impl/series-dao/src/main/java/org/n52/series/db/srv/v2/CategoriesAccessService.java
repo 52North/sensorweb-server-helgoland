@@ -113,4 +113,8 @@ public class CategoriesAccessService extends ParameterService<CategoryOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

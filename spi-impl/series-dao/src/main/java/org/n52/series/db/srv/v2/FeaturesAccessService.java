@@ -116,4 +116,8 @@ public class FeaturesAccessService extends ParameterService<FeatureOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

@@ -125,4 +125,13 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataOutput> 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public boolean exists(String id) {
+        try {
+            return seriesRepository.exists(id);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
+        }
+    }
+
 }

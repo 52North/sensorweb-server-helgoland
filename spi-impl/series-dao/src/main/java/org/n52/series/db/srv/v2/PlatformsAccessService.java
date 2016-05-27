@@ -102,4 +102,8 @@ public class PlatformsAccessService extends ParameterService<PlatformOutput> {
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

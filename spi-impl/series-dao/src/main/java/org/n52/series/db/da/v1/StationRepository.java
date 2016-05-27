@@ -40,11 +40,15 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.v1.StationSearchResult;
-import org.n52.series.db.da.dao.v1.FeatureDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.ext.GeometryEntity;
+import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
+import org.n52.series.db.da.dao.v1.FeatureDao;
+import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -53,10 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import org.n52.series.db.da.beans.ext.GeometryEntity;
-import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
-import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
-import org.n52.web.exception.BadRequestException;
 
 /**
  *
@@ -73,10 +73,25 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     private String dbSrid = "EPSG:4326";
 
     @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            FeatureDao dao = createDao(session);
+            return dao.hasInstance(parseId(id), FeatureEntity.class);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private FeatureDao createDao(Session session) {
+        return new FeatureDao(session);
+    }
+
+    @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            FeatureDao stationDao = new FeatureDao(session);
+            FeatureDao stationDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query.getLocale());
@@ -132,7 +147,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     }
 
     List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = new FeatureDao(session);
+        FeatureDao featureDao = createDao(session);
         return featureDao.getAllInstances(parameters);
     }
 
@@ -152,7 +167,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     FeatureEntity getInstance(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
         parameters.setDatabaseAuthorityCode(dbSrid);
-        FeatureDao featureDao = new FeatureDao(session);
+        FeatureDao featureDao = createDao(session);
         return featureDao.getInstance(parseId(id), parameters);
     }
 
@@ -160,7 +175,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(dbSrid);
-            FeatureDao featureDao = new FeatureDao(session);
+            FeatureDao featureDao = createDao(session);
             FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         } finally {

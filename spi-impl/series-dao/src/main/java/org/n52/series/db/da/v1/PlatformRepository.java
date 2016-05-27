@@ -64,6 +64,23 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private SeriesRepository seriesRepository;
 
     @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            if (PlatformType.isStationaryId(id)) {
+                FeatureDao featureDao = new FeatureDao(session);
+                return featureDao.hasInstance(parseId(id), FeatureEntity.class);
+            } else {
+                PlatformDao dao = new PlatformDao(session);
+                String platformId = PlatformType.extractId(id);
+                return dao.hasInstance(parseId(platformId), PlatformEntity.class);
+            }
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    @Override
     public List<PlatformOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -103,7 +120,6 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
                 PlatformEntity platform = getPlatform(id, parameters, session);
                 return createExpanded(platform, parameters, session);
             }
-
         } finally {
             returnSession(session);
         }

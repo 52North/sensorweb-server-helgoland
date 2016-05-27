@@ -33,18 +33,20 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.v1.ext.GeometryCategory;
 import org.n52.io.response.v1.ext.GeometryInfo;
-import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.ext.GeometryEntity;
-import org.n52.series.db.da.beans.ext.PlatformEntity;
 
 public class GeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
+
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
     @Override
     public List<GeometryInfo> getAllCondensed(DbQuery parameters) throws DataAccessException {

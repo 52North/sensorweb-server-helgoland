@@ -81,6 +81,11 @@ public class LocaleAwareSortService<T> extends ParameterService<T> {
     }
 
     @Override
+    public boolean exists(String id) {
+        return composedService.exists(id);
+    }
+
+    @Override
     public RawDataService getRawDataService() {
         return composedService.getRawDataService();
     }

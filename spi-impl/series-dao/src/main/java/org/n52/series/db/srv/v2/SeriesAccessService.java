@@ -144,4 +144,8 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
         }
     }
 
+    @Override
+    public boolean exists(String id) {
+        return true;
+    }
 }

@@ -57,7 +57,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     private ServiceRepository serviceRepository;
 
     protected UrlHelper urHelper = new UrlHelper();
-
+    
     protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementSeriesEntity timeseries : series) {

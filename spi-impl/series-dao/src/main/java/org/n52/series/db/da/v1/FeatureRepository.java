@@ -34,24 +34,38 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.FeatureSearchResult;
-import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput> {
+    
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        Session session = getSession();
+        try {
+            FeatureDao dao = createDao(session);
+            return dao.hasInstance(parseId(id), FeatureEntity.class);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private FeatureDao createDao(Session session) {
+        return new FeatureDao(session);
+    }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            FeatureDao featureDao = new FeatureDao(session);
+            FeatureDao featureDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
             return convertToSearchResults(found, query.getLocale());
@@ -76,7 +90,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     public List<FeatureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = new FeatureDao(session);
+            FeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createCondensed(featureEntity, parameters));
@@ -91,7 +105,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = new FeatureDao(session);
+            FeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createExpanded(featureEntity, parameters));
@@ -106,7 +120,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     public FeatureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = new FeatureDao(session);
+            FeatureDao featureDao = createDao(session);
             FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
             if (result == null) {
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");

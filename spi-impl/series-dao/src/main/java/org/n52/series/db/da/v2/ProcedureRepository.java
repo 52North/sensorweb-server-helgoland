@@ -152,4 +152,8 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
         return result;
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

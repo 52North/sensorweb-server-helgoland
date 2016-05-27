@@ -86,20 +86,25 @@ public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDa
 
     @Override
     public T getParameter(String item) {
-        T parameter = composedService.getParameter(item);
-        if (parameter == null) {
-            throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
-        }
-        return parameter;
+        assertItemExists(item);
+        return composedService.getParameter(item);
     }
 
     @Override
     public T getParameter(String item, IoParameters query) {
-        T parameter = composedService.getParameter(item, query);
-        if (parameter == null) {
+        assertItemExists(item);
+        return composedService.getParameter(item, query);
+    }
+
+    private void assertItemExists(String item) {
+        if ( !exists(item)) {
             throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
         }
-        return parameter;
+    }
+
+    @Override
+    public boolean exists(String id) {
+        return composedService.exists(id);
     }
 
     @Override

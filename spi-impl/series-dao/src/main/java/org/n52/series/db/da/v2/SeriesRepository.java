@@ -410,4 +410,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 .doubleValue();
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

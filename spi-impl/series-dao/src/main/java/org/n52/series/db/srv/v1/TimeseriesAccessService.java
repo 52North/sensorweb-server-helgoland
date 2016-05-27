@@ -47,6 +47,7 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Deprecated
 public class TimeseriesAccessService extends ParameterService<TimeseriesMetadataOutput> implements SeriesDataService {
 
     @Autowired
@@ -142,4 +143,12 @@ public class TimeseriesAccessService extends ParameterService<TimeseriesMetadata
 
     }
 
+    @Override
+    public boolean exists(String id) {
+        try {
+            return repository.exists(id);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
+        }
+    }
 }

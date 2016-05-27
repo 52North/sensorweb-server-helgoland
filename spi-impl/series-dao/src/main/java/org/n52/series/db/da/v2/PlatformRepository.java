@@ -187,4 +187,8 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         }
     }
 
+    @Override
+    public boolean exists(String id) throws DataAccessException {
+        return true;
+    }
 }

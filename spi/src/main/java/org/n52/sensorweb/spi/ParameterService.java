@@ -26,57 +26,58 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.sensorweb.spi;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 
 /**
- * A generic service to get arbitrary parameters from the underlying data access
- * implementation. In general the access can result either in compact or
- * detailed outputs. However, each query can be controlled in more detail by a
- * parameter values hold by a {@link IoParameters}.
+ * A generic service to get arbitrary parameters from the underlying data access implementation. In general
+ * the access can result either in compact or detailed outputs. However, each query can be controlled in more
+ * detail by a parameter values hold by a {@link IoParameters}.
  *
- * @param <T> the actual parameter type.
+ * @param <T>
+ *        the actual parameter type.
  */
 public abstract class ParameterService<T> implements RawDataInfo {
 
     private RawDataService rawDataService;
 
     /**
-     * @param query query parameters to control the output.
+     * @param query
+     *        query parameters to control the output.
      * @return an output collection of expanded items.
      */
     public abstract OutputCollection<T> getExpandedParameters(IoParameters query);
 
     /**
-     * @param query query parameters to control the output.
+     * @param query
+     *        query parameters to control the output.
      * @return an output collection of compact items.
      */
     public abstract OutputCollection<T> getCondensedParameters(IoParameters query);
 
     /**
      * Gets the requested items with respect to default query settings. Use
-     * {@link #getParameters(String[], IoParameters)} to control the output
-     * items.
+     * {@link #getParameters(String[], IoParameters)} to control the output items.
      *
-     * @param items a subset of item ids which are of interest.
-     * @return an output collection of expanded items which are of interest. Not
-     * known ids will be ignored.
+     * @param items
+     *        a subset of item ids which are of interest.
+     * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
      */
     public abstract OutputCollection<T> getParameters(String[] items);
 
     /**
-     * Gets the requested items with respect to the given query parameters.
-     * <b>Note</b>, that implementations may be aware of parameters not
-     * specified by the official timeseries API. However, at least all
-     * officially specified query parameters should be considered by all
-     * implementations.
+     * Gets the requested items with respect to the given query parameters. <b>Note</b>, that implementations
+     * may be aware of parameters not specified by the official timeseries API. However, at least all
+     * officially specified query parameters should be considered by all implementations.
      *
-     * @param items a subset of item ids which are of interest.
-     * @param query query parameters to control the output.
-     * @return an output collection of expanded items which are of interest. Not
-     * known ids will be ignored.
+     * @param items
+     *        a subset of item ids which are of interest.
+     * @param query
+     *        query parameters to control the output.
+     * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
      */
     public abstract OutputCollection<T> getParameters(String[] items, IoParameters query);
 
@@ -84,23 +85,34 @@ public abstract class ParameterService<T> implements RawDataInfo {
      * Gets the requested item with respect to default query settings. Use
      * {@link #getParameter(String, IoParameters)} to control the output item.
      *
-     * @param item the item id of interest.
+     * @param item
+     *        the item id of interest.
      * @return an expanded items of interest.
      */
     public abstract T getParameter(String item);
 
     /**
-     * Gets the requested item with respect to the given query parameters.
-     * <b>Note</b>, that implementations may be aware of parameters not
-     * specified by the official timeseries API. However, at least all
-     * officially specified query parameters should be considered by all
-     * implementations.
+     * Gets the requested item with respect to the given query parameters. <b>Note</b>, that implementations
+     * may be aware of parameters not specified by the official timeseries API. However, at least all
+     * officially specified query parameters should be considered by all implementations.
      *
-     * @param item the item id of interest.
-     * @param query query parameters to control the output.
+     * @param item
+     *        the item id of interest.
+     * @param query
+     *        query parameters to control the output.
      * @return an expanded items of interest.
      */
     public abstract T getParameter(String item, IoParameters query);
+
+    /**
+     * If a resource exists or not.
+     * 
+     * @param id
+     *        the id of the resource.
+     * @return <code>true</code> if the resource exists, <code>false</code> otherwise.
+     * @since 2.0.0
+     */
+    public abstract boolean exists(String id);
 
     /**
      * Check if raw data output is supported
