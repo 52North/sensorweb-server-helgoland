@@ -51,7 +51,6 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -70,8 +69,6 @@ public abstract class ParameterController extends BaseController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
     private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<>();
-
-    private ServiceParameterService serviceParameterService;
 
     private ParameterService<ParameterOutput> parameterService;
 
@@ -168,14 +165,6 @@ public abstract class ParameterController extends BaseController {
 
     protected ModelAndView createModelAndView(OutputCollection<?> items) {
         return new ModelAndView().addObject(items);
-    }
-
-    public ServiceParameterService getServiceParameterService() {
-        return serviceParameterService;
-    }
-
-    public void setServiceParameterService(ServiceParameterService serviceParameterService) {
-        this.serviceParameterService = serviceParameterService;
     }
 
     public ParameterService<ParameterOutput> getParameterService() {

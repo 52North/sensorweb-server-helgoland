@@ -62,7 +62,6 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.TimeseriesMetadataController" parent="parameterController">
-        <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="timeseriesService" />
         <property name="metadataExtensions">
             <list merge="true">
@@ -76,7 +75,6 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.TimeseriesDataController">
-        <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="timeseriesMetadataService" ref="timeseriesService" />
         <property name="timeseriesDataService" ref="timeseriesService" />
         <!--<property name="preRenderingTask" ref="preRenderingJobV1" />-->

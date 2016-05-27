@@ -24,10 +24,6 @@
         <property name="metadataService" ref="metadataService" />
     </bean>-->
 
-    <!--    <bean class="org.n52.web.ctrl.v1.ext.ExtServicesParameterController" parent="parameterController">
-        <property name="parameterService" ref="serviceParameterService" />
-    </bean>-->
-
     <bean class="org.n52.web.ctrl.v1.ext.ExtOfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
@@ -57,7 +53,6 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.SeriesMetadataController" parent="parameterController">
-        <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="parameterService" ref="seriesService" />
         <property name="metadataExtensions">
             <list merge="true">
@@ -71,7 +66,6 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
-        <property name="serviceParameterService" ref="serviceParameterService" />
         <property name="metadataService" ref="seriesService" />
         <property name="dataService" ref="seriesService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />

@@ -76,7 +76,6 @@ import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.BadRequestException;
@@ -98,8 +97,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class TimeseriesDataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
-
-    private ServiceParameterService serviceParameterService;
 
     private ParameterService<MeasurementSeriesOutput> timeseriesMetadataService;
 
@@ -350,7 +347,7 @@ public class TimeseriesDataController extends BaseController {
 
     private void checkIfUnknownTimeseries(String... timeseriesIds) {
         for (String timeseriesId : timeseriesIds) {
-            if (!serviceParameterService.isKnownTimeseries(timeseriesId)) {
+            if (!timeseriesMetadataService.exists(timeseriesId)) {
                 throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
             }
         }
@@ -390,14 +387,6 @@ public class TimeseriesDataController extends BaseController {
                 : timeseriesDataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
-    }
-
-    public ServiceParameterService getServiceParameterService() {
-        return serviceParameterService;
-    }
-
-    public void setServiceParameterService(ServiceParameterService serviceParameterService) {
-        this.serviceParameterService = serviceParameterService;
     }
 
     public ParameterService<MeasurementSeriesOutput> getTimeseriesMetadataService() {
