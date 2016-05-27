@@ -28,36 +28,21 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Map;
+
+import org.n52.io.response.ParameterOutput;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vividsolutions.jts.geom.Geometry;
-import java.util.Comparator;
-import java.util.Map;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class GeometryInfo implements CondensedGeometryInfo {
+public class GeometryInfo extends ParameterOutput implements CondensedGeometryInfo {
 
-    /**
-     * Takes the ids to compare.
-     *
-     * @param <T> the actual type.
-     * @return a label comparing {@link Comparator}
-     */
-    public static <T extends GeometryInfo> Comparator<T> defaultComparator() {
-        return new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        };
-    }
-
-    private String id;
-
-    private String href;
+    private String hrefBase;
 
     private Geometry geometry;
 
@@ -71,22 +56,16 @@ public class GeometryInfo implements CondensedGeometryInfo {
         this.geometyCategory = category;
     }
 
+    @JsonIgnore
     @Override
-    public String getId() {
-        return id;
+    public String getLabel() {
+        return super.getLabel();
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    @JsonIgnore
     @Override
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
+    public String getDomainId() {
+        return super.getDomainId();
     }
 
     @Override
@@ -104,6 +83,22 @@ public class GeometryInfo implements CondensedGeometryInfo {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+    public void setHrefBase(String hrefBase) {
+        this.hrefBase = hrefBase;
+    }
+
+    @JsonIgnore
+    public String getHrefBase() {
+        String suffix = getUrlIdSuffix();
+        return hrefBase != null && hrefBase.endsWith(suffix)
+                ? hrefBase.substring(0, hrefBase.lastIndexOf(suffix) - 1)
+                : hrefBase;
+    }
+
+    private String getUrlIdSuffix() {
+        return getType().getTypeName();
     }
 
     @JsonIgnore

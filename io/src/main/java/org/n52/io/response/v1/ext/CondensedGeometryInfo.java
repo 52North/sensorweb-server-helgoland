@@ -35,11 +35,7 @@ import org.n52.io.response.CondensedParameterOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public interface CondensedGeometryInfo {
-
-    String getId();
-
-    String getHref();
+public interface CondensedGeometryInfo extends CondensedParameterOutput {
 
     CondensedParameterOutput getPlatform();
 }
