@@ -50,6 +50,10 @@ public enum GeometryCategory {
         return category;
     }
 
+    public String getTypeName() {
+        return this.name().toLowerCase();
+    }
+
     @Override
     public String toString() {
         return getCategory();
