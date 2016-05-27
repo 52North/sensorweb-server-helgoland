@@ -33,7 +33,6 @@ import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.n52.series.db.da.beans.v1.ObservationEntity;
-import org.n52.series.db.da.beans.ServiceInfo;
 
 public class ServiceInfoTest {
 

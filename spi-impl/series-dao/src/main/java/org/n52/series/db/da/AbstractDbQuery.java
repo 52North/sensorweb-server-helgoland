@@ -194,11 +194,11 @@ public abstract class AbstractDbQuery {
         return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
     }
-    
+
     public boolean hasObservationType() {
         return parameters.containsParameter(Parameters.OBSERVATION_TYPE);
     }
-    
+
     public ObservationType getObservationType() {
         String observationType = parameters.containsParameter(Parameters.OBSERVATION_TYPE)
             ? parameters.getAsString(Parameters.OBSERVATION_TYPE)

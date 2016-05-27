@@ -56,7 +56,7 @@ public enum ObservationType {
         }
         return temp;
     }
-    
+
     public static ObservationType toInstance(String typeName) {
         for (ObservationType type : values()) {
             if (type.getObservationType().equalsIgnoreCase(typeName)) {
@@ -65,7 +65,7 @@ public enum ObservationType {
         }
         throw new IllegalArgumentException("no type for '" + typeName + "'.");
     }
-    
+
 
     public static boolean isKnownType(String typeName) {
         for (ObservationType type : values()) {

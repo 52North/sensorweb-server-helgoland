@@ -28,13 +28,15 @@
  */
 package org.n52.series.db.da.beans.v1.ext;
 
+import java.io.IOException;
+
+import org.junit.Test;
+import org.n52.io.geojson.GeoJSONException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.IOException;
-import org.junit.Test;
-import org.n52.io.geojson.GeoJSONException;
 
 /**
  * TODO: JavaDoc
