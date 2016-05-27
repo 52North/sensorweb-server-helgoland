@@ -77,7 +77,6 @@ import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.sensorweb.spi.ServiceParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.BadRequestException;
@@ -100,8 +99,6 @@ public class SeriesDataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SeriesDataController.class);
 
-    private ServiceParameterService serviceParameterService;
-
     private ParameterService<MeasurementSeriesOutput> metadataService;
 
     private SeriesDataService dataService;
@@ -114,7 +111,7 @@ public class SeriesDataController extends BaseController {
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
                                                 @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
-        checkIfUnknownTimeseries(parameters.getSeriesIds());
+        checkForUnknownSeriesIds(parameters.getSeriesIds());
         if (parameters.isSetRawFormat()) {
             getRawSeriesCollectionData(response, parameters);
             return null;
@@ -131,7 +128,7 @@ public class SeriesDataController extends BaseController {
                                       @PathVariable String seriesId,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
 
-        checkIfUnknownTimeseries(seriesId);
+        checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
         IntervalWithTimeZone timespan = map.getTimespan();
@@ -157,7 +154,7 @@ public class SeriesDataController extends BaseController {
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkIfUnknownTimeseries(parameters.getSeriesIds());
+        checkForUnknownSeriesIds(parameters.getSeriesIds());
         if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
@@ -177,7 +174,7 @@ public class SeriesDataController extends BaseController {
     public void getRawSeriesData(HttpServletResponse response,
                                  @PathVariable String seriesId,
                                  @RequestParam MultiValueMap<String, String> query) {
-        checkIfUnknownTimeseries(seriesId);
+        checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         if ( !dataService.supportsRawData()) {
@@ -203,7 +200,7 @@ public class SeriesDataController extends BaseController {
     public void getSeriesCollectionReport(HttpServletResponse response,
                                           @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
+        checkForUnknownSeriesIds(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -231,7 +228,7 @@ public class SeriesDataController extends BaseController {
                                 @PathVariable String seriesId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(seriesId);
+        checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
@@ -260,7 +257,7 @@ public class SeriesDataController extends BaseController {
                               @PathVariable String seriesId,
                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(seriesId);
+        checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
@@ -286,7 +283,7 @@ public class SeriesDataController extends BaseController {
     public void getSeriesCollectionChart(HttpServletResponse response,
                                          @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
+        checkForUnknownSeriesIds(requestParameters.getSeriesIds());
 
         IoParameters map = createFromQuery(requestParameters);
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
@@ -309,7 +306,7 @@ public class SeriesDataController extends BaseController {
                                @PathVariable String seriesId,
                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(seriesId);
+        checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
@@ -350,10 +347,10 @@ public class SeriesDataController extends BaseController {
         }
     }
 
-    private void checkIfUnknownTimeseries(String... timeseriesIds) {
-        for (String timeseriesId : timeseriesIds) {
-            if ( !serviceParameterService.isKnownTimeseries(timeseriesId)) {
-                throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
+    private void checkForUnknownSeriesIds(String... seriesIds) {
+        for (String id : seriesIds) {
+            if ( !metadataService.exists(id)) {
+                throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
             }
         }
     }
@@ -399,14 +396,6 @@ public class SeriesDataController extends BaseController {
             : dataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
-    }
-
-    public ServiceParameterService getServiceParameterService() {
-        return serviceParameterService;
-    }
-
-    public void setServiceParameterService(ServiceParameterService serviceParameterService) {
-        this.serviceParameterService = serviceParameterService;
     }
 
     public ParameterService<MeasurementSeriesOutput> getMetadataService() {
