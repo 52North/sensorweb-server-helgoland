@@ -158,7 +158,7 @@ public abstract class ParameterController extends BaseController {
         }
         return output;
     }
-
+    
     protected void hookQueryParameters(MultiValueMap<String, String> query) {
         // override to add/change query flags, e.g. for backward compatible behaviour
     }

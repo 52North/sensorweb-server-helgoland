@@ -70,7 +70,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
-        if (parameters.isPureStationInsituConcept()) {
+        if (parameters.isPureStationInsituPlatformConcept()) {
             parameters.filterMobileInsitu("feature", criteria, false, true);
             //add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
         }

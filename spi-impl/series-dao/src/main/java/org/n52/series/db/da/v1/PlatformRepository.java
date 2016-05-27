@@ -137,10 +137,10 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_STATIONARY, parameters)) {
+        if (parameters.shallIncludeStationaryTypes()) {
             platforms.addAll(getAllStationary(parameters, session));
         }
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_MOBILE, parameters)) {
+        if (parameters.shallIncludeMobilePlatformTypes()) {
             platforms.addAll(getAllMobile(parameters, session));
         }
         return platforms;
@@ -148,10 +148,10 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllStationary(DbQuery parameters, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_INSITU, parameters)) {
+        if (parameters.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllStationaryInsitu(parameters, session));
         }
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_REMOTE, parameters)) {
+        if (parameters.shallIncludeRemotePlatformTypes()) {
             platforms.addAll(getAllStationaryRemote(parameters, session));
         }
         return platforms;
@@ -189,18 +189,13 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllMobile(DbQuery parameters, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_INSITU, parameters)) {
+        if (parameters.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllMobileInsitu(parameters, session));
         }
-        if (shallInclude(Parameters.PLATFORMS_INCLUDE_REMOTE, parameters)) {
+        if (parameters.shallIncludeRemotePlatformTypes()) {
             platforms.addAll(getAllMobileRemote(parameters, session));
         }
         return platforms;
-    }
-
-    private static boolean shallInclude(String parameter, DbQuery parameters) {
-        return (parameters.getParameters().containsParameter(parameter)
-                && parameters.getParameters().getAsBoolean(parameter)) || parameters.isAllConcepts();
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {

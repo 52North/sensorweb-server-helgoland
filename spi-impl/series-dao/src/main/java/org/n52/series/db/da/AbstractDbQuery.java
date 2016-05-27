@@ -145,7 +145,7 @@ public abstract class AbstractDbQuery {
     }
 
     public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria, String parameter) {
-        if (isPureStationInsituConcept()) {
+        if (isPureStationInsituPlatformConcept()) {
             filterMobileInsitu(parameter, criteria, false, true);
         }
         return criteria;
@@ -161,36 +161,36 @@ public abstract class AbstractDbQuery {
         criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
     }
 
-    public boolean isPureStationInsituConcept() {
+    public boolean isPureStationInsituPlatformConcept() {
         return parameters.containsParameter(Parameters.PURE_STATION_INSITU_CONCEPT)
                 && parameters.getAsBoolean(Parameters.PURE_STATION_INSITU_CONCEPT);
     }
 
-    public boolean isMobileConcept() {
-        return isAllConcepts()
+    public boolean shallIncludeMobilePlatformTypes() {
+        return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
     }
 
-    public boolean isStationaryConcept() {
-        return isAllConcepts()
+    public boolean shallIncludeStationaryTypes() {
+        return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
     }
 
-    public boolean isInsituConcept() {
-        return isAllConcepts()
+    public boolean shallIncludeInsituPlatformTypes() {
+        return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
     }
 
-    public boolean isRemoteConcept() {
-        return isAllConcepts()
+    public boolean shallIncludeRemotePlatformTypes() {
+        return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
     }
 
-    public boolean isAllConcepts() {
+    public boolean shallIncludeAllPlatformTypes() {
         return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
     }

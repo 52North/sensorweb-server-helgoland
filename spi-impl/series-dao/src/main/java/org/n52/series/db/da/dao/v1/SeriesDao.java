@@ -118,7 +118,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         parameters.addPagingTo(criteria);
 
         Criteria platformCreateria = criteria.createCriteria("platform");
-        if (parameters.isPureStationInsituConcept()) {
+        if (parameters.isPureStationInsituPlatformConcept()) {
             platformCreateria.add(Restrictions.and(Restrictions.eq("mobile", false), Restrictions.eq("insitu", true)));
         }
 

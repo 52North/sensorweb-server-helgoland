@@ -50,7 +50,6 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<PlatformEntity> find(DbQuery query) {
         throw new UnsupportedOperationException("not implemented yet.");
     }
@@ -69,17 +68,17 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 //        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
 //        criteria.add(Subqueries.propertyIn("platform", filter));
         parameters.addPagingTo(criteria);
-        if (!parameters.isAllConcepts()) {
-            if (parameters.isStationaryConcept()) {
+        if (!parameters.shallIncludeAllPlatformTypes()) {
+            if (parameters.shallIncludeStationaryTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
             }
-            if (parameters.isMobileConcept()) {
+            if (parameters.shallIncludeMobilePlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, true));
             }
-            if (parameters.isInsituConcept() || parameters.isStationaryConcept()) {
+            if (parameters.shallIncludeInsituPlatformTypes() || parameters.shallIncludeStationaryTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.INSITU, true));
             }
-            if (parameters.isRemoteConcept()) {
+            if (parameters.shallIncludeRemotePlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.INSITU, false));
             }
         }
