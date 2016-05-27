@@ -29,35 +29,33 @@
 package org.n52.series.db.da.v1;
 
 import org.hibernate.Session;
-import org.n52.io.request.IoParameters;
+import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.HibernateSessionStore;
+import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.dao.v1.CategoryDao;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.PhenomenonDao;
 import org.n52.series.db.da.dao.v1.ProcedureDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.SessionAwareRepository;
-import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EntityCounter {
-
-    private final SessionAwareRepository<DbQuery> repository = new ExtendedSessionAwareRepository() {
-        @Override
-        protected DbQuery getDbQuery(IoParameters parameters) {
-            return DbQuery.createFrom(parameters);
-        }
-    };
+    
+    @Autowired
+    private HibernateSessionStore sessionStore;
 
     public int countStations() throws DataAccessException {
         return countFeatures();
     }
 
     public int countFeatures() throws DataAccessException {
-        Session session = repository.getSession();
+        Session session = sessionStore.getSession();
         try {
             return new FeatureDao(session).getCount();
         } finally {
-            repository.returnSession(session);
+            sessionStore.returnSession(session);
         }
     }
 
@@ -67,39 +65,38 @@ public class EntityCounter {
     }
 
     public int countProcedures() throws DataAccessException {
-        Session session = repository.getSession();
+        Session session = sessionStore.getSession();
         try {
             return new ProcedureDao(session).getCount();
         } finally {
-            repository.returnSession(session);
+            sessionStore.returnSession(session);
         }
     }
 
     public int countPhenomena() throws DataAccessException {
-        Session session = repository.getSession();
+        Session session = sessionStore.getSession();
         try {
             return new PhenomenonDao(session).getCount();
         } finally {
-            repository.returnSession(session);
+            sessionStore.returnSession(session);
         }
     }
 
     public int countCategories() throws DataAccessException {
-        Session session = repository.getSession();
+        Session session = sessionStore.getSession();
         try {
             return new CategoryDao(session).getCount();
         } finally {
-            repository.returnSession(session);
+            sessionStore.returnSession(session);
         }
     }
 
     public int countTimeseries() throws DataAccessException {
-        Session session = repository.getSession();
+        Session session = sessionStore.getSession();
         try {
-//            return new SeriesDao<>(session, MeasurementSeriesEntity.class).getCount();
             return new SeriesDao<MeasurementSeriesEntity>(session).getCount();
         } finally {
-            repository.returnSession(session);
+            sessionStore.returnSession(session);
         }
     }
 }

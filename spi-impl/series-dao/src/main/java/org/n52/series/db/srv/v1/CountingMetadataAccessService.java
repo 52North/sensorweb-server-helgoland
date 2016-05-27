@@ -32,10 +32,12 @@ import org.n52.sensorweb.spi.v1.CountingMetadataService;
 import org.n52.series.db.da.v1.EntityCounter;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.web.exception.InternalServerException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CountingMetadataAccessService implements CountingMetadataService {
 
-    private final EntityCounter repository = new EntityCounter();
+    @Autowired
+    private EntityCounter repository;
 
     @Override
     public int getServiceCount() {

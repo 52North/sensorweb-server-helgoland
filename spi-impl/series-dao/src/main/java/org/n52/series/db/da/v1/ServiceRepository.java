@@ -53,7 +53,8 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     @Autowired
     private ServiceInfo serviceInfo;
 
-    private final EntityCounter counter = new EntityCounter();
+    @Autowired
+    private EntityCounter counter;
 
     public String getServiceId() {
         return serviceInfo.getServiceId();
