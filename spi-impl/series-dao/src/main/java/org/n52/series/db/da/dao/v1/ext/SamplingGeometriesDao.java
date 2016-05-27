@@ -88,7 +88,7 @@ public class SamplingGeometriesDao extends AbstractDao<GeometryEntity> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(SamplingGeometryEntity.class).add(eq(COLUMN_DELETED, Boolean.FALSE));
+        return session.createCriteria(SamplingGeometryEntity.class);
     }
 
 }

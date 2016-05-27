@@ -35,10 +35,10 @@ package org.n52.io.response.v1.ext;
  */
 public enum GeometryCategory {
 
-    PLATFORM_SITE("platformLocations/site"),
-    PLATFORM_TRACK("platformLocations/track"),
-    STATIC_OBSERVERATION("observedGeometry/static"),
-    DYNAMIC_OBSERVATION("observedGeometry/dynamic");
+    PLATFORM_SITE("platformLocations/sites"),
+    PLATFORM_TRACK("platformLocations/tracks"),
+    STATIC_OBSERVERATION("observedGeometries/static"),
+    DYNAMIC_OBSERVATION("observedGeometries/dynamic");
 
     private final String category;
 
@@ -57,5 +57,34 @@ public enum GeometryCategory {
     @Override
     public String toString() {
         return getCategory();
+    }
+
+    public static boolean isSiteId(String id) {
+        return id.startsWith(PLATFORM_SITE.getCategory());
+    }
+
+    public static boolean isTrackId(String id) {
+        return id.startsWith(PLATFORM_TRACK.getCategory());
+    }
+
+    public static boolean isStaticId(String id) {
+        return id.endsWith(STATIC_OBSERVERATION.getCategory());
+    }
+
+    public static boolean isDynamic(String id) {
+        return id.endsWith(DYNAMIC_OBSERVATION.getCategory());
+    }
+
+    public static String extractId(String id) {
+        if (isSiteId(id)) {
+            return id.substring(PLATFORM_SITE.getCategory().length() + 1);
+        } else if (isTrackId(id)) {
+            return id.substring(PLATFORM_TRACK.getCategory().length() + 1);
+        } else if (isStaticId(id)) {
+            return id.substring(STATIC_OBSERVERATION.getCategory().length() + 1);
+        } else if (isDynamic(id)) {
+            return id.substring(DYNAMIC_OBSERVATION.getCategory().length() + 1);
+        }
+        return id;
     }
 }

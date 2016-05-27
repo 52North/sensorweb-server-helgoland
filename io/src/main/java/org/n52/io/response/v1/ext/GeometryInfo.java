@@ -42,8 +42,6 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class GeometryInfo extends ParameterOutput implements CondensedGeometryInfo {
 
-    private String hrefBase;
-
     private Geometry geometry;
 
     private PlatformItemOutput platform;
@@ -54,6 +52,11 @@ public class GeometryInfo extends ParameterOutput implements CondensedGeometryIn
 
     public GeometryInfo(GeometryCategory category) {
         this.geometyCategory = category;
+    }
+
+    @Override
+    public void setId(String id) {
+        super.setId(getUrlIdSuffix() + "/" + id);
     }
 
     @JsonIgnore
@@ -85,20 +88,19 @@ public class GeometryInfo extends ParameterOutput implements CondensedGeometryIn
         this.geometry = geometry;
     }
 
-    public void setHrefBase(String hrefBase) {
-        this.hrefBase = hrefBase;
-    }
 
     @JsonIgnore
+    @Override
     public String getHrefBase() {
+        String base = super.getHrefBase();
         String suffix = getUrlIdSuffix();
-        return hrefBase != null && hrefBase.endsWith(suffix)
-                ? hrefBase.substring(0, hrefBase.lastIndexOf(suffix) - 1)
-                : hrefBase;
+        return base != null && base.endsWith(suffix)
+                ? base.substring(0, base.lastIndexOf(suffix) - 1)
+                : base;
     }
 
     private String getUrlIdSuffix() {
-        return getType().getTypeName();
+        return getType().getCategory();
     }
 
     @JsonIgnore
