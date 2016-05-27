@@ -33,7 +33,9 @@ import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.web.ctrl.ParameterController;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +57,7 @@ public class SeriesMetadataController extends ParameterController {
     @RequestMapping(method = GET, path = "/{observationType}")
     public ModelAndView getMeasurementSeriesMetadataCollection(@PathVariable String observationType,
                                                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        assertObservationType(observationType);
         query.add(Parameters.OBSERVATION_TYPE, observationType);
         return super.getCollection(query);
     }
@@ -63,8 +66,15 @@ public class SeriesMetadataController extends ParameterController {
     public ModelAndView getSeriesMetadata(@PathVariable String id,
                                           @PathVariable String observationType,
                                           @RequestParam(required = false) MultiValueMap<String, String> query) {
+        assertObservationType(observationType);
         query.add(Parameters.OBSERVATION_TYPE, observationType);
         return super.getItem(id, query);
+    }
+
+    private void assertObservationType(String observationType) {
+        if ( !ObservationType.isKnownType(observationType)) {
+            throw new ResourceNotFoundException("Observation type '" + observationType + "' not found.");
+        }
     }
 
 }
