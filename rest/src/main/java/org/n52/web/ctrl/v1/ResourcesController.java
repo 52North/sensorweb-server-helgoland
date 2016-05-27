@@ -28,12 +28,12 @@
  */
 package org.n52.web.ctrl.v1;
 
+import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v1.ResourcesController.ResourceCollection.createResource;
 import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.n52.io.request.QueryParameters;
 
 import org.n52.sensorweb.spi.v1.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
