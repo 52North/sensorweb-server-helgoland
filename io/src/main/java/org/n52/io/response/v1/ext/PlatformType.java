@@ -54,6 +54,10 @@ public enum PlatformType {
         return typeName;
     }
 
+    public String createId(String id) {
+        return getPlatformType() + "/" + id;
+    }
+    
     public static String extractId(String id) {
         if (isStationaryId(id)) {
             if (isInsitu(id)) {
@@ -116,4 +120,5 @@ public enum PlatformType {
                     : STATIONARY_REMOTE;
         }
     }
+
 }

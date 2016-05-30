@@ -49,6 +49,10 @@ public enum ObservationType {
         return name().toLowerCase();
     }
 
+    public String createId(String id) {
+        return getObservationType() + "/" + id;
+    }
+    
     public static String extractId(String id) {
         String temp = id;
         for (ObservationType observationType : ObservationType.values()) {

@@ -44,11 +44,11 @@
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.PlatformsParameterController">
+    <bean class="org.n52.web.ctrl.v1.ext.PlatformsParameterController" parent="parameterController">
         <property name="parameterService" ref="platformParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.GeometriesController">
+    <bean class="org.n52.web.ctrl.v1.ext.GeometriesController" parent="parameterController">
         <property name="parameterService" ref="geometriesService" />
     </bean>
 

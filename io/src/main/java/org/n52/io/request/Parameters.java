@@ -349,11 +349,11 @@ public interface Parameters {
 
     public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
 
-    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
+    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
 
-    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
+    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
 
-    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
+    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
 
     public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
 

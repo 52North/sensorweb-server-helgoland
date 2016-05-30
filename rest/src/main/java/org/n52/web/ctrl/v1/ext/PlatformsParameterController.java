@@ -29,6 +29,7 @@
 package org.n52.web.ctrl.v1.ext;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.web.ctrl.ParameterController;
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
 import org.springframework.util.MultiValueMap;
@@ -66,7 +67,7 @@ public class PlatformsParameterController extends ParameterController {
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_STATIONARY, "true");
-        return super.getItem("stationary_insitu/" + id, query);
+        return super.getItem(PlatformType.STATIONARY_INSITU.createId(id), query);
     }
 
     @RequestMapping(method = GET, path = "/mobile_insitu")
@@ -81,7 +82,9 @@ public class PlatformsParameterController extends ParameterController {
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
-        return super.getItem("mobile_insitu/" + id, query);
+        return super.getItem(PlatformType.MOBILE_INSITU.createId(id), query);
+    }
+    
     }
 
 }

@@ -24,15 +24,6 @@
         <property name="metadataService" ref="metadataService" />
     </bean>-->
 
-
-    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
-        <property name="metadataExtensions">
-            <list>
-                <bean class="org.n52.io.response.extension.LicenseExtension" />
-            </list>
-        </property>
-    </bean>
-
     <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>

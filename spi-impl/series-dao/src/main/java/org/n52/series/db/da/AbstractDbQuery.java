@@ -224,18 +224,18 @@ public abstract class AbstractDbQuery {
     }
 
     public boolean isAllPlatformLocations() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL);
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL);
     }
 
     public boolean isSites() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES);
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES);
     }
 
     public boolean isTracks() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS);
+        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS)
+                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS);
     }
 
     public boolean isAllObservedGeometries() {

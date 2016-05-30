@@ -14,15 +14,23 @@
 
     <mvc:annotation-driven />
     <ctx:annotation-config />
+    
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+        <!-- TODO @Autowire object mapper -->
+        <property name="serializationInclusion" value="NON_NULL" />
+    </bean>
+    
 
     <bean class="org.n52.web.ctrl.RootController" />
     <bean class="org.n52.web.ctrl.v1.ext.ExtResourcesController">
         <property name="metadataService" ref="metadataService" />
     </bean>
-
-    <!-- TODO @Autowire instances -->
-    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
-        <property name="serializationInclusion" value="NON_NULL" />
+    <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="metadataExtensions">
+            <list>
+                <bean class="org.n52.io.response.extension.LicenseExtension" />
+            </list>
+        </property>
     </bean>
 
     <import resource="api_v1_mvc.xml" />

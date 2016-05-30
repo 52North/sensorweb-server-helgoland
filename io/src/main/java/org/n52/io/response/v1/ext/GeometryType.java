@@ -78,6 +78,10 @@ public enum GeometryType {
     public static boolean isDynamic(String id) {
         return id.endsWith(DYNAMIC_OBSERVATION.getGeometryType());
     }
+    
+    public String createId(String id) {
+        return getGeometryType() + "/" + id;
+    }
 
     public static String extractId(String id) {
         for (GeometryType geometryType : values()) {
