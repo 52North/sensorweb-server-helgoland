@@ -29,9 +29,10 @@
 package org.n52.series.db.da.beans.v1.ext;
 
 import java.util.UUID;
+
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.response.v1.ext.GeometryCategory;
 import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.PlatformItemOutput;
 
 /**
@@ -84,20 +85,20 @@ public enum GeometryExample {
     public GeometryInfo getCondensed() {
         switch (this) {
             case SITE_BEVER_TALSPERRE:
-                return createCondensed(GeometryCategory.PLATFORM_SITE);
+                return createCondensed(GeometryType.PLATFORM_SITE);
             case TRACK_1_RV_SONNE_MISSION_1:
             case TRACK_2_RV_SONNE_MISSION_1:
             case TRACK_1_RV_SONNE_MISSION_2:
             case TRACK_2_RV_SONNE_MISSION_2:
-                return createCondensed(GeometryCategory.PLATFORM_TRACK);
+                return createCondensed(GeometryType.PLATFORM_TRACK);
             case STATIC_OBSERVATION_WEBCAM:
-                return createCondensed(GeometryCategory.STATIC_OBSERVERATION);
+                return createCondensed(GeometryType.STATIC_OBSERVERATION);
             default:
         }
         return null;
     }
 
-    public static GeometryInfo createCondensed(GeometryCategory category) {
+    public static GeometryInfo createCondensed(GeometryType category) {
         GeometryInfo condensed = new GeometryInfo(category);
         condensed.setId(UUID.randomUUID().toString());
         condensed.setHref(ExampleConstants.BASE_URL + "/" + category + "/" + condensed.getId());

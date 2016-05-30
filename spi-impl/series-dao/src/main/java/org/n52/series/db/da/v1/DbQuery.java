@@ -37,8 +37,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class DbQuery extends AbstractDbQuery {
 
     private DbQuery(IoParameters parameters) {

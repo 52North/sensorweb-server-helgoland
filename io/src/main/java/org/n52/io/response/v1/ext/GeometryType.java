@@ -28,8 +28,6 @@
  */
 package org.n52.io.response.v1.ext;
 
-import java.util.Locale;
-
 /**
  * TODO: JavaDoc
  *
