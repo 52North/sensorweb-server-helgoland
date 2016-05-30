@@ -77,11 +77,7 @@ public class SamplingGeometriesDao extends AbstractDao<GeometryEntity> {
         Criteria criteria = getDefaultCriteria();
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        criteria.setProjection(Projections.projectionList()
-                .add(Projections.groupProperty(COLUMN_TIMESTAMP))
-                .add(Projections.groupProperty(COLUMN_GEOMETRY))
-                .add(Projections.groupProperty(COLUMN_LAT))
-                .add(Projections.groupProperty(COLUMN_LON)));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc(COLUMN_TIMESTAMP));
         return (List<GeometryEntity>)criteria.list();
     }

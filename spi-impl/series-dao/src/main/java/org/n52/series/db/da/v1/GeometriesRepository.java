@@ -187,7 +187,10 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
                 }
 
             } else {
-                List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(parameters);
+                // TODO better solution for adding a parameter
+                RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
+                simpleParameterSet.addParameter(Parameters.FEATURES, IoParameters.getJsonNodeFrom(featureEntity.getPkid()));
+                List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
                 geometryInfo.setGeometry(createGeometry(samplingGeometries));
                 return geometryInfo;
             }

@@ -199,6 +199,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
+        // TODO better solution for adding a parameter
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
         simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(entity.getPkid()));
         result.setSeries(seriesRepository.getAllCondensed(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet))));
