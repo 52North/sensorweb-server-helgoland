@@ -35,10 +35,14 @@ import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
+    
     @Autowired
     private HibernateSessionStore sessionStore;
 
@@ -57,6 +61,7 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
         try {
             return Long.parseLong(id);
         } catch (NumberFormatException e) {
+            LOGGER.debug("Unable to parse {} to Long.", e);
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
     }
