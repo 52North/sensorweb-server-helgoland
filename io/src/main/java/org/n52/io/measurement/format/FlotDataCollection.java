@@ -26,18 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.format;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
-public interface CondensedParameterOutput {
+import org.n52.io.response.TimeseriesDataCollection;
 
-    String getId();
+public class FlotDataCollection extends TimeseriesDataCollection<FlotSeries> {
 
-    String getHref();
 
-    String getLabel();
 }
