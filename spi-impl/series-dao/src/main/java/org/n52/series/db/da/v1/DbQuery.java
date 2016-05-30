@@ -49,35 +49,8 @@ public class DbQuery extends AbstractDbQuery {
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
         DetachedCriteria filter = DetachedCriteria.forClass(AbstractSeriesEntity.class);
 
-        // old query parameter to stay backward compatible
-        if (getParameters().getPhenomenon() != null) {
-            filter.createCriteria("phenomenon")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getPhenomenon())));
-        }
-        if (getParameters().getProcedure() != null) {
-            filter.createCriteria("procedure")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
-        }
-        if (getParameters().getOffering() != null) {
-            // here procedure == offering
-            filter.createCriteria("procedure")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
-        }
-        if (getParameters().getFeature() != null) {
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
-        }
-        if (getParameters().getStation() != null) {
-            // here feature == station
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
-        }
-        if (getParameters().getCategory() != null) {
-            filter.createCriteria("category")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
-        }
+        filterWithSingularParmameters(filter); // stay backwards compatible
 
-        // new query parameters
         if (getParameters().getPhenomena() != null) {
             filter.createCriteria("phenomenon")
             .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
@@ -105,6 +78,37 @@ public class DbQuery extends AbstractDbQuery {
         }
 
         return filter.setProjection(projectionList().add(property(propertyName)));
+    }
+
+    @Deprecated
+    private void filterWithSingularParmameters(DetachedCriteria filter) {
+        // old query parameter to stay backward compatible
+        if (getParameters().getPhenomenon() != null) {
+            filter.createCriteria("phenomenon")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getPhenomenon())));
+        }
+        if (getParameters().getProcedure() != null) {
+            filter.createCriteria("procedure")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
+        }
+        if (getParameters().getOffering() != null) {
+            // here procedure == offering
+            filter.createCriteria("procedure")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
+        }
+        if (getParameters().getFeature() != null) {
+            filter.createCriteria("feature")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getFeature())));
+        }
+        if (getParameters().getStation() != null) {
+            // here feature == station
+            filter.createCriteria("feature")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getStation())));
+        }
+        if (getParameters().getCategory() != null) {
+            filter.createCriteria("category")
+                    .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getCategory())));
+        }
     }
 
 
