@@ -33,18 +33,12 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.hibernate.sql.JoinType;
-import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
-import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
-import org.n52.series.db.da.beans.v2.ObservationEntityV2;
-import org.n52.series.db.da.beans.v2.SeriesEntityV2;
+import org.n52.series.db.da.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -84,10 +78,11 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     /**
      *
      * @param parameters
-     * @return a list of features related to stationary-featureConcept
+     * @return a list of features related to stationary insitu types
      * @since 2.0.0
      * @throws DataAccessException
      */
+    @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllStations(DbQuery parameters) throws DataAccessException {
         Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
         parameters.filterMobileInsitu("feature", criteria, false, true);
@@ -97,10 +92,11 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     /**
     *
     * @param parameters
-    * @return a list of features related to stationary-featureConcept
+    * @return a list of features related to mobile insitu types
     * @since 2.0.0
     * @throws DataAccessException
     */
+   @SuppressWarnings("unchecked")
    public List<FeatureEntity> getAllMobileInsitu(DbQuery parameters) throws DataAccessException {
        Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
        parameters.filterMobileInsitu("feature", criteria, true, true);
