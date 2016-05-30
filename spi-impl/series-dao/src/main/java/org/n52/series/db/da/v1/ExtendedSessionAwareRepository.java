@@ -80,17 +80,6 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return timeseriesOutput;
     }
 
-    protected Map<String, SeriesParameters> createSeriesList(List<AbstractSeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, SeriesParameters> outputs = new HashMap<>();
-        for (AbstractSeriesEntity entity : series) {
-            String seriesId = entity.getPkid().toString();
-            SeriesParameters output = createSeriesParameters(entity, parameters);
-            output.setPlatform(getCondensedPlatform(entity.getPlatform(), parameters));
-            outputs.put(seriesId, output);
-        }
-        return outputs;
-    }
-
     protected SeriesParameters createSeriesParameters(AbstractSeriesEntity series, DbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(getCondensedExtendedService(parameters));
