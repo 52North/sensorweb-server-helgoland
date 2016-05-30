@@ -28,12 +28,14 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Locale;
+
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public enum GeometryCategory {
+public enum GeometryType {
 
     PLATFORM_SITE("platformLocations/sites"),
     PLATFORM_TRACK("platformLocations/tracks"),
@@ -42,48 +44,46 @@ public enum GeometryCategory {
 
     private final String category;
 
-    private GeometryCategory(String category) {
+    private GeometryType(String category) {
         this.category = category;
     }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getTypeName() {
+    
+    public String getIdPrefix() {
         return this.name().toLowerCase();
     }
 
-    @Override
-    public String toString() {
-        return getCategory();
+    public String getGeometryType() {
+        return category;
     }
 
+    public static boolean isPlatformLocation(String id) {
+        return id != null && id.toLowerCase().startsWith("platformlocation");
+    }
+    
+
+    public static boolean isObservedGeometry(String id) {
+        return id != null && id.toLowerCase().startsWith("observedGeometry");
+    }
+    
     public static boolean isSiteId(String id) {
-        return id.startsWith(PLATFORM_SITE.getCategory());
+        return id.startsWith(PLATFORM_SITE.getGeometryType());
     }
 
     public static boolean isTrackId(String id) {
-        return id.startsWith(PLATFORM_TRACK.getCategory());
+        return id.startsWith(PLATFORM_TRACK.getGeometryType());
     }
 
     public static boolean isStaticId(String id) {
-        return id.endsWith(STATIC_OBSERVERATION.getCategory());
+        return id.endsWith(STATIC_OBSERVERATION.getGeometryType());
     }
 
     public static boolean isDynamic(String id) {
-        return id.endsWith(DYNAMIC_OBSERVATION.getCategory());
+        return id.endsWith(DYNAMIC_OBSERVATION.getGeometryType());
     }
 
     public static String extractId(String id) {
-        if (isSiteId(id)) {
-            return id.substring(PLATFORM_SITE.getCategory().length() + 1);
-        } else if (isTrackId(id)) {
-            return id.substring(PLATFORM_TRACK.getCategory().length() + 1);
-        } else if (isStaticId(id)) {
-            return id.substring(STATIC_OBSERVERATION.getCategory().length() + 1);
-        } else if (isDynamic(id)) {
-            return id.substring(DYNAMIC_OBSERVATION.getCategory().length() + 1);
+        for (GeometryType geometryType : values()) {
+            id = id.replaceAll(geometryType.getGeometryType() + "/", "");
         }
         return id;
     }
