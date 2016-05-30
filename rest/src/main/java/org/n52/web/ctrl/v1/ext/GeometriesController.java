@@ -32,7 +32,6 @@ import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_GEOMETRIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.Parameters;
-import org.n52.web.ctrl.ParameterController;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,28 +57,30 @@ public class GeometriesController extends ExtParameterRequestMappingAdapter {
     }
 
     @RequestMapping(method = GET, path = "/platformLocations/sites")
-    public ModelAndView getStationaryInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
+    public ModelAndView getSites(@RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES, "true");
         return super.getCollection(query);
     }
 
     @RequestMapping(method = GET, path = "/platformLocations/sites/{id}")
-    public ModelAndView getStationaryInsituPlatform(@PathVariable("id") String id,
+    public ModelAndView getSite(@PathVariable("id") String id,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES, "true");
         return super.getItem("platformLocations/sites/" + id, query);
     }
 
     @RequestMapping(method = GET, path = "/platformLocations/tracks")
-    public ModelAndView getMobileInsituPlatforms(@RequestParam(required = false) MultiValueMap<String, String> query) {
+    public ModelAndView getTracks(@RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS, "true");
         return super.getCollection(query);
     }
 
     @RequestMapping(method = GET, path = "/platformLocations/tracks/{id}")
-    public ModelAndView getMobileInsituPlatform(@PathVariable("id") String id,
+    public ModelAndView getTrack(@PathVariable("id") String id,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS, "true");
         return super.getItem("platformLocations/tracks/" + id, query);
     }
+    
+    // TODO observed geometries
 }
