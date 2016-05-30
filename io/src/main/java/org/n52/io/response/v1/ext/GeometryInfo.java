@@ -30,9 +30,14 @@ package org.n52.io.response.v1.ext;
 
 import java.util.Map;
 
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.geojson.FeatureOutputSerializer;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.response.AbstractOutput;
+import org.n52.io.response.ServiceOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
@@ -40,7 +45,8 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class GeometryInfo extends ParameterOutput implements CondensedGeometryInfo {
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
+public class GeometryInfo extends AbstractOutput implements CondensedGeometryInfo, GeoJSONFeature {
 
     private Geometry geometry;
 
@@ -69,6 +75,11 @@ public class GeometryInfo extends ParameterOutput implements CondensedGeometryIn
     @Override
     public String getDomainId() {
         return super.getDomainId();
+    }
+
+    @JsonIgnore
+    public ServiceOutput getService() {
+        return super.getService();
     }
 
     @Override
@@ -122,6 +133,11 @@ public class GeometryInfo extends ParameterOutput implements CondensedGeometryIn
 
     public boolean hasProperty(String key) {
         return this.properties.containsKey(key);
+    }
+
+    @Override
+    public boolean isSetGeometry() {
+        return getGeometry() != null && !getGeometry().isEmpty();
     }
 
 }
