@@ -35,6 +35,8 @@ import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.sensorweb.spi.v1.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,23 +52,26 @@ public class ResourcesController {
 
     @RequestMapping("/")
     public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        return new ModelAndView().addObject(createResources(createFromQuery(query).isExpanded()));
+        return new ModelAndView().addObject(createResources(createFromQuery(query)));
     }
 
-    protected ResourceCollection[] createResources(boolean expanded) {
+    protected ResourceCollection[] createResources(IoParameters params) {
         List<ResourceCollection> resources = new ArrayList<>();
-        ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription("A service provider offers timeseries data.");
-        ResourceCollection stations = createResource("stations").withLabel("Station").withDescription("A station is the place where measurement takes place.");
-        ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription("Represents a sequence of data values measured over time.");
-        ResourceCollection categories = createResource("categories").withLabel("Category").withDescription("A category group available timeseries.");
-        ResourceCollection offerings = createResource("offerings").withLabel("Offering").withDescription("An organizing unit to filter resources.");
-        ResourceCollection features = createResource("features").withLabel("Feature").withDescription("An organizing unit to filter resources.");
-        ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription("An organizing unit to filter resources.");
-        ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription("An organizing unit to filter resources.");
-        if (expanded) {
+        
+        I18N i18n = I18N.getMessageLocalizer(params.getLocale());
+        
+        ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription(i18n.get("msg.web.resources.services"));
+        ResourceCollection stations = createResource("stations").withLabel("Station").withDescription(i18n.get("msg.web.resources.stations"));
+        ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.timeseries"));
+        ResourceCollection categories = createResource("categories").withLabel("Category").withDescription(i18n.get("msg.web.resources.categories"));
+        ResourceCollection offerings = createResource("offerings").withLabel("Offering").withDescription(i18n.get("msg.web.resources.offerings"));
+        ResourceCollection features = createResource("features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.features"));
+        ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.procedures"));
+        ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.phenomena"));
+        if (params.isExpanded()) {
             services.setSize(metadataService.getServiceCount());
             stations.setSize(metadataService.getStationsCount());
-            timeseries.setSize(metadataService.getSeriesCount());
+            timeseries.setSize(metadataService.getTimeseriesCount());
             categories.setSize(metadataService.getCategoriesCount());
             offerings.setSize(metadataService.getOfferingsCount());
             features.setSize(metadataService.getFeaturesCount());
@@ -92,7 +97,7 @@ public class ResourcesController {
         this.metadataService = metadataService;
     }
 
-    static class ResourceCollection {
+    public static class ResourceCollection {
 
         private String id;
         private String label;

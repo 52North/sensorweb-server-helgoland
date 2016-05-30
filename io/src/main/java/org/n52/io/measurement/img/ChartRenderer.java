@@ -213,11 +213,11 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
         String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
         zoneName = "+00:00".equalsIgnoreCase(zoneName) ? "UTC" : zoneName;
 
-        StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
+        StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
         chart = createTimeSeriesChart(null,
                 domainAxisLabel.toString(),
-                i18n.get("value"),
+                i18n.get("msg.io.chart.value"),
                 null,
                 drawLegend,
                 showTooltips,
@@ -242,7 +242,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
     private void addNotice(JFreeChart chart) {
         TextTitle notice = new TextTitle();
-        String msg = i18n.get("notice");
+        String msg = i18n.get("msg.io.chart.notice");
         if (msg != null && !msg.isEmpty()) {
             notice.setText(msg);
             notice.setPaint(BLACK);

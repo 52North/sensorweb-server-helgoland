@@ -37,7 +37,7 @@ public interface CountingMetadataService {
 
     int getStationsCount();
 
-    int getSeriesCount();
+    int getTimeseriesCount();
 
     int getOfferingsCount();
 

@@ -54,7 +54,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getSeriesCount() {
+    public int getTimeseriesCount() {
         try {
             return repository.countTimeseries();
         } catch (DataAccessException e) {
