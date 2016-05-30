@@ -55,7 +55,7 @@ public class ResourcesController {
         return new ModelAndView().addObject(createResources(createFromQuery(query)));
     }
 
-    protected ResourceCollection[] createResources(IoParameters params) {
+    protected List<ResourceCollection> createResources(IoParameters params) {
         List<ResourceCollection> resources = new ArrayList<>();
         
         I18N i18n = I18N.getMessageLocalizer(params.getLocale());
@@ -69,14 +69,14 @@ public class ResourcesController {
         ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.procedures"));
         ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.phenomena"));
         if (params.isExpanded()) {
-            services.setSize(metadataService.getServiceCount());
-            stations.setSize(metadataService.getStationsCount());
-            timeseries.setSize(metadataService.getTimeseriesCount());
-            categories.setSize(metadataService.getCategoriesCount());
-            offerings.setSize(metadataService.getOfferingsCount());
-            features.setSize(metadataService.getFeaturesCount());
-            procedures.setSize(metadataService.getProceduresCount());
-            phenomena.setSize(metadataService.getPhenomenaCount());
+            services.setSize(getMetadataService().getServiceCount());
+            stations.setSize(getMetadataService().getStationsCount());
+            timeseries.setSize(getMetadataService().getTimeseriesCount());
+            categories.setSize(getMetadataService().getCategoriesCount());
+            offerings.setSize(getMetadataService().getOfferingsCount());
+            features.setSize(getMetadataService().getFeaturesCount());
+            procedures.setSize(getMetadataService().getProceduresCount());
+            phenomena.setSize(getMetadataService().getPhenomenaCount());
         }
         resources.add(services);
         resources.add(stations);
@@ -86,7 +86,7 @@ public class ResourcesController {
         resources.add(features);
         resources.add(procedures);
         resources.add(phenomena);
-        return resources.toArray(new ResourceCollection[0]);
+        return resources;
     }
 
     public CountingMetadataService getMetadataService() {

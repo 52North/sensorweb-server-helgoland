@@ -18,5 +18,8 @@
         <property name="serviceDescription" value="My Timeseries Service." />
         <property name="noDataValues" value="-9999.0,99999" />
     </bean>
+    
+    <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
+    <bean id="metadataService" class="org.n52.series.db.srv.v1.ExtCountingMetadataAccessService" />
 
 </beans>

@@ -26,18 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.v1.ext;
-
-import org.n52.sensorweb.spi.v1.CountingMetadataService;
+package org.n52.sensorweb.spi.v1;
 
 /**
  * Provides access to resource quantities available.
  */
 public interface ExtCountingMetadataService extends CountingMetadataService {
 
-    int getPlatformsCount();
+    int getPlatformCount();
 
-    int getSeriesCount(); // TODO
+    int getSeriesCount();
 
     int getExtOfferingsCount();
 
