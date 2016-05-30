@@ -37,7 +37,7 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.v1.ext.GeometryCategory;
+import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.PlatformItemOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
@@ -62,8 +62,22 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
 
     @Override
     public boolean exists(String id) throws DataAccessException {
-        // TODO Auto-generated method stub
-        return false;
+        Session session = getSession();
+        try {
+            if (GeometryType.isPlatformLocation(id)) {
+                id = GeometryType.extractId(id);
+                return new FeatureDao(session).hasInstance(parseId(id), FeatureEntity.class);
+            }
+            else if (GeometryType.isObservedGeometry(id)) {
+                id = GeometryType.extractId(id);
+                // TODO class of observed geometries
+//                return new FeatureDao(session).hasInstance(parseId(id), clazz);
+            }
+            
+            return false;
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
@@ -90,12 +104,12 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     public GeometryInfo getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            if (GeometryCategory.isSiteId(id) || GeometryCategory.isTrackId(id)) {
+            if (GeometryType.isPlatformLocation(id)) {
                 return getPlatformLocationGeometry(id, parameters, session);
             } else {
+                // TODO observed Geometry tpyes
                 return null;
             }
-
         } finally {
             returnSession(session);
         }
@@ -131,21 +145,29 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private GeometryInfo getPlatformLocationGeometry(String id, DbQuery parameters, Session session) throws DataAccessException {
-        FeatureEntity featureEntity = new FeatureDao(session).getInstance(Long.parseLong(GeometryCategory.extractId(id)), parameters);
+        String geometryId = GeometryType.extractId(id);
+        FeatureEntity featureEntity = getFeatureEntity(geometryId, parameters, session);
         if (featureEntity != null) {
-            if (GeometryCategory.isSiteId(id)) {
+            if (GeometryType.isSiteId(id)) {
                 return createSite(featureEntity, parameters, true);
-            } else if (GeometryCategory.isTrackId(id)) {
+            } else if (GeometryType.isTrackId(id)) {
                 return createTrack(featureEntity, parameters, true, session);
             }
         }
         return null;
     }
 
+    private FeatureEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException {
+        FeatureDao dao = new FeatureDao(session);
+        long geometryId = Long.parseLong(GeometryType.extractId(id));
+        return dao.getInstance(geometryId, parameters);
+    }
+
 
     private List<GeometryInfo> getAllPlatformLocationsSites(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
-        for (FeatureEntity featureEntity : new FeatureDao(session).getAllStations(parameters)) {
+        FeatureDao dao = new FeatureDao(session);
+        for (FeatureEntity featureEntity : dao.getAllStations(parameters)) {
             if (featureEntity.isSetGeometry()) {
                 GeometryInfo geometryInfo = createSite(featureEntity, parameters, expanded);
                 if (geometryInfo != null) {
@@ -160,7 +182,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
             throws DataAccessException {
         if (featureEntity.isSetGeometry()) {
             GeometryInfo geometryInfo =
-                    addCondensedValues(new GeometryInfo(GeometryCategory.PLATFORM_SITE), featureEntity, parameters);
+                    addCondensedValues(new GeometryInfo(GeometryType.PLATFORM_SITE), featureEntity, parameters);
             if (expanded) {
                 if (featureEntity.getGeometry().isSetGeometry()) {
                     geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
@@ -178,21 +200,21 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
 
     private Collection<GeometryInfo> getAllPlatformLocationsTracks(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
-        for (FeatureEntity featureEntity : new FeatureDao(session).getAllMobileInsitu(parameters)) {
+        FeatureDao featureDao = new FeatureDao(session);
+        for (FeatureEntity featureEntity : featureDao.getAllMobileInsitu(parameters)) {
             geometryInfoList.add(createTrack(featureEntity, parameters, expanded, session));
         }
         return geometryInfoList;
     }
 
     private GeometryInfo createTrack(FeatureEntity featureEntity, DbQuery parameters, boolean expanded, Session session) throws DataAccessException {
-        GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(GeometryCategory.PLATFORM_TRACK), featureEntity, parameters);
+        GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(GeometryType.PLATFORM_TRACK), featureEntity, parameters);
         if (expanded) {
             if (featureEntity.isSetGeometry()) {
                 if (featureEntity.getGeometry().isSetGeometry()) {
                     geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
                     return geometryInfo;
                 }
-
             } else {
                 // TODO better solution for adding a parameter
                 RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
