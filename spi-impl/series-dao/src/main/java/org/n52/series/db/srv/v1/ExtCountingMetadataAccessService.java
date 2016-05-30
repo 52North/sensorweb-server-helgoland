@@ -29,13 +29,8 @@
 package org.n52.series.db.srv.v1;
 
 import org.n52.sensorweb.spi.v1.ExtCountingMetadataService;
-import org.n52.series.db.da.v1.EntityCounter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ExtCountingMetadataAccessService extends CountingMetadataAccessService implements ExtCountingMetadataService {
-
-    @Autowired
-    private EntityCounter counter;
 
     @Override
     public int getPlatformCount() {
