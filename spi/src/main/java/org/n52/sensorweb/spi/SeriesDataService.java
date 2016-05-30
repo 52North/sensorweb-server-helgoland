@@ -28,15 +28,16 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataCollection;
 
 /**
- * Provides access to the actual raw timeseries data via
+ * Provides access to the actual series data via
  * {@link RequestSimpleParameterSet}.
  */
-public interface SeriesDataService extends RawDataInfo {
+public interface SeriesDataService<T extends SeriesData> extends RawDataInfo {
 
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters);
+    public SeriesDataCollection<T> getSeriesData(RequestSimpleParameterSet parameters);
 
 }

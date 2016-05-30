@@ -108,6 +108,10 @@ public abstract class AbstractDbQuery {
         return parameters.getSpatialFilter();
     }
 
+    public boolean isExpanded() {
+        return parameters.isExpanded();
+    }
+
     public boolean checkTranslationForLocale(Criteria criteria) {
         return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
     }

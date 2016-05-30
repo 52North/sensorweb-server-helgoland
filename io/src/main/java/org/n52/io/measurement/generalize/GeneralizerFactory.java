@@ -26,9 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.generalize;
+package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.series.MeasurementData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class GeneralizerFactory {
 
     private static final String DOUGLAS_PEUCKER = "DP";
 
-    public static final Generalizer createGeneralizer(IoParameters parameters) {
+    public static final Generalizer<MeasurementData> createGeneralizer(IoParameters parameters) {
 
         if (!parameters.isGeneralize()) {
             return new NoActionGeneralizer(parameters);
@@ -52,7 +53,7 @@ public class GeneralizerFactory {
                 ? parameters.getOther(GENERALIZING_ALGORITHM)
                 : "LTTB";
 
-        Generalizer generalizer;
+        Generalizer<MeasurementData> generalizer;
         if (LARGEST_TRIANGLE_THREE_BUCKETS.equalsIgnoreCase(algorithm)) {
             generalizer = new LargestTriangleThreeBucketsGeneralizer(parameters);
         } else if (DOUGLAS_PEUCKER.equalsIgnoreCase(algorithm)) {

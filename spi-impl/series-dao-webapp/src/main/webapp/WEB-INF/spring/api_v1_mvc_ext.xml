@@ -53,7 +53,7 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.SeriesMetadataController" parent="parameterController">
-        <property name="parameterService" ref="seriesService" />
+        <property name="parameterService" ref="measurementSeriesService" />
         <property name="metadataExtensions">
             <list merge="true">
                 <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
@@ -65,9 +65,9 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
-        <property name="metadataService" ref="seriesService" />
-        <property name="dataService" ref="seriesService" />
+    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesDataController">
+        <property name="metadataService" ref="measurementSeriesService" />
+        <property name="dataService" ref="measurementDataService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 

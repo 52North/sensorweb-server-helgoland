@@ -28,18 +28,22 @@
  */
 package org.n52.sensorweb.spi.v1;
 
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
+import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.RawDataService;
 
-public class TransformingTimeseriesService extends TransformationService<SeriesMetadataV1Output> {
+@Deprecated
+public class TransformingTimeseriesService extends ParameterService<SeriesMetadataV1Output> {
 
     private final ParameterService<SeriesMetadataV1Output> composedService;
 
+    private final TransformationService transformationService;
+
     public TransformingTimeseriesService(ParameterService<SeriesMetadataV1Output> toCompose) {
         this.composedService = toCompose;
+        this.transformationService = new TransformationService();
     }
 
     @Override
@@ -68,7 +72,7 @@ public class TransformingTimeseriesService extends TransformationService<SeriesM
     @Override
     public SeriesMetadataV1Output getParameter(String item) {
         SeriesMetadataV1Output metadata = composedService.getParameter(item, IoParameters.createDefaults());
-        transformInline(metadata.getStation(), IoParameters.createDefaults());
+        transformationService.transformInline(metadata.getStation(), IoParameters.createDefaults());
         return metadata;
     }
 
@@ -76,14 +80,14 @@ public class TransformingTimeseriesService extends TransformationService<SeriesM
     public SeriesMetadataV1Output getParameter(String timeseriesId, IoParameters query) {
         SeriesMetadataV1Output metadata = composedService.getParameter(timeseriesId, query);
         if (metadata != null) {
-            transformInline(metadata.getStation(), query);
+            transformationService.transformInline(metadata.getStation(), query);
         }
         return metadata;
     }
 
     private OutputCollection<SeriesMetadataV1Output> transformStations(IoParameters query, OutputCollection<SeriesMetadataV1Output> metadata) {
         for (SeriesMetadataV1Output timeseriesMetadata : metadata) {
-            transformInline(timeseriesMetadata.getStation(), query);
+            transformationService.transformInline(timeseriesMetadata.getStation(), query);
         }
         return metadata;
     }

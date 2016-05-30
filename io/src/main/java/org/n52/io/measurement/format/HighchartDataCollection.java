@@ -26,11 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public final class HighchartDataCollection extends TimeseriesDataCollection<HighchartSeries> {
+public final class HighchartDataCollection extends SeriesDataCollection<HighchartSeries> {
 
     /*
      * (non-Javadoc)
@@ -38,7 +38,7 @@ public final class HighchartDataCollection extends TimeseriesDataCollection<High
      * @see org.n52.io.v1.data.TimeseriesDataCollection#getTimeseriesOutput()
      */
     @Override
-    public Object getTimeseriesOutput() {
+    public Object getSeriesOutput() {
         /*
          * Output will look like:
          *
@@ -55,7 +55,7 @@ public final class HighchartDataCollection extends TimeseriesDataCollection<High
          *   ]
          * }]
          */
-        return getAllTimeseries().values();
+        return getAllSeries().values();
     }
 
 }

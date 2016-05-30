@@ -28,14 +28,14 @@
  */
 package org.n52.sensorweb.spi;
 
-import org.n52.sensorweb.spi.SeriesDataService;
+import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
 import static org.n52.io.request.IoParameters.createFromQuery;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.generalize.Generalizer;
-import org.n52.io.generalize.GeneralizerException;
-import static org.n52.io.generalize.GeneralizerFactory.createGeneralizer;
-import org.n52.io.response.TimeseriesData;
+
+import org.n52.io.measurement.generalize.Generalizer;
+import org.n52.io.measurement.generalize.GeneralizerException;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,22 +43,24 @@ import org.slf4j.LoggerFactory;
  * Composes a {@link SeriesDataService} instance to generalize requested
  * timeseries data.
  */
-public class GeneralizingTimeseriesDataService implements SeriesDataService {
+public class GeneralizingMeasurementDataService implements SeriesDataService<MeasurementData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingTimeseriesDataService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingMeasurementDataService.class);
 
-    private final SeriesDataService composedService;
+    private final SeriesDataService<MeasurementData> composedService;
 
-    public GeneralizingTimeseriesDataService(SeriesDataService toCompose) {
+    public GeneralizingMeasurementDataService(SeriesDataService<MeasurementData> toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
-        TvpDataCollection ungeneralizedData = composedService.getSeriesData(parameters);
+    public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
+
+        SeriesDataCollection<MeasurementData> data = composedService.getSeriesData(parameters);
+        SeriesDataCollection<MeasurementData> ungeneralizedData = data;
         try {
-            Generalizer generalizer = createGeneralizer(createFromQuery(parameters));
-            TvpDataCollection generalizedData = generalizer.generalize(ungeneralizedData);
+            Generalizer<MeasurementData> generalizer = createGeneralizer(createFromQuery(parameters));
+            SeriesDataCollection<MeasurementData> generalizedData = generalizer.generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
@@ -69,19 +71,19 @@ public class GeneralizingTimeseriesDataService implements SeriesDataService {
         }
     }
 
-    private void logGeneralizationAmount(TvpDataCollection ungeneralizedData,
-            TvpDataCollection generalizedData) {
-        for (String timeseriesId : ungeneralizedData.getAllTimeseries().keySet()) {
-            TimeseriesData originalTimeseries = ungeneralizedData.getTimeseries(timeseriesId);
-            TimeseriesData generalizedTimeseries = generalizedData.getTimeseries(timeseriesId);
+    private void logGeneralizationAmount(SeriesDataCollection<MeasurementData> ungeneralizedData,
+                                         SeriesDataCollection<MeasurementData> generalizedData) {
+        for (String timeseriesId : ungeneralizedData.getAllSeries().keySet()) {
+            MeasurementData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
+            MeasurementData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
             int originalAmount = originalTimeseries.getValues().length;
             int generalizedAmount = generalizedTimeseries.getValues().length;
             LOGGER.debug("Generalized timeseries: {} (#{} --> #{}).", timeseriesId, originalAmount, generalizedAmount);
         }
     }
 
-    public static SeriesDataService composeDataService(SeriesDataService toCompose) {
-        return new GeneralizingTimeseriesDataService(toCompose);
+    public static SeriesDataService<MeasurementData> composeDataService(SeriesDataService<MeasurementData> toCompose) {
+        return new GeneralizingMeasurementDataService(toCompose);
     }
 
     @Override

@@ -26,12 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.generalize;
+package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public abstract class Generalizer {
+public abstract class Generalizer<T extends SeriesData> {
 
     private IoParameters parameters;
 
@@ -39,7 +40,7 @@ public abstract class Generalizer {
         this.parameters = parameters;
     }
 
-    public abstract TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException;
+    public abstract SeriesDataCollection<T> generalize(SeriesDataCollection<T> data) throws GeneralizerException;
 
     public IoParameters getParameters() {
         return parameters == null

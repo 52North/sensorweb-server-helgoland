@@ -28,24 +28,23 @@
  */
 package org.n52.series.db.da.dao.v1;
 
+import static org.hibernate.criterion.Restrictions.eq;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-
-import static org.hibernate.criterion.Restrictions.eq;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
-import org.n52.series.db.da.beans.v2.ObservationEntityV2;
-import org.n52.series.db.da.beans.v2.SeriesEntityV2;
 import org.n52.series.db.da.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -38,7 +38,7 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
-import org.n52.io.response.ext.MetadataExtension;
+import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.SessionAwareRepository;

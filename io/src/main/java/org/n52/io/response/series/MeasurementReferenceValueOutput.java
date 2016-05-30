@@ -26,15 +26,15 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.series;
 
-public class ReferenceValueOutput {
+public class MeasurementReferenceValueOutput {
 
     private String referenceValueId;
 
     private String label;
 
-    private TimeseriesValue lastValue;
+    private MeasurementValue lastValue;
 
     public String getReferenceValueId() {
         return referenceValueId;
@@ -52,11 +52,11 @@ public class ReferenceValueOutput {
         this.label = label;
     }
 
-    public TimeseriesValue getLastValue() {
+    public MeasurementValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(TimeseriesValue lastValue) {
+    public void setLastValue(MeasurementValue lastValue) {
         this.lastValue = lastValue;
     }
 

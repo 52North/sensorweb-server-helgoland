@@ -29,16 +29,16 @@
 package org.n52.web.ctrl.v2;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v2.FeatureOutputCollection;
+import org.n52.io.response.v2.FeatureOutput;
 import org.n52.io.response.v2.PlatformOutput;
-import org.n52.io.response.v2.SeriesOutputCollection;
+import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
@@ -59,9 +59,9 @@ public class PlatformsParameterController {
 
     private ParameterService<PlatformOutput> parameterService;
 
-    private ParameterService<FeatureOutputCollection> featureParameterService;
+    private ParameterService<FeatureOutput> featureParameterService;
 
-    private ParameterService<SeriesOutputCollection> seriesParameterService;
+    private ParameterService<SeriesMetadataV2Output> seriesParameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -202,11 +202,11 @@ public class PlatformsParameterController {
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 
-    public void setFeatureParameterService(ParameterService<FeatureOutputCollection> featureParameterService) {
+    public void setFeatureParameterService(ParameterService<FeatureOutput> featureParameterService) {
         this.featureParameterService = featureParameterService;
     }
 
-    public void setSeriesParameterService(ParameterService<SeriesOutputCollection> seriesParameterService) {
+    public void setSeriesParameterService(ParameterService<SeriesMetadataV2Output> seriesParameterService) {
         this.seriesParameterService = seriesParameterService;
     }
 

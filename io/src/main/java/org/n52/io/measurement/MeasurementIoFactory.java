@@ -26,20 +26,24 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.measurement;
 
-import java.net.URI;
-import org.n52.io.request.IoParameters;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.csv.CsvIoHandler;
-import org.n52.io.img.MultipleChartsRenderer;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.report.PDFReportGenerator;
-import org.n52.io.report.ReportGenerator;
 
-public final class IoFactory {
+import java.net.URI;
+
+import org.n52.io.IoHandler;
+import org.n52.io.MimeType;
+import org.n52.io.measurement.csv.CsvIoHandler;
+import org.n52.io.measurement.img.MultipleChartsRenderer;
+import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.measurement.report.PDFReportGenerator;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.series.MeasurementData;
+
+public final class MeasurementIoFactory {
 
     private MimeType mimeType = IMAGE_PNG;
 
@@ -47,25 +51,25 @@ public final class IoFactory {
 
     private URI servletContextRoot;
 
-    private IoFactory(IoParameters parameters) {
+    private MeasurementIoFactory(IoParameters parameters) {
         this.config = parameters;
     }
 
     /**
-     * @return An {@link IoFactory} instance with default values set. Configure
+     * @return An {@link MeasurementIoFactory} instance with default values set. Configure
      * factory by passing an {@link IoParameters} instance. After creating the
      * factory an apropriately configured {@link IoHandler} is returned when
      * calling {@link #createIOHandler(RenderingContext)}.
      */
-    public static IoFactory create() {
+    public static MeasurementIoFactory create() {
         return createWith(null);
     }
 
-    public static IoFactory createWith(IoParameters parameters) {
+    public static MeasurementIoFactory createWith(IoParameters parameters) {
         if (parameters == null) {
             parameters = IoParameters.createDefaults();
         }
-        return new IoFactory(parameters);
+        return new MeasurementIoFactory(parameters);
     }
 
     /**
@@ -73,17 +77,17 @@ public final class IoFactory {
      * {@link MimeType#IMAGE_PNG}).
      * @return this instance for parameter chaining.
      */
-    public IoFactory forMimeType(MimeType mimeType) {
+    public MeasurementIoFactory forMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
         return this;
     }
 
-    public IoFactory withServletContextRoot(URI servletContextRoot) {
+    public MeasurementIoFactory withServletContextRoot(URI servletContextRoot) {
         this.servletContextRoot = servletContextRoot;
         return this;
     }
 
-    public IoHandler createIOHandler(RenderingContext context) {
+    public IoHandler<MeasurementData> createIOHandler(RenderingContext context) {
 
         if (mimeType == APPLICATION_PDF) {
             MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);

@@ -26,7 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
+
+import org.n52.io.response.series.MeasurementData;
 
 public final class FormatterFactory {
 
@@ -36,7 +38,7 @@ public final class FormatterFactory {
         this.format = format;
     }
 
-    public TimeseriesDataFormatter<?> create() {
+    public SeriesDataFormatter<MeasurementData, ?> create() {
         if ("highcharts".equalsIgnoreCase(format)) {
             return new HighchartFormatter();
         } else if ("flotcharts".equalsIgnoreCase(format)

@@ -26,11 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public interface TimeseriesDataFormatter<T extends TimeseriesDataCollection<?>> {
+public interface SeriesDataFormatter<IN extends SeriesData, OUT extends SeriesData> {
 
-    public TimeseriesDataCollection<?> format(TvpDataCollection toFormat);
+    public SeriesDataCollection<OUT> format(SeriesDataCollection<IN> toFormat);
 }

@@ -35,13 +35,13 @@ import java.util.Map.Entry;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.n52.io.extension.v1.StatusIntervalsExtensionConfig.ConfigInterval;
-import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;

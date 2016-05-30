@@ -35,14 +35,15 @@ import java.util.Map;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.extension.MetadataExtension;
+import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
-import org.n52.io.response.ext.MetadataExtension;
+
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
 public class RenderingHintsExtension extends MetadataExtension<SeriesMetadataOutput> {

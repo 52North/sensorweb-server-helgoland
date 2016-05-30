@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.img;
+package org.n52.io.measurement.img;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -34,14 +34,12 @@ import static org.junit.Assert.assertThat;
 import java.util.Date;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.format.ISODateTimeFormat;
-import org.joda.time.format.ISOPeriodFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.MimeType;
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 
 public class ChartRendererTest {
 
@@ -139,7 +137,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void generateOutput(TvpDataCollection data) {
+        public void generateOutput(SeriesDataCollection<MeasurementData> data) {
             throw new UnsupportedOperationException();
         }
 

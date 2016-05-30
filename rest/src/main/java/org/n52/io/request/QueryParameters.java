@@ -35,7 +35,7 @@ import java.util.Map;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
-import org.n52.io.img.ChartDimension;
+import org.n52.io.measurement.img.ChartDimension;
 import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;

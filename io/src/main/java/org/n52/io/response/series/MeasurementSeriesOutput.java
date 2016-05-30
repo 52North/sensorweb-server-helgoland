@@ -26,11 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response.series;
 
 import org.n52.io.Utils;
-import org.n52.io.response.ReferenceValueOutput;
-import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.v1.ext.ObservationType;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
 /**
  * TODO: JavaDoc
@@ -41,11 +41,11 @@ public class MeasurementSeriesOutput extends SeriesMetadataOutput {
 
     private String uom;
 
-    private ReferenceValueOutput[] referenceValues;
+    private MeasurementReferenceValueOutput[] referenceValues;
 
-    private TimeseriesValue firstValue;
+    private MeasurementValue firstValue;
 
-    private TimeseriesValue lastValue;
+    private MeasurementValue lastValue;
 
     public MeasurementSeriesOutput() {
         super(ObservationType.MEASUREMENT);
@@ -59,27 +59,27 @@ public class MeasurementSeriesOutput extends SeriesMetadataOutput {
         this.uom = uom;
     }
 
-    public ReferenceValueOutput[] getReferenceValues() {
+    public MeasurementReferenceValueOutput[] getReferenceValues() {
         return Utils.copy(referenceValues);
     }
 
-    public void setReferenceValues(ReferenceValueOutput[] referenceValues) {
+    public void setReferenceValues(MeasurementReferenceValueOutput[] referenceValues) {
         this.referenceValues = Utils.copy(referenceValues);
     }
 
-    public TimeseriesValue getFirstValue() {
+    public MeasurementValue getFirstValue() {
         return firstValue;
     }
 
-    public void setFirstValue(TimeseriesValue firstValue) {
+    public void setFirstValue(MeasurementValue firstValue) {
         this.firstValue = firstValue;
     }
 
-    public TimeseriesValue getLastValue() {
+    public MeasurementValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(TimeseriesValue lastValue) {
+    public void setLastValue(MeasurementValue lastValue) {
         this.lastValue = lastValue;
     }
 

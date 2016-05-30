@@ -43,11 +43,11 @@ public interface OutputAssembler<T> {
     List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
 
     T getInstance(String id, DbQuery parameters) throws DataAccessException;
-
+    
     Collection<SearchResult> searchFor(IoParameters parameters);
 
     List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale);
-    
+
     boolean exists(String id) throws DataAccessException;
 
 }

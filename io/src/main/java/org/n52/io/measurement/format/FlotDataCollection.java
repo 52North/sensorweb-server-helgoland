@@ -26,11 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public class FlotDataCollection extends TimeseriesDataCollection<FlotSeries> {
-
+class FlotDataCollection extends SeriesDataCollection<FlotSeries> {
 
 }

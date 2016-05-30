@@ -26,13 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FlotSeries {
+import org.n52.io.response.series.SeriesData;
+
+public class FlotSeries extends SeriesData {
+
+    private static final long serialVersionUID = -3294537734635511620L;
 
     private List<Number[]> values;
 

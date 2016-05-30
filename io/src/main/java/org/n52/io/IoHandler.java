@@ -30,15 +30,16 @@ package org.n52.io;
 
 import java.io.OutputStream;
 
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public interface IoHandler {
+public interface IoHandler<T extends SeriesData> {
 
     /**
      * @param data the input data collection to create an output for.
      * @throws IoParseException if ouput generation fails.
      */
-    public void generateOutput(TvpDataCollection data) throws IoParseException;
+    public void generateOutput(SeriesDataCollection<T> data) throws IoParseException;
 
     /**
      * Encodes and writes previously generated output to the given stream. After

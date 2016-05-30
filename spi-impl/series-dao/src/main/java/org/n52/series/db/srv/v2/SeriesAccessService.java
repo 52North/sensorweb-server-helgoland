@@ -32,12 +32,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.TimeseriesData;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.io.response.v2.SeriesOutputCollection;
 import org.n52.sensorweb.spi.ParameterService;
@@ -49,7 +50,7 @@ import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output>
-        implements SeriesDataService {
+        implements SeriesDataService<MeasurementData> {
 
     @Autowired
     private SeriesRepository repository;
@@ -64,13 +65,13 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
     }
 
     @Override
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
+    public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         try {
             TvpDataCollection dataCollection = new TvpDataCollection();
             for (String timeseriesId : parameters.getSeriesIds()) {
-                TimeseriesData data = getDataFor(timeseriesId, parameters);
+                MeasurementData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {
-                    dataCollection.addNewTimeseries(timeseriesId, data);
+                    dataCollection.addNewSeries(timeseriesId, data);
                 }
             }
             return dataCollection;
@@ -79,7 +80,7 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
         }
     }
 
-    private TimeseriesData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
+    private MeasurementData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         if (parameters.isExpanded()) {

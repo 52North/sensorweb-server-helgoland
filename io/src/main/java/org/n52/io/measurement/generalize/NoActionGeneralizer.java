@@ -31,12 +31,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.n52.io.generalize;
+package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 
-public class NoActionGeneralizer extends Generalizer {
+public class NoActionGeneralizer extends Generalizer<MeasurementData> {
 
     public NoActionGeneralizer(IoParameters parameters) {
         super(parameters);
@@ -48,7 +49,7 @@ public class NoActionGeneralizer extends Generalizer {
     }
 
     @Override
-    public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
+    public SeriesDataCollection<MeasurementData> generalize(SeriesDataCollection<MeasurementData> data) throws GeneralizerException {
         return data;
     }
 

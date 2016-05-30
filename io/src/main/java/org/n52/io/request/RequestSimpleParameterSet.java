@@ -111,9 +111,9 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
         return getRawFormat() != null && !getRawFormat().isEmpty();
     }
 
-    public static RequestSimpleParameterSet createForSingleTimeseries(String timeseriesId, IoParameters parameters) {
+    public static RequestSimpleParameterSet createForSingleTimeseries(String seriesId, IoParameters parameters) {
         RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
-        parameterSet.setSeriesIds(new String[]{timeseriesId});
+        parameterSet.setSeriesIds(new String[]{seriesId});
         IntervalWithTimeZone timespan = parameters.getTimespan();
         parameterSet.setTimespan(timespan.toString());
         return parameterSet;

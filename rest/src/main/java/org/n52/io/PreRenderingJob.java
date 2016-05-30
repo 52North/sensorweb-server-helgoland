@@ -28,8 +28,10 @@
  */
 package org.n52.io;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.n52.io.measurement.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,23 +43,24 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.ChartDimension;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.request.IoParameters;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.TimeseriesMetadataOutput;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.task.ScheduledJob;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.common.Stopwatch;
@@ -74,6 +77,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
@@ -92,7 +98,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Autowired
     @Qualifier("timeseriesService")
-    private SeriesDataService timeseriesDataService;
+    private SeriesDataService<MeasurementData> timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
 
@@ -187,7 +193,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
-        IoHandler renderer = IoFactory
+        IoHandler renderer = MeasurementIoFactory
                 .createWith(config)
                 .createIOHandler(context);
         String chartQualifier = renderingConfig.getChartQualifier();
@@ -231,11 +237,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public SeriesDataService getTimeseriesDataService() {
+    public SeriesDataService<MeasurementData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService<MeasurementData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
@@ -341,7 +347,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return QueryParameters.createFromQuery(configuration);
     }
 
-    private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
+    private SeriesDataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
         //return timeseriesDataService.getSeriesData(parameters);
         return parameters.isGeneralize()
                 ? composeDataService(timeseriesDataService).getSeriesData(parameters)

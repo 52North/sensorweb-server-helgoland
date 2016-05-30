@@ -26,59 +26,64 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.series;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TimeseriesDataCollection<T> {
+public class SeriesDataCollection<T extends SeriesData> {
 
     /**
-     * Associates timeseries to a (custom client) id.
+     * Associates series to a (custom client) id.
      */
-    private Map<String, T> allTimeseries = new HashMap<>();
+    private Map<String, T> allSeries = new HashMap<>();
 
-    public TimeseriesDataCollection() {
-        // for serialization
+    private Class<T> dataType;
+
+    public SeriesDataCollection() {
+        this.dataType = (Class<T>) SeriesData.class;
     }
 
-    public void addAll(TimeseriesDataCollection<T> timseriesCollection) {
-        allTimeseries.putAll(timseriesCollection.getAllTimeseries());
+    public void addAll(SeriesDataCollection<T> seriesCollection) {
+        allSeries.putAll(seriesCollection.getAllSeries());
     }
 
-    public void addNewTimeseries(String reference, T timeseries) {
-        this.allTimeseries.put(reference, timeseries);
+    public void addNewSeries(String reference, T series) {
+        this.allSeries.put(reference, series);
     }
 
-    public T getTimeseries(String timeseriesId) {
-        return allTimeseries.get(timeseriesId);
+    public T getSeries(String seriesId) {
+        return allSeries.get(seriesId);
     }
 
     /**
-     * Returns all timeseries mapped by timeseriesId.
+     * Returns all series mapped by series id.
      *
-     * @return all timeseries hold by this data collection.
+     * @return all series hold by this data collection.
      */
-    public Map<String, T> getAllTimeseries() {
-        return allTimeseries;
+    public Map<String, T> getAllSeries() {
+        return allSeries;
     }
 
     /**
      * <p>
-     * Returns all timeseries as simple collection. This method is intended only
+     * Returns all series as simple collection. This method is intended only
      * for output serialization.
      * </p>
      * <p>
-     * <b>Note:</b> Depending on the actual timeseries data type no reference
-     * can be made to the concrete timeseries anymore! Use
-     * {@link #getAllTimeseries()} if you need to keep reference.</p>
+     * <b>Note:</b> Depending on the actual series data type no reference
+     * can be made to the concrete series anymore! Use
+     * {@link #getAllSeries()} if you need to keep reference.</p>
      *
      * @return the timeseries hold by this data collection.
      */
-    public abstract Object getTimeseriesOutput();
+    public Object getSeriesOutput() {
+        return getAllSeries();
+    }
 
-    public void setAllTimeseries(HashMap<String, T> timeseries) {
-        this.allTimeseries = timeseries;
+    public void setAllSeries(HashMap<String, T> series) {
+        this.allSeries = series;
     }
 
 }

@@ -26,23 +26,23 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.series;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimeseriesDataMetadata implements Serializable {
+public class MeasurementDataMetadata implements Serializable {
 
     private static final long serialVersionUID = 7422416308386483575L;
 
-    private Map<String, TimeseriesData> referenceValues = new HashMap<>();
+    private Map<String, MeasurementData> referenceValues = new HashMap<>();
 
-    public Map<String, TimeseriesData> getReferenceValues() {
+    public Map<String, MeasurementData> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Map<String, TimeseriesData> referenceValues) {
+    public void setReferenceValues(Map<String, MeasurementData> referenceValues) {
         this.referenceValues = referenceValues;
     }
 

@@ -50,7 +50,7 @@ import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
-import org.n52.io.img.ChartDimension;
+import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.response.BBox;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;

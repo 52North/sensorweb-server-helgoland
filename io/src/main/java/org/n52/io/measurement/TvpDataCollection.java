@@ -26,20 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement;
 
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesDataCollection;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 
 /**
- * Represents a time value pair data format. This class acts as a convenience
- * class to encapsulate
- * <code>TimeseriesDataCollection&lt;TimeseriesData&gt;</code>.
+ * Represents a time value pair data format.
  */
-public final class TvpDataCollection extends TimeseriesDataCollection<TimeseriesData> {
+public final class TvpDataCollection extends SeriesDataCollection<MeasurementData> {
 
-    @Override
-    public Object getTimeseriesOutput() {
-        return getAllTimeseries();
-    }
 }

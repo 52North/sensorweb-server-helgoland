@@ -26,16 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl.v1.ext;
+package org.n52.io.response;
 
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_PROCEDURES;
+/**
+ * TODO: JavaDoc
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ */
+public interface CondensedParameterOutput {
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+    String getId();
 
-@RestController
-@RequestMapping(value = EXT_COLLECTION_PROCEDURES)
-public class ExtProceduresParameterController extends ExtParameterRequestMappingAdapter {
+    String getHref();
 
-    // resource controller for phenomena
+    String getLabel();
 }

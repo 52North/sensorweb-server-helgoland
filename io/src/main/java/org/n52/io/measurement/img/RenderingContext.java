@@ -26,15 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.img;
+package org.n52.io.measurement.img;
 
 import java.util.Collections;
 import java.util.List;
-import org.n52.io.IoFactory;
+
 import org.n52.io.IoHandler;
+import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementSeriesOutput;
 
 public final class RenderingContext {
 
@@ -62,7 +63,7 @@ public final class RenderingContext {
      * <code>null</code>.
      * @throws IllegalStateException if amount of timeseries described by the
      * given arguments is not in sync.
-     * @return a rendering context to be used by {@link IoFactory} to create an
+     * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
      * {@link IoHandler}.
      */
     public static RenderingContext createContextWith(RequestStyledParameterSet styles,

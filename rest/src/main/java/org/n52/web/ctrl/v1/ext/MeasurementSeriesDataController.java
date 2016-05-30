@@ -32,14 +32,14 @@ package org.n52.web.ctrl.v1.ext;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
+import static org.n52.io.measurement.format.FormatterFactory.createFormatterFactory;
+import static org.n52.io.measurement.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.measurement.img.RenderingContext.createContextWith;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
+import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -61,19 +61,18 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.format.TimeseriesDataFormatter;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.RenderingContext;
+import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.img.RenderingContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
@@ -95,13 +94,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES, produces = {"application/json"})
-public class SeriesDataController extends BaseController {
+public class MeasurementSeriesDataController extends BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SeriesDataController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MeasurementSeriesDataController.class);
 
     private ParameterService<MeasurementSeriesOutput> metadataService;
 
-    private SeriesDataService dataService;
+    private SeriesDataService<MeasurementData> dataService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -117,9 +116,9 @@ public class SeriesDataController extends BaseController {
             return null;
         }
 
-        TvpDataCollection data = getSeriesData(parameters);
-        TimeseriesDataCollection< ? > formattedDataCollection = format(data, parameters.getFormat());
-        return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
+        SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
+        SeriesDataCollection< ? > formattedDataCollection = format(data, parameters.getFormat());
+        return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
     @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/json"}, method = GET)
@@ -128,6 +127,7 @@ public class SeriesDataController extends BaseController {
                                       @PathVariable String seriesId,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
 
+        seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
@@ -142,13 +142,17 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         // TODO add paging
-        TvpDataCollection data = getSeriesData(parameters);
-        TimeseriesDataCollection< ? > formattedDataCollection = format(data, map.getFormat());
+        SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
+        SeriesDataCollection< ? > formattedDataCollection = format(data, map.getFormat());
         if (map.isExpanded()) {
-            return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
+            return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
-        Object formattedTimeseries = formattedDataCollection.getAllTimeseries().get(seriesId);
+        Object formattedTimeseries = formattedDataCollection.getAllSeries().get(seriesId);
         return new ModelAndView().addObject(formattedTimeseries);
+    }
+
+    private String qualifySeriesId(String observationType, String seriesId) {
+        return observationType + "/" + seriesId;
     }
 
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
@@ -170,10 +174,13 @@ public class SeriesDataController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/{seriesId}/data", method = GET, params = {RawFormats.RAW_FORMAT})
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesData(HttpServletResponse response,
+                                 @PathVariable String observationType,
                                  @PathVariable String seriesId,
                                  @RequestParam MultiValueMap<String, String> query) {
+        
+        seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
@@ -191,9 +198,8 @@ public class SeriesDataController extends BaseController {
         }
     }
 
-    private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
-        TimeseriesDataFormatter< ? > formatter = createFormatterFactory(format).create();
-        return formatter.format(timeseriesData);
+    private SeriesDataCollection< ? > format(SeriesDataCollection<MeasurementData> timeseriesData, String format) {
+        return createFormatterFactory(format).create().format(timeseriesData);
     }
 
     @RequestMapping(value = "/data", produces = {"application/pdf"}, method = POST)
@@ -213,7 +219,7 @@ public class SeriesDataController extends BaseController {
                                                                                                       map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
-        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
 
@@ -223,11 +229,13 @@ public class SeriesDataController extends BaseController {
         return new URI(getServletConfig().getServletContext().getRealPath("/"));
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"application/pdf"}, method = GET)
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/pdf"}, method = GET)
     public void getSeriesReport(HttpServletResponse response,
+                                @PathVariable String observationType,
                                 @PathVariable String seriesId,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
+        seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
@@ -238,25 +246,28 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"application/zip"}, method = GET)
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/zip"}, method = GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
+                                     @PathVariable String observationType,
                                      @PathVariable String seriesId,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
                                              throws Exception {
         query.put("zip", Arrays.asList(new String[] {Boolean.TRUE.toString()}));
-        geSeriesAsCsv(response, seriesId, query);
+        getSeriesAsCsv(response, observationType, seriesId, query);
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"text/csv"}, method = GET)
-    public void geSeriesAsCsv(HttpServletResponse response,
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"text/csv"}, method = GET)
+    public void getSeriesAsCsv(HttpServletResponse response,
+                              @PathVariable String observationType,
                               @PathVariable String seriesId,
                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
+        seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
@@ -267,7 +278,7 @@ public class SeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -296,16 +307,18 @@ public class SeriesDataController extends BaseController {
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
                                                                                                       map);
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
-        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"image/png"}, method = GET)
     public void getSeriesChart(HttpServletResponse response,
+                               @PathVariable String observationType,
                                @PathVariable String seriesId,
                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
+        seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
@@ -320,11 +333,11 @@ public class SeriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
 
-    @RequestMapping(value = "/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{observationType}/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
                                          @PathVariable String seriesId,
                                          @PathVariable String chartQualifier,
@@ -367,7 +380,7 @@ public class SeriesDataController extends BaseController {
      */
     private void handleBinaryResponse(HttpServletResponse response,
                                       RequestSimpleParameterSet parameters,
-                                      IoHandler renderer) {
+                                      IoHandler<MeasurementData> renderer) {
         try {
             renderer.generateOutput(getSeriesData(parameters));
             if (parameters.isBase64()) {
@@ -389,9 +402,9 @@ public class SeriesDataController extends BaseController {
         }
     }
 
-    private TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
+    private SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = parameters.isGeneralize()
+        SeriesDataCollection<MeasurementData> timeseriesData = parameters.isGeneralize()
             ? composeDataService(dataService).getSeriesData(parameters)
             : dataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
@@ -406,11 +419,11 @@ public class SeriesDataController extends BaseController {
         this.metadataService = new WebExceptionAdapter<>(seriesMetadataService);
     }
 
-    public SeriesDataService getDataService() {
+    public SeriesDataService<MeasurementData> getDataService() {
         return dataService;
     }
 
-    public void setDataService(SeriesDataService seriesDataService) {
+    public void setDataService(SeriesDataService<MeasurementData> seriesDataService) {
         this.dataService = seriesDataService;
     }
 

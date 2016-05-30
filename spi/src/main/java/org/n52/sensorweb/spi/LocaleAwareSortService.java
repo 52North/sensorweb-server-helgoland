@@ -33,8 +33,9 @@ import java.util.Locale;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 
-public class LocaleAwareSortService<T> extends ParameterService<T> {
+public class LocaleAwareSortService<T extends ParameterOutput> extends ParameterService<T> {
 
     private final ParameterService<T> composedService;
 

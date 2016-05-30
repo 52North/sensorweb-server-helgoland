@@ -30,7 +30,6 @@ package org.n52.web.ctrl;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +47,7 @@ import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ext.MetadataExtension;
+import org.n52.io.response.extension.MetadataExtension;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.web.common.Stopwatch;
@@ -59,11 +58,8 @@ import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(produces = {"application/json"})
 public abstract class ParameterController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
@@ -73,7 +69,6 @@ public abstract class ParameterController extends BaseController {
     private ParameterService<ParameterOutput> parameterService;
 
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
@@ -89,7 +84,6 @@ public abstract class ParameterController extends BaseController {
     }
 
     public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
 
         Map<String, Object> extras = new HashMap<>();
@@ -113,9 +107,7 @@ public abstract class ParameterController extends BaseController {
         return overridableKeys;
     }
 
-    @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
+    public ModelAndView getCollection(MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
         if (queryMap.isExpanded()) {
@@ -134,7 +126,6 @@ public abstract class ParameterController extends BaseController {
     }
 
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         IoParameters queryMap = createFromQuery(query);
         ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
 
@@ -157,10 +148,6 @@ public abstract class ParameterController extends BaseController {
             extension.addExtraMetadataFieldNames(output);
         }
         return output;
-    }
-    
-    protected void hookQueryParameters(MultiValueMap<String, String> query) {
-        // override to add/change query flags, e.g. for backward compatible behaviour
     }
 
     protected ModelAndView createModelAndView(OutputCollection<?> items) {

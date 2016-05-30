@@ -33,8 +33,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
+import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.v1.StationOutput;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

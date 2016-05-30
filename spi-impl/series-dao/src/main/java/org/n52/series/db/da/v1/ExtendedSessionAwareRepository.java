@@ -34,7 +34,7 @@ import java.util.Map;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.SeriesParameters;
+import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.OfferingOutput;
@@ -57,7 +57,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     private ServiceRepository serviceRepository;
 
     protected UrlHelper urHelper = new UrlHelper();
-    
+
     protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementSeriesEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementSeriesEntity timeseries : series) {
@@ -147,7 +147,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedOffering(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new OfferingOutput(), entity, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensedExtended(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
     private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {

@@ -31,14 +31,11 @@ package org.n52.web.ctrl.v1;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
+import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.web.common.Stopwatch.startStopwatch;
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -60,19 +57,19 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.format.TimeseriesDataFormatter;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.RenderingContext;
+import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.format.FormatterFactory;
+import org.n52.io.measurement.img.RenderingContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
@@ -100,7 +97,7 @@ public class TimeseriesDataController extends BaseController {
 
     private ParameterService<MeasurementSeriesOutput> timeseriesMetadataService;
 
-    private SeriesDataService timeseriesDataService;
+    private SeriesDataService<MeasurementData> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -116,9 +113,9 @@ public class TimeseriesDataController extends BaseController {
             return null;
         }
 
-        TvpDataCollection timeseriesData = getTimeseriesData(parameters);
-        TimeseriesDataCollection< ?> formattedDataCollection = format(timeseriesData, parameters.getFormat());
-        return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
+        SeriesDataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
+        SeriesDataCollection<?> formattedDataCollection = format(seriesData, parameters.getFormat());
+        return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/json"}, method = GET)
@@ -140,12 +137,12 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         // TODO add paging
-        TvpDataCollection timeseriesData = getTimeseriesData(parameters);
-        TimeseriesDataCollection< ?> formattedDataCollection = format(timeseriesData, map.getFormat());
+        SeriesDataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
+        SeriesDataCollection<?> formattedDataCollection = format(seriesData, map.getFormat());
         if (map.isExpanded()) {
-            return new ModelAndView().addObject(formattedDataCollection.getTimeseriesOutput());
+            return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
-        Object formattedTimeseries = formattedDataCollection.getAllTimeseries().get(timeseriesId);
+        Object formattedTimeseries = formattedDataCollection.getAllSeries().get(timeseriesId);
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
@@ -186,9 +183,10 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private TimeseriesDataCollection< ?> format(TvpDataCollection timeseriesData, String format) {
-        TimeseriesDataFormatter< ?> formatter = createFormatterFactory(format).create();
-        return formatter.format(timeseriesData);
+    private SeriesDataCollection<?> format(SeriesDataCollection<MeasurementData> timeseriesData, String format) {
+        return FormatterFactory.createFormatterFactory(format)
+                .create()
+                .format(timeseriesData);
     }
 
     @RequestMapping(value = "/getData", produces = {"application/pdf"}, method = POST)
@@ -205,9 +203,9 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
-        IoHandler renderer = IoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
                 .withServletContextRoot(getRootResource())
@@ -235,8 +233,8 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler renderer = IoFactory
+        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
                 .withServletContextRoot(getRootResource())
@@ -267,8 +265,11 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler renderer = IoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
+        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+                .createWith(map)
+                .forMimeType(TEXT_CSV)
+                .createIOHandler(context);
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -294,8 +295,10 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
-        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
+        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+                .createWith(map)
+                .createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
     }
@@ -309,7 +312,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
+        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
@@ -319,7 +322,9 @@ public class TimeseriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+                .createWith(map)
+                .createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -361,7 +366,7 @@ public class TimeseriesDataController extends BaseController {
      */
     private void handleBinaryResponse(HttpServletResponse response,
             RequestSimpleParameterSet parameters,
-            IoHandler renderer) {
+            IoHandler<MeasurementData> renderer) {
         try {
             renderer.generateOutput(getTimeseriesData(parameters));
             if (parameters.isBase64()) {
@@ -380,9 +385,9 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
+    private SeriesDataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        TvpDataCollection timeseriesData = parameters.isGeneralize()
+        SeriesDataCollection<MeasurementData> timeseriesData = parameters.isGeneralize()
                 ? composeDataService(timeseriesDataService).getSeriesData(parameters)
                 : timeseriesDataService.getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
@@ -397,11 +402,11 @@ public class TimeseriesDataController extends BaseController {
         this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 
-    public SeriesDataService getTimeseriesDataService() {
+    public SeriesDataService<MeasurementData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(SeriesDataService<MeasurementData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 

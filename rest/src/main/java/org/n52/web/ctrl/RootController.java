@@ -45,7 +45,7 @@ import org.springframework.web.context.ServletConfigAware;
 public class RootController implements ServletConfigAware {
 
     // TODO
-    
+
     private ServletConfig servletConfig;
 
     @RequestMapping(value = "/")

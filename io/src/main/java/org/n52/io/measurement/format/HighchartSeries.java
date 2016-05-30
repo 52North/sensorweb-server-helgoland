@@ -26,11 +26,15 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
 import java.util.List;
 
-public class HighchartSeries {
+import org.n52.io.response.series.SeriesData;
+
+public class HighchartSeries extends SeriesData {
+
+    private static final long serialVersionUID = 6663267440167980890L;
 
     private String name;
 

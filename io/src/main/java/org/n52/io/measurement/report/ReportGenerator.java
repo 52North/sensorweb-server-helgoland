@@ -26,18 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.report;
+package org.n52.io.measurement.report;
 
-import java.util.List;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 
+import java.util.List;
+
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
 
-public abstract class ReportGenerator implements IoHandler {
+public abstract class ReportGenerator implements IoHandler<MeasurementData> {
 
     protected I18N i18n = getDefaultLocalizer();
 
@@ -58,7 +60,7 @@ public abstract class ReportGenerator implements IoHandler {
         return context;
     }
 
-    protected List<MeasurementSeriesOutput> getTimeseriesMetadatas() {
+    protected List<MeasurementSeriesOutput> getSeriesMetadatas() {
         return getContext().getSeriesMetadatas();
     }
 

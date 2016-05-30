@@ -28,21 +28,18 @@
  */
 package org.n52.series.db.srv.v1.ext;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import org.n52.io.format.TvpDataCollection;
+import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
-import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.v1.DbQuery;
+import org.n52.series.db.da.v1.MeasurementDataRepository;
 import org.n52.series.db.da.v1.SeriesRepository;
+import org.n52.series.db.srv.v1.AccessService;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,87 +48,37 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class SeriesAccessService extends ParameterService<SeriesMetadataOutput> implements SeriesDataService {
+public class MeasurementSeriesAccessService extends AccessService<SeriesMetadataOutput> 
+        implements SeriesDataService<MeasurementData> {
 
     @Autowired
-    private SeriesRepository seriesRepository;
-
-    private OutputCollection<SeriesMetadataOutput> createOutputCollection(List<SeriesMetadataOutput> results) {
-        return new OutputCollection<SeriesMetadataOutput>(results) {
-            @Override
-            protected Comparator<SeriesMetadataOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
+    private MeasurementDataRepository dataRepository;
+    
+    public MeasurementSeriesAccessService(SeriesRepository repository) {
+        super(repository);
+    }
+    
+    @Override
+    public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
+        try {
+            TvpDataCollection dataCollection = new TvpDataCollection();
+            for (String seriesId : parameters.getSeriesIds()) {
+                MeasurementData data = getDataFor(seriesId, parameters);
+                if (data != null) {
+                    dataCollection.addNewSeries(seriesId, data);
+                }
             }
-        };
-    }
-
-    @Override
-    public OutputCollection<SeriesMetadataOutput> getExpandedParameters(IoParameters query) {
-        try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
-            List<SeriesMetadataOutput> results = seriesRepository.getAllExpanded(dbQuery);
-            return createOutputCollection(results);
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get timeseries metadata from database.", e);
+            return dataCollection;
+        }
+        catch (DataAccessException e) {
+            throw new InternalServerException("Could not get series data from database.", e);
         }
     }
 
-    @Override
-    public OutputCollection<SeriesMetadataOutput> getCondensedParameters(IoParameters query) {
-        try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
-            List<SeriesMetadataOutput> results = seriesRepository.getAllCondensed(dbQuery);
-            return createOutputCollection(results);
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get timeseries metadata from database.", e);
-        }
-    }
-
-    @Override
-    public OutputCollection<SeriesMetadataOutput> getParameters(String[] items) {
-        return getParameters(items, IoParameters.createDefaults());
-    }
-
-    @Override
-    public OutputCollection<SeriesMetadataOutput> getParameters(String[] items, IoParameters query) {
-        try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
-            List<SeriesMetadataOutput> results = new ArrayList<>();
-            for (String timeseriesId : items) {
-                results.add(seriesRepository.getInstance(timeseriesId, dbQuery));
-            }
-            return createOutputCollection(results);
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get series data.", e);
-        }
-    }
-
-    @Override
-    public SeriesMetadataOutput getParameter(String item) {
-        return getParameter(item, IoParameters.createDefaults());
-    }
-
-    @Override
-    public SeriesMetadataOutput getParameter(String item, IoParameters query) {
-        try {
-            return seriesRepository.getInstance(item, DbQuery.createFrom(query));
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not get series data for '" + item + "'.", e);
-        }
-    }
-
-    @Override
-    public TvpDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean exists(String id) {
-        try {
-            return seriesRepository.exists(id);
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
-        }
+    private MeasurementData getDataFor(String seriesId, RequestSimpleParameterSet parameters)
+            throws DataAccessException {
+        DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        return dataRepository.getData(seriesId, dbQuery);
     }
 
 }

@@ -51,7 +51,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     private CategoryDao createDao(Session session) {
         return new CategoryDao(session);
     }
-    
+
     @Override
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();

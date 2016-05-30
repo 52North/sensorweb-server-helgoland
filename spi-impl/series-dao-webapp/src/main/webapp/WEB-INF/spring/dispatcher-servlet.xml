@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:ctx="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:ctx="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
         http://www.springframework.org/schema/mvc
@@ -27,29 +25,35 @@
         <property name="serializationInclusion" value="NON_NULL" />
     </bean>
 
-    <import resource="api_v1_mvc.xml"/>
-    <import resource="api_v1_mvc_ext.xml"/>
-    <!--<import resource="api_v2_mvc.xml"/>-->
+    <import resource="api_v1_mvc.xml" />
+    <import resource="api_v1_mvc_ext.xml" />
+    <!--<import resource="api_v2_mvc.xml"/> -->
 
-    <bean id="contentNegotiationManager"
-          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="mediaTypes">
-            <value>
-                json=application/json*
-            </value>
-        </property>
+    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
+
+    <bean id="jsonViewResolver" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+        <property name="extractValueFromSingleKeyModel" value="true" />
+        <property name="objectMapper" ref="objectMapper" />
     </bean>
 
-    <bean
-        class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="defaultViews">
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="defaultContentType" value="application/json" />
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="viewResolvers">
             <list>
-                <bean
-                    class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-                    <property name="extractValueFromSingleKeyModel" value="true" />
-                    <property name="objectMapper" ref="objectMapper" />
-                </bean>
+<!--                 <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" /> -->
+<!--                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
+<!--                     <property name="prefix" value="/WEB-INF/jsp/" /> -->
+<!--                     <property name="suffix" value=".jsp" /> -->
+<!--                 </bean> -->
             </list>
+        </property>
+        <property name="defaultViews">
+            <util:list>
+                <ref bean="jsonViewResolver" />
+            </util:list>
         </property>
     </bean>
 </beans>

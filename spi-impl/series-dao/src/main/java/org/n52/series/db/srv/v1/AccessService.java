@@ -33,37 +33,36 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.v1.DbQuery;
 import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.InternalServerException;
 
-public class AccessService extends ParameterService<AbstractOutput> {
+public class AccessService<T extends ParameterOutput> extends ParameterService<T> {
 
-    private final OutputAssembler<AbstractOutput> repository;
+    private final OutputAssembler<T> repository;
 
-    public AccessService(OutputAssembler<AbstractOutput> repository) {
+    public AccessService(OutputAssembler<T> repository) {
         this.repository = repository;
     }
 
-    private OutputCollection<AbstractOutput> createOutputCollection(List<AbstractOutput> results) {
-        return new OutputCollection<AbstractOutput>(results) {
+    private OutputCollection<T> createOutputCollection(List<T> results) {
+        return new OutputCollection<T>(results) {
             @Override
-            protected Comparator<AbstractOutput> getComparator() {
+            protected Comparator<T> getComparator() {
                 return ParameterOutput.defaultComparator();
             }
         };
     }
 
     @Override
-    public OutputCollection<AbstractOutput> getExpandedParameters(IoParameters query) {
+    public OutputCollection<T> getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            List<AbstractOutput> results = repository.getAllExpanded(dbQuery);
+            List<T> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get data.", e);
@@ -71,10 +70,10 @@ public class AccessService extends ParameterService<AbstractOutput> {
     }
 
     @Override
-    public OutputCollection<AbstractOutput> getCondensedParameters(IoParameters query) {
+    public OutputCollection<T> getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            List<AbstractOutput> results = repository.getAllCondensed(dbQuery);
+            List<T> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get data.", e);
@@ -82,15 +81,15 @@ public class AccessService extends ParameterService<AbstractOutput> {
     }
 
     @Override
-    public OutputCollection<AbstractOutput> getParameters(String[] ids) {
+    public OutputCollection<T> getParameters(String[] ids) {
         return getParameters(ids, IoParameters.createDefaults());
     }
 
     @Override
-    public OutputCollection<AbstractOutput> getParameters(String[] ids, IoParameters query) {
+    public OutputCollection<T> getParameters(String[] ids, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            List<AbstractOutput> results = new ArrayList<>();
+            List<T> results = new ArrayList<>();
             for (String id : ids) {
                 results.add(repository.getInstance(id, dbQuery));
             }
@@ -101,12 +100,12 @@ public class AccessService extends ParameterService<AbstractOutput> {
     }
 
     @Override
-    public AbstractOutput getParameter(String categoryId) {
+    public T getParameter(String categoryId) {
         return getParameter(categoryId, IoParameters.createDefaults());
     }
 
     @Override
-    public AbstractOutput getParameter(String id, IoParameters query) {
+    public T getParameter(String id, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
             return repository.getInstance(id, dbQuery);

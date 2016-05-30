@@ -26,50 +26,50 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesDataCollection;
-import org.n52.io.response.TimeseriesDataMetadata;
+
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementDataMetadata;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.v2.SeriesValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import org.n52.io.response.TimeseriesValue;
-
-public class FlotFormatter implements TimeseriesDataFormatter<FlotDataCollection> {
+public class FlotFormatter implements SeriesDataFormatter<MeasurementData, FlotSeries> {
 
     @Override
-    public TimeseriesDataCollection<?> format(TvpDataCollection toFormat) {
+    public FlotDataCollection format(SeriesDataCollection<MeasurementData> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
-        for (String timeseriesId : toFormat.getAllTimeseries().keySet()) {
-            TimeseriesData seriesToFormat = toFormat.getTimeseries(timeseriesId);
+        for (String timeseriesId : toFormat.getAllSeries().keySet()) {
+            MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);
             FlotSeries series = createFlotSeries(seriesToFormat);
-            flotDataCollection.addNewTimeseries(timeseriesId, series);
+            flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotSeries createFlotSeries(TimeseriesData seriesToFormat) {
+    private FlotSeries createFlotSeries(MeasurementData seriesToFormat) {
         FlotSeries flotSeries = new FlotSeries();
         flotSeries.setValues(formatSeries(seriesToFormat));
-        TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
+        MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
         if (metadata != null) {
-            Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
+            Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
             for (String referenceValueId : referenceValues.keySet()) {
-                TimeseriesData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
+                MeasurementData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
                 flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
             }
         }
         return flotSeries;
     }
 
-    private List<Number[]> formatSeries(TimeseriesData timeseries) {
+    private List<Number[]> formatSeries(MeasurementData timeseries) {
         List<Number[]> series = new ArrayList<Number[]>();
-        for (TimeseriesValue currentValue : timeseries.getValues()) {
+        for (MeasurementValue currentValue : timeseries.getValues()) {
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());

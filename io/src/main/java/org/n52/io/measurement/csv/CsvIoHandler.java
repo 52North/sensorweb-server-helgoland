@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.csv;
+package org.n52.io.measurement.csv;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -36,21 +36,20 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import org.joda.time.DateTime;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.SeriesMetadataV1Output;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
-import org.n52.io.response.v2.SeriesMetadataV2Output;
+import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvIoHandler implements IoHandler {
+public class CsvIoHandler implements IoHandler<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvIoHandler.class);
 
@@ -65,7 +64,7 @@ public class CsvIoHandler implements IoHandler {
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
-    private TvpDataCollection data = new TvpDataCollection();
+    private SeriesDataCollection<MeasurementData> data = new SeriesDataCollection<>();
 
     private boolean useByteOrderMark = true;
 
@@ -94,7 +93,7 @@ public class CsvIoHandler implements IoHandler {
     }
 
     @Override
-    public void generateOutput(TvpDataCollection data) throws IoParseException {
+    public void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException {
         // hold the data so we can stream it directly when #encodeAndWriteTo is called
         this.data = data;
     }
@@ -140,14 +139,15 @@ public class CsvIoHandler implements IoHandler {
 
     private void writeData(OutputStream stream) throws IOException {
         for (MeasurementSeriesOutput metadata : context.getSeriesMetadatas()) {
-            TimeseriesData timeseries = data.getTimeseries(metadata.getId());
-            String station = metadata instanceof SeriesMetadataV1Output // XXX hack
-                    ? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
-                    : ((SeriesMetadataV2Output) metadata).getLabel();
+            MeasurementData timeseries = data.getSeries(metadata.getId());
+            String station = metadata.getSeriesParameters().getPlatform().getLabel();
+            // instanceof SeriesMetadataV1Output // XXX hack
+            //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
+            //: ((SeriesMetadataV2Output) metadata).getLabel();
             String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
             String uom = metadata.getUom();
 
-            for (TimeseriesValue timeseriesValue : timeseries.getValues()) {
+            for (MeasurementValue timeseriesValue : timeseries.getValues()) {
                 String[] values = new String[HEADER.length];
                 values[0] = station;
                 values[1] = phenomenon;

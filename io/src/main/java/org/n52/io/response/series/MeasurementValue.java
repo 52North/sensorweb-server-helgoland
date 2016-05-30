@@ -26,12 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.series;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
 
-public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializable {
+public class MeasurementValue extends SeriesData implements Comparable<MeasurementValue>, Serializable {
 
     private static final long serialVersionUID = -7292181682632614697L;
 
@@ -39,11 +38,11 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
 
     private Double value;
 
-    public TimeseriesValue() {
+    public MeasurementValue() {
         // for serialization
     }
 
-    public TimeseriesValue(long timestamp, Double value) {
+    public MeasurementValue(long timestamp, Double value) {
         this.timestamp = timestamp;
         this.value = value;
     }
@@ -75,7 +74,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     }
 
     @Override
-    public int compareTo(TimeseriesValue o) {
+    public int compareTo(MeasurementValue o) {
         return getTimestamp().compareTo(o.getTimestamp());
     }
 }

@@ -28,19 +28,20 @@
  */
 package org.n52.web.ctrl.v1;
 
-import org.n52.io.geojson.GeoJSONFeature;
-import org.n52.web.common.Stopwatch;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
+import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.common.Stopwatch.startStopwatch;
+import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.LocaleAwareSortService;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.v1.TransformingGeojsonOutputService;
+import org.n52.sensorweb.spi.v1.TransformingStationOutputService;
+import org.n52.web.common.Stopwatch;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.QueryParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
@@ -58,7 +58,7 @@ public class StationsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<GeoJSONFeature> parameterService;
+    private ParameterService<StationOutput> parameterService;
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
@@ -104,12 +104,12 @@ public class StationsParameterController {
         query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
     }
 
-    public ParameterService<GeoJSONFeature> getParameterService() {
+    public ParameterService<StationOutput> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<GeoJSONFeature> stationParameterService) {
-        ParameterService<GeoJSONFeature> service = new TransformingGeojsonOutputService(stationParameterService);
+    public void setParameterService(ParameterService<StationOutput> stationParameterService) {
+        ParameterService<StationOutput> service = new TransformingStationOutputService(stationParameterService);
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
     }
 

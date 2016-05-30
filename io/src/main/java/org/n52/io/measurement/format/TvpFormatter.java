@@ -26,15 +26,19 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
+
+import org.n52.io.measurement.TvpDataCollection;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesDataCollection;
 
 /**
  * Represents the identity transformation. Input is equal to output.
  */
-public class TvpFormatter implements TimeseriesDataFormatter<TvpDataCollection> {
+public class TvpFormatter implements SeriesDataFormatter<MeasurementData, MeasurementData> {
 
     @Override
-    public TvpDataCollection format(TvpDataCollection toFormat) {
+    public SeriesDataCollection<MeasurementData> format(SeriesDataCollection<MeasurementData> toFormat) {
         return toFormat;
     }
 

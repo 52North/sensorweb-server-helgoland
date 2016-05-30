@@ -26,19 +26,15 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.generalize;
+package org.n52.io.measurement.generalize;
 
 import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
-import java.util.ArrayList;
-import java.util.List;
 
-import java.util.Properties;
+import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
-
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * https://github.com/sveinn-steinarsson/flot-downsample/
  */
-public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
+public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
@@ -81,19 +77,19 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
     }
 
     @Override
-    public TvpDataCollection generalize(TvpDataCollection data) throws GeneralizerException {
+    public SeriesDataCollection<MeasurementData> generalize(SeriesDataCollection<MeasurementData> data) throws GeneralizerException {
         TvpDataCollection generalizedDataCollection = new TvpDataCollection();
-        for (String timeseriesId : data.getAllTimeseries().keySet()) {
-            TimeseriesData timeseries = data.getTimeseries(timeseriesId);
-            TimeseriesData generalizedTimeseries = generalize(timeseries);
+        for (String timeseriesId : data.getAllSeries().keySet()) {
+            MeasurementData timeseries = data.getSeries(timeseriesId);
+            MeasurementData generalizedTimeseries = generalize(timeseries);
             generalizedTimeseries.setMetadata(timeseries.getMetadata());
-            generalizedDataCollection.addNewTimeseries(timeseriesId, generalizedTimeseries);
+            generalizedDataCollection.addNewSeries(timeseriesId, generalizedTimeseries);
         }
         return generalizedDataCollection;
     }
 
-    private TimeseriesData generalize(TimeseriesData timeseries) {
-        TimeseriesValue[] data = timeseries.getValues();
+    private MeasurementData generalize(MeasurementData timeseries) {
+        MeasurementValue[] data = timeseries.getValues();
 
         int dataLength = data.length;
 
@@ -142,14 +138,14 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
         return generalizeData(data);
     }
 
-    private TimeseriesData generalizeData(TimeseriesValue[] data) {
+    private MeasurementData generalizeData(MeasurementValue[] data) {
 
         int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
 
         int pointIndex = 0;
-        TimeseriesData sampled = new TimeseriesData();
+        MeasurementData sampled = new MeasurementData();
         sampled.addValues(data[pointIndex]);
 
         for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2; bucketIndex++) {
@@ -159,7 +155,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             int rangeTo = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
 
             // first point of triangle
-            TimeseriesValue triangleLeft = data[pointIndex];
+            MeasurementValue triangleLeft = data[pointIndex];
             if (triangleLeft.getValue().isNaN()) {
                 addNodataValue(sampled, triangleLeft.getTimestamp());
                 pointIndex = rangeTo - 1;
@@ -172,7 +168,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             // init fallback value
             BucketAverage avgCurrentBucket = calculateAverageOfBucket(bucketIndex, bucketSize, data);
             long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp();
-            TimeseriesValue maxAreaPoint = new TimeseriesValue(fallBackTimestamp, Double.NaN);
+            MeasurementValue maxAreaPoint = new MeasurementValue(fallBackTimestamp, Double.NaN);
 
             double area;
             int amountOfNodataValues = 0;
@@ -185,7 +181,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 //                    triangleRight = // TODO
 //                }
                 // calculate triangle area over three buckets
-                final TimeseriesValue triangleMiddle = data[rangeOff];
+                final MeasurementValue triangleMiddle = data[rangeOff];
 
                 if (triangleMiddle.getValue().isNaN()) {
                     amountOfNodataValues++;
@@ -222,11 +218,11 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
                 : amountOfNodataValues > noDataGapThreshold; // max absolute
     }
 
-    private void addNodataValue(TimeseriesData sampled, long timestamp) {
-        sampled.addValues(new TimeseriesValue(timestamp, Double.NaN));
+    private void addNodataValue(MeasurementData sampled, long timestamp) {
+        sampled.addValues(new MeasurementValue(timestamp, Double.NaN));
     }
 
-    private static double calcTriangleArea(TimeseriesValue left, BucketAverage right, TimeseriesValue middle) {
+    private static double calcTriangleArea(MeasurementValue left, BucketAverage right, MeasurementValue middle) {
         Double middleValue = middle.getValue();
         final Double leftValue = left.getValue();
         final Double rightValue = right.value;
@@ -236,7 +232,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
                 * (rightValue - leftValue)) * 0.5;
     }
 
-    private BucketAverage calculateAverageOfBucket(int bucketIndex, double bucketSize, TimeseriesValue[] data) {
+    private BucketAverage calculateAverageOfBucket(int bucketIndex, double bucketSize, MeasurementValue[] data) {
 
         int dataLength = data.length;
 
@@ -250,7 +246,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
         int amountOfNodataValues = 0;
         boolean noDataThresholdExceeded = false;
         for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
-            final TimeseriesValue current = data[avgRangeStart];
+            final MeasurementValue current = data[avgRangeStart];
             avgTimestamp += current.getTimestamp();
             if (noDataThresholdExceeded) {
                 continue; // keep on calc avg timestamp
@@ -285,8 +281,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             return value.isNaN();
         }
 
-        TimeseriesValue toTimeseriesValue() {
-            return new TimeseriesValue(timestamp.longValue(), value);
+        MeasurementValue toTimeseriesValue() {
+            return new MeasurementValue(timestamp.longValue(), value);
         }
     }
 }

@@ -34,13 +34,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.n52.io.response.SeriesParameters;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.io.response.v1.ext.FeatureOutputCollection;
 import org.n52.io.response.v1.ext.GeometryOutputCollection;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.PhenomenonOutputCollection;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;

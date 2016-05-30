@@ -37,9 +37,9 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.SeriesParameters;
-import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.sensorweb.spi.SearchResult;
@@ -63,6 +63,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
+            id = ObservationType.extractId(id);
             SeriesDao<AbstractSeriesEntity> dao = new SeriesDao<>(session);
             return dao.hasInstance(parseId(id), AbstractSeriesEntity.class);
         } finally {
@@ -75,10 +76,16 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            // TODO backward compatibility (only MeasurementSeriesEntity)
-            SeriesDao<AbstractSeriesEntity<AbstractObservationEntity>> seriesDao = new SeriesDao(session);
-            for (AbstractSeriesEntity series : seriesDao.getAllInstances(query)) {
-                results.add(createCondensed(series, query));
+            switch (query.getObservationType()) {
+
+            // TODO other obesrvation types
+
+            case MEASUREMENT:
+            default:
+                SeriesDao<MeasurementSeriesEntity>  seriesDao = new SeriesDao<>(session);
+                for (MeasurementSeriesEntity series : seriesDao.getAllInstances(query)) {
+                    results.add(createCondensed(series, query));
+                }
             }
             return results;
 
@@ -92,10 +99,16 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            // TODO backward compatibility (only MeasurementSeriesEntity)
-            SeriesDao<AbstractSeriesEntity<AbstractObservationEntity>>  seriesDao = new SeriesDao(session);
-            for (AbstractSeriesEntity<AbstractObservationEntity> series : seriesDao.getAllInstances(query)) {
-                results.add(createExpanded(series, query, session));
+            switch (query.getObservationType()) {
+
+            // TODO other obesrvation types
+
+            case MEASUREMENT:
+            default:
+                SeriesDao<MeasurementSeriesEntity>  seriesDao = new SeriesDao<>(session);
+                for (MeasurementSeriesEntity series : seriesDao.getAllInstances(query)) {
+                    results.add(createExpanded(series, query, session));
+                }
             }
             return results;
         } finally {
@@ -135,7 +148,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
 
     private SeriesMetadataOutput createCondensed(AbstractSeriesEntity<?> series, DbQuery query) throws DataAccessException {
         if (series instanceof MeasurementSeriesEntity) {
-            MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
             MeasurementSeriesOutput output = new MeasurementSeriesOutput();
             output.setLabel(createSeriesLabel(series, query.getLocale()));
             output.setId(series.getPkid().toString());
@@ -172,12 +184,12 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return sb.append(station).toString();
     }
 
-    private TimeseriesValue createTimeseriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
+    private MeasurementValue createTimeseriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         }
-        TimeseriesValue value = new TimeseriesValue();
+        MeasurementValue value = new MeasurementValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         Double observationValue = !getServiceInfo().isNoDataValue(observation)
                 ? formatDecimal(observation.getValue(), series)
@@ -193,7 +205,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
      * @param query
      * @return
      */
-    private TimeseriesValue queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity series, DbQuery query) {
+    private MeasurementValue queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

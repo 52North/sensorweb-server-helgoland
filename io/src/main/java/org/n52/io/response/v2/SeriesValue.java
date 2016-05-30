@@ -29,13 +29,13 @@
 package org.n52.io.response.v2;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
-import org.n52.io.response.TimeseriesValue;
+import org.n52.io.response.series.MeasurementValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
-public class SeriesValue extends TimeseriesValue {
+public class SeriesValue extends MeasurementValue {
 
     private static final long serialVersionUID = 4735920096822181576L;
 

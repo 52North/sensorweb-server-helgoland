@@ -45,7 +45,7 @@ import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends ExtendedSessionAwareRepository implements OutputAssembler<FeatureOutput> {
-    
+
     @Override
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();

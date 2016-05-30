@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.report;
+package org.n52.io.measurement.report;
 
 import static java.io.File.createTempFile;
 import static org.n52.io.MimeType.APPLICATION_PDF;
@@ -55,15 +55,15 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.joda.time.DateTime;
-import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.ChartRenderer;
-import org.n52.io.response.SeriesParameters;
-import org.n52.io.response.TimeseriesData;
+import org.n52.io.measurement.TvpDataCollection;
+import org.n52.io.measurement.img.ChartRenderer;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.TimeseriesValue;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.SeriesParameters;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
 import org.n52.oxf.DocumentStructureType.TimeSeries;
@@ -75,7 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-public class PDFReportGenerator extends ReportGenerator implements IoHandler {
+public class PDFReportGenerator extends ReportGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
 
@@ -108,7 +108,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     @Override
-    public void generateOutput(TvpDataCollection data) throws IoParseException {
+    public void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
@@ -117,7 +117,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         }
     }
 
-    private void generateTimeseriesChart(TvpDataCollection data) throws IOException {
+    private void generateTimeseriesChart(SeriesDataCollection<MeasurementData> data) throws IOException {
         FileOutputStream stream = null;
         try {
             renderer.generateOutput(data);
@@ -133,7 +133,7 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     }
 
     private void generateTimeseriesMetadata() {
-        for (MeasurementSeriesOutput metadata : getTimeseriesMetadatas()) {
+        for (MeasurementSeriesOutput metadata : getSeriesMetadatas()) {
             TimeSeries timeseries = addTimeseries(metadata);
             // addDataTable(timeseries, metadata, data);
             addMetadata(timeseries, metadata);
@@ -228,8 +228,8 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         dataTable.setLeftColHeader("Date");
         dataTable.setRightColHeader(createValueTableHeader(metadata));
 
-        TimeseriesData data = dataCollection.getTimeseries(metadata.getId());
-        for (TimeseriesValue valueEntry : data.getValues()) {
+        MeasurementData data = dataCollection.getSeries(metadata.getId());
+        for (MeasurementValue valueEntry : data.getValues()) {
             Entry entry = dataTable.addNewEntry();
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());
             entry.setValue(Double.toString(valueEntry.getValue()));

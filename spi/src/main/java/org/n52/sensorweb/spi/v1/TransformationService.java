@@ -28,21 +28,20 @@
  */
 package org.n52.sensorweb.spi.v1;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.n52.web.exception.BadQueryParameterException;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.crs.CRSUtils;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.request.IoParameters;
+import org.n52.web.exception.BadQueryParameterException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 
-import org.n52.io.geojson.GeoJSONFeature;
-import org.n52.sensorweb.spi.ParameterService;
+import com.vividsolutions.jts.geom.Geometry;
 
-public abstract class TransformationService<T> extends ParameterService<T> {
+public class TransformationService {
 
     /**
      * @param feature the feature to transform.

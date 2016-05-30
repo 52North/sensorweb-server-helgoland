@@ -31,6 +31,7 @@ package org.n52.sensorweb.spi;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 
 /**
  * A generic service to get arbitrary parameters from the underlying data access implementation. In general
@@ -40,7 +41,7 @@ import org.n52.io.response.OutputCollection;
  * @param <T>
  *        the actual parameter type.
  */
-public abstract class ParameterService<T> implements RawDataInfo {
+public abstract class ParameterService<T extends ParameterOutput> implements RawDataInfo {
 
     private RawDataService rawDataService;
 
@@ -106,7 +107,7 @@ public abstract class ParameterService<T> implements RawDataInfo {
 
     /**
      * If a resource exists or not.
-     * 
+     *
      * @param id
      *        the id of the resource.
      * @return <code>true</code> if the resource exists, <code>false</code> otherwise.

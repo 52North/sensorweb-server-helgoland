@@ -44,11 +44,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+@RequestMapping(produces = {"application/json"})
 public abstract class ParameterControllerV1Adapter extends ParameterController {
 
-    @Override
-    protected void hookQueryParameters(MultiValueMap<String, String> query) {
+    private void addBackwardCompatibilityHint(MultiValueMap<String, String> query) {
         query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
+    }
+
+    @RequestMapping(method = GET)
+    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
+        addBackwardCompatibilityHint(query);
+        return super.getCollection(query);
     }
 
     @Override
@@ -58,18 +64,21 @@ public abstract class ParameterControllerV1Adapter extends ParameterController {
 
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        addBackwardCompatibilityHint(query);
         return super.getItem(id, query);
     }
 
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        addBackwardCompatibilityHint(query);
         super.getRawData(response, id, query);
     }
 
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
+        addBackwardCompatibilityHint(query);
         return super.getExtras(resourceId, query);
     }
 

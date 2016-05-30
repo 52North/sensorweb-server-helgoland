@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.img;
+package org.n52.io.measurement.img;
 
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
@@ -38,11 +38,11 @@ import static javax.imageio.ImageIO.write;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
-import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
-import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
+import static org.n52.io.measurement.img.BarRenderer.BAR_CHART_TYPE;
+import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.COLOR;
+import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
+import static org.n52.io.measurement.img.LineRenderer.LINE_CHART_TYPE;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -77,16 +77,17 @@ import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
-import org.n52.io.format.TvpDataCollection;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.SeriesParameters;
-import org.n52.io.response.v1.ext.MeasurementSeriesOutput;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ChartRenderer implements IoHandler {
+public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartRenderer.class);
 
@@ -116,7 +117,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     @Override
-    public abstract void generateOutput(TvpDataCollection data) throws IoParseException;
+    public abstract void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException;
 
     @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {

@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = COLLECTION_PLATFORMS)
+@RequestMapping(value = COLLECTION_PLATFORMS, produces = {"application/json"})
 public class PlatformsParameterController extends ParameterController {
 
     @Override

@@ -26,47 +26,44 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.measurement.format;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.event.ListSelectionEvent;
-
-import org.n52.io.response.TimeseriesData;
-import org.n52.io.response.TimeseriesDataMetadata;
+import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.MeasurementDataMetadata;
+import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.v2.SeriesValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import org.n52.io.response.TimeseriesValue;
-
-public class HighchartFormatter implements TimeseriesDataFormatter<HighchartDataCollection> {
+public class HighchartFormatter implements SeriesDataFormatter<MeasurementData, HighchartSeries> {
 
     @Override
-    public HighchartDataCollection format(TvpDataCollection toFormat) {
+    public HighchartDataCollection format(SeriesDataCollection<MeasurementData> toFormat) {
         HighchartDataCollection dataCollection = new HighchartDataCollection();
-        for (String timeseriesId : toFormat.getAllTimeseries().keySet()) {
-            TimeseriesData seriesToFormat = toFormat.getTimeseries(timeseriesId);
+        for (String timeseriesId : toFormat.getAllSeries().keySet()) {
+            MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);
             HighchartSeries series = createHighchartSeries(timeseriesId, seriesToFormat);
-            dataCollection.addNewTimeseries(timeseriesId, series);
+            dataCollection.addNewSeries(timeseriesId, series);
 
-            TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
+            MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
             if (metadata != null) {
-                Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
+                Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
                 for (String referenceValueId : referenceValues.keySet()) {
-                    TimeseriesData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
+                    MeasurementData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
                     HighchartSeries referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
-                    dataCollection.addNewTimeseries(referenceValueId, referenceSeries);
+                    dataCollection.addNewSeries(referenceValueId, referenceSeries);
                 }
             }
         }
         return dataCollection;
     }
 
-    private HighchartSeries createHighchartSeries(String seriesId, TimeseriesData seriesToFormat) {
+    private HighchartSeries createHighchartSeries(String seriesId, MeasurementData seriesToFormat) {
         List<Number[]> formattedSeries = formatSeries(seriesToFormat);
         HighchartSeries series = new HighchartSeries();
         series.setName(seriesId);
@@ -74,9 +71,9 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
         return series;
     }
 
-    private List<Number[]> formatSeries(TimeseriesData timeseries) {
+    private List<Number[]> formatSeries(MeasurementData timeseries) {
         List<Number[]> series = new ArrayList<Number[]>();
-        for (TimeseriesValue currentValue : timeseries.getValues()) {
+        for (MeasurementValue currentValue : timeseries.getValues()) {
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());

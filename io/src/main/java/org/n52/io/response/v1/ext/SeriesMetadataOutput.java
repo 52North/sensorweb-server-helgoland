@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.SeriesParameters;
+import org.n52.io.response.series.SeriesParameters;
 
 public abstract class SeriesMetadataOutput extends ParameterOutput {
 

@@ -32,16 +32,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.geojson.FeatureOutputSerializer;
-import org.n52.io.response.AbstractOutput;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
-import org.n52.io.geojson.GeoJSONFeature;
 
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
+public class FeatureOutput extends ParameterOutput implements GeoJSONFeature {
 
     private final Map<String, Object> members = new HashMap<>();
 
