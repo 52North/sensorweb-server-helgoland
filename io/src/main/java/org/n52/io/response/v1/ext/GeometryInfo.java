@@ -28,6 +28,7 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.n52.io.geojson.FeatureOutputSerializer;
@@ -52,27 +53,25 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
 
     private PlatformItemOutput platform;
 
-    private final GeometryCategory geometyCategory;
+    private final GeometryType geometyCategory;
 
-    private Map<String, Object> properties;
-
-    public GeometryInfo(GeometryCategory category) {
+    public GeometryInfo(GeometryType category) {
         this.geometyCategory = category;
     }
 
     @Override
     public void setId(String id) {
-        super.setId(getUrlIdSuffix() + "/" + id);
+        super.setId(getUrlIdPrefix() + "/" + id);
     }
 
-    @JsonIgnore
     @Override
+    @JsonIgnore
     public String getLabel() {
         return super.getLabel();
     }
 
-    @JsonIgnore
     @Override
+    @JsonIgnore
     public String getDomainId() {
         return super.getDomainId();
     }
@@ -104,35 +103,32 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
     @Override
     public String getHrefBase() {
         String base = super.getHrefBase();
-        String suffix = getUrlIdSuffix();
+        String suffix = getUrlIdPrefix();
         return base != null && base.endsWith(suffix)
                 ? base.substring(0, base.lastIndexOf(suffix) - 1)
                 : base;
     }
 
-    private String getUrlIdSuffix() {
-        return getType().getCategory();
+    private String getUrlIdPrefix() {
+        return getType().getGeometryType();
     }
 
     @JsonIgnore
-    public GeometryCategory getType() {
+    public GeometryType getType() {
         return geometyCategory;
     }
 
     public String getGeometyCategory() {
-        return geometyCategory.getCategory();
+        return geometyCategory.getGeometryType();
     }
 
     public Map<String, Object> getProperties() {
+        HashMap<String, Object> properties = new HashMap<>();
+        properties.put("geometryType", getGeometyCategory());
+        properties.put("platform", platform);
+        properties.put("href", getHref());
+        properties.put("id", getId());
         return properties;
-    }
-
-    public void addProperty(String key, Object value) {
-        this.properties.put(key, value);
-    }
-
-    public boolean hasProperty(String key) {
-        return this.properties.containsKey(key);
     }
 
     @Override
