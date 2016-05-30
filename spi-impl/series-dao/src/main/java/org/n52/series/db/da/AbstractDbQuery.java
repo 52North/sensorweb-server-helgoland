@@ -158,10 +158,10 @@ public abstract class AbstractDbQuery {
     public void filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
         DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
                 .createCriteria("procedure", "p")
-                .add(Restrictions.and(Restrictions.eq("p.mobile",mobile),
-                                      Restrictions.eq("p.insitu",insitu)));
+                .add(Restrictions.and(Restrictions.eq("p.mobile", mobile), 
+                                      Restrictions.eq("p.insitu", insitu)));
         c.setProjection(Projections.projectionList()
-                        .add(Projections.property(String.format("series.%s.pkid", parameter))));
+                                        .add(Projections.property(String.format("series.%s.pkid", parameter))));
         criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
     }
 
@@ -173,30 +173,49 @@ public abstract class AbstractDbQuery {
     public boolean shallIncludeMobilePlatformTypes() {
         return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
-                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
+                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
     }
 
     public boolean shallIncludeStationaryTypes() {
         return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
-                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
+                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
     }
 
     public boolean shallIncludeInsituPlatformTypes() {
         return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
-                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
+                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
     }
 
     public boolean shallIncludeRemotePlatformTypes() {
         return shallIncludeAllPlatformTypes()
                 || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
-                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
+                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
     }
 
     public boolean shallIncludeAllPlatformTypes() {
         return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
                 && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
+    }
+
+    public boolean hasObservationType() {
+        return parameters.containsParameter(Parameters.OBSERVATION_TYPE);
+    }
+
+    public ObservationType getObservationType() {
+        String observationType = parameters.containsParameter(Parameters.OBSERVATION_TYPE)
+            ? parameters.getAsString(Parameters.OBSERVATION_TYPE)
+            : null;
+        try {
+            return observationType != null
+                ? ObservationType.toInstance(observationType)
+                : ObservationType.MEASUREMENT;
+        }
+        catch (IllegalArgumentException e) {
+            LOGGER.debug("unknown observation type: {}", observationType);
+            throw new ResourceNotFoundException("Could not find resource under type '" + observationType + "'.");
+        }
     }
 
     public boolean isAllGeomentries() {

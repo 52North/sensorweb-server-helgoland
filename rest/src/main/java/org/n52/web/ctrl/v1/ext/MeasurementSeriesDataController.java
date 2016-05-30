@@ -179,7 +179,7 @@ public class MeasurementSeriesDataController extends BaseController {
                                  @PathVariable String observationType,
                                  @PathVariable String seriesId,
                                  @RequestParam MultiValueMap<String, String> query) {
-        
+
         seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);

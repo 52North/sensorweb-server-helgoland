@@ -67,7 +67,7 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
         }
         return referenceSeries;
     }
-    
+
     private boolean haveToExpandReferenceData(MeasurementData referenceSeriesData) {
         return referenceSeriesData.getValues().length <= 1;
     }

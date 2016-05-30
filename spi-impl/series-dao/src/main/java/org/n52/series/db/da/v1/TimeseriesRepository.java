@@ -256,6 +256,6 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     public void setDataRepository(MeasurementDataRepository dataRepository) {
         this.dataRepository = dataRepository;
     }
-    
+
 
 }

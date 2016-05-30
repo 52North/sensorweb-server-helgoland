@@ -48,16 +48,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class MeasurementSeriesAccessService extends AccessService<SeriesMetadataOutput> 
+public class MeasurementSeriesAccessService extends AccessService<SeriesMetadataOutput>
         implements SeriesDataService<MeasurementData> {
 
     @Autowired
     private MeasurementDataRepository dataRepository;
-    
+
     public MeasurementSeriesAccessService(SeriesRepository repository) {
         super(repository);
     }
-    
+
     @Override
     public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         try {

@@ -76,7 +76,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         return dataRepository.getData(timeseriesId, dbQuery);
     }
-    
-    
+
+
 
 }

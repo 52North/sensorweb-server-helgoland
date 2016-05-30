@@ -79,7 +79,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             switch (query.getObservationType()) {
 
             // TODO other obesrvation types
-
             case MEASUREMENT:
             default:
                 SeriesDao<MeasurementSeriesEntity>  seriesDao = new SeriesDao<>(session);

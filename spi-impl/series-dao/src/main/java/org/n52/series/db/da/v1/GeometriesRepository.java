@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.v1.ext.GeometryCategory;
 import org.n52.io.response.v1.ext.GeometryInfo;
