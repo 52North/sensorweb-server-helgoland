@@ -41,22 +41,19 @@ import org.n52.io.response.v1.ext.GeometryCategory;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.PlatformItemOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.ext.GeometryEntity;
-import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
-import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.ext.SamplingGeometriesDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.Point;
 
 public class GeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
@@ -153,15 +150,19 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         return geometryInfoList;
     }
 
-    private GeometryInfo createSite(FeatureEntity featureEntity, DbQuery parameters, boolean expanded) throws DataAccessException {
+    private GeometryInfo createSite(FeatureEntity featureEntity, DbQuery parameters, boolean expanded)
+            throws DataAccessException {
         if (featureEntity.isSetGeometry()) {
-            GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(GeometryCategory.PLATFORM_SITE), featureEntity, parameters);
+            GeometryInfo geometryInfo =
+                    addCondensedValues(new GeometryInfo(GeometryCategory.PLATFORM_SITE), featureEntity, parameters);
             if (expanded) {
                 if (featureEntity.getGeometry().isSetGeometry()) {
                     geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
                 } else if (featureEntity.getGeometry().isSetLonLat()) {
-                    // TODO
-//                    geometryInfo.setGeometry(featureEntity.getGeometry());
+                    Point geom = new GeometryFactory().createPoint(new Coordinate(featureEntity.getGeometry().getLon(),
+                            featureEntity.getGeometry().getLat()));
+                    geom.setSRID(4326);
+                    geometryInfo.setGeometry(geom);
                 }
             }
             return geometryInfo;

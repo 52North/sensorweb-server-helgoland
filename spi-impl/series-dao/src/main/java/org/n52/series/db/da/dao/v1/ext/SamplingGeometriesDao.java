@@ -28,15 +28,12 @@
  */
 package org.n52.series.db.da.dao.v1.ext;
 
-import static org.hibernate.criterion.Restrictions.eq;
-
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.GeometryEntity;
