@@ -28,38 +28,25 @@
  */
 package org.n52.series.db.da.beans;
 
-import org.n52.io.response.v1.ext.PlatformType;
+import org.n52.series.db.da.beans.ext.GeometryEntity;
 
 public class FeatureEntity extends DescribableEntity {
 
     /**
      * @since 2.0.0
      */
-    private boolean mobile = false;
+    private GeometryEntity geometry;
 
-    /**
-     * @since 2.0.0
-     */
-    private boolean insitu = true;
-
-    public PlatformType getPlatformType() {
-        return PlatformType.toInstance(mobile, insitu);
+    public GeometryEntity getGeometry() {
+        return geometry;
     }
 
-    public boolean isMobile() {
-        return mobile;
+    public void setGeometry(GeometryEntity geometry) {
+        this.geometry = geometry;
     }
 
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
-
-    public boolean isInsitu() {
-        return insitu;
-    }
-
-    public void setInsitu(boolean insitu) {
-        this.insitu = insitu;
+    public boolean isSetGeometry() {
+        return getGeometry() != null && !getGeometry().isEmpty();
     }
 
     @Override
@@ -68,6 +55,11 @@ public class FeatureEntity extends DescribableEntity {
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" Domain id: ").append(getDomainId());
         return sb.append(" ]").toString();
+    }
+
+    public boolean hasGeometry() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

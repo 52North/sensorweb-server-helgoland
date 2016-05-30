@@ -26,16 +26,28 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.series.db.da.beans.ext;
 
-import org.n52.io.response.CondensedParameterOutput;
+import java.util.Date;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
-public interface CondensedGeometryInfo extends CondensedParameterOutput {
+public class SamplingGeometryEntity extends GeometryEntity {
 
-    CondensedParameterOutput getPlatform();
+    private Date timestamp;
+    private Long seriesPkid;
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Long getSeriesPkid() {
+        return seriesPkid;
+    }
+
+    public void setSeriesPkid(Long seriesPkid) {
+        this.seriesPkid = seriesPkid;
+    }
 }

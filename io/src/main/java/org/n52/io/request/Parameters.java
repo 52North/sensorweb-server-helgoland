@@ -345,4 +345,20 @@ public interface Parameters {
 
     public static final String OBSERVATION_TYPE = "observationtype";
 
+    /* geometries  */
+
+    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
+
+    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
+
+    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
+
+    public static final String GEOMETRIES_INCLUDE_PLATFORMSLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
+
+    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
+
+    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC = "internal.include.geometries.observedgeometries.static";
+
+    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC = "internal.include.geometries.observedgeometries.dynamic";
+
 }

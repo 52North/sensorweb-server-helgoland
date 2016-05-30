@@ -103,8 +103,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .add(eq(COLUMN_DELETED, Boolean.FALSE));
+        Criteria criteria = getDefaultCriteria();
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<T>) criteria.list();
@@ -123,8 +122,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @SuppressWarnings("unchecked")
     public List<T> getAllInstancesFor(AbstractSeriesEntity<?> series, AbstractDbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
-                .add(eq(COLUMN_DELETED, Boolean.FALSE));
+                .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
         return (List<T>) criteria.list();
@@ -133,8 +131,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @SuppressWarnings("unchecked")
     public List<T> getObservationsFor(AbstractSeriesEntity<T> series, AbstractDbQuery query) {
         Criteria criteria = query.addTimespanTo(getDefaultCriteria())
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
-                .add(eq(COLUMN_DELETED, Boolean.FALSE));
+                .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
         return criteria.list();
     }
 
@@ -148,14 +145,13 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @Override
     public int getCount() throws DataAccessException {
         Criteria criteria = getDefaultCriteria()
-                .add(eq(COLUMN_DELETED, Boolean.FALSE))
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(entityType);
+        return session.createCriteria(entityType).add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
 
     @SuppressWarnings("unchecked")

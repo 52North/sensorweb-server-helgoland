@@ -28,36 +28,25 @@
  */
 package org.n52.io.response.v1.ext;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vividsolutions.jts.geom.Geometry;
-import java.util.Comparator;
 import java.util.Map;
+
+import org.n52.io.geojson.FeatureOutputSerializer;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.response.AbstractOutput;
+import org.n52.io.response.ServiceOutput;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class GeometryInfo implements CondensedGeometryInfo {
-
-    /**
-     * Takes the ids to compare.
-     *
-     * @param <T> the actual type.
-     * @return a label comparing {@link Comparator}
-     */
-    public static <T extends GeometryInfo> Comparator<T> defaultComparator() {
-        return new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.getId().compareTo(o2.getId());
-            }
-        };
-    }
-
-    private String id;
-
-    private String href;
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
+public class GeometryInfo extends AbstractOutput implements CondensedGeometryInfo, GeoJSONFeature {
 
     private Geometry geometry;
 
@@ -72,21 +61,25 @@ public class GeometryInfo implements CondensedGeometryInfo {
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
     public void setId(String id) {
-        this.id = id;
+        super.setId(getUrlIdSuffix() + "/" + id);
     }
 
+    @JsonIgnore
     @Override
-    public String getHref() {
-        return href;
+    public String getLabel() {
+        return super.getLabel();
     }
 
-    public void setHref(String href) {
-        this.href = href;
+    @JsonIgnore
+    @Override
+    public String getDomainId() {
+        return super.getDomainId();
+    }
+
+    @JsonIgnore
+    public ServiceOutput getService() {
+        return super.getService();
     }
 
     @Override
@@ -104,6 +97,21 @@ public class GeometryInfo implements CondensedGeometryInfo {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+
+    @JsonIgnore
+    @Override
+    public String getHrefBase() {
+        String base = super.getHrefBase();
+        String suffix = getUrlIdSuffix();
+        return base != null && base.endsWith(suffix)
+                ? base.substring(0, base.lastIndexOf(suffix) - 1)
+                : base;
+    }
+
+    private String getUrlIdSuffix() {
+        return getType().getCategory();
     }
 
     @JsonIgnore
@@ -125,6 +133,11 @@ public class GeometryInfo implements CondensedGeometryInfo {
 
     public boolean hasProperty(String key) {
         return this.properties.containsKey(key);
+    }
+
+    @Override
+    public boolean isSetGeometry() {
+        return getGeometry() != null && !getGeometry().isEmpty();
     }
 
 }
