@@ -7,9 +7,14 @@
             <column name="featureofinterestid" />
             <generator class="assigned" />
         </id>
-        <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
+        <property name="domainId" column="identifier" type="string" insert="false" update="false" />
         <property name="name" column="name" type="string" />
-        <property name="description" column="description" type="string"/>
-        <property name="geom" column="geom" type="org.hibernate.spatial.GeometryType" />
+        <property name="description" column="description" type="string" />
+        <!-- <property name="geom" column="geom" type="org.hibernate.spatial.GeometryType" /> -->
+        <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
+<!--             <property column="lat" name="lat" type="double" /> -->
+<!--             <property column="lon" name="lon" type="double" /> -->
+            <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType" />
+        </component>
     </class>
 </hibernate-mapping>
