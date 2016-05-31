@@ -162,14 +162,17 @@ public final class CRSUtils {
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createPoint(coordinate);
     }
-
-    GeometryFactory createGeometryFactory(String srs) {
-        return createGeometryFactory(getSrsIdFrom(srs));
+    
+    public Geometry createLineString(Coordinate[] coordinates, String srs) {
+        GeometryFactory factory = createGeometryFactory(srs);
+        return factory.createLineString(coordinates);
     }
 
-    GeometryFactory createGeometryFactory(int srsId) {
+    GeometryFactory createGeometryFactory(String srsId) {
         PrecisionModel pm = new PrecisionModel(FLOATING);
-        return new GeometryFactory(pm, srsId);
+        return srsId == null
+                ? new GeometryFactory(pm)
+                : new GeometryFactory(pm, getSrsIdFrom(srsId));
     }
 
     /**
