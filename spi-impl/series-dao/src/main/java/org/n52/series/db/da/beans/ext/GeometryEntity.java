@@ -29,7 +29,8 @@
 
 package org.n52.series.db.da.beans.ext;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.n52.io.crs.CRSUtils;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -46,8 +47,8 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public class GeometryEntity {
-    
-    private static final Logger LOGGER  = Logger.getLogger(GeometryEntity.class);
+
+    private static final Logger LOGGER  = LoggerFactory.getLogger(GeometryEntity.class);
 
     private final CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
 
@@ -65,8 +66,8 @@ public class GeometryEntity {
 
     /**
      * Returns the {@link Geometry}. Expects that a geometry with a valid SRID is available. Otherwise use
-     * {@link #getGeometry(String)} to obtain a geometry with spatial reference.    
-     * 
+     * {@link #getGeometry(String)} to obtain a geometry with spatial reference.
+     *
      * @return the geometry
      */
     public Geometry getGeometry() {
