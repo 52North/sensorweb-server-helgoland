@@ -117,18 +117,12 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return serviceOutput;
     }
 
-    protected PhenomenonOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
-        PhenomenonOutput outputvalue = new PhenomenonOutput();
-        final String id = entity.getPkid().toString();
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
-        outputvalue.setId(id);
-        return outputvalue;
+    protected ParameterOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
+        return createCondensed(new PhenomenonOutput(), entity, parameters);
     }
 
-    protected PhenomenonOutput getCondensedExtendedPhenomenon(DescribableEntity entity, DbQuery parameters) {
-        PhenomenonOutput outputvalue = getCondensedPhenomenon(entity, parameters);
-        outputvalue.setHref(entity.getPkid().toString());
-        return outputvalue;
+    protected ParameterOutput getCondensedExtendedPhenomenon(DescribableEntity entity, DbQuery parameters) {
+        return createCondensedExtended(new PhenomenonOutput(), entity, parameters, urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {

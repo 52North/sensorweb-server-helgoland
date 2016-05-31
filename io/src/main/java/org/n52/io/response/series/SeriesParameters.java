@@ -57,7 +57,7 @@ public class SeriesParameters {
         return phenomenon;
     }
 
-    public void setPhenomenon(PhenomenonOutput phenomenon) {
+    public void setPhenomenon(ParameterOutput phenomenon) {
         this.phenomenon = phenomenon;
     }
 
