@@ -158,7 +158,7 @@ public abstract class AbstractDbQuery {
     public void filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
         DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
                 .createCriteria("procedure", "p")
-                .add(Restrictions.and(Restrictions.eq("p.mobile", mobile), 
+                .add(Restrictions.and(Restrictions.eq("p.mobile", mobile),
                                       Restrictions.eq("p.insitu", insitu)));
         c.setProjection(Projections.projectionList()
                                         .add(Projections.property(String.format("series.%s.pkid", parameter))));

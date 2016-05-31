@@ -70,7 +70,6 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
         if (parameters.isPureStationInsituPlatformConcept()) {
             parameters.filterMobileInsitu("feature", criteria, false, true);
-            //add(Restrictions.eqOrIsNull("featureConcept", "stationary/insitu"));
         }
         return (List<FeatureEntity>) criteria.list();
     }

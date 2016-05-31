@@ -46,7 +46,13 @@ public class FeatureEntity extends DescribableEntity {
     }
 
     public boolean isSetGeometry() {
-        return getGeometry() != null && !getGeometry().isEmpty();
+        final GeometryEntity g = getGeometry();
+        return g != null && !g.isEmpty() && g.isSetGeometry();
+    }
+    
+    public boolean isSetLonLat() {
+        final GeometryEntity g = getGeometry();
+        return g != null && !g.isEmpty() && g.isSetLonLat();
     }
 
     @Override

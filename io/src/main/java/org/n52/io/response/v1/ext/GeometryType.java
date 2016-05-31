@@ -45,7 +45,7 @@ public enum GeometryType {
     private GeometryType(String category) {
         this.category = category;
     }
-    
+
     public String getIdPrefix() {
         return this.name().toLowerCase();
     }
@@ -57,12 +57,12 @@ public enum GeometryType {
     public static boolean isPlatformLocation(String id) {
         return id != null && id.toLowerCase().startsWith("platformlocation");
     }
-    
+
 
     public static boolean isObservedGeometry(String id) {
         return id != null && id.toLowerCase().startsWith("observedGeometry");
     }
-    
+
     public static boolean isSiteId(String id) {
         return id.startsWith(PLATFORM_SITE.getGeometryType());
     }
@@ -78,7 +78,7 @@ public enum GeometryType {
     public static boolean isDynamic(String id) {
         return id.endsWith(DYNAMIC_OBSERVATION.getGeometryType());
     }
-    
+
     public String createId(String id) {
         return getGeometryType() + "/" + id;
     }

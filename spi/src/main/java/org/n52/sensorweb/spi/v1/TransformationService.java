@@ -58,7 +58,9 @@ public class TransformationService {
                     ? createEpsgForcedXYAxisOrder()
                     : createEpsgStrictAxisOrder();
             Geometry geometry = feature.getGeometry();
-            feature.setGeometry(crsUtils.transformInnerToOuter(geometry, crs));
+            if (geometry != null) {
+                feature.setGeometry(crsUtils.transformInnerToOuter(geometry, crs));
+            }
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {

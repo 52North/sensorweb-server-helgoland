@@ -30,6 +30,7 @@ package org.n52.series.db.da.v2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,18 +40,17 @@ import org.n52.io.response.v2.MobilePlatformOutput;
 import org.n52.io.response.v2.PlatformOutput;
 import org.n52.io.response.v2.StationaryPlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
+import org.n52.sensorweb.spi.search.v2.PlatformSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
+import org.n52.series.db.da.beans.v2.SiteEntity;
 import org.n52.series.db.da.dao.v2.FeatureDao;
+import org.n52.series.db.da.v1.OutputAssembler;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Point;
-import java.util.HashMap;
-import org.n52.sensorweb.spi.search.v2.PlatformSearchResult;
-import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
-import org.n52.series.db.da.v1.OutputAssembler;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
@@ -168,8 +168,8 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private PlatformOutput getConcretePlatformOutput(FeatureEntity entity, DbQuery parameters) {
-        if (entity instanceof SiteFeatureEntity) {
-            SiteFeatureEntity site = (SiteFeatureEntity) entity;
+        if (entity instanceof SiteEntity) {
+            SiteEntity site = (SiteEntity) entity;
             if (site.isSetGeometry() && site.getGeometry().getGeometry() instanceof Point) {
                 return new StationaryPlatformOutput();
             }

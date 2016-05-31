@@ -42,7 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
-    
+
     @Autowired
     private HibernateSessionStore sessionStore;
 

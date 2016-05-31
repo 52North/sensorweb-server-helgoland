@@ -74,12 +74,12 @@ public class GeometriesController extends ParameterController {
     }
 
     @RequestMapping(value = "/platformLocations/sites/{id}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable String id, 
+    public Map<String, Object> getExtras(@PathVariable String id,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES, "true");
         return super.getExtras(GeometryType.PLATFORM_SITE.createId(id), query);
     }
-    
+
     @RequestMapping(method = GET, path = "/platformLocations/tracks")
     public ModelAndView getTracks(@RequestParam(required = false) MultiValueMap<String, String> query) {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS, "true");
@@ -92,8 +92,8 @@ public class GeometriesController extends ParameterController {
         query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS, "true");
         return super.getItem(GeometryType.PLATFORM_TRACK.createId(id), query);
     }
-    
+
     // TODO observed geometries
-    
+
 
 }

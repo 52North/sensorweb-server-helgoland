@@ -45,13 +45,13 @@ import org.n52.web.ctrl.v1.ResourcesController;
 public class ExtResourcesController extends ResourcesController {
 
     private ExtCountingMetadataService metadataService;
-    
+
     @Override
     protected List<ResourceCollection> createResources(IoParameters params) {
         List<ResourceCollection> resources = super.createResources(params);
-        
+
         I18N i18n = I18N.getMessageLocalizer(params.getLocale());
-        
+
         ResourceCollection platforms = createResource("platforms").withLabel("Station").withDescription(i18n.get("msg.web.resources.platforms"));
         ResourceCollection series = createResource("series").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.series"));
         ResourceCollection extCategories = createResource("ext/categories").withLabel("Category").withDescription(i18n.get("msg.web.resources.ext.categories"));
@@ -86,5 +86,5 @@ public class ExtResourcesController extends ResourcesController {
         this.metadataService = metadataService;
     }
 
-    
+
 }

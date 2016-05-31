@@ -57,7 +57,7 @@ public enum PlatformType {
     public String createId(String id) {
         return getPlatformType() + "/" + id;
     }
-    
+
     public static String extractId(String id) {
         if (isStationaryId(id)) {
             if (isInsitu(id)) {

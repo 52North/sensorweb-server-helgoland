@@ -28,17 +28,22 @@
  */
 package org.n52.series.db.da.v1;
 
+import static org.n52.io.request.Parameters.FEATURES;
+import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_SITE;
+import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_TRACK;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.PlatformItemOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.sensorweb.spi.SearchResult;
@@ -57,6 +62,10 @@ import com.vividsolutions.jts.geom.Point;
 
 public class GeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
+    private final CRSUtils crsUtils = CRSUtils.createEpsgStrictAxisOrder();
+
+    private String dbSrid = CRSUtils.DEFAULT_CRS;
+
     @Autowired
     private PlatformRepository platformRepository;
 
@@ -73,7 +82,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
                 // TODO class of observed geometries
 //                return new FeatureDao(session).hasInstance(parseId(id), clazz);
             }
-            
+
             return false;
         } finally {
             returnSession(session);
@@ -180,16 +189,14 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
 
     private GeometryInfo createSite(FeatureEntity featureEntity, DbQuery parameters, boolean expanded)
             throws DataAccessException {
-        if (featureEntity.isSetGeometry()) {
-            GeometryInfo geometryInfo =
-                    addCondensedValues(new GeometryInfo(GeometryType.PLATFORM_SITE), featureEntity, parameters);
+        GeometryEntity geometry = featureEntity.getGeometry();
+        if (geometry.isSetGeometry()) {
+            GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_SITE), featureEntity, parameters);
             if (expanded) {
-                if (featureEntity.getGeometry().isSetGeometry()) {
-                    geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
-                } else if (featureEntity.getGeometry().isSetLonLat()) {
-                    Point geom = new GeometryFactory().createPoint(new Coordinate(featureEntity.getGeometry().getLon(),
-                            featureEntity.getGeometry().getLat()));
-                    geom.setSRID(4326);
+                if (geometry.isSetGeometry()) {
+                    geometryInfo.setGeometry(geometry.getGeometry());
+                } else if (geometry.isSetLonLat()) {
+                    Point geom = crsUtils.createPoint(geometry.getLon(), geometry.getLat(), geometry.getAlt(), dbSrid);
                     geometryInfo.setGeometry(geom);
                 }
             }
@@ -208,17 +215,17 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private GeometryInfo createTrack(FeatureEntity featureEntity, DbQuery parameters, boolean expanded, Session session) throws DataAccessException {
-        GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(GeometryType.PLATFORM_TRACK), featureEntity, parameters);
+        GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_TRACK), featureEntity, parameters);
         if (expanded) {
             if (featureEntity.isSetGeometry()) {
-                if (featureEntity.getGeometry().isSetGeometry()) {
-                    geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
-                    return geometryInfo;
-                }
+                geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
+                return geometryInfo;
             } else {
                 // TODO better solution for adding a parameter
                 RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-                simpleParameterSet.addParameter(Parameters.FEATURES, IoParameters.getJsonNodeFrom(featureEntity.getPkid()));
+                simpleParameterSet.addParameter(FEATURES, IoParameters.getJsonNodeFrom(featureEntity.getPkid()));
+                
+                // XXX find or getInstances + filter
                 List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
                 geometryInfo.setGeometry(createGeometry(samplingGeometries));
                 return geometryInfo;
@@ -314,4 +321,9 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         geom.setSRID(srid);
         return geom;
     }
+    
+    public void setDatabaseSrid(String dbSrid) {
+        this.dbSrid = dbSrid;
+    }
+
 }

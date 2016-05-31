@@ -45,7 +45,6 @@ import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
-import org.n52.series.db.da.beans.ext.SiteFeatureEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.web.exception.BadRequestException;
@@ -56,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 
 /**
  *
@@ -70,7 +68,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     private final CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
 
-    private String dbSrid = "EPSG:4326";
+    private String dbSrid = CRSUtils.DEFAULT_CRS;
 
     @Override
     public boolean exists(String id) throws DataAccessException {
@@ -201,16 +199,14 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
 
     private Geometry createPoint(FeatureEntity featureEntity) {
         try {
-            if (featureEntity instanceof SiteFeatureEntity) {
-                SiteFeatureEntity entity = (SiteFeatureEntity) featureEntity;
-                if (entity.isSetGeometry()) {
-                    Geometry geometry = entity.getGeometry().getGeometry();
-                    String fromCrs = getCrs(geometry);
-                    return (Point) crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-                } else if (entity.isSetLonLat()) {
-                    final GeometryEntity geometry = entity.getGeometry();
-                    return crsUtil.createPoint(geometry.getLon(), geometry.getLat(), geometry.getAlt(), dbSrid);
-                }
+            if (featureEntity.isSetGeometry()) {
+                GeometryEntity geomEntity = featureEntity.getGeometry();
+                Geometry geometry = geomEntity.getGeometry();
+                String fromCrs = getCrs(geometry);
+                return crsUtil.transformOuterToInner(geometry, fromCrs);
+            } else if (featureEntity.isSetLonLat()) {
+                GeometryEntity geomEntity = featureEntity.getGeometry();
+                return crsUtil.createPoint(geomEntity.getLon(), geomEntity.getLat(), geomEntity.getAlt(), dbSrid);
             }
         } catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId(), e);

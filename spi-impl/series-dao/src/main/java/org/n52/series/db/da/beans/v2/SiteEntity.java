@@ -28,11 +28,11 @@
  */
 package org.n52.series.db.da.beans.v2;
 
-import org.n52.series.db.da.beans.DescribableEntity;
+import org.n52.series.db.da.beans.FeatureEntity;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class SiteEntity extends DescribableEntity {
+public class SiteEntity extends FeatureEntity {
 
     private Geometry geom;
 
