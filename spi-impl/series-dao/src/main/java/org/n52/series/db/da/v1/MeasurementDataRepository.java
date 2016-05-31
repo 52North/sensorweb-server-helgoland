@@ -16,6 +16,7 @@ import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.DataAccessException;
+import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
@@ -102,7 +103,7 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
         List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (MeasurementEntity observation : observations) {
             if (observation != null) {
-                result.addValues(createTimeseriesValueFor(observation, seriesEntity));
+                result.addValues(createSeriesValueFor(observation, seriesEntity));
             }
         }
         return result;
@@ -115,12 +116,12 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
         referenceEnd.setValue(entity.getValue());
-        return new MeasurementValue[]{createTimeseriesValueFor(referenceStart, series),
-            createTimeseriesValueFor(referenceEnd, series)};
+        return new MeasurementValue[]{createSeriesValueFor(referenceStart, series),
+            createSeriesValueFor(referenceEnd, series)};
 
     }
 
-    MeasurementValue createTimeseriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
+    MeasurementValue createSeriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -131,6 +132,10 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
                 ? formatDecimal(observation.getValue(), series)
                 : Double.NaN;
         value.setValue(observationValue);
+        if (observation.isSetGeometry()) {
+            GeometryEntity geometry = observation.getGeometry();
+            value.setGeometry(geometry.getGeometry(getDatabaseSrid()));
+        }
         return value;
     }
 

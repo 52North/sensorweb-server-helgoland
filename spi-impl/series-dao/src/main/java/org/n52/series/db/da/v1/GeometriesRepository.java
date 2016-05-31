@@ -33,12 +33,10 @@ import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_SITE;
 import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_TRACK;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -57,14 +55,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 
 public class GeometriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<GeometryInfo> {
-
-    private final CRSUtils crsUtils = CRSUtils.createEpsgStrictAxisOrder();
-
-    private String dbSrid = CRSUtils.DEFAULT_CRS;
 
     @Autowired
     private PlatformRepository platformRepository;
@@ -189,16 +182,11 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
 
     private GeometryInfo createSite(FeatureEntity featureEntity, DbQuery parameters, boolean expanded)
             throws DataAccessException {
-        GeometryEntity geometry = featureEntity.getGeometry();
-        if (geometry.isSetGeometry()) {
+        Geometry geometry = featureEntity.getGeometry(getDatabaseSrid());
+        if (geometry != null) {
             GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_SITE), featureEntity, parameters);
             if (expanded) {
-                if (geometry.isSetGeometry()) {
-                    geometryInfo.setGeometry(geometry.getGeometry());
-                } else if (geometry.isSetLonLat()) {
-                    Point geom = crsUtils.createPoint(geometry.getLon(), geometry.getLat(), geometry.getAlt(), dbSrid);
-                    geometryInfo.setGeometry(geom);
-                }
+                geometryInfo.setGeometry(geometry);
             }
             return geometryInfo;
         }
@@ -218,7 +206,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_TRACK), featureEntity, parameters);
         if (expanded) {
             if (featureEntity.isSetGeometry()) {
-                geometryInfo.setGeometry(featureEntity.getGeometry().getGeometry());
+                geometryInfo.setGeometry(featureEntity.getGeometry(getDatabaseSrid()));
                 return geometryInfo;
             } else {
                 // TODO better solution for adding a parameter
@@ -227,7 +215,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
                 
                 // XXX find or getInstances + filter
                 List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
-                geometryInfo.setGeometry(createGeometry(samplingGeometries));
+                geometryInfo.setGeometry(createLineString(samplingGeometries));
                 return geometryInfo;
             }
         }
@@ -298,32 +286,13 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         return platforms.iterator().next();
     }
 
-    private Geometry createGeometry(List<GeometryEntity> samplingGeometries) {
+    private Geometry createLineString(List<GeometryEntity> samplingGeometries) {
         List<Coordinate> coordinates = new ArrayList<Coordinate>();
-        int srid = 4326;
         for (GeometryEntity geometryEntity : samplingGeometries) {
-            if (geometryEntity.isSetLonLat()) {
-                coordinates.add(new Coordinate(geometryEntity.getLon(), geometryEntity.getLat()));
-            } else if (geometryEntity.isSetGeometry()) {
-                Geometry geometry = geometryEntity.getGeometry();
-                coordinates.addAll(Arrays.asList(geometryEntity.getGeometry().getCoordinates()));
-                if (geometry.getSRID() != srid) {
-                    srid = geometry.getSRID();
-                 }
-            }
+            Point geometry = (Point) geometryEntity.getGeometry(getDatabaseSrid());
+            coordinates.add(geometry.getCoordinate());
         }
-        Geometry geom = null;
-        if (coordinates.size() == 1) {
-            geom = new GeometryFactory().createPoint(coordinates.iterator().next());
-        } else {
-            geom = new GeometryFactory().createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
-        }
-        geom.setSRID(srid);
-        return geom;
+        return getCrsUtils().createLineString(coordinates.toArray(new Coordinate[0]), getDatabaseSrid());
     }
     
-    public void setDatabaseSrid(String dbSrid) {
-        this.dbSrid = dbSrid;
-    }
-
 }

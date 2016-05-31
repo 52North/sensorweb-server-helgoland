@@ -189,8 +189,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         SeriesMetadataV1Output output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
-        output.setFirstValue(dataRepository.createTimeseriesValueFor(series.getFirstValue(), series));
-        output.setLastValue(dataRepository.createTimeseriesValueFor(series.getLastValue(), series));
+        output.setFirstValue(dataRepository.createSeriesValueFor(series.getFirstValue(), series));
+        output.setLastValue(dataRepository.createSeriesValueFor(series.getLastValue(), series));
         return output;
     }
 
@@ -206,7 +206,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
                 MeasurementEntity lastValue = series.getLastValue();
-                refenceValueOutput.setLastValue(dataRepository.createTimeseriesValueFor(lastValue, series));
+                refenceValueOutput.setLastValue(dataRepository.createSeriesValueFor(lastValue, series));
                 outputs.add(refenceValueOutput);
             }
         }

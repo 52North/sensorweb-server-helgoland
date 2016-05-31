@@ -14,10 +14,5 @@
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
 
-        <!--        <set name="series" table="series">
-            <key column="procedureid" />
-            <one-to-many class="org.n52.series.db.da.beans.ext.AbstractSeriesEntity" />
-        </set>-->
-
     </class>
 </hibernate-mapping>

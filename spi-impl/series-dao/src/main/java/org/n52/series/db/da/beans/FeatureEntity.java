@@ -30,15 +30,21 @@ package org.n52.series.db.da.beans;
 
 import org.n52.series.db.da.beans.ext.GeometryEntity;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 public class FeatureEntity extends DescribableEntity {
 
     /**
      * @since 2.0.0
      */
     private GeometryEntity geometry;
+    
+    public Geometry getGeometry() {
+        return getGeometry(null);
+    }
 
-    public GeometryEntity getGeometry() {
-        return geometry;
+    public Geometry getGeometry(String srid) {
+        return geometry != null ? geometry.getGeometry(srid) : null;
     }
 
     public void setGeometry(GeometryEntity geometry) {
@@ -46,26 +52,15 @@ public class FeatureEntity extends DescribableEntity {
     }
 
     public boolean isSetGeometry() {
-        final GeometryEntity g = getGeometry();
-        return g != null && !g.isEmpty() && g.isSetGeometry();
+        return geometry != null;
     }
     
-    public boolean isSetLonLat() {
-        final GeometryEntity g = getGeometry();
-        return g != null && !g.isEmpty() && g.isSetLonLat();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" Domain id: ").append(getDomainId());
         return sb.append(" ]").toString();
-    }
-
-    public boolean hasGeometry() {
-        // TODO Auto-generated method stub
-        return false;
     }
 
 }

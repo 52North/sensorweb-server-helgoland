@@ -26,7 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.da.beans.ext;
+
+import org.apache.log4j.Logger;
+import org.n52.io.crs.CRSUtils;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -35,7 +41,15 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
+/**
+ * @author henning
+ *
+ */
 public class GeometryEntity {
+    
+    private static final Logger LOGGER  = Logger.getLogger(GeometryEntity.class);
+
+    private final CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
 
     private Geometry geometry;
 
@@ -43,22 +57,50 @@ public class GeometryEntity {
 
     private Double lat;
 
-    private Double alt;
+    private Double alt = Double.NaN;
 
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();
     }
 
-    public boolean isSetLonLat() {
-        return lon != null && lat != null;
-    }
-
+    /**
+     * Returns the {@link Geometry}. Expects that a geometry with a valid SRID is available. Otherwise use
+     * {@link #getGeometry(String)} to obtain a geometry with spatial reference.    
+     * 
+     * @return the geometry
+     */
     public Geometry getGeometry() {
-        return geometry;
+        return getGeometry(null);
     }
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+    /**
+     * Returns the {@link Geometry} or creates a {@link Geometry} with the given srid in case of geometry has
+     * been set via lat/lon.
+     * 
+     * @param srid
+     *        the spatial reference
+     * @return the geometry or a created geometry (with given srid)
+     */
+    public Geometry getGeometry(String srid) {
+        Geometry g =  isSetLonLat()
+            ? crsUtils.createPoint(lon, lat, alt, srid)
+            : geometry;
+        try {
+            return g != null && srid != null
+                    ? crsUtils.transformOuterToInner(g, srid)
+                    : g;
+        } catch (FactoryException | TransformException e) {
+            LOGGER.warn("Invalid srid '{}'. Could not transform geometry.", e);
+            return g;
+        }
+    }
+
+    public boolean isSetLonLat() {
+        return lon != null && lat != null;
     }
 
     public Double getLon() {

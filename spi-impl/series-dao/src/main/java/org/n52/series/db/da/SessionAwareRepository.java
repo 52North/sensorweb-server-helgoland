@@ -29,6 +29,7 @@
 package org.n52.series.db.da;
 
 import org.hibernate.Session;
+import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.db.da.beans.DescribableEntity;
@@ -43,6 +44,10 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
 
+    private final CRSUtils crsUtils = CRSUtils.createEpsgStrictAxisOrder();
+
+    private String databaseSrid; // if null, database is expected to have srs set properly
+
     @Autowired
     private HibernateSessionStore sessionStore;
 
@@ -55,6 +60,14 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
+    }
+    
+    protected CRSUtils getCrsUtils() {
+        return crsUtils;
+    }
+    
+    protected String getDatabaseSrid() {
+        return databaseSrid;
     }
 
     protected Long parseId(String id) throws BadRequestException {
@@ -94,6 +107,10 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     private boolean isi18nNameAvailable(DescribableEntity entity, String locale) {
         return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
+    }
+
+    public void setDatabaseSrid(String databaseSrid) {
+        this.databaseSrid = databaseSrid;
     }
 
 }

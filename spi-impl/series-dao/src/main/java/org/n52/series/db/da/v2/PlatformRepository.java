@@ -170,7 +170,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private PlatformOutput getConcretePlatformOutput(FeatureEntity entity, DbQuery parameters) {
         if (entity instanceof SiteEntity) {
             SiteEntity site = (SiteEntity) entity;
-            if (site.isSetGeometry() && site.getGeometry().getGeometry() instanceof Point) {
+            if (site.isSetGeometry() && site.getGeometry(getDatabaseSrid()) instanceof Point) {
                 return new StationaryPlatformOutput();
             }
         }
