@@ -68,6 +68,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         try {
             if (GeometryType.isPlatformLocation(id)) {
                 id = GeometryType.extractId(id);
+                // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
                 return new FeatureDao(session).hasInstance(parseId(id), FeatureEntity.class);
             }
             else if (GeometryType.isObservedGeometry(id)) {
