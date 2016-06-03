@@ -34,8 +34,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.AbstractDao;
@@ -56,8 +58,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     @Override
     public PlatformEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .add(eq(PlatformEntity.COLUMN_PKID, key));
+        Criteria criteria = getDefaultCriteria().add(eq(PlatformEntity.COLUMN_PKID, key));
         return (PlatformEntity) criteria.uniqueResult();
     }
 
@@ -65,8 +66,12 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria("platform"); // TODO filter
-//        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
-//        criteria.add(Subqueries.propertyIn("platform", filter));
+        
+        // TODO translation
+        
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
+        criteria.add(Subqueries.propertyIn("platform.pkid", filter));
+        
         parameters.addPagingTo(criteria);
         if (!parameters.shallIncludeAllPlatformTypes()) {
             if (parameters.shallIncludeStationaryTypes()) {
