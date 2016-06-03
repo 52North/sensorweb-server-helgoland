@@ -44,7 +44,6 @@
         <property name="mappingLocations">
             <list>
                 <value>classpath:hbm/sos/v44/*.hbm.xml</value>
-                <value>classpath:hbm/sos/metadata/*.hbm.xml</value>
             </list>
         </property>
     </bean>
