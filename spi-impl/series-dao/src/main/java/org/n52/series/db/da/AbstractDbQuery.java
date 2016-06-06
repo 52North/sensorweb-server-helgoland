@@ -261,6 +261,9 @@ public abstract class AbstractDbQuery {
      */
     public Long parseToId(String id) {
         try {
+            if (id.contains("/")) {
+                return Long.parseLong(id.substring(id.lastIndexOf("/")+1));
+            }
             return Long.parseLong(id);
         }
         catch (NumberFormatException e) {
