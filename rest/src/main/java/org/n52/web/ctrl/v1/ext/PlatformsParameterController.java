@@ -84,7 +84,5 @@ public class PlatformsParameterController extends ParameterController {
         query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
         return super.getItem(PlatformType.MOBILE_INSITU.createId(id), query);
     }
-    
-    }
 
 }
