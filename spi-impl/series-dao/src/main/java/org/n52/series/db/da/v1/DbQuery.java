@@ -31,9 +31,13 @@ package org.n52.series.db.da.v1;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
@@ -71,11 +75,40 @@ public class DbQuery extends AbstractDbQuery {
                     .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getCategories())));
         }
         if (getParameters().getPlatforms() != null) {
-            filter.createCriteria("platform")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPlatforms())));
+            Set<String> stationaryIds = getStationary(getParameters().getPlatforms());
+            Set<String> platformIds = getNonStationary(getParameters().getPlatforms());
+            if (!stationaryIds.isEmpty()) {
+                filter.createCriteria("feature").add(Restrictions.in(COLUMN_KEY, parseToIds(stationaryIds)));
+            }
+            if (!platformIds.isEmpty()) {
+                filter.createCriteria("platform").add(Restrictions.in(COLUMN_KEY, parseToIds(platformIds)));
+            }
+        }
+        if (getParameters().getSeries() != null) {
+            filter.add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getSeries())));
         }
 
         return filter.setProjection(projectionList().add(property(propertyName)));
+    }
+
+    private Set<String> getStationary(Set<String> platforms) {
+        Set<String> set = new HashSet<String>();
+        for (String platform : platforms) {
+            if (PlatformType.isStationaryId(platform)) {
+                set.add(PlatformType.extractId(platform));
+            }
+        }
+        return set;
+    }
+
+    private Set<String> getNonStationary(Set<String> platforms) {
+        Set<String> set = new HashSet<String>();
+        for (String platform : platforms) {
+            if (!PlatformType.isStationaryId(platform)) {
+                set.add(PlatformType.extractId(platform));
+            }
+        }
+        return set;
     }
 
     @Deprecated
