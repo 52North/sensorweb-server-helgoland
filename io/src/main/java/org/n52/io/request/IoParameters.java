@@ -439,6 +439,12 @@ public class IoParameters implements Parameters {
                 : null;
     }
 
+    public Set<String> getSeries() {
+        return containsParameter(SERIES)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(SERIES)))
+                : null;
+    }
+
     public Set<String> getFields() {
         return containsParameter(FIELDS)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(FIELDS)))

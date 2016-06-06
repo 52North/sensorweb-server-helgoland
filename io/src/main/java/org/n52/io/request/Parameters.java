@@ -272,6 +272,8 @@ public interface Parameters {
 
     public static final String PLATFORMS = "platforms";
 
+    public static final String SERIES = "series";
+
     /**
      * Determines the category filter
      */
