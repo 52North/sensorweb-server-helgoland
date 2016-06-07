@@ -41,7 +41,7 @@ public class PrerenderingJobConfig {
 
     private List<RenderingConfig> phenomenonStyles = new ArrayList<>();
 
-    private List<RenderingConfig> timeseriesStyles = new ArrayList<>();
+    private List<RenderingConfig> seriesStyles = new ArrayList<>();
 
     public Map<String, String> getGeneralConfig() {
         return generalConfig;
@@ -59,12 +59,24 @@ public class PrerenderingJobConfig {
         this.phenomenonStyles = phenomenonStyles;
     }
 
+    // keep for backwards compatibility
+    @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
-        return timeseriesStyles;
+        return seriesStyles;
     }
 
+    // keep for backwards compatibility
+    @Deprecated
     public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
-        this.timeseriesStyles = timeseriesStyles;
+        this.seriesStyles = timeseriesStyles;
+    }
+    
+    public List<RenderingConfig> getSeriesStyles() {
+        return seriesStyles;
+    }
+
+    public void setSeriesStyles(List<RenderingConfig> seriesStyles) {
+        this.seriesStyles = seriesStyles;
     }
 
     public static class RenderingConfig {
