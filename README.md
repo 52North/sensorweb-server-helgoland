@@ -1,10 +1,6 @@
 # 52n Series REST API
-The 52n Series REST API (formaly known as timeseries-api) provides a thin 
-access layer to sensor data via RESTful Web binding with different output 
-formats like json, pdf or png.
-
-Note: We renamed the project to better align with the intend to provide 
-sensor data rather than just timeseries data. 
+The Series REST API provides a thin access layer to sensor data via RESTful
+Web binding with different output formats like json, pdf or png.
 
 ## Developing
 We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 
