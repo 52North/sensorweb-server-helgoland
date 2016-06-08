@@ -34,6 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.Map;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.springframework.util.MultiValueMap;
@@ -45,7 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_PLATFORMS, produces = {"application/json"})
-public class PlatformsParameterController extends ParameterSimpleArrayCollectionAdapter {
+public class PlatformsParameterController extends ParameterSimpleArrayCollectionAdapter<PlatformOutput> {
 
     @Override
     @RequestMapping(method = GET)

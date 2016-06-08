@@ -69,11 +69,6 @@ public class ProceduresAccessService extends ParameterService<ProcedureOutput> {
     }
 
     @Override
-    public ProcedureOutputCollection getParameters(String[] procedureIds) {
-        return getParameters(procedureIds, IoParameters.createDefaults());
-    }
-
-    @Override
     public ProcedureOutputCollection getParameters(String[] procedureIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -85,11 +80,6 @@ public class ProceduresAccessService extends ParameterService<ProcedureOutput> {
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get procedure data.");
         }
-    }
-
-    @Override
-    public ProcedureOutput getParameter(String procedureId) {
-        return getParameter(procedureId, IoParameters.createDefaults());
     }
 
     @Override

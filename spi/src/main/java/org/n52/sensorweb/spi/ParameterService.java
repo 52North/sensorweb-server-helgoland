@@ -60,16 +60,6 @@ public abstract class ParameterService<T extends ParameterOutput> implements Raw
     public abstract OutputCollection<T> getCondensedParameters(IoParameters query);
 
     /**
-     * Gets the requested items with respect to default query settings. Use
-     * {@link #getParameters(String[], IoParameters)} to control the output items.
-     *
-     * @param items
-     *        a subset of item ids which are of interest.
-     * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
-     */
-    public abstract OutputCollection<T> getParameters(String[] items);
-
-    /**
      * Gets the requested items with respect to the given query parameters. <b>Note</b>, that implementations
      * may be aware of parameters not specified by the official timeseries API. However, at least all
      * officially specified query parameters should be considered by all implementations.
@@ -81,16 +71,6 @@ public abstract class ParameterService<T extends ParameterOutput> implements Raw
      * @return an output collection of expanded items which are of interest. Not known ids will be ignored.
      */
     public abstract OutputCollection<T> getParameters(String[] items, IoParameters query);
-
-    /**
-     * Gets the requested item with respect to default query settings. Use
-     * {@link #getParameter(String, IoParameters)} to control the output item.
-     *
-     * @param item
-     *        the item id of interest.
-     * @return an expanded items of interest.
-     */
-    public abstract T getParameter(String item);
 
     /**
      * Gets the requested item with respect to the given query parameters. <b>Note</b>, that implementations

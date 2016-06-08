@@ -60,20 +60,9 @@ public class LocaleAwareSortService<T extends ParameterOutput> extends Parameter
     }
 
     @Override
-    public OutputCollection<T> getParameters(String[] items) {
-        OutputCollection<T> result = composedService.getParameters(items);
-        return result.withSortedItems(createCollator(IoParameters.createDefaults().getLocale()));
-    }
-
-    @Override
     public OutputCollection<T> getParameters(String[] items, IoParameters query) {
         OutputCollection<T> result = composedService.getParameters(items, query);
         return result.withSortedItems(createCollator(query.getLocale()));
-    }
-
-    @Override
-    public T getParameter(String item) {
-        return composedService.getParameter(item);
     }
 
     @Override

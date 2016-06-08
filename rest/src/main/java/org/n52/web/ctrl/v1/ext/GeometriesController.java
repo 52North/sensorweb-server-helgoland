@@ -34,8 +34,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.Map;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.GeometryType;
-import org.n52.web.ctrl.ParameterController;
+import org.n52.sensorweb.spi.ParameterService;
+import org.n52.sensorweb.spi.v1.ext.TransformingGeometryOutputService;
+import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +48,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_GEOMETRIES)
-public class GeometriesController extends ParameterController {
+public class GeometriesController extends ParameterSimpleArrayCollectionAdapter<GeometryInfo> {
 
     @Override
     @RequestMapping(method = GET)
@@ -93,7 +96,11 @@ public class GeometriesController extends ParameterController {
         return super.getItem(GeometryType.PLATFORM_TRACK.createId(id), query);
     }
 
-    // TODO observed geometries
+    @Override
+    public void setParameterService(ParameterService<GeometryInfo> parameterService) {
+        super.setParameterService(new TransformingGeometryOutputService(parameterService));
+    }
 
+    // TODO observed geometries
 
 }

@@ -81,11 +81,6 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     }
 
     @Override
-    public OutputCollection<T> getParameters(String[] ids) {
-        return getParameters(ids, IoParameters.createDefaults());
-    }
-
-    @Override
     public OutputCollection<T> getParameters(String[] ids, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -97,11 +92,6 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get data.", e);
         }
-    }
-
-    @Override
-    public T getParameter(String categoryId) {
-        return getParameter(categoryId, IoParameters.createDefaults());
     }
 
     @Override

@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1;
 
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PHENOMENA;
 
+import org.n52.io.response.v1.PhenomenonOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_PHENOMENA)
-public class PhenomenaParameterController extends ParameterControllerV1Adapter {
+public class PhenomenaParameterController extends ParameterControllerV1Adapter<PhenomenonOutput> {
 
     // resource controller for phenomena
 }

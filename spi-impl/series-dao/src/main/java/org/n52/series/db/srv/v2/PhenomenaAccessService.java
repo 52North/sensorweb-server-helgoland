@@ -80,11 +80,6 @@ public class PhenomenaAccessService extends ParameterService<PhenomenonOutput> {
     }
 
     @Override
-    public PhenomenonOutputCollection getParameters(String[] phenomenonIds) {
-        return getParameters(phenomenonIds, IoParameters.createDefaults());
-    }
-
-    @Override
     public PhenomenonOutputCollection getParameters(String[] phenomenonIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -96,11 +91,6 @@ public class PhenomenaAccessService extends ParameterService<PhenomenonOutput> {
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get phenomenon data.", e);
         }
-    }
-
-    @Override
-    public PhenomenonOutput getParameter(String phenomenonId) {
-        return getParameter(phenomenonId, IoParameters.createDefaults());
     }
 
     @Override

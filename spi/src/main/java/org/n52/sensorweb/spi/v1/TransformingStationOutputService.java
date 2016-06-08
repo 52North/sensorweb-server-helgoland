@@ -64,22 +64,9 @@ public class TransformingStationOutputService extends ParameterService<StationOu
     }
 
     @Override
-    public OutputCollection<StationOutput> getParameters(String[] items) {
-        OutputCollection<StationOutput> features = composedService.getParameters(items);
-        return transformFeatures(IoParameters.createDefaults(), features);
-    }
-
-    @Override
     public OutputCollection<StationOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<StationOutput> features = composedService.getParameters(items, query);
         return transformFeatures(query, features);
-    }
-
-    @Override
-    public StationOutput getParameter(String item) {
-        StationOutput feature = composedService.getParameter(item);
-        transformService.transformInline(feature, IoParameters.createDefaults());
-        return feature;
     }
 
     @Override

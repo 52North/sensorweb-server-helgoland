@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.web.ctrl.ParameterController;
 import org.springframework.util.MultiValueMap;
@@ -44,10 +45,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
-public abstract class ExtParameterRequestMappingAdapter extends ParameterController {
+public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
     @Override
-    protected ModelAndView createModelAndView(OutputCollection<?> items) {
+    protected ModelAndView createModelAndView(OutputCollection<T> items) {
         return new ModelAndView().addObject(items.getItems());
     }
 

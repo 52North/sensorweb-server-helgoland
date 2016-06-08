@@ -83,11 +83,6 @@ public class FeaturesAccessService extends ParameterService<FeatureOutput> {
     }
 
     @Override
-    public FeatureOutputCollection getParameters(String[] featureIds) {
-        return getParameters(featureIds, IoParameters.createDefaults());
-    }
-
-    @Override
     public FeatureOutputCollection getParameters(String[] featureIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -99,11 +94,6 @@ public class FeaturesAccessService extends ParameterService<FeatureOutput> {
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get feature data.");
         }
-    }
-
-    @Override
-    public FeatureOutput getParameter(String featureId) {
-        return getParameter(featureId, IoParameters.createDefaults());
     }
 
     @Override

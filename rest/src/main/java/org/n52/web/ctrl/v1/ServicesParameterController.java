@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1;
 
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_SERVICES;
 
+import org.n52.io.response.v1.ServiceOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERVICES)
-public class ServicesParameterController extends ParameterControllerV1Adapter {
+public class ServicesParameterController extends ParameterControllerV1Adapter<ServiceOutput> {
 
     // resource controller for services
 }

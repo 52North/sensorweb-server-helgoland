@@ -80,11 +80,6 @@ public class CategoriesAccessService extends ParameterService<CategoryOutput> {
     }
 
     @Override
-    public CategoryOutputCollection getParameters(String[] categoryIds) {
-        return getParameters(categoryIds, IoParameters.createDefaults());
-    }
-
-    @Override
     public CategoryOutputCollection getParameters(String[] categoryIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -96,11 +91,6 @@ public class CategoriesAccessService extends ParameterService<CategoryOutput> {
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get category data.", e);
         }
-    }
-
-    @Override
-    public CategoryOutput getParameter(String categoryId) {
-        return getParameter(categoryId, IoParameters.createDefaults());
     }
 
     @Override

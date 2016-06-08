@@ -60,13 +60,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class ParameterController extends BaseController {
+public abstract class ParameterController<T extends ParameterOutput> extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
-    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<>();
+    private List<MetadataExtension<T>> metadataExtensions = new ArrayList<>();
 
-    private ParameterService<ParameterOutput> parameterService;
+    private ParameterService<T> parameterService;
 
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
@@ -87,8 +87,8 @@ public abstract class ParameterController extends BaseController {
         IoParameters queryMap = createFromQuery(query);
 
         Map<String, Object> extras = new HashMap<>();
-        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+        for (MetadataExtension<T> extension : metadataExtensions) {
+            T from = parameterService.getParameter(resourceId, queryMap);
             final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if (!overridableKeys.isEmpty()) {
@@ -112,13 +112,13 @@ public abstract class ParameterController extends BaseController {
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            OutputCollection<ParameterOutput> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
             // TODO add paging
             return createModelAndView(result);
         } else {
-            OutputCollection<ParameterOutput> results = parameterService.getCondensedParameters(queryMap);
+            OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
 
             // TODO add paging
             return createModelAndView(results);
@@ -127,48 +127,48 @@ public abstract class ParameterController extends BaseController {
 
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput item = parameterService.getParameter(id, queryMap);
+        T item = parameterService.getParameter(id, queryMap);
         
         if (item == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
         }
 
-        ParameterOutput parameter = addExtensionInfos(item);
+        T parameter = addExtensionInfos(item);
         return new ModelAndView().addObject(parameter);
     }
 
-    protected OutputCollection<ParameterOutput> addExtensionInfos(OutputCollection<ParameterOutput> toBeProcessed) {
-        for (ParameterOutput parameterOutput : toBeProcessed) {
+    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed) {
+        for (T parameterOutput : toBeProcessed) {
             addExtensionInfos(parameterOutput);
         }
         return toBeProcessed;
     }
 
-    protected ParameterOutput addExtensionInfos(ParameterOutput output) {
-        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+    protected T addExtensionInfos(T output) {
+        for (MetadataExtension<T> extension : metadataExtensions) {
             extension.addExtraMetadataFieldNames(output);
         }
         return output;
     }
 
-    protected ModelAndView createModelAndView(OutputCollection<?> items) {
+    protected ModelAndView createModelAndView(OutputCollection<T> items) {
         return new ModelAndView().addObject(items);
     }
 
-    public ParameterService<ParameterOutput> getParameterService() {
+    public ParameterService<T> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<ParameterOutput> parameterService) {
-        ParameterService<ParameterOutput> service = new WebExceptionAdapter<>(parameterService);
+    public void setParameterService(ParameterService<T> parameterService) {
+        ParameterService<T> service = new WebExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);
     }
 
-    public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {
+    public List<MetadataExtension<T>> getMetadataExtensions() {
         return metadataExtensions;
     }
 
-    public void setMetadataExtensions(List<MetadataExtension<ParameterOutput>> metadataExtensions) {
+    public void setMetadataExtensions(List<MetadataExtension<T>> metadataExtensions) {
         this.metadataExtensions = metadataExtensions;
     }
 }

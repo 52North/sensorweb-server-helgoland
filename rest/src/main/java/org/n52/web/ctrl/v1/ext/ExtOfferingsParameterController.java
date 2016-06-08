@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1.ext;
 
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_OFFERINGS;
 
+import org.n52.io.response.v1.OfferingOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = EXT_COLLECTION_OFFERINGS)
-public class ExtOfferingsParameterController extends ExtParameterRequestMappingAdapter {
+public class ExtOfferingsParameterController extends ExtParameterRequestMappingAdapter<OfferingOutput> {
 
     // resource controller for phenomena
 }

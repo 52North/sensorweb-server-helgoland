@@ -59,21 +59,8 @@ public class TransformingTimeseriesService extends ParameterService<SeriesMetada
     }
 
     @Override
-    public OutputCollection<SeriesMetadataV1Output> getParameters(String[] items) {
-        OutputCollection<SeriesMetadataV1Output> metadata = composedService.getParameters(items);
-        return transformStations(IoParameters.createDefaults(), metadata);
-    }
-
-    @Override
     public OutputCollection<SeriesMetadataV1Output> getParameters(String[] items, IoParameters query) {
         return transformStations(query, composedService.getParameters(items, query));
-    }
-
-    @Override
-    public SeriesMetadataV1Output getParameter(String item) {
-        SeriesMetadataV1Output metadata = composedService.getParameter(item, IoParameters.createDefaults());
-        transformationService.transformInline(metadata.getStation(), IoParameters.createDefaults());
-        return metadata;
     }
 
     @Override
