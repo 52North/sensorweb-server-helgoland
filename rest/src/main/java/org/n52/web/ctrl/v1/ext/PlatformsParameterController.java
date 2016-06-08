@@ -28,21 +28,24 @@
  */
 package org.n52.web.ctrl.v1.ext;
 
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import java.util.Map;
+
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.PlatformType;
-import org.n52.web.ctrl.ParameterController;
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
+import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_PLATFORMS, produces = {"application/json"})
-public class PlatformsParameterController extends ParameterController {
+public class PlatformsParameterController extends ParameterSimpleArrayCollectionAdapter {
 
     @Override
     @RequestMapping(method = GET)
@@ -83,6 +86,12 @@ public class PlatformsParameterController extends ParameterController {
         query.add(Parameters.PLATFORMS_INCLUDE_INSITU, "true");
         query.add(Parameters.PLATFORMS_INCLUDE_MOBILE, "true");
         return super.getItem(PlatformType.MOBILE_INSITU.createId(id), query);
+    }
+
+    @Override
+    @RequestMapping(method = GET, path = "/mobile_insitu/{id}/extras")
+    public Map<String, Object> getExtras(String id, MultiValueMap<String, String> query) {
+        return super.getExtras(PlatformType.MOBILE_INSITU.createId(id), query);
     }
 
 }
