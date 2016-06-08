@@ -119,9 +119,6 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
                 if (zipStream != null) {
                     zipStream.flush();
                     zipStream.close();
-                } else {
-                    stream.flush();
-                    stream.close();
                 }
             } catch (IOException e) {
                 LOGGER.debug("Stream already flushed and closed.", e);
