@@ -107,6 +107,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     public GeometryInfo getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
+            parameters.setDatabaseAuthorityCode(getDatabaseSrid());
             if (GeometryType.isPlatformLocation(id)) {
                 return getPlatformLocationGeometry(id, parameters, session);
             } else {
@@ -132,6 +133,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
 
     private List<GeometryInfo> getAllInstances(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometries = new ArrayList<>();
+        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
         if (shallIncludePlatformLocationsSites(parameters)) {
             geometries.addAll(getAllPlatformLocationsSites(parameters, session, expanded));
         }
