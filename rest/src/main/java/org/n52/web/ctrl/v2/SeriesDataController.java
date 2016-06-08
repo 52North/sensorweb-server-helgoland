@@ -314,6 +314,12 @@ public class SeriesDataController extends BaseController {
             throw new InternalServerException("Error handling output stream.", e);
         } catch (IoParseException e) { // handled by BaseController
             throw new InternalServerException("Could not write binary to stream.", e);
+        } finally {
+            try {
+                response.flushBuffer();
+            } catch (IOException e) {
+                throw new InternalServerException("Could not flush stream.", e);
+            }
         }
     }
 

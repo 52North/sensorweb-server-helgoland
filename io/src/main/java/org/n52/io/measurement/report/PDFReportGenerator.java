@@ -118,17 +118,12 @@ public class PDFReportGenerator extends ReportGenerator {
     }
 
     private void generateTimeseriesChart(SeriesDataCollection<MeasurementData> data) throws IOException {
-        FileOutputStream stream = null;
-        try {
-            renderer.generateOutput(data);
-            File tmpFile = createTempFile("52n_swc_", "_chart.png");
-            stream = new FileOutputStream(tmpFile);
+        renderer.generateOutput(data);
+        File tmpFile = createTempFile("52n_swc_", "_chart.png");
+        try (FileOutputStream stream = new FileOutputStream(tmpFile)){
             renderer.encodeAndWriteTo(stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
+            stream.flush();
         }
     }
 

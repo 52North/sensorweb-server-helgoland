@@ -127,13 +127,6 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
             write(drawChartToImage(), mimeType.getFormatName(), stream);
         } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
-        } finally {
-            try {
-                stream.flush();
-                stream.close();
-            } catch (IOException e) {
-                LOGGER.debug("Stream already flushed and closed.", e);
-            }
         }
     }
 

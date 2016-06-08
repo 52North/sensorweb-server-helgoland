@@ -100,30 +100,30 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
 
     @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
-        BufferedOutputStream bos = new BufferedOutputStream(stream);
-        ZipOutputStream zipStream = null;
         try {
             if (zipOutput) {
-                zipStream = new ZipOutputStream(stream);
-                zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
-                writeHeader(zipStream);
-                writeData(zipStream);
+                writeAsZipStream(stream);
             } else {
-                writeHeader(bos);
-                writeData(bos);
+                writeAsPlainCsv(stream);
             }
         } catch (IOException e) {
             throw new IoParseException("Could not write CSV to output stream.", e);
-        } finally {
-            try {
-                if (zipStream != null) {
-                    zipStream.flush();
-                    zipStream.close();
-                }
-            } catch (IOException e) {
-                LOGGER.debug("Stream already flushed and closed.", e);
-            }
         }
+    }
+
+    private void writeAsPlainCsv(OutputStream stream) throws IOException {
+        BufferedOutputStream bos = new BufferedOutputStream(stream);
+        writeHeader(bos);
+        writeData(bos);
+        bos.flush();
+    }
+
+    private void writeAsZipStream(OutputStream stream) throws IOException {
+        ZipOutputStream zipStream = new ZipOutputStream(stream);
+        zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
+        writeHeader(zipStream);
+        writeData(zipStream);
+        zipStream.flush();
     }
 
     private void writeHeader(OutputStream stream) throws IOException {
