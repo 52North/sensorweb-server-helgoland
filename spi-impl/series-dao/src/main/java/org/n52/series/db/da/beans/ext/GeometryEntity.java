@@ -81,7 +81,7 @@ public class GeometryEntity {
     /**
      * Returns the {@link Geometry} or creates a {@link Geometry} with the given srid in case of geometry has
      * been set via lat/lon.
-     * 
+     *
      * @param srid
      *        the spatial reference
      * @return the geometry or a created geometry (with given srid)

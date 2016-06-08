@@ -162,7 +162,7 @@ public final class CRSUtils {
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createPoint(coordinate);
     }
-    
+
     public Geometry createLineString(Coordinate[] coordinates, String srs) {
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createLineString(coordinates);

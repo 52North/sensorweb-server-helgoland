@@ -15,7 +15,7 @@
         <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" name="phenomenon" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform" />
-        
+
         <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
         <property column="observationtype" name="observationType" type="string"/>
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">

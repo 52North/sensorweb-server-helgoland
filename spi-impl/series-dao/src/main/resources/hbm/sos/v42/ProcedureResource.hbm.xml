@@ -11,7 +11,7 @@
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
         <property name="reference" column="referenceflag" type="org.hibernate.type.TrueFalseType" />
-        
+
         <property name="mobile" type="org.hibernate.type.TrueFalseType" formula="'F'" />
         <property name="insitu" type="org.hibernate.type.TrueFalseType" formula="'T'" />
     </class>

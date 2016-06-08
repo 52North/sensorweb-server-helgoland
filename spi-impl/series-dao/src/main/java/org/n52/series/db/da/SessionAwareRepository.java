@@ -61,11 +61,11 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
     }
-    
+
     protected CRSUtils getCrsUtils() {
         return crsUtils;
     }
-    
+
     protected String getDatabaseSrid() {
         return databaseSrid;
     }

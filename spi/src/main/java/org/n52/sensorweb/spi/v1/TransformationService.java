@@ -48,7 +48,7 @@ public class TransformationService {
         if (DEFAULT_CRS.equals(crs)) {
             return geometry; // no need to transform
         }
-        
+
         try {
             CRSUtils crsUtils = query.isForceXY()
                     ? createEpsgForcedXYAxisOrder()
@@ -62,7 +62,7 @@ public class TransformationService {
             throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
         }
     }
-    
+
     /**
      * @param feature the feature to transform.
      * @param query the query containing CRS and how to handle axes order.
