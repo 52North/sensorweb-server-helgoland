@@ -99,12 +99,12 @@ public class PlatformsParameterController {
     public ModelAndView getFeatures(@PathVariable("platformItem") String platformId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         // TODO check parameters and throw BAD_REQUEST if invalid
-        PlatformOutput platform = parameterService.getParameter(platformId);
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        PlatformOutput platform = parameterService.getParameter(platformId, map);
         if (platform == null) {
             throw new ResourceNotFoundException("Found no platform for given platform id.");
         }
-        query.add("platform", platformId);
-        IoParameters map = createFromQuery(query);
 
         Object result = null;
         if (map.isExpanded()) {
@@ -147,12 +147,12 @@ public class PlatformsParameterController {
     public ModelAndView getSeries(@PathVariable("platformItem") String platformId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         // TODO check parameters and throw BAD_REQUEST if invalid
-        PlatformOutput platform = parameterService.getParameter(platformId);
+        query.add("platform", platformId);
+        IoParameters map = createFromQuery(query);
+        PlatformOutput platform = parameterService.getParameter(platformId, map);
         if (platform == null) {
             throw new ResourceNotFoundException("Found no platform for given platform id.");
         }
-        query.add("platform", platformId);
-        IoParameters map = createFromQuery(query);
 
         Object result = null;
         if (map.isExpanded()) {

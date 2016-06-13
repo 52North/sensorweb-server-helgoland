@@ -43,11 +43,32 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public class TransformationService {
 
+    public Geometry transform(Geometry geometry, IoParameters query) {
+        String crs = query.getCrs();
+        if (DEFAULT_CRS.equals(crs)) {
+            return geometry; // no need to transform
+        }
+        
+        try {
+            CRSUtils crsUtils = query.isForceXY()
+                    ? createEpsgForcedXYAxisOrder()
+                    : createEpsgStrictAxisOrder();
+            return geometry != null
+                    ? crsUtils.transformInnerToOuter(geometry, crs)
+                    : geometry;
+        } catch (TransformException e) {
+            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
+        } catch (FactoryException e) {
+            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
+        }
+    }
+    
     /**
      * @param feature the feature to transform.
      * @param query the query containing CRS and how to handle axes order.
      * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
+    @Deprecated
     protected void transformInline(GeoJSONFeature feature, IoParameters query) {
         String crs = query.getCrs();
         if (DEFAULT_CRS.equals(crs)) {

@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1;
 
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_OFFERINGS;
 
+import org.n52.io.response.v1.OfferingOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_OFFERINGS)
-public class OfferingsParameterController extends ParameterControllerV1Adapter implements RestfulUrls {
+public class OfferingsParameterController extends ParameterControllerV1Adapter<OfferingOutput> implements RestfulUrls {
 
     // resource controller for offerings
 }

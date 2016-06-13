@@ -69,11 +69,6 @@ public class PlatformsAccessService extends ParameterService<PlatformOutput> {
     }
 
     @Override
-    public PlatformOutputCollection getParameters(String[] ids) {
-        return getParameters(ids, IoParameters.createDefaults());
-    }
-
-    @Override
     public PlatformOutputCollection getParameters(String[] ids, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -85,11 +80,6 @@ public class PlatformsAccessService extends ParameterService<PlatformOutput> {
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get platform data.");
         }
-    }
-
-    @Override
-    public PlatformOutput getParameter(String platformId) {
-        return getParameter(platformId, IoParameters.createDefaults());
     }
 
     @Override

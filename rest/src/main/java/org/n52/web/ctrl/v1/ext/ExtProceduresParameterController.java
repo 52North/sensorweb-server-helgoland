@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1.ext;
 
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_PROCEDURES;
 
+import org.n52.io.response.v1.ProcedureOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = EXT_COLLECTION_PROCEDURES)
-public class ExtProceduresParameterController extends ExtParameterRequestMappingAdapter {
+public class ExtProceduresParameterController extends ExtParameterRequestMappingAdapter<ProcedureOutput> {
 
     // resource controller for phenomena
 }

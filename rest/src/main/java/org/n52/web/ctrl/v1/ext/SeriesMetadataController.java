@@ -34,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.web.ctrl.ParameterController;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.util.MultiValueMap;
@@ -46,7 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES)
-public class SeriesMetadataController extends ParameterSimpleArrayCollectionAdapter {
+public class SeriesMetadataController extends ParameterSimpleArrayCollectionAdapter<SeriesMetadataOutput> {
 
     @Override
     @RequestMapping(method = GET)

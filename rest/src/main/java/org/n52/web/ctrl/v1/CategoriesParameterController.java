@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1;
 
 import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_CATEGORIES;
 
+import org.n52.io.response.v1.CategoryOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = COLLECTION_CATEGORIES)
-public class CategoriesParameterController extends ParameterControllerV1Adapter {
+public class CategoriesParameterController extends ParameterControllerV1Adapter<CategoryOutput> {
 
     // resource controller for categories
 }

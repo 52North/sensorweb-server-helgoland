@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1.ext;
 
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_FEATURES;
 
+import org.n52.io.response.v1.FeatureOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = EXT_COLLECTION_FEATURES)
-public class ExtFeaturesParameterController extends ExtParameterRequestMappingAdapter {
+public class ExtFeaturesParameterController extends ExtParameterRequestMappingAdapter<FeatureOutput> {
 
     // resource controller for phenomena
 }

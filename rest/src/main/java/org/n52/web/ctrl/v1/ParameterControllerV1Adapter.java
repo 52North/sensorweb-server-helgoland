@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.springframework.util.MultiValueMap;
@@ -44,7 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
-public abstract class ParameterControllerV1Adapter extends ParameterSimpleArrayCollectionAdapter {
+public abstract class ParameterControllerV1Adapter<T extends ParameterOutput> extends ParameterSimpleArrayCollectionAdapter<T> {
 
     private void addBackwardCompatibilityHint(MultiValueMap<String, String> query) {
         query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");

@@ -30,12 +30,13 @@ package org.n52.web.ctrl.v1.ext;
 
 import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_SERVICES;
 
+import org.n52.io.response.v1.ServiceOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = EXT_COLLECTION_SERVICES)
-public class ExtServicesParameterController extends ExtParameterRequestMappingAdapter {
+public class ExtServicesParameterController extends ExtParameterRequestMappingAdapter<ServiceOutput> {
 
     // resource controller for services
 }

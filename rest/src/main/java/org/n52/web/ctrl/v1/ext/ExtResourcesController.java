@@ -59,15 +59,15 @@ public class ExtResourcesController extends ResourcesController {
         ResourceCollection extFeatures = createResource("ext/features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.ext.features"));
         ResourceCollection extProcedures = createResource("ext/procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.ext.procedures"));
         ResourceCollection extPhenomena = createResource("ext/phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.ext.phenomena"));
-        if (params.isExpanded()) {
-            platforms.setSize(getMetadataService().getPlatformCount());
-            series.setSize(getMetadataService().getSeriesCount());
-            extCategories.setSize(getMetadataService().getExtCategoriesCount());
-            extOfferings.setSize(getMetadataService().getExtOfferingsCount());
-            extFeatures.setSize(getMetadataService().getExtFeaturesCount());
-            extProcedures.setSize(getMetadataService().getExtProceduresCount());
-            extPhenomena.setSize(getMetadataService().getExtPhenomenaCount());
-        }
+//        if (params.isExpanded()) {
+//            platforms.setSize(getMetadataService().getPlatformCount());
+//            series.setSize(getMetadataService().getSeriesCount());
+//            extCategories.setSize(getMetadataService().getExtCategoriesCount());
+//            extOfferings.setSize(getMetadataService().getExtOfferingsCount());
+//            extFeatures.setSize(getMetadataService().getExtFeaturesCount());
+//            extProcedures.setSize(getMetadataService().getExtProceduresCount());
+//            extPhenomena.setSize(getMetadataService().getExtPhenomenaCount());
+//        }
         resources.add(platforms);
         resources.add(series);
         resources.add(extCategories);

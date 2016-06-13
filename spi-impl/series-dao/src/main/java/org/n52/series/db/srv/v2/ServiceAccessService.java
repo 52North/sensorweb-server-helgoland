@@ -70,11 +70,6 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
     }
 
     @Override
-    public ServiceCollectionOutput getParameters(String[] items) {
-        return getParameters(items, IoParameters.createDefaults());
-    }
-
-    @Override
     public ServiceCollectionOutput getParameters(String[] items, IoParameters query) {
         for (String serviceId : items) {
             ServiceOutput result = getParameter(serviceId, query);
@@ -83,11 +78,6 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> implem
             }
         }
         return null;
-    }
-
-    @Override
-    public ServiceOutput getParameter(String item) {
-        return getParameter(item, IoParameters.createDefaults());
     }
 
     @Override

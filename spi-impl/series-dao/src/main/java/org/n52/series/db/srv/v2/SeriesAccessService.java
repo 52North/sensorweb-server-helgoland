@@ -113,11 +113,6 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
     }
 
     @Override
-    public OutputCollection<SeriesMetadataV2Output> getParameters(String[] items) {
-        return getParameters(items, IoParameters.createDefaults());
-    }
-
-    @Override
     public OutputCollection<SeriesMetadataV2Output> getParameters(String[] items, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
@@ -129,11 +124,6 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get series data.", e);
         }
-    }
-
-    @Override
-    public SeriesMetadataV2Output getParameter(String item) {
-        return getParameter(item, IoParameters.createDefaults());
     }
 
     @Override

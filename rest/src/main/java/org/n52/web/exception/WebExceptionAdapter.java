@@ -68,27 +68,12 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     }
 
     @Override
-    public OutputCollection<T> getParameters(String[] items) {
-        OutputCollection<T> parameters = composedService.getParameters(items);
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
-        return parameters;
-    }
-
-    @Override
     public OutputCollection<T> getParameters(String[] items, IoParameters query) {
         OutputCollection<T> parameters = composedService.getParameters(items, query);
         if (parameters == null) {
             throw new InternalServerException("SPI implementation did return null value!");
         }
         return parameters;
-    }
-
-    @Override
-    public T getParameter(String item) {
-        assertItemExists(item);
-        return composedService.getParameter(item);
     }
 
     @Override
