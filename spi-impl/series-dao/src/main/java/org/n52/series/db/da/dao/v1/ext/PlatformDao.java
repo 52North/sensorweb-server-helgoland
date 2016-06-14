@@ -66,12 +66,12 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria("platform"); // TODO filter
-        
+
         // TODO translation
-        
+
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
-        
+
         parameters.addPagingTo(criteria);
         if (!parameters.shallIncludeAllPlatformTypes()) {
             if (parameters.shallIncludeStationaryTypes()) {

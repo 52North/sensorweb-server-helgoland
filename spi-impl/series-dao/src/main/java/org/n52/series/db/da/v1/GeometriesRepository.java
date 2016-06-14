@@ -213,7 +213,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
                 // TODO better solution for adding a parameter
                 RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
                 simpleParameterSet.addParameter(FEATURES, IoParameters.getJsonNodeFrom(featureEntity.getPkid()));
-                
+
                 // XXX find or getInstances + filter
                 List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
                 geometryInfo.setGeometry(createLineString(samplingGeometries));
@@ -295,5 +295,5 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         }
         return getCrsUtils().createLineString(coordinates.toArray(new Coordinate[0]), getDatabaseSrid());
     }
-    
+
 }

@@ -6,28 +6,21 @@
             <column name="observationid"/>
             <generator class="assigned"/>
         </id>
-        <!-- only required for hzg, default use joined-subclass(see SOS) -->
-        <discriminator formula="'measurement'" type="string"/>
         <property column="seriesid" name="seriesPkid" type="long"/>
         <property column="phenomenontime" name="timestamp" type="timestamp"/>
-        <property name="deleted" type="org.hibernate.type.TrueFalseType" formula="'F'" />
+        <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
+            <!--
             <property column="lat" name="lat" type="double" />
             <property column="lon" name="lon" type="double" />
+             -->
             <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
-        <subclass name="MeasurementEntity" discriminator-value="measurement" >
-        	<property name="value" type="double"/>
-<!--             <join fetch="join" table="numericvalue"> -->
-<!--                 <key column="observationid" foreign-key="observationid"/> -->
-<!--                 <property name="value" type="double"/> -->
-<!--             </join> -->
-        </subclass>
-        <!-- <joined-subclass name="MeasurementEntity"
+        <joined-subclass name="MeasurementEntity"
                          extends="AbstractObservationEntity"
                          table="numericValue">
-        	<key column="observationId" foreign-key="observationBlobValueFk" />
+        	<key column="observationId"/>
          	<property column="value" name="value" type="double" />
-        </joined-subclass> -->
+        </joined-subclass>
     </class>
 </hibernate-mapping>

@@ -88,6 +88,12 @@
             <groupId>net.postgis</groupId>
             <artifactId>postgis-jdbc</artifactId>
             <version>${postgis.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>postgresql</groupId>
+            		<artifactId>postgresql</artifactId>
+            	</exclusion>
+            </exclusions>
             <scope>runtime</scope>
         </dependency>
         <dependency>

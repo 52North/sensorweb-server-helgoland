@@ -6,8 +6,10 @@
             <column name="phenomenontime"/>
             <generator class="assigned"/>
         </id>
+        <!--
         <property column="lat" name="lat" type="double" />
         <property column="lon" name="lon" type="double" />
+         -->
         <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         <property column="seriesid" name="seriesPkid" type="long"/>
     </class>

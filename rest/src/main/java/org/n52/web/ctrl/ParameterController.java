@@ -128,7 +128,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
         T item = parameterService.getParameter(id, queryMap);
-        
+
         if (item == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
         }

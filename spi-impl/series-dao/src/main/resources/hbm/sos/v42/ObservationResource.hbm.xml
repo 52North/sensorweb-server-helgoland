@@ -6,9 +6,9 @@
             <column name="observationid"/>
             <generator class="assigned"/>
         </id>
-        
+
         <discriminator formula="'measurement'" type="string"/>
-        
+
         <subclass name="MeasurementEntity" discriminator-value="measurement">
             <property column="seriesid" name="seriesPkid" type="long"/>
             <property column="phenomenontimeend" name="timestamp" type="timestamp"/>

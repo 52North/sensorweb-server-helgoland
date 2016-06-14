@@ -7,16 +7,15 @@
             <generator class="assigned"/>
         </id>
 
-        <!-- <discriminator column="observationconcept" type="string" /> -->
-        <discriminator formula="'measurement'" type="string"/>
+        <discriminator column="seriesType" type="string" />
 
         <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" name="category" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.PhenomenonEntity" column="observablepropertyid" name="phenomenon" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.FeatureEntity" column="featureofinterestid" name="feature" insert="false" update="false" />
-        <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform"/>
-        <property name="published" type="org.hibernate.type.TrueFalseType" formula="'T'" />
-        <property column="observationtype" name="observationType" type="string"/>
+        <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform" insert="false" update="false"/>
+        <property column="published" name="published" type="org.hibernate.type.TrueFalseType" insert="false" update="false"/>
+        <property column="seriesType" name="observationType" type="string" insert="false" update="false"/>
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">
             <property name="numberOfDecimals" type="int" formula="3" />
             <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="seriesid" name="unit" insert="false" update="false" />

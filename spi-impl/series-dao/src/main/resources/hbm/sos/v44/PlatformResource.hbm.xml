@@ -11,8 +11,8 @@
         <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
 
-        <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
-        <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
+        <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType" insert="false" update="false"/>
+        <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType" insert="false" update="false"/>
 
     </class>
 </hibernate-mapping>
