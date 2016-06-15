@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.da.beans.ext">
-    <class name="AbstractObservationEntity" table="observation">
+    <class name="AbstractObservationEntity" table="observation" abstract="true">
         <id name="pkid" type="long">
             <column name="observationid"/>
             <generator class="assigned"/>
         </id>
         <property column="seriesid" name="seriesPkid" type="long"/>
-        <property column="phenomenontime" name="timestamp" type="timestamp"/>
+        <property column="phenomenonTimeStart" name="timestamp" type="timestamp"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
             <!--

@@ -21,11 +21,11 @@
             <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="seriesid" name="unit" insert="false" update="false" />
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
-                <property column="firstvalue" name="value" type="double"/>
+                <property column="firstnumericvalue" name="value" type="double"/>
             </component>
             <component class="org.n52.series.db.da.beans.ext.MeasurementEntity" name="lastValue">
                 <property column="lasttimestamp" name="timestamp" type="timestamp"/>
-                <property column="lastvalue" name="value" type="double"/>
+                <property column="lastnumericvalue" name="value" type="double"/>
             </component>
             <list fetch="select" inverse="true" name="observations" table="observation">
                 <key column="seriesid"/>

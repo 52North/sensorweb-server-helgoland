@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.n52.series.db.da.beans.ext">
     <class name="org.n52.series.db.da.beans.ext.SamplingGeometryEntity" table="observation">
         <id name="timestamp" type="timestamp">
-            <column name="phenomenontime"/>
+            <column name="phenomenonTimeStart"/>
             <generator class="assigned"/>
         </id>
         <!--
