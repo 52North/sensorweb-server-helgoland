@@ -29,7 +29,7 @@
 package org.n52.web.ctrl.v2;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_PLATFORMS;
+import static org.n52.web.ctrl.v2.RestfulUrls.COLLECTION_PLATFORMS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;

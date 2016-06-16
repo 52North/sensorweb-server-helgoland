@@ -89,7 +89,7 @@ public class PlatformsParameterController extends ParameterSimpleArrayCollection
         return super.getItem(PlatformType.MOBILE_INSITU.createId(id), query);
     }
 
-    @Override
+//    @Override
     @RequestMapping(method = GET, path = "/mobile_insitu/{id}/extras")
     public Map<String, Object> getExtras(String id, MultiValueMap<String, String> query) {
         return super.getExtras(PlatformType.MOBILE_INSITU.createId(id), query);
