@@ -24,7 +24,7 @@
         class="org.n52.series.db.srv.v1.ext.MeasurementSeriesAccessService">
         <constructor-arg index="0" ref="seriesRepository" />
     </bean>
-    <bean id="textObservationtSeriesService" name="textObservationDataService"
+    <bean id="textObservationSeriesService" name="textObservationDataService"
         class="org.n52.series.db.srv.v1.ext.TextObservationSeriesAccessService">
         <constructor-arg index="0" ref="seriesRepository" />
     </bean>

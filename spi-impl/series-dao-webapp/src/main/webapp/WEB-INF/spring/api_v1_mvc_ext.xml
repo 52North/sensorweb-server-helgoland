@@ -70,13 +70,13 @@
         <property name="dataService" ref="measurementDataService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
-
-    <!--
+    
+	<!--
     <bean class="org.n52.web.ctrl.v1.ext.TextObservationSeriesDataController">
-        <property name="metadataService" ref="textObservationtSeriesService" />
-        <property name="dataService" ref="textObservationtDataService" />
+        <property name="metadataService" ref="textObservationSeriesService" />
+        <property name="dataService" ref="textObservationDataService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
-    -->
+	-->
 
 </beans>
