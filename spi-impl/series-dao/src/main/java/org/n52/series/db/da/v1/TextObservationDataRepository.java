@@ -45,6 +45,7 @@ import org.n52.series.db.da.beans.ext.TextObservationEntity;
 import org.n52.series.db.da.beans.ext.TextObservationSeriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.web.exception.ResourceNotFoundException;
 
 public class TextObservationDataRepository extends ExtendedSessionAwareRepository implements DataRepository<TextObservationData> {
 
@@ -55,6 +56,9 @@ public class TextObservationDataRepository extends ExtendedSessionAwareRepositor
             SeriesDao<TextObservationSeriesEntity> seriesDao = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class);
             String id = ObservationType.extractId(seriesId);
             TextObservationSeriesEntity series = seriesDao.getInstance(parseId(id), dbQuery);
+            if (series == null) {
+                throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
+            }
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);
