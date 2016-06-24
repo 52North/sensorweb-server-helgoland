@@ -28,7 +28,6 @@
  */
 package org.n52.io.response.series;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 

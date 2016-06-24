@@ -32,8 +32,8 @@ import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.measurement.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.measurement.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.measurement.img.RenderingContext.createContextWith;
+import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
@@ -59,7 +59,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -154,7 +154,7 @@ public class SeriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        MeasurementRenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
@@ -176,7 +176,7 @@ public class SeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
@@ -204,7 +204,7 @@ public class SeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
 
         response.setCharacterEncoding("UTF-8");
@@ -231,7 +231,7 @@ public class SeriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = seriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        MeasurementRenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
 
         handleBinaryResponse(response, parameters, renderer);
@@ -246,7 +246,7 @@ public class SeriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = seriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);

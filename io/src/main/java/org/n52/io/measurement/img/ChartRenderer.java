@@ -93,7 +93,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
     protected I18N i18n = getDefaultLocalizer();
 
-    private RenderingContext context;
+    private MeasurementRenderingContext context;
 
     private boolean showTooltips;
 
@@ -109,7 +109,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
     private XYPlot xyPlot;
 
-    public ChartRenderer(RenderingContext context, String locale) {
+    public ChartRenderer(MeasurementRenderingContext context, String locale) {
         if (locale != null) {
             i18n = getMessageLocalizer(locale);
         }
@@ -161,7 +161,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
         return xyPlot;
     }
 
-    public RenderingContext getRenderingContext() {
+    public MeasurementRenderingContext getRenderingContext() {
         return context;
     }
 
@@ -205,7 +205,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
         this.showTooltips = showTooltips;
     }
 
-    private XYPlot createChart(RenderingContext context) {
+    private XYPlot createChart(MeasurementRenderingContext context) {
         DateTime end = getTimespan() != null
                 ? DateTime.parse(getTimespan().split("/")[1])
                 : new DateTime();

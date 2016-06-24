@@ -54,7 +54,7 @@ public class ChartRendererTest {
     @Before
     public void
             setUp() {
-        this.chartRenderer = new MyChartRenderer(RenderingContext.createEmpty());
+        this.chartRenderer = new MyChartRenderer(MeasurementRenderingContext.createEmpty());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
+        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -93,7 +93,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
+        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(null);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -103,7 +103,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
+        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -113,7 +113,7 @@ public class ChartRendererTest {
 
     static class MyChartRenderer extends ChartRenderer {
 
-        public MyChartRenderer(RenderingContext context) {
+        public MyChartRenderer(MeasurementRenderingContext context) {
             super(context, null);
         }
 

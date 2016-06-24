@@ -61,7 +61,7 @@ import org.n52.io.style.LineStyle;
 
 public class MultipleChartsRenderer extends ChartRenderer {
 
-    public MultipleChartsRenderer(RenderingContext context, String locale) {
+    public MultipleChartsRenderer(MeasurementRenderingContext context, String locale) {
         super(context, locale);
     }
 

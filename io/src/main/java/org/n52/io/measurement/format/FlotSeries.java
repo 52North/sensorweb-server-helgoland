@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataMetadata;
 
 public class FlotSeries extends SeriesData {
 
@@ -65,6 +66,16 @@ public class FlotSeries extends SeriesData {
 
     public void addReferenceValues(String id, List<Number[]> values) {
         this.referenceValues.put(id, values);
+    }
+
+    @Override
+    public boolean hasReferenceValues() {
+        return false;
+    }
+
+    @Override
+    public SeriesDataMetadata getMetadata() {
+        return null;
     }
 
 }

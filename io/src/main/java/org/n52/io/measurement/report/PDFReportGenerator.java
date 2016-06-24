@@ -56,7 +56,6 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
-import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.measurement.img.ChartRenderer;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.series.MeasurementData;
@@ -64,6 +63,7 @@ import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.series.TvpDataCollection;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
 import org.n52.oxf.DocumentStructureType.TimeSeries;
@@ -221,7 +221,7 @@ public class PDFReportGenerator extends ReportGenerator {
 
     private void addDataTable(TimeSeries timeseries,
             TimeseriesMetadataOutput metadata,
-            TvpDataCollection dataCollection) {
+            TvpDataCollection<MeasurementData> dataCollection) {
         TableType dataTable = timeseries.addNewTable();
 
         // TODO add language context

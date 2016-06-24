@@ -62,7 +62,7 @@ import org.n52.io.IoParseException;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.measurement.format.FormatterFactory;
-import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -203,7 +203,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
@@ -233,7 +233,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
@@ -265,7 +265,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(TEXT_CSV)
@@ -295,7 +295,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = RenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .createIOHandler(context);
@@ -312,7 +312,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RenderingContext context = RenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);

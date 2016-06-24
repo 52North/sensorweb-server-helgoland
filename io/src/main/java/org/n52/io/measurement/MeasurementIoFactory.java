@@ -36,12 +36,12 @@ import java.net.URI;
 
 import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
-import org.n52.io.measurement.csv.CsvIoHandler;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
-import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.series.MeasurementData;
+import org.n52.io.series.csv.CsvIoHandler;
 
 public final class MeasurementIoFactory {
 
@@ -59,7 +59,7 @@ public final class MeasurementIoFactory {
      * @return An {@link MeasurementIoFactory} instance with default values set. Configure
      * factory by passing an {@link IoParameters} instance. After creating the
      * factory an apropriately configured {@link IoHandler} is returned when
-     * calling {@link #createIOHandler(RenderingContext)}.
+     * calling {@link #createIOHandler(MeasurementRenderingContext)}.
      */
     public static MeasurementIoFactory create() {
         return createWith(null);
@@ -87,7 +87,7 @@ public final class MeasurementIoFactory {
         return this;
     }
 
-    public IoHandler<MeasurementData> createIOHandler(RenderingContext context) {
+    public IoHandler<MeasurementData> createIOHandler(MeasurementRenderingContext context) {
 
         if (mimeType == APPLICATION_PDF) {
             MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);
@@ -125,7 +125,7 @@ public final class MeasurementIoFactory {
         throw exception;
     }
 
-    private MultipleChartsRenderer createMultiChartRenderer(RenderingContext context) {
+    private MultipleChartsRenderer createMultiChartRenderer(MeasurementRenderingContext context) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, config.getLocale());
         chartRenderer.setDrawLegend(config.isLegend());
         chartRenderer.setShowGrid(config.isGrid());

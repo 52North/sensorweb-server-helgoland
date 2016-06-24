@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
-import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 
@@ -43,20 +43,20 @@ public abstract class ReportGenerator implements IoHandler<MeasurementData> {
 
     protected I18N i18n = getDefaultLocalizer();
 
-    private RenderingContext context;
+    private MeasurementRenderingContext context;
 
     /**
      * @param context the rendering context.
      * @param language the ISO639 locale to be used.
      */
-    public ReportGenerator(RenderingContext context, String language) {
+    public ReportGenerator(MeasurementRenderingContext context, String language) {
         if (language != null) {
             i18n = getMessageLocalizer(language);
         }
         this.context = context;
     }
 
-    public RenderingContext getContext() {
+    public MeasurementRenderingContext getContext() {
         return context;
     }
 

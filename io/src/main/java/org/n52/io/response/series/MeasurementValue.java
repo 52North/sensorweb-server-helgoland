@@ -77,4 +77,14 @@ public class MeasurementValue extends SeriesData implements Comparable<Measureme
     public int compareTo(MeasurementValue o) {
         return getTimestamp().compareTo(o.getTimestamp());
     }
+
+    @Override
+    public boolean hasReferenceValues() {
+        return false;
+    }
+
+    @Override
+    public SeriesDataMetadata getMetadata() {
+        return null;
+    }
 }

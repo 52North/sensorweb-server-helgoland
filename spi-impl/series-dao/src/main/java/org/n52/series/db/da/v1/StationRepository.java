@@ -168,7 +168,7 @@ public class StationRepository extends ExtendedSessionAwareRepository implements
     }
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+        SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class);
         List<MeasurementSeriesEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));

@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.measurement.csv;
+package org.n52.io.series.csv;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -34,6 +34,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -41,15 +42,21 @@ import org.joda.time.DateTime;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
-import org.n52.io.measurement.img.RenderingContext;
+import org.n52.io.series.RenderingContext;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.series.SeriesData;
 import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.count.CountObservationData;
+import org.n52.io.response.series.count.CountObservationValue;
+import org.n52.io.response.series.text.TextObservationData;
+import org.n52.io.response.series.text.TextObservationValue;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvIoHandler implements IoHandler<MeasurementData> {
+public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvIoHandler.class);
 
@@ -60,11 +67,11 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
     // needed by some clients to detect UTF-8 encoding (e.g. excel)
     private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
 
-    private RenderingContext context = RenderingContext.createEmpty();
+    private RenderingContext context;
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
-    private SeriesDataCollection<MeasurementData> data = new SeriesDataCollection<>();
+    private SeriesDataCollection data = new SeriesDataCollection<>();
 
     private boolean useByteOrderMark = true;
 
@@ -93,7 +100,7 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
     }
 
     @Override
-    public void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException {
+    public void generateOutput(SeriesDataCollection data) throws IoParseException {
         // hold the data so we can stream it directly when #encodeAndWriteTo is called
         this.data = data;
     }
@@ -138,26 +145,75 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
     }
 
     private void writeData(OutputStream stream) throws IOException {
-        for (MeasurementSeriesOutput metadata : context.getSeriesMetadatas()) {
-            MeasurementData timeseries = data.getSeries(metadata.getId());
-            String station = metadata.getSeriesParameters().getPlatform().getLabel();
-            // instanceof SeriesMetadataV1Output // XXX hack
-            //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
-            //: ((SeriesMetadataV2Output) metadata).getLabel();
-            String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
-            String uom = metadata.getUom();
-
-            for (MeasurementValue timeseriesValue : timeseries.getValues()) {
-                String[] values = new String[HEADER.length];
-                values[0] = station;
-                values[1] = phenomenon;
-                values[2] = uom;
-
-                long timestamp = timeseriesValue.getTimestamp();
-                values[3] = new DateTime(timestamp).toString();
-                values[4] = numberformat.format(timeseriesValue.getValue());
-                writeCsvLine(csvEncode(values), stream);
+        for (SeriesMetadataOutput metadata : (List<SeriesMetadataOutput>)context.getTyplessSeriesMetadatas()) {
+            SeriesData series = data.getSeries(metadata.getId());
+            if (series instanceof MeasurementData) {
+                writeData(metadata, (MeasurementData) series, stream);
+            } else if (series instanceof TextObservationData) {
+                writeData(metadata, (TextObservationData) series, stream);
+            } else if (series instanceof CountObservationData) {
+                writeData(metadata, (CountObservationData) series, stream);
             }
+        }
+    }
+
+    private void writeData(SeriesMetadataOutput metadata, MeasurementData series, OutputStream stream) throws IOException {
+        String station = metadata.getSeriesParameters().getPlatform().getLabel();
+        // instanceof SeriesMetadataV1Output // XXX hack
+        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
+        //: ((SeriesMetadataV2Output) metadata).getLabel();
+        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
+        String uom = metadata.getUom();
+        for (MeasurementValue timeseriesValue : series.getValues()) {
+            String[] values = new String[HEADER.length];
+            values[0] = station;
+            values[1] = phenomenon;
+            values[2] = uom;
+
+            long timestamp = timeseriesValue.getTimestamp();
+            values[3] = new DateTime(timestamp).toString();
+            values[4] = numberformat.format(timeseriesValue.getValue());
+            writeCsvLine(csvEncode(values), stream);
+        }
+    }
+
+    private void writeData(SeriesMetadataOutput metadata, TextObservationData series, OutputStream stream) throws IOException {
+        String station = metadata.getSeriesParameters().getPlatform().getLabel();
+        // instanceof SeriesMetadataV1Output // XXX hack
+        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
+        //: ((SeriesMetadataV2Output) metadata).getLabel();
+        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
+        String uom = metadata.getUom();
+        for (TextObservationValue value : series.getValues()) {
+            String[] values = new String[HEADER.length];
+            values[0] = station;
+            values[1] = phenomenon;
+            values[2] = uom;
+
+            long timestamp = value.getTimestamp();
+            values[3] = new DateTime(timestamp).toString();
+            values[4] = value.getValue();
+            writeCsvLine(csvEncode(values), stream);
+        }
+    }
+
+    private void writeData(SeriesMetadataOutput metadata, CountObservationData series, OutputStream stream) throws IOException {
+        String station = metadata.getSeriesParameters().getPlatform().getLabel();
+        // instanceof SeriesMetadataV1Output // XXX hack
+        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
+        //: ((SeriesMetadataV2Output) metadata).getLabel();
+        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
+        String uom = metadata.getUom();
+        for (CountObservationValue value : series.getValues()) {
+            String[] values = new String[HEADER.length];
+            values[0] = station;
+            values[1] = phenomenon;
+            values[2] = uom;
+
+            long timestamp = value.getTimestamp();
+            values[3] = new DateTime(timestamp).toString();
+            values[4] = Integer.toString(value.getValue());
+            writeCsvLine(csvEncode(values), stream);
         }
     }
 

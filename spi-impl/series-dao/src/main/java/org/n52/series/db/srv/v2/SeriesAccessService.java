@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
@@ -41,6 +40,7 @@ import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.v2.SeriesMetadataV2Output;
 import org.n52.io.response.v2.SeriesOutputCollection;
+import org.n52.io.series.TvpDataCollection;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
@@ -67,7 +67,7 @@ public class SeriesAccessService extends ParameterService<SeriesMetadataV2Output
     @Override
     public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         try {
-            TvpDataCollection dataCollection = new TvpDataCollection();
+            TvpDataCollection<MeasurementData> dataCollection = new TvpDataCollection<MeasurementData>();
             for (String timeseriesId : parameters.getSeriesIds()) {
                 MeasurementData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {

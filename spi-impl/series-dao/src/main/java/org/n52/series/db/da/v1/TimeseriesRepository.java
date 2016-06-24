@@ -84,7 +84,7 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private SeriesDao<MeasurementSeriesEntity> createDao(Session session) {
-        return new SeriesDao<>(session);
+        return new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class);
     }
 
     @Override
@@ -147,8 +147,8 @@ public class TimeseriesRepository extends ExtendedSessionAwareRepository impleme
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<TimeseriesEntity> seriesDao = new SeriesDao<>(session);
-            for (TimeseriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            SeriesDao<MeasurementSeriesEntity> seriesDao = createDao(session);
+            for (MeasurementSeriesEntity timeseries : seriesDao.getAllInstances(query)) {
                 /*
                  *  ATM, the SWC REST API only supports numeric types
                  *  We check for a unit to check for them

@@ -26,14 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.measurement;
+package org.n52.io.series;
 
-import org.n52.io.response.series.MeasurementData;
+import org.n52.io.response.series.SeriesData;
 import org.n52.io.response.series.SeriesDataCollection;
 
 /**
  * Represents a time value pair data format.
  */
-public final class TvpDataCollection extends SeriesDataCollection<MeasurementData> {
+public final class TvpDataCollection<T extends SeriesData> extends SeriesDataCollection<T> {
 
 }

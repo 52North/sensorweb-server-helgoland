@@ -71,4 +71,12 @@
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 
+    <!--
+    <bean class="org.n52.web.ctrl.v1.ext.TextObservationSeriesDataController">
+        <property name="metadataService" ref="textObservationtSeriesService" />
+        <property name="dataService" ref="textObservationtDataService" />
+        <property name="requestIntervalRestriction" value="P1Y1D" />
+    </bean>
+    -->
+
 </beans>

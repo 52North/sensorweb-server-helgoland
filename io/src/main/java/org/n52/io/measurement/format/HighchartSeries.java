@@ -31,6 +31,7 @@ package org.n52.io.measurement.format;
 import java.util.List;
 
 import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.SeriesDataMetadata;
 
 public class HighchartSeries extends SeriesData {
 
@@ -54,6 +55,16 @@ public class HighchartSeries extends SeriesData {
 
     public void setData(List<Number[]> series) {
         this.data = series;
+    }
+
+    @Override
+    public boolean hasReferenceValues() {
+        return false;
+    }
+
+    @Override
+    public SeriesDataMetadata getMetadata() {
+        return null;
     }
 
 }

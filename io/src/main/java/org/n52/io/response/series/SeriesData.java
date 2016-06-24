@@ -35,7 +35,7 @@ import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
-public class SeriesData implements Serializable {
+public abstract class SeriesData implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
@@ -49,4 +49,8 @@ public class SeriesData implements Serializable {
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
+
+    public abstract boolean hasReferenceValues();
+
+    public abstract SeriesDataMetadata getMetadata();
 }

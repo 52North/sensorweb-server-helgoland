@@ -29,12 +29,12 @@
 
 package org.n52.series.db.srv.v1;
 
-import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.series.TvpDataCollection;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.v1.DbQuery;
@@ -57,7 +57,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     @Override
     public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         try {
-            TvpDataCollection dataCollection = new TvpDataCollection();
+            TvpDataCollection<MeasurementData> dataCollection = new TvpDataCollection<MeasurementData>();
             for (String timeseriesId : parameters.getSeriesIds()) {
                 MeasurementData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {

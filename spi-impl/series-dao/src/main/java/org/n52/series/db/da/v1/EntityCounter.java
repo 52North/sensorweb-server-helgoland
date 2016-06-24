@@ -94,7 +94,7 @@ public class EntityCounter {
     public int countTimeseries() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new SeriesDao<MeasurementSeriesEntity>(session).getCount();
+            return new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class).getCount();
         } finally {
             sessionStore.returnSession(session);
         }

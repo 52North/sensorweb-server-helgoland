@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.series;
 
-public class MeasurementReferenceValueOutput {
+public class MeasurementReferenceValueOutput implements SeriesReferenceValueOutput<MeasurementValue> {
 
     private String referenceValueId;
 

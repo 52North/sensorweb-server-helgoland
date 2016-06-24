@@ -35,11 +35,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 
-import org.n52.io.measurement.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,7 +118,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
 
     @Override
     public SeriesDataCollection<MeasurementData> generalize(SeriesDataCollection<MeasurementData> data) throws GeneralizerException {
-        TvpDataCollection generalizedDataCollection = new TvpDataCollection();
+        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<MeasurementData>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
             MeasurementData timeseries = data.getSeries(timeseriesId);
             generalizedDataCollection.addNewSeries(timeseriesId, generalize(timeseries));

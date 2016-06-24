@@ -34,8 +34,9 @@ import java.util.Set;
 
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.response.series.SeriesReferenceValueOutput;
 
-public abstract class SeriesMetadataOutput extends ParameterOutput {
+public abstract class SeriesMetadataOutput<T extends SeriesReferenceValueOutput> extends ParameterOutput {
 
     private final ObservationType observationType;
 
@@ -108,4 +109,7 @@ public abstract class SeriesMetadataOutput extends ParameterOutput {
         }
     }
 
+    public abstract T[] getReferenceValues();
+
+    public abstract void setReferenceValues(T[] referenceValues);
 }

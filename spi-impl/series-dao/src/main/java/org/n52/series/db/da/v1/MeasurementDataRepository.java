@@ -56,7 +56,7 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
     public MeasurementData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<>(session);
+            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class);
             String id = ObservationType.extractId(seriesId);
             MeasurementSeriesEntity series = seriesDao.getInstance(parseId(id), dbQuery);
             return dbQuery.isExpanded()

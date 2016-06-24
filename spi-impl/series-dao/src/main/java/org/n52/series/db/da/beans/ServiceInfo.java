@@ -35,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
+import org.n52.series.db.da.beans.ext.TextObservationEntity;
 import org.n52.series.db.da.beans.v1.ObservationEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

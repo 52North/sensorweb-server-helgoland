@@ -210,7 +210,8 @@ public abstract class AbstractDbQuery {
         try {
             return observationType != null
                 ? ObservationType.toInstance(observationType)
-                : ObservationType.MEASUREMENT;
+                : ObservationType.ALL;
+//                : ObservationType.MEASUREMENT;
         }
         catch (IllegalArgumentException e) {
             LOGGER.debug("unknown observation type: {}", observationType);
