@@ -56,14 +56,9 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     private final Class<T> entityType;
 
-    private SeriesDao(Session session, Class<T> clazz) {
+    public SeriesDao(Session session, Class<T> clazz) {
         super(session);
         this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
-    }
-
-    public SeriesDao(Session session) {
-        super(session);
-        this.entityType = (Class<T>) AbstractSeriesEntity.class;
     }
 
     @Override
