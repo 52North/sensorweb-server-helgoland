@@ -69,11 +69,10 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
         try {
             if (PlatformType.isStationaryId(id)) {
                 FeatureDao featureDao = new FeatureDao(session);
-                return featureDao.hasInstance(parseId(id), FeatureEntity.class);
+                return featureDao.hasInstance(parseId(PlatformType.extractId(id)), FeatureEntity.class);
             } else {
                 PlatformDao dao = new PlatformDao(session);
-                String platformId = PlatformType.extractId(id);
-                return dao.hasInstance(parseId(platformId), PlatformEntity.class);
+                return dao.hasInstance(parseId(PlatformType.extractId(id)), PlatformEntity.class);
             }
         } finally {
             returnSession(session);
@@ -159,6 +158,12 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         LOGGER.warn("getAllStationaryRemote() not implemented yet.");
+        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
+        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        }
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_REMOTE, IoParameters.getJsonNodeFrom(true));
         return Collections.emptyList();
     }
 
@@ -200,11 +205,23 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
         PlatformDao dao = new PlatformDao(session);
-        return dao.getAllInstances(parameters);
+        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
+        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        }
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_MOBILE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_INSITU, IoParameters.getJsonNodeFrom(true));
+        return dao.getAllInstances(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
         LOGGER.warn("getAllMobileRemote() not implemented yet.");
+        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
+        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        }
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_MOBILE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_REMOTE, IoParameters.getJsonNodeFrom(true));
         return Collections.emptyList();
     }
 
