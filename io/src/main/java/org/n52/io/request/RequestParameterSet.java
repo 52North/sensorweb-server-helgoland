@@ -164,6 +164,12 @@ public abstract class RequestParameterSet {
         return parameters.get(parameter);
     }
 
+    public void removeParameter(String parameter) {
+        if (parameter != null && !parameter.isEmpty()) {
+            parameters.remove(parameter);
+        }
+    }
+
     public final void setParameters(Map<String, JsonNode> parameters) {
         if (parameters != null) {
             this.parameters.clear();
