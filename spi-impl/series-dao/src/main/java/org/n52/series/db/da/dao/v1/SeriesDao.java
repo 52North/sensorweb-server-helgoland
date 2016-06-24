@@ -161,6 +161,9 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     @Override
     protected Criteria getDefaultCriteria() {
+        if (entityType != null) {
+            return session.createCriteria(entityType);
+        }
         return session.createCriteria(AbstractSeriesEntity.class);
     }
 
