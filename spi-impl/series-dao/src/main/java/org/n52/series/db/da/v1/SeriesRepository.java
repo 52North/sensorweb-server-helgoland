@@ -168,8 +168,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
                 return null;
                 // TODO other obesrvation types
             case TEXT:
-                TextObservationSeriesEntity testSeries = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
-                return createExpanded(testSeries, query, session);
+                TextObservationSeriesEntity textSeries = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
+                return createExpanded(textSeries, query, session);
             case COUNT:
                 CountObservationSeriesEntity countSeries = new SeriesDao<CountObservationSeriesEntity>(session, CountObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
                 return createExpanded(countSeries, query, session);
