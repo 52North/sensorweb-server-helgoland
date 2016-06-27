@@ -44,6 +44,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -59,6 +60,7 @@ import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
+import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.measurement.format.FormatterFactory;
@@ -211,12 +213,13 @@ public class TimeseriesDataController extends BaseController {
                 .withServletContextRoot(getRootResource())
                 .createIOHandler(context);
 
+        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
         handleBinaryResponse(response, parameters, renderer);
 
     }
 
-    private URI getRootResource() throws URISyntaxException {
-        return new URI(getServletConfig().getServletContext().getRealPath("/"));
+    private URI getRootResource() throws URISyntaxException, MalformedURLException {
+        return getServletConfig().getServletContext().getResource("/").toURI();
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/pdf"}, method = GET)
@@ -240,6 +243,7 @@ public class TimeseriesDataController extends BaseController {
                 .withServletContextRoot(getRootResource())
                 .createIOHandler(context);
 
+        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -248,6 +252,8 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
         query.put("zip", Arrays.asList(new String[]{Boolean.TRUE.toString()}));
+
+        response.setContentType(MimeType.APPLICATION_ZIP.getMimeType());
         getTimeseriesAsCsv(response, timeseriesId, query);
     }
 
@@ -300,6 +306,7 @@ public class TimeseriesDataController extends BaseController {
                 .createWith(map)
                 .createIOHandler(context);
 
+        response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -325,6 +332,7 @@ public class TimeseriesDataController extends BaseController {
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .createIOHandler(context);
+        response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -382,6 +390,14 @@ public class TimeseriesDataController extends BaseController {
             throw new InternalServerException("Error handling output stream.", e);
         } catch (IoParseException e) { // handled by BaseController
             throw new InternalServerException("Could not write binary to stream.", e);
+        } finally {
+            try {
+                if ( !response.isCommitted()) {
+                    response.flushBuffer();
+                }
+            } catch (IOException e) {
+                throw new InternalServerException("Could not flush buffer.", e);
+            }
         }
     }
 

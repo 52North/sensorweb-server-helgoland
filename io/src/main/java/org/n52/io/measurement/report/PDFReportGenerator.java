@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.Files;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -45,6 +46,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.avalon.framework.configuration.Configuration;
@@ -54,6 +56,7 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
 import org.n52.io.measurement.img.ChartRenderer;
@@ -78,6 +81,8 @@ import org.xml.sax.SAXException;
 public class PDFReportGenerator extends ReportGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
+
+    private static final String TEMP_FILE_PREFIX = "52n_swc_";
 
     private static final String LOCALE_REPLACER = "{locale}";
 
@@ -118,18 +123,19 @@ public class PDFReportGenerator extends ReportGenerator {
     }
 
     private void generateTimeseriesChart(SeriesDataCollection<MeasurementData> data) throws IOException {
-        FileOutputStream stream = null;
-        try {
-            renderer.generateOutput(data);
-            File tmpFile = createTempFile("52n_swc_", "_chart.png");
-            stream = new FileOutputStream(tmpFile);
+        renderer.generateOutput(data);
+        File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
+        try (FileOutputStream stream = new FileOutputStream(tmpFile)){
             renderer.encodeAndWriteTo(stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-        } finally {
-            if (stream != null) {
-                stream.close();
-            }
+//            String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
+//            document.getDocumentStructure().setDiagramURL(absoluteFilePath);
+            stream.flush();
         }
+    }
+
+    private String getFoAbsoluteFilepath(File tmpFile) {
+        return tmpFile.toURI().toString();
     }
 
     private void generateTimeseriesMetadata() {
@@ -161,6 +167,19 @@ public class PDFReportGenerator extends ReportGenerator {
 
             Source source = new StreamSource(document.newInputStream());
             Result result = new SAXResult(fop.getDefaultHandler());
+            if (LOGGER.isDebugEnabled()) {
+                try {
+                    File tempFile = createTempFile(TEMP_FILE_PREFIX, ".xml");
+                    StreamResult debugResult = new StreamResult(tempFile);
+                    transformer.transform(source, debugResult);
+                    String xslResult = XmlObject.Factory.parse(tempFile).xmlText();
+                    LOGGER.debug("xsl-fo input (locale '{}'): {}", i18n.getTwoDigitsLanguageCode(), xslResult);
+                } catch (Exception e) {
+                    LOGGER.error("Could not debug XSL result output!", e);
+                }
+            }
+
+            // XXX debug, diagram is not embedded
             transformer.transform(source, result);
         } catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
@@ -170,13 +189,6 @@ public class PDFReportGenerator extends ReportGenerator {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
         } catch (TransformerException e) {
             throw new IoParseException("Could not generate PDF report!", e);
-        } finally {
-            try {
-                stream.flush();
-                stream.close();
-            } catch (IOException e) {
-                LOGGER.debug("Stream already flushed and closed.", e);
-            }
         }
     }
 

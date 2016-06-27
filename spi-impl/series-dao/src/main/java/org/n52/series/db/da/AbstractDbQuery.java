@@ -289,7 +289,10 @@ public abstract class AbstractDbQuery {
                 Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
                 Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
-                criteria.add(SpatialRestrictions.filter("geom", envelope, databaseSrid));
+                criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
+
+                // TODO intersect with linestring
+
             }
             catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);

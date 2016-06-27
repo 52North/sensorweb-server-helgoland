@@ -48,6 +48,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -225,8 +226,8 @@ public class MeasurementSeriesDataController extends BaseController {
 
     }
 
-    private URI getRootResource() throws URISyntaxException {
-        return new URI(getServletConfig().getServletContext().getRealPath("/"));
+    private URI getRootResource() throws URISyntaxException, MalformedURLException {
+        return getServletConfig().getServletContext().getResource("/").toURI();
     }
 
     @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/pdf"}, method = GET)
