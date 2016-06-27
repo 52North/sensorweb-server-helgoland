@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -29,6 +29,8 @@ package org.n52.io.generalize;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Properties;
 import org.n52.io.IoParameters;
@@ -49,18 +51,25 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
     private static final String THRESHOLD = "threshold";
+    
+    private static final String NO_DATA_GAP_THRESHOLD = "noDataGapThreshold";
 
-    private double threshold = 200; // fallback default
+    private double maxOutputValues = 200; // fallback default
+    
+    private double noDataGapThreshold = 0.2d; // fallback default
 
     public LargestTriangleThreeBucketsGeneralizer(IoParameters parameters) {
         super(parameters);
         try {
-            threshold = parameters.containsParameter(THRESHOLD)
+            maxOutputValues = parameters.containsParameter(THRESHOLD)
                     ? parseDouble(parameters.getOther(THRESHOLD))
-                    : threshold;
+                    : maxOutputValues;
+            noDataGapThreshold = parameters.containsParameter(NO_DATA_GAP_THRESHOLD.toLowerCase())
+                    ? parseDouble(parameters.getOther(NO_DATA_GAP_THRESHOLD.toLowerCase()))
+                    : noDataGapThreshold;
         } catch (NumberFormatException ne) {
             LOGGER.error("Error while reading properties! Using fallback defaults.", ne);
-            throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
+//            throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
         }
     }
 
@@ -88,61 +97,115 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
 
         int dataLength = data.length;
 
-        if (threshold >= dataLength || threshold == 0) {
+        if (maxOutputValues >= dataLength || maxOutputValues == 0) {
             return timeseries; // nothing to do
         }
+        
+//        int amountOfNaN = 0;
+//        for (int i = 0 ; i < dataLength ; i++) {
+//            if (data[i].getValue().isNaN()) {
+//                amountOfNaN++;
+//            }
+//        }
+//        int offset = 0;
+//        int amountNaNsInSequence = 0;
+//        List<TimeseriesValue[]> dataChunks = new ArrayList<>();
+//        for (int i = 0 ; i < dataLength ; ) {
+//            if ( !data[i].getValue().isNaN()) {
+//                i++; // continue, if normal number
+//                continue;
+//            }
+//            for (int j = 0 ; i + j < dataLength ; j++) {
+//                final int currentIdx = i + j;
+//                final int lastIdx = currentIdx - 1;
+//                if (lastIdx >= 0 && !data[lastIdx].getValue().isNaN()) {
+//                    offset = currentIdx;
+//                }
+//                if (data[ currentIdx ].getValue().isNaN()) {
+//                    amountNaNsInSequence++;
+//                    if (amountNaNsInSequence == noDataGapThreshold) {
+//                        TimeseriesValue[] chunk = new TimeseriesValue[i - offset];
+//                        System.arraycopy(data, offset, chunk, 0, chunk.length);
+//                        dataChunks.add(chunk);
+//                    }
+//                    if (amountNaNsInSequence > noDataGapThreshold) {
+//                        offset++;
+//                    }
+//                } else {
+//                    // end of NaN sequence
+//                    amountNaNsInSequence = 0; // reset
+//                    i += j + 1; // index of next normal number
+//                    break; // 
+//                }
+//            }
+//        }
+        
+        return generalizeData(data);
+    }
+    
+    private TimeseriesData generalizeData(TimeseriesValue[] data) {
 
-        //int threshold = data.length / 10; // TODO define the threshold
-
-        TimeseriesData sampled = new TimeseriesData();
-
+        int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
-        double every = ((double) dataLength - 2) / (threshold - 2);
+        double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
 
         int pointIndex = 0;
+        TimeseriesData sampled = new TimeseriesData();
         sampled.addValues(data[pointIndex]);
 
-        for (int i = 0; i < threshold - 2; i++) {
-            // Calculate point average for next bucket (containing c)
-            int avgRangeStart = (int) Math.floor((i + 1) * every) + 1;
-            int avgRangeEnd = (int) Math.floor((i + 2) * every) + 1;
-            double avgTimestamp = 0;
-            double avgValue = 0;
-            avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
-
-            double avgRangeLength = avgRangeEnd - avgRangeStart;
-
-            for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
-                avgTimestamp += data[avgRangeStart].getTimestamp();
-                if (data[avgRangeStart].getValue() != null) {
-                    avgValue += data[avgRangeStart].getValue();
-                }
-            }
-
-            avgTimestamp /= avgRangeLength;
-            avgValue /= avgRangeLength;
-
+        for (int bucketIndex =  0; bucketIndex  < maxOutputValues - 2; bucketIndex++) {
+            
             // get the range for this bucket
-            int rangeOffs = (int) Math.floor((i + 0) * every) + 1;
-            int rangeTo = (int) Math.floor((i + 1) * every) + 1;
+            int rangeOff = (int) Math.floor((bucketIndex  + 0) * bucketSize) + 1;
+            int rangeTo = (int) Math.floor((bucketIndex  + 1) * bucketSize) + 1;
+            
+            // first point of triangle
+            TimeseriesValue triangleLeft = data[pointIndex];
+            if (triangleLeft.getValue().isNaN()) {
+                addNodataValue(sampled, triangleLeft.getTimestamp());
+                pointIndex = rangeTo - 1;
+                continue;
+            }
+            
+            // last point of triangle (next bucket's average)
+            BucketAverage triangleRight = calculateAverageOfBucket(bucketIndex + 1, bucketSize, data);
 
-            // Point a
-            double tempTimestamp = data[pointIndex].getTimestamp();
-            double tempValue = data[pointIndex].getValue();
-
+            // init fallback value
+            BucketAverage avgCurrentBucket = calculateAverageOfBucket(bucketIndex, bucketSize, data);
+            long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp();
+            TimeseriesValue maxAreaPoint = new TimeseriesValue(fallBackTimestamp, Double.NaN);
+            
             double area;
-            TimeseriesValue maxAreaPoint = null;
-            int nextPointIndex = 0;
+            int amountOfNodataValues = 0;
             double maxArea = area = -1;
-
-            for (; rangeOffs < rangeTo; rangeOffs++) {
+            int nextPointIndex = 0;
+            
+            for (; rangeOff < rangeTo; rangeOff++) {
+                
+//                if (triangleRight.isNoDataBucket()) {
+//                    triangleRight = // TODO
+//                }
+                
                 // calculate triangle area over three buckets
-                if (data[rangeOffs].getValue() != null) {
-                    area = Math.abs((tempTimestamp - avgTimestamp) * (data[rangeOffs].getValue() - tempValue) - (tempTimestamp - data[rangeOffs].getTimestamp()) * (avgValue - tempValue)) * 0.5;
+                final TimeseriesValue triangleMiddle = data[rangeOff];
+                
+                if (triangleMiddle.getValue().isNaN()) {
+                    amountOfNodataValues++;
+                    if (isExceededGapThreshold(amountOfNodataValues, bucketSize)) {
+                        if (triangleMiddle.getValue().isNaN()) {
+                            maxAreaPoint = avgCurrentBucket.toTimeseriesValue();
+                            maxAreaPoint.setValue(Double.NaN);
+                            LOGGER.debug("No data value for bucket {}.", bucketIndex);
+                            pointIndex = rangeTo - 1;
+                            break;
+                        }
+                    }
+                } else {
+                    area = calcTriangleArea(triangleLeft, triangleRight, triangleMiddle);
                     if (area > maxArea) {
                         maxArea = area;
-                        maxAreaPoint = data[rangeOffs];
-                        nextPointIndex = rangeOffs;
+                        maxAreaPoint = triangleMiddle;
+                        nextPointIndex = rangeOff;
                     }
                 }
             }
@@ -151,8 +214,78 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             pointIndex = nextPointIndex; // This a is the next a
         }
 
-        sampled.addValues(data[dataLength - 1]); // Allways add last value
+        sampled.addValues(data[dataLength - 1]); // Always add last value
         return sampled;
     }
 
+    private boolean isExceededGapThreshold(int amountOfNodataValues, double bucketSize) {
+        return noDataGapThreshold <= 1
+                ? amountOfNodataValues > noDataGapThreshold * bucketSize // max percent
+                : amountOfNodataValues > noDataGapThreshold; // max absolute
+    }
+
+    private void addNodataValue(TimeseriesData sampled, long timestamp) {
+        sampled.addValues(new TimeseriesValue(timestamp, Double.NaN));
+    }
+
+    private static double calcTriangleArea(TimeseriesValue left, BucketAverage right, TimeseriesValue middle) {
+        Double middleValue = middle.getValue();
+        final Double leftValue = left.getValue();
+        final Double rightValue = right.value;
+        return Math.abs((left.getTimestamp() - right.timestamp)
+                * (middleValue - leftValue)
+                - (left.getTimestamp() - middle.getTimestamp())
+                * (rightValue - leftValue)) * 0.5;
+    }
+
+    private BucketAverage calculateAverageOfBucket(int bucketIndex, double bucketSize, TimeseriesValue[] data) {
+        
+        int dataLength = data.length;
+        
+
+        int avgRangeStart = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
+        int avgRangeEnd = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
+        avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
+        double avgRangeLength = avgRangeEnd - avgRangeStart;
+        
+        Double avgValue = 0d;
+        Double avgTimestamp = 0d;
+        int amountOfNodataValues = 0;
+        boolean noDataThresholdExceeded = false;
+        for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
+            final TimeseriesValue current = data[avgRangeStart];
+            avgTimestamp += current.getTimestamp();
+            if (noDataThresholdExceeded) {
+                continue; // keep on calc avg timestamp
+            }
+            if (current.getValue().isNaN()) {
+                amountOfNodataValues++;
+                if (amountOfNodataValues == noDataGapThreshold) {
+                    avgValue = Double.NaN;
+                    noDataThresholdExceeded = true;
+                }
+            } else {
+                avgValue += current.getValue();
+            }
+        }
+        
+        avgTimestamp /= avgRangeLength;
+        avgValue /= avgRangeLength;
+        return new BucketAverage(avgTimestamp, avgValue);
+    }
+    
+    private class BucketAverage {
+        private Double timestamp;
+        private Double value;
+        BucketAverage(Double timestamp, Double value) {
+            this.timestamp = timestamp;
+            this.value = value;
+        }
+        boolean isNoDataBucket() {
+            return value.isNaN();
+        }
+        TimeseriesValue toTimeseriesValue() {
+            return new TimeseriesValue(timestamp.longValue(), value);
+        }
+    }
 }

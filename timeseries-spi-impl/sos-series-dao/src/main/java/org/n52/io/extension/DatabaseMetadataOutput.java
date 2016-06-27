@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,51 +25,35 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
-import org.n52.io.v1.data.StyleProperties;
+public class DatabaseMetadataOutput<T> {
 
-public class ConfigRenderingHints {
+    private T value;
+    
+    private Date lastUpdate;
 
-	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
+    public T getValue() {
+        return value;
+    }
 
-	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+    
+    static <T> DatabaseMetadataOutput<T> create() {
+        return new DatabaseMetadataOutput<>();
+    }
 
-	public ConfigRenderingHints() {
-		
-	}
-	
-	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
-		return phenomenonStyles;
-	}
-
-	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
-		this.phenomenonStyles = phenomenonStyles;
-	}
-
-	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-		return timeseriesStyles;
-	}
-
-	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-		this.timeseriesStyles = timeseriesStyles;
-	}
-
-	public static class ConfiguredStyle {
-
-		private StyleProperties style;
-
-		public StyleProperties getStyle() {
-			return style;
-		}
-
-		public void setStyle(StyleProperties style) {
-			this.style = style;
-		}
-
-	}
-
+    DatabaseMetadataOutput<T> withValue(T value) {
+        this.value = value;
+        return this;
+    }
+    
+    DatabaseMetadataOutput<T> lastUpdatedAt(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+        return this;
+    }
 }

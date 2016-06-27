@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,16 +25,8 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.extension;
 
-import java.util.Map;
-
-import org.n52.io.IoParameters;
-
-public interface MetadataExtension<T> {
-
-    public void applyExtensionOn(T toApplyExtensionOn);
-
-    public Map<String, Object> getData(IoParameters parameters, String timeseriesId);
-
+public class MetadataStringEntity extends MetadataEntity<String> {
+    
 }

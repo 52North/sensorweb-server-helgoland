@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -184,7 +184,7 @@ public abstract class SessionAwareRepository {
 		} else if (isNameAvailable(entity)) {
 			return entity.getName();
 		} else {
-			return entity.getCanonicalId();
+			return entity.getDomainId();
 		}
 	}
 

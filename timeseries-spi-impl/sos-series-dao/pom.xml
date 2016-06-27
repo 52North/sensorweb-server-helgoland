@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52.sensorweb</groupId>
         <artifactId>timeseries-spi-impl</artifactId>
-        <version>1.6.0</version>
+        <version>1.8.0</version>
     </parent>
     <artifactId>timeseries-series-dao</artifactId>
     <packaging>jar</packaging>
@@ -13,7 +13,7 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-        <sos.version>4.1.0</sos.version>
+        <sos.version>4.3.4</sos.version>
     </properties>
     <dependencies>
         <dependency>
@@ -24,6 +24,11 @@
             <groupId>org.n52.sensorweb</groupId>
             <artifactId>timeseries-web</artifactId>
         </dependency>
+        
+        <dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
@@ -55,12 +60,29 @@
             <artifactId>hibernate-datasource-common</artifactId>
             <version>${sos.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -69,22 +91,32 @@
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/webapp</directory>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <filtering>false</filtering>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
 

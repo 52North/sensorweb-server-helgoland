@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,7 +63,7 @@ public class DesignedParameterSet extends ParameterSet {
      * Creates an instance with non-null default values.
      */
     public DesignedParameterSet() {
-        styleOptions = new HashMap<String, StyleProperties>();
+        styleOptions = new HashMap<>();
     }
 
     /**
@@ -127,25 +127,14 @@ public class DesignedParameterSet extends ParameterSet {
     }
 
     public StyleProperties getReferenceSeriesStyleOptions(String timeseriesId, String referenceSeriesId) {
-        try {
-            if ( !styleOptions.containsKey(timeseriesId)) {
-                return null;
-            }
-            StyleProperties styleProperties = styleOptions.get(timeseriesId);
-            Map<String, String> properties = styleProperties.getProperties();
-            return properties.containsKey(referenceSeriesId)
-                ? new ObjectMapper().readValue(properties.get(referenceSeriesId), StyleProperties.class)
-                : null;
+        if ( !styleOptions.containsKey(timeseriesId)) {
+            return null;
         }
-        catch (JsonMappingException e) {
-            throw new IoParseException("Unable to read style properties for reference series: " + referenceSeriesId, e);
-        }
-        catch (JsonParseException e) {
-            throw new IoParseException("Could not parse style properties.", e);
-        }
-        catch (IOException e) {
-            throw new IoParseException("Could handle I/O operations while parsing JSON properties.", e);
-        }
+        StyleProperties styleProperties = styleOptions.get(timeseriesId);
+        Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
+        return properties.containsKey(referenceSeriesId)
+            ? properties.get(referenceSeriesId)
+            : null;
     }
 
     public void addTimeseriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {

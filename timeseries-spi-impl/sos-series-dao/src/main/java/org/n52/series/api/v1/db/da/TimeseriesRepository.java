@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -332,10 +332,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         TimeseriesValue value = new TimeseriesValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(formatDecimal(observation.getValue(), series));
+        Double observationValue = !getServiceInfo().hasNoDataValue(observation)
+                ? formatDecimal(observation.getValue(), series)
+                : Double.NaN;
+        value.setValue(observationValue);
         return value;
     }
-
+    
     private Double formatDecimal(Double value, SeriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)

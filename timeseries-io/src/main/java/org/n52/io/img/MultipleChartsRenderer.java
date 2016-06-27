@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -211,7 +211,11 @@ public class MultipleChartsRenderer extends ChartRenderer {
                 else if (isLineStyle(style)) {
                     for (TimeseriesValue value : timeseriesData.getValues()) {
                         Second second = new Second(new Date(value.getTimestamp()));
-                        timeseries.add(second, value.getValue());
+                        if ( !value.getValue().isNaN()) {
+                            timeseries.addOrUpdate(second, value.getValue());
+                        } else {
+                            timeseries.addOrUpdate(second, null);
+                        }
                     }
                 }
             }

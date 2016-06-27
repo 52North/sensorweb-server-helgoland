@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,8 +27,12 @@
  */
 package org.n52.web;
 
+import java.io.InputStream;
+
 import org.n52.io.IoParameters;
+import org.n52.io.v1.data.UndesignedParameterSet;
 import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.RawDataService;
 
 /**
  * Adapts SPI exceptions to HTTP specified Web exceptions.
@@ -37,7 +41,7 @@ import org.n52.sensorweb.v1.spi.ParameterService;
  *
  * @param <T> the parameter type of the service to adapt execptions for.
  */
-public class WebExceptionAdapter<T> implements ParameterService<T> {
+public class WebExceptionAdapter<T> implements ParameterService<T>, RawDataService {
 
     private final ParameterService<T> composedService;
 
@@ -98,5 +102,21 @@ public class WebExceptionAdapter<T> implements ParameterService<T> {
         }
         return parameter;
     }
+    
+    @Override
+	public InputStream getRawData(String id, IoParameters query) {
+		if (composedService instanceof RawDataService) {
+			return ((RawDataService)composedService).getRawData(id, query);
+		}
+		return null;
+	}
+
+	@Override
+	public InputStream getRawData(UndesignedParameterSet parameters) {
+		if (composedService instanceof RawDataService) {
+			return ((RawDataService)composedService).getRawData(parameters);
+		}
+		return null;
+	}
 
 }

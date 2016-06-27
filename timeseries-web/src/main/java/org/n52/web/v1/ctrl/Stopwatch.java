@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -47,6 +47,10 @@ public class Stopwatch {
 
     public String stopInSeconds() {
         return secondsFormatter.format(stopInMillis() / 1000d);
+    }
+    
+    public long getStartInMillis() {
+        return start;
     }
 
     public static Stopwatch startStopwatch() {

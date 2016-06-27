@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,24 +25,29 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.web.v1.extension;
+package org.n52.io.v1.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-public class ConfigResultTime {
-    
-    private List<String> services = new ArrayList<String>();
+public interface RawFormats {
+	
+	String RAW_FORMAT = "rawFormat";
 
-    public ConfigResultTime() {
-    }
+	/**
+	 * @return the rawFormats
+	 */
+	String[] getRawFormats();
 
-    public List<String> getServices() {
-        return services;
-    }
+	/**
+	 * @param rawFormat
+	 *            the rawFormat to add
+	 */
+	void addRawFormat(String rawFormat);
 
-    public void setServices(List<String> services) {
-        this.services = services;
-    }
-    
+	/**
+	 * @param rawFormats
+	 *            the rawFormats to set
+	 */
+	void setRawFormats(Collection<String> rawFormats);
+
 }
