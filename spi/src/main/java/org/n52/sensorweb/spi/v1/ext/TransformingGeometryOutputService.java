@@ -11,14 +11,14 @@ import com.vividsolutions.jts.geom.Geometry;
 public class TransformingGeometryOutputService extends ParameterService<GeometryInfo> {
 
     private final ParameterService<GeometryInfo> composedService;
-    
+
     private final TransformationService transformationService;
 
     public TransformingGeometryOutputService(ParameterService<GeometryInfo> toCompose) {
         this.composedService = toCompose;
         this.transformationService = new TransformationService();
     }
-    
+
     @Override
     public OutputCollection<GeometryInfo> getExpandedParameters(IoParameters query) {
         return transform(query, composedService.getExpandedParameters(query));
@@ -43,7 +43,7 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
     public boolean exists(String id) {
         return composedService.exists(id);
     }
-    
+
     private OutputCollection<GeometryInfo> transform(IoParameters query, OutputCollection<GeometryInfo> infos) {
         if (infos != null) {
             for (GeometryInfo info : infos) {
@@ -52,7 +52,7 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
         }
         return infos;
     }
-    
+
     private GeometryInfo transform(IoParameters query, GeometryInfo info) {
         transformInline(query, info);
         return info;

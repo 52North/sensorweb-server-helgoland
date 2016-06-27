@@ -68,7 +68,7 @@ public class PrerenderingJobConfig {
     public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
         this.seriesStyles = timeseriesStyles;
     }
-    
+
     public List<RenderingConfig> getSeriesStyles() {
         return seriesStyles;
     }

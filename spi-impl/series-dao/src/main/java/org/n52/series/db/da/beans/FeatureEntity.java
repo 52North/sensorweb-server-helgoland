@@ -38,7 +38,7 @@ public class FeatureEntity extends DescribableEntity {
      * @since 2.0.0
      */
     private GeometryEntity geometry;
-    
+
     public Geometry getGeometry() {
         return getGeometry(null);
     }
@@ -54,7 +54,7 @@ public class FeatureEntity extends DescribableEntity {
     public boolean isSetGeometry() {
         return geometry != null;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
