@@ -193,7 +193,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
         RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
-        IoHandler renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(config)
                 .createIOHandler(context);
         String chartQualifier = renderingConfig.getChartQualifier();
@@ -201,10 +201,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         renderChartFile(renderer, parameters, fos);
     }
 
-    private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
+    private void renderChartFile(IoHandler<MeasurementData> renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
         try (FileOutputStream out = fos;) {
             renderer.generateOutput(getTimeseriesData(parameters));
             renderer.encodeAndWriteTo(out);
+            fos.flush();
         } catch (IoParseException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }

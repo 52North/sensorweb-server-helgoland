@@ -42,8 +42,7 @@ public interface IoHandler<T extends SeriesData> {
     public void generateOutput(SeriesDataCollection<T> data) throws IoParseException;
 
     /**
-     * Encodes and writes previously generated output to the given stream. After
-     * handling the stream gets flushed and closed.
+     * Encodes and writes previously generated output to the given stream.
      *
      * @param stream the stream to write on the generated ouput.
      * @throws IoParseException if writing output to stream fails.
