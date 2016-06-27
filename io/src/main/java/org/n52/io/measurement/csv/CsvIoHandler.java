@@ -115,7 +115,7 @@ public class CsvIoHandler implements IoHandler<MeasurementData> {
         BufferedOutputStream bos = new BufferedOutputStream(stream);
         writeHeader(bos);
         writeData(bos);
-        bos.flush();    
+        bos.flush();
     }
 
     private void writeAsZipStream(OutputStream stream) throws IOException {
