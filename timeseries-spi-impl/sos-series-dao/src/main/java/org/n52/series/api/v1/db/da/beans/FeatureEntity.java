@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,12 +42,16 @@ public class FeatureEntity extends DescribableEntity<I18nFeatureEntity> {
     public void setGeom(Geometry geom) {
         this.geom = geom;
     }
-
+    
+    public boolean isSetGeom() {
+    	return getGeom() != null && !getGeom().isEmpty();
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Canonical id: ").append(getCanonicalId());
+        sb.append(" Domain id: ").append(getDomainId());
         return sb.append(" ]").toString();
     }
     

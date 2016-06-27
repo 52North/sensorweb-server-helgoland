@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,18 +27,20 @@
  */
 package org.n52.io;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.n52.io.v1.data.StyleProperties;
 
-public class ConfigTaskPrerendering {
+public class PreRenderingTaskConfig {
 
-    private Map<String, String> generalConfig = new HashMap<String, String>();
+    private Map<String, String> generalConfig = new HashMap<>();
 
-    private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<String, ConfiguredStyle>();
+    private List<RenderingConfig> phenomenonStyles = new ArrayList<>();
 
-    private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<String, ConfiguredStyle>();
+    private List<RenderingConfig> timeseriesStyles = new ArrayList<>();
 
     public Map<String, String> getGeneralConfig() {
         return generalConfig;
@@ -48,27 +50,61 @@ public class ConfigTaskPrerendering {
         this.generalConfig = generalConfig;
     }
 
-    public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+    public List<RenderingConfig> getPhenomenonStyles() {
         return phenomenonStyles;
     }
 
-    public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+    public void setPhenomenonStyles(List<RenderingConfig> phenomenonStyles) {
         this.phenomenonStyles = phenomenonStyles;
     }
 
-    public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+    public List<RenderingConfig> getTimeseriesStyles() {
         return timeseriesStyles;
     }
 
-    public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+    public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
         this.timeseriesStyles = timeseriesStyles;
     }
 
-    public static class ConfiguredStyle {
+    public static class RenderingConfig {
+        
+        private String id;
+        
+        private String title;
+        
+        private String chartQualifier;
 
         private String[] interval;
 
         private StyleProperties style;
+        
+        private Map<String, String> config;
+        
+        private Map<String, StyleProperties> refValues;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getChartQualifier() {
+            return chartQualifier;
+        }
+
+        public void setChartQualifier(String chartQualifier) {
+            this.chartQualifier = chartQualifier;
+        }
 
         public String[] getInterval() {
             return interval;
@@ -86,6 +122,22 @@ public class ConfigTaskPrerendering {
             this.style = style;
         }
 
+        public Map<String, String> getConfig() {
+            return config;
+        }
+
+        public void setConfig(Map<String, String> config) {
+            this.config = config;
+        }
+
+        public Map<String, StyleProperties> getRefValues() {
+            return refValues;
+        }
+
+        public void setRefValues(Map<String, StyleProperties> refValues) {
+            this.refValues = refValues;
+        }
+        
     }
 
 }

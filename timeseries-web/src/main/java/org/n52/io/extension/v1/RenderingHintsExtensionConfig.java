@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,50 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension.v1;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.v1.data.StatusInterval;
+import org.n52.io.v1.data.StyleProperties;
 
-public class ConfigStatusIntervals {
+public class RenderingHintsExtensionConfig {
+    
+	private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();
 
-	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<String, ConfigInterval>();
-	
-	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<String, ConfigInterval>();
-	
-	public ConfigStatusIntervals() {
-	}
-	
-	public Map<String, ConfigInterval> getPhenomenonIntervals() {
-		return phenomenonIntervals;
+	private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<>();
+
+	public Map<String, ConfiguredStyle> getPhenomenonStyles() {
+		return phenomenonStyles;
 	}
 
-	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
-		this.phenomenonIntervals = phenomenonIntervals;
+	public void setPhenomenonStyles(Map<String, ConfiguredStyle> phenomenonStyles) {
+		this.phenomenonStyles = phenomenonStyles;
 	}
 
-	public Map<String, ConfigInterval> getTimeseriesIntervals() {
-		return timeseriesIntervals;
+	public Map<String, ConfiguredStyle> getTimeseriesStyles() {
+		return timeseriesStyles;
 	}
 
-	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
-		this.timeseriesIntervals = timeseriesIntervals;
+	public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
+		this.timeseriesStyles = timeseriesStyles;
 	}
 
-	public static class ConfigInterval {
-		
-		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+	public static class ConfiguredStyle {
 
-		public Map<String, StatusInterval> getStatusIntervals() {
-			return statusIntervals;
+		private StyleProperties style;
+
+		public StyleProperties getStyle() {
+			return style;
 		}
 
-		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
-			this.statusIntervals = statusIntervals;
+		public void setStyle(StyleProperties style) {
+			this.style = style;
 		}
 
-		
 	}
+
 }

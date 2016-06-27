@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -47,12 +47,12 @@ public final class Utils {
     @SuppressWarnings("unchecked")
     public static final <T> T[] copy(T[] source) {
     	if(source != null) {
-    		Class< ? > type = source.getClass().getComponentType();
+            Class< ? > type = source.getClass().getComponentType();
             T[] target = (T[]) Array.newInstance(type, source.length);
             System.arraycopy(source, 0, target, 0, source.length);
             return target;
     	} else {
-    		return null;
+            return null;
     	}
     }
 }

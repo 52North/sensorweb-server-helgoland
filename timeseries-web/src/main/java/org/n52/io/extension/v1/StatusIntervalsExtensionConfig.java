@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -25,38 +25,47 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io;
+package org.n52.io.extension.v1;
 
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URISyntaxException;
-import org.apache.commons.io.FileUtils;
-import org.n52.io.v1.data.ParameterOutput;
+import org.n52.io.v1.data.StatusInterval;
 
-public class LicenseConfigApplier extends ConfigApplier<ParameterOutput> {
+public class StatusIntervalsExtensionConfig {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseConfigApplier.class);
+	private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
+	
+	private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
+	
+	public Map<String, ConfigInterval> getPhenomenonIntervals() {
+		return phenomenonIntervals;
+	}
 
-    private static final String CONFIG_FILE = "/config-license.txt";
+	public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
+		this.phenomenonIntervals = phenomenonIntervals;
+	}
 
-    private String licenseText;
+	public Map<String, ConfigInterval> getTimeseriesIntervals() {
+		return timeseriesIntervals;
+	}
 
-    public LicenseConfigApplier() {
-        try {
-            File file = new File(getClass().getResource(CONFIG_FILE).toURI());
-            this.licenseText = FileUtils.readFileToString(file);
-        } catch (URISyntaxException | IOException e) {
-            LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
-        }
-    }
+	public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
+		this.timeseriesIntervals = timeseriesIntervals;
+	}
 
-    @Override
-    public void applyConfigOn(ParameterOutput toApplyConfigOn) {
-        toApplyConfigOn.setLicense(licenseText);
-    }
+	public static class ConfigInterval {
+		
+		private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
 
+		public Map<String, StatusInterval> getStatusIntervals() {
+			return statusIntervals;
+		}
+
+		public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
+			this.statusIntervals = statusIntervals;
+		}
+
+		
+	}
 }

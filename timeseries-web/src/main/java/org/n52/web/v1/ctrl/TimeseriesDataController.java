@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,12 +27,31 @@
  */
 package org.n52.web.v1.ctrl;
 
+import static org.n52.io.IoParameters.createFromQuery;
+import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.APPLICATION_ZIP;
+import static org.n52.io.MimeType.TEXT_CSV;
+import static org.n52.io.QueryParameters.createFromQuery;
+import static org.n52.io.format.FormatterFactory.createFormatterFactory;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createContextWith;
+import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
+import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
+import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.composeDataService;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.InputStream;
 import java.util.Arrays;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
@@ -42,34 +61,23 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
-import org.n52.io.MimeType;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.APPLICATION_ZIP;
-import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.PreRenderingTask;
-import static org.n52.io.QueryParameters.createFromQuery;
-import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import org.n52.io.format.TimeseriesDataFormatter;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.img.RenderingContext;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.img.RenderingContext.createContextWith;
 import org.n52.io.v1.data.DesignedParameterSet;
+import org.n52.io.v1.data.RawFormats;
 import org.n52.io.v1.data.TimeseriesDataCollection;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.UndesignedParameterSet;
-import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
-import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
+import org.n52.sensorweb.v1.spi.ParameterService;
+import org.n52.sensorweb.v1.spi.RawDataService;
+import org.n52.sensorweb.v1.spi.ServiceParameterService;
+import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
 import org.n52.web.InternalServerException;
 import org.n52.web.ResourceNotFoundException;
-import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
-import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.composeDataService;
-import org.n52.sensorweb.v1.spi.ParameterService;
-import org.n52.sensorweb.v1.spi.ServiceParameterService;
-import org.n52.sensorweb.v1.spi.TimeseriesDataService;
 import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,8 +86,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -104,6 +110,10 @@ public class TimeseriesDataController extends BaseController {
                                                     @RequestBody UndesignedParameterSet parameters) throws Exception {
 
         checkIfUnknownTimeseries(parameters.getTimeseries());
+        if (parameters.isSetRawFormat()) {
+        	getRawTimeseriesCollectionData(response, parameters);
+        	return null;
+        }
 
         TvpDataCollection timeseriesData = getTimeseriesData(parameters);
         TimeseriesDataCollection< ? > formattedDataCollection = format(timeseriesData, parameters.getFormat());
@@ -138,7 +148,69 @@ public class TimeseriesDataController extends BaseController {
         Object formattedTimeseries = formattedDataCollection.getAllTimeseries().get(timeseriesId);
         return new ModelAndView().addObject(formattedTimeseries);
     }
+    
+    
+	@RequestMapping(value = "/getData", method = POST, params = { RawFormats.RAW_FORMAT })
+	public void getRawTimeseriesCollectionData(HttpServletResponse response,
+												@RequestBody UndesignedParameterSet parameters) throws Exception {
+		checkIfUnknownTimeseries(parameters.getTimeseries());
+		if (timeseriesDataService instanceof RawDataService) {
+			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
+			if (inputStream == null) {
+				throw new ResourceNotFoundException("Found no data for timeseries.");
+			}
+			try {
+				IOUtils.copyLarge(inputStream, response.getOutputStream());
+			} catch (IOException e) {
+				throw new InternalServerException(
+						"Error while querying raw timeseries data", e);
+			} finally {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						LOGGER.error("Error while closing InputStream", e);
+					}
+				}
+			}
 
+		} else {
+	    	throw new BadRequestException(
+					"Querying of raw timeseries data is not supported by the underlying service!");
+		}
+	}
+
+    @RequestMapping(value = "/{timeseriesId}/getData", method = GET, params = { RawFormats.RAW_FORMAT })
+    public void getRawTimeseriesData(HttpServletResponse response,
+    									@PathVariable String timeseriesId,
+										@RequestParam MultiValueMap<String, String> query) {
+    	checkIfUnknownTimeseries(timeseriesId);
+        IoParameters map = createFromQuery(query);
+        UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+    	if (timeseriesDataService instanceof RawDataService ) {
+    		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
+    		if (inputStream == null) {
+    			throw new ResourceNotFoundException("Found no data found for timeseries '" + timeseriesId + "'.");
+    		}
+    		try {
+    			IOUtils.copyLarge(inputStream, response.getOutputStream());
+    		} catch (IOException e) {
+    			throw new InternalServerException("Error while querying raw timeseries data", e);
+    		} finally {
+    			if (inputStream != null) {
+    				try {
+    					inputStream.close();
+    				} catch (IOException e) {
+    					LOGGER.error("Error while closing InputStream", e);
+    				}
+    			}
+    		}
+		} else {
+	    	throw new BadRequestException(
+					"Querying of raw timeseries data is not supported by the underlying service!");
+		}
+    }
+ 
     private TimeseriesDataCollection< ? > format(TvpDataCollection timeseriesData, String format) {
         TimeseriesDataFormatter< ? > formatter = createFormatterFactory(format).create();
         return formatter.format(timeseriesData);
@@ -264,18 +336,18 @@ public class TimeseriesDataController extends BaseController {
         handleBinaryResponse(response, parameters, renderer);
     }
 
-    @RequestMapping(value = "/{timeseriesId}/{interval}", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{timeseriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getTimeseriesChartByInterval(HttpServletResponse response,
                                              @PathVariable String timeseriesId,
-                                             @PathVariable String interval,
+                                             @PathVariable String chartQualifier,
                                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
-        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, interval)) {
+        if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
-        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, interval, response.getOutputStream());
+        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {

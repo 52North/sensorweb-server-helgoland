@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -180,16 +180,18 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
         try {
-            Geometry geometry = featureEntity.getGeom();
-            String fromCrs = "EPSG:" +geometry.getSRID();
-            Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-            return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            if (featureEntity.isSetGeom()) {
+                Geometry geometry = featureEntity.getGeom();
+                String fromCrs = "EPSG:" +geometry.getSRID();
+                Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
+                return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+            }
         }
         catch (FactoryException e) {
-            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId());
         }
         catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getCanonicalId());
+            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
         }
         return null;
     }

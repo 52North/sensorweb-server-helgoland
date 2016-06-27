@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2015 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,16 +44,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static javax.imageio.ImageIO.write;
-import static javax.imageio.ImageIO.write;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.Timeline;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.block.BlockFrame;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.ui.HorizontalAlignment;
@@ -113,8 +110,10 @@ public abstract class ChartRenderer implements IoHandler {
         this.context = context;
     }
 
+    @Override
     public abstract void generateOutput(TvpDataCollection data) throws IoParseException;
 
+    @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
@@ -230,6 +229,7 @@ public abstract class ChartRenderer implements IoHandler {
         configureDomainAxis(plot);
         showGridlinesOnChart(plot);
         configureTimeAxis(plot);
+        configureTitle(chart);
         addNotice(chart);
         return plot;
     }
@@ -310,6 +310,12 @@ public abstract class ChartRenderer implements IoHandler {
         return uom.toString();
     }
 
+    private void configureTitle(JFreeChart chart) {
+        if (getChartStyleDefinitions().containsParameter("title")) {
+            chart.setTitle(getChartStyleDefinitions().getAsString("title"));
+        }
+    }
+    
     protected TimeseriesMetadataOutput[] getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }
