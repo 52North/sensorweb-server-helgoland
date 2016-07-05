@@ -32,11 +32,11 @@ package org.n52.web.ctrl.v1.ext;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.measurement.format.FormatterFactory.createFormatterFactory;
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
+//import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
+//import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
+import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.web.common.Stopwatch.startStopwatch;
@@ -51,6 +51,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,16 +64,14 @@ import org.joda.time.Period;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
+import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.SeriesDataService;
@@ -81,7 +80,6 @@ import org.n52.web.ctrl.BaseController;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
-import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -94,13 +92,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_SERIES, produces = {"application/json"})
-public class MeasurementSeriesDataController extends BaseController {
+public class SeriesDataController extends BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(MeasurementSeriesDataController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SeriesDataController.class);
 
-    // TODO encapsulate service bundle and provide a map: serviceByObservationId
-    private ParameterService<MeasurementSeriesOutput> metadataService;
-    private SeriesDataService<MeasurementData> dataService;
+    private Map<ObservationType, SeriesDataControllerService> serviceByObservationType;
 
     private PreRenderingJob preRenderingTask;
 
@@ -117,11 +113,9 @@ public class MeasurementSeriesDataController extends BaseController {
         }
 
         String observationType = parameters.getObservationType();
-        
-        // TODO abstract from observationType
-        
+
         SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
-        SeriesDataCollection< ? > formattedDataCollection = format(data, parameters.getFormat());
+        SeriesDataCollection< ? > formattedDataCollection = format(observationType, data, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
@@ -137,7 +131,7 @@ public class MeasurementSeriesDataController extends BaseController {
         IoParameters map = createFromQuery(query);
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         if (map.getResultTime() != null) {
             parameters.setResultTime(map.getResultTime().toString());
         }
@@ -145,10 +139,8 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        // TODO abstract from observation type
-        
         SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
-        SeriesDataCollection< ? > formattedDataCollection = format(data, map.getFormat());
+        SeriesDataCollection< ? > formattedDataCollection = format(observationType, data, map.getFormat());
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
@@ -156,17 +148,14 @@ public class MeasurementSeriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
-    private String qualifySeriesId(String observationType, String seriesId) {
-        return observationType + "/" + seriesId;
-    }
-
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        
-        // TODO add observationType to parameter set
-        
+
         checkForUnknownSeriesIds(parameters.getSeriesIds());
+
+        String observationType = parameters.getObservationType();
+        SeriesDataService dataService = getDataService(observationType);
         if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
@@ -191,7 +180,9 @@ public class MeasurementSeriesDataController extends BaseController {
         seriesId = qualifySeriesId(observationType, seriesId);
         checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+
+        SeriesDataService dataService = getDataService(observationType);
         if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
@@ -206,10 +197,6 @@ public class MeasurementSeriesDataController extends BaseController {
         }
     }
 
-    private SeriesDataCollection< ? > format(SeriesDataCollection<MeasurementData> timeseriesData, String format) {
-        return createFormatterFactory(format).create().format(timeseriesData);
-    }
-
     @RequestMapping(value = "/data", produces = {"application/pdf"}, method = POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
                                           @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
@@ -222,23 +209,29 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        String observationType = parameters.getObservationType();
-        
-        // TODO abstract from observationType
-        
-        String[] timeseriesIds = parameters.getSeriesIds();
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
-                                                                                                      map);
-        MeasurementRenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
-
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
-
+        IoHandler renderer = getIoHandler(parameters.getObservationType(), requestParameters, map, APPLICATION_PDF);
         handleBinaryResponse(response, parameters, renderer);
 
     }
 
-    private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext().getResource("/").toURI();
+
+    private IoHandler getIoHandler(String observationType, RequestStyledParameterSet parameters, IoParameters map) throws MalformedURLException, URISyntaxException {
+        return getServiceByObservationType(observationType).getIoHandler(parameters, map);
+    }
+
+    private IoHandler getIoHandler(String observationType, RequestStyledParameterSet parameters, IoParameters map,
+            MimeType mimeType) throws MalformedURLException, URISyntaxException {
+        return getServiceByObservationType(observationType).getIoHandler(parameters, map, mimeType, getRootResource());
+    }
+
+    private IoHandler getIoHandler(String observationType, RequestSimpleParameterSet parameters, IoParameters map) throws MalformedURLException, URISyntaxException {
+        return getServiceByObservationType(observationType).getIoHandler(parameters, map);
+    }
+
+    private IoHandler getIoHandler(String observationType, RequestSimpleParameterSet parameters, IoParameters map,
+            MimeType mimeType) throws MalformedURLException, URISyntaxException {
+        return getServiceByObservationType(observationType).getIoHandler(parameters, map,
+                mimeType, getRootResource());
     }
 
     @RequestMapping(value = "/{observationType}/{seriesId}/data", produces = {"application/pdf"}, method = GET)
@@ -251,17 +244,12 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        // TODO abstract from obseravtionType
-        
-        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
-        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
-
+        IoHandler renderer = getIoHandler(parameters.getObservationType(), parameters, map, APPLICATION_PDF);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -285,16 +273,12 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        // TODO abstract from observationType
-        
-        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
-        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
+        IoHandler renderer = getIoHandler(parameters.getObservationType(), parameters, map, TEXT_CSV);
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -319,17 +303,8 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String[] timeseriesIds = parameters.getSeriesIds();
-        
         String observationType = parameters.getObservationType();
-        
-        // TODO abstract from observationType
-        
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
-                                                                                                      map);
-        MeasurementRenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
-
+        IoHandler renderer = getIoHandler(observationType, requestParameters, map);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -343,21 +318,14 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-
-        // TODO abstract from observationType
-        
-        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
-        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
-        context.setDimensions(map.getChartDimension());
 
         parameters.setGeneralize(map.isGeneralize());
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        // TODO abstract from observationType
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
+        IoHandler renderer = getIoHandler(observationType, parameters, map);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -368,9 +336,9 @@ public class MeasurementSeriesDataController extends BaseController {
                                          @PathVariable String chartQualifier,
                                          @RequestParam(required = false) MultiValueMap<String, String> query)
                                                  throws Exception {
-        
+
         // TODO consider observation type
-        
+
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
@@ -378,6 +346,18 @@ public class MeasurementSeriesDataController extends BaseController {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
         }
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
+    }
+
+    private URI getRootResource() throws URISyntaxException, MalformedURLException {
+        return getServletConfig().getServletContext().getResource("/").toURI();
+    }
+
+    private SeriesDataCollection< ? > format(String observationType, SeriesDataCollection timeseriesData, String format) {
+        return getServiceByObservationType(observationType).format(timeseriesData, format);
+    }
+
+    private String qualifySeriesId(String observationType, String seriesId) {
+        return observationType + "/" + seriesId;
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
@@ -390,9 +370,9 @@ public class MeasurementSeriesDataController extends BaseController {
 
     private void checkForUnknownSeriesIds(String... seriesIds) {
         for (String id : seriesIds) {
-            
+
             // TODO abstract from observationType
-        
+            ParameterService metadataService = getMetadataService(ObservationType.extractType(id));
             if ( !metadataService.exists(id)) {
                 throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
             }
@@ -411,7 +391,7 @@ public class MeasurementSeriesDataController extends BaseController {
      */
     private void handleBinaryResponse(HttpServletResponse response,
                                       RequestSimpleParameterSet parameters,
-                                      IoHandler<MeasurementData> renderer) {
+                                      IoHandler renderer) {
         try {
             // TODO abstract from observation
             renderer.generateOutput(getSeriesData(parameters));
@@ -434,31 +414,47 @@ public class MeasurementSeriesDataController extends BaseController {
         }
     }
 
-    private SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
+    private SeriesDataCollection getSeriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        
-        // TODO abstract from observationType
-        SeriesDataCollection<MeasurementData> timeseriesData = parameters.isGeneralize()
-            ? composeDataService(dataService).getSeriesData(parameters)
-            : dataService.getSeriesData(parameters);
+        SeriesDataCollection seriesData = getServiceByObservationType(parameters.getObservationType()).getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-        return timeseriesData;
+        return seriesData;
     }
 
-    public ParameterService<MeasurementSeriesOutput> getMetadataService() {
-        return metadataService;
+    @SuppressWarnings("rawtypes")
+    private ParameterService getMetadataService(String observationType) {
+        return getMetadataService(ObservationType.toInstance(observationType));
     }
 
-    public void setMetadataService(ParameterService<MeasurementSeriesOutput> seriesMetadataService) {
-        this.metadataService = new WebExceptionAdapter<>(seriesMetadataService);
+    @SuppressWarnings("rawtypes")
+    private ParameterService getMetadataService(ObservationType observationType) {
+        return getServiceByObservationType(observationType).getMetadataService();
     }
 
-    public SeriesDataService<MeasurementData> getDataService() {
-        return dataService;
+    @SuppressWarnings("rawtypes")
+    private SeriesDataService getDataService(String observationType) {
+        return getDataService(ObservationType.toInstance(observationType));
     }
 
-    public void setDataService(SeriesDataService<MeasurementData> seriesDataService) {
-        this.dataService = seriesDataService;
+    @SuppressWarnings("rawtypes")
+    private SeriesDataService getDataService(ObservationType observationType) {
+        return getServiceByObservationType(observationType).getDataService();
+    }
+
+    private SeriesDataControllerService getServiceByObservationType(String observationType) {
+        return getServiceByObservationType(ObservationType.toInstance(observationType));
+    }
+
+    private SeriesDataControllerService getServiceByObservationType(ObservationType observationType) {
+        return getServiceByObservationType().get(observationType);
+    }
+
+    public Map<ObservationType, SeriesDataControllerService> getServiceByObservationType() {
+        return serviceByObservationType;
+    }
+
+    public void setServiceByObservationType(Map<ObservationType, SeriesDataControllerService> serviceByObservationType) {
+        this.serviceByObservationType = serviceByObservationType;
     }
 
     public PreRenderingJob getPreRenderingTask() {

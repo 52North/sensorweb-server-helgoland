@@ -65,18 +65,24 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.MeasurementSeriesDataController">
-        <property name="metadataService" ref="measurementSeriesService" />
-        <property name="dataService" ref="measurementDataService" />
+    <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
+    	<property name="serviceByObservationType">
+    		<map key-type="org.n52.io.response.v1.ext.ObservationType">
+	    		<entry key="MEASUREMENT">
+					<bean class="org.n52.web.ctrl.v1.ext.MeasurmentSeriesDataControllerService">
+						<property name="metadataService" ref="measurementSeriesService" />
+	        			<property name="dataService" ref="measurementDataService" />
+					</bean>
+				</entry>
+				<entry key="TEXT">
+					<bean class="org.n52.web.ctrl.v1.ext.TextSeriesDataControllerService">
+						<property name="metadataService" ref="textObservationSeriesService" />
+	        			<property name="dataService" ref="textObservationDataService" />
+					</bean>
+				</entry>
+    		</map>
+    	</property>
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
-
-	<!--
-    <bean class="org.n52.web.ctrl.v1.ext.TextObservationSeriesDataController">
-        <property name="metadataService" ref="textObservationSeriesService" />
-        <property name="dataService" ref="textObservationDataService" />
-        <property name="requestIntervalRestriction" value="P1Y1D" />
-    </bean>
-	-->
 
 </beans>
