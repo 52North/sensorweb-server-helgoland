@@ -33,7 +33,7 @@ import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.web.common.Stopwatch.startStopwatch;
@@ -130,7 +130,7 @@ public class TimeseriesDataController extends BaseController {
         IoParameters map = createFromQuery(query);
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         if (map.getResultTime() != null) {
             parameters.setResultTime(map.getResultTime().toString());
         }
@@ -171,7 +171,7 @@ public class TimeseriesDataController extends BaseController {
             @RequestParam MultiValueMap<String, String> query) {
         checkIfUnknownTimeseries(timeseriesId);
         IoParameters map = createFromQuery(query);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         if (!timeseriesDataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
@@ -231,12 +231,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
@@ -266,12 +266,12 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(map)
                 .forMimeType(TEXT_CSV)
@@ -319,10 +319,10 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleTimeseries(metadata, map);
+        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());

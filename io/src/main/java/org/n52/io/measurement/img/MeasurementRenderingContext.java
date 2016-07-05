@@ -87,7 +87,7 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
         return new MeasurementRenderingContext(styles, metadatas);
     }
 
-    public static MeasurementRenderingContext createContextForSingleTimeseries(MeasurementSeriesOutput metadata, IoParameters ioConfig) {
+    public static MeasurementRenderingContext createContextForSingleSeries(MeasurementSeriesOutput metadata, IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));

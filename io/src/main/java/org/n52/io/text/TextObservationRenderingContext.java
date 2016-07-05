@@ -86,7 +86,7 @@ public final class TextObservationRenderingContext implements RenderingContext<T
         return new TextObservationRenderingContext(styles, metadatas);
     }
 
-    public static TextObservationRenderingContext createContextForSingleTimeseries(TextObservationSeriesOutput metadata, IoParameters ioConfig) {
+    public static TextObservationRenderingContext createContextForSingleSeries(TextObservationSeriesOutput metadata, IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));

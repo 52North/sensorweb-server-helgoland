@@ -28,8 +28,8 @@
  */
 package org.n52.io;
 
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleTimeseries;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
+import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 
 import java.awt.image.BufferedImage;
@@ -188,11 +188,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-        MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, config);
+        MeasurementRenderingContext context = createContextForSingleSeries(metadata, config);
         int width = context.getChartStyleDefinitions().getWidth();
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory
                 .createWith(config)
                 .createIOHandler(context);
