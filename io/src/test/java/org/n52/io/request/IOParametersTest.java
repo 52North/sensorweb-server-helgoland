@@ -50,7 +50,7 @@ public class IOParametersTest {
 
     @Test
     public void testAfterConvertedFromParameterSet() {
-        RequestSimpleParameterSet set = RequestSimpleParameterSet.createForSingleTimeseries("1", IoParameters.createDefaults());
+        RequestSimpleParameterSet set = RequestSimpleParameterSet.createForSingleSeries("1", IoParameters.createDefaults());
         IoParameters parameters = IoParameters.createFromQuery(set);
         Assert.assertTrue(parameters.isGeneralize());
     }
