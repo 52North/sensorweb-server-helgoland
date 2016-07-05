@@ -35,7 +35,6 @@ import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.measurement.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
-import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
@@ -99,8 +98,8 @@ public class MeasurementSeriesDataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MeasurementSeriesDataController.class);
 
+    // TODO encapsulate service bundle and provide a map: serviceByObservationId
     private ParameterService<MeasurementSeriesOutput> metadataService;
-
     private SeriesDataService<MeasurementData> dataService;
 
     private PreRenderingJob preRenderingTask;
@@ -117,6 +116,10 @@ public class MeasurementSeriesDataController extends BaseController {
             return null;
         }
 
+        String observationType = parameters.getObservationType();
+        
+        // TODO abstract from observationType
+        
         SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
         SeriesDataCollection< ? > formattedDataCollection = format(data, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
@@ -142,7 +145,8 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        // TODO add paging
+        // TODO abstract from observation type
+        
         SeriesDataCollection<MeasurementData> data = getSeriesData(parameters);
         SeriesDataCollection< ? > formattedDataCollection = format(data, map.getFormat());
         if (map.isExpanded()) {
@@ -159,6 +163,9 @@ public class MeasurementSeriesDataController extends BaseController {
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+        
+        // TODO add observationType to parameter set
+        
         checkForUnknownSeriesIds(parameters.getSeriesIds());
         if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
@@ -215,6 +222,10 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        String observationType = parameters.getObservationType();
+        
+        // TODO abstract from observationType
+        
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
                                                                                                       map);
@@ -240,12 +251,14 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
-        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        // TODO abstract from obseravtionType
+        
+        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(APPLICATION_PDF).withServletContextRoot(getRootResource()).createIOHandler(context);
 
@@ -272,12 +285,14 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
-        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
+        // TODO abstract from observationType
+        
+        MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).forMimeType(TEXT_CSV).createIOHandler(context);
 
@@ -305,6 +320,11 @@ public class MeasurementSeriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
 
         String[] timeseriesIds = parameters.getSeriesIds();
+        
+        String observationType = parameters.getObservationType();
+        
+        // TODO abstract from observationType
+        
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = metadataService.getParameters(timeseriesIds,
                                                                                                       map);
         MeasurementRenderingContext context = createContextWith(requestParameters, timeseriesMetadatas.getItems());
@@ -323,27 +343,34 @@ public class MeasurementSeriesDataController extends BaseController {
         checkForUnknownSeriesIds(seriesId);
 
         IoParameters map = createFromQuery(query);
+        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+
+        // TODO abstract from observationType
+        
         MeasurementSeriesOutput metadata = metadataService.getParameter(seriesId, map);
         MeasurementRenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
-
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(seriesId, map);
-        checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
+        // TODO abstract from observationType
         IoHandler<MeasurementData> renderer = MeasurementIoFactory.createWith(map).createIOHandler(context);
         handleBinaryResponse(response, parameters, renderer);
     }
 
     @RequestMapping(value = "/{observationType}/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
+                                         @PathVariable String observationType,
                                          @PathVariable String seriesId,
                                          @PathVariable String chartQualifier,
                                          @RequestParam(required = false) MultiValueMap<String, String> query)
                                                  throws Exception {
+        
+        // TODO consider observation type
+        
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
@@ -363,6 +390,9 @@ public class MeasurementSeriesDataController extends BaseController {
 
     private void checkForUnknownSeriesIds(String... seriesIds) {
         for (String id : seriesIds) {
+            
+            // TODO abstract from observationType
+        
             if ( !metadataService.exists(id)) {
                 throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
             }
@@ -383,6 +413,7 @@ public class MeasurementSeriesDataController extends BaseController {
                                       RequestSimpleParameterSet parameters,
                                       IoHandler<MeasurementData> renderer) {
         try {
+            // TODO abstract from observation
             renderer.generateOutput(getSeriesData(parameters));
             if (parameters.isBase64()) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -405,6 +436,8 @@ public class MeasurementSeriesDataController extends BaseController {
 
     private SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
+        
+        // TODO abstract from observationType
         SeriesDataCollection<MeasurementData> timeseriesData = parameters.isGeneralize()
             ? composeDataService(dataService).getSeriesData(parameters)
             : dataService.getSeriesData(parameters);
