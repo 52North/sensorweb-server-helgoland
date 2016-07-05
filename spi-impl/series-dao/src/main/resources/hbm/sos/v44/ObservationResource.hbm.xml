@@ -9,6 +9,8 @@
         <property column="seriesid" name="seriesPkid" type="long"/>
         <property column="phenomenonTimeStart" name="timestamp" type="timestamp"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
+        <property column="validTimeStart" name="validTimeStart" type="timestamp" not-null="false"/>
+        <property column="validTimeEnd" name="validTimeEnd" type="timestamp" not-null="false"/>
         <component class="org.n52.series.db.da.beans.ext.GeometryEntity" name="geometry">
             <!--
             <property column="lat" name="lat" type="double" />

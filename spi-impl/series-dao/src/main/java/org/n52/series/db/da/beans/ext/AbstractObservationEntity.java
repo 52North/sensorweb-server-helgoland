@@ -43,6 +43,10 @@ public abstract class AbstractObservationEntity<T> {
     private GeometryEntity geometry;
 
     private Boolean deleted;
+    
+    private Date validTimeStart;
+    
+    private Date validTimeEnd;
 
     public Long getPkid() {
         return pkid;
@@ -94,6 +98,26 @@ public abstract class AbstractObservationEntity<T> {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Date getValidTimeStart() {
+        return validTimeStart;
+    }
+
+    public void setValidTimeStart(Date validTimeStart) {
+        this.validTimeStart = validTimeStart;
+    }
+
+    public Date getValidTimeEnd() {
+        return validTimeEnd;
+    }
+
+    public void setValidTimeEnd(Date validTimeEnd) {
+        this.validTimeEnd = validTimeEnd;
+    }
+    
+    public boolean isSetValidTime() {
+        return validTimeStart != null && validTimeEnd != null;
     }
 
     @Override
