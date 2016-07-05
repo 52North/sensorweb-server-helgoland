@@ -28,7 +28,7 @@
  */
 package org.n52.io.text.format;
 
-import org.n52.io.measurement.format.SeriesDataFormatter;
+import org.n52.io.format.SeriesDataFormatter;
 import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.response.series.text.TextObservationData;
 

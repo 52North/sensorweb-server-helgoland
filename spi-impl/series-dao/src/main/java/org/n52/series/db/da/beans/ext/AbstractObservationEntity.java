@@ -43,9 +43,9 @@ public abstract class AbstractObservationEntity<T> {
     private GeometryEntity geometry;
 
     private Boolean deleted;
-    
+
     private Date validTimeStart;
-    
+
     private Date validTimeEnd;
 
     public Long getPkid() {
@@ -115,7 +115,7 @@ public abstract class AbstractObservationEntity<T> {
     public void setValidTimeEnd(Date validTimeEnd) {
         this.validTimeEnd = validTimeEnd;
     }
-    
+
     public boolean isSetValidTime() {
         return validTimeStart != null && validTimeEnd != null;
     }

@@ -247,7 +247,7 @@ public abstract class RequestParameterSet {
     }
 
     public abstract String[] getSeriesIds();
-    
+
     public String getObservationType() {
         String[] seriesIds = getSeriesIds();
         if (seriesIds.length > 0) {
