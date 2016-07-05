@@ -67,7 +67,7 @@ public enum ObservationType {
 
     public static ObservationType extractType(String id) {
         for (ObservationType observationType : ObservationType.values()) {
-            if (id.startsWith(observationType.name())) {
+            if (id.toLowerCase(Locale.ROOT).startsWith(observationType.name().toLowerCase(Locale.ROOT))) {
                 return observationType;
             }
         }
