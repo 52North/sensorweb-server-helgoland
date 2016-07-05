@@ -210,8 +210,10 @@
                             <extraClasspath>target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <systemProperties>
-                            <name>catalina.base</name>
-                            <value>${project.build.directory}</value>
+                            <systemProperty>
+                                <name>catalina.base</name>
+                                <value>${project.build.directory}</value>
+                            </systemProperty>
                         </systemProperties>
                         <scanTargets>
                             <scanTarget>target/classes</scanTarget>
