@@ -29,6 +29,10 @@
 package org.n52.series.db.da.beans.ext;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.n52.series.db.da.beans.ext.parameter.Parameter;
 
 public abstract class AbstractObservationEntity<T> {
 
@@ -47,6 +51,9 @@ public abstract class AbstractObservationEntity<T> {
     private Date validTimeStart;
 
     private Date validTimeEnd;
+
+    @SuppressWarnings("rawtypes")
+    private Set<Parameter> parameters = new HashSet<>(0);
 
     public Long getPkid() {
         return pkid;
@@ -118,6 +125,24 @@ public abstract class AbstractObservationEntity<T> {
 
     public boolean isSetValidTime() {
         return validTimeStart != null && validTimeEnd != null;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public Set<Parameter> getParameters() {
+        return parameters;
+    }
+
+    @SuppressWarnings(value = { "unchecked", "rawtypes" })
+    public void setParameters(Object parameters) {
+        if (parameters instanceof Set<?>) {
+            this.parameters = (Set<Parameter>) parameters;
+        } else {
+            getParameters().add((Parameter) parameters);
+        }
+    }
+
+    public boolean hasParameters() {
+        return getParameters() != null && !getParameters().isEmpty();
     }
 
     @Override

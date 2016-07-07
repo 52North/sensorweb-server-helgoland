@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.da.beans.ext.parameter">
+    <class name="Parameter" table="parameter">
+        <id name="parameterId" type="long">
+            <column name="parameterid"/>
+            <generator class="assigned"/>
+        </id>
+        <property name="observationId" type="long">
+            <column name="observationid" not-null="true"/>
+        </property>
+        <property name="name" type="string">
+            <column name="name" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>
