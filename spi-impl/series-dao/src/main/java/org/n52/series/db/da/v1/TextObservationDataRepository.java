@@ -40,14 +40,13 @@ import org.n52.io.response.series.text.TextObservationDataMetadata;
 import org.n52.io.response.series.text.TextObservationValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.TextObservationEntity;
 import org.n52.series.db.da.beans.ext.TextObservationSeriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class TextObservationDataRepository extends ExtendedSessionAwareRepository implements DataRepository<TextObservationData> {
+public class TextObservationDataRepository extends AbstractDataRepository<TextObservationData> {
 
     @Override
     public TextObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
@@ -117,14 +116,6 @@ public class TextObservationDataRepository extends ExtendedSessionAwareRepositor
         return result;
     }
 
-    private boolean hasValidEntriesWithinRequestedTimespan(List<TextObservationEntity> observations) {
-        return observations.size() > 0;
-    }
-
-    private boolean hasSingleValidReferenceValue(List<TextObservationEntity> observations) {
-        return observations.size() == 1;
-    }
-
     private TextObservationData assembleData(TextObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TextObservationData result = new TextObservationData();
         ObservationDao<TextObservationEntity> dao = new ObservationDao<>(session);
@@ -157,10 +148,8 @@ public class TextObservationDataRepository extends ExtendedSessionAwareRepositor
         TextObservationValue value = new TextObservationValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
-        if (observation.isSetGeometry()) {
-            GeometryEntity geometry = observation.getGeometry();
-            value.setGeometry(geometry.getGeometry(getDatabaseSrid()));
-        }
+        addGeometry(observation, value);
+        addValidTime(observation, value);
         return value;
     }
 

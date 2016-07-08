@@ -44,13 +44,12 @@ import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 
-public class MeasurementDataRepository extends ExtendedSessionAwareRepository implements DataRepository<MeasurementData> {
+public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData> {
 
     @Override
     public MeasurementData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
@@ -117,14 +116,6 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
         return result;
     }
 
-    private boolean hasValidEntriesWithinRequestedTimespan(List<MeasurementEntity> observations) {
-        return observations.size() > 0;
-    }
-
-    private boolean hasSingleValidReferenceValue(List<MeasurementEntity> observations) {
-        return observations.size() == 1;
-    }
-
     private MeasurementData assembleData(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
         ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
@@ -160,10 +151,9 @@ public class MeasurementDataRepository extends ExtendedSessionAwareRepository im
                 ? formatDecimal(observation.getValue(), series)
                 : Double.NaN;
         value.setValue(observationValue);
-        if (observation.isSetGeometry()) {
-            GeometryEntity geometry = observation.getGeometry();
-            value.setGeometry(geometry.getGeometry(getDatabaseSrid()));
-        }
+        addGeometry(observation, value);
+        addValidTime(observation, value);
+        addParameter(observation, value);
         return value;
     }
 

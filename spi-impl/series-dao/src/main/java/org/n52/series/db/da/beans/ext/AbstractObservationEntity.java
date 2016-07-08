@@ -124,7 +124,15 @@ public abstract class AbstractObservationEntity<T> {
     }
 
     public boolean isSetValidTime() {
-        return validTimeStart != null && validTimeEnd != null;
+        return isSetValidStartTime() && isSetValidEndTime();
+    }
+
+    public boolean isSetValidStartTime() {
+        return validTimeStart != null;
+    }
+
+    public boolean isSetValidEndTime() {
+        return validTimeEnd != null;
     }
 
     @SuppressWarnings("rawtypes")

@@ -40,13 +40,12 @@ import org.n52.io.response.series.count.CountObservationDataMetadata;
 import org.n52.io.response.series.count.CountObservationValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.CountObservationEntity;
 import org.n52.series.db.da.beans.ext.CountObservationSeriesEntity;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 
-public class CountObservationDataRepository extends ExtendedSessionAwareRepository implements DataRepository<CountObservationData> {
+public class CountObservationDataRepository extends AbstractDataRepository<CountObservationData> {
 
     @Override
     public CountObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
@@ -113,14 +112,6 @@ public class CountObservationDataRepository extends ExtendedSessionAwareReposito
         return result;
     }
 
-    private boolean hasValidEntriesWithinRequestedTimespan(List<CountObservationEntity> observations) {
-        return observations.size() > 0;
-    }
-
-    private boolean hasSingleValidReferenceValue(List<CountObservationEntity> observations) {
-        return observations.size() == 1;
-    }
-
     private CountObservationData assembleData(CountObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountObservationData result = new CountObservationData();
         ObservationDao<CountObservationEntity> dao = new ObservationDao<>(session);
@@ -153,11 +144,10 @@ public class CountObservationDataRepository extends ExtendedSessionAwareReposito
         CountObservationValue value = new CountObservationValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
-        if (observation.isSetGeometry()) {
-            GeometryEntity geometry = observation.getGeometry();
-            value.setGeometry(geometry.getGeometry(getDatabaseSrid()));
-        }
+        addGeometry(observation, value);
+        addValidTime(observation, value);
         return value;
     }
+
 
 }
