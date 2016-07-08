@@ -88,8 +88,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             switch (query.getObservationType()) {
 
             // TODO other obesrvation types
-            case UNSUPPORTED:
-                break;
             case TEXT:
                 for (TextObservationSeriesEntity series : new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getAllInstances(query)) {
                     results.add(createCondensed(series, query));
@@ -126,8 +124,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
             switch (query.getObservationType()) {
-            case UNSUPPORTED:
-                break;
             // TODO other obesrvation types
             case TEXT:
                 for (TextObservationSeriesEntity series : new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getAllInstances(query)) {
@@ -164,8 +160,6 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         try {
             String seriesId = ObservationType.extractId(id);
             switch (query.getObservationType()) {
-            case UNSUPPORTED:
-                return null;
                 // TODO other obesrvation types
             case TEXT:
                 TextObservationSeriesEntity textSeries = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);

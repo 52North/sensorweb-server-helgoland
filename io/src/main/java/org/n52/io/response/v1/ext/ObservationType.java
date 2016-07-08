@@ -42,7 +42,6 @@ public enum ObservationType {
     TEXT,
     COUNT,
     URI,
-    UNSUPPORTED,
     ALL;
 
     public String getIdPrefix() {

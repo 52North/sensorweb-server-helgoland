@@ -7,7 +7,7 @@
             <generator class="assigned"/>
         </id>
 
-        <discriminator column="seriesType" type="string" />
+        <discriminator column="seriesType" type="string" force="true" />
 
         <many-to-one class="org.n52.series.db.da.beans.CategoryEntity" column="observablepropertyid" name="category" insert="false" update="false" />
         <many-to-one class="org.n52.series.db.da.beans.ProcedureEntity" column="procedureid" name="procedure" insert="false" update="false" />
@@ -16,6 +16,7 @@
         <many-to-one class="org.n52.series.db.da.beans.ext.PlatformEntity" column="procedureid" name="platform" insert="false" update="false"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType" insert="false" update="false"/>
         <property column="seriesType" name="observationType" type="string" insert="false" update="false"/>
+
         <subclass name="org.n52.series.db.da.beans.ext.MeasurementSeriesEntity" discriminator-value="measurement">
             <property name="numberOfDecimals" type="int" formula="3" />
             <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="unitid" name="unit" insert="false" update="false" />
@@ -33,6 +34,7 @@
                 <one-to-many class="org.n52.series.db.da.beans.ext.AbstractObservationEntity"/>
             </list>
         </subclass>
+
         <subclass name="org.n52.series.db.da.beans.ext.TextObservationSeriesEntity" discriminator-value="text">
             <component class="org.n52.series.db.da.beans.ext.TextObservationEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
@@ -46,6 +48,7 @@
                 <one-to-many class="org.n52.series.db.da.beans.ext.AbstractObservationEntity"/>
             </list>
         </subclass>
+
         <subclass name="org.n52.series.db.da.beans.ext.CountObservationSeriesEntity" discriminator-value="count">
             <component class="org.n52.series.db.da.beans.ext.CountObservationEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp"/>
@@ -59,6 +62,6 @@
                 <one-to-many class="org.n52.series.db.da.beans.ext.AbstractObservationEntity"/>
             </list>
         </subclass>
-        <subclass name="org.n52.series.db.da.beans.ext.UnsupportedSeriesEntity" discriminator-value="not null" />
+
     </class>
 </hibernate-mapping>
