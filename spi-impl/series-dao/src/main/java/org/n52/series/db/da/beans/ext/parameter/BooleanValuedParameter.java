@@ -30,18 +30,6 @@ package org.n52.series.db.da.beans.ext.parameter;
 
 public class BooleanValuedParameter extends Parameter<Boolean> {
 
-    private Boolean value;
-
-    public Boolean getValue() {
-        return value;
-    }
-
-    public void setValue(Boolean value) {
-       this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return value != null;
-    }
-
+    // allows explicit mapping
+    
 }

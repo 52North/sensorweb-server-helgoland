@@ -32,60 +32,49 @@ package org.n52.series.db.da.beans.ext.parameter;
 public abstract class Parameter<T> {
 
     private long parameterId;
+    
     private long observationId;
+    
     private String name;
+    
+    private T value;
 
-    public Parameter() {
-        super();
-    }
-
-    /**
-     * @return the parameterId
-     */
     public long getParameterId() {
         return parameterId;
     }
 
-    /**
-     * @param parameterId the parameterId to set
-     */
     public void setParameterId(long parameterId) {
         this.parameterId = parameterId;
     }
 
-    /**
-     * @return the observationId
-     */
     public long getObservationId() {
         return observationId;
     }
 
-    /**
-     * @param observationId the observationId to set
-     */
     public void setObservationId(long observationId) {
         this.observationId = observationId;
     }
 
-    /**
-     * @return the name
-     */
     public String getName() {
         return name;
     }
-    /**
-     * @param name the name to set
-     */
     public void setName(String name) {
         this.name = name;
     }
 
     public boolean isSetName() {
-        return getName() != null && !getName().isEmpty();
+        return getName() != null;
     }
 
-    public abstract T getValue();
+    public T getValue() {
+        return value;
+    }
 
-    public abstract void setValue(T value);
-
+    public void setValue(T value) {
+        this.value = value;
+    }
+    
+    public boolean isSetValue() {
+        return getValue() != null;
+    }
 }

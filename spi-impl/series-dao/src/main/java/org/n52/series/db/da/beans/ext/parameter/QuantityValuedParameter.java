@@ -32,20 +32,8 @@ import org.n52.series.db.da.beans.UnitEntity;
 
 public class QuantityValuedParameter extends Parameter<Double> {
 
-    private Double value;
     private UnitEntity unit;
 
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
     public UnitEntity getUnit() {
         return unit;
     }

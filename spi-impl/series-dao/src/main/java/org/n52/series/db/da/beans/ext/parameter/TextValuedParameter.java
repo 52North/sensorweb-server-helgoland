@@ -30,18 +30,6 @@ package org.n52.series.db.da.beans.ext.parameter;
 
 public class TextValuedParameter extends Parameter<String> {
 
-    private String value;
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null && !getValue().isEmpty();
-    }
-
+    // allows explicit mapping
+    
 }

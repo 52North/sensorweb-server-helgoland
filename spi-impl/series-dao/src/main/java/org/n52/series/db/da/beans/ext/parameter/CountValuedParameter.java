@@ -30,18 +30,6 @@ package org.n52.series.db.da.beans.ext.parameter;
 
 public class CountValuedParameter extends Parameter<Integer>{
 
-    private Integer value;
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public void setValue(Integer value) {
-       this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
-
+    // allows explicit mapping
+    
 }

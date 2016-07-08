@@ -32,20 +32,7 @@ import org.n52.series.db.da.beans.UnitEntity;
 
 public class CategoryValuedParameter extends Parameter<String> {
 
-    private String value;
     private UnitEntity unit;
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null && !getValue().isEmpty();
-    }
 
     public UnitEntity getUnit() {
         return unit;
