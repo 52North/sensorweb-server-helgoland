@@ -28,16 +28,11 @@
  */
 package org.n52.io.response.series.text;
 
-import java.io.Serializable;
+import org.n52.io.response.series.AbstractValue;
 
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataMetadata;
-
-public class TextObservationValue extends SeriesData implements Comparable<TextObservationValue>, Serializable {
+public class TextObservationValue extends AbstractValue<String> {
 
     private static final long serialVersionUID = -7292181682632614697L;
-
-    private Long timestamp;
 
     private String value;
 
@@ -46,48 +41,20 @@ public class TextObservationValue extends SeriesData implements Comparable<TextO
     }
 
     public TextObservationValue(long timestamp, String value) {
-        this.timestamp = timestamp;
+        super(timestamp);
         this.value = value;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
+    @Override
     public String getValue() {
         return value == null
                 ? ""
                 : value;
     }
 
+    @Override
     public void setValue(String value) {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("TextValue [ ");
-        sb.append("timestamp: ").append(timestamp).append(", ");
-        sb.append("value: ").append(value);
-        return sb.append(" ]").toString();
-    }
-
-    @Override
-    public int compareTo(TextObservationValue o) {
-        return getTimestamp().compareTo(o.getTimestamp());
-    }
-
-    @Override
-    public boolean hasReferenceValues() {
-        return false;
-    }
-
-    @Override
-    public SeriesDataMetadata getMetadata() {
-        return null;
-    }
 }

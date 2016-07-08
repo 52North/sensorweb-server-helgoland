@@ -26,35 +26,56 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.count;
+package org.n52.io.response.series;
 
-import org.n52.io.response.series.AbstractValue;
+import java.io.Serializable;
 
-public class CountObservationValue extends AbstractValue<Integer> {
+public abstract class AbstractValue<T> extends SeriesData implements Comparable<AbstractValue<?>>,Serializable {
 
-    private static final long serialVersionUID = 635165564503748527L;
+    private static final long serialVersionUID = -1606015864495830281L;
 
-    private Integer value;
+    private Long timestamp;
 
-    public CountObservationValue() {
-        // for serialization
+    public AbstractValue() {
     }
 
-    public CountObservationValue(long timestamp, Integer value) {
-        super(timestamp);
-        this.value = value;
+    public AbstractValue(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public abstract T getValue();
+
+    public abstract void setValue(T value);
+
+    @Override
+    public boolean hasReferenceValues() {
+        return false;
     }
 
     @Override
-    public Integer getValue() {
-        return value == null
-                ? Integer.MIN_VALUE
-                : value;
+    public SeriesDataMetadata getMetadata() {
+        return null;
     }
 
     @Override
-    public void setValue(Integer value) {
-        this.value = value;
+    public int compareTo(AbstractValue<?> o) {
+        return getTimestamp().compareTo(o.getTimestamp());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
+        sb.append("timestamp: ").append(getTimestamp()).append(", ");
+        sb.append("value: ").append(getValue());
+        return sb.append(" ]").toString();
     }
 
 }

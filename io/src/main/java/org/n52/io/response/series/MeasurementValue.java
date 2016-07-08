@@ -28,13 +28,9 @@
  */
 package org.n52.io.response.series;
 
-import java.io.Serializable;
-
-public class MeasurementValue extends SeriesData implements Comparable<MeasurementValue>, Serializable {
+public class MeasurementValue extends AbstractValue<Double> {
 
     private static final long serialVersionUID = -7292181682632614697L;
-
-    private Long timestamp;
 
     private Double value;
 
@@ -43,48 +39,20 @@ public class MeasurementValue extends SeriesData implements Comparable<Measureme
     }
 
     public MeasurementValue(long timestamp, Double value) {
-        this.timestamp = timestamp;
+        super(timestamp);
         this.value = value;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
+    @Override
     public Double getValue() {
         return value == null
                 ? Double.NaN
                 : value;
     }
 
+    @Override
     public void setValue(Double value) {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("TimeseriesValue [ ");
-        sb.append("timestamp: ").append(timestamp).append(", ");
-        sb.append("value: ").append(value);
-        return sb.append(" ]").toString();
-    }
-
-    @Override
-    public int compareTo(MeasurementValue o) {
-        return getTimestamp().compareTo(o.getTimestamp());
-    }
-
-    @Override
-    public boolean hasReferenceValues() {
-        return false;
-    }
-
-    @Override
-    public SeriesDataMetadata getMetadata() {
-        return null;
-    }
 }
