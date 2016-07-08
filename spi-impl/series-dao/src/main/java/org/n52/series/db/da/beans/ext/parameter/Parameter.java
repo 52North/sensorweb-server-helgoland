@@ -84,4 +84,8 @@ public abstract class Parameter<T> {
         return getName() != null && !getName().isEmpty();
     }
 
+    public abstract T getValue();
+
+    public abstract void setValue(T value);
+
 }

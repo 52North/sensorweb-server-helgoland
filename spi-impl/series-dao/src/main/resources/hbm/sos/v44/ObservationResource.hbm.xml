@@ -18,6 +18,11 @@
              -->
             <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
+        <!-- Or add only to specific joined-subclasses -->
+        <set name="parameters" table="parameters" inverse="true" >
+           	<key column="observationid" not-null="true" />
+           	<one-to-many class="org.n52.series.db.da.beans.ext.parameter.Parameter" />
+       	</set>
         <joined-subclass name="MeasurementEntity"
                          extends="AbstractObservationEntity"
                          table="numericValue">
@@ -29,11 +34,6 @@
                          table="textValue">
         	<key column="observationid"/>
          	<property column="value" name="value" type="string" />
-         	<!-- Or add to AbstractObservationEntity properties -->
-         	<set name="parameters" table="parameters" inverse="true" >
-            	<key column="observationid" not-null="true" />
-            	<one-to-many class="org.n52.series.db.da.beans.ext.parameter.Parameter" />
-        	</set>
         </joined-subclass>
          <joined-subclass name="CountObservationEntity"
                          extends="AbstractObservationEntity"
