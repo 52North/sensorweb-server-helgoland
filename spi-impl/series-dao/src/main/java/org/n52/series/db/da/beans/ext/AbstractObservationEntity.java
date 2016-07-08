@@ -52,9 +52,8 @@ public abstract class AbstractObservationEntity<T> {
 
     private Date validTimeEnd;
 
-    @SuppressWarnings("rawtypes")
-    private Set<Parameter> parameters = new HashSet<>(0);
-
+    private final Set<Parameter<?>> parameters = new HashSet<>(0);
+    
     public Long getPkid() {
         return pkid;
     }
@@ -135,17 +134,13 @@ public abstract class AbstractObservationEntity<T> {
         return validTimeEnd != null;
     }
 
-    @SuppressWarnings("rawtypes")
-    public Set<Parameter> getParameters() {
+    public Set<Parameter<?>> getParameters() {
         return parameters;
     }
 
-    @SuppressWarnings(value = { "unchecked", "rawtypes" })
-    public void setParameters(Object parameters) {
-        if (parameters instanceof Set<?>) {
-            this.parameters = (Set<Parameter>) parameters;
-        } else {
-            getParameters().add((Parameter) parameters);
+    public void setParameters(Set<Parameter<?>> parameters) {
+        if (parameters != null) {
+            this.parameters.addAll(parameters);
         }
     }
 
