@@ -225,18 +225,18 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
             MeasurementSeriesOutput output = (MeasurementSeriesOutput) result;
             output.setUom(measurementSeries.getUnitI18nName(query.getLocale()));
-            output.setFirstValue(createTimeseriesValueFor(measurementSeries.getFirstValue(), measurementSeries));
-            output.setLastValue(createTimeseriesValueFor(measurementSeries.getLastValue(), measurementSeries));
+            output.setFirstValue(createSeriesValueFor(measurementSeries.getFirstValue(), measurementSeries));
+            output.setLastValue(createSeriesValueFor(measurementSeries.getLastValue(), measurementSeries));
         } else if (series instanceof TextObservationSeriesEntity && result instanceof TextObservationSeriesOutput) {
             TextObservationSeriesEntity textObservationSeries = (TextObservationSeriesEntity) series;
             TextObservationSeriesOutput output = (TextObservationSeriesOutput) result;
-            output.setFirstValue(createTimeseriesValueFor(textObservationSeries.getFirstValue(), textObservationSeries));
-            output.setLastValue(createTimeseriesValueFor(textObservationSeries.getLastValue(), textObservationSeries));
+            output.setFirstValue(createSeriesValueFor(textObservationSeries.getFirstValue(), textObservationSeries));
+            output.setLastValue(createSeriesValueFor(textObservationSeries.getLastValue(), textObservationSeries));
         } else if (series instanceof CountObservationSeriesEntity && result instanceof CountObservationSeriesOutput) {
             CountObservationSeriesEntity countObservationSeries = (CountObservationSeriesEntity) series;
             CountObservationSeriesOutput output = (CountObservationSeriesOutput) result;
-            output.setFirstValue(createTimeseriesValueFor(countObservationSeries.getFirstValue(), countObservationSeries));
-            output.setLastValue(createTimeseriesValueFor(countObservationSeries.getLastValue(), countObservationSeries));
+            output.setFirstValue(createSeriesValueFor(countObservationSeries.getFirstValue(), countObservationSeries));
+            output.setLastValue(createSeriesValueFor(countObservationSeries.getLastValue(), countObservationSeries));
         }
         return result;
     }
@@ -255,7 +255,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return sb.append(station).toString();
     }
 
-    private MeasurementValue createTimeseriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
+    private MeasurementValue createSeriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -269,7 +269,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    private TextObservationValue createTimeseriesValueFor(TextObservationEntity observation,
+    private TextObservationValue createSeriesValueFor(TextObservationEntity observation,
             TextObservationSeriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
@@ -283,7 +283,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    private CountObservationValue createTimeseriesValueFor(CountObservationEntity observation,
+    private CountObservationValue createSeriesValueFor(CountObservationEntity observation,
             CountObservationSeriesEntity series) {
         if (observation == null) {
             // do not fail on empty observations
@@ -316,11 +316,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         List<AbstractObservationEntity> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
         if (observations != null && !observations.isEmpty()) {
             if (series instanceof MeasurementSeriesEntity) {
-                return createTimeseriesValueFor((MeasurementEntity)observations.iterator().next(), (MeasurementSeriesEntity)series);
+                return createSeriesValueFor((MeasurementEntity)observations.iterator().next(), (MeasurementSeriesEntity)series);
             } else if (series instanceof TextObservationSeriesEntity) {
-                return createTimeseriesValueFor((TextObservationEntity)observations.iterator().next(), (TextObservationSeriesEntity)series);
+                return createSeriesValueFor((TextObservationEntity)observations.iterator().next(), (TextObservationSeriesEntity)series);
             } else if (series instanceof CountObservationSeriesEntity) {
-                return createTimeseriesValueFor((CountObservationEntity)observations.iterator().next(), (CountObservationSeriesEntity)series);
+                return createSeriesValueFor((CountObservationEntity)observations.iterator().next(), (CountObservationSeriesEntity)series);
             }
         }
         return null;
