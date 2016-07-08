@@ -37,7 +37,6 @@ import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.series.SeriesDataCollection;
-import org.n52.io.response.v2.SeriesValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -78,8 +77,8 @@ public class HighchartFormatter implements SeriesDataFormatter<MeasurementData, 
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());
-            if (currentValue instanceof SeriesValue && ((SeriesValue) currentValue).isSetGeometry()) {
-                Coordinate coordinate = ((SeriesValue) currentValue).getGeometry().getCoordinate();
+            if (currentValue.isSetGeometry()) {
+                Coordinate coordinate = currentValue.getGeometry().getCoordinate();
                 list.add(coordinate.x);
                 list.add(coordinate.y);
                 if (!Double.isNaN(coordinate.z)) {
