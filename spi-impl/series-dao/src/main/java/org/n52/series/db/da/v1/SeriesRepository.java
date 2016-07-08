@@ -68,6 +68,8 @@ import org.n52.series.db.da.dao.v1.SeriesDao;
  */
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
 
+    private ObservationTypeToEntityMapper mapper = new ObservationTypeToEntityMapper();
+    
     @Override
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
@@ -85,37 +87,22 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            switch (query.getObservationType()) {
-
-            // TODO other obesrvation types
-            case TEXT:
-                for (TextObservationSeriesEntity series : new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createCondensed(series, query));
-                }
-                break;
-            case COUNT:
-                for (CountObservationSeriesEntity series : new SeriesDao<CountObservationSeriesEntity>(session, CountObservationSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createCondensed(series, query));
-                }
-                break;
-            case MEASUREMENT:
-                for (MeasurementSeriesEntity series : new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createCondensed(series, query));
-                }
-                break;
-            default:
-                for (AbstractSeriesEntity series : new SeriesDao<AbstractSeriesEntity>(session, AbstractSeriesEntity.class).getAllInstances(query)) {
-                    SeriesMetadataOutput output = createCondensed(series, query);
-                    if (output != null) {
-                        results.add(output);
-                    }
+            SeriesDao<? extends AbstractSeriesEntity> dao = getSeriesDao(query, session);
+            for (AbstractSeriesEntity series : dao.getAllInstances(query)) {
+                final SeriesMetadataOutput item = createCondensed(series, query);
+                if (item != null) {
+                    results.add(item);
                 }
             }
             return results;
-
         } finally {
             returnSession(session);
         }
+    }
+
+    private SeriesDao<? extends AbstractSeriesEntity> getSeriesDao(DbQuery query, Session session) {
+        final ObservationType observationType = query.getObservationType();
+        return new SeriesDao<>(session, mapper.mapToEntityClass(observationType));
     }
 
     @Override
@@ -123,30 +110,9 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             List<SeriesMetadataOutput> results = new ArrayList<>();
-            switch (query.getObservationType()) {
-            // TODO other obesrvation types
-            case TEXT:
-                for (TextObservationSeriesEntity series : new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createExpanded(series, query, session));
-                }
-                break;
-            case COUNT:
-                for (CountObservationSeriesEntity series : new SeriesDao<CountObservationSeriesEntity>(session, CountObservationSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createExpanded(series, query, session));
-                }
-                break;
-            case MEASUREMENT:
-                for (MeasurementSeriesEntity series : new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class).getAllInstances(query)) {
-                    results.add(createExpanded(series, query, session));
-                }
-                break;
-            default:
-                for (AbstractSeriesEntity series : new SeriesDao<AbstractSeriesEntity>(session, AbstractSeriesEntity.class).getAllInstances(query)) {
-                    SeriesMetadataOutput output = createExpanded(series, query, session);
-                    if (output != null) {
-                        results.add(output);
-                    }
-                }
+            SeriesDao<? extends AbstractSeriesEntity> dao = getSeriesDao(query, session);
+            for (AbstractSeriesEntity series : dao.getAllInstances(query)) {
+                results.add(createExpanded(series, query, session));
             }
             return results;
         } finally {
@@ -159,21 +125,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         Session session = getSession();
         try {
             String seriesId = ObservationType.extractId(id);
-            switch (query.getObservationType()) {
-                // TODO other obesrvation types
-            case TEXT:
-                TextObservationSeriesEntity textSeries = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
-                return createExpanded(textSeries, query, session);
-            case COUNT:
-                CountObservationSeriesEntity countSeries = new SeriesDao<CountObservationSeriesEntity>(session, CountObservationSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
-                return createExpanded(countSeries, query, session);
-            case MEASUREMENT:
-                MeasurementSeriesEntity measuremenSeries = new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
-                return createExpanded(measuremenSeries, query, session);
-            default:
-                AbstractSeriesEntity abstractSeries = new SeriesDao<AbstractSeriesEntity>(session, AbstractSeriesEntity.class).getInstance(Long.parseLong(seriesId), query);
-                return createExpanded(abstractSeries, query, session);
-            }
+            AbstractSeriesEntity instance = getSeriesDao(query, session).getInstance(Long.parseLong(seriesId), query);
+            return createExpanded(instance, query, session);
         } finally {
             returnSession(session);
         }
@@ -291,14 +244,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    /**
-     * Query observations for timestamp
-     * @param observation
-     * @param series
-     * @param query
-     * @return
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+//    @SuppressWarnings({ "rawtypes", "unchecked" })
     private SeriesData queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
