@@ -31,5 +31,5 @@ package org.n52.series.db.da.beans.ext.parameter;
 public class CountValuedParameter extends Parameter<Integer>{
 
     // allows explicit mapping
-    
+
 }

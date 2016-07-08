@@ -23,23 +23,27 @@
            	<key column="observationid" not-null="true" />
            	<one-to-many class="org.n52.series.db.da.beans.ext.parameter.Parameter" />
        	</set>
+
         <joined-subclass name="MeasurementEntity"
                          extends="AbstractObservationEntity"
                          table="numericValue">
         	<key column="observationid"/>
          	<property column="value" name="value" type="double" />
         </joined-subclass>
+
         <joined-subclass name="TextObservationEntity"
                          extends="AbstractObservationEntity"
                          table="textValue">
         	<key column="observationid"/>
          	<property column="value" name="value" type="string" />
         </joined-subclass>
+
          <joined-subclass name="CountObservationEntity"
                          extends="AbstractObservationEntity"
                          table="countValue">
         	<key column="observationid"/>
          	<property column="value" name="value" type="integer" />
         </joined-subclass>
+
     </class>
 </hibernate-mapping>

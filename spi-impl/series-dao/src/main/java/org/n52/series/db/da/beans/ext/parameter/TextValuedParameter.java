@@ -31,5 +31,5 @@ package org.n52.series.db.da.beans.ext.parameter;
 public class TextValuedParameter extends Parameter<String> {
 
     // allows explicit mapping
-    
+
 }

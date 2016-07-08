@@ -32,11 +32,11 @@ package org.n52.series.db.da.beans.ext.parameter;
 public abstract class Parameter<T> {
 
     private long parameterId;
-    
+
     private long observationId;
-    
+
     private String name;
-    
+
     private T value;
 
     public long getParameterId() {
@@ -73,7 +73,7 @@ public abstract class Parameter<T> {
     public void setValue(T value) {
         this.value = value;
     }
-    
+
     public boolean isSetValue() {
         return getValue() != null;
     }

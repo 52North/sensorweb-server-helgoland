@@ -2,32 +2,32 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.da.beans.ext.parameter">
-    
+
     <joined-subclass name="BooleanValuedParameter" extends="Parameter" table="booleanParameterValue" check="value in ('T','F')">
         <key column="parameterid" />
         <property name="value" column="value" type="org.hibernate.type.TrueFalseType" />
     </joined-subclass>
-    
+
     <joined-subclass name="CategoryValuedParameter" extends="Parameter" table="categoryParameterValue">
         <key column="parameterid" />
         <property name="value" column="value" type="string" />
         <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="unitid" name="unit" insert="false" update="false" />
     </joined-subclass>
-    
+
     <joined-subclass name="CountValuedParameter" extends="Parameter" table="countParameterValue">
         <key column="parameterid" />
         <property name="value" column="value" type="integer" />
     </joined-subclass>
-    
+
     <joined-subclass name="QuantityValuedParameter" extends="Parameter" table="numericParameterValue">
         <key column="parameterid" />
         <property name="value" column="value" type="double" />
         <many-to-one class="org.n52.series.db.da.beans.UnitEntity" column="unitid" name="unit" insert="false" update="false" />
     </joined-subclass>
-    
+
     <joined-subclass name="TextValuedParameter" extends="Parameter" table="textParameterValue">
         <key column="parameterid" />
         <property name="value" column="value" type="string" />
     </joined-subclass>
-    
+
 </hibernate-mapping>
