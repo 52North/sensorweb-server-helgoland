@@ -50,6 +50,10 @@ public abstract class SeriesData implements Serializable {
         this.geometry = geometry;
     }
 
+    public boolean isSetGeometry() {
+        return geometry != null && !geometry.isEmpty();
+    }
+
     public abstract boolean hasReferenceValues();
 
     public abstract SeriesDataMetadata getMetadata();

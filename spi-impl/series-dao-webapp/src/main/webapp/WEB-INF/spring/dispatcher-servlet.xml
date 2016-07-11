@@ -35,7 +35,6 @@
 
     <import resource="api_v1_mvc.xml" />
     <import resource="api_v1_mvc_ext.xml" />
-    <!--<import resource="api_v2_mvc.xml"/> -->
 
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 

@@ -20,15 +20,9 @@
 
     <import resource="spi-impl-dao_common.xml"/>
 
-    <ctx:component-scan base-package="org.n52.series.db">
-        <!-- exclude V2 beans from autowiring -->
-        <ctx:exclude-filter type="regex" expression="org\.n52\.series\.db\.*\.v2\.*" />
-    </ctx:component-scan>
-
     <!-- timeseries api web controller bindings -->
     <import resource="spi-impl-dao_v1_beans.xml"/>
     <import resource="spi-impl-dao_v1_beans_ext.xml"/>
-    <!--<import resource="spi-impl-dao_v2_beans.xml"/>-->
 
 
     <!--<import resource="spi-impl-dao_tasks.xml" />-->
