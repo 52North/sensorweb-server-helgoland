@@ -13,6 +13,7 @@
     <modules>
         <module>series-dao</module>
         <module>series-dao-sos</module>
+        <module>dwd-harvester</module>
         <module>series-dao-webapp</module>
     </modules>
 
