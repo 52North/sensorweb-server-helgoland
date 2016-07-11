@@ -122,7 +122,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedPhenomenon(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new PhenomenonOutput(), entity, parameters, urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new PhenomenonOutput(), entity, parameters, urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
@@ -130,7 +130,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedOffering(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
     private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
@@ -139,7 +139,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
         return outputvalue;
     }
 
-    private ParameterOutput createCondensedExtended(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters, String hrefBase) {
+    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters, String hrefBase) {
         createCondensed(outputvalue, entity, parameters);
         outputvalue.setHref(hrefBase + "/" + outputvalue.getId());
         return outputvalue;
@@ -150,7 +150,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedProcedure(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new ProcedureOutput(), entity, parameters, urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new ProcedureOutput(), entity, parameters, urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
@@ -158,7 +158,7 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedFeature(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new FeatureOutput(), entity, parameters, urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new FeatureOutput(), entity, parameters, urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
@@ -166,11 +166,11 @@ public abstract class ExtendedSessionAwareRepository extends SessionAwareReposit
     }
 
     protected ParameterOutput getCondensedExtendedCategory(DescribableEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
     protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
-        return createCondensedExtended(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
+        return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
     }
 
     @Override
