@@ -37,7 +37,7 @@ import org.n52.series.dwd.rest.AlertCollection;
 public interface AlertStore {
 
     boolean isEmpty();
-    
+
     List<WarnCell> getAllWarnCells();
 
     List<AlertMessage> getAllAlerts();

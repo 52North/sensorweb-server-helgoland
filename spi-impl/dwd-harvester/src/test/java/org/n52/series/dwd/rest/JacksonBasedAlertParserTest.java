@@ -68,7 +68,7 @@ public class JacksonBasedAlertParserTest {
         parser.parse(streamOf("/empty-example.json"), store);
         Assert.assertThat(store.getLastKnownAlertTime(), is(new DateTime(100L)));
     }
-    
+
     @Test
     public void when_dwdExampleAlerts_then_nonEmptyAlerts() throws ParseException {
         AlertParser parser = new JacksonBasedAlertParser();
@@ -76,7 +76,7 @@ public class JacksonBasedAlertParserTest {
         parser.parse(streamOf("/dwd-example.json"), store);
         Assert.assertFalse(store.getAllAlerts().isEmpty());
     }
-    
+
     @Test
     public void when_dwdExampleAlerts_then_warningCellsWithId() throws ParseException {
         AlertParser parser = new JacksonBasedAlertParser();
@@ -85,7 +85,7 @@ public class JacksonBasedAlertParserTest {
         final WarnCell cell = new WarnCell("901055001");
         Assert.assertTrue(store.getAllWarnCells().contains(cell));
     }
-    
+
     private InputStream streamOf(String file) {
         return getClass().getResourceAsStream(file);
     }

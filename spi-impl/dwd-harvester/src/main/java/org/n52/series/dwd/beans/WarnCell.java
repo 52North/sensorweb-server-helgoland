@@ -32,26 +32,27 @@ import com.vividsolutions.jts.geom.Geometry;
 import java.util.Objects;
 
 public class WarnCell {
-    
+
     private final String id;
-    
+
     private Geometry geometry;
-    
+
     public WarnCell(String id) {
         if (id == null) {
             throw new NullPointerException("Id must not be null.");
         }
-        this.id = id; 
+        this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }
 
     public Geometry getGeometry() {
-        
+
         // TODO read from shp?
-        
+        // TODO check licensing of dwd's shp!
+
         return geometry;
     }
 
@@ -80,5 +81,5 @@ public class WarnCell {
         return true;
     }
 
-    
+
 }

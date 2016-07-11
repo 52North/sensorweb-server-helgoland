@@ -35,5 +35,5 @@ public class WarnungAlert extends Alert {
         return "Warning";
     }
 
-    
+
 }

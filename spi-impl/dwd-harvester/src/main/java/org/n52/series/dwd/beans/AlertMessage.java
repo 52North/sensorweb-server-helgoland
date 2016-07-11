@@ -32,9 +32,9 @@ import java.util.Objects;
 import org.n52.series.dwd.rest.Alert;
 
 public class AlertMessage {
-    
+
     private final WarnCell warnCell;
-    
+
     private final Alert alert;
 
     public AlertMessage(WarnCell warnCell, Alert alert) {
@@ -69,7 +69,7 @@ public class AlertMessage {
         }
         return true;
     }
-    
-    
-    
+
+
+
 }

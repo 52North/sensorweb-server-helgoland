@@ -69,7 +69,7 @@ public class InMemoryAlertStore implements AlertStore {
         all.addAll(toWarnCells(getCurrentAlerts().getVorabInformation()));
         return Collections.unmodifiableList(all);
     }
-    
+
     private <A extends Alert> Collection<WarnCell> toWarnCells(Map<String, List<A>> alerts) {
         List<WarnCell> warnCells = new ArrayList<>();
         for (Map.Entry<String, List<A>> entry : alerts.entrySet()) {
