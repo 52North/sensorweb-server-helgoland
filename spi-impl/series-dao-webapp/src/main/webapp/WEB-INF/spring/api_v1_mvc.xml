@@ -24,7 +24,7 @@
         <property name="metadataService" ref="metadataService" />
     </bean>-->
 
-    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
+<!--    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
 
@@ -46,7 +46,7 @@
 
     <bean class="org.n52.web.ctrl.v1.PhenomenaParameterController" parent="parameterController">
         <property name="parameterService" ref="phenomenonParameterService" />
-    </bean>
+    </bean>-->
 
     <bean class="org.n52.web.ctrl.v1.StationsParameterController">
         <property name="parameterService" ref="stationParameterService" />
@@ -70,10 +70,6 @@
         <property name="timeseriesDataService" ref="timeseriesService" />
         <!--<property name="preRenderingTask" ref="preRenderingJobV1" />-->
         <property name="requestIntervalRestriction" value="P1Y1D" />
-    </bean>
-
-    <bean class="org.n52.web.ctrl.v1.SearchController">
-        <property name="searchService" ref="searchService"/>
     </bean>
 
 

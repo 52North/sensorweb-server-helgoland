@@ -29,7 +29,7 @@
 
 package org.n52.web.ctrl.v1.ext;
 
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_SERIES;
+import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_DATASETS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.Parameters;
@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = COLLECTION_SERIES)
+@RequestMapping(value = COLLECTION_DATASETS)
 public class SeriesMetadataController extends ParameterSimpleArrayCollectionAdapter<SeriesMetadataOutput> {
 
     @Override

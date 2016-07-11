@@ -41,59 +41,82 @@ import org.n52.web.ctrl.v1.RestfulUrls;
 public interface ExtUrlSettings extends RestfulUrls {
 
     /**
-     * Subpath identifying the extension.
+     * Subpaths identifying services collections available.
      */
-    static final String EXT = "/ext";
+    static final String COLLECTION_SERVICES_ALL = API_VERSION_PATH + "/services/all";
+    static final String COLLECTION_SERVICES_MOBILE = API_VERSION_PATH + "/services/mobile";
+    static final String COLLECTION_SERVICES_INSITU = API_VERSION_PATH + "/services/insitu";
+    static final String COLLECTION_SERVICES_REMOTE = API_VERSION_PATH + "/services/remote";
+    static final String COLLECTION_SERVICES_STATIONARY = API_VERSION_PATH + "/services/stationary";
 
     /**
-     * Subpath identifying the api version and extension.
+     * Subpaths identifying categories collections available.
      */
-    static final String API_VERSION_EXTENSION_PATH = API_VERSION_PATH + EXT;
+    static final String COLLECTION_CATEGORIES_ALL = API_VERSION_PATH + "/categories/all";
+    static final String COLLECTION_CATEGORIES_MOBILE = API_VERSION_PATH + "/categories/mobile";
+    static final String COLLECTION_CATEGORIES_INSITU = API_VERSION_PATH + "/categories/insitu";
+    static final String COLLECTION_CATEGORIES_REMOTE = API_VERSION_PATH + "/categories/remote";
+    static final String COLLECTION_CATEGORIES_STATIONARY = API_VERSION_PATH + "/categories/stationary";
 
     /**
-     * Subpath identifying a collection of services available.
+     * Subpaths identifying offerings collections available.
      */
-    static final String EXT_COLLECTION_SERVICES = API_VERSION_EXTENSION_PATH + "/services";
+    static final String COLLECTION_OFFERINGS_ALL = API_VERSION_PATH + "/offerings/all";
+    static final String COLLECTION_OFFERINGS_MOBILE = API_VERSION_PATH + "/offerings/mobile";
+    static final String COLLECTION_OFFERINGS_INSITU = API_VERSION_PATH + "/offerings/insitu";
+    static final String COLLECTION_OFFERINGS_REMOTE = API_VERSION_PATH + "/offerings/remote";
+    static final String COLLECTION_OFFERINGS_STATIONARY = API_VERSION_PATH + "/offerings/stationary";
 
     /**
-     * Subpath identifying a collection of categories available.
+     * Subpaths identifying features collections available.
      */
-    String EXT_COLLECTION_CATEGORIES = API_VERSION_EXTENSION_PATH + "/categories";
+    static final String COLLECTION_FEATURES_ALL = API_VERSION_PATH + "/features/all";
+    static final String COLLECTION_FEATURES_MOBILE = API_VERSION_PATH + "/features/mobile";
+    static final String COLLECTION_FEATURES_INSITU = API_VERSION_PATH + "/features/insitu";
+    static final String COLLECTION_FEATURES_REMOTE = API_VERSION_PATH + "/features/remote";
+    static final String COLLECTION_FEATURES_STATIONARY = API_VERSION_PATH + "/features/stationary";
 
     /**
-     * Subpath identifying a collection of offerings available.
+     * Subpaths identifying procedures collections available.
      */
-    String EXT_COLLECTION_OFFERINGS = API_VERSION_EXTENSION_PATH + "/offerings";
+    static final String COLLECTION_PROCEDURES_ALL = API_VERSION_PATH + "/procedures/all";
+    static final String COLLECTION_PROCEDURES_MOBILE = API_VERSION_PATH + "/procedures/mobile";
+    static final String COLLECTION_PROCEDURES_INSITU = API_VERSION_PATH + "/procedures/insitu";
+    static final String COLLECTION_PROCEDURES_REMOTE = API_VERSION_PATH + "/procedures/remote";
+    static final String COLLECTION_PROCEDURES_STATIONARY = API_VERSION_PATH + "/procedures/stationary";
 
     /**
-     * Subpath identifying a collection of features available.
+     * Subpaths identifying phenomena collections available.
      */
-    String EXT_COLLECTION_FEATURES = API_VERSION_EXTENSION_PATH + "/features";
+    static final String COLLECTION_PHENOMENA_ALL = API_VERSION_PATH + "/phenomena/all";
+    static final String COLLECTION_PHENOMENA_MOBILE = API_VERSION_PATH + "/phenomena/mobile";
+    static final String COLLECTION_PHENOMENA_INSITU = API_VERSION_PATH + "/phenomena/insitu";
+    static final String COLLECTION_PHENOMENA_REMOTE = API_VERSION_PATH + "/phenomena/remote";
+    static final String COLLECTION_PHENOMENA_STATIONARY = API_VERSION_PATH + "/phenomena/stationary";
 
     /**
-     * Subpath identifying a collection of procedures available.
+     * Subpaths identifying platforms collections available.
      */
-    String EXT_COLLECTION_PROCEDURES = API_VERSION_EXTENSION_PATH + "/procedures";
+    static final String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
+//    static final String COLLECTION_PLATFORMS_ALL = API_VERSION_PATH + "/platforms/all";
+//    static final String COLLECTION_PLATFORMS_MOBILE = API_VERSION_PATH + "/platforms/mobile";
+//    static final String COLLECTION_PLATFORMS_INSITU = API_VERSION_PATH + "/platforms/insitu";
+//    static final String COLLECTION_PLATFORMS_REMOTE = API_VERSION_PATH + "/platforms/remote";
+//    static final String COLLECTION_PLATFORMS_STATIONARY = API_VERSION_PATH + "/platforms/stationary";
 
     /**
-     * Subpath identifying a collection of phenomenons available.
+     * Subpaths identifying datasets collections available.
      */
-    String EXT_COLLECTION_PHENOMENA = API_VERSION_EXTENSION_PATH + "/phenomena";
+    static final String COLLECTION_DATASETS = API_VERSION_PATH + "/datasets";
+//    static final String COLLECTION_DATASETS_ALL = API_VERSION_PATH + "/datasets/all";
+//    static final String COLLECTION_DATASETS_MOBILE = API_VERSION_PATH + "/datasets/mobile";
+//    static final String COLLECTION_DATASETS_INSITU = API_VERSION_PATH + "/datasets/insitu";
+//    static final String COLLECTION_DATASETS_REMOTE = API_VERSION_PATH + "/datasets/remote";
+//    static final String COLLECTION_DATASETS_STATIONARY = API_VERSION_PATH + "/datasets/stationary";
 
     /**
-     * Subpath identifying a collection of platforms available.
+     * Subpaths identifying geometries collections available.
      */
-    String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
-
-    /**
-     * Subpath identifying a collection of series metadata available.
-     */
-    String COLLECTION_SERIES = API_VERSION_PATH + "/series";
-
-    /**
-     * Subpath identifying a collection of series metadata available.
-     */
-    String COLLECTION_GEOMETRIES = API_VERSION_PATH + "/geometries";
-
+    static final String COLLECTION_GEOMETRIES = API_VERSION_PATH + "/geometries";
 
 }

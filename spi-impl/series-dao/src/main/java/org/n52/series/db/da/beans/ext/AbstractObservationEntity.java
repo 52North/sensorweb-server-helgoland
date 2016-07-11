@@ -53,7 +53,7 @@ public abstract class AbstractObservationEntity<T> {
     private Date validTimeEnd;
 
     private final Set<Parameter<?>> parameters = new HashSet<>(0);
-    
+
     public Long getPkid() {
         return pkid;
     }

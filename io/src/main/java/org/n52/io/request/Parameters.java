@@ -331,36 +331,25 @@ public interface Parameters {
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";
 
-    public static final String PLATFORMS_INCLUDE_ALL = "internal.include.platforms.all";
+    public static final String INCLUDE_ALL = "internal.include.all";
+    public static final String FILTER_ON_INSITU = "internal.filter.insitu";
+    public static final String FILTER_ON_REMOTE = "internal.filter.remote";
+    public static final String FILTER_ON_STATIONARY = "internal.filter.stationary";
+    public static final String FILTER_ON_MOBILE = "internal.filter.mobile";
 
-    public static final String PLATFORMS_INCLUDE_INSITU = "internal.include.platforms.insitu";
-
-    public static final String PLATFORMS_INCLUDE_REMOTE = "internal.include.platforms.remote";
-
-    public static final String PLATFORMS_INCLUDE_STATIONARY = "internal.include.platforms.stationary";
-
-    public static final String PLATFORMS_INCLUDE_MOBILE = "internal.include.platforms.mobile";
-
+    // TODO discuss separating observatoin types at all
     public static final String SERIES_INCLUDE_ALL = "internal.include.series.all";
-
     public static final String SERIES_INCLUDE_MEASUREMENT = "internal.include.series.measurement";
-
     public static final String OBSERVATION_TYPE = "observationtype";
 
     /* geometries  */
 
     public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
-
     public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
-
     public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
-
     public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
-
     public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
-
     public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC = "internal.include.geometries.observedgeometries.static";
-
     public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC = "internal.include.geometries.observedgeometries.dynamic";
 
 }

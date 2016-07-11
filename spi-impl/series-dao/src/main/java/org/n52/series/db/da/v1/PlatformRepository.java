@@ -159,11 +159,11 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         LOGGER.warn("getAllStationaryRemote() not implemented yet.");
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
         }
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_REMOTE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_STATIONARY, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_REMOTE, IoParameters.getJsonNodeFrom(true));
         return Collections.emptyList();
     }
 
@@ -206,27 +206,28 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
         PlatformDao dao = new PlatformDao(session);
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
         }
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_MOBILE, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_INSITU, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_MOBILE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_INSITU, IoParameters.getJsonNodeFrom(true));
         return dao.getAllInstances(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
         LOGGER.warn("getAllMobileRemote() not implemented yet.");
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.PLATFORMS_INCLUDE_ALL);
+        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
+            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
         }
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_MOBILE, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_REMOTE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_MOBILE, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.FILTER_ON_REMOTE, IoParameters.getJsonNodeFrom(true));
         return Collections.emptyList();
     }
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
+        
         // TODO better solution for adding a parameter
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
         simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(entity.getPkid()));

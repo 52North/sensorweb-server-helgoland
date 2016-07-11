@@ -69,7 +69,7 @@ import org.n52.series.db.da.dao.v1.SeriesDao;
 public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
 
     private ObservationTypeToEntityMapper mapper = new ObservationTypeToEntityMapper();
-    
+
     @Override
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();

@@ -114,13 +114,9 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
             Stopwatch stopwatch = startStopwatch();
             OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-            // TODO add paging
             return createModelAndView(result);
         } else {
             OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
-
-            // TODO add paging
             return createModelAndView(results);
         }
     }

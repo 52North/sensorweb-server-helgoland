@@ -33,6 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+import org.n52.io.request.Parameters;
 
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
@@ -53,21 +54,25 @@ public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutpu
     }
 
     @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
+    public ModelAndView getAllMobile(@RequestParam MultiValueMap<String, String> query) {
+        query.add(Parameters.INCLUDE_ALL, "true");
         return super.getCollection(query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
         return super.getItem(id, query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
         super.getRawData(response, id, query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {

@@ -23,4 +23,7 @@
     <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
     <bean id="metadataService" class="org.n52.series.db.srv.v1.ExtCountingMetadataAccessService" />
 
+    <bean class="org.n52.web.ctrl.v1.SearchController">
+        <property name="searchService" ref="searchService"/>
+    </bean>
 </beans>

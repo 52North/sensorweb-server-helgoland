@@ -31,27 +31,27 @@ package org.n52.web.ctrl.v1.ext;
 public class UrlHelper {
 
     public String getServicesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERVICES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERVICES_DEFAULT);
     }
 
     public String getCategoriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_CATEGORIES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_CATEGORIES_ALL);
     }
 
     public String getOfferingsHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_OFFERINGS);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_OFFERINGS_ALL);
     }
 
     public String getFeaturesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_FEATURES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_FEATURES_ALL);
     }
 
     public String getProceduresHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_PROCEDURES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_PROCEDURES_ALL);
     }
 
     public String getPhenomenaHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.EXT_COLLECTION_PHENOMENA);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_PHENOMENA_ALL);
     }
 
     public String getPlatformsHrefBaseUrl(String hrefBase) {
@@ -59,7 +59,7 @@ public class UrlHelper {
     }
 
     public String getSeriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERIES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_DATASETS);
     }
 
     public String getGeometriesHrefBaseUrl(String hrefBase) {

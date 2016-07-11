@@ -28,14 +28,14 @@
  */
 package org.n52.web.ctrl.v1;
 
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_SERVICES;
 
 import org.n52.io.response.v1.ServiceOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_SERVICES_DEFAULT;
 
 @RestController
-@RequestMapping(value = COLLECTION_SERVICES)
+@RequestMapping(value = COLLECTION_SERVICES_DEFAULT)
 public class ServicesParameterController extends ParameterControllerV1Adapter<ServiceOutput> {
 
     // resource controller for services

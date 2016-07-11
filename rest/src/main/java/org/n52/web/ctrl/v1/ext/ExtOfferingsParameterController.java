@@ -28,15 +28,51 @@
  */
 package org.n52.web.ctrl.v1.ext;
 
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.EXT_COLLECTION_OFFERINGS;
-
+import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.OfferingOutput;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = EXT_COLLECTION_OFFERINGS)
 public class ExtOfferingsParameterController extends ExtParameterRequestMappingAdapter<OfferingOutput> {
 
-    // resource controller for phenomena
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_DEFAULT)
+    public ModelAndView getDefaultOfferings(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_ALL)
+    public ModelAndView getAllOfferings(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.INCLUDE_ALL, "true");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_INSITU)
+    public ModelAndView getInsituPhenomena(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.FILTER_ON_INSITU, "true");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_REMOTE)
+    public ModelAndView getRemotePhenomena(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.FILTER_ON_REMOTE, "true");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_MOBILE)
+    public ModelAndView getMobilePhenomena(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.FILTER_ON_MOBILE, "true");
+        return super.getCollection(query);
+    }
+
+    @RequestMapping(ExtUrlSettings.COLLECTION_OFFERINGS_STATIONARY)
+    public ModelAndView getStationaryaPhenomena(@RequestParam(required = false) MultiValueMap<String, String> query) {
+        query.add(Parameters.FILTER_ON_STATIONARY, "true");
+        return super.getCollection(query);
+    }
+
 }

@@ -28,14 +28,14 @@
  */
 package org.n52.web.ctrl.v1;
 
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES;
 
 import org.n52.io.response.v1.ProcedureOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PROCEDURES_DEFAULT;
 
 @RestController
-@RequestMapping(value = COLLECTION_PROCEDURES)
+@RequestMapping(value = COLLECTION_PROCEDURES_DEFAULT)
 public class ProceduresParameterController extends ParameterControllerV1Adapter<ProcedureOutput> {
 
     // resource controller for procedures

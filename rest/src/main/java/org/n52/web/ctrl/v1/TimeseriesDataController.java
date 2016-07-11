@@ -31,7 +31,6 @@ package org.n52.web.ctrl.v1;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
@@ -90,6 +89,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_TIMESERIES, produces = {"application/json"})
