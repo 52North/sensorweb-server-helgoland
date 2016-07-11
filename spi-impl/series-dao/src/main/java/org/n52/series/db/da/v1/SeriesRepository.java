@@ -244,8 +244,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-//    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private SeriesData queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity series, DbQuery query) {
+    private SeriesData queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity<?> series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
