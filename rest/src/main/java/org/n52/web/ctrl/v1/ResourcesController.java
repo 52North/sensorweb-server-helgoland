@@ -30,7 +30,7 @@ package org.n52.web.ctrl.v1;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.v1.ResourcesController.ResourceCollection.createResource;
-import static org.n52.web.ctrl.v1.RestfulUrls.API_VERSION_PATH;
+import static org.n52.web.ctrl.v1.UrlSettings.API_VERSION_PATH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +86,13 @@ public class ResourcesController {
         resources.add(features);
         resources.add(procedures);
         resources.add(phenomena);
+
+        // since 2.0.0
+        ResourceCollection platforms = createResource("platforms").withLabel("Station").withDescription(i18n.get("msg.web.resources.platforms"));
+        ResourceCollection series = createResource("series").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.series"));
+        resources.add(platforms);
+        resources.add(series);
+
         return resources;
     }
 
