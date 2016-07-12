@@ -38,10 +38,14 @@ import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.FeatureEntity;
 import org.n52.series.db.da.beans.I18nFeatureEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class FeatureDao extends AbstractDao<FeatureEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
 
     public FeatureDao(Session session) {
         super(session);
@@ -50,6 +54,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(DbQuery query) {
+        LOGGER.debug("find instance: {}", query);
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
@@ -60,6 +65,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
         return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
 
@@ -103,6 +109,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
    private Criteria createFeatureListCriteria(DbQuery parameters, Class<? extends FeatureEntity> featureType) {
         Criteria criteria = getDefaultCriteria("feature", featureType);
+        LOGGER.debug("get all instances: {}", parameters);
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }

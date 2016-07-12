@@ -38,10 +38,14 @@ import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.I18nCategoryEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class CategoryDao extends AbstractDao<CategoryEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDao.class);
 
     public CategoryDao(Session session) {
         super(session);
@@ -50,6 +54,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> find(DbQuery query) {
+        LOGGER.debug("find instance: {}", query);
         Criteria criteria = getDefaultCriteria();
         if (hasTranslation(query, I18nCategoryEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
@@ -64,6 +69,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 //    }
     @Override
     public CategoryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
         return (CategoryEntity) session.get(CategoryEntity.class, key);
     }
 

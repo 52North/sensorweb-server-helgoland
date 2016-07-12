@@ -44,6 +44,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -54,6 +56,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class ObservationDao<T extends AbstractObservationEntity> extends AbstractDao<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObservationDao.class);
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -70,11 +74,13 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
 
     @Override
     public List<T> find(DbQuery query) {
+        LOGGER.debug("find instances: {}", query);
         return Collections.emptyList();
     }
 
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
         return (T) session.get(entityType, key);
     }
 
@@ -87,6 +93,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
      * fails.
      */
     public List<T> getAllInstancesFor(AbstractSeriesEntity<T> series) throws DataAccessException {
+        LOGGER.debug("get all instances for series '{}'", series.getPkid());
         return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
@@ -101,6 +108,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = getDefaultCriteria();
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
@@ -119,6 +127,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
      */
     @SuppressWarnings("unchecked")
     public List<T> getAllInstancesFor(AbstractSeriesEntity<?> series, AbstractDbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
         parameters.addTimespanTo(criteria);

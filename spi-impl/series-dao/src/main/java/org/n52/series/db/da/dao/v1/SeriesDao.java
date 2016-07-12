@@ -46,10 +46,14 @@ import org.n52.series.db.da.beans.I18nFeatureEntity;
 import org.n52.series.db.da.beans.I18nProcedureEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
 
     private static final String COLUMN_PKID = "pkid";
 
@@ -63,7 +67,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> find(DbQuery query) {
-
+        LOGGER.debug("find entities: {}", query);
         /*
          * Timeseries labels are constructed from labels of related feature
          * and phenomenon. Therefore we have to join both tables and search
@@ -91,6 +95,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
         addIgnoreNonPublishedSeriesTo(criteria);
@@ -100,6 +105,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = session.createCriteria(entityType, "series");
         addIgnoreNonPublishedSeriesTo(criteria, "series");
         Criteria procedureCreateria = criteria.createCriteria("procedure");
@@ -120,6 +126,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(FeatureEntity feature) {
+        LOGGER.debug("get instance for feature '{}'", feature);
         Criteria criteria = session.createCriteria(entityType, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
@@ -129,6 +136,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
 
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(PlatformEntity platform) {
+        LOGGER.debug("get instance for platform '{}'", platform);
         Criteria criteria = session.createCriteria(entityType, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
