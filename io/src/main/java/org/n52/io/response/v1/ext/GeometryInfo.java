@@ -47,7 +47,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class GeometryInfo extends AbstractOutput implements CondensedGeometryInfo, GeoJSONFeature {
+public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     private Geometry geometry;
 
@@ -76,12 +76,12 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
         return super.getDomainId();
     }
 
+    @Override
     @JsonIgnore
     public ServiceOutput getService() {
         return super.getService();
     }
 
-    @Override
     public PlatformItemOutput getPlatform() {
         return platform;
     }
@@ -90,17 +90,19 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
         this.platform = platform;
     }
 
+    @Override
     public Geometry getGeometry() {
         return geometry;
     }
 
+    @Override
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
 
 
-    @JsonIgnore
     @Override
+    @JsonIgnore
     public String getHrefBase() {
         String base = super.getHrefBase();
         String suffix = getUrlIdPrefix();
@@ -122,6 +124,7 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
         return geometyCategory.getGeometryType();
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("geometryType", getGeometyCategory());
