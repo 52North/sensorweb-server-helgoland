@@ -713,12 +713,19 @@ public class IoParameters implements Parameters {
         return new IoParameters(Collections.<String, JsonNode>emptyMap());
     }
 
-    /**
-     * @param parameters the parameters to override
-     * @return a query map for convenient parameter access plus validation.
-     */
-    public static IoParameters extendWith(IoParameters parameters) {
-        return new IoParameters(parameters);
+    public IoParameters removeAllOf(String key) {
+        MultiValueMap<String, JsonNode> newValues = new LinkedMultiValueMap<>(query);
+        newValues.remove(key);
+        return new IoParameters(newValues);
+    }
+
+    public IoParameters extendWith(String key, String... values) {
+        MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
+        newValues.put(key, Arrays.asList(values));
+
+        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
+        mergedValues.putAll(convertValuesToJsonNodes(newValues));
+        return new IoParameters(mergedValues);
     }
 
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
