@@ -42,6 +42,7 @@ import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static java.lang.Integer.parseInt;
 
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm
