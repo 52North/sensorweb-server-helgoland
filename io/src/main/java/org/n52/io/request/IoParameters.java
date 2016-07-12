@@ -346,12 +346,6 @@ public class IoParameters implements Parameters {
         return getAsString(CATEGORY);
     }
 
-    public Set<String> getCategories() {
-        return containsParameter(CATEGORIES)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(CATEGORIES)))
-                : null;
-    }
-
     /**
      * @return the service filter
      * @deprecated use {@link #getServices()}
@@ -359,12 +353,6 @@ public class IoParameters implements Parameters {
     @Deprecated
     public String getService() {
         return getAsString(SERVICE);
-    }
-
-    public Set<String> getServices() {
-        return containsParameter(SERVICES)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(SERVICES)))
-                : null;
     }
 
     /**
@@ -376,12 +364,6 @@ public class IoParameters implements Parameters {
         return getAsString(OFFERING);
     }
 
-    public Set<String> getOfferings() {
-        return containsParameter(OFFERINGS)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(OFFERINGS)))
-                : null;
-    }
-
     /**
      * @return the feature filter
      * @deprecated use {@link #getFeatures()}
@@ -391,13 +373,6 @@ public class IoParameters implements Parameters {
         return getAsString(FEATURE);
     }
 
-    public Set<String> getFeatures() {
-        return containsParameter(FEATURES)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(FEATURES)))
-                : null;
-    }
-
-
     /**
      * @return the procedure filter
      * @deprecated use {@link #getProcedures()}
@@ -405,12 +380,6 @@ public class IoParameters implements Parameters {
     @Deprecated
     public String getProcedure() {
         return getAsString(PROCEDURE);
-    }
-
-    public Set<String> getProcedures() {
-        return containsParameter(PROCEDURES)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(PROCEDURES)))
-                : null;
     }
 
     /**
@@ -422,39 +391,55 @@ public class IoParameters implements Parameters {
         return getAsString(PHENOMENON);
     }
 
-    public Set<String> getPhenomena() {
-        return containsParameter(PHENOMENA)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(PHENOMENA)))
-                : null;
-    }
-
     @Deprecated
     public String getStation() {
         return getAsString(STATION);
     }
 
+    public Set<String> getCategories() {
+        return getValuesOf(CATEGORIES);
+    }
+
+    public Set<String> getServices() {
+        return getValuesOf(SERVICES);
+    }
+
+    public Set<String> getOfferings() {
+        return getValuesOf(OFFERINGS);
+    }
+
+    public Set<String> getFeatures() {
+        return getValuesOf(FEATURES);
+    }
+
+    public Set<String> getProcedures() {
+        return getValuesOf(PROCEDURES);
+    }
+
+    public Set<String> getPhenomena() {
+        return getValuesOf(PHENOMENA);
+    }
+
     public Set<String> getPlatforms() {
-        return containsParameter(PLATFORMS)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(PLATFORMS)))
-                : null;
+        return getValuesOf(PLATFORMS);
     }
 
     public Set<String> getSeries() {
-        return containsParameter(SERIES)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(SERIES)))
-                : null;
+        return getValuesOf(SERIES);
     }
 
     public Set<String> getFields() {
-        return containsParameter(FIELDS)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(FIELDS)))
-                : null;
+        return getValuesOf(FIELDS);
     }
 
-    public String getType() {
-        return containsParameter(TYPE)
-                ? getAsString(TYPE)
-                : null;
+    public Set<String> getPlatformTypes() {
+        return getValuesOf(PLATFORM_TYPES);
+    }
+
+    private Set<String> getValuesOf(String parameterName) {
+        return containsParameter(parameterName)
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
+                : Collections.<String>emptySet();
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
@@ -784,6 +769,11 @@ public class IoParameters implements Parameters {
             queryParameters.put(parameter.toLowerCase(), getJsonNodeFrom(value));
         }
         return queryParameters;
+    }
+
+    @Override
+    public String toString() {
+        return "IoParameters{" + "query=" + query + '}';
     }
 
 }
