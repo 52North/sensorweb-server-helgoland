@@ -31,11 +31,9 @@ package org.n52.series.db.da.v1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.response.v1.ServiceOutput;
 import org.n52.io.response.v1.ServiceOutput.ParameterCount;
 import org.n52.sensorweb.spi.SearchResult;
@@ -43,7 +41,6 @@ import org.n52.sensorweb.spi.search.ServiceSearchResult;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.DescribableEntity;
 import org.n52.series.db.da.beans.ServiceInfo;
-import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.ctrl.v1.ext.UrlHelper;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,10 +128,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     }
 
     private void checkForHref(ServiceOutput result, DbQuery parameters) {
-        if (parameters == null) {
-            parameters = DbQuery.createFrom(QueryParameters.createFromQuery(new HashMap<String, String>()));
-        }
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters != null && parameters.getHrefBase() != null) {
             result.setHrefBase(new UrlHelper().getServicesHrefBaseUrl(parameters.getHrefBase()));
         }
     }

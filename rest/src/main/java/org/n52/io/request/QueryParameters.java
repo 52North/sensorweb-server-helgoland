@@ -67,10 +67,8 @@ public final class QueryParameters extends IoParameters {
     public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
         try {
             query.add(HREF_BASE, RequestUtils.resolveQueryLessRequestUrl());
-
         } catch (IOException | URISyntaxException e) {
             LOGGER.error("could not resolve href base URL.", e);
-            query.add(HREF_BASE, "http://localhost/");
         }
         return new QueryParameters(query);
     }

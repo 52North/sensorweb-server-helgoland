@@ -154,7 +154,7 @@ public class ProcedureRepository extends ExtendedSessionAwareRepository implemen
     }
 
     private void checkForHref(ProcedureOutput result, DbQuery parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters.getHrefBase() != null) {
             result.setHrefBase(urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
         }
     }

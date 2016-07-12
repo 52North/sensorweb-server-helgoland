@@ -147,7 +147,7 @@ public class FeatureRepository extends ExtendedSessionAwareRepository implements
     }
 
     private void checkForHref(FeatureOutput result, DbQuery parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters.getHrefBase() != null) {
             result.setHrefBase(urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
         }
     }

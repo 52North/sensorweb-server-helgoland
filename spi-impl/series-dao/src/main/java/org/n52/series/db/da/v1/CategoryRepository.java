@@ -159,7 +159,7 @@ public class CategoryRepository extends ExtendedSessionAwareRepository implement
     }
 
     private void checkForHref(CategoryOutput result, DbQuery parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters.getHrefBase() != null) {
             result.setHrefBase(urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
         }
     }

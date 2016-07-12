@@ -154,7 +154,7 @@ public class PhenomenonRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private void checkForHref(PhenomenonOutput result, DbQuery parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
+        if (parameters.getHrefBase() != null) {
             result.setHrefBase(urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
         }
     }

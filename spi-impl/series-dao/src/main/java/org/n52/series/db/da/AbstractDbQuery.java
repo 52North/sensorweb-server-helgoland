@@ -172,31 +172,31 @@ public abstract class AbstractDbQuery {
 
     public boolean shallIncludeMobilePlatformTypes() {
         return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_MOBILE)
-                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_MOBILE);
+                || parameters.containsParameter(Parameters.FILTER_ON_MOBILE)
+                        && parameters.getAsBoolean(Parameters.FILTER_ON_MOBILE);
     }
 
     public boolean shallIncludeStationaryTypes() {
         return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_STATIONARY)
-                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_STATIONARY);
+                || parameters.containsParameter(Parameters.FILTER_ON_STATIONARY)
+                        && parameters.getAsBoolean(Parameters.FILTER_ON_STATIONARY);
     }
 
     public boolean shallIncludeInsituPlatformTypes() {
         return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_INSITU)
-                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_INSITU);
+                || parameters.containsParameter(Parameters.FILTER_ON_INSITU)
+                        && parameters.getAsBoolean(Parameters.FILTER_ON_INSITU);
     }
 
     public boolean shallIncludeRemotePlatformTypes() {
         return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_REMOTE)
-                        && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_REMOTE);
+                || parameters.containsParameter(Parameters.FILTER_ON_REMOTE)
+                        && parameters.getAsBoolean(Parameters.FILTER_ON_REMOTE);
     }
 
     public boolean shallIncludeAllPlatformTypes() {
-        return parameters.containsParameter(Parameters.PLATFORMS_INCLUDE_ALL)
-                && parameters.getAsBoolean(Parameters.PLATFORMS_INCLUDE_ALL);
+        return parameters.containsParameter(Parameters.INCLUDE_ALL)
+                && parameters.getAsBoolean(Parameters.INCLUDE_ALL);
     }
 
     public boolean hasObservationType() {

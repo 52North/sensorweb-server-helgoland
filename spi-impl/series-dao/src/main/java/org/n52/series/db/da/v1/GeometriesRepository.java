@@ -284,7 +284,7 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     private PlatformItemOutput getPlatfom(Long id, DbQuery parameters) throws DataAccessException {
         RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
         simpleParameterSet.addParameter(Parameters.FEATURES, IoParameters.getJsonNodeFrom(id));
-        simpleParameterSet.addParameter(Parameters.PLATFORMS_INCLUDE_ALL, IoParameters.getJsonNodeFrom(true));
+        simpleParameterSet.addParameter(Parameters.INCLUDE_ALL, IoParameters.getJsonNodeFrom(true));
         List<PlatformOutput> platforms = platformRepository.getAllCondensed(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
         return platforms.iterator().next();
     }
