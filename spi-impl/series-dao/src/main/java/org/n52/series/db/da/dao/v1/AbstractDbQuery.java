@@ -27,12 +27,10 @@
  * for more details.
  */
 
-package org.n52.series.db.da;
+package org.n52.series.db.da.dao.v1;
 
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
 import static org.n52.series.db.da.beans.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
@@ -41,9 +39,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
@@ -61,6 +57,16 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import org.hibernate.criterion.ProjectionList;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Subqueries.propertyIn;
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
 
 public abstract class AbstractDbQuery {
 
@@ -128,16 +134,6 @@ public abstract class AbstractDbQuery {
         return getLocale().split("_")[0];
     }
 
-    public Criteria addPagingTo(Criteria criteria) {
-        if (parameters.getLimit() > 0) {
-            criteria.setMaxResults(parameters.getLimit());
-        }
-        if (parameters.getOffset() > 0) {
-            criteria.setFirstResult(parameters.getOffset());
-        }
-        return criteria;
-    }
-
     public Criteria addTimespanTo(Criteria criteria) {
         if (parameters.getTimespan() != null) {
             Interval interval = parameters.getTimespan().toInterval();
@@ -148,55 +144,67 @@ public abstract class AbstractDbQuery {
         return criteria;
     }
 
-    public Criteria backwardCompatibleWithPureStationConcept(Criteria criteria, String parameter) {
-        if (isPureStationInsituPlatformConcept()) {
-            filterMobileInsitu(parameter, criteria, false, true);
+    /**
+     * Adds a external defined filters to the query.
+     *
+     * @param parameter parameters containing the filters.
+     * @param criteria the criteria to add the filter to.
+     * @return the criteria to chain.
+     */
+    Criteria addPlatformTypesFilter(String parameter, Criteria criteria) {
+        boolean mobile = isSetMobileFilter();
+        boolean insitu = isSetInsituFilter();
+        filterMobileInsitu(parameter, criteria, mobile, insitu);
+        return criteria;
+    }
+
+    Criteria filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
+        if ("series".equalsIgnoreCase(parameter)) {
+            criteria.createCriteria("platform")
+                    .add(and(eq("mobile", mobile), eq("insitu", insitu)));
+        } else {
+            DetachedCriteria c = forClass(AbstractSeriesEntity.class, "series")
+                .createCriteria("procedure", "p")
+                .add(and(eq("p.mobile", mobile), eq("p.insitu", insitu)));
+            c.setProjection(createSeriesProjectionWith(parameter));
+            criteria.add(propertyIn(format("%s.pkid", parameter), c));
         }
         return criteria;
     }
 
-    public void filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
-        DetachedCriteria c = DetachedCriteria.forClass(AbstractSeriesEntity.class, "series")
-                .createCriteria("procedure", "p")
-                .add(Restrictions.and(Restrictions.eq("p.mobile", mobile),
-                                      Restrictions.eq("p.insitu", insitu)));
-        c.setProjection(Projections.projectionList()
-                                        .add(Projections.property(String.format("series.%s.pkid", parameter))));
-        criteria.add(Subqueries.propertyIn(String.format("%s.pkid", parameter), c));
-    }
-
-    public boolean isPureStationInsituPlatformConcept() {
-        return parameters.containsParameter(Parameters.PURE_STATION_INSITU_CONCEPT)
-                && parameters.getAsBoolean(Parameters.PURE_STATION_INSITU_CONCEPT);
+    private ProjectionList createSeriesProjectionWith(String parameter) {
+        final String filterProperty = format("series.%s.pkid", parameter);
+        return projectionList().add(property(filterProperty));
     }
 
     public boolean shallIncludeMobilePlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.FILTER_ON_MOBILE)
-                        && parameters.getAsBoolean(Parameters.FILTER_ON_MOBILE);
+        return shallIncludeAllPlatformTypes() || isSetMobileFilter();
     }
 
-    public boolean shallIncludeStationaryTypes() {
-        return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.FILTER_ON_STATIONARY)
-                        && parameters.getAsBoolean(Parameters.FILTER_ON_STATIONARY);
+    public boolean shallIncludeStationaryPlatformTypes() {
+        return shallIncludeAllPlatformTypes() || !isSetMobileFilter();
     }
 
     public boolean shallIncludeInsituPlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.FILTER_ON_INSITU)
-                        && parameters.getAsBoolean(Parameters.FILTER_ON_INSITU);
+        return shallIncludeAllPlatformTypes() || isSetInsituFilter();
     }
 
     public boolean shallIncludeRemotePlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || parameters.containsParameter(Parameters.FILTER_ON_REMOTE)
-                        && parameters.getAsBoolean(Parameters.FILTER_ON_REMOTE);
+        return shallIncludeAllPlatformTypes() || !isSetInsituFilter();
+    }
+
+    private boolean isSetMobileFilter() {
+        Set<String> platformTypes = parameters.getPlatformTypes();
+        return platformTypes.contains("mobile"); // stationary by default true
+    }
+
+    private boolean isSetInsituFilter() {
+        Set<String> platformTypes = parameters.getPlatformTypes();
+        return !platformTypes.contains("remote"); // insitu by default true
     }
 
     public boolean shallIncludeAllPlatformTypes() {
-        return parameters.containsParameter(Parameters.INCLUDE_ALL)
-                && parameters.getAsBoolean(Parameters.INCLUDE_ALL);
+        return parameters.getPlatformTypes().contains("all");
     }
 
     public boolean hasObservationType() {
@@ -211,10 +219,9 @@ public abstract class AbstractDbQuery {
             return observationType != null
                 ? ObservationType.toInstance(observationType)
                 : ObservationType.ALL;
-//                : ObservationType.MEASUREMENT;
         }
         catch (IllegalArgumentException e) {
-            LOGGER.debug("unknown observation type: {}", observationType);
+            LOGGER.debug("unknown observation type: {}", observationType, e);
             throw new ResourceNotFoundException("Could not find resource under type '" + observationType + "'.");
         }
     }

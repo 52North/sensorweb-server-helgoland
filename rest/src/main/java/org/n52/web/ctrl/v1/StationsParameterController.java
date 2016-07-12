@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_STATIONS;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_STATIONS;
 
 @RestController
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})

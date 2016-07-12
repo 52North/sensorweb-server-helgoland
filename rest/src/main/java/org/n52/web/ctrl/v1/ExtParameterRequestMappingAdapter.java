@@ -34,10 +34,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.n52.io.request.Parameters;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
-import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
+import org.n52.web.ctrl.ParameterController;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,35 +45,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
-public abstract class ParameterControllerV1Adapter<T extends ParameterOutput> extends ParameterSimpleArrayCollectionAdapter<T> {
+public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
-    private void addBackwardCompatibilityHint(MultiValueMap<String, String> query) {
-        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
+    @Override
+    protected ModelAndView createModelAndView(OutputCollection<T> items) {
+        return new ModelAndView().addObject(items.getItems());
     }
 
-    @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
-        addBackwardCompatibilityHint(query);
+    @RequestMapping(path = "", method = GET)
+    public ModelAndView getAllParameters(@RequestParam MultiValueMap<String, String> query) {
+        ensureBackwardsCompatibility(query);
         return super.getCollection(query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
-        addBackwardCompatibilityHint(query);
+        ensureBackwardsCompatibility(query);
         return super.getItem(id, query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
-        addBackwardCompatibilityHint(query);
+        ensureBackwardsCompatibility(query);
         super.getRawData(response, id, query);
     }
 
+    @Override
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
-        addBackwardCompatibilityHint(query);
+        ensureBackwardsCompatibility(query);
         return super.getExtras(resourceId, query);
     }
 

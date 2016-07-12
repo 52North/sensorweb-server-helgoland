@@ -28,7 +28,7 @@
  */
 package org.n52.web.ctrl.v1;
 
-import static org.n52.web.ctrl.v1.RestfulUrls.SEARCH;
+import static org.n52.web.ctrl.v1.UrlSettings.SEARCH;
 
 import java.util.Collection;
 import java.util.HashMap;

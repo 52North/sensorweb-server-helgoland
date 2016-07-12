@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da;
 
+import org.n52.series.db.da.dao.v1.AbstractDbQuery;
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;

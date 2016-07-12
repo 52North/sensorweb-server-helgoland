@@ -46,6 +46,7 @@ import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.MeasurementEntity;
 import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
+import org.n52.series.db.da.dao.v1.DbQuery;
 import org.n52.series.db.da.dao.v1.ObservationDao;
 import org.n52.series.db.da.dao.v1.SeriesDao;
 

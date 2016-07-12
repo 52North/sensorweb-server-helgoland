@@ -28,7 +28,8 @@
  */
 package org.n52.web.ctrl.v1;
 
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
+import org.n52.web.ctrl.v1.old.ParameterControllerV1Adapter;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_TIMESERIES;
 
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.springframework.web.bind.annotation.RequestMapping;

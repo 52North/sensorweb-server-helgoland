@@ -30,13 +30,13 @@ package org.n52.web.ctrl.v1;
 
 /**
  * <p>
- * The {@link RestfulUrls} serves as markup interface, so that each controller
+ * The {@link UrlSettings} serves as markup interface, so that each controller
  * instance uses the same URL subpaths.</p>
  *
  * <p>
  * <b>Note:</b> Do not code against this type.</p>
  */
-public interface RestfulUrls {
+public interface UrlSettings {
 
     /**
      * The base URL to be used as RESTful entry point.
@@ -51,38 +51,32 @@ public interface RestfulUrls {
     /**
      * Subpath identifying a collection of services availabe.
      */
-    @Deprecated
-    static final String COLLECTION_SERVICES_DEFAULT = API_VERSION_PATH + "/services";
+    static final String COLLECTION_SERVICES = API_VERSION_PATH + "/services";
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    @Deprecated
-    static final String COLLECTION_CATEGORIES_DEFAULT = API_VERSION_PATH + "/categories";
+    static final String COLLECTION_CATEGORIES = API_VERSION_PATH + "/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    @Deprecated
-    static final String COLLECTION_OFFERINGS_DEFAULT = API_VERSION_PATH + "/offerings";
+    static final String COLLECTION_OFFERINGS = API_VERSION_PATH + "/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    @Deprecated
-    static final String COLLECTION_FEATURES_DEFAULT = API_VERSION_PATH + "/features";
+    static final String COLLECTION_FEATURES = API_VERSION_PATH + "/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    @Deprecated
-    static final String COLLECTION_PROCEDURES_DEFAULT = API_VERSION_PATH + "/procedures";
+    static final String COLLECTION_PROCEDURES = API_VERSION_PATH + "/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    @Deprecated
-    static final String COLLECTION_PHENOMENA_DEFAULT = API_VERSION_PATH + "/phenomena";
+    static final String COLLECTION_PHENOMENA = API_VERSION_PATH + "/phenomena";
 
     /**
      * Subpath identifying a collection of stations available.
@@ -96,4 +90,18 @@ public interface RestfulUrls {
     @Deprecated
     static final String COLLECTION_TIMESERIES = API_VERSION_PATH + "/timeseries";
 
+    /**
+     * Subpaths identifying platforms collections available.
+     */
+    static final String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
+
+    /**
+     * Subpaths identifying datasets collections available.
+     */
+    static final String COLLECTION_DATASETS = API_VERSION_PATH + "/datasets";
+
+    /**
+     * Subpaths identifying geometries collections available.
+     */
+    static final String COLLECTION_GEOMETRIES = API_VERSION_PATH + "/geometries";
 }

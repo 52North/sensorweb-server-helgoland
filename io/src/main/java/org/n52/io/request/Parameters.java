@@ -325,20 +325,20 @@ public interface Parameters {
      */
     public static final String FIELDS = "fields";
 
-    public static final String TYPE = "type";
+    public static final String PLATFORM_TYPES = "platformTypes";
 
     public static final String HREF_BASE = "internal.href.base";
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";
 
-    public static final String INCLUDE_ALL = "internal.include.all";
-    public static final String FILTER_ON_INSITU = "internal.filter.insitu";
-    public static final String FILTER_ON_REMOTE = "internal.filter.remote";
-    public static final String FILTER_ON_STATIONARY = "internal.filter.stationary";
-    public static final String FILTER_ON_MOBILE = "internal.filter.mobile";
+    public static final String INCLUDE_ALL = "all";
+//    public static final String FILTER_ON_INSITU = "internal.filter.insitu";
+//    public static final String FILTER_ON_REMOTE = "internal.filter.remote";
+//    public static final String FILTER_ON_STATIONARY = "internal.filter.stationary";
+//    public static final String FILTER_ON_MOBILE = "internal.filter.mobile";
 
     // TODO discuss separating observatoin types at all
-    public static final String SERIES_INCLUDE_ALL = "internal.include.series.all";
+//    public static final String SERIES_INCLUDE_ALL = "internal.include.series.all";
     public static final String SERIES_INCLUDE_MEASUREMENT = "internal.include.series.measurement";
     public static final String OBSERVATION_TYPE = "observationtype";
 

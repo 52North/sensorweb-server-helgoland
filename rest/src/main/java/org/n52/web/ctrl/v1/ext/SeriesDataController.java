@@ -36,7 +36,6 @@ import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.*;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -84,6 +83,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_DATASETS;
 
 @RestController
 @RequestMapping(value = COLLECTION_DATASETS, produces = {"application/json"})

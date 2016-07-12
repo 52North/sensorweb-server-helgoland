@@ -20,23 +20,23 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
-    <bean class="org.n52.web.ctrl.v1.ext.ExtOfferingsParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ExtOfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.ExtCategoriesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ExtCategoriesParameterController" parent="parameterController">
         <property name="parameterService" ref="categoryParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.ExtFeaturesParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ExtFeaturesParameterController" parent="parameterController">
         <property name="parameterService" ref="featureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.ExtProceduresParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ExtProceduresParameterController" parent="parameterController">
         <property name="parameterService" ref="procedureParameterService" />
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.ext.ExtPhenomenaParameterController" parent="parameterController">
+    <bean class="org.n52.web.ctrl.v1.ExtPhenomenaParameterController" parent="parameterController">
         <property name="parameterService" ref="phenomenonParameterService" />
     </bean>
 
@@ -62,22 +62,22 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.v1.ext.SeriesDataController">
-    	<property name="serviceByObservationType">
-    		<map key-type="org.n52.io.response.v1.ext.ObservationType">
-	    		<entry key="MEASUREMENT">
-					<bean class="org.n52.web.ctrl.v1.ext.MeasurmentSeriesDataControllerService">
-						<property name="metadataService" ref="measurementSeriesService" />
-	        			<property name="dataService" ref="measurementDataService" />
-					</bean>
-				</entry>
-				<entry key="TEXT">
-					<bean class="org.n52.web.ctrl.v1.ext.TextSeriesDataControllerService">
-						<property name="metadataService" ref="textObservationSeriesService" />
-	        			<property name="dataService" ref="textObservationDataService" />
-					</bean>
-				</entry>
-    		</map>
-    	</property>
+        <property name="serviceByObservationType">
+            <map key-type="org.n52.io.response.v1.ext.ObservationType">
+                <entry key="MEASUREMENT">
+                    <bean class="org.n52.web.ctrl.v1.ext.MeasurmentSeriesDataControllerService">
+                        <property name="metadataService" ref="measurementSeriesService" />
+                        <property name="dataService" ref="measurementDataService" />
+                    </bean>
+                </entry>
+                <entry key="TEXT">
+                    <bean class="org.n52.web.ctrl.v1.ext.TextSeriesDataControllerService">
+                        <property name="metadataService" ref="textObservationSeriesService" />
+                        <property name="dataService" ref="textObservationDataService" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 

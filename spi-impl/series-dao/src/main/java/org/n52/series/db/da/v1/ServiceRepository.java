@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da.v1;
 
+import org.n52.series.db.da.dao.v1.DbQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

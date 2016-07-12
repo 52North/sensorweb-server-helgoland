@@ -37,7 +37,7 @@ import org.n52.io.response.series.SeriesDataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.DbQuery;
 import org.n52.series.db.da.v1.MeasurementDataRepository;
 import org.n52.series.db.da.v1.TimeseriesRepository;
 import org.n52.web.exception.InternalServerException;

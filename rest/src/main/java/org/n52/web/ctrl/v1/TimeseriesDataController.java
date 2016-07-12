@@ -36,7 +36,7 @@ import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
 import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_TIMESERIES;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_TIMESERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 

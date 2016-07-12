@@ -41,11 +41,9 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
-import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
-import org.n52.series.db.da.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 /**

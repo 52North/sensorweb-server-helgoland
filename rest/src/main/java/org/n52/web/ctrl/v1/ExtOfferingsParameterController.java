@@ -26,13 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.web.ctrl.v1;
 
-import org.n52.series.db.da.dao.v1.DbQuery;
-import org.n52.io.response.series.SeriesData;
-import org.n52.series.db.da.DataAccessException;
+import org.n52.io.response.v1.OfferingOutput;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-public interface DataRepository<T extends SeriesData> {
+@RestController
+@RequestMapping(path = UrlSettings.COLLECTION_OFFERINGS)
+public class ExtOfferingsParameterController extends ExtParameterRequestMappingAdapter<OfferingOutput> {
 
-    T getData(String id, DbQuery dbQuery) throws DataAccessException;
 }

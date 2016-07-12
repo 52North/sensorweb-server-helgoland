@@ -36,7 +36,7 @@ import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.DbQuery;
 import org.n52.series.db.da.v1.SeriesRepository;
 import org.n52.series.db.da.v1.CountObservationDataRepository;
 import org.n52.series.db.srv.v1.AccessService;

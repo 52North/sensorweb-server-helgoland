@@ -26,17 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl.v1;
+package org.n52.web.ctrl.v1.old;
 
 
-import org.n52.io.response.v1.CategoryOutput;
+import org.n52.io.response.v1.PhenomenonOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_CATEGORIES_DEFAULT;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_PHENOMENA;
 
 @RestController
-@RequestMapping(value = COLLECTION_CATEGORIES_DEFAULT)
-public class CategoriesParameterController extends ParameterControllerV1Adapter<CategoryOutput> {
+@RequestMapping(value = COLLECTION_PHENOMENA)
+public class PhenomenaParameterController extends ParameterControllerV1Adapter<PhenomenonOutput> {
 
-    // resource controller for categories
+    // resource controller for phenomena
 }

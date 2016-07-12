@@ -40,7 +40,7 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.AbstractDbQuery;
+import org.n52.series.db.da.dao.v1.AbstractDbQuery;
 import org.n52.series.db.da.SessionAwareRepository;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {

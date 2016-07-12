@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da.v1;
 
+import org.n52.series.db.da.dao.v1.DbQuery;
 import static java.math.RoundingMode.HALF_UP;
 
 import java.math.BigDecimal;

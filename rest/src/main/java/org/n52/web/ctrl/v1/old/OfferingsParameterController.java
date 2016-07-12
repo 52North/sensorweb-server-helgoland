@@ -26,17 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl.v1;
+package org.n52.web.ctrl.v1.old;
 
 
-import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.response.v1.OfferingOutput;
+import org.n52.web.ctrl.v1.UrlSettings;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static org.n52.web.ctrl.v1.RestfulUrls.COLLECTION_PHENOMENA_DEFAULT;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_OFFERINGS;
 
 @RestController
-@RequestMapping(value = COLLECTION_PHENOMENA_DEFAULT)
-public class PhenomenaParameterController extends ParameterControllerV1Adapter<PhenomenonOutput> {
+@RequestMapping(value = COLLECTION_OFFERINGS)
+public class OfferingsParameterController extends ParameterControllerV1Adapter<OfferingOutput> implements UrlSettings {
 
-    // resource controller for phenomena
+    // resource controller for offerings
 }

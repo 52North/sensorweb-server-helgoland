@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da.v1;
 
+import org.n52.series.db.da.dao.v1.DbQuery;
 import static org.n52.io.request.Parameters.FEATURES;
 import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_SITE;
 import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_TRACK;

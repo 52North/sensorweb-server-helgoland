@@ -26,19 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl.v1.ext;
+package org.n52.web.ctrl.v1.old;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import org.n52.io.request.Parameters;
 
-import org.n52.io.response.OutputCollection;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
-import org.n52.web.ctrl.ParameterController;
+import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,22 +45,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(produces = {"application/json"})
-public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
+public abstract class ParameterControllerV1Adapter<T extends ParameterOutput> extends ParameterSimpleArrayCollectionAdapter<T> {
 
     @Override
-    protected ModelAndView createModelAndView(OutputCollection<T> items) {
-        return new ModelAndView().addObject(items.getItems());
-    }
-
     @RequestMapping(method = GET)
-    public ModelAndView getAllMobile(@RequestParam MultiValueMap<String, String> query) {
-        query.add(Parameters.INCLUDE_ALL, "true");
+    public ModelAndView getCollection(@RequestParam MultiValueMap<String, String> query) {
+        ensureBackwardsCompatibility(query);
         return super.getCollection(query);
     }
 
     @Override
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        ensureBackwardsCompatibility(query);
         return super.getItem(id, query);
     }
 
@@ -69,6 +65,7 @@ public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutpu
     @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id, @RequestParam MultiValueMap<String, String> query) {
+        ensureBackwardsCompatibility(query);
         super.getRawData(response, id, query);
     }
 
@@ -76,6 +73,8 @@ public abstract class ExtParameterRequestMappingAdapter<T extends ParameterOutpu
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
+        ensureBackwardsCompatibility(query);
         return super.getExtras(resourceId, query);
     }
+
 }

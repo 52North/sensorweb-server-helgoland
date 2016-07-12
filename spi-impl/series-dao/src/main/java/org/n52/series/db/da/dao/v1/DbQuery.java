@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.series.db.da.dao.v1;
 
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
@@ -38,7 +38,6 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.ext.PlatformType;
-import org.n52.series.db.da.AbstractDbQuery;
 import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
 
 public class DbQuery extends AbstractDbQuery {
@@ -53,28 +52,28 @@ public class DbQuery extends AbstractDbQuery {
 
         filterWithSingularParmameters(filter); // stay backwards compatible
 
-        if (getParameters().getPhenomena() != null) {
+        if (hasValues(getParameters().getPhenomena())) {
             filter.createCriteria("phenomenon")
             .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
         }
-        if (getParameters().getProcedures() != null) {
+        if (hasValues(getParameters().getProcedures())) {
             filter.createCriteria("procedure")
             .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getProcedures())));
         }
-        if (getParameters().getOfferings() != null) {
+        if (hasValues(getParameters().getOfferings())) {
             // here procedure == offering
             filter.createCriteria("procedure")
             .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getOfferings())));
         }
-        if (getParameters().getFeatures() != null) {
+        if (hasValues(getParameters().getFeatures())) {
             filter.createCriteria("feature")
                     .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getFeatures())));
         }
-        if (getParameters().getCategories() != null) {
+        if (hasValues(getParameters().getCategories())) {
             filter.createCriteria("category")
                     .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getCategories())));
         }
-        if (getParameters().getPlatforms() != null) {
+        if (hasValues(getParameters().getPlatforms())) {
             Set<String> stationaryIds = getStationary(getParameters().getPlatforms());
             Set<String> platformIds = getNonStationary(getParameters().getPlatforms());
             if (!stationaryIds.isEmpty()) {
@@ -84,15 +83,19 @@ public class DbQuery extends AbstractDbQuery {
                 filter.createCriteria("platform").add(Restrictions.in(COLUMN_KEY, parseToIds(platformIds)));
             }
         }
-        if (getParameters().getSeries() != null) {
+        if (hasValues(getParameters().getSeries())) {
             filter.add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getSeries())));
         }
 
         return filter.setProjection(projectionList().add(property(propertyName)));
     }
 
+    private boolean hasValues(Set<String> values) {
+        return values != null && !values.isEmpty();
+    }
+
     private Set<String> getStationary(Set<String> platforms) {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (String platform : platforms) {
             if (PlatformType.isStationaryId(platform)) {
                 set.add(PlatformType.extractId(platform));
@@ -102,7 +105,7 @@ public class DbQuery extends AbstractDbQuery {
     }
 
     private Set<String> getNonStationary(Set<String> platforms) {
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (String platform : platforms) {
             if (!PlatformType.isStationaryId(platform)) {
                 set.add(PlatformType.extractId(platform));
@@ -142,10 +145,15 @@ public class DbQuery extends AbstractDbQuery {
         }
     }
 
-
-
     public static DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
     }
+
+    @Override
+    public String toString() {
+        return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
+    }
+
+
 
 }

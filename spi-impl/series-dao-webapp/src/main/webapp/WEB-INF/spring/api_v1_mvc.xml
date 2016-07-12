@@ -22,30 +22,7 @@
 
     <bean class="org.n52.web.ctrl.v1.ResourcesController">
         <property name="metadataService" ref="metadataService" />
-
-<!--    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
-        <property name="parameterService" ref="offeringParameterService" />
     </bean>
-
-    <bean class="org.n52.web.ctrl.v1.ServicesParameterController" parent="parameterController">
-        <property name="parameterService" ref="serviceParameterService" />
-    </bean>
-
-    <bean class="org.n52.web.ctrl.v1.CategoriesParameterController" parent="parameterController">
-        <property name="parameterService" ref="categoryParameterService" />
-    </bean>
-
-    <bean class="org.n52.web.ctrl.v1.FeaturesParameterController" parent="parameterController">
-        <property name="parameterService" ref="featureParameterService" />
-    </bean>
-
-    <bean class="org.n52.web.ctrl.v1.ProceduresParameterController" parent="parameterController">
-        <property name="parameterService" ref="procedureParameterService" />
-    </bean>
-
-    <bean class="org.n52.web.ctrl.v1.PhenomenaParameterController" parent="parameterController">
-        <property name="parameterService" ref="phenomenonParameterService" />
-    </bean>-->
 
     <bean class="org.n52.web.ctrl.v1.StationsParameterController">
         <property name="parameterService" ref="stationParameterService" />

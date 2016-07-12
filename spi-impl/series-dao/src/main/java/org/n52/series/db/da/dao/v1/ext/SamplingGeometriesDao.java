@@ -39,7 +39,9 @@ import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.GeometryEntity;
 import org.n52.series.db.da.beans.ext.SamplingGeometryEntity;
 import org.n52.series.db.da.dao.v1.AbstractDao;
-import org.n52.series.db.da.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.AbstractDao;
+import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.DbQuery;
 
 public class SamplingGeometriesDao extends AbstractDao<GeometryEntity> {
 

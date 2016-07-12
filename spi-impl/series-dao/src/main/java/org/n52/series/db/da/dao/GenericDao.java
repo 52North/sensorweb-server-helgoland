@@ -28,11 +28,11 @@
  */
 package org.n52.series.db.da.dao;
 
+import org.n52.series.db.da.dao.v1.AbstractDbQuery;
 import java.io.Serializable;
 import java.util.List;
 
 import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.AbstractDbQuery;
 
 /**
  * @param <T> entity type

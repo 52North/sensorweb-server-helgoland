@@ -26,13 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.web.ctrl.v1.old;
 
-import org.n52.series.db.da.dao.v1.DbQuery;
-import org.n52.io.response.series.SeriesData;
-import org.n52.series.db.da.DataAccessException;
 
-public interface DataRepository<T extends SeriesData> {
+import org.n52.io.response.v1.CategoryOutput;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_CATEGORIES;
 
-    T getData(String id, DbQuery dbQuery) throws DataAccessException;
+@RestController
+@RequestMapping(value = COLLECTION_CATEGORIES)
+public class CategoriesParameterController extends ParameterControllerV1Adapter<CategoryOutput> {
+
+    // resource controller for categories
 }

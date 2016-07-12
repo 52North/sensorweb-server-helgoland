@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da.v1;
 
+import org.n52.series.db.da.dao.v1.DbQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,15 +36,12 @@ import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.v1.CategoryOutput;
-import org.n52.io.response.v1.PhenomenonOutput;
 import org.n52.sensorweb.spi.SearchResult;
 import org.n52.sensorweb.spi.search.CategorySearchResult;
 import org.n52.series.db.da.dao.v1.CategoryDao;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.CategoryEntity;
 import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.I18nEntity;
-import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class CategoryRepository extends ExtendedSessionAwareRepository implements OutputAssembler<CategoryOutput> {

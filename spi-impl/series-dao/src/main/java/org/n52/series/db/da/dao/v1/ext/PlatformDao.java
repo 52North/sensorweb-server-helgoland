@@ -41,7 +41,9 @@ import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.AbstractDao;
-import org.n52.series.db.da.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.AbstractDao;
+import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.da.dao.v1.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional

@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl.v1.ext;
 
-import static org.n52.web.ctrl.v1.ext.ExtUrlSettings.COLLECTION_GEOMETRIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import java.util.Map;
@@ -39,6 +38,7 @@ import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.v1.ext.TransformingGeometryOutputService;
 import org.n52.web.ctrl.ParameterSimpleArrayCollectionAdapter;
+import static org.n52.web.ctrl.v1.UrlSettings.COLLECTION_GEOMETRIES;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -28,53 +28,55 @@
  */
 package org.n52.web.ctrl.v1.ext;
 
+import org.n52.web.ctrl.v1.UrlSettings;
+
 public class UrlHelper {
 
     public String getServicesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_SERVICES_DEFAULT);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_SERVICES);
     }
 
     public String getCategoriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_CATEGORIES_ALL);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_CATEGORIES);
     }
 
     public String getOfferingsHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_OFFERINGS_ALL);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_OFFERINGS);
     }
 
     public String getFeaturesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_FEATURES_ALL);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_FEATURES);
     }
 
     public String getProceduresHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_PROCEDURES_ALL);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PROCEDURES);
     }
 
     public String getPhenomenaHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_PHENOMENA_ALL);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PHENOMENA);
     }
 
     public String getPlatformsHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_PLATFORMS);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PLATFORMS);
     }
 
     public String getSeriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_DATASETS);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_DATASETS);
     }
 
     public String getGeometriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.COLLECTION_GEOMETRIES);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_GEOMETRIES);
     }
 
     public String getVersionLessHrefBaseURl(String hrefBase) {
-        if (hrefBase.contains(ExtUrlSettings.API_VERSION_PATH)) {
-            return hrefBase.substring(0, hrefBase.lastIndexOf(ExtUrlSettings.API_VERSION_PATH));
+        if (hrefBase.contains(UrlSettings.API_VERSION_PATH)) {
+            return hrefBase.substring(0, hrefBase.lastIndexOf(UrlSettings.API_VERSION_PATH));
         }
         return hrefBase;
     }
 
     public String getRootHrefBaseURl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(ExtUrlSettings.API_VERSION_PATH);
+        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.API_VERSION_PATH);
     }
 
 }
