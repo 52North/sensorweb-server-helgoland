@@ -61,6 +61,8 @@ import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.n52.io.request.Parameters;
+import org.springframework.util.MultiValueMap;
 
 /**
  * <p>
@@ -80,6 +82,13 @@ public abstract class BaseController implements ServletConfigAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
     private ServletConfig servletConfig;
+
+    protected void ensureBackwardsCompatibility(MultiValueMap<String, String> query) {
+        if ( !query.containsKey(Parameters.PLATFORM_TYPES)) {
+            query.add(Parameters.PLATFORM_TYPES, "stationary");
+            query.add(Parameters.PLATFORM_TYPES, "insitu");
+        }
+    }
 
     @Override
     public void setServletConfig(ServletConfig servletConfig) {
