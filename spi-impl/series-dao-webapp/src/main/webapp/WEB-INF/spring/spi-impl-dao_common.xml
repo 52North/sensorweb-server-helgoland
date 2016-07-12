@@ -21,7 +21,7 @@
 
     <bean class="org.n52.series.db.da.v1.EntityCounter" />
     <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
-    <bean id="metadataService" class="org.n52.series.db.srv.v1.ExtCountingMetadataAccessService" />
+    <bean id="metadataService" class="org.n52.series.db.srv.v1.CountingMetadataAccessService" />
 
     <bean class="org.n52.web.ctrl.v1.SearchController">
         <property name="searchService" ref="searchService"/>
