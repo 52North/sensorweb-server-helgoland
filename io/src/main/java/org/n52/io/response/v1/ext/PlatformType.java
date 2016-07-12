@@ -40,39 +40,39 @@ public enum PlatformType {
     MOBILE_INSITU("mobile/insitu"),
     MOBILE_REMOTE("mobile/remote");
 
-    private final String typeName;
+    private final String idPrefix;
 
     private PlatformType(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public String getIdPrefix() {
-        return this.name().toLowerCase();
+        this.idPrefix = typeName;
     }
 
     public String getPlatformType() {
-        return typeName;
+        return idPrefix;
     }
 
     public String createId(String id) {
-        return getPlatformType() + "/" + id;
+        return idPrefix + "/" + id;
     }
 
     public static String extractId(String id) {
         if (isStationaryId(id)) {
-            if (isInsitu(id)) {
-                return id.substring(STATIONARY_INSITU.getIdPrefix().length() + 1);
-            } else {
-                return id.substring(STATIONARY_REMOTE.getIdPrefix().length() + 1);
-            }
+            return isInsitu(id)
+                    ? extractId(STATIONARY_INSITU, id)
+                    : extractId(STATIONARY_REMOTE, id);
         } else if (isMobileId(id)) {
-            if (isInsitu(id)) {
-                return id.substring(MOBILE_INSITU.getIdPrefix().length() + 1);
-            } else {
-                return id.substring(MOBILE_REMOTE.getIdPrefix().length() + 1);
-            }
+            return isInsitu(id)
+                    ? extractId(MOBILE_INSITU, id)
+                    : extractId(MOBILE_REMOTE, id);
+        } else {
+            return id;
         }
-        return id;
+    }
+
+    private static String extractId(PlatformType type, String id) {
+        final int maxLength = type.idPrefix.length() + 1;
+        return id.length() >= maxLength
+                ? id.substring(maxLength)
+                : id;
     }
 
     public static boolean isStationaryId(String id) {
@@ -102,6 +102,9 @@ public enum PlatformType {
 
     public static PlatformType toInstance(String typeName) {
         for (PlatformType type : values()) {
+            if (type.idPrefix.equalsIgnoreCase(typeName)) {
+                return type;
+            }
             if (type.getPlatformType().equalsIgnoreCase(typeName)) {
                 return type;
             }

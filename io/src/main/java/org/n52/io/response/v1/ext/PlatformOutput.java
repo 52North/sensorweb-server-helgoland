@@ -65,7 +65,7 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
     @Override
     public String getHrefBase() {
         String base = super.getHrefBase();
-        String suffix = getIdPrefix();
+        String suffix = getType().getPlatformType();
         return base != null && base.endsWith(suffix)
                 ? base.substring(0, base.lastIndexOf(suffix) - 1)
                 : base;
@@ -86,13 +86,8 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
 
     @Override
     public void setId(String id) {
-        super.setId(getIdPrefix() + "/" + id);
+        super.setId(getType().createId(id));
     }
-
-    private String getIdPrefix() {
-        return getType().getIdPrefix();
-    }
-
 
     public Collection<SeriesMetadataOutput> getSeries() {
         return series;
