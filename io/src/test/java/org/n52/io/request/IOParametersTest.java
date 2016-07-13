@@ -28,36 +28,98 @@
  */
 package org.n52.io.request;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import static org.n52.io.request.IoParameters.getJsonNodeFrom;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.n52.io.request.IoParameters.createDefaults;
+import static org.n52.io.request.IoParameters.createFromMultiValueMap;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromSingleValueMap;
 
 public class IOParametersTest {
 
+    private File getAlternativeConfigFile() throws URISyntaxException {
+        Path root = Paths.get(getClass().getResource("/").toURI());
+        return root.resolve("test-config.json").toFile();
+    }
+    
     @Test
-    public void testJsonOverriddenWidthConfigParameter() {
-        IoParameters parameters = IoParameters.createDefaults();
-        Assert.assertThat(parameters.getChartDimension().getWidth(), Matchers.is(2000));
+    public void when_creationViaFromSingleValuedMap_then_keysGetLowerCased() {
+        Map<String, String> map = new HashMap<>();
+        map.put("camelCased", "value");
+        map.put("UPPERCASED", "value");
+        IoParameters parameters = createFromSingleValueMap(map);
+        Assert.assertTrue(parameters.containsParameter("camelCased"));
+        Assert.assertTrue(parameters.containsParameter("camelcased"));
+        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
+        Assert.assertTrue(parameters.containsParameter("uppercased"));
+    }
+
+    @Test
+    public void when_creationViaFromMultiValuedMap_then_keysGetLowerCased() {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("camelCased", "value");
+        map.add("UPPERCASED", "value");
+        IoParameters parameters = createFromMultiValueMap(map);
+        Assert.assertTrue(parameters.containsParameter("camelCased"));
+        Assert.assertTrue(parameters.containsParameter("camelcased"));
+        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
+        Assert.assertTrue(parameters.containsParameter("uppercased"));
+    }
+
+    @Test
+    public void when_creationViaRequestParameterSet_then_keysGetLowerCased() {
+        RequestParameterSet request = new RequestSimpleParameterSet();
+        request.addParameter("camelCased", getJsonNodeFrom("value"));
+        request.addParameter("UPPERCASED", getJsonNodeFrom("value"));
+        IoParameters parameters = createFromQuery(request);
+        Assert.assertTrue(parameters.containsParameter("camelCased"));
+        Assert.assertTrue(parameters.containsParameter("camelcased"));
+        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
+        Assert.assertTrue(parameters.containsParameter("uppercased"));
+    }
+
+    @Test
+    public void when_defaults_then_valuesFromDefaultConfigFile() {
+        IoParameters parameters = createDefaults();
+        assertThat(parameters.getChartDimension().getWidth(), is(2000));
+    }
+
+    @Test
+    public void when_createdWithConfig_then_widthIsOfAppropriateValue() throws URISyntaxException {
+        IoParameters parameters = createDefaults(getAlternativeConfigFile());
+        assertThat(parameters.getChartDimension().getWidth(), is(1000));
     }
 
     @Test
     public void testBooleanValue() {
-        IoParameters parameters = IoParameters.createDefaults();
+        IoParameters parameters = createDefaults();
         Assert.assertTrue(parameters.isGeneralize());
     }
 
     @Test
     public void testAfterConvertedFromParameterSet() {
-        RequestSimpleParameterSet set = RequestSimpleParameterSet.createForSingleSeries("1", IoParameters.createDefaults());
-        IoParameters parameters = IoParameters.createFromQuery(set);
+        final IoParameters defaults = createDefaults();
+        RequestSimpleParameterSet set = createForSingleSeries("1", defaults);
+        IoParameters parameters = createFromQuery(set);
         Assert.assertTrue(parameters.isGeneralize());
     }
 
     @Test
     public void when_extending_then_parameterIsPresent() {
-        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value");
         Assert.assertFalse(defaults.containsParameter("test"));
         Assert.assertTrue(extended.containsParameter("test"));
@@ -66,7 +128,7 @@ public class IOParametersTest {
 
     @Test
     public void when_extendingCamelCased_then_parameterIsPresent() {
-        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("testParameter", "value");
         Assert.assertFalse(defaults.containsParameter("testParameter"));
         Assert.assertTrue(extended.containsParameter("testParameter"));
@@ -75,7 +137,7 @@ public class IOParametersTest {
 
     @Test
     public void when_extending_then_valueObjectIsDifferent() {
-        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value");
         Assert.assertFalse(defaults == extended);
     }

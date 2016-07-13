@@ -33,7 +33,6 @@ import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,48 +66,73 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class IoParameters implements Parameters {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
-    private final static String DEFAULT_CONFIG_FILE = "/config-general.json";
+    private final static String DEFAULT_CONFIG_FILE = "config-general.json";
 
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
 
     private final MultiValueMap<String, JsonNode> query;
 
+    private static File getDefaultConfigFile() {
+        try {
+            Path path = Paths.get(IoParameters.class.getResource("/").toURI());
+            return path.resolve(DEFAULT_CONFIG_FILE).toFile();
+        } catch (URISyntaxException e) {
+            LOGGER.error("Could not find default config file '{}'", DEFAULT_CONFIG_FILE, e);
+            return null;
+        }
+    }
+
     private IoParameters() {
-        query = new LinkedMultiValueMap<>();
-        query.setAll(readDefaultConfig());
+        this((File) null);
     }
 
     protected IoParameters(IoParameters parameters) {
-        this();
+        this((File) null);
         if (parameters != null) {
             query.putAll(parameters.query);
         }
     }
 
     protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
-        this();
+        this(queryParameters, (File) null);
+    }
+
+    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters, File defaults) {
+        this(defaults);
         if (queryParameters != null) {
             query.putAll(queryParameters);
         }
     }
 
-    /**
-     * @param queryParameters containing query parameters. If <code>null</code>,
-     * all parameters are returned with default values.
-     */
     protected IoParameters(Map<String, JsonNode> queryParameters) {
-        this();
+        this(queryParameters, (File) null);
+    }
+
+    protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
+        this(defaults);
         query.setAll(queryParameters);
     }
 
-    private Map<String, JsonNode> readDefaultConfig() {
-        try (InputStream taskConfig = getClass().getResourceAsStream(DEFAULT_CONFIG_FILE)) {
-            return om.readValue(taskConfig, TypeFactory
+    private IoParameters(File defaultConfig) {
+        query = new LinkedMultiValueMap<>();
+        query.setAll(readDefaultConfig(defaultConfig));
+    }
+
+    private Map<String, JsonNode> readDefaultConfig(File config) {
+        if (config == null) {
+            config = getDefaultConfigFile();
+        }
+        try {
+            return om.readValue(config, TypeFactory
                     .defaultInstance()
                     .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
         } catch (IOException e) {
@@ -701,7 +725,7 @@ public class IoParameters implements Parameters {
     }
 
     private RequestParameterSet addValuesToParameterSet(RequestParameterSet parameterSet) {
-
+        // TODO check value object
         // TODO keep multi value map
         for (Entry<String, JsonNode> entry : query.toSingleValueMap().entrySet()) {
             parameterSet.addParameter(entry.getKey().toLowerCase(), entry.getValue());
@@ -709,8 +733,16 @@ public class IoParameters implements Parameters {
         return parameterSet;
     }
 
-    public static IoParameters createDefaults() {
-        return new IoParameters(Collections.<String, JsonNode>emptyMap());
+    public static JsonNode getJsonNodeFrom(Object object) {
+        if (object == null) {
+            return null;
+        }
+        try {
+            return om.readTree(om.writeValueAsString(object));
+        } catch (IOException e) {
+            LOGGER.error("Could not parse parameter", e);
+            return null;
+        }
     }
 
     public IoParameters removeAllOf(String key) {
@@ -731,9 +763,8 @@ public class IoParameters implements Parameters {
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            parameters.put(key, getJsonNodeFrom(value));
+            String key = entry.getKey().toLowerCase();
+            parameters.put(key, getJsonNodeFrom(entry.getValue()));
         }
         return parameters;
     }
@@ -743,22 +774,39 @@ public class IoParameters implements Parameters {
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
             for (String value : entry.getValue()) {
-                parameters.add(entry.getKey(), getJsonNodeFrom(value));
+                final String key = entry.getKey().toLowerCase();
+                parameters.add(key, getJsonNodeFrom(value));
             }
         }
         return parameters;
     }
 
-    public static JsonNode getJsonNodeFrom(Object object) {
-        if (object == null) {
-            return null;
-        }
-        try {
-            return om.readTree(om.writeValueAsString(object));
-        } catch (IOException e) {
-            LOGGER.error("Could not parse parameter", e);
-            return null;
-        }
+    /* ****************************************************************
+     *                    FACTORY METHODS
+     * ************************************************************** */
+
+    public static IoParameters createDefaults() {
+        return createDefaults(null);
+    }
+
+    static IoParameters createDefaults(File defaultConfig) {
+        return new IoParameters(Collections.<String, JsonNode>emptyMap(), defaultConfig);
+    }
+
+    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
+        return createFromMultiValueMap(query, null);
+    }
+
+    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
+        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
+    }
+
+    static IoParameters createFromSingleValueMap(Map<String, String> query) {
+        return createFromSingleValueMap(query, null);
+    }
+
+    static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
+        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
     /**
@@ -766,16 +814,16 @@ public class IoParameters implements Parameters {
      * @return a query map for convenient parameter access plus validation.
      */
     public static IoParameters createFromQuery(RequestParameterSet parameters) {
-        return new IoParameters(createQueryParametersFrom(parameters));
+        return createFromQuery(parameters, null);
     }
 
-    private static Map<String, JsonNode> createQueryParametersFrom(RequestParameterSet parameters) {
+    public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameters()) {
-            Object value = parameters.getAsObject(parameter);
-            queryParameters.put(parameter.toLowerCase(), getJsonNodeFrom(value));
+            JsonNode value = parameters.getAsJsonNode(parameter);
+            queryParameters.put(parameter.toLowerCase(), value);
         }
-        return queryParameters;
+        return new IoParameters(queryParameters, defaultConfig);
     }
 
     @Override
