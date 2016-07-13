@@ -104,7 +104,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     private MeasurementData expandReferenceDataIfNecessary(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
         ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
-        List<MeasurementEntity> observations = dao.getObservationsFor(seriesEntity, query);
+        List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             MeasurementEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));

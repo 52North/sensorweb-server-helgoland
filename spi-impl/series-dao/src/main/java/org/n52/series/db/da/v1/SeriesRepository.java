@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
@@ -253,7 +254,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         if (query == null) {
             query = DbQuery.createFrom(IoParameters.createDefaults());
         }
-        List<AbstractObservationEntity> observations = new ObservationDao(getSession()).getInstancesFor(observation.getTimestamp(), series, query);
+        DateTime timestamp = new DateTime(observation.getTimestamp());
+        List<AbstractObservationEntity> observations = new ObservationDao(getSession()).getInstancesFor(timestamp, series, query);
         if (observations != null && !observations.isEmpty()) {
             if (series instanceof MeasurementSeriesEntity) {
                 return createSeriesValueFor((MeasurementEntity)observations.iterator().next(), (MeasurementSeriesEntity)series);

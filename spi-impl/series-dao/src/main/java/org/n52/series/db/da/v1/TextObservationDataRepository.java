@@ -104,7 +104,7 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
     private TextObservationData expandReferenceDataIfNecessary(TextObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TextObservationData result = new TextObservationData();
         ObservationDao<TextObservationEntity> dao = new ObservationDao<>(session);
-        List<TextObservationEntity> observations = dao.getObservationsFor(seriesEntity, query);
+        List<TextObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             TextObservationEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));

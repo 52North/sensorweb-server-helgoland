@@ -100,7 +100,7 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
     private CountObservationData expandReferenceDataIfNecessary(CountObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountObservationData result = new CountObservationData();
         ObservationDao<CountObservationEntity> dao = new ObservationDao<>(session);
-        List<CountObservationEntity> observations = dao.getObservationsFor(seriesEntity, query);
+        List<CountObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             CountObservationEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));

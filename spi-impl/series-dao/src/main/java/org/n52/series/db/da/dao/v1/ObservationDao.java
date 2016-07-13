@@ -40,6 +40,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.da.DataAccessException;
 import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
@@ -111,7 +112,6 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
         LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = getDefaultCriteria();
         parameters.addTimespanTo(criteria);
-        parameters.addPagingTo(criteria);
         return (List<T>) criteria.list();
     }
 
@@ -131,15 +131,7 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
         parameters.addTimespanTo(criteria);
-        parameters.addPagingTo(criteria);
         return (List<T>) criteria.list();
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<T> getObservationsFor(AbstractSeriesEntity<T> series, AbstractDbQuery query) {
-        Criteria criteria = query.addTimespanTo(getDefaultCriteria())
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
-        return criteria.list();
     }
 
     /**
@@ -162,7 +154,8 @@ public class ObservationDao<T extends AbstractObservationEntity> extends Abstrac
     }
 
     @SuppressWarnings("unchecked")
-    public List<AbstractObservationEntity> getInstancesFor(Date timestamp, AbstractSeriesEntity series, DbQuery parameters) {
+    public List<AbstractObservationEntity> getInstancesFor(DateTime timestamp, AbstractSeriesEntity series, DbQuery parameters) {
+        LOGGER.debug("get instances @{} for '{}': {}", timestamp, series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
