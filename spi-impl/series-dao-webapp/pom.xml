@@ -207,7 +207,7 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>target/${project.build.finalName}/WEB-INF/classes;../series-dao/target/classes;../series-dao/src/main/resources/hbm;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <systemProperties>
                             <systemProperty>
@@ -215,13 +215,6 @@
                                 <value>${project.build.directory}</value>
                             </systemProperty>
                         </systemProperties>
-                        <scanTargets>
-                            <scanTarget>target/classes</scanTarget>
-                            <scanTarget>../series-dao/target/classes</scanTarget>
-                            <scanTarget>../../io/target/classes</scanTarget>
-                            <scanTarget>../../spi/target/classes</scanTarget>
-                            <scanTarget>../../rest/target/classes</scanTarget>
-                        </scanTargets>
                     </configuration>
                 </plugin>
             </plugins>
