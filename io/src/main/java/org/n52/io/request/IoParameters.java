@@ -715,13 +715,13 @@ public class IoParameters implements Parameters {
 
     public IoParameters removeAllOf(String key) {
         MultiValueMap<String, JsonNode> newValues = new LinkedMultiValueMap<>(query);
-        newValues.remove(key);
+        newValues.remove(key.toLowerCase());
         return new IoParameters(newValues);
     }
 
     public IoParameters extendWith(String key, String... values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
-        newValues.put(key, Arrays.asList(values));
+        newValues.put(key.toLowerCase(), Arrays.asList(values));
 
         MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
         mergedValues.putAll(convertValuesToJsonNodes(newValues));
