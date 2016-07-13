@@ -54,16 +54,16 @@ public class DbQuery extends AbstractDbQuery {
 
         if (hasValues(getParameters().getPhenomena())) {
             filter.createCriteria("phenomenon")
-            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
         }
         if (hasValues(getParameters().getProcedures())) {
             filter.createCriteria("procedure")
-            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getProcedures())));
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getProcedures())));
         }
         if (hasValues(getParameters().getOfferings())) {
             // here procedure == offering
             filter.createCriteria("procedure")
-            .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getOfferings())));
+                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getOfferings())));
         }
         if (hasValues(getParameters().getFeatures())) {
             filter.createCriteria("feature")
@@ -74,13 +74,13 @@ public class DbQuery extends AbstractDbQuery {
                     .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getCategories())));
         }
         if (hasValues(getParameters().getPlatforms())) {
-            Set<String> stationaryIds = getStationary(getParameters().getPlatforms());
-            Set<String> platformIds = getNonStationary(getParameters().getPlatforms());
+            Set<String> stationaryIds = getStationaryIds(getParameters().getPlatforms());
+            Set<String> mobileIds = getMobileIds(getParameters().getPlatforms());
             if (!stationaryIds.isEmpty()) {
                 filter.createCriteria("feature").add(Restrictions.in(COLUMN_KEY, parseToIds(stationaryIds)));
             }
-            if (!platformIds.isEmpty()) {
-                filter.createCriteria("platform").add(Restrictions.in(COLUMN_KEY, parseToIds(platformIds)));
+            if (!mobileIds.isEmpty()) {
+                filter.createCriteria("platform").add(Restrictions.in(COLUMN_KEY, parseToIds(mobileIds)));
             }
         }
         if (hasValues(getParameters().getSeries())) {
@@ -94,7 +94,7 @@ public class DbQuery extends AbstractDbQuery {
         return values != null && !values.isEmpty();
     }
 
-    private Set<String> getStationary(Set<String> platforms) {
+    private Set<String> getStationaryIds(Set<String> platforms) {
         Set<String> set = new HashSet<>();
         for (String platform : platforms) {
             if (PlatformType.isStationaryId(platform)) {
@@ -104,7 +104,7 @@ public class DbQuery extends AbstractDbQuery {
         return set;
     }
 
-    private Set<String> getNonStationary(Set<String> platforms) {
+    private Set<String> getMobileIds(Set<String> platforms) {
         Set<String> set = new HashSet<>();
         for (String platform : platforms) {
             if (!PlatformType.isStationaryId(platform)) {

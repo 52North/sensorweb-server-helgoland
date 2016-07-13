@@ -40,7 +40,6 @@ import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.PlatformItemOutput;
@@ -192,7 +191,8 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
             throws DataAccessException {
         Geometry geometry = featureEntity.getGeometry(getDatabaseSrid());
         if (geometry != null) {
-            GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_SITE), featureEntity, parameters);
+            final GeometryInfo geomInfo = new GeometryInfo(PLATFORM_SITE);
+            GeometryInfo geometryInfo = addCondensedValues(geomInfo, featureEntity, parameters);
             if (expanded) {
                 geometryInfo.setGeometry(geometry);
             }
@@ -215,18 +215,20 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
     private GeometryInfo createTrack(FeatureEntity featureEntity, DbQuery parameters, boolean expanded, Session session) throws DataAccessException {
-        GeometryInfo geometryInfo = addCondensedValues(new GeometryInfo(PLATFORM_TRACK), featureEntity, parameters);
+        final GeometryInfo geomInfo = new GeometryInfo(PLATFORM_TRACK);
+        GeometryInfo geometryInfo = addCondensedValues(geomInfo, featureEntity, parameters);
         if (expanded) {
             if (featureEntity.isSetGeometry()) {
+                // track available from feature table
                 geometryInfo.setGeometry(featureEntity.getGeometry(getDatabaseSrid()));
                 return geometryInfo;
             } else {
-                // TODO better solution for adding a parameter
-                RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-                simpleParameterSet.addParameter(FEATURES, IoParameters.getJsonNodeFrom(featureEntity.getPkid()));
-
-                // XXX find or getInstances + filter
-                List<GeometryEntity> samplingGeometries = new SamplingGeometriesDao(session).find(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
+                // track available as points from observation table
+                DbQuery featureQuery = DbQuery.createFrom(parameters.getParameters()
+                        .extendWith(FEATURES, String.valueOf(featureEntity.getPkid()))
+                );
+                final SamplingGeometriesDao dao = new SamplingGeometriesDao(session);
+                List<GeometryEntity> samplingGeometries = dao.getAllInstances(featureQuery);
                 geometryInfo.setGeometry(createLineString(samplingGeometries));
                 return geometryInfo;
             }
@@ -286,20 +288,21 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
             DbQuery parameters) throws DataAccessException {
         geometryInfo.setId(Long.toString(featureEntity.getPkid()));
         geometryInfo.setHrefBase(urHelper.getGeometriesHrefBaseUrl(parameters.getHrefBase()));
-        geometryInfo.setPlatform(getPlatfom(featureEntity.getPkid(), parameters));
+        geometryInfo.setPlatform(getPlatfom(featureEntity, parameters));
         return geometryInfo;
     }
 
-    private PlatformItemOutput getPlatfom(Long id, DbQuery parameters) throws DataAccessException {
-        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        simpleParameterSet.addParameter(Parameters.FEATURES, IoParameters.getJsonNodeFrom(id));
-        simpleParameterSet.addParameter(Parameters.INCLUDE_ALL, IoParameters.getJsonNodeFrom(true));
-        List<PlatformOutput> platforms = platformRepository.getAllCondensed(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
+    private PlatformItemOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
+        DbQuery platformQuery = DbQuery.createFrom(parameters.getParameters()
+                .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
+                .extendWith(Parameters.PLATFORM_TYPES, "all")
+        );
+        List<PlatformOutput> platforms = platformRepository.getAllCondensed(platformQuery);
         return platforms.iterator().next();
     }
 
     private Geometry createLineString(List<GeometryEntity> samplingGeometries) {
-        List<Coordinate> coordinates = new ArrayList<Coordinate>();
+        List<Coordinate> coordinates = new ArrayList<>();
         for (GeometryEntity geometryEntity : samplingGeometries) {
             Point geometry = (Point) geometryEntity.getGeometry(getDatabaseSrid());
             coordinates.add(geometry.getCoordinate());
