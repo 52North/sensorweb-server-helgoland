@@ -63,20 +63,12 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
         return criteria.list();
     }
 
-//    @Override
-//    public CategoryEntity getInstance(Long key) throws DataAccessException {
-//        return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     public CategoryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get instance '{}': {}", key, parameters);
         return (CategoryEntity) session.get(CategoryEntity.class, key);
     }
 
-//    @Override
-//    public List<CategoryEntity> getAllInstances() throws DataAccessException {
-//        return getAllInstances(DbQuery.createFrom(IoParameters.createDefaults()));
-//    }
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
