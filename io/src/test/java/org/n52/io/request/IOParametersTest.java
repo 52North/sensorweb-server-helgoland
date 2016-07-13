@@ -55,4 +55,29 @@ public class IOParametersTest {
         Assert.assertTrue(parameters.isGeneralize());
     }
 
+    @Test
+    public void when_extending_then_parameterIsPresent() {
+        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters extended = defaults.extendWith("test", "value");
+        Assert.assertFalse(defaults.containsParameter("test"));
+        Assert.assertTrue(extended.containsParameter("test"));
+        Assert.assertThat(extended.getAsString("test"), Matchers.is("value"));
+    }
+
+    @Test
+    public void when_extendingCamelCased_then_parameterIsPresent() {
+        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters extended = defaults.extendWith("testParameter", "value");
+        Assert.assertFalse(defaults.containsParameter("testParameter"));
+        Assert.assertTrue(extended.containsParameter("testParameter"));
+        Assert.assertThat(extended.getAsString("testParameter"), Matchers.is("value"));
+    }
+
+    @Test
+    public void when_extending_then_valueObjectIsDifferent() {
+        IoParameters defaults = IoParameters.createDefaults();
+        IoParameters extended = defaults.extendWith("test", "value");
+        Assert.assertFalse(defaults == extended);
+    }
+
 }
