@@ -55,7 +55,7 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
             criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return criteria.list();
+        return addFiltersTo(criteria, query).list();
     }
 
     @Override
@@ -70,13 +70,13 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
         if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
+        return (List<PhenomenonEntity>) addFiltersTo(criteria, parameters).list();
+    }
 
+    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
-        criteria.add(Subqueries.propertyIn("phenomenon.pkid", filter));
-
-        criteria = parameters.addPagingTo(criteria);
-        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria, "phenomenon");
-        return (List<PhenomenonEntity>) criteria.list();
+        return parameters.addPlatformTypesFilter("phenomenon", criteria)
+                .add(Subqueries.propertyIn("phenomenon.pkid", filter));
     }
 
     @Override

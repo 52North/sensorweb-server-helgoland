@@ -59,7 +59,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
             criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return criteria.list();
+        return addFiltersTo(criteria, query).list();
     }
 
     @Override
@@ -74,13 +74,13 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
+        return (List<ProcedureEntity>) addFiltersTo(criteria, parameters).list();
+    }
 
+    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
-        criteria.add(Subqueries.propertyIn("procedure.pkid", filter));
-
-        criteria = parameters.addPagingTo(criteria);
-        criteria = parameters.backwardCompatibleWithPureStationConcept(criteria, "procedure");
-        return (List<ProcedureEntity>) criteria.list();
+        return parameters.addPlatformTypesFilter("procedure", criteria)
+                .add(Subqueries.propertyIn("procedure.pkid", filter));
     }
 
     @Override

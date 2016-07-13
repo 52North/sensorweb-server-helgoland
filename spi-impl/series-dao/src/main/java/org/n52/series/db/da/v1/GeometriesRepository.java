@@ -136,10 +136,10 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         List<GeometryInfo> geometries = new ArrayList<>();
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
         if (shallIncludePlatformLocationsSites(parameters)) {
-            geometries.addAll(getAllPlatformLocationsSites(parameters, session, expanded));
+            geometries.addAll(getAllSites(parameters, session, expanded));
         }
         if (shallIncludePlatformLocationsTracks(parameters)) {
-            geometries.addAll(getAllPlatformLocationsTracks(parameters, session, expanded));
+            geometries.addAll(getAllTracks(parameters, session, expanded));
         }
         if (shallIncludeObservedGeometriesStatic(parameters)) {
             geometries.addAll(getAllObservedGeometriesStatic(parameters, session, expanded));
@@ -170,10 +170,14 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
     }
 
 
-    private List<GeometryInfo> getAllPlatformLocationsSites(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
+    private List<GeometryInfo> getAllSites(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao dao = new FeatureDao(session);
-        for (FeatureEntity featureEntity : dao.getAllStations(parameters)) {
+        DbQuery siteQuery = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "stationary")
+        );
+        for (FeatureEntity featureEntity : dao.getAllInstances(siteQuery)) {
             if (featureEntity.isSetGeometry()) {
                 GeometryInfo geometryInfo = createSite(featureEntity, parameters, expanded);
                 if (geometryInfo != null) {
@@ -197,10 +201,14 @@ public class GeometriesRepository extends ExtendedSessionAwareRepository impleme
         return null;
     }
 
-    private Collection<GeometryInfo> getAllPlatformLocationsTracks(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
+    private Collection<GeometryInfo> getAllTracks(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao featureDao = new FeatureDao(session);
-        for (FeatureEntity featureEntity : featureDao.getAllMobileInsitu(parameters)) {
+        DbQuery trackQuery = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "mobile")
+        );
+        for (FeatureEntity featureEntity : featureDao.getAllInstances(trackQuery)) {
             geometryInfoList.add(createTrack(featureEntity, parameters, expanded, session));
         }
         return geometryInfoList;

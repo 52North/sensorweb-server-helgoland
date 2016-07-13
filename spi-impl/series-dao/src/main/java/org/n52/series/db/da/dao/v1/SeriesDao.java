@@ -107,21 +107,19 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = session.createCriteria(entityType, "series");
-        addIgnoreNonPublishedSeriesTo(criteria, "series");
+
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
 
+        return (List<T>) addFiltersTo(criteria, parameters).list();
+    }
+
+
+    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn("series.pkid", filter));
-
-        parameters.addPagingTo(criteria);
-
-        Criteria platformCreateria = criteria.createCriteria("platform");
-        if (parameters.isPureStationInsituPlatformConcept()) {
-            platformCreateria.add(Restrictions.and(Restrictions.eq("mobile", false), Restrictions.eq("insitu", true)));
-        }
-
-        return (List<T>) criteria.list();
+        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
+        return parameters.addPlatformTypesFilter("series", criteria)
+                .add(Subqueries.propertyIn("series.pkid", filter));
     }
 
     @SuppressWarnings("unchecked")

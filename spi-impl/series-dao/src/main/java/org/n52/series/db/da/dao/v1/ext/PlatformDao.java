@@ -74,15 +74,14 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
 
-        parameters.addPagingTo(criteria);
         if (!parameters.shallIncludeAllPlatformTypes()) {
-            if (parameters.shallIncludeStationaryTypes()) {
+            if (parameters.shallIncludeStationaryPlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
             }
             if (parameters.shallIncludeMobilePlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, true));
             }
-            if (parameters.shallIncludeInsituPlatformTypes() || parameters.shallIncludeStationaryTypes()) {
+            if (parameters.shallIncludeInsituPlatformTypes() || parameters.shallIncludeStationaryPlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.INSITU, true));
             }
             if (parameters.shallIncludeRemotePlatformTypes()) {

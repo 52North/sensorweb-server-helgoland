@@ -60,7 +60,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return criteria.list();
+        return addFiltersTo(criteria, query).list();
     }
 
     @Override
@@ -72,52 +72,19 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
-        if (parameters.isPureStationInsituPlatformConcept()) {
-            parameters.filterMobileInsitu("feature", criteria, false, true);
-        }
-        return (List<FeatureEntity>) criteria.list();
-    }
-
-    /**
-     *
-     * @param parameters
-     * @return a list of features related to stationary insitu types
-     * @since 2.0.0
-     * @throws DataAccessException
-     */
-    @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllStations(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
-        parameters.filterMobileInsitu("feature", criteria, false, true);
-        return (List<FeatureEntity>) criteria.list();
-    }
-
-    /**
-    *
-    * @param parameters
-    * @return a list of features related to mobile insitu types
-    * @since 2.0.0
-    * @throws DataAccessException
-    */
-   @SuppressWarnings("unchecked")
-   public List<FeatureEntity> getAllMobileInsitu(DbQuery parameters) throws DataAccessException {
-       Criteria criteria = createFeatureListCriteria(parameters, FeatureEntity.class);
-       parameters.filterMobileInsitu("feature", criteria, true, true);
-       return (List<FeatureEntity>) criteria.list();
-   }
-
-   private Criteria createFeatureListCriteria(DbQuery parameters, Class<? extends FeatureEntity> featureType) {
-        Criteria criteria = getDefaultCriteria("feature", featureType);
         LOGGER.debug("get all instances: {}", parameters);
+        Criteria criteria = getDefaultCriteria("feature", FeatureEntity.class);
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
+        return (List<FeatureEntity>) addFiltersTo(criteria, parameters).list();
+    }
+
+    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
-        criteria.add(Subqueries.propertyIn("feature.pkid", filter));
-        criteria = parameters.addPagingTo(criteria);
-        parameters.addSpatialFilterTo(criteria, parameters);
-        return criteria;
+        criteria = parameters.addPlatformTypesFilter("feature", criteria);
+        return parameters.addSpatialFilterTo(criteria, parameters)
+                .add(Subqueries.propertyIn("feature.pkid", filter));
     }
 
     @Override

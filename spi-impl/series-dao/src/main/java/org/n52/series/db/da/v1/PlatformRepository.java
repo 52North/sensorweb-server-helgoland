@@ -36,7 +36,6 @@ import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.sensorweb.spi.SearchResult;
@@ -47,8 +46,6 @@ import org.n52.series.db.da.beans.ext.PlatformEntity;
 import org.n52.series.db.da.dao.v1.FeatureDao;
 import org.n52.series.db.da.dao.v1.ext.PlatformDao;
 import org.n52.web.exception.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -57,8 +54,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 public class PlatformRepository extends ExtendedSessionAwareRepository implements OutputAssembler<PlatformOutput> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
 
     @Autowired
     private SeriesRepository seriesRepository;
@@ -136,7 +131,7 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        if (parameters.shallIncludeStationaryTypes()) {
+        if (parameters.shallIncludeStationaryPlatformTypes()) {
             platforms.addAll(getAllStationary(parameters, session));
         }
         if (parameters.shallIncludeMobilePlatformTypes()) {
@@ -157,14 +152,11 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
-        LOGGER.warn("getAllStationaryRemote() not implemented yet.");
-        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
-        }
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_STATIONARY, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_REMOTE, IoParameters.getJsonNodeFrom(true));
-        return Collections.emptyList();
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "stationary","insitu"));
+        PlatformDao dao = new PlatformDao(session);
+        return dao.getAllInstances(query);
     }
 
     private PlatformEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
@@ -189,7 +181,10 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
 
     private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
-        return convertAll(featureDao.getAllStations(parameters));
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "stationary","insitu"));
+        return convertAll(featureDao.getAllInstances(query));
     }
 
     private List<PlatformEntity> getAllMobile(DbQuery parameters, Session session) throws DataAccessException {
@@ -204,34 +199,27 @@ public class PlatformRepository extends ExtendedSessionAwareRepository implement
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "mobile","insitu"));
         PlatformDao dao = new PlatformDao(session);
-        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
-        }
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_MOBILE, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_INSITU, IoParameters.getJsonNodeFrom(true));
-        return dao.getAllInstances(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet)));
+        return dao.getAllInstances(query);
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
-        LOGGER.warn("getAllMobileRemote() not implemented yet.");
-        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        if (simpleParameterSet.containsParameter(Parameters.INCLUDE_ALL)) {
-            simpleParameterSet.removeParameter(Parameters.INCLUDE_ALL);
-        }
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_MOBILE, IoParameters.getJsonNodeFrom(true));
-        simpleParameterSet.addParameter(Parameters.FILTER_ON_REMOTE, IoParameters.getJsonNodeFrom(true));
-        return Collections.emptyList();
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.PLATFORM_TYPES)
+                .extendWith(Parameters.PLATFORM_TYPES, "mobile","remote"));
+        PlatformDao dao = new PlatformDao(session);
+        return dao.getAllInstances(query);
     }
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
-        
-        // TODO better solution for adding a parameter
-        RequestSimpleParameterSet simpleParameterSet = parameters.getParameters().toSimpleParameterSet();
-        simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(entity.getPkid()));
-        result.setSeries(seriesRepository.getAllCondensed(DbQuery.createFrom(IoParameters.createFromQuery(simpleParameterSet))));
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+//                .extendWith(Parameters.PLATFORMS, String.valueOf(entity.getPkid())));
+                .extendWith(Parameters.PLATFORMS, result.getId()));
+        result.setSeries(seriesRepository.getAllCondensed(query));
         return result;
     }
 
