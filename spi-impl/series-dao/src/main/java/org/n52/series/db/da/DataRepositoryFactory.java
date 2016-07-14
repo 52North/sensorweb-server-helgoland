@@ -101,14 +101,6 @@ public class DataRepositoryFactory {
     public boolean isKnownEntry(String datasetType) {
         return mappings.containsKey(datasetType);
     }
-    
-    private boolean hasMappings() {
-        return !mappings.isEmpty();
-    }
-    
-    private boolean isAllEntitiesRequested(String datasetType) {
-        return hasMappings() && "all".equalsIgnoreCase(datasetType);
-    }
 
     public DataRepository createRepository(String datasetType) {
         if (cache.containsKey(datasetType)) {
