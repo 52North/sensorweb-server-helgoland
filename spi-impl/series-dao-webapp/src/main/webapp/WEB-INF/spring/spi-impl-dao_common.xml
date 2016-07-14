@@ -13,17 +13,21 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean id="serviceInfo" class="org.n52.series.db.da.beans.ServiceInfo">
+    <bean class="org.n52.web.ctrl.ResourcesController">
+        <property name="metadataService" ref="metadataService" />
+    </bean>
+
+    <bean id="serviceInfo" class="org.n52.series.db.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />
         <property name="noDataValues" value="-9999.0,99999" />
     </bean>
 
-    <bean class="org.n52.series.db.da.v1.EntityCounter" />
-    <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
-    <bean id="metadataService" class="org.n52.series.db.srv.v1.CountingMetadataAccessService" />
+    <bean class="org.n52.series.db.da.EntityCounter" />
+    <bean id="metadataService" class="org.n52.series.srv.CountingMetadataAccessService" />
 
-    <bean class="org.n52.web.ctrl.v1.SearchController">
+    <bean id="searchService" class="org.n52.series.srv.Search" />
+    <bean class="org.n52.web.ctrl.SearchController">
         <property name="searchService" ref="searchService"/>
     </bean>
 </beans>

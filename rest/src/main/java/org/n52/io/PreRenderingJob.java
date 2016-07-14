@@ -59,10 +59,9 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.task.ScheduledJob;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.SeriesDataService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.quartz.InterruptableJob;
@@ -80,6 +79,7 @@ import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.n52.sensorweb.spi.DataService;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
@@ -98,7 +98,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Autowired
     @Qualifier("timeseriesService")
-    private SeriesDataService<MeasurementData> timeseriesDataService;
+    private DataService<MeasurementData> timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
 
@@ -238,11 +238,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public SeriesDataService<MeasurementData> getTimeseriesDataService() {
+    public DataService<MeasurementData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(SeriesDataService<MeasurementData> timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<MeasurementData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
@@ -348,11 +348,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return QueryParameters.createFromQuery(configuration);
     }
 
-    private SeriesDataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
+    private DataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
         //return timeseriesDataService.getSeriesData(parameters);
         return parameters.isGeneralize()
-                ? composeDataService(timeseriesDataService).getSeriesData(parameters)
-                : timeseriesDataService.getSeriesData(parameters);
+                ? composeDataService(timeseriesDataService).getData(parameters)
+                : timeseriesDataService.getData(parameters);
     }
 
 }

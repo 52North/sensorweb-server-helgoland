@@ -44,7 +44,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.n52.web.ctrl.v1.ResourcesController;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -61,8 +60,6 @@ import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import org.n52.io.request.Parameters;
-import org.springframework.util.MultiValueMap;
 
 /**
  * <p>
@@ -82,13 +79,6 @@ public abstract class BaseController implements ServletConfigAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
     private ServletConfig servletConfig;
-
-    protected void ensureBackwardsCompatibility(MultiValueMap<String, String> query) {
-        if ( !query.containsKey(Parameters.PLATFORM_TYPES)) {
-            query.add(Parameters.PLATFORM_TYPES, "stationary");
-            query.add(Parameters.PLATFORM_TYPES, "insitu");
-        }
-    }
 
     @Override
     public void setServletConfig(ServletConfig servletConfig) {

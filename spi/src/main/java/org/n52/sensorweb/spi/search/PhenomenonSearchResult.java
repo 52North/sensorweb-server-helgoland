@@ -28,8 +28,6 @@
  */
 package org.n52.sensorweb.spi.search;
 
-import org.n52.sensorweb.spi.SearchResult;
-
 public class PhenomenonSearchResult extends SearchResult {
 
     public PhenomenonSearchResult(String id, String label) {

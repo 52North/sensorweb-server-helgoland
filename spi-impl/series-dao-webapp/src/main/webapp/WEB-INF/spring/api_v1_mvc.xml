@@ -20,20 +20,60 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
-    <bean class="org.n52.web.ctrl.v1.ResourcesController">
-        <property name="metadataService" ref="metadataService" />
+    <bean class="org.n52.web.ctrl.OfferingsParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="offeringParameterService" />
+            </bean>
+        </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.StationsParameterController">
-        <property name="parameterService" ref="stationParameterService" />
+    <bean class="org.n52.web.ctrl.CategoriesParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="categoryParameterService" />
+            </bean>
+        </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.TimeseriesMetadataController" parent="parameterController">
-        <property name="parameterService" ref="timeseriesService" />
+    <bean class="org.n52.web.ctrl.FeaturesParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="featureParameterService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.ctrl.ProceduresParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="procedureParameterService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.ctrl.PhenomenaParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="phenomenonParameterService" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.n52.web.ctrl.PlatformsParameterController" parent="parameterController">
+        <property name="parameterService" ref="platformParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.GeometriesController" parent="parameterController">
+        <property name="parameterService" ref="geometriesService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.DatasetController" parent="parameterController">
+        <property name="parameterService" ref="datasetService" />
         <property name="metadataExtensions">
             <list merge="true">
-                <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
-                <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
+                <bean class="org.n52.io.extension.RenderingHintsExtension" />
+                <bean class="org.n52.io.extension.StatusIntervalsExtension" />
                 <!-- Using DatabaseMetadataExtension requires some preparation work. -->
                 <!-- Have a look at the README.md at TBD -->
                 <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
@@ -41,12 +81,24 @@
         </property>
     </bean>
 
-    <bean class="org.n52.web.ctrl.v1.TimeseriesDataController">
-        <property name="timeseriesMetadataService" ref="timeseriesService" />
-        <property name="timeseriesDataService" ref="timeseriesService" />
-        <!--<property name="preRenderingTask" ref="preRenderingJobV1" />-->
+    <bean class="org.n52.web.ctrl.DataController">
+        <property name="serviceByObservationType">
+            <map key-type="org.n52.io.response.v1.ext.ObservationType">
+                <entry key="MEASUREMENT">
+                    <bean class="org.n52.web.ctrl.MeasurmentSeriesDataControllerService">
+                        <property name="metadataService" ref="datasetService" />
+                        <property name="dataService" ref="datasetService" />
+                    </bean>
+                </entry>
+                <entry key="TEXT">
+                    <bean class="org.n52.web.ctrl.TextSeriesDataControllerService">
+                        <property name="metadataService" ref="datasetService" />
+                        <property name="dataService" ref="datasetService" />
+                    </bean>
+                </entry>
+            </map>
+        </property>
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
-
 
 </beans>

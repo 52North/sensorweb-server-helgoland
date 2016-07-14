@@ -32,7 +32,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MeasurementDataMetadata implements SeriesDataMetadata<Map<String, MeasurementData>>, Serializable {
+public class MeasurementDataMetadata implements DatasetMetadata<Map<String, MeasurementData>>, Serializable {
 
     private static final long serialVersionUID = 7422416308386483575L;
 

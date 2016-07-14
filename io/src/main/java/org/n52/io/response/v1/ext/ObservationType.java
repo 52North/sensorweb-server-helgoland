@@ -35,7 +35,10 @@ import java.util.Locale;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
+@Deprecated
 public enum ObservationType {
+
+    // TODO refactor to configuration
 
     MEASUREMENT,
     PROFILE,
@@ -53,13 +56,13 @@ public enum ObservationType {
     }
 
     public String createId(String id) {
-        return getObservationType() + "/" + id;
+        return getObservationType() + "_" + id;
     }
 
     public static String extractId(String id) {
         String temp = id;
         for (ObservationType observationType : ObservationType.values()) {
-            temp = temp.replaceAll(observationType.name().toLowerCase(Locale.ROOT) + "/", "");
+            temp = temp.replaceAll(observationType.name().toLowerCase(Locale.ROOT) + "_", "");
         }
         return temp;
     }

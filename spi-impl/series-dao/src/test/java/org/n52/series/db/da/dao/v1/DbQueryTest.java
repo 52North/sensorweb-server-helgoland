@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da.dao.v1;
 
+import org.n52.series.db.dao.DbQuery;
 import org.junit.Assert;
 import org.junit.Test;
 import org.n52.io.request.IoParameters;

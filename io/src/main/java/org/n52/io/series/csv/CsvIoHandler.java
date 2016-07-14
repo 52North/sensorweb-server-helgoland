@@ -46,17 +46,17 @@ import org.n52.io.series.RenderingContext;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.Data;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.response.series.count.CountObservationData;
 import org.n52.io.response.series.count.CountObservationValue;
 import org.n52.io.response.series.text.TextObservationData;
 import org.n52.io.response.series.text.TextObservationValue;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
+public class CsvIoHandler<T extends Data> implements IoHandler<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvIoHandler.class);
 
@@ -71,7 +71,7 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
-    private SeriesDataCollection data = new SeriesDataCollection<>();
+    private DataCollection data = new DataCollection<>();
 
     private boolean useByteOrderMark = true;
 
@@ -100,7 +100,7 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
     }
 
     @Override
-    public void generateOutput(SeriesDataCollection data) throws IoParseException {
+    public void generateOutput(DataCollection data) throws IoParseException {
         // hold the data so we can stream it directly when #encodeAndWriteTo is called
         this.data = data;
     }
@@ -142,8 +142,8 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
     }
 
     private void writeData(OutputStream stream) throws IOException {
-        for (SeriesMetadataOutput metadata : (List<SeriesMetadataOutput>)context.getTyplessSeriesMetadatas()) {
-            SeriesData series = data.getSeries(metadata.getId());
+        for (DatasetOutput metadata : (List<DatasetOutput>)context.getTyplessSeriesMetadatas()) {
+            Data series = data.getSeries(metadata.getId());
             if (series instanceof MeasurementData) {
                 writeData(metadata, (MeasurementData) series, stream);
             } else if (series instanceof TextObservationData) {
@@ -154,7 +154,7 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
         }
     }
 
-    private void writeData(SeriesMetadataOutput metadata, MeasurementData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, MeasurementData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         // instanceof SeriesMetadataV1Output // XXX hack
         //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
@@ -174,7 +174,7 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
         }
     }
 
-    private void writeData(SeriesMetadataOutput metadata, TextObservationData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, TextObservationData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         // instanceof SeriesMetadataV1Output // XXX hack
         //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
@@ -194,7 +194,7 @@ public class CsvIoHandler<T extends SeriesData> implements IoHandler<T> {
         }
     }
 
-    private void writeData(SeriesMetadataOutput metadata, CountObservationData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, CountObservationData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         // instanceof SeriesMetadataV1Output // XXX hack
         //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")

@@ -32,9 +32,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.response.series.SeriesDataMetadata;
+import org.n52.io.response.series.DatasetMetadata;
 
-public class CountObservationDataMetadata implements SeriesDataMetadata<Map<String, CountObservationData>>, Serializable {
+public class CountObservationDataMetadata implements DatasetMetadata<Map<String, CountObservationData>>, Serializable {
 
     private static final long serialVersionUID = -5666064665815076013L;
 

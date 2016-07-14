@@ -35,12 +35,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.Data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TextObservationData extends SeriesData {
+public class TextObservationData extends Data {
 
     private static final long serialVersionUID = 4717558247670336015L;
 

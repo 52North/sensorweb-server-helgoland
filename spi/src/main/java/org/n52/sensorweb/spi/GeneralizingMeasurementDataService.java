@@ -29,38 +29,38 @@
 package org.n52.sensorweb.spi;
 
 import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
-import static org.n52.io.request.IoParameters.createFromQuery;
 
 import org.n52.io.measurement.generalize.Generalizer;
 import org.n52.io.measurement.generalize.GeneralizerException;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 /**
- * Composes a {@link SeriesDataService} instance to generalize requested
+ * Composes a {@link DataService} instance to generalize requested
  * timeseries data.
  */
-public class GeneralizingMeasurementDataService implements SeriesDataService<MeasurementData> {
+public class GeneralizingMeasurementDataService implements DataService<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingMeasurementDataService.class);
 
-    private final SeriesDataService<MeasurementData> composedService;
+    private final DataService<MeasurementData> composedService;
 
-    public GeneralizingMeasurementDataService(SeriesDataService<MeasurementData> toCompose) {
+    public GeneralizingMeasurementDataService(DataService<MeasurementData> toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
+    public DataCollection<MeasurementData> getData(RequestSimpleParameterSet parameters) {
 
-        SeriesDataCollection<MeasurementData> data = composedService.getSeriesData(parameters);
-        SeriesDataCollection<MeasurementData> ungeneralizedData = data;
+        DataCollection<MeasurementData> data = composedService.getData(parameters);
+        DataCollection<MeasurementData> ungeneralizedData = data;
         try {
             Generalizer<MeasurementData> generalizer = createGeneralizer(createFromQuery(parameters));
-            SeriesDataCollection<MeasurementData> generalizedData = generalizer.generalize(ungeneralizedData);
+            DataCollection<MeasurementData> generalizedData = generalizer.generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
@@ -71,8 +71,8 @@ public class GeneralizingMeasurementDataService implements SeriesDataService<Mea
         }
     }
 
-    private void logGeneralizationAmount(SeriesDataCollection<MeasurementData> ungeneralizedData,
-                                         SeriesDataCollection<MeasurementData> generalizedData) {
+    private void logGeneralizationAmount(DataCollection<MeasurementData> ungeneralizedData,
+                                         DataCollection<MeasurementData> generalizedData) {
         for (String timeseriesId : ungeneralizedData.getAllSeries().keySet()) {
             MeasurementData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
             MeasurementData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
@@ -82,7 +82,7 @@ public class GeneralizingMeasurementDataService implements SeriesDataService<Mea
         }
     }
 
-    public static SeriesDataService<MeasurementData> composeDataService(SeriesDataService<MeasurementData> toCompose) {
+    public static DataService<MeasurementData> composeDataService(DataService<MeasurementData> toCompose) {
         return new GeneralizingMeasurementDataService(toCompose);
     }
 

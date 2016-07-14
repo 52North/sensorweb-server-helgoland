@@ -20,9 +20,9 @@
 
     <import resource="spi-impl-dao_common.xml"/>
 
-    <!-- timeseries api web controller bindings -->
+    <!-- api controller bindings -->
     <import resource="spi-impl-dao_v1_beans.xml"/>
-    <import resource="spi-impl-dao_v1_beans_ext.xml"/>
+    <import resource="spi-impl-dao_v1_beans_legacy.xml"/>
 
 
     <!--<import resource="spi-impl-dao_tasks.xml" />-->

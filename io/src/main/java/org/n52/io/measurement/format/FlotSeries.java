@@ -33,10 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataMetadata;
+import org.n52.io.response.series.Data;
+import org.n52.io.response.series.DatasetMetadata;
 
-public class FlotSeries extends SeriesData {
+public class FlotSeries extends Data {
 
     private static final long serialVersionUID = -3294537734635511620L;
 
@@ -74,7 +74,7 @@ public class FlotSeries extends SeriesData {
     }
 
     @Override
-    public SeriesDataMetadata getMetadata() {
+    public DatasetMetadata getMetadata() {
         return null;
     }
 

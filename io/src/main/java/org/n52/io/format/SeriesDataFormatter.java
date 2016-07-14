@@ -28,10 +28,10 @@
  */
 package org.n52.io.format;
 
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.Data;
+import org.n52.io.response.series.DataCollection;
 
-public interface SeriesDataFormatter<IN extends SeriesData, OUT extends SeriesData> {
+public interface SeriesDataFormatter<IN extends Data, OUT extends Data> {
 
-    public SeriesDataCollection<OUT> format(SeriesDataCollection<IN> toFormat);
+    public DataCollection<OUT> format(DataCollection<IN> toFormat);
 }

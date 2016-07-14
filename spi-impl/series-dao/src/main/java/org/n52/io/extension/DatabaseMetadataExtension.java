@@ -37,11 +37,9 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.dao.v1.AbstractDbQuery;
-import org.n52.series.db.da.SessionAwareRepository;
+import org.n52.series.db.dao.AbstractDbQuery;
+import org.n52.series.db.SessionAwareRepository;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
@@ -68,11 +66,6 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
     }
 
     private class MetadataRepository extends SessionAwareRepository<AbstractDbQuery> {
-
-        @Override
-        protected AbstractDbQuery getDbQuery(IoParameters parameters) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
 
         private List<String> getFieldNames(String id) {
             Session session = getSession();
@@ -106,12 +99,6 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
                 outputs.put(entity.getName(), entity.toOutput());
             }
             return outputs;
-        }
-
-        @Override
-        protected ServiceOutput getServiceOutput() throws DataAccessException {
-            // not used here
-            return null;
         }
 
     }

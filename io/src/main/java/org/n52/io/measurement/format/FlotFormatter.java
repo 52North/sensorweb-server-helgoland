@@ -36,14 +36,14 @@ import org.n52.io.format.SeriesDataFormatter;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class FlotFormatter implements SeriesDataFormatter<MeasurementData, FlotSeries> {
 
     @Override
-    public FlotDataCollection format(SeriesDataCollection<MeasurementData> toFormat) {
+    public FlotDataCollection format(DataCollection<MeasurementData> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
             MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);

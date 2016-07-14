@@ -37,7 +37,7 @@ import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.series.MeasurementSeriesOutput;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.RenderingContext;
 
 public final class MeasurementRenderingContext implements RenderingContext<MeasurementSeriesOutput> {
@@ -107,8 +107,8 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
     }
 
     @Override
-    public List<SeriesMetadataOutput> getTyplessSeriesMetadatas() {
-        return new ArrayList<SeriesMetadataOutput>(seriesMetadatas);
+    public List<DatasetOutput> getTyplessSeriesMetadatas() {
+        return new ArrayList<DatasetOutput>(seriesMetadatas);
     }
 
     public String getTimeAxisFormat() {

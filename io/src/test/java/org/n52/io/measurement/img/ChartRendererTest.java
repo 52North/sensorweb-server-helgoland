@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.MimeType;
 import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 
 public class ChartRendererTest {
 
@@ -137,7 +137,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void generateOutput(SeriesDataCollection<MeasurementData> data) {
+        public void generateOutput(DataCollection<MeasurementData> data) {
             throw new UnsupportedOperationException();
         }
 

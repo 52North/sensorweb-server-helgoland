@@ -29,7 +29,7 @@
 package org.n52.io.text.format;
 
 import org.n52.io.format.SeriesDataFormatter;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.response.series.text.TextObservationData;
 
 /**
@@ -38,7 +38,7 @@ import org.n52.io.response.series.text.TextObservationData;
 public class TvpFormatter implements SeriesDataFormatter<TextObservationData, TextObservationData> {
 
     @Override
-    public SeriesDataCollection<TextObservationData> format(SeriesDataCollection<TextObservationData> toFormat) {
+    public DataCollection<TextObservationData> format(DataCollection<TextObservationData> toFormat) {
         return toFormat;
     }
 

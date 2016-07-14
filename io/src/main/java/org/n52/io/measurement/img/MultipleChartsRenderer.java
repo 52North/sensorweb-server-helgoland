@@ -55,7 +55,7 @@ import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementReferenceValueOutput;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
 
@@ -66,7 +66,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
     }
 
     @Override
-    public void generateOutput(SeriesDataCollection<MeasurementData> data) {
+    public void generateOutput(DataCollection<MeasurementData> data) {
         Map<String, MeasurementData> allTimeseries = data.getAllSeries();
         List<MeasurementSeriesOutput> timeseriesMetadatas = getTimeseriesMetadataOutputs();
 

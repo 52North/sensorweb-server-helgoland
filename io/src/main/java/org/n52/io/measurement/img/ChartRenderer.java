@@ -82,10 +82,12 @@ import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementSeriesOutput;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.response.series.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 
 public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
@@ -117,7 +119,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
     }
 
     @Override
-    public abstract void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException;
+    public abstract void generateOutput(DataCollection<MeasurementData> data) throws IoParseException;
 
     @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {

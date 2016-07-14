@@ -28,12 +28,13 @@
  */
 package org.n52.io.series;
 
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.Data;
+import org.n52.io.response.series.DataCollection;
 
 /**
  * Represents a time value pair data format.
+ * @param <T>
  */
-public final class TvpDataCollection<T extends SeriesData> extends SeriesDataCollection<T> {
+public final class TvpDataCollection<T extends Data> extends DataCollection<T> {
 
 }

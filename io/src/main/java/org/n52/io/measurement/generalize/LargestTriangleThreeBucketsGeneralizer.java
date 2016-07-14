@@ -33,7 +33,7 @@ import static java.lang.Double.parseDouble;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
     }
 
     @Override
-    public SeriesDataCollection<MeasurementData> generalize(SeriesDataCollection<MeasurementData> data) throws GeneralizerException {
+    public DataCollection<MeasurementData> generalize(DataCollection<MeasurementData> data) throws GeneralizerException {
         TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<MeasurementData>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
             MeasurementData timeseries = data.getSeries(timeseriesId);

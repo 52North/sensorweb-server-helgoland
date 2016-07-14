@@ -30,14 +30,14 @@ package org.n52.io.response.series;
 
 import org.n52.io.Utils;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class MeasurementSeriesOutput extends SeriesMetadataOutput<MeasurementReferenceValueOutput> {
+public class MeasurementSeriesOutput extends DatasetOutput<MeasurementReferenceValueOutput> {
 
     private String uom;
 

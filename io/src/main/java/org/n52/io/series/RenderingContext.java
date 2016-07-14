@@ -32,13 +32,13 @@ import java.util.List;
 
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 
-public interface RenderingContext<T extends SeriesMetadataOutput> {
+public interface RenderingContext<T extends DatasetOutput> {
 
     RequestStyledParameterSet getChartStyleDefinitions();
 
-    List<SeriesMetadataOutput> getTyplessSeriesMetadatas();
+    List<DatasetOutput> getTyplessSeriesMetadatas();
 
     List<T> getSeriesMetadatas();
 

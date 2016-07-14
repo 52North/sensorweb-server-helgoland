@@ -30,7 +30,7 @@ package org.n52.io.response.series;
 
 import java.io.Serializable;
 
-public abstract class AbstractValue<T> extends SeriesData implements Comparable<AbstractValue<?>>,Serializable {
+public abstract class AbstractValue<T> extends Data implements Comparable<AbstractValue<?>>,Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
@@ -61,7 +61,7 @@ public abstract class AbstractValue<T> extends SeriesData implements Comparable<
     }
 
     @Override
-    public SeriesDataMetadata getMetadata() {
+    public DatasetMetadata getMetadata() {
         return null;
     }
 

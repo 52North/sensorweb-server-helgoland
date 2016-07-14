@@ -64,7 +64,7 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.oxf.DocumentStructureDocument;
@@ -77,6 +77,7 @@ import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import static java.io.File.createTempFile;
 
 public class PDFReportGenerator extends ReportGenerator {
 
@@ -113,7 +114,7 @@ public class PDFReportGenerator extends ReportGenerator {
     }
 
     @Override
-    public void generateOutput(SeriesDataCollection<MeasurementData> data) throws IoParseException {
+    public void generateOutput(DataCollection<MeasurementData> data) throws IoParseException {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
@@ -122,7 +123,7 @@ public class PDFReportGenerator extends ReportGenerator {
         }
     }
 
-    private void generateTimeseriesChart(SeriesDataCollection<MeasurementData> data) throws IOException {
+    private void generateTimeseriesChart(DataCollection<MeasurementData> data) throws IOException {
         renderer.generateOutput(data);
         File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)){

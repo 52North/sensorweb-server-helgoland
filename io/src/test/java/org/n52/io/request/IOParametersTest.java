@@ -54,7 +54,7 @@ public class IOParametersTest {
         Path root = Paths.get(getClass().getResource("/").toURI());
         return root.resolve("test-config.json").toFile();
     }
-    
+
     @Test
     public void when_creationViaFromSingleValuedMap_then_keysGetLowerCased() {
         Map<String, String> map = new HashMap<>();

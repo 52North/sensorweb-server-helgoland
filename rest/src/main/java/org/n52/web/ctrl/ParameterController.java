@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class ParameterController<T extends ParameterOutput> extends BaseController {
+public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -68,6 +68,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     private ParameterService<T> parameterService;
 
+    @Override
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -83,6 +84,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
         }
     }
 
+    @Override
     public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
@@ -107,6 +109,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
         return overridableKeys;
     }
 
+    @Override
     public ModelAndView getCollection(MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
@@ -121,6 +124,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
         }
     }
 
+    @Override
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
         T item = parameterService.getParameter(id, queryMap);
@@ -148,7 +152,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     protected ModelAndView createModelAndView(OutputCollection<T> items) {
-        return new ModelAndView().addObject(items);
+        return new ModelAndView().addObject(items.getItems());
     }
 
     public ParameterService<T> getParameterService() {

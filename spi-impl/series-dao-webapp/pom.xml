@@ -16,7 +16,7 @@
         <postgis.version>2.2.0</postgis.version>
         <aspectj.version>1.8.9</aspectj.version>
         <postgresql.version>9.4.1208.jre7</postgresql.version>
-        <webapp.target.dir>${project.build.directory}/${project.build.finalName}</webapp.target.dir>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
     </properties>
 
@@ -118,6 +118,7 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -156,16 +157,16 @@
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>rest</artifactId>
                                 <includes>api-doc/**</includes>
-                                <outputDirectory>${webapp.target.dir}</outputDirectory>
+                                <outputDirectory>${webappDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>
-                            <artifactItem>
+<!--                            <artifactItem>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>series-dao</artifactId>
                                 <includes>hbm/**</includes>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                 <overWrite>true</overWrite>
-                            </artifactItem>
+                            </artifactItem>-->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
@@ -177,21 +178,11 @@
                     <version>2.6</version>
                     <configuration>
                         <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                        <webappDirectory>${webapp.target.dir}</webappDirectory>
+                        <webappDirectory>${webappDirectory}</webappDirectory>
                         <webResources>
                             <resource>
                                 <directory>src/main/webapp</directory>
                                 <filtering>true</filtering>
-                                <excludes>
-                                    <!-- exclude files from filtering -->
-                                    <exclude>img/*</exclude>
-                                    <exclude>cache/*</exclude>
-                                </excludes>
-                            </resource>
-                            <resource>
-                                <directory>src/main/resources</directory>
-                                <filtering>true</filtering>
-                                <targetPath>WEB-INF/classes</targetPath>
                             </resource>
                         </webResources>
                     </configuration>
@@ -207,7 +198,7 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>target/${project.build.finalName}/WEB-INF/classes;../series-dao/target/classes;../series-dao/src/main/resources/hbm;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-mappings/target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <systemProperties>
                             <systemProperty>
@@ -216,6 +207,19 @@
                             </systemProperty>
                         </systemProperties>
                     </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>series-dao</artifactId>
+                            <version>${project.version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>series-mappings</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

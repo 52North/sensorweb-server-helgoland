@@ -30,9 +30,9 @@ package org.n52.io.response.series.text;
 
 import org.n52.io.Utils;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 
-public class TextObservationSeriesOutput extends SeriesMetadataOutput<TextObservationReferenceValueOutput> {
+public class TextObservationSeriesOutput extends DatasetOutput<TextObservationReferenceValueOutput> {
 
     private String uom;
 

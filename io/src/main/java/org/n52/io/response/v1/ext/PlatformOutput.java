@@ -29,6 +29,7 @@
 package org.n52.io.response.v1.ext;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Geometry;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,9 +49,9 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
 
     private final PlatformType platformType;
 
-    private Collection<SeriesMetadataOutput> series;
+    private Collection<DatasetOutput> series;
 
-    private GeometryOutputCollection geometries; // TODO
+    private Geometry geometry;
 
     private PhenomenonOutputCollection phenomena;
 
@@ -89,20 +90,20 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
         super.setId(getType().createId(id));
     }
 
-    public Collection<SeriesMetadataOutput> getSeries() {
+    public Collection<DatasetOutput> getSeries() {
         return series;
     }
 
-    public void setSeries(List<SeriesMetadataOutput> series) {
+    public void setSeries(List<DatasetOutput> series) {
         this.series = series;
     }
 
-    public Collection<GeometryInfo> getGeometries() {
-        return getNullSafeItems(geometries);
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public void setGeometries(GeometryOutputCollection geometries) {
-        this.geometries = geometries;
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
     public Collection<PhenomenonOutput> getPhenomena() {

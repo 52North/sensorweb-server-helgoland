@@ -38,7 +38,7 @@ import java.util.Map.Entry;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class MeasurementData extends SeriesData {
+public class MeasurementData extends Data {
 
     private static final long serialVersionUID = 4717558247670336015L;
 

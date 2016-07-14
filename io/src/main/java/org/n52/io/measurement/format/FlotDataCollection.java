@@ -28,8 +28,8 @@
  */
 package org.n52.io.measurement.format;
 
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.DataCollection;
 
-class FlotDataCollection extends SeriesDataCollection<FlotSeries> {
+class FlotDataCollection extends DataCollection<FlotSeries> {
 
 }
