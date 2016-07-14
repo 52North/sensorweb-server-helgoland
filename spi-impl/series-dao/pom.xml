@@ -130,13 +130,5 @@
         </dependency>
     </dependencies>
 
-<!--    <build>
-        <resources>
-            <resource>
-                <directory>src/main/hbm</directory>
-                <targetPath>hbm</targetPath>
-            </resource>
-        </resources>
-    </build>-->
 </project>
 
