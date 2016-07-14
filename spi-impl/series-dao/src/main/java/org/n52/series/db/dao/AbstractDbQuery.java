@@ -47,9 +47,7 @@ import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -62,26 +60,11 @@ import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
-import static java.lang.String.format;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Restrictions.and;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
 import static java.lang.String.format;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
-import static java.lang.String.format;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
-import static java.lang.String.format;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
 
 public abstract class AbstractDbQuery {
 
@@ -134,11 +117,11 @@ public abstract class AbstractDbQuery {
     }
 
     public Set<String> getDatasetTypes() {
-        return parameters.getObservationTypes();
+        return parameters.getDatasetTypes();
     }
-    
+
     public boolean isSetDatasetTypeFilter() {
-        return !parameters.getObservationTypes().isEmpty();
+        return !parameters.getDatasetTypes().isEmpty();
     }
 
     public boolean checkTranslationForLocale(Criteria criteria) {
@@ -228,10 +211,6 @@ public abstract class AbstractDbQuery {
 
     public boolean shallIncludeAllPlatformTypes() {
         return parameters.getPlatformTypes().contains("all");
-    }
-
-    public boolean hasObservationType() {
-        return parameters.containsParameter(Parameters.OBSERVATION_TYPE);
     }
 
     public boolean isAllGeomentries() {

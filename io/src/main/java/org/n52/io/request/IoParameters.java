@@ -460,8 +460,8 @@ public class IoParameters implements Parameters {
         return getValuesOf(PLATFORM_TYPES);
     }
 
-    public Set<String> getObservationTypes() {
-        return getValuesOf(OBSERVATION_TYPES);
+    public Set<String> getDatasetTypes() {
+        return getValuesOf(DATASET_TYPES);
     }
 
     private Set<String> getValuesOf(String parameterName) {

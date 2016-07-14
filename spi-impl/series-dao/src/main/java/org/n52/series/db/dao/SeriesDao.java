@@ -156,7 +156,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     }
 
     private Criteria addDatasetTypesFilterTo(Criteria criteria, DbQuery query) {
-        for (String datasetType : query.getParameters().getObservationTypes()) {
+        for (String datasetType : query.getParameters().getDatasetTypes()) {
 
         }
         // TODO

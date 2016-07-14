@@ -116,7 +116,7 @@ public class DatasetRepository<T extends Data>
         final DataRepository dataRepository = factory.createRepository(datasetType);
         return getSeriesDao(dataRepository.getEntityType(), session);
     }
-    
+
     private SeriesDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
         return new SeriesDao<>(session, clazz);
     }
