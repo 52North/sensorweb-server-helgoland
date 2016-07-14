@@ -50,11 +50,8 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> {
 
     private final OutputAssembler<ServiceOutput> serviceRepository;
 
-    private final OutputAssembler<SeriesMetadataOutput> seriesRepository;
-
     public ServiceAccessService(OutputAssembler<ServiceOutput> serviceRepository) {
         this.serviceRepository = serviceRepository;
-        this.seriesRepository = timeseriesRepository;
     }
 
     private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
@@ -117,16 +114,6 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> {
                     : null;
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get service data.", e);
-        }
-    }
-
-    @Override
-    public boolean isKnownTimeseries(String timeseriesId) {
-        try {
-            DbQuery dbQuery = DbQuery.createFrom(IoParameters.createDefaults());
-            return seriesRepository.getInstance(timeseriesId, dbQuery) != null;
-        } catch (DataAccessException e) {
-            throw new InternalServerException("Could not determine if timeseries '" + timeseriesId + "' is known.");
         }
     }
 

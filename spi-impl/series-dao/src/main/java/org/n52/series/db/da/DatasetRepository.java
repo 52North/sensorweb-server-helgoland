@@ -26,9 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.series.db.da;
 
-import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.dao.DbQuery;
 import static java.math.RoundingMode.HALF_UP;
 
 import java.math.BigDecimal;
@@ -41,59 +41,95 @@ import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.series.MeasurementSeriesOutput;
 import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesData;
+import org.n52.io.response.series.Data;
 import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.response.series.count.CountObservationSeriesOutput;
 import org.n52.io.response.series.count.CountObservationValue;
 import org.n52.io.response.series.text.TextObservationSeriesOutput;
 import org.n52.io.response.series.text.TextObservationValue;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
-import org.n52.sensorweb.spi.SearchResult;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.DescribableEntity;
-import org.n52.series.db.da.beans.ext.AbstractObservationEntity;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
-import org.n52.series.db.da.beans.ext.CountObservationEntity;
-import org.n52.series.db.da.beans.ext.CountObservationSeriesEntity;
-import org.n52.series.db.da.beans.ext.MeasurementEntity;
-import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
-import org.n52.series.db.da.beans.ext.TextObservationEntity;
-import org.n52.series.db.da.beans.ext.TextObservationSeriesEntity;
-import org.n52.series.db.da.dao.v1.ObservationDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.sensorweb.spi.search.SearchResult;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.CountDataEntity;
+import org.n52.series.db.beans.CountDatasetEntity;
+import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.TextDataEntity;
+import org.n52.series.db.beans.TextDatasetEntity;
+import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.SeriesDao;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @param <T> the dataset's type this repository is responsible for.
  */
-public class SeriesRepository extends ExtendedSessionAwareRepository implements OutputAssembler<SeriesMetadataOutput> {
+public class DatasetRepository<T extends Data>
+        extends SessionAwareRepository<DbQuery>
+        implements OutputAssembler<DatasetOutput>{
 
-    private ObservationTypeToEntityMapper mapper = new ObservationTypeToEntityMapper();
+    private DataRepositoryFactory factory = new DataRepositoryFactory();
 
     @Override
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
             id = ObservationType.extractId(id);
-            SeriesDao<AbstractSeriesEntity> dao = new SeriesDao<AbstractSeriesEntity>(session, AbstractSeriesEntity.class);
-            return dao.hasInstance(parseId(id), AbstractSeriesEntity.class);
+            SeriesDao<DatasetEntity> dao = new SeriesDao<>(session, DatasetEntity.class);
+            return dao.hasInstance(parseId(id), DatasetEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SeriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
+    public List<DatasetOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<SeriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<? extends AbstractSeriesEntity> dao = getSeriesDao(query, session);
-            for (AbstractSeriesEntity series : dao.getAllInstances(query)) {
-                final SeriesMetadataOutput item = createCondensed(series, query);
-                if (item != null) {
-                    results.add(item);
+            List<DatasetOutput> results = new ArrayList<>();
+            if (query.isSetDatasetTypeFilter()) {
+                for (String datasetType : query.getDatasetTypes()) {
+                    addResults(getSeriesDao(datasetType, session), query, results);
+                }
+            } else {
+                addResults(getSeriesDao(DatasetEntity.class, session), query, results);
+            }
+            return results;
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private void addResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
+        for (DatasetEntity series : dao.getAllInstances(query)) {
+            results.add(createCondensed(series, query));
+        }
+    }
+
+    private SeriesDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) {
+        final DataRepository dataRepository = factory.createRepository(datasetType);
+        return getSeriesDao(dataRepository.getEntityType(), session);
+    }
+    
+    private SeriesDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
+        return new SeriesDao<>(session, clazz);
+    }
+
+    @Override
+    public List<DatasetOutput> getAllExpanded(DbQuery query) throws DataAccessException {
+        Session session = getSession();
+        try {
+            List<DatasetOutput> results = new ArrayList<>();
+            for (String datasetType : query.getDatasetTypes()) {
+                SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+                for (DatasetEntity series : dao.getAllInstances(query)) {
+                    results.add(createExpanded(series, query, session));
                 }
             }
             return results;
@@ -102,32 +138,14 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         }
     }
 
-    private SeriesDao<? extends AbstractSeriesEntity> getSeriesDao(DbQuery query, Session session) {
-        final ObservationType observationType = query.getObservationType();
-        return new SeriesDao<>(session, mapper.mapToEntityClass(observationType));
-    }
-
     @Override
-    public List<SeriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
-        Session session = getSession();
-        try {
-            List<SeriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<? extends AbstractSeriesEntity> dao = getSeriesDao(query, session);
-            for (AbstractSeriesEntity series : dao.getAllInstances(query)) {
-                results.add(createExpanded(series, query, session));
-            }
-            return results;
-        } finally {
-            returnSession(session);
-        }
-    }
-
-    @Override
-    public SeriesMetadataOutput getInstance(String id, DbQuery query) throws DataAccessException {
+    public DatasetOutput getInstance(String id, DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             String seriesId = ObservationType.extractId(id);
-            AbstractSeriesEntity instance = getSeriesDao(query, session).getInstance(Long.parseLong(seriesId), query);
+            final String datasetType = ObservationType.extractType(id).getObservationType();
+            SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+            DatasetEntity instance = dao.getInstance(Long.parseLong(seriesId), query);
             return createExpanded(instance, query, session);
         } finally {
             returnSession(session);
@@ -144,20 +162,20 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private SeriesMetadataOutput createCondensed(AbstractSeriesEntity<?> series, DbQuery query) throws DataAccessException {
-        if (series instanceof MeasurementSeriesEntity) {
+    private DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
+        if (series instanceof MeasurementDatasetEntity) {
             MeasurementSeriesOutput output = new MeasurementSeriesOutput();
             output.setLabel(createSeriesLabel(series, query.getLocale()));
             output.setId(series.getPkid().toString());
             output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
             return output;
-        } else if (series instanceof TextObservationSeriesEntity) {
+        } else if (series instanceof TextDatasetEntity) {
             TextObservationSeriesOutput output = new TextObservationSeriesOutput();
             output.setLabel(createSeriesLabel(series, query.getLocale()));
             output.setId(series.getPkid().toString());
             output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
             return output;
-        } else if (series instanceof CountObservationSeriesEntity) {
+        } else if (series instanceof CountDatasetEntity) {
             CountObservationSeriesOutput output = new CountObservationSeriesOutput();
             output.setLabel(createSeriesLabel(series, query.getLocale()));
             output.setId(series.getPkid().toString());
@@ -167,22 +185,22 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return null;
     }
 
-    private SeriesMetadataOutput createExpanded(AbstractSeriesEntity<?> series, DbQuery query, Session session) throws DataAccessException {
-        SeriesMetadataOutput result = createCondensed(series, query);
+    private DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+        DatasetOutput result = createCondensed(series, query);
         result.setSeriesParameters(getParameters(series, query));
-        if (series instanceof MeasurementSeriesEntity && result instanceof MeasurementSeriesOutput) {
-            MeasurementSeriesEntity measurementSeries = (MeasurementSeriesEntity) series;
+        if (series instanceof MeasurementDatasetEntity && result instanceof MeasurementSeriesOutput) {
+            MeasurementDatasetEntity measurementSeries = (MeasurementDatasetEntity) series;
             MeasurementSeriesOutput output = (MeasurementSeriesOutput) result;
             output.setUom(measurementSeries.getUnitI18nName(query.getLocale()));
             output.setFirstValue(createSeriesValueFor(measurementSeries.getFirstValue(), measurementSeries));
             output.setLastValue(createSeriesValueFor(measurementSeries.getLastValue(), measurementSeries));
-        } else if (series instanceof TextObservationSeriesEntity && result instanceof TextObservationSeriesOutput) {
-            TextObservationSeriesEntity textObservationSeries = (TextObservationSeriesEntity) series;
+        } else if (series instanceof TextDatasetEntity && result instanceof TextObservationSeriesOutput) {
+            TextDatasetEntity textObservationSeries = (TextDatasetEntity) series;
             TextObservationSeriesOutput output = (TextObservationSeriesOutput) result;
             output.setFirstValue(createSeriesValueFor(textObservationSeries.getFirstValue(), textObservationSeries));
             output.setLastValue(createSeriesValueFor(textObservationSeries.getLastValue(), textObservationSeries));
-        } else if (series instanceof CountObservationSeriesEntity && result instanceof CountObservationSeriesOutput) {
-            CountObservationSeriesEntity countObservationSeries = (CountObservationSeriesEntity) series;
+        } else if (series instanceof CountDatasetEntity && result instanceof CountObservationSeriesOutput) {
+            CountDatasetEntity countObservationSeries = (CountDatasetEntity) series;
             CountObservationSeriesOutput output = (CountObservationSeriesOutput) result;
             output.setFirstValue(createSeriesValueFor(countObservationSeries.getFirstValue(), countObservationSeries));
             output.setLastValue(createSeriesValueFor(countObservationSeries.getLastValue(), countObservationSeries));
@@ -190,11 +208,11 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return result;
     }
 
-    private SeriesParameters getParameters(AbstractSeriesEntity<?> series, DbQuery query) throws DataAccessException {
+    private SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
         return createSeriesParameters(series, query);
     }
 
-    private String createSeriesLabel(AbstractSeriesEntity<?> series, String locale) {
+    private String createSeriesLabel(DatasetEntity<?> series, String locale) {
         String station = getLabelFrom(series.getFeature(), locale);
         String procedure = getLabelFrom(series.getProcedure(), locale);
         String phenomenon = getLabelFrom(series.getPhenomenon(), locale);
@@ -204,7 +222,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return sb.append(station).toString();
     }
 
-    private MeasurementValue createSeriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
+    private MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -218,8 +236,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    private TextObservationValue createSeriesValueFor(TextObservationEntity observation,
-            TextObservationSeriesEntity series) {
+    private TextObservationValue createSeriesValueFor(TextDataEntity observation,
+            TextDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -232,8 +250,8 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    private CountObservationValue createSeriesValueFor(CountObservationEntity observation,
-            CountObservationSeriesEntity series) {
+    private CountObservationValue createSeriesValueFor(CountDataEntity observation,
+            CountDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -246,7 +264,7 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
         return value;
     }
 
-    private SeriesData queryObservationFor(AbstractObservationEntity observation, AbstractSeriesEntity<?> series, DbQuery query) {
+    private Data queryObservationFor(DataEntity observation, DatasetEntity<?> series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -255,23 +273,32 @@ public class SeriesRepository extends ExtendedSessionAwareRepository implements 
             query = DbQuery.createFrom(IoParameters.createDefaults());
         }
         DateTime timestamp = new DateTime(observation.getTimestamp());
-        List<AbstractObservationEntity> observations = new ObservationDao(getSession()).getInstancesFor(timestamp, series, query);
+        List<DataEntity> observations = new ObservationDao(getSession()).getInstancesFor(timestamp, series, query);
         if (observations != null && !observations.isEmpty()) {
-            if (series instanceof MeasurementSeriesEntity) {
-                return createSeriesValueFor((MeasurementEntity)observations.iterator().next(), (MeasurementSeriesEntity)series);
-            } else if (series instanceof TextObservationSeriesEntity) {
-                return createSeriesValueFor((TextObservationEntity)observations.iterator().next(), (TextObservationSeriesEntity)series);
-            } else if (series instanceof CountObservationSeriesEntity) {
-                return createSeriesValueFor((CountObservationEntity)observations.iterator().next(), (CountObservationSeriesEntity)series);
+            if (series instanceof MeasurementDatasetEntity) {
+                return createSeriesValueFor((MeasurementDataEntity)observations.iterator().next(), (MeasurementDatasetEntity)series);
+            } else if (series instanceof TextDatasetEntity) {
+                return createSeriesValueFor((TextDataEntity)observations.iterator().next(), (TextDatasetEntity)series);
+            } else if (series instanceof CountDatasetEntity) {
+                return createSeriesValueFor((CountDataEntity)observations.iterator().next(), (CountDatasetEntity)series);
             }
         }
         return null;
     }
 
-    private Double formatDecimal(Double value, MeasurementSeriesEntity series) {
+    private Double formatDecimal(Double value, MeasurementDatasetEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
                 .setScale(scale, HALF_UP)
                 .doubleValue();
     }
+
+    public DataRepositoryFactory getDataRepositoryFactory() {
+        return factory;
+    }
+
+    public void setDataRepositoryFactory(DataRepositoryFactory factory) {
+        this.factory = factory;
+    }
+
 }

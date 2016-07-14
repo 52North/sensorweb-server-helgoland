@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.dao.v1.ext;
+package org.n52.series.db.dao;
 
 import java.util.List;
 
@@ -35,55 +35,27 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Subqueries;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.GeometryEntity;
-import org.n52.series.db.da.beans.ext.SamplingGeometryEntity;
-import org.n52.series.db.da.dao.v1.AbstractDao;
-import org.n52.series.db.da.dao.v1.AbstractDao;
-import org.n52.series.db.da.dao.v1.DbQuery;
-import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.beans.GeometryEntity;
+import org.n52.series.db.beans.SamplingGeometryEntity;
 
-public class SamplingGeometriesDao extends AbstractDao<GeometryEntity> {
+public class SamplingGeometryDao {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
-    private static final String COLUMN_DELETED = "deleted";
     private static final String COLUMN_TIMESTAMP = "timestamp";
-    private static final String COLUMN_GEOMETRY = "geometry";
-    private static final String COLUMN_LAT = "lat";
-    private static final String COLUMN_LON = "lon";
 
-    public SamplingGeometriesDao(Session session) {
-        super(session);
+    private final Session session;
+
+    public SamplingGeometryDao(Session session) {
+        this.session = session;
     }
 
-    @Override
-    public GeometryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<GeometryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        return get(parameters);
-    }
-
-    @Override
-    public List<GeometryEntity> find(DbQuery query) {
-        return get(query);
-    }
-
-    protected List<GeometryEntity> get(DbQuery parameters) {
-        Criteria criteria = getDefaultCriteria();
+    public List<GeometryEntity> getGeometriesOrderedByTimestamp(DbQuery parameters) {
+        Criteria criteria = session.createCriteria(SamplingGeometryEntity.class);
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc(COLUMN_TIMESTAMP));
-        return (List<GeometryEntity>)criteria.list();
-    }
-
-    @Override
-    protected Criteria getDefaultCriteria() {
-        return session.createCriteria(SamplingGeometryEntity.class);
+        return (List<GeometryEntity>) criteria.list();
     }
 
 }

@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.dao.v1;
+package org.n52.series.db.dao;
 
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.sql.JoinType.LEFT_OUTER_JOIN;
@@ -40,18 +40,18 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.FeatureEntity;
-import org.n52.series.db.da.beans.I18nFeatureEntity;
-import org.n52.series.db.da.beans.I18nProcedureEntity;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
-import org.n52.series.db.da.beans.ext.PlatformEntity;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.I18nFeatureEntity;
+import org.n52.series.db.beans.I18nProcedureEntity;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
+public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
 
@@ -64,6 +64,11 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
     }
 
+    public SeriesDao(Session session) {
+        super(session);
+        this.entityType = (Class<T>) DatasetEntity.class;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public List<T> find(DbQuery query) {
@@ -74,7 +79,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
          * for given pattern on any of the stored labels.
          */
         List<T> series = new ArrayList<>();
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria());
+        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria(), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
 
@@ -98,7 +103,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         LOGGER.debug("get instance '{}': {}", key, parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq("pkid", key));
-        addIgnoreNonPublishedSeriesTo(criteria);
+        addIgnoreNonPublishedSeriesTo(criteria, "s");
         return entityType.cast(criteria.uniqueResult());
     }
 
@@ -118,6 +123,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
     private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
+        criteria = addDatasetTypesFilterTo(criteria, parameters);
         return parameters.addPlatformTypesFilter("series", criteria)
                 .add(Subqueries.propertyIn("series.pkid", filter));
     }
@@ -149,19 +155,26 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
-    private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria) {
-        return addIgnoreNonPublishedSeriesTo(criteria, null);
+    private Criteria addDatasetTypesFilterTo(Criteria criteria, DbQuery query) {
+        for (String datasetType : query.getParameters().getObservationTypes()) {
+
+        }
+        // TODO
+        return criteria;
     }
 
-    // TODO
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
-        alias = alias == null ? "" : alias + ".";
+        alias = prepareForConcatenation(alias);
         criteria.add(Restrictions.and(
                 Restrictions.and(
-                        Restrictions.isNotNull(alias + "firstValue"),
-                        Restrictions.isNotNull(alias + "lastValue")),
-                Restrictions.eq(alias + "published", true)));
+                        Restrictions.isNotNull(alias.concat("firstValue")),
+                        Restrictions.isNotNull(alias.concat("lastValue"))),
+                Restrictions.eq(alias.concat("published"), true)));
         return criteria;
+    }
+
+    private String prepareForConcatenation(String alias) {
+        return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
 
     @Override
@@ -169,7 +182,7 @@ public class SeriesDao<T extends AbstractSeriesEntity> extends AbstractDao<T> {
         if (entityType != null) {
             return session.createCriteria(entityType);
         }
-        return session.createCriteria(AbstractSeriesEntity.class);
+        return session.createCriteria(DatasetEntity.class);
     }
 
 }

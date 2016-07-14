@@ -26,9 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.series.db.da;
 
-import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.dao.DbQuery;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,22 +40,27 @@ import org.n52.io.response.series.text.TextObservationData;
 import org.n52.io.response.series.text.TextObservationDataMetadata;
 import org.n52.io.response.series.text.TextObservationValue;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.TextObservationEntity;
-import org.n52.series.db.da.beans.ext.TextObservationSeriesEntity;
-import org.n52.series.db.da.dao.v1.ObservationDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.TextDataEntity;
+import org.n52.series.db.beans.TextDatasetEntity;
+import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.SeriesDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class TextObservationDataRepository extends AbstractDataRepository<TextObservationData> {
+public class TextDataRepository extends AbstractDataRepository<TextObservationData, TextDataEntity> {
+
+    @Override
+    public Class<TextDataEntity> getEntityType() {
+        return TextDataEntity.class;
+    }
 
     @Override
     public TextObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<TextObservationSeriesEntity> seriesDao = new SeriesDao<TextObservationSeriesEntity>(session, TextObservationSeriesEntity.class);
+            SeriesDao<TextDatasetEntity> seriesDao = new SeriesDao<>(session, TextDatasetEntity.class);
             String id = ObservationType.extractId(seriesId);
-            TextObservationSeriesEntity series = seriesDao.getInstance(parseId(id), dbQuery);
+            TextDatasetEntity series = seriesDao.getInstance(parseId(id), dbQuery);
             if (series == null) {
                 throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
             }
@@ -68,11 +73,11 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
         }
     }
 
-    private TextObservationData assembleDataWithReferenceValues(TextObservationSeriesEntity timeseries,
+    private TextObservationData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
                                                             DbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         TextObservationData result = assembleData(timeseries, dbQuery, session);
-        Set<TextObservationSeriesEntity> referenceValues = timeseries.getReferenceValues();
+        Set<TextDatasetEntity> referenceValues = timeseries.getReferenceValues();
         if (referenceValues != null && !referenceValues.isEmpty()) {
             TextObservationDataMetadata metadata = new TextObservationDataMetadata();
             metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
@@ -81,11 +86,11 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
         return result;
     }
 
-    private Map<String, TextObservationData> assembleReferenceSeries(Set<TextObservationSeriesEntity> referenceValues,
+    private Map<String, TextObservationData> assembleReferenceSeries(Set<TextDatasetEntity> referenceValues,
                                                                  DbQuery query,
                                                                  Session session) throws DataAccessException {
         Map<String, TextObservationData> referenceSeries = new HashMap<>();
-        for (TextObservationSeriesEntity referenceSeriesEntity : referenceValues) {
+        for (TextDatasetEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 TextObservationData referenceSeriesData = assembleData(referenceSeriesEntity, query, session);
                 if (haveToExpandReferenceData(referenceSeriesData)) {
@@ -101,27 +106,27 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
         return referenceSeriesData.getValues().length <= 1;
     }
 
-    private TextObservationData expandReferenceDataIfNecessary(TextObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private TextObservationData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TextObservationData result = new TextObservationData();
-        ObservationDao<TextObservationEntity> dao = new ObservationDao<>(session);
-        List<TextObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
+        List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            TextObservationEntity lastValidEntity = seriesEntity.getLastValue();
+            TextDataEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
-            TextObservationEntity entity = observations.get(0);
+            TextDataEntity entity = observations.get(0);
             result.addValues(expandToInterval(query.getTimespan(), entity, seriesEntity));
         }
         return result;
     }
 
-    private TextObservationData assembleData(TextObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private TextObservationData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TextObservationData result = new TextObservationData();
-        ObservationDao<TextObservationEntity> dao = new ObservationDao<>(session);
-        List<TextObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
-        for (TextObservationEntity observation : observations) {
+        ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
+        List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        for (TextDataEntity observation : observations) {
             if (observation != null) {
                 result.addValues(createSeriesValueFor(observation, seriesEntity));
             }
@@ -129,9 +134,9 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
         return result;
     }
 
-    private TextObservationValue[] expandToInterval(Interval interval, TextObservationEntity entity, TextObservationSeriesEntity series) {
-        TextObservationEntity referenceStart = new TextObservationEntity();
-        TextObservationEntity referenceEnd = new TextObservationEntity();
+    private TextObservationValue[] expandToInterval(Interval interval, TextDataEntity entity, TextDatasetEntity series) {
+        TextDataEntity referenceStart = new TextDataEntity();
+        TextDataEntity referenceEnd = new TextDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
@@ -141,7 +146,7 @@ public class TextObservationDataRepository extends AbstractDataRepository<TextOb
 
     }
 
-    TextObservationValue createSeriesValueFor(TextObservationEntity observation, TextObservationSeriesEntity series) {
+    TextObservationValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

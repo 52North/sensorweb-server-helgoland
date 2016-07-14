@@ -27,11 +27,11 @@
  * for more details.
  */
 
-package org.n52.series.db.da.dao.v1;
+package org.n52.series.db.dao;
 
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
-import static org.n52.series.db.da.beans.DataModelUtil.isEntitySupported;
+import static org.n52.series.db.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -48,7 +48,7 @@ import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.series.db.da.beans.ext.AbstractSeriesEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
@@ -62,6 +62,21 @@ import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Restrictions.and;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
 import static java.lang.String.format;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Restrictions.and;
@@ -118,6 +133,14 @@ public abstract class AbstractDbQuery {
         return parameters.isExpanded();
     }
 
+    public Set<String> getDatasetTypes() {
+        return parameters.getObservationTypes();
+    }
+    
+    public boolean isSetDatasetTypeFilter() {
+        return !parameters.getObservationTypes().isEmpty();
+    }
+
     public boolean checkTranslationForLocale(Criteria criteria) {
         return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
     }
@@ -163,7 +186,7 @@ public abstract class AbstractDbQuery {
             criteria.createCriteria("platform")
                     .add(and(eq("mobile", mobile), eq("insitu", insitu)));
         } else {
-            DetachedCriteria c = forClass(AbstractSeriesEntity.class, "series")
+            DetachedCriteria c = forClass(DatasetEntity.class, "series")
                 .createCriteria("procedure", "p")
                 .add(and(eq("p.mobile", mobile), eq("p.insitu", insitu)));
             c.setProjection(createSeriesProjectionWith(parameter));
@@ -209,21 +232,6 @@ public abstract class AbstractDbQuery {
 
     public boolean hasObservationType() {
         return parameters.containsParameter(Parameters.OBSERVATION_TYPE);
-    }
-
-    public ObservationType getObservationType() {
-        String observationType = parameters.containsParameter(Parameters.OBSERVATION_TYPE)
-            ? parameters.getAsString(Parameters.OBSERVATION_TYPE)
-            : null;
-        try {
-            return observationType != null
-                ? ObservationType.toInstance(observationType)
-                : ObservationType.ALL;
-        }
-        catch (IllegalArgumentException e) {
-            LOGGER.debug("unknown observation type: {}", observationType, e);
-            throw new ResourceNotFoundException("Could not find resource under type '" + observationType + "'.");
-        }
     }
 
     public boolean isAllGeomentries() {

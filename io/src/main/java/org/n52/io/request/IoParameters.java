@@ -86,7 +86,7 @@ public class IoParameters implements Parameters {
             Path path = Paths.get(IoParameters.class.getResource("/").toURI());
             return path.resolve(DEFAULT_CONFIG_FILE).toFile();
         } catch (URISyntaxException e) {
-            LOGGER.error("Could not find default config file '{}'", DEFAULT_CONFIG_FILE, e);
+            LOGGER.warn("Could not find default config file '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
         }
     }
@@ -458,6 +458,10 @@ public class IoParameters implements Parameters {
 
     public Set<String> getPlatformTypes() {
         return getValuesOf(PLATFORM_TYPES);
+    }
+
+    public Set<String> getObservationTypes() {
+        return getValuesOf(OBSERVATION_TYPES);
     }
 
     private Set<String> getValuesOf(String parameterName) {

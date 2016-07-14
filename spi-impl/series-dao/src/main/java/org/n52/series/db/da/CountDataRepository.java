@@ -26,9 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da.v1;
+package org.n52.series.db.da;
 
-import org.n52.series.db.da.dao.v1.DbQuery;
+import org.n52.series.db.dao.DbQuery;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,21 +40,26 @@ import org.n52.io.response.series.count.CountObservationData;
 import org.n52.io.response.series.count.CountObservationDataMetadata;
 import org.n52.io.response.series.count.CountObservationValue;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.CountObservationEntity;
-import org.n52.series.db.da.beans.ext.CountObservationSeriesEntity;
-import org.n52.series.db.da.dao.v1.ObservationDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.CountDataEntity;
+import org.n52.series.db.beans.CountDatasetEntity;
+import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.SeriesDao;
 
-public class CountObservationDataRepository extends AbstractDataRepository<CountObservationData> {
+public class CountDataRepository extends AbstractDataRepository<CountObservationData, CountDataEntity> {
+
+    @Override
+    public Class<CountDataEntity> getEntityType() {
+        return CountDataEntity.class;
+    }
 
     @Override
     public CountObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<CountObservationSeriesEntity> seriesDao = new SeriesDao<CountObservationSeriesEntity>(session, CountObservationSeriesEntity.class);
+            SeriesDao<CountDatasetEntity> seriesDao = new SeriesDao<>(session, CountDatasetEntity.class);
             String id = ObservationType.extractId(seriesId);
-            CountObservationSeriesEntity series = seriesDao.getInstance(parseId(id), dbQuery);
+            CountDatasetEntity series = seriesDao.getInstance(parseId(id), dbQuery);
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);
@@ -64,11 +69,11 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
         }
     }
 
-    private CountObservationData assembleDataWithReferenceValues(CountObservationSeriesEntity timeseries,
+    private CountObservationData assembleDataWithReferenceValues(CountDatasetEntity timeseries,
                                                             DbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         CountObservationData result = assembleData(timeseries, dbQuery, session);
-        Set<CountObservationSeriesEntity> referenceValues = timeseries.getReferenceValues();
+        Set<CountDatasetEntity> referenceValues = timeseries.getReferenceValues();
         if (referenceValues != null && !referenceValues.isEmpty()) {
             CountObservationDataMetadata metadata = new CountObservationDataMetadata();
             metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
@@ -77,11 +82,11 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
         return result;
     }
 
-    private Map<String, CountObservationData> assembleReferenceSeries(Set<CountObservationSeriesEntity> referenceValues,
+    private Map<String, CountObservationData> assembleReferenceSeries(Set<CountDatasetEntity> referenceValues,
                                                                  DbQuery query,
                                                                  Session session) throws DataAccessException {
         Map<String, CountObservationData> referenceSeries = new HashMap<>();
-        for (CountObservationSeriesEntity referenceSeriesEntity : referenceValues) {
+        for (CountDatasetEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 CountObservationData referenceSeriesData = assembleData(referenceSeriesEntity, query, session);
                 if (haveToExpandReferenceData(referenceSeriesData)) {
@@ -97,27 +102,27 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
         return referenceSeriesData.getValues().length <= 1;
     }
 
-    private CountObservationData expandReferenceDataIfNecessary(CountObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private CountObservationData expandReferenceDataIfNecessary(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountObservationData result = new CountObservationData();
-        ObservationDao<CountObservationEntity> dao = new ObservationDao<>(session);
-        List<CountObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        ObservationDao<CountDataEntity> dao = new ObservationDao<>(session);
+        List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            CountObservationEntity lastValidEntity = seriesEntity.getLastValue();
+            CountDataEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
-            CountObservationEntity entity = observations.get(0);
+            CountDataEntity entity = observations.get(0);
             result.addValues(expandToInterval(query.getTimespan(), entity, seriesEntity));
         }
         return result;
     }
 
-    private CountObservationData assembleData(CountObservationSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private CountObservationData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountObservationData result = new CountObservationData();
-        ObservationDao<CountObservationEntity> dao = new ObservationDao<>(session);
-        List<CountObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
-        for (CountObservationEntity observation : observations) {
+        ObservationDao<CountDataEntity> dao = new ObservationDao<>(session);
+        List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        for (CountDataEntity observation : observations) {
             if (observation != null) {
                 result.addValues(createSeriesValueFor(observation, seriesEntity));
             }
@@ -125,9 +130,9 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
         return result;
     }
 
-    private CountObservationValue[] expandToInterval(Interval interval, CountObservationEntity entity, CountObservationSeriesEntity series) {
-        CountObservationEntity referenceStart = new CountObservationEntity();
-        CountObservationEntity referenceEnd = new CountObservationEntity();
+    private CountObservationValue[] expandToInterval(Interval interval, CountDataEntity entity, CountDatasetEntity series) {
+        CountDataEntity referenceStart = new CountDataEntity();
+        CountDataEntity referenceEnd = new CountDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
@@ -137,7 +142,7 @@ public class CountObservationDataRepository extends AbstractDataRepository<Count
 
     }
 
-    CountObservationValue createSeriesValueFor(CountObservationEntity observation, CountObservationSeriesEntity series) {
+    CountObservationValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

@@ -327,6 +327,8 @@ public interface Parameters {
 
     public static final String PLATFORM_TYPES = "platformTypes";
 
+    public static final String OBSERVATION_TYPES = "observationTypes";
+
     public static final String HREF_BASE = "internal.href.base";
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";

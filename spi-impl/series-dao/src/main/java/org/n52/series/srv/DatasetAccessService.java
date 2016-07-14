@@ -26,44 +26,44 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.srv.v1.ext;
+package org.n52.series.srv;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.SeriesDataCollection;
-import org.n52.io.response.v1.ext.SeriesMetadataOutput;
+import org.n52.io.response.series.Data;
+import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.v1.ext.DatasetType;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.TvpDataCollection;
-import org.n52.sensorweb.spi.SeriesDataService;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.dao.v1.DbQuery;
-import org.n52.series.db.da.v1.MeasurementDataRepository;
-import org.n52.series.db.da.v1.SeriesRepository;
-import org.n52.series.db.srv.v1.AccessService;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.da.DatasetRepository;
+import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.web.exception.InternalServerException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.n52.sensorweb.spi.DataService;
+import org.n52.series.db.da.DataRepository;
 
 /**
  * TODO: JavaDoc
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class MeasurementSeriesAccessService extends AccessService<SeriesMetadataOutput>
-        implements SeriesDataService<MeasurementData> {
+public class DatasetAccessService extends AccessService<DatasetOutput>
+        implements DataService<Data> {
 
-    @Autowired
-    private MeasurementDataRepository dataRepository;
+    private final DataRepositoryFactory factory;
 
-    public MeasurementSeriesAccessService(SeriesRepository repository) {
+    public DatasetAccessService(DatasetRepository repository) {
         super(repository);
+        factory = repository.getDataRepositoryFactory();
     }
 
     @Override
-    public SeriesDataCollection<MeasurementData> getSeriesData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data> getData(RequestSimpleParameterSet parameters) {
         try {
-            TvpDataCollection<MeasurementData> dataCollection = new TvpDataCollection<MeasurementData>();
+            TvpDataCollection<Data> dataCollection = new TvpDataCollection<>();
             for (String seriesId : parameters.getSeriesIds()) {
-                MeasurementData data = getDataFor(seriesId, parameters);
+                Data data = getDataFor(seriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(seriesId, data);
                 }
@@ -75,9 +75,11 @@ public class MeasurementSeriesAccessService extends AccessService<SeriesMetadata
         }
     }
 
-    private MeasurementData getDataFor(String seriesId, RequestSimpleParameterSet parameters)
+    private Data getDataFor(String seriesId, RequestSimpleParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        String datasetType = DatasetType.extractType(seriesId);
+        DataRepository dataRepository = factory.createRepository(datasetType);
         return dataRepository.getData(seriesId, dbQuery);
     }
 

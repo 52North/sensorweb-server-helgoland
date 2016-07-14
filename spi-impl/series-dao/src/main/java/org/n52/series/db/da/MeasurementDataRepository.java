@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.series.db.da.v1;
+package org.n52.series.db.da;
 
 import static java.math.RoundingMode.HALF_UP;
 
@@ -43,22 +43,27 @@ import org.n52.io.response.series.MeasurementData;
 import org.n52.io.response.series.MeasurementDataMetadata;
 import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.series.db.da.DataAccessException;
-import org.n52.series.db.da.beans.ext.MeasurementEntity;
-import org.n52.series.db.da.beans.ext.MeasurementSeriesEntity;
-import org.n52.series.db.da.dao.v1.DbQuery;
-import org.n52.series.db.da.dao.v1.ObservationDao;
-import org.n52.series.db.da.dao.v1.SeriesDao;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.SeriesDao;
 
-public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData> {
+public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDataEntity> {
+
+    @Override
+    public Class<MeasurementDataEntity> getEntityType() {
+        return MeasurementDataEntity.class;
+    }
 
     @Override
     public MeasurementData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementSeriesEntity> seriesDao = new SeriesDao<MeasurementSeriesEntity>(session, MeasurementSeriesEntity.class);
+            SeriesDao<MeasurementDatasetEntity> seriesDao = new SeriesDao<>(session, MeasurementDatasetEntity.class);
             String id = ObservationType.extractId(seriesId);
-            MeasurementSeriesEntity series = seriesDao.getInstance(parseId(id), dbQuery);
+            MeasurementDatasetEntity series = seriesDao.getInstance(parseId(id), dbQuery);
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);
@@ -68,11 +73,11 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         }
     }
 
-    private MeasurementData assembleDataWithReferenceValues(MeasurementSeriesEntity timeseries,
+    private MeasurementData assembleDataWithReferenceValues(MeasurementDatasetEntity timeseries,
                                                             DbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         MeasurementData result = assembleData(timeseries, dbQuery, session);
-        Set<MeasurementSeriesEntity> referenceValues = timeseries.getReferenceValues();
+        Set<MeasurementDatasetEntity> referenceValues = timeseries.getReferenceValues();
         if (referenceValues != null && !referenceValues.isEmpty()) {
             MeasurementDataMetadata metadata = new MeasurementDataMetadata();
             metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
@@ -81,11 +86,11 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return result;
     }
 
-    private Map<String, MeasurementData> assembleReferenceSeries(Set<MeasurementSeriesEntity> referenceValues,
+    private Map<String, MeasurementData> assembleReferenceSeries(Set<MeasurementDatasetEntity> referenceValues,
                                                                  DbQuery query,
                                                                  Session session) throws DataAccessException {
         Map<String, MeasurementData> referenceSeries = new HashMap<>();
-        for (MeasurementSeriesEntity referenceSeriesEntity : referenceValues) {
+        for (MeasurementDatasetEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 MeasurementData referenceSeriesData = assembleData(referenceSeriesEntity, query, session);
                 if (haveToExpandReferenceData(referenceSeriesData)) {
@@ -101,27 +106,27 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return referenceSeriesData.getValues().length <= 1;
     }
 
-    private MeasurementData expandReferenceDataIfNecessary(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private MeasurementData expandReferenceDataIfNecessary(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
-        List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        ObservationDao<MeasurementDataEntity> dao = new ObservationDao<>(session);
+        List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            MeasurementEntity lastValidEntity = seriesEntity.getLastValue();
+            MeasurementDataEntity lastValidEntity = seriesEntity.getLastValue();
             result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
-            MeasurementEntity entity = observations.get(0);
+            MeasurementDataEntity entity = observations.get(0);
             result.addValues(expandToInterval(query.getTimespan(), entity, seriesEntity));
         }
         return result;
     }
 
-    private MeasurementData assembleData(MeasurementSeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementEntity> dao = new ObservationDao<>(session);
-        List<MeasurementEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
-        for (MeasurementEntity observation : observations) {
+        ObservationDao<MeasurementDataEntity> dao = new ObservationDao<>(session);
+        List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
+        for (MeasurementDataEntity observation : observations) {
             if (observation != null) {
                 result.addValues(createSeriesValueFor(observation, seriesEntity));
             }
@@ -129,9 +134,9 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return result;
     }
 
-    private MeasurementValue[] expandToInterval(Interval interval, MeasurementEntity entity, MeasurementSeriesEntity series) {
-        MeasurementEntity referenceStart = new MeasurementEntity();
-        MeasurementEntity referenceEnd = new MeasurementEntity();
+    private MeasurementValue[] expandToInterval(Interval interval, MeasurementDataEntity entity, MeasurementDatasetEntity series) {
+        MeasurementDataEntity referenceStart = new MeasurementDataEntity();
+        MeasurementDataEntity referenceEnd = new MeasurementDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
@@ -141,7 +146,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
 
     }
 
-    MeasurementValue createSeriesValueFor(MeasurementEntity observation, MeasurementSeriesEntity series) {
+    MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -158,7 +163,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return value;
     }
 
-    private Double formatDecimal(Double value, MeasurementSeriesEntity series) {
+    private Double formatDecimal(Double value, MeasurementDatasetEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
                 .setScale(scale, HALF_UP)
