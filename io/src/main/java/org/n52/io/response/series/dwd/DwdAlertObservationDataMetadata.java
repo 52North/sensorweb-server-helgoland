@@ -26,13 +26,26 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.io.response.series.dwd;
 
-public class VorabInformationAlert extends Alert {
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+import org.n52.io.response.series.SeriesDataMetadata;
+
+public class DwdAlertObservationDataMetadata implements SeriesDataMetadata<Map<String, DwdAlertObservationData>>, Serializable {
+
+    private static final long serialVersionUID = -5666064665815076013L;
+
+    private Map<String, DwdAlertObservationData> referenceValues = new HashMap<>();
+
+    public Map<String, DwdAlertObservationData> getReferenceValues() {
+        return referenceValues;
+    }
+
+    public void setReferenceValues(Map<String, DwdAlertObservationData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

@@ -26,13 +26,33 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.io.response.series.dwd;
 
-public class VorabInformationAlert extends Alert {
+import org.n52.io.response.series.AbstractValue;
+
+public class DwdAlertObservationValue extends AbstractValue<DwdAlertValue> {
+
+    private static final long serialVersionUID = -8560044983739848371L;
+
+    private DwdAlertValue value;
+
+    public DwdAlertObservationValue() {
+        // for serialization
+    }
+
+    public DwdAlertObservationValue(long timestamp, DwdAlertValue value) {
+        super(timestamp);
+        this.value = value;
+    }
 
     @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+    public DwdAlertValue getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(DwdAlertValue value) {
+        this.value = value;
     }
 
 }

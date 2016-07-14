@@ -32,7 +32,7 @@ public class WarnungAlert extends Alert {
 
     @Override
     public String getAlertType() {
-        return "Warning";
+        return AlertTypes.Warning.name();
     }
 
 

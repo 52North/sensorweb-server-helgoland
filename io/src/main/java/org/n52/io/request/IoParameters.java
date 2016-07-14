@@ -786,4 +786,8 @@ public class IoParameters implements Parameters {
         return queryParameters;
     }
 
+    public String getHrefBase() {
+        return getAsString(Parameters.HREF_BASE);
+    }
+
 }

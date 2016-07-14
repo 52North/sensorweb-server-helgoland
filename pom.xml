@@ -123,6 +123,21 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-main</artifactId>
+                <version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <!-- ensure loading before ealier versions -->
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-opengis</artifactId>
@@ -183,6 +198,21 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+			   <groupId>org.geotools</groupId>
+			   <artifactId>gt-shapefile</artifactId>
+			   <version>${geotools.version}</version>
+			   <exclusions>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.media</groupId>
+                        <artifactId>jai_codec</artifactId>
+                    </exclusion>
+                </exclusions>
+			</dependency>
             <dependency>
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts</artifactId>

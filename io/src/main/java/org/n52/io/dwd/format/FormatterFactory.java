@@ -26,13 +26,24 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.io.dwd.format;
 
-public class VorabInformationAlert extends Alert {
+import org.n52.io.format.SeriesDataFormatter;
+import org.n52.io.response.series.dwd.DwdAlertObservationData;
 
-    @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+public final class FormatterFactory {
+
+    private final String format;
+
+    private FormatterFactory(String format) {
+        this.format = format;
     }
 
+    public SeriesDataFormatter<DwdAlertObservationData, ?> create() {
+            return new TvpFormatter();
+    }
+
+    public static FormatterFactory createFormatterFactory(String format) {
+        return new FormatterFactory(format);
+    }
 }

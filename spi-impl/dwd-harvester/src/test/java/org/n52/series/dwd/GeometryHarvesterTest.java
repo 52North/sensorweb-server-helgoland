@@ -26,13 +26,31 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.series.dwd;
 
-public class VorabInformationAlert extends Alert {
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-    @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+public class GeometryHarvesterTest {
+
+    private ShapeFileHarvester harvester;
+
+    @Before
+    public void setUp() throws IOException, URISyntaxException {
+        this.harvester = new ShapeFileHarvester();
+        File file = new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI());
+        harvester.setFile(file);
+        this.harvester.loadGeometries();
+    }
+
+    @Test
+    public void when_notYetHarvested_then_emptyStore() {
+        Assert.assertTrue(harvester != null);
     }
 
 }

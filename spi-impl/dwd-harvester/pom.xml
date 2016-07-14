@@ -7,14 +7,28 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>dwd-harvester</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>Series REST API - DWD module</name>
     <description>REST SPI Implementation harvesting DWD Alerts.</description>
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
+    	<webapp.target.dir>${project.build.directory}/${project.build.finalName}</webapp.target.dir>
+        <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
     </properties>
     <dependencies>
+    	<dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>rest</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
@@ -51,8 +65,88 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>
+        <dependency>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-api</artifactId>
+		</dependency>
+		<dependency>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-main</artifactId>
+		</dependency>
+		<dependency>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-opengis</artifactId>
+		</dependency>
+        <dependency>
+		   <groupId>org.geotools</groupId>
+		   <artifactId>gt-shapefile</artifactId>
+		   <scope>runtime</scope>
+		</dependency>
+		<dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-tx</artifactId>
+		    <scope>runtime</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
     </dependencies>
     <build>
+     <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -67,6 +161,23 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
             </plugin>
         </plugins>
 
@@ -87,6 +198,83 @@
                                 <filtering>false</filtering>
                             </resource>
                         </resources>
+                    </configuration>
+                </plugin>
+                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <artifactItems>
+                            <artifactItem>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>rest</artifactId>
+                                <includes>api-doc/**</includes>
+                                <outputDirectory>${webapp.target.dir}</outputDirectory>
+                                <overWrite>false</overWrite>
+                            </artifactItem>
+                            <artifactItem>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>series-dao</artifactId>
+                                <includes>hbm/**</includes>
+                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                <overWrite>true</overWrite>
+                            </artifactItem>
+                        </artifactItems>
+                        <overWriteReleases>false</overWriteReleases>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                        <webappDirectory>${webapp.target.dir}</webappDirectory>
+                        <webResources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <filtering>true</filtering>
+                                <excludes>
+                                    <!-- exclude files from filtering -->
+                                    <exclude>img/*</exclude>
+                                    <exclude>cache/*</exclude>
+                                </excludes>
+                            </resource>
+                            <resource>
+                                <directory>src/main/resources</directory>
+                                <filtering>true</filtering>
+                                <targetPath>WEB-INF/classes</targetPath>
+                            </resource>
+                        </webResources>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <configuration>
+                        <stopKey>C</stopKey>
+                        <stopPort>34343</stopPort>
+                        <scanIntervalSeconds>0</scanIntervalSeconds>
+                        <reload>manual</reload>
+                        <webAppConfig>
+                            <contextPath>/</contextPath>
+                            <extraClasspath>target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                        </webAppConfig>
+                        <systemProperties>
+                            <systemProperty>
+                                <name>catalina.base</name>
+                                <value>${project.build.directory}</value>
+                            </systemProperty>
+                        </systemProperties>
+                        <scanTargets>
+                            <scanTarget>target/classes</scanTarget>
+                            <scanTarget>../series-dao/target/classes</scanTarget>
+                            <scanTarget>../../io/target/classes</scanTarget>
+                            <scanTarget>../../spi/target/classes</scanTarget>
+                            <scanTarget>../../rest/target/classes</scanTarget>
+                        </scanTargets>
                     </configuration>
                 </plugin>
             </plugins>

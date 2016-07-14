@@ -89,7 +89,7 @@ public abstract class AbstractDbQuery {
     }
 
     public String getHrefBase() {
-        return parameters.getAsString(Parameters.HREF_BASE);
+        return parameters.getHrefBase();
     }
 
     public String getLocale() {

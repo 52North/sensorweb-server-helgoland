@@ -26,13 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.series.dwd.srv;
 
-public class VorabInformationAlert extends Alert {
+import org.n52.series.dwd.beans.ServiceInfo;
 
-    @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+public abstract class ServiceInfoOutputAdapter {
+
+    private ServiceInfo serviceInfo;
+
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
     }
 
 }

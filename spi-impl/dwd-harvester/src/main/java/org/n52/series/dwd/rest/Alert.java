@@ -162,5 +162,8 @@ public abstract class Alert {
 
     public abstract String getAlertType();
 
+    public enum AlertTypes {
+        Warning, VorabInformation;
+    }
 
 }

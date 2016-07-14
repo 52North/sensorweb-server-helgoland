@@ -64,6 +64,14 @@ public class AlertCollection {
         return Collections.unmodifiableMap(vorabInformation); // XXX collection values modifiable
     }
 
+    public boolean hasWarning() {
+        return warnings != null && !warnings.isEmpty();
+    }
+
+    public boolean hasVorabInformation() {
+        return vorabInformation != null && !vorabInformation.isEmpty();
+    }
+
     public String getCopyright() {
         return copyright;
     }

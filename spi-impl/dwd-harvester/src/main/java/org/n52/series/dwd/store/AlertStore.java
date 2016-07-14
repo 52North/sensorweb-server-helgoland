@@ -29,10 +29,16 @@
 package org.n52.series.dwd.store;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.n52.series.dwd.beans.AlertMessage;
 import org.n52.series.dwd.beans.WarnCell;
+import org.n52.series.dwd.rest.Alert.AlertTypes;
 import org.n52.series.dwd.rest.AlertCollection;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public interface AlertStore {
 
@@ -47,4 +53,11 @@ public interface AlertStore {
     void updateCurrentAlerts(AlertCollection alertCollection);
 
     DateTime getLastKnownAlertTime();
+
+    void setWarnCellGeometries(Map<String, Geometry> warnCellGeometries);
+
+    boolean hasAlertsforType(AlertTypes type);
+
+    Set<String> getAlertTypes();
+
 }

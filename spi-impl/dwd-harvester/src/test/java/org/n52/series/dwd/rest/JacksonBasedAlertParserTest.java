@@ -28,15 +28,25 @@
  */
 package org.n52.series.dwd.rest;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+
 import static org.hamcrest.CoreMatchers.is;
+
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.n52.series.dwd.AlertParser;
 import org.n52.series.dwd.ParseException;
+import org.n52.series.dwd.ShapeFileHarvester;
 import org.n52.series.dwd.beans.WarnCell;
 import org.n52.series.dwd.store.InMemoryAlertStore;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 public class JacksonBasedAlertParserTest {
 
@@ -70,19 +80,26 @@ public class JacksonBasedAlertParserTest {
     }
 
     @Test
-    public void when_dwdExampleAlerts_then_nonEmptyAlerts() throws ParseException {
+    public void when_dwdExampleAlerts_then_nonEmptyAlerts() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
+        store.setWarnCellGeometries(new ShapeFileHarvester().setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).loadGeometries());
         parser.parse(streamOf("/dwd-example.json"), store);
         Assert.assertFalse(store.getAllAlerts().isEmpty());
     }
 
     @Test
-    public void when_dwdExampleAlerts_then_warningCellsWithId() throws ParseException {
+    public void when_dwdExampleAlerts_then_warningCellsWithId() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
+        store.setWarnCellGeometries(new ShapeFileHarvester().setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).loadGeometries());
         parser.parse(streamOf("/dwd-example.json"), store);
-        final WarnCell cell = new WarnCell("901055001");
+
+        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+        Coordinate coord = new Coordinate(1, 1);
+        Point point = geometryFactory.createPoint(coord);
+
+        final WarnCell cell = new WarnCell("901055001", point);
         Assert.assertTrue(store.getAllWarnCells().contains(cell));
     }
 

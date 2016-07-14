@@ -31,18 +31,24 @@ package org.n52.series.dwd.store;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.n52.series.dwd.beans.AlertMessage;
 import org.n52.series.dwd.beans.WarnCell;
 import org.n52.series.dwd.rest.Alert;
+import org.n52.series.dwd.rest.Alert.AlertTypes;
 import org.n52.series.dwd.rest.AlertCollection;
-import org.n52.series.dwd.rest.WarnungAlert;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public class InMemoryAlertStore implements AlertStore {
 
     private AlertCollection currentAlerts;
+    private Map<String, Geometry> warnCellGeometries;
 
     @Override
     public boolean isEmpty() {
@@ -73,7 +79,7 @@ public class InMemoryAlertStore implements AlertStore {
     private <A extends Alert> Collection<WarnCell> toWarnCells(Map<String, List<A>> alerts) {
         List<WarnCell> warnCells = new ArrayList<>();
         for (Map.Entry<String, List<A>> entry : alerts.entrySet()) {
-            warnCells.add(new WarnCell(entry.getKey()));
+            warnCells.add(new WarnCell(entry.getKey(), warnCellGeometries.get(entry.getKey())));
         }
         return warnCells;
     }
@@ -89,7 +95,7 @@ public class InMemoryAlertStore implements AlertStore {
     private <A extends Alert> Collection<AlertMessage> toAlertMessages(Map<String, List<A>> alerts) {
         List<AlertMessage> messages = new ArrayList<>();
         for (Map.Entry<String, List<A>> entry : alerts.entrySet()) {
-            final WarnCell warnCell = new WarnCell(entry.getKey());
+            final WarnCell warnCell = new WarnCell(entry.getKey(), warnCellGeometries.get(entry.getKey()));
             for (Alert alert : entry.getValue()) {
                 messages.add(new AlertMessage(warnCell, alert));
             }
@@ -103,6 +109,33 @@ public class InMemoryAlertStore implements AlertStore {
         return alertTime != null
                 ? new DateTime(alertTime)
                 : null; // TODO optionals
+    }
+
+    @Override
+    public void setWarnCellGeometries(Map<String, Geometry> warnCellGeometries) {
+        this.warnCellGeometries = warnCellGeometries;
+    }
+
+    @Override
+    public boolean hasAlertsforType(AlertTypes type) {
+        if (AlertTypes.Warning.equals(type)) {
+            return currentAlerts.hasWarning();
+        } else if (AlertTypes.VorabInformation.equals(type)) {
+            return currentAlerts.hasVorabInformation();
+        }
+        return false;
+    }
+
+    @Override
+    public Set<String> getAlertTypes() {
+        Set<String> alertTypes = new HashSet<String>();
+        if (currentAlerts.hasWarning()) {
+            alertTypes.add(AlertTypes.Warning.name());
+        }
+        if (currentAlerts.hasVorabInformation()) {
+            alertTypes.add(AlertTypes.VorabInformation.name());
+        }
+        return alertTypes;
     }
 
 }

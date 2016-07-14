@@ -26,61 +26,56 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.beans;
+package org.n52.io.response.series.dwd;
 
-import com.vividsolutions.jts.geom.Geometry;
-import java.util.Objects;
+import org.n52.io.Utils;
+import org.n52.io.response.v1.ext.ObservationType;
+import org.n52.io.response.v1.ext.SeriesMetadataOutput;
 
-public class WarnCell {
+public class DwdAlertObservationSeriesOutput extends SeriesMetadataOutput<DwdAlertObservationReferenceValueOutput> {
 
-    private final String id;
+    private String uom;
 
-    private Geometry geometry;
+    private DwdAlertObservationReferenceValueOutput[] referenceValues;
 
-    public WarnCell(String id, Geometry geometry) {
-        if (id == null) {
-            throw new NullPointerException("Id must not be null.");
-        }
-        this.id = id;
-        this.geometry = geometry;
+    private DwdAlertObservationValue firstValue;
+
+    private DwdAlertObservationValue lastValue;
+
+    public DwdAlertObservationSeriesOutput() {
+        super(ObservationType.TEXT);
     }
 
-    public String getId() {
-        return id;
+    public String getUom() {
+        return uom;
     }
 
-    public Geometry getGeometry() {
-
-        // TODO read from shp?
-        // TODO check licensing of dwd's shp!
-
-        return geometry;
+    public void setUom(String uom) {
+        this.uom = uom;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 31 * hash + Objects.hashCode(this.id);
-        return hash;
+    public DwdAlertObservationReferenceValueOutput[] getReferenceValues() {
+        return Utils.copy(referenceValues);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final WarnCell other = (WarnCell) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+    public void setReferenceValues(DwdAlertObservationReferenceValueOutput[] referenceValues) {
+        this.referenceValues = Utils.copy(referenceValues);
     }
 
+    public DwdAlertObservationValue getFirstValue() {
+        return firstValue;
+    }
+
+    public void setFirstValue(DwdAlertObservationValue firstValue) {
+        this.firstValue = firstValue;
+    }
+
+    public DwdAlertObservationValue getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(DwdAlertObservationValue lastValue) {
+        this.lastValue = lastValue;
+    }
 
 }

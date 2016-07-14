@@ -26,13 +26,39 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.io.response.series.dwd;
 
-public class VorabInformationAlert extends Alert {
+import org.n52.io.response.series.SeriesReferenceValueOutput;
 
-    @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+public class DwdAlertObservationReferenceValueOutput implements SeriesReferenceValueOutput<DwdAlertObservationValue> {
+
+    private String referenceValueId;
+
+    private String label;
+
+    private DwdAlertObservationValue lastValue;
+
+    public String getReferenceValueId() {
+        return referenceValueId;
     }
 
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public DwdAlertObservationValue getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(DwdAlertObservationValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }

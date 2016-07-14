@@ -26,13 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd.rest;
+package org.n52.io.dwd.format;
 
-public class VorabInformationAlert extends Alert {
+import org.n52.io.format.SeriesDataFormatter;
+import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.series.dwd.DwdAlertObservationData;
+
+/**
+ * Represents the identity transformation. Input is equal to output.
+ */
+public class TvpFormatter implements SeriesDataFormatter<DwdAlertObservationData, DwdAlertObservationData> {
 
     @Override
-    public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+    public SeriesDataCollection<DwdAlertObservationData> format(SeriesDataCollection<DwdAlertObservationData> toFormat) {
+        return toFormat;
     }
 
 }
