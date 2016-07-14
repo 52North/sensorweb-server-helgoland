@@ -47,11 +47,11 @@ import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class TextDataRepository extends AbstractDataRepository<TextObservationData, TextDataEntity> {
+public class TextDataRepository extends AbstractDataRepository<TextObservationData, TextDatasetEntity> {
 
     @Override
-    public Class<TextDataEntity> getEntityType() {
-        return TextDataEntity.class;
+    public Class<TextDatasetEntity> getEntityType() {
+        return TextDatasetEntity.class;
     }
 
     @Override

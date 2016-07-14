@@ -46,11 +46,11 @@ import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
 
-public class CountDataRepository extends AbstractDataRepository<CountObservationData, CountDataEntity> {
+public class CountDataRepository extends AbstractDataRepository<CountObservationData, CountDatasetEntity> {
 
     @Override
-    public Class<CountDataEntity> getEntityType() {
-        return CountDataEntity.class;
+    public Class<CountDatasetEntity> getEntityType() {
+        return CountDatasetEntity.class;
     }
 
     @Override

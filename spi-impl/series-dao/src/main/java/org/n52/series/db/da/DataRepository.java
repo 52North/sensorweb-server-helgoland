@@ -31,9 +31,9 @@ package org.n52.series.db.da;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.io.response.series.Data;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DatasetEntity;
 
-public interface DataRepository<T extends Data, E extends DataEntity> {
+public interface DataRepository<T extends Data, E extends DatasetEntity> {
 
     T getData(String id, DbQuery dbQuery) throws DataAccessException;
 

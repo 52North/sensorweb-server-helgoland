@@ -59,6 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
 

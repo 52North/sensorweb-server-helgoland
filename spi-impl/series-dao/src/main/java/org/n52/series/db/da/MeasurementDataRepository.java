@@ -50,11 +50,11 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
 
-public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDataEntity> {
+public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity> {
 
     @Override
-    public Class<MeasurementDataEntity> getEntityType() {
-        return MeasurementDataEntity.class;
+    public Class<MeasurementDatasetEntity> getEntityType() {
+        return MeasurementDatasetEntity.class;
     }
 
     @Override

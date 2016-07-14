@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.da;
 
-import org.n52.series.db.da.DataRepository;
 import java.util.List;
 
 import org.n52.io.response.series.AbstractValue;
@@ -37,9 +36,10 @@ import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.DataParameter;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 
-public abstract class AbstractDataRepository<T extends Data, E extends DataEntity> extends SessionAwareRepository<DbQuery> implements DataRepository<T, E> {
+public abstract class AbstractDataRepository<T extends Data, E extends DatasetEntity> extends SessionAwareRepository<DbQuery> implements DataRepository<T, E> {
 
     protected boolean hasValidEntriesWithinRequestedTimespan(List<?> observations) {
         return observations.size() > 0;
