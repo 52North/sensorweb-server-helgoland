@@ -198,7 +198,7 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-mappings/target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <systemProperties>
                             <systemProperty>
@@ -207,7 +207,7 @@
                             </systemProperty>
                         </systemProperties>
                     </configuration>
-                    <dependencies>
+<!--                    <dependencies>
                         <dependency>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>series-dao</artifactId>
@@ -219,7 +219,7 @@
                                 </exclusion>
                             </exclusions>
                         </dependency>
-                    </dependencies>
+                    </dependencies>-->
                 </plugin>
             </plugins>
         </pluginManagement>
