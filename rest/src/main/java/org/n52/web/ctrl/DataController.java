@@ -86,6 +86,8 @@ import static org.n52.web.ctrl.UrlSettings.COLLECTION_DATASETS;
 import org.n52.sensorweb.spi.DataService;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import org.n52.io.response.v1.ext.DatasetType;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_DATASETS, produces = {"application/json"})
@@ -112,10 +114,8 @@ public class DataController extends BaseController {
             return null;
         }
 
-        String observationType = parameters.getObservationType();
-
         DataCollection< ? > data = getSeriesData(parameters);
-        DataCollection< ? > formattedDataCollection = format(observationType, data, parameters.getFormat());
+        DataCollection< ? > formattedDataCollection = format(parameters.getDatasetTypeFromFirst(), data, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
@@ -153,8 +153,7 @@ public class DataController extends BaseController {
 
         checkForUnknownSeriesIds(parameters.getSeriesIds());
 
-        String observationType = parameters.getObservationType();
-        DataService<?> dataService = getDataService(observationType);
+        DataService<?> dataService = getDataService(parameters.getDatasetTypeFromFirst());
         if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
@@ -207,7 +206,7 @@ public class DataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<?> renderer = getIoHandler(parameters.getObservationType(), requestParameters, map, APPLICATION_PDF);
+        IoHandler<?> renderer = getIoHandler(parameters.getDatasetTypeFromFirst(), requestParameters, map, APPLICATION_PDF);
         handleBinaryResponse(response, parameters, renderer);
 
     }
@@ -244,7 +243,7 @@ public class DataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<?> renderer = getIoHandler(parameters.getObservationType(), parameters, map, APPLICATION_PDF);
+        IoHandler<?> renderer = getIoHandler(parameters.getDatasetTypeFromFirst(), parameters, map, APPLICATION_PDF);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -296,8 +295,7 @@ public class DataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String observationType = parameters.getObservationType();
-        IoHandler<?> renderer = getIoHandler(observationType, requestParameters, map);
+        IoHandler<?> renderer = getIoHandler(parameters.getDatasetTypeFromFirst(), requestParameters, map);
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -399,7 +397,7 @@ public class DataController extends BaseController {
 
     private DataCollection<?> getSeriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();
-        DataCollection<?> seriesData = getServiceByObservationType(parameters.getObservationType()).getSeriesData(parameters);
+        DataCollection<?> seriesData = getServiceByObservationType(parameters.getDatasetTypeFromFirst()).getSeriesData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return seriesData;
     }
