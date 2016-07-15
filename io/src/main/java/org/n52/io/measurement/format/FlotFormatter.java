@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.format.SeriesDataFormatter;
+import org.n52.io.SeriesDataFormatter;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;

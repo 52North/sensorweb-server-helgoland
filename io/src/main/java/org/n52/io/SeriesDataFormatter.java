@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io;
 
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
