@@ -32,7 +32,6 @@
     <bean id="datasetService" class="org.n52.series.srv.DatasetAccessService">
         <constructor-arg index="0" ref="datasetRepository" />
     </bean>
-
     <bean id="geometriesService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="geometriesRepository" />
     </bean>

@@ -34,6 +34,7 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.dao.DbQuery;
@@ -41,13 +42,15 @@ import org.n52.series.db.da.MeasurementDataRepository;
 import org.n52.series.db.da.TimeseriesRepository;
 import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.DataService;
+import org.n52.series.db.da.DataRepository;
+import org.n52.series.db.da.DataRepositoryFactory;
 
 @Deprecated
 public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOutput>
         implements DataService<MeasurementData> {
 
-    private final MeasurementDataRepository dataRepository = new MeasurementDataRepository();
-
+    private final DataRepositoryFactory factory = new DataRepositoryFactory();
+    
     public TimeseriesAccessService(TimeseriesRepository repository) {
         super(repository);
     }
@@ -72,7 +75,8 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     private MeasurementData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
-        return dataRepository.getData(timeseriesId, dbQuery);
+        DataRepository dataRepository = factory.createRepository("measurement");
+        return (MeasurementData) dataRepository.getData(timeseriesId, dbQuery);
     }
 
 

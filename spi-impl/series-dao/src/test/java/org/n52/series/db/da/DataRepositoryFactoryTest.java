@@ -41,6 +41,7 @@ import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.n52.series.db.beans.ServiceInfo;
 
 public class DataRepositoryFactoryTest {
 
@@ -91,6 +92,13 @@ public class DataRepositoryFactoryTest {
         DataRepository instance = factory.createRepository("measurement");
         Assert.assertTrue(factory.hasCacheEntry("measurement"));
         Assert.assertTrue(instance == factory.createRepository("measurement"));
+    }
+    
+    @Test
+    public void when_serviceInfoAvailable_then_instanceHasServiceInfo() {
+        factory.setServiceInfo(new ServiceInfo());
+        DataRepository instance = factory.createRepository("measurement");
+        Assert.assertNotNull(instance.getServiceInfo());
     }
 
     @Test

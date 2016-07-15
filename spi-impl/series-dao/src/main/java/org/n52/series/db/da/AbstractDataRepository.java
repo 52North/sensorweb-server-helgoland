@@ -43,7 +43,7 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.SeriesDao;
 
-public abstract class AbstractDataRepository<T extends Data, E extends DatasetEntity> 
+public abstract class AbstractDataRepository<T extends Data, E extends DatasetEntity>
         extends SessionAwareRepository<DbQuery> implements DataRepository<T, E> {
 
     @Override
@@ -61,11 +61,11 @@ public abstract class AbstractDataRepository<T extends Data, E extends DatasetEn
             returnSession(session);
         }
     }
-    
+
     protected abstract T assembleData(E seriesEntity, DbQuery query, Session session) throws DataAccessException;
 
     protected abstract T assembleDataWithReferenceValues(E timeseries, DbQuery dbQuery, Session session) throws DataAccessException;
-    
+
     protected boolean hasValidEntriesWithinRequestedTimespan(List<?> observations) {
         return observations.size() > 0;
     }

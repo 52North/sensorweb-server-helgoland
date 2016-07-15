@@ -52,7 +52,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
         implements DataService<Data> {
 
     private final DataRepositoryFactory factory;
-
+    
     public DatasetAccessService(DatasetRepository repository) {
         super(repository);
         factory = repository.getDataRepositoryFactory();

@@ -42,13 +42,11 @@ import org.joda.time.Interval;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
 
 public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity> {
 

@@ -63,6 +63,7 @@ import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * TODO: JavaDoc
@@ -74,7 +75,8 @@ public class DatasetRepository<T extends Data>
         extends SessionAwareRepository<DbQuery>
         implements OutputAssembler<DatasetOutput>{
 
-    private DataRepositoryFactory factory = new DataRepositoryFactory();
+    @Autowired
+    private DataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id) throws DataAccessException {

@@ -41,9 +41,11 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.n52.series.db.beans.ServiceInfo;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class DataRepositoryFactory {
@@ -57,6 +59,9 @@ public class DataRepositoryFactory {
     private final Map<String, DataRepository> cache;
 
     private final Properties mappings;
+    
+    @Autowired
+    private ServiceInfo serviceInfo;
 
     public DataRepositoryFactory() {
         this(getDefaultConfigFile());
@@ -114,6 +119,7 @@ public class DataRepositoryFactory {
         try {
             final Class<?> type = Class.forName(clazz);
             DataRepository instance = createInstance(type);
+            instance.setServiceInfo(serviceInfo);
             cache.put(datasetType, instance);
             return instance;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
@@ -142,4 +148,12 @@ public class DataRepositoryFactory {
         return cache.get(datasetType);
     }
 
+    public ServiceInfo getServiceInfo() {
+        return serviceInfo;
+    }
+
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
+    }
+    
 }

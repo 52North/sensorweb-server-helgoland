@@ -85,6 +85,10 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     protected DbQuery getDbQuery(IoParameters parameters) {
         return DbQuery.createFrom(parameters);
     }
+    
+    public void setServiceInfo(ServiceInfo serviceInfo) {
+        this.serviceInfo = serviceInfo;
+    }
 
     public ServiceInfo getServiceInfo() {
         return serviceInfo;

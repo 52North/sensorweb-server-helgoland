@@ -126,10 +126,6 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
             SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
-                /*
-                 *  ATM, the SWC REST API only supports numeric types
-                 *  We check for a unit to check for them
-                 */
                 if (timeseries.hasUnit()) {
                     results.add(createCondensed(timeseries, query));
                 }
@@ -148,10 +144,6 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
             SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
-                /*
-                 *  ATM, the SWC REST API only supports numeric types
-                 *  We check for a unit to check for them
-                 */
                 if (timeseries.hasUnit()) {
                     results.add(createExpanded(session, timeseries, query));
                 } else {
@@ -170,10 +162,6 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
         try {
             SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-            /*
-             *  ATM, the SWC REST API only supports numeric types
-             *  We check for a unit to check for them
-             */
             if (result == null || !result.hasUnit()) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
