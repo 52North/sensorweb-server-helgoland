@@ -26,27 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi;
+package org.n52.series.spi.srv;
+
+import java.io.InputStream;
+
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
 
 /**
- * Provides access to resource quantities available.
+ * Interface for raw data output
+ *
+ * @since 1.7.3
  */
-public interface CountingMetadataService {
+public interface RawDataService {
 
-    int getServiceCount();
+    /**
+     * Get raw data for
+     *
+     * @param id Resource id
+     * @param query Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(String id, IoParameters query);
 
-    int getStationsCount();
-
-    int getTimeseriesCount();
-
-    int getOfferingsCount();
-
-    int getCategoriesCount();
-
-    int getFeaturesCount();
-
-    int getProceduresCount();
-
-    int getPhenomenaCount();
+    /**
+     * Get raw data for
+     *
+     * @param parameters Requested parameter
+     * @return Raw data output as {@link InputStream}
+     */
+    public InputStream getRawData(RequestSimpleParameterSet parameters);
 
 }

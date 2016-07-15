@@ -26,22 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.search;
+package org.n52.series.spi.search;
 
-public class ProcedureSearchResult extends SearchResult {
+public class CategorySearchResult extends SearchResult {
 
-    public ProcedureSearchResult(String id, String label) {
+    public CategorySearchResult(String id, String label) {
         super(id, label);
     }
 
     @Override
     public String getHref() {
-        return "./procedures/" + getId();
+        return "./categories/" + getId();
     }
 
     @Override
     public String getType() {
-        return "procedure";
+        return "category";
     }
 
 }

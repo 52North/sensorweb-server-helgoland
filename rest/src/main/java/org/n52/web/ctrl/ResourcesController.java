@@ -37,7 +37,7 @@ import java.util.List;
 
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
-import org.n52.sensorweb.spi.CountingMetadataService;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

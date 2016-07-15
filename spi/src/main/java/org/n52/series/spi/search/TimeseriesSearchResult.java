@@ -26,22 +26,23 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.search;
+package org.n52.series.spi.search;
 
-public class ServiceSearchResult extends SearchResult {
+@Deprecated
+public class TimeseriesSearchResult extends SearchResult {
 
-    public ServiceSearchResult(String id, String label) {
+    public TimeseriesSearchResult(String id, String label) {
         super(id, label);
     }
 
     @Override
     public String getHref() {
-        return "./services/" + getId();
+        return "./timeseries/" + getId();
     }
 
     @Override
     public String getType() {
-        return "service";
+        return "timeseries";
     }
 
 }

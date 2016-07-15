@@ -41,7 +41,7 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.da.MeasurementDataRepository;
 import org.n52.series.db.da.TimeseriesRepository;
 import org.n52.web.exception.InternalServerException;
-import org.n52.sensorweb.spi.DataService;
+import org.n52.series.spi.srv.DataService;
 import org.n52.series.db.da.DataRepository;
 import org.n52.series.db.da.DataRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;

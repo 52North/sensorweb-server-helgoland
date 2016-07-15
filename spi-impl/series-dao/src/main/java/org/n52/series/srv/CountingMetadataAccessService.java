@@ -28,7 +28,7 @@
  */
 package org.n52.series.srv;
 
-import org.n52.sensorweb.spi.CountingMetadataService;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.db.da.EntityCounter;
 import org.n52.series.db.DataAccessException;
 import org.n52.web.exception.InternalServerException;

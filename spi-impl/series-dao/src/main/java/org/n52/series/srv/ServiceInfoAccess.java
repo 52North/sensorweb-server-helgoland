@@ -28,7 +28,7 @@
  */
 package org.n52.series.srv;
 
-import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.db.beans.ServiceInfo;
 
 public abstract class ServiceInfoAccess {

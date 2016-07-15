@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.search;
+package org.n52.series.spi.search;
 
 import java.util.Collection;
 import org.n52.io.request.IoParameters;

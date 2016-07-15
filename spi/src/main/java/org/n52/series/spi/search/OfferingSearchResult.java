@@ -26,20 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi;
+package org.n52.series.spi.search;
 
-/**
- * @since 2.0.0
- */
-public interface RawDataInfo {
+public class OfferingSearchResult extends SearchResult {
 
-    /**
-     * Check if raw data output is supported
-     *
-     * @return <code>true</code>, if raw data output is supported
-     */
-    public boolean supportsRawData();
+    public OfferingSearchResult(String id, String label) {
+        super(id, label);
+    }
 
-    public RawDataService getRawDataService();
+    @Override
+    public String getHref() {
+        return "./offerings/" + getId();
+    }
+
+    @Override
+    public String getType() {
+        return "offering";
+    }
 
 }

@@ -43,7 +43,7 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.sensorweb.spi.search.SearchResult;
+import org.n52.series.spi.search.SearchResult;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;

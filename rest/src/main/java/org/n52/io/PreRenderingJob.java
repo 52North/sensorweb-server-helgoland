@@ -30,7 +30,7 @@ package org.n52.io;
 
 import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
+import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -61,7 +61,7 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.task.ScheduledJob;
-import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.quartz.InterruptableJob;
@@ -79,7 +79,7 @@ import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.n52.sensorweb.spi.DataService;
+import org.n52.series.spi.srv.DataService;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 

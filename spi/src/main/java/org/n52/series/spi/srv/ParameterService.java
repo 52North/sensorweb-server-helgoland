@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.sensorweb.spi;
+package org.n52.series.spi.srv;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;

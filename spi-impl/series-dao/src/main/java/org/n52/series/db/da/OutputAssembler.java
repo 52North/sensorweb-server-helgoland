@@ -32,7 +32,7 @@ import org.n52.series.db.dao.DbQuery;
 import java.util.Collection;
 import java.util.List;
 import org.n52.io.request.IoParameters;
-import org.n52.sensorweb.spi.search.SearchResult;
+import org.n52.series.spi.search.SearchResult;
 
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;

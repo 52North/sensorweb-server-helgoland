@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi;
+package org.n52.series.spi.srv;
 
 import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
 

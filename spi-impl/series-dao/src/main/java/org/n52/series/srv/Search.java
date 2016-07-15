@@ -39,8 +39,8 @@ import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.StationOutput;
 
-import org.n52.sensorweb.spi.search.SearchResult;
-import org.n52.sensorweb.spi.search.SearchService;
+import org.n52.series.spi.search.SearchResult;
+import org.n52.series.spi.search.SearchService;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.da.OutputAssembler;
 import org.springframework.beans.factory.annotation.Autowired;

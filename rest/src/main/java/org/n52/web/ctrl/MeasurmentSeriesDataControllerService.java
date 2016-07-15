@@ -29,7 +29,7 @@
 package org.n52.web.ctrl;
 
 import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
-import static org.n52.sensorweb.spi.GeneralizingMeasurementDataService.composeDataService;
+import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
 
 import java.net.URI;

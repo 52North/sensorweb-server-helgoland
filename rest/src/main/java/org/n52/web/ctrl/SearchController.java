@@ -39,8 +39,8 @@ import org.n52.io.request.QueryParameters;
 
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.ctrl.BaseController;
-import org.n52.sensorweb.spi.search.SearchService;
-import org.n52.sensorweb.spi.search.SearchResult;
+import org.n52.series.spi.search.SearchService;
+import org.n52.series.spi.search.SearchResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;

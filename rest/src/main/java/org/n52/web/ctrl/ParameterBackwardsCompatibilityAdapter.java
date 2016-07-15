@@ -33,8 +33,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.RawDataService;
+import org.n52.series.spi.srv.ParameterService;
+import org.n52.series.spi.srv.RawDataService;
 
 
 public class ParameterBackwardsCompatibilityAdapter extends ParameterService<ParameterOutput> {

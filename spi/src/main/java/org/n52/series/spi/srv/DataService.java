@@ -26,23 +26,19 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.search;
+package org.n52.series.spi.srv;
 
-@Deprecated
-public class TimeseriesSearchResult extends SearchResult {
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
-    public TimeseriesSearchResult(String id, String label) {
-        super(id, label);
-    }
+/**
+ * Provides access to the actual series data via
+ * {@link RequestSimpleParameterSet}.
+ * @param <T>
+ */
+public interface DataService<T extends Data> extends RawDataInfo {
 
-    @Override
-    public String getHref() {
-        return "./timeseries/" + getId();
-    }
-
-    @Override
-    public String getType() {
-        return "timeseries";
-    }
+    public DataCollection<T> getData(RequestSimpleParameterSet parameters);
 
 }

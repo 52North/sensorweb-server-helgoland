@@ -26,13 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi;
+package org.n52.series.spi.search;
 
-import java.util.ArrayList;
-import org.n52.io.request.IoParameters;
+public class FeatureSearchResult extends SearchResult {
 
-public interface ResultTimeService {
+    public FeatureSearchResult(String id, String label) {
+        super(id, label);
+    }
 
-    ArrayList<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+    @Override
+    public String getHref() {
+        return "./features/" + getId();
+    }
+
+    @Override
+    public String getType() {
+        return "feature";
+    }
 
 }

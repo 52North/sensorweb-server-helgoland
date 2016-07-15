@@ -26,14 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.geo;
+package org.n52.series.spi.geo;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.spi.srv.ParameterService;
 
 // TODO consolidate
 // -> TransformingGeometryOutputService

@@ -26,37 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.sensorweb.spi.search;
+package org.n52.series.spi.search;
 
-public abstract class SearchResult {
+public class PhenomenonSearchResult extends SearchResult {
 
-    private String id;
-
-    private String label;
-
-    public SearchResult(String id, String label) {
-        this.id = id;
-        this.label = label;
+    public PhenomenonSearchResult(String id, String label) {
+        super(id, label);
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public String getHref() {
+        return "./phenomena/" + getId();
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String getType() {
+        return "phenomenon";
     }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public abstract String getHref();
-
-    public abstract String getType();
 
 }
