@@ -14,5 +14,20 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+	<bean class="org.n52.web.ctrl.v1.ProceduresParameterController" parent="parameterController">
+        <property name="parameterService" ref="procedureParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
+        <property name="parameterService" ref="offeringParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v1.PhenomenaParameterController" parent="parameterController">
+        <property name="parameterService" ref="phenomenonParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v1.CategoriesParameterController" parent="parameterController">
+        <property name="parameterService" ref="categoryParameterService" />
+    </bean>
 
 </beans>

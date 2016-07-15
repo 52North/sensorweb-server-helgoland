@@ -32,7 +32,7 @@ public class VorabInformationAlert extends Alert {
 
     @Override
     public String getAlertType() {
-        return AlertTypes.VorabInformation.name();
+        return AlertTypes.vorabInformation.name();
     }
 
 }

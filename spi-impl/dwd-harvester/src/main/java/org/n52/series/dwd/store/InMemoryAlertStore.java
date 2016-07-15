@@ -118,9 +118,9 @@ public class InMemoryAlertStore implements AlertStore {
 
     @Override
     public boolean hasAlertsforType(AlertTypes type) {
-        if (AlertTypes.Warning.equals(type)) {
+        if (AlertTypes.warning.equals(type)) {
             return currentAlerts.hasWarning();
-        } else if (AlertTypes.VorabInformation.equals(type)) {
+        } else if (AlertTypes.vorabInformation.equals(type)) {
             return currentAlerts.hasVorabInformation();
         }
         return false;
@@ -130,10 +130,10 @@ public class InMemoryAlertStore implements AlertStore {
     public Set<String> getAlertTypes() {
         Set<String> alertTypes = new HashSet<String>();
         if (currentAlerts.hasWarning()) {
-            alertTypes.add(AlertTypes.Warning.name());
+            alertTypes.add(AlertTypes.warning.name());
         }
         if (currentAlerts.hasVorabInformation()) {
-            alertTypes.add(AlertTypes.VorabInformation.name());
+            alertTypes.add(AlertTypes.vorabInformation.name());
         }
         return alertTypes;
     }

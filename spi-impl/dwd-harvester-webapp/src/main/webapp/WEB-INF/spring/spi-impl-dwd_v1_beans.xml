@@ -14,6 +14,22 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+	<bean id="procedureParameterService" class="org.n52.series.dwd.srv.v1.ProcedureOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+    </bean>
+
+    <bean id="offeringParameterService" class="org.n52.series.dwd.srv.v1.OfferingOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+    </bean>
+
+    <bean id="phenomenonParameterService" class="org.n52.series.dwd.srv.v1.PhenomenonOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+    </bean>
+
+    <bean id="categoryParameterService" class="org.n52.series.dwd.srv.v1.CategoryOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+    </bean>
+
     <!-- <bean id="categoryRepository" class="org.n52.series.db.da.v1.CategoryRepository" />
     <bean id="featureRepository" class="org.n52.series.db.da.v1.FeatureRepository" />
     <bean id="phenomenonRepository" class="org.n52.series.db.da.v1.PhenomenonRepository" />
@@ -36,9 +52,6 @@
     </bean>
     <bean id="featureParameterService" class="org.n52.series.db.srv.v1.AccessService">
         <constructor-arg index="0" ref="featureRepository" />
-    </bean>
-    <bean id="procedureParameterService" class="org.n52.series.db.srv.v1.AccessService">
-        <constructor-arg index="0" ref="procedureRepository" />
     </bean>
     <bean id="phenomenonParameterService" class="org.n52.series.db.srv.v1.AccessService">
         <constructor-arg index="0" ref="phenomenonRepository" />

@@ -79,5 +79,4 @@ public class AlertCollection {
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
-
 }

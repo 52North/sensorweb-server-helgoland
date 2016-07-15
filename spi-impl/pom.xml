@@ -14,6 +14,7 @@
         <module>series-dao</module>
         <module>series-dao-sos</module>
         <module>dwd-harvester</module>
+        <module>dwd-harvester-webapp</module>
         <module>series-dao-webapp</module>
     </modules>
 
@@ -43,6 +44,16 @@
                 <artifactId>rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+	            <groupId>${project.groupId}</groupId>
+	            <artifactId>dwd-harvester</artifactId>
+	            <version>${project.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>${project.groupId}</groupId>
+	            <artifactId>dwd-harvester-webapp</artifactId>
+	            <version>${project.version}</version>
+	        </dependency>
         </dependencies>
     </dependencyManagement>
 

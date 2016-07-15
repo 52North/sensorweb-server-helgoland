@@ -35,7 +35,7 @@
         <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
         <property name="cronExpression" value="0 0/5 * * * ?" />
         <property name="triggerAtStartup" value="true" />
-        <property name="enabled" value="false" />
+        <property name="enabled" value="true" />
     </bean>
 
     <!-- <bean id="preRenderingJobV1" class="org.n52.io.PreRenderingJob">

@@ -28,9 +28,14 @@
  */
 package org.n52.series.dwd.rest;
 
+import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 import org.n52.series.dwd.AlertParser;
 import org.n52.series.dwd.ParseException;
 import org.n52.series.dwd.store.AlertStore;

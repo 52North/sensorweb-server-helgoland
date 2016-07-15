@@ -32,7 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
+import org.n52.series.dwd.rest.AlertCollection;
 import org.n52.series.dwd.rest.JacksonBasedAlertParser;
 import org.n52.series.dwd.store.AlertStore;
 import org.slf4j.Logger;
@@ -71,7 +73,10 @@ public class UrlHarvester implements DwdHarvester {
 
     private void parseFile() {
         try(InputStream is = URI.create(url).toURL().openConnection().getInputStream()) {
-            parser.parse(is, store);
+            String string = IOUtils.toString(is);
+            String prefix = string.replaceAll("warnWetter.loadWarnings\\(", "");
+            String json = prefix.replaceAll("\\);", "");
+            parser.parse(IOUtils.toInputStream(json), store);
         } catch (IOException | ParseException e) {
             LOGGER.warn("Unable to harvest file.", e);
         }
