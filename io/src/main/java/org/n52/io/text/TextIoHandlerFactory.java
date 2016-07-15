@@ -28,53 +28,31 @@
  */
 package org.n52.io.text;
 
-import static org.n52.io.MimeType.TEXT_CSV;
 
 import java.net.URI;
 import org.n52.io.IoHandler;
+import org.n52.io.IoHandlerFactory;
 
 import org.n52.io.MimeType;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.series.csv.CsvIoHandler;
 
-public class TextIoHandlerFactory {
+public class TextIoHandlerFactory implements IoHandlerFactory {
 
-    private MimeType mimeType = TEXT_CSV;
-
-    private final IoParameters config;
+    private IoParameters parameters;
 
     private URI servletContextRoot;
 
-    private TextIoHandlerFactory(IoParameters parameters) {
-        this.config = parameters;
+    private TextObservationRenderingContext context;
+
+    public TextIoHandlerFactory() {
+        this.parameters = IoParameters.createDefaults();
+        this.context = new TextObservationRenderingContext();
     }
 
-    /**
-     * @return An {@link TextIoHandlerFactory} instance with default values
-     * set. Configure factory by passing an {@link IoParameters} instance. After
-     * creating the factory an apropriately configured {@link IoHandler} is
-     * returned when calling
-     * {@link #createIOHandler(TextObservationRenderingContext)}.
-     */
-    public static TextIoHandlerFactory create() {
-        return createWith(null);
-    }
-
-    public static TextIoHandlerFactory createWith(IoParameters parameters) {
-        if (parameters == null) {
-            parameters = IoParameters.createDefaults();
-        }
-        return new TextIoHandlerFactory(parameters);
-    }
-
-    /**
-     * @param mimeType the MIME-Type of the image to be rendered (default is
-     * {@link MimeType#IMAGE_PNG}).
-     * @return this instance for parameter chaining.
-     */
-    public TextIoHandlerFactory forMimeType(MimeType mimeType) {
-        this.mimeType = mimeType;
+    public TextIoHandlerFactory withParameters(IoParameters parameters) {
+        this.parameters = parameters;
         return this;
     }
 
@@ -83,20 +61,30 @@ public class TextIoHandlerFactory {
         return this;
     }
 
-    public IoHandler<TextObservationData> createIOHandler(TextObservationRenderingContext context) {
+    public TextIoHandlerFactory withContext(TextObservationRenderingContext context) {
+        this.context = context;
+        return this;
+    }
 
-        if (mimeType == TEXT_CSV) {
-            CsvIoHandler<TextObservationData> handler = new CsvIoHandler<>(context, config.getLocale());
-            handler.setTokenSeparator(config.getOther("tokenSeparator"));
+    @Override
+    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
+        return MimeType.isKnownMimeType(outputMimeType)
+            && MimeType.toInstance(outputMimeType) == MimeType.TEXT_CSV;
+    }
 
-            boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
-            boolean zipOutput = Boolean.parseBoolean(config.getOther("zip"));
+    @Override
+    public IoHandler<TextObservationData> createHandler(String outputMimeType) {
+        if (MimeType.toInstance(outputMimeType) == MimeType.TEXT_CSV) {
+            CsvIoHandler<TextObservationData> handler = new CsvIoHandler<>(context, parameters.getLocale());
+            handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
+
+            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
+            boolean zipOutput = Boolean.parseBoolean(parameters.getOther("zip"));
             handler.setIncludeByteOrderMark(byteOderMark);
             handler.setZipOutput(zipOutput);
             return handler;
         }
-
-        String msg = "The requested media type '" + mimeType.getMimeType() + "' is not supported.";
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
     }

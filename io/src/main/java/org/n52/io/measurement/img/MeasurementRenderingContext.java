@@ -46,6 +46,11 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
 
     private final List<MeasurementSeriesOutput> seriesMetadatas;
 
+    public MeasurementRenderingContext() {
+        this.chartStyleDefinitions = new RequestStyledParameterSet();
+        this.seriesMetadatas = Collections.emptyList();
+    }
+
     // use static constructors
     private MeasurementRenderingContext(RequestStyledParameterSet timeseriesStyles, List<MeasurementSeriesOutput> metadatas) {
         this.seriesMetadatas = metadatas.isEmpty()

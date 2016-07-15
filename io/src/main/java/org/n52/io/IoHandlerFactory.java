@@ -32,7 +32,7 @@ import org.n52.io.response.dataset.Data;
 
 public interface IoHandlerFactory {
 
-    IoHandler<? extends Data> createHandler(String datasetType);
+    IoHandler<? extends Data> createHandler(String outputMimeType);
 
-    boolean isAbleToCreate(String datasetType);
+    boolean isAbleToCreateHandlerFor(String outputMimeType);
 }

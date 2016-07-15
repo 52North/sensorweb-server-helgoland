@@ -46,7 +46,11 @@ public final class TextObservationRenderingContext implements RenderingContext<T
 
     private final List<TextObservationSeriesOutput> seriesMetadatas;
 
-    // use static constructors
+    public TextObservationRenderingContext() {
+        this.chartStyleDefinitions = new RequestStyledParameterSet();
+        this.seriesMetadatas = new ArrayList<>();
+    }
+
     private TextObservationRenderingContext(RequestStyledParameterSet timeseriesStyles, List<TextObservationSeriesOutput> metadatas) {
         this.seriesMetadatas = metadatas.isEmpty()
                 ? Collections.<TextObservationSeriesOutput>emptyList()

@@ -193,9 +193,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(config)
-                .createIOHandler(context);
+        IoHandler<MeasurementData> renderer = new MeasurementIoHandlerFactory()
+                .withParameters(config)
+                .withContext(context)
+                .createHandler("png");
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(timeseriesId, interval, chartQualifier);
         renderChartFile(renderer, parameters, fos);

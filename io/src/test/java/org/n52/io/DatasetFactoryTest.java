@@ -18,17 +18,17 @@ import org.junit.rules.ExpectedException;
 public class DatasetFactoryTest {
 
     private DatasetFactory<Collection> factory;
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-            
-    
+
+
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-collection-factory.properties");
         factory = createCollectionFactory(config);
     }
-    
+
     @Test
     public void when_created_then_hasMappings() throws DatasetFactoryException {
         Assert.assertTrue(factory.create("arraylist").getClass() == ArrayList.class);
@@ -38,13 +38,13 @@ public class DatasetFactoryTest {
     public void when_created_then_initHaveBeenCalled() throws DatasetFactoryException {
         Assert.assertThat(factory.create("arraylist").isEmpty(), Matchers.is(false));
     }
-    
+
     @Test
     public void when_createdWithNullConfig_then_configureWithFallback() {
         DatasetFactory<Collection> f = createCollectionFactory(null);
         Assert.assertTrue(f.isKnown("hashmap"));
     }
-    
+
     @Test
     public void when_havingInvalidEntry_then_throwException() throws URISyntaxException, DatasetFactoryException {
         thrown.expect(DatasetFactoryException.class);
@@ -84,5 +84,5 @@ public class DatasetFactoryTest {
             }
         };
     }
-    
+
 }
