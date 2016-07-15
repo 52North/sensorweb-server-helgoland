@@ -69,7 +69,8 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     @Qualifier(value = "stationRepository")
     private OutputAssembler<StationOutput> stationRepository;
 
-    private MeasurementDataRepository dataRepository = new MeasurementDataRepository();
+    @Autowired
+    private DataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id) throws DataAccessException {
@@ -175,14 +176,16 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
-        output.setReferenceValues(createReferenceValueOutputs(series, query));
-        output.setFirstValue(dataRepository.createSeriesValueFor(series.getFirstValue(), series));
-        output.setLastValue(dataRepository.createSeriesValueFor(series.getLastValue(), series));
+        MeasurementDataRepository repository = (MeasurementDataRepository) factory.createRepository("measurement");
+
+        output.setReferenceValues(createReferenceValueOutputs(series, query, repository));
+        output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series));
+        output.setLastValue(repository.createSeriesValueFor(series.getLastValue(), series));
         return output;
     }
 
     private MeasurementReferenceValueOutput[] createReferenceValueOutputs(MeasurementDatasetEntity series,
-            DbQuery query) throws DataAccessException {
+            DbQuery query, MeasurementDataRepository repository) throws DataAccessException {
         List<MeasurementReferenceValueOutput> outputs = new ArrayList<>();
         Set<MeasurementDatasetEntity> referenceValues = series.getReferenceValues();
         for (MeasurementDatasetEntity referenceSeriesEntity : referenceValues) {
@@ -193,7 +196,7 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
                 MeasurementDataEntity lastValue = series.getLastValue();
-                refenceValueOutput.setLastValue(dataRepository.createSeriesValueFor(lastValue, series));
+                refenceValueOutput.setLastValue(repository.createSeriesValueFor(lastValue, series));
                 outputs.add(refenceValueOutput);
             }
         }
@@ -235,14 +238,5 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     public void setStationRepository(OutputAssembler<StationOutput> stationRepository) {
         this.stationRepository = stationRepository;
     }
-
-    public MeasurementDataRepository getDataRepository() {
-        return dataRepository;
-    }
-
-    public void setDataRepository(MeasurementDataRepository dataRepository) {
-        this.dataRepository = dataRepository;
-    }
-
 
 }

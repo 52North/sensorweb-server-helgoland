@@ -44,13 +44,15 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.sensorweb.spi.DataService;
 import org.n52.series.db.da.DataRepository;
 import org.n52.series.db.da.DataRepositoryFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Deprecated
 public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOutput>
         implements DataService<MeasurementData> {
 
-    private final DataRepositoryFactory factory = new DataRepositoryFactory();
-    
+    @Autowired
+    private DataRepositoryFactory factory;
+
     public TimeseriesAccessService(TimeseriesRepository repository) {
         super(repository);
     }
@@ -79,6 +81,12 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
         return (MeasurementData) dataRepository.getData(timeseriesId, dbQuery);
     }
 
+    public DataRepositoryFactory getFactory() {
+        return factory;
+    }
 
+    public void setFactory(DataRepositoryFactory factory) {
+        this.factory = factory;
+    }
 
 }

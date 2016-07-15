@@ -85,7 +85,23 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
     protected DbQuery getDbQuery(IoParameters parameters) {
         return DbQuery.createFrom(parameters);
     }
-    
+
+    public HibernateSessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(HibernateSessionStore sessionStore) {
+        this.sessionStore = sessionStore;
+    }
+
+    public ServiceRepository getServiceRepository() {
+        return serviceRepository;
+    }
+
+    public void setServiceRepository(ServiceRepository serviceRepository) {
+        this.serviceRepository = serviceRepository;
+    }
+
     public void setServiceInfo(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
     }

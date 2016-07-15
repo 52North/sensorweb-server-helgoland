@@ -30,4 +30,6 @@
     <bean class="org.n52.web.ctrl.SearchController">
         <property name="searchService" ref="searchService"/>
     </bean>
+
+    <bean class="org.n52.series.db.da.DataRepositoryFactory" />
 </beans>

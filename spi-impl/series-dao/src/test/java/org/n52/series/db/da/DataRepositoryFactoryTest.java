@@ -93,7 +93,7 @@ public class DataRepositoryFactoryTest {
         Assert.assertTrue(factory.hasCacheEntry("measurement"));
         Assert.assertTrue(instance == factory.createRepository("measurement"));
     }
-    
+
     @Test
     public void when_serviceInfoAvailable_then_instanceHasServiceInfo() {
         factory.setServiceInfo(new ServiceInfo());

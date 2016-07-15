@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -59,7 +60,12 @@ public class DataRepositoryFactory {
     private final Map<String, DataRepository> cache;
 
     private final Properties mappings;
-    
+
+    // TODO autowiring
+
+    @Autowired
+    private HibernateSessionStore sessionStore;
+
     @Autowired
     private ServiceInfo serviceInfo;
 
@@ -120,6 +126,7 @@ public class DataRepositoryFactory {
             final Class<?> type = Class.forName(clazz);
             DataRepository instance = createInstance(type);
             instance.setServiceInfo(serviceInfo);
+            instance.setSessionStore(sessionStore);
             cache.put(datasetType, instance);
             return instance;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
@@ -148,6 +155,14 @@ public class DataRepositoryFactory {
         return cache.get(datasetType);
     }
 
+    public HibernateSessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(HibernateSessionStore sessionStore) {
+        this.sessionStore = sessionStore;
+    }
+
     public ServiceInfo getServiceInfo() {
         return serviceInfo;
     }
@@ -155,5 +170,5 @@ public class DataRepositoryFactory {
     public void setServiceInfo(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
-    
+
 }
