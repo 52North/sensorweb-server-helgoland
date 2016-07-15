@@ -37,7 +37,6 @@ import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.ServiceOutput;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -65,19 +64,16 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
     }
 
     @Override
-    @JsonIgnore
     public String getLabel() {
         return super.getLabel();
     }
 
     @Override
-    @JsonIgnore
     public String getDomainId() {
         return super.getDomainId();
     }
 
     @Override
-    @JsonIgnore
     public ServiceOutput getService() {
         return super.getService();
     }
@@ -102,7 +98,6 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
 
     @Override
-    @JsonIgnore
     public String getHrefBase() {
         String base = super.getHrefBase();
         String suffix = getUrlIdPrefix();
@@ -115,7 +110,6 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
         return getType().getGeometryType();
     }
 
-    @JsonIgnore
     public GeometryType getType() {
         return geometyCategory;
     }
