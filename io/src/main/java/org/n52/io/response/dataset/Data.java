@@ -28,6 +28,7 @@
  */
 package org.n52.io.response.dataset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
@@ -50,6 +51,7 @@ public abstract class Data implements Serializable {
         this.geometry = geometry;
     }
 
+    @JsonIgnore
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();
     }
