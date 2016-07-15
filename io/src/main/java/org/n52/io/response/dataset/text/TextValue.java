@@ -44,7 +44,7 @@ public class TextValue extends AbstractValue<String> {
 
     @Override
     public String getValue() {
-        return super.getValue() == null 
+        return super.getValue() == null
                 ? ""  // TODO null for no_data
                 : super.getValue();
     }

@@ -35,7 +35,7 @@ public class ServiceOutput extends ParameterOutput {
     private String version;
 
     private String type;
-    
+
     private ParameterCount quantities;
 
     private Boolean supportsFirstLatest;

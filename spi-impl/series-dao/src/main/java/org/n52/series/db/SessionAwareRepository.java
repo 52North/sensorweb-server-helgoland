@@ -42,7 +42,7 @@ import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.ProcedureOutput;
-import org.n52.io.response.v1.ServiceOutput;
+import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
@@ -175,10 +175,10 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
         return seriesParameter;
     }
 
-    protected org.n52.io.response.v1.ServiceOutput getCondensedService(DbQuery parameters ) throws DataAccessException {
+    protected ServiceOutput getCondensedService(DbQuery parameters ) throws DataAccessException {
         String serviceId = serviceRepository.getServiceId();
-        org.n52.io.response.v1.ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-        org.n52.io.response.v1.ServiceOutput serviceOutput = new org.n52.io.response.v1.ServiceOutput();
+        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
+        ServiceOutput serviceOutput = new ServiceOutput();
         serviceOutput.setLabel(instance.getLabel());
         serviceOutput.setId(instance.getId());
         return serviceOutput;
@@ -186,8 +186,8 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
 
     private org.n52.io.response.ServiceOutput getCondensedExtendedService(DbQuery parameters) {
         String serviceId = serviceRepository.getServiceId();
-        org.n52.io.response.v1.ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-        org.n52.io.response.v1.ServiceOutput serviceOutput = new org.n52.io.response.v1.ServiceOutput();
+        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
+        ServiceOutput serviceOutput = new ServiceOutput();
         serviceOutput.setLabel(instance.getLabel());
         serviceOutput.setId(instance.getId());
         serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + instance.getId());

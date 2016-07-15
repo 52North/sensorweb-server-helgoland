@@ -35,8 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.ServiceOutput;
-import org.n52.io.response.v1.ServiceOutput.ParameterCount;
+import org.n52.io.response.ServiceOutput;
+import org.n52.io.response.ServiceOutput.ParameterCount;
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.sensorweb.spi.search.ServiceSearchResult;
 import org.n52.series.db.DataAccessException;

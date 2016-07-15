@@ -34,7 +34,7 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.v1.ServiceOutput;
+import org.n52.io.response.ServiceOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.ServiceInfo;

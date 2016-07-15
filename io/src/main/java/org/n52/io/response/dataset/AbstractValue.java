@@ -35,7 +35,7 @@ public abstract class AbstractValue<T> extends Data implements Comparable<Abstra
     private static final long serialVersionUID = -1606015864495830281L;
 
     private Long timestamp;
-    
+
     private T value;
 
     public AbstractValue() {
