@@ -29,18 +29,11 @@
 
 package org.n52.series.db.da;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
+import org.n52.io.DatasetFactory;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -49,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class DataRepositoryFactory {
+public class DataRepositoryFactory extends DatasetFactory<DataRepository> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataRepositoryFactory.class);
 
@@ -57,9 +50,7 @@ public class DataRepositoryFactory {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-factory.properties";
 
-    private final Map<String, DataRepository> cache;
-
-    private final Properties mappings;
+    private Properties mappings;
 
     // TODO autowiring
 
@@ -70,55 +61,40 @@ public class DataRepositoryFactory {
     private ServiceInfo serviceInfo;
 
     public DataRepositoryFactory() {
-        this(getDefaultConfigFile());
+        super(DEFAULT_CONFIG_FILE);
     }
 
-    private static File getDefaultConfigFile() {
-        try {
-            Path path = Paths.get(DataRepositoryFactory.class.getResource("/").toURI());
-            return path.resolve(DEFAULT_CONFIG_FILE).toFile();
-        } catch (URISyntaxException e) {
-            LOGGER.info("Could not find config file '{}'. Load from compiled default.", DEFAULT_CONFIG_FILE, e);
-            return null;
+    public DataRepositoryFactory(File configFile) {
+        super(configFile);
+    }
+
+    private void lazyLoadMappings() {
+        if (mappings == null) {
+            mappings = new Properties();
+            loadMappings(mappings, configFile);
         }
     }
 
-    public DataRepositoryFactory(File file) {
-        if (file == null) {
-            throw new NullPointerException("mapping file must not be null");
-        }
-        cache = new HashMap<>();
-        mappings = new Properties();
-        loadMappings(mappings, file);
-    }
-
-    private static void loadMappings(Properties mappings, File file) {
-        try (InputStream is = createConfigStream(file)) {
+    private void loadMappings(Properties mappings, File file) {
+        try (InputStream is = createConfigStream(file, DEFAULT_CONFIG_FILE, DataRepositoryFactory.class)) {
             mappings.load(is);
         } catch (IOException e) {
             LOGGER.error("Could not load mapping file: '{}'", file.getAbsolutePath(), e);
         }
     }
 
-    private static InputStream createConfigStream(File file) throws FileNotFoundException {
-        if (file != null && file.exists()) {
-            return new FileInputStream(file);
-        }
-        final String jarResource = "/" + DEFAULT_CONFIG_FILE;
-        final Class<DataRepositoryFactory> clazz = DataRepositoryFactory.class;
-        return new BufferedInputStream(clazz.getResourceAsStream(jarResource));
-    }
-
     public boolean isKnownEntry(String datasetType) {
+        lazyLoadMappings();
         return mappings.containsKey(datasetType);
     }
 
     public DataRepository createRepository(String datasetType) {
+        lazyLoadMappings();
         if (cache.containsKey(datasetType)) {
             return cache.get(datasetType);
         }
         if ( !mappings.containsKey(datasetType)) {
-            LOGGER.error("No mapping entry for type '{}'", datasetType);
+            LOGGER.debug("No mapping entry for type '{}'", datasetType);
             throw new ResourceNotFoundException("No datasets available for '" + datasetType + "'.");
         }
         final String clazz = mappings.getProperty(datasetType);

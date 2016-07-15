@@ -68,7 +68,7 @@ public class DataRepositoryFactoryTest {
     public void when_havingInvalidEntry_then_throwException() throws URISyntaxException {
         thrown.expect(ResourceNotFoundException.class);
         thrown.expectMessage(is("No datasets available for 'invalid'."));
-        File configFile = getConfigFile("/files/dataset-factory_with-invalid-entries.properties");
+        File configFile = getConfigFile("dataset-factory_with-invalid-entries.properties");
         new DataRepositoryFactory(configFile).createRepository("invalid");
     }
 
