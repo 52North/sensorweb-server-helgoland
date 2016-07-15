@@ -29,18 +29,43 @@
 package org.n52.series.db.da;
 
 import java.util.List;
+import org.hibernate.Session;
 
 import org.n52.io.response.series.AbstractValue;
 import org.n52.io.response.series.Data;
+import org.n52.io.response.v1.ext.DatasetType;
+import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.SeriesDao;
 
-public abstract class AbstractDataRepository<T extends Data, E extends DatasetEntity> extends SessionAwareRepository<DbQuery> implements DataRepository<T, E> {
+public abstract class AbstractDataRepository<T extends Data, E extends DatasetEntity> 
+        extends SessionAwareRepository<DbQuery> implements DataRepository<T, E> {
 
+    @Override
+    public T getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
+        Session session = getSession();
+        try {
+            SeriesDao<E> seriesDao = new SeriesDao<>(session, getEntityType());
+            String id = DatasetType.extractId(seriesId);
+            E series = seriesDao.getInstance(parseId(id), dbQuery);
+            return dbQuery.isExpanded()
+                ? assembleDataWithReferenceValues(series, dbQuery, session)
+                : assembleData(series, dbQuery, session);
+        }
+        finally {
+            returnSession(session);
+        }
+    }
+    
+    protected abstract T assembleData(E seriesEntity, DbQuery query, Session session) throws DataAccessException;
+
+    protected abstract T assembleDataWithReferenceValues(E timeseries, DbQuery dbQuery, Session session) throws DataAccessException;
+    
     protected boolean hasValidEntriesWithinRequestedTimespan(List<?> observations) {
         return observations.size() > 0;
     }

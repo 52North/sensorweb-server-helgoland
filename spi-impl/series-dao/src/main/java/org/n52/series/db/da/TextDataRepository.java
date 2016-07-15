@@ -39,13 +39,10 @@ import org.joda.time.Interval;
 import org.n52.io.response.series.text.TextObservationData;
 import org.n52.io.response.series.text.TextObservationDataMetadata;
 import org.n52.io.response.series.text.TextObservationValue;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
-import org.n52.web.exception.ResourceNotFoundException;
 
 public class TextDataRepository extends AbstractDataRepository<TextObservationData, TextDatasetEntity> {
 
@@ -55,25 +52,7 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
     }
 
     @Override
-    public TextObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
-        Session session = getSession();
-        try {
-            SeriesDao<TextDatasetEntity> seriesDao = new SeriesDao<>(session, TextDatasetEntity.class);
-            String id = ObservationType.extractId(seriesId);
-            TextDatasetEntity series = seriesDao.getInstance(parseId(id), dbQuery);
-            if (series == null) {
-                throw new ResourceNotFoundException("Resource with id '" + seriesId + "' could not be found.");
-            }
-            return dbQuery.isExpanded()
-                ? assembleDataWithReferenceValues(series, dbQuery, session)
-                : assembleData(series, dbQuery, session);
-        }
-        finally {
-            returnSession(session);
-        }
-    }
-
-    private TextObservationData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
+    protected TextObservationData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
                                                             DbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         TextObservationData result = assembleData(timeseries, dbQuery, session);
@@ -122,7 +101,8 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
         return result;
     }
 
-    private TextObservationData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    @Override
+    protected TextObservationData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TextObservationData result = new TextObservationData();
         ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);

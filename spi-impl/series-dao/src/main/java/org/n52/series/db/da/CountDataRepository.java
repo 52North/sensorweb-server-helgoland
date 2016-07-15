@@ -39,12 +39,10 @@ import org.joda.time.Interval;
 import org.n52.io.response.series.count.CountObservationData;
 import org.n52.io.response.series.count.CountObservationDataMetadata;
 import org.n52.io.response.series.count.CountObservationValue;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
 
 public class CountDataRepository extends AbstractDataRepository<CountObservationData, CountDatasetEntity> {
 
@@ -54,22 +52,7 @@ public class CountDataRepository extends AbstractDataRepository<CountObservation
     }
 
     @Override
-    public CountObservationData getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
-        Session session = getSession();
-        try {
-            SeriesDao<CountDatasetEntity> seriesDao = new SeriesDao<>(session, CountDatasetEntity.class);
-            String id = ObservationType.extractId(seriesId);
-            CountDatasetEntity series = seriesDao.getInstance(parseId(id), dbQuery);
-            return dbQuery.isExpanded()
-                ? assembleDataWithReferenceValues(series, dbQuery, session)
-                : assembleData(series, dbQuery, session);
-        }
-        finally {
-            returnSession(session);
-        }
-    }
-
-    private CountObservationData assembleDataWithReferenceValues(CountDatasetEntity timeseries,
+    protected CountObservationData assembleDataWithReferenceValues(CountDatasetEntity timeseries,
                                                             DbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         CountObservationData result = assembleData(timeseries, dbQuery, session);
@@ -118,7 +101,8 @@ public class CountDataRepository extends AbstractDataRepository<CountObservation
         return result;
     }
 
-    private CountObservationData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    @Override
+    protected CountObservationData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountObservationData result = new CountObservationData();
         ObservationDao<CountDataEntity> dao = new ObservationDao<>(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
