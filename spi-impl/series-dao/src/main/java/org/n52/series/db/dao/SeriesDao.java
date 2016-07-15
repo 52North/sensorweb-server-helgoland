@@ -101,10 +101,11 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get instance '{}': {}", key, parameters);
-        Criteria criteria = getDefaultCriteria()
-                .add(eq("pkid", key));
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
-        return entityType.cast(criteria.uniqueResult());
+        Criteria criteria = session.createCriteria(entityType, "series");
+        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
+        return entityType.cast(criteria
+                .add(eq("pkid", key))
+                .uniqueResult());
     }
 
     @Override
@@ -123,7 +124,6 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        criteria = addDatasetTypesFilterTo(criteria, parameters);
         return parameters.addPlatformTypesFilter("series", criteria)
                 .add(Subqueries.propertyIn("series.pkid", filter));
     }
@@ -153,14 +153,6 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         Criteria criteria = getDefaultCriteria()
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
-    }
-
-    private Criteria addDatasetTypesFilterTo(Criteria criteria, DbQuery query) {
-        for (String datasetType : query.getParameters().getDatasetTypes()) {
-
-        }
-        // TODO
-        return criteria;
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {

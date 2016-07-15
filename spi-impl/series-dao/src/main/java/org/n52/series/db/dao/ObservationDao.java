@@ -158,7 +158,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         LOGGER.debug("get instances @{} for '{}': {}", timestamp, series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
-                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
+                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp.toDate()));
 
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
