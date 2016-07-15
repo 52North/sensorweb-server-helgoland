@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 public class DatasetTypeTest {
-    
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
@@ -48,32 +48,42 @@ public class DatasetTypeTest {
     public void when_datasetId_then_extractId() {
         Assert.assertThat(DatasetType.extractId("text_234"), Matchers.is("234"));
     }
-    
+
     @Test
-    public void when_createDatasetId_then_typeAndIdGetsConcatenated() {
-        Assert.assertThat(DatasetType.createId("myType", "123"), Matchers.is("myType_123"));
+    public void when_createIdDatasetId_then_typeAndIdGetsConcatenated() {
+        Assert.assertThat(DatasetType.createId("mytype", "123"), Matchers.is("mytype_123"));
     }
-    
+
+    @Test
+    public void when_createIdWithCamelCasedType_then_typeGetsLowercased() {
+        Assert.assertThat(DatasetType.createId("myType", "123"), Matchers.is("mytype_123"));
+    }
+
+    @Test
+    public void when_createIdWithCamelCasedId_then_idKeepsCamelCased() {
+        Assert.assertThat(DatasetType.createId("mytype", "camelCasedId"), Matchers.is("mytype_camelCasedId"));
+    }
+
     @Test
     public void when_createWithNullType_then_returnIdentity() {
         Assert.assertThat(DatasetType.createId(null, "123"), Matchers.is("123"));
     }
-    
+
     @Test
     public void when_createWithEmptyType_then_returnIdentity() {
         Assert.assertThat(DatasetType.createId("", "123"), Matchers.is("123"));
     }
-    
+
     @Test
     public void when_createWithEmptyId_then_throwException() {
         thrown.expect(IllegalArgumentException.class);
         DatasetType.createId("myType", "");
     }
-    
+
     @Test
     public void when_createWithNullId_then_throwException() {
         thrown.expect(NullPointerException.class);
         DatasetType.createId("myType", null);
     }
-    
+
 }
