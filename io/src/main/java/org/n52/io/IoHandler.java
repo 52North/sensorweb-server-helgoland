@@ -33,6 +33,8 @@ import java.io.OutputStream;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
+// TODO actually this interface describes an prepares and writes an output only
+// TODO consider a plain JSON Writer to get rid of ModelAndView in controllers
 public interface IoHandler<T extends Data> {
 
     /**

@@ -155,9 +155,6 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
 
     private void writeData(DatasetOutput metadata, MeasurementData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
-        // instanceof SeriesMetadataV1Output // XXX hack
-        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
-        //: ((SeriesMetadataV2Output) metadata).getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
         for (MeasurementValue timeseriesValue : series.getValues()) {

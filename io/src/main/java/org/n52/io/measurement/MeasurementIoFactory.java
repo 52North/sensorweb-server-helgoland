@@ -110,7 +110,7 @@ public final class MeasurementIoFactory {
             // TODO do further settings?!
             return chartRenderer;
         } else if (mimeType == TEXT_CSV) {
-            CsvIoHandler handler = new CsvIoHandler(context, config.getLocale());
+            CsvIoHandler<MeasurementData> handler = new CsvIoHandler(context, config.getLocale());
             handler.setTokenSeparator(config.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
