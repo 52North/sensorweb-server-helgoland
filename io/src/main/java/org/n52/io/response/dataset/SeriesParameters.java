@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset;
 
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;

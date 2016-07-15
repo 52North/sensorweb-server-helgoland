@@ -26,35 +26,15 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset;
 
-import java.io.Serializable;
+public interface SeriesReferenceValueOutput<T> {
 
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
+    String getReferenceValueId();
+    void setReferenceValueId(String referenceValueId);
+    String getLabel();
+    void setLabel(String label);
+    T getLastValue();
+    void setLastValue(T lastValue);
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.Geometry;
-
-public abstract class Data implements Serializable {
-
-    private static final long serialVersionUID = 3119211667773416585L;
-
-    private Geometry geometry;
-
-    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
-    public Geometry getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null && !geometry.isEmpty();
-    }
-
-    public abstract boolean hasReferenceValues();
-
-    public abstract DatasetMetadata getMetadata();
 }

@@ -29,7 +29,7 @@
 package org.n52.series.db.da;
 
 import org.n52.series.db.dao.DbQuery;
-import org.n52.io.response.series.Data;
+import org.n52.io.response.dataset.Data;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
 

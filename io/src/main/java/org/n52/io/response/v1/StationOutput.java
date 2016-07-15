@@ -35,7 +35,7 @@ import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.response.dataset.SeriesParameters;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;

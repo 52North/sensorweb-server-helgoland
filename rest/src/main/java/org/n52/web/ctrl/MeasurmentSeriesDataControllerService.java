@@ -44,9 +44,9 @@ import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementSeriesOutput;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
+import org.n52.io.response.dataset.DataCollection;
 
 public class MeasurmentSeriesDataControllerService extends DatasetServiceBundle {
 

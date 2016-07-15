@@ -32,7 +32,7 @@ package org.n52.io.response.v1;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.response.dataset.SeriesParameters;
 
 @Deprecated
 public class SeriesMetadataV1Output extends TimeseriesMetadataOutput {

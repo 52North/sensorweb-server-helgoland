@@ -36,9 +36,9 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
-import org.n52.io.response.series.text.TextObservationData;
-import org.n52.io.response.series.text.TextObservationDataMetadata;
-import org.n52.io.response.series.text.TextValue;
+import org.n52.io.response.dataset.text.TextObservationData;
+import org.n52.io.response.dataset.text.TextObservationDataMetadata;
+import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;

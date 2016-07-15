@@ -28,7 +28,7 @@
  */
 package org.n52.io.measurement.format;
 
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.DataCollection;
 
 public final class HighchartDataCollection extends DataCollection<HighchartSeries> {
 

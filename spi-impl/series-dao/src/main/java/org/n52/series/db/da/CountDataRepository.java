@@ -36,9 +36,9 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
-import org.n52.io.response.series.count.CountObservationData;
-import org.n52.io.response.series.count.CountObservationDataMetadata;
-import org.n52.io.response.series.count.CountValue;
+import org.n52.io.response.dataset.count.CountObservationData;
+import org.n52.io.response.dataset.count.CountObservationDataMetadata;
+import org.n52.io.response.dataset.count.CountValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;

@@ -26,39 +26,42 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.text;
+package org.n52.io.response.dataset.measurement;
 
-import org.n52.io.response.series.SeriesReferenceValueOutput;
+import org.n52.io.response.v1.ext.ObservationType;
+import org.n52.io.response.v1.ext.DatasetOutput;
 
-public class TextObservationReferenceValueOutput implements SeriesReferenceValueOutput<TextValue> {
+/**
+ * TODO: JavaDoc
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ */
+public class MeasurementSeriesOutput extends DatasetOutput<MeasurementReferenceValueOutput> {
 
-    private String referenceValueId;
+    private MeasurementReferenceValueOutput[] referenceValues;
 
-    private String label;
+    private MeasurementValue firstValue;
 
-    private TextValue lastValue;
+    private MeasurementValue lastValue;
 
-    public String getReferenceValueId() {
-        return referenceValueId;
+    public MeasurementSeriesOutput() {
+        super(ObservationType.MEASUREMENT.name());
     }
 
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
+    public MeasurementValue getFirstValue() {
+        return firstValue;
     }
 
-    public String getLabel() {
-        return label;
+    public void setFirstValue(MeasurementValue firstValue) {
+        this.firstValue = firstValue;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public TextValue getLastValue() {
+    public MeasurementValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(TextValue lastValue) {
+    public void setLastValue(MeasurementValue lastValue) {
         this.lastValue = lastValue;
     }
+
 }

@@ -41,8 +41,8 @@ import org.n52.io.measurement.img.MultipleChartsRenderer;
 import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.text.TextObservationData;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.series.csv.CsvIoHandler;
 
 public class TextObservationIoFactory {

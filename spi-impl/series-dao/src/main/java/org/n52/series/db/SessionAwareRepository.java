@@ -36,7 +36,7 @@ import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.v1.CategoryOutput;
 import org.n52.io.response.v1.FeatureOutput;
 import org.n52.io.response.v1.OfferingOutput;

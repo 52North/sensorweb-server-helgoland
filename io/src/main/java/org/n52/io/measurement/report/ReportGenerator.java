@@ -36,8 +36,8 @@ import java.util.List;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.measurement.img.MeasurementRenderingContext;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 
 public abstract class ReportGenerator implements IoHandler<MeasurementData> {
 

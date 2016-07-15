@@ -26,25 +26,39 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset.count;
 
-public class MeasurementValue extends AbstractValue<Double> {
+import org.n52.io.response.dataset.SeriesReferenceValueOutput;
 
-    private static final long serialVersionUID = -7292181682632614697L;
+public class CountObservationReferenceValueOutput implements SeriesReferenceValueOutput<CountValue>{
 
-    public MeasurementValue() {
-        // for serialization
+    private String referenceValueId;
+
+    private String label;
+
+    private CountValue lastValue;
+
+    public String getReferenceValueId() {
+        return referenceValueId;
     }
 
-    public MeasurementValue(long timestamp, Double value) {
-        super(timestamp, value);
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
     }
 
-    @Override
-    public Double getValue() {
-        return super.getValue() == null
-                ? Double.NaN // TODO null for no_data
-                : super.getValue();
+    public String getLabel() {
+        return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public CountValue getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(CountValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }

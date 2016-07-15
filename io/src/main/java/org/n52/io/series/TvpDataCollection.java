@@ -28,8 +28,8 @@
  */
 package org.n52.io.series;
 
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
 /**
  * Represents a time value pair data format.

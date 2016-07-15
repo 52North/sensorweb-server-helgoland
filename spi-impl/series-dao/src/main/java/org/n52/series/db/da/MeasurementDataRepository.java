@@ -39,9 +39,9 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementDataMetadata;
-import org.n52.io.response.series.MeasurementValue;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;

@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.n52.io.format.SeriesDataFormatter;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementDataMetadata;
-import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.DataCollection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 

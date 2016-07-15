@@ -33,8 +33,8 @@ import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneral
 import org.n52.io.measurement.generalize.Generalizer;
 import org.n52.io.measurement.generalize.GeneralizerException;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.DataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.n52.io.request.IoParameters.createFromQuery;

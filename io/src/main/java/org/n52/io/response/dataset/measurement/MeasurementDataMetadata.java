@@ -26,39 +26,25 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.count;
+package org.n52.io.response.dataset.measurement;
 
-import org.n52.io.response.series.SeriesReferenceValueOutput;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import org.n52.io.response.dataset.DatasetMetadata;
 
-public class CountObservationReferenceValueOutput implements SeriesReferenceValueOutput<CountValue>{
+public class MeasurementDataMetadata implements DatasetMetadata<Map<String, MeasurementData>>, Serializable {
 
-    private String referenceValueId;
+    private static final long serialVersionUID = 7422416308386483575L;
 
-    private String label;
+    private Map<String, MeasurementData> referenceValues = new HashMap<>();
 
-    private CountValue lastValue;
-
-    public String getReferenceValueId() {
-        return referenceValueId;
+    public Map<String, MeasurementData> getReferenceValues() {
+        return referenceValues;
     }
 
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
+    public void setReferenceValues(Map<String, MeasurementData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public CountValue getLastValue() {
-        return lastValue;
-    }
-
-    public void setLastValue(CountValue lastValue) {
-        this.lastValue = lastValue;
-    }
 }

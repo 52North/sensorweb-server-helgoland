@@ -26,38 +26,26 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset.text;
 
-public class MeasurementReferenceValueOutput implements SeriesReferenceValueOutput<MeasurementValue> {
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-    private String referenceValueId;
+import org.n52.io.response.dataset.DatasetMetadata;
 
-    private String label;
+public class TextObservationDataMetadata implements DatasetMetadata<Map<String, TextObservationData>>, Serializable {
 
-    private MeasurementValue lastValue;
+    private static final long serialVersionUID = -5666064665815076013L;
 
-    public String getReferenceValueId() {
-        return referenceValueId;
+    private Map<String, TextObservationData> referenceValues = new HashMap<>();
+
+    public Map<String, TextObservationData> getReferenceValues() {
+        return referenceValues;
     }
 
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public MeasurementValue getLastValue() {
-        return lastValue;
-    }
-
-    public void setLastValue(MeasurementValue lastValue) {
-        this.lastValue = lastValue;
+    public void setReferenceValues(Map<String, TextObservationData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

@@ -26,26 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.text;
+package org.n52.io.response.dataset;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.n52.io.response.series.DatasetMetadata;
+import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
-public class TextObservationDataMetadata implements DatasetMetadata<Map<String, TextObservationData>>, Serializable {
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
 
-    private static final long serialVersionUID = -5666064665815076013L;
+public abstract class Data implements Serializable {
 
-    private Map<String, TextObservationData> referenceValues = new HashMap<>();
+    private static final long serialVersionUID = 3119211667773416585L;
 
-    public Map<String, TextObservationData> getReferenceValues() {
-        return referenceValues;
+    private Geometry geometry;
+
+    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public void setReferenceValues(Map<String, TextObservationData> referenceValues) {
-        this.referenceValues = referenceValues;
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
+    public boolean isSetGeometry() {
+        return geometry != null && !geometry.isEmpty();
+    }
+
+    public abstract boolean hasReferenceValues();
+
+    public abstract DatasetMetadata getMetadata();
 }

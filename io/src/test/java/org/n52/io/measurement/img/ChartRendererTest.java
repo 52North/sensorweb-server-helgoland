@@ -38,8 +38,8 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.MimeType;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.DataCollection;
 
 public class ChartRendererTest {
 

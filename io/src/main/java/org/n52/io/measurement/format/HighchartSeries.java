@@ -30,8 +30,8 @@ package org.n52.io.measurement.format;
 
 import java.util.List;
 
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DatasetMetadata;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DatasetMetadata;
 
 public class HighchartSeries extends Data {
 

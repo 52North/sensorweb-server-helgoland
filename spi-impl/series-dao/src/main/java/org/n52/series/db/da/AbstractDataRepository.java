@@ -31,8 +31,8 @@ package org.n52.series.db.da;
 import java.util.List;
 import org.hibernate.Session;
 
-import org.n52.io.response.series.AbstractValue;
-import org.n52.io.response.series.Data;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;

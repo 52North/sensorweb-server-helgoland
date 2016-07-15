@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.count;
+package org.n52.io.response.dataset.count;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.n52.io.response.series.Data;
+import org.n52.io.response.dataset.Data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

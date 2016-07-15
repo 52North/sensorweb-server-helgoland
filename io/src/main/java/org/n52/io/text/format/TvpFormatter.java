@@ -29,8 +29,8 @@
 package org.n52.io.text.format;
 
 import org.n52.io.format.SeriesDataFormatter;
-import org.n52.io.response.series.DataCollection;
-import org.n52.io.response.series.text.TextObservationData;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.text.TextObservationData;
 
 /**
  * Represents the identity transformation. Input is equal to output.

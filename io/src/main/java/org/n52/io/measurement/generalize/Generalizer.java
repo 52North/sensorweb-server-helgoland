@@ -29,8 +29,8 @@
 package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
 public abstract class Generalizer<T extends Data> {
 

@@ -36,9 +36,9 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

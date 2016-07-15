@@ -36,7 +36,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.n52.sensorweb.spi.DataService;

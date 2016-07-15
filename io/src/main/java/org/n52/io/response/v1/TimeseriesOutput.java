@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.v1;
 
-import org.n52.io.response.series.SeriesParameters;
+import org.n52.io.response.dataset.SeriesParameters;
 
 /**
  *

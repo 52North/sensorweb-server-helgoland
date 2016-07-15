@@ -26,27 +26,39 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.count;
+package org.n52.io.response.dataset.text;
 
-import org.n52.io.response.series.AbstractValue;
+import org.n52.io.response.dataset.SeriesReferenceValueOutput;
 
-public class CountValue extends AbstractValue<Integer> {
+public class TextObservationReferenceValueOutput implements SeriesReferenceValueOutput<TextValue> {
 
-    private static final long serialVersionUID = 635165564503748527L;
+    private String referenceValueId;
 
-    public CountValue() {
-        // for serialization
+    private String label;
+
+    private TextValue lastValue;
+
+    public String getReferenceValueId() {
+        return referenceValueId;
     }
 
-    public CountValue(long timestamp, Integer value) {
-        super(timestamp, value);
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
     }
 
-    @Override
-    public Integer getValue() {
-        return super.getValue() == null
-                ? Integer.MIN_VALUE // TODO null for no_data
-                : super.getValue();
+    public String getLabel() {
+        return label;
     }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public TextValue getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(TextValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }

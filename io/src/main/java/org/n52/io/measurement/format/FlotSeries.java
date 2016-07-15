@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DatasetMetadata;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DatasetMetadata;
 
 public class FlotSeries extends Data {
 

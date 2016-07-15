@@ -30,8 +30,8 @@ package org.n52.io;
 
 import java.io.OutputStream;
 
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
 public interface IoHandler<T extends Data> {
 

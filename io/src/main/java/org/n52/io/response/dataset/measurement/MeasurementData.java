@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.text;
+package org.n52.io.response.dataset.measurement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,20 +35,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.n52.io.response.series.Data;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.n52.io.response.dataset.Data;
 
-public class TextObservationData extends Data {
+public class MeasurementData extends Data {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<TextValue> values = new ArrayList<>();
+    private List<MeasurementValue> values = new ArrayList<>();
 
-    private TextObservationDataMetadata metadata;
+    private MeasurementDataMetadata metadata;
 
-    public void addValues(TextValue... values) {
+    public void addValues(MeasurementValue... values) {
         if (values != null && values.length > 0) {
             this.values.addAll(Arrays.asList(values));
         }
@@ -58,42 +57,42 @@ public class TextObservationData extends Data {
      * @param values the timestamp &lt;-&gt; value map.
      * @return a measurement data object.
      */
-    public static TextObservationData newTextObservationData(Map<Long, String> values) {
-        TextObservationData timeseries = new TextObservationData();
-        for (Entry<Long, String> data : values.entrySet()) {
+    public static MeasurementData newMeasurementData(Map<Long, Double> values) {
+        MeasurementData timeseries = new MeasurementData();
+        for (Entry<Long, Double> data : values.entrySet()) {
             timeseries.addNewValue(data.getKey(), data.getValue());
         }
         return timeseries;
     }
 
-    public static TextObservationData newTextObservationData(TextValue... values) {
-        TextObservationData timeseries = new TextObservationData();
+    public static MeasurementData newMeasurementData(MeasurementValue... values) {
+        MeasurementData timeseries = new MeasurementData();
         timeseries.addValues(values);
         return timeseries;
     }
 
-    private void addNewValue(Long timestamp, String value) {
-        values.add(new TextValue(timestamp, value));
+    private void addNewValue(Long timestamp, Double value) {
+        values.add(new MeasurementValue(timestamp, value));
     }
 
     /**
      * @return a sorted list of measurement values.
      */
-    public TextValue[] getValues() {
+    public MeasurementValue[] getValues() {
         Collections.sort(values);
-        return values.toArray(new TextValue[0]);
+        return values.toArray(new MeasurementValue[0]);
     }
 
-    void setValues(TextValue[] values) {
+    void setValues(MeasurementValue[] values) {
         this.values = Arrays.asList(values);
     }
 
     @JsonProperty("extra")
-    public TextObservationDataMetadata getMetadata() {
+    public MeasurementDataMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(TextObservationDataMetadata metadata) {
+    public void setMetadata(MeasurementDataMetadata metadata) {
         this.metadata = metadata;
     }
 

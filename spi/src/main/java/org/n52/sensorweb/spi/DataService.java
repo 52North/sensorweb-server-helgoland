@@ -29,8 +29,8 @@
 package org.n52.sensorweb.spi;
 
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.series.Data;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
 /**
  * Provides access to the actual series data via

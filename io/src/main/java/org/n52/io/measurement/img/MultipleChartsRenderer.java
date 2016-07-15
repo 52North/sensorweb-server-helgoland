@@ -50,12 +50,12 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementDataMetadata;
-import org.n52.io.response.series.MeasurementReferenceValueOutput;
-import org.n52.io.response.series.MeasurementSeriesOutput;
-import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
+import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
 

@@ -37,7 +37,7 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.series.MeasurementReferenceValueOutput;
+import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
 import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.search.SearchResult;

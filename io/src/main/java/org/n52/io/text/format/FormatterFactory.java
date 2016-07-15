@@ -29,7 +29,7 @@
 package org.n52.io.text.format;
 
 import org.n52.io.format.SeriesDataFormatter;
-import org.n52.io.response.series.text.TextObservationData;
+import org.n52.io.response.dataset.text.TextObservationData;
 
 public final class FormatterFactory {
 

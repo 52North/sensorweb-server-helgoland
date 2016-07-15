@@ -26,26 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.count;
+package org.n52.io.response.dataset;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.n52.io.response.series.DatasetMetadata;
+@SuppressWarnings("rawtypes")
+public interface DatasetMetadata<T extends Map> {
 
-public class CountObservationDataMetadata implements DatasetMetadata<Map<String, CountObservationData>>, Serializable {
+    public T getReferenceValues();
 
-    private static final long serialVersionUID = -5666064665815076013L;
-
-    private Map<String, CountObservationData> referenceValues = new HashMap<>();
-
-    public Map<String, CountObservationData> getReferenceValues() {
-        return referenceValues;
-    }
-
-    public void setReferenceValues(Map<String, CountObservationData> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
+    public void setReferenceValues(T referenceValues);
 }

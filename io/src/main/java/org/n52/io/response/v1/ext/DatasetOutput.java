@@ -31,10 +31,11 @@ package org.n52.io.response.v1.ext;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.n52.io.Utils;
 
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.series.SeriesParameters;
-import org.n52.io.response.series.SeriesReferenceValueOutput;
+import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.SeriesReferenceValueOutput;
 
 public abstract class DatasetOutput<T extends SeriesReferenceValueOutput> extends ParameterOutput {
 

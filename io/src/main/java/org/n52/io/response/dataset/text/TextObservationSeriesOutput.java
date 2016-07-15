@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.text;
+package org.n52.io.response.dataset.text;
 
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;

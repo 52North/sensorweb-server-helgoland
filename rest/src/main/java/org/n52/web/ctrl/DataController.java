@@ -65,7 +65,7 @@ import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.series.DataCollection;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.sensorweb.spi.ParameterService;

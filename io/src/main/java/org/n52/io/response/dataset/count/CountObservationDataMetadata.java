@@ -26,27 +26,26 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series.text;
+package org.n52.io.response.dataset.count;
 
-import org.n52.io.response.series.AbstractValue;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TextValue extends AbstractValue<String> {
+import org.n52.io.response.dataset.DatasetMetadata;
 
-    private static final long serialVersionUID = -7292181682632614697L;
+public class CountObservationDataMetadata implements DatasetMetadata<Map<String, CountObservationData>>, Serializable {
 
-    public TextValue() {
-        // for serialization
+    private static final long serialVersionUID = -5666064665815076013L;
+
+    private Map<String, CountObservationData> referenceValues = new HashMap<>();
+
+    public Map<String, CountObservationData> getReferenceValues() {
+        return referenceValues;
     }
 
-    public TextValue(long timestamp, String value) {
-        super(timestamp, value);
-    }
-
-    @Override
-    public String getValue() {
-        return super.getValue() == null 
-                ? ""  // TODO null for no_data
-                : super.getValue();
+    public void setReferenceValues(Map<String, CountObservationData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

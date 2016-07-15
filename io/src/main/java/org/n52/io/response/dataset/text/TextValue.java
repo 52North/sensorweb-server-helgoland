@@ -26,63 +26,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset.text;
 
-import java.io.Serializable;
+import org.n52.io.response.dataset.AbstractValue;
 
-public abstract class AbstractValue<T> extends Data implements Comparable<AbstractValue<?>>,Serializable {
+public class TextValue extends AbstractValue<String> {
 
-    private static final long serialVersionUID = -1606015864495830281L;
+    private static final long serialVersionUID = -7292181682632614697L;
 
-    private Long timestamp;
-    
-    private T value;
-
-    public AbstractValue() {
+    public TextValue() {
+        // for serialization
     }
 
-    public AbstractValue(long timestamp, T value) {
-        this.timestamp = timestamp;
-        this.value = value;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
+    public TextValue(long timestamp, String value) {
+        super(timestamp, value);
     }
 
     @Override
-    public boolean hasReferenceValues() {
-        return false;
-    }
-
-    @Override
-    public DatasetMetadata getMetadata() {
-        return null;
-    }
-
-    @Override
-    public int compareTo(AbstractValue<?> o) {
-        return getTimestamp().compareTo(o.getTimestamp());
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
-        sb.append("timestamp: ").append(getTimestamp()).append(", ");
-        sb.append("value: ").append(getValue());
-        return sb.append(" ]").toString();
+    public String getValue() {
+        return super.getValue() == null 
+                ? ""  // TODO null for no_data
+                : super.getValue();
     }
 
 }

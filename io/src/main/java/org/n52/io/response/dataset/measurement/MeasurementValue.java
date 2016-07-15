@@ -26,15 +26,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset.measurement;
 
-public interface SeriesReferenceValueOutput<T> {
+import org.n52.io.response.dataset.AbstractValue;
 
-    String getReferenceValueId();
-    void setReferenceValueId(String referenceValueId);
-    String getLabel();
-    void setLabel(String label);
-    T getLastValue();
-    void setLastValue(T lastValue);
+public class MeasurementValue extends AbstractValue<Double> {
+
+    private static final long serialVersionUID = -7292181682632614697L;
+
+    public MeasurementValue() {
+        // for serialization
+    }
+
+    public MeasurementValue(long timestamp, Double value) {
+        super(timestamp, value);
+    }
+
+    @Override
+    public Double getValue() {
+        return super.getValue() == null
+                ? Double.NaN // TODO null for no_data
+                : super.getValue();
+    }
 
 }

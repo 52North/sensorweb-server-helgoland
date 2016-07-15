@@ -26,14 +26,40 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset.measurement;
 
-import java.util.Map;
+import org.n52.io.response.dataset.SeriesReferenceValueOutput;
 
-@SuppressWarnings("rawtypes")
-public interface DatasetMetadata<T extends Map> {
+public class MeasurementReferenceValueOutput implements SeriesReferenceValueOutput<MeasurementValue> {
 
-    public T getReferenceValues();
+    private String referenceValueId;
 
-    public void setReferenceValues(T referenceValues);
+    private String label;
+
+    private MeasurementValue lastValue;
+
+    public String getReferenceValueId() {
+        return referenceValueId;
+    }
+
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public MeasurementValue getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(MeasurementValue lastValue) {
+        this.lastValue = lastValue;
+    }
+
 }

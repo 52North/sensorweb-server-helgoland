@@ -36,7 +36,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.series.MeasurementSeriesOutput;
+import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.RenderingContext;
 

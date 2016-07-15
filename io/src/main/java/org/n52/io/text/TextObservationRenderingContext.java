@@ -36,7 +36,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.series.text.TextObservationSeriesOutput;
+import org.n52.io.response.dataset.text.TextObservationSeriesOutput;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.RenderingContext;
 

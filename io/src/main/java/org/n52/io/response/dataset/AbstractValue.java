@@ -26,42 +26,63 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.series;
+package org.n52.io.response.dataset;
 
-import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.io.response.v1.ext.DatasetOutput;
+import java.io.Serializable;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
-public class MeasurementSeriesOutput extends DatasetOutput<MeasurementReferenceValueOutput> {
+public abstract class AbstractValue<T> extends Data implements Comparable<AbstractValue<?>>,Serializable {
 
-    private MeasurementReferenceValueOutput[] referenceValues;
+    private static final long serialVersionUID = -1606015864495830281L;
 
-    private MeasurementValue firstValue;
+    private Long timestamp;
+    
+    private T value;
 
-    private MeasurementValue lastValue;
-
-    public MeasurementSeriesOutput() {
-        super(ObservationType.MEASUREMENT.name());
+    public AbstractValue() {
     }
 
-    public MeasurementValue getFirstValue() {
-        return firstValue;
+    public AbstractValue(long timestamp, T value) {
+        this.timestamp = timestamp;
+        this.value = value;
     }
 
-    public void setFirstValue(MeasurementValue firstValue) {
-        this.firstValue = firstValue;
+    public Long getTimestamp() {
+        return timestamp;
     }
 
-    public MeasurementValue getLastValue() {
-        return lastValue;
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public void setLastValue(MeasurementValue lastValue) {
-        this.lastValue = lastValue;
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    @Override
+    public boolean hasReferenceValues() {
+        return false;
+    }
+
+    @Override
+    public DatasetMetadata getMetadata() {
+        return null;
+    }
+
+    @Override
+    public int compareTo(AbstractValue<?> o) {
+        return getTimestamp().compareTo(o.getTimestamp());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
+        sb.append("timestamp: ").append(getTimestamp()).append(", ");
+        sb.append("value: ").append(getValue());
+        return sb.append(" ]").toString();
     }
 
 }
