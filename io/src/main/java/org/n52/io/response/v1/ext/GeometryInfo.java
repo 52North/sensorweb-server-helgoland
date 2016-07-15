@@ -51,7 +51,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     private Geometry geometry;
 
-    private PlatformItemOutput platform;
+    private PlatformOutput platform;
 
     private final GeometryType geometyCategory;
 
@@ -82,11 +82,11 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
         return super.getService();
     }
 
-    public PlatformItemOutput getPlatform() {
+    public PlatformOutput getPlatform() {
         return platform;
     }
 
-    public void setPlatform(PlatformItemOutput platform) {
+    public void setPlatform(PlatformOutput platform) {
         this.platform = platform;
     }
 

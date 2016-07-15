@@ -42,7 +42,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.GeometryType;
-import org.n52.io.response.v1.ext.PlatformItemOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.series.db.DataAccessException;
@@ -293,7 +292,7 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         return geometryInfo;
     }
 
-    private PlatformItemOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
+    private PlatformOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         DbQuery platformQuery = DbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
                 .extendWith(Parameters.PLATFORM_TYPES, "all")

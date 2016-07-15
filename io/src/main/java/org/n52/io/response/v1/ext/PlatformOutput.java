@@ -45,7 +45,7 @@ import org.n52.io.response.ProcedureOutput;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  * @since 2.0.0
  */
-public class PlatformOutput extends AbstractOutput implements PlatformItemOutput {
+public class PlatformOutput extends AbstractOutput {
 
     private final PlatformType platformType;
 
@@ -72,7 +72,6 @@ public class PlatformOutput extends AbstractOutput implements PlatformItemOutput
                 : base;
     }
 
-    @Override
     public String getPlatformType() {
         return getType().getPlatformType();
     }
