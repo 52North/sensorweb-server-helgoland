@@ -38,10 +38,27 @@ public class DatasetType {
         }
         return id.substring(0, id.indexOf(SEPERATOR));
     }
+    
     public static String extractId(String id) {
         if (id == null || id.isEmpty()) {
             return id;
         }
         return id.substring(id.indexOf(SEPERATOR) + 1);
+    }
+    
+    public static String createId(String type, String id) {
+        if (id == null) {
+            throw new NullPointerException("Cannot create from null id.");
+        }
+        if (id.isEmpty()) {
+            throw new IllegalArgumentException("Cannot create from empty id.");
+        }
+        return assertNotNullOrEmpty(type)
+                ? type.concat(SEPERATOR).concat(id)
+                : id;
+    }
+
+    private static boolean assertNotNullOrEmpty(String type) {
+        return !(type == null || type.isEmpty());
     }
 }
