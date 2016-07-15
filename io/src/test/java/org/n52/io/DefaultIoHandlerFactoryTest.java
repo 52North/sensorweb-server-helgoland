@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da;
+package org.n52.io;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -41,29 +41,29 @@ import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.n52.io.DatasetFactoryException;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.io.measurement.MeasurementIoHandlerFactory;
 
-public class DataRepositoryFactoryTest {
+public class DefaultIoHandlerFactoryTest {
 
-    private DataRepositoryFactory factory;
+    private DefaultIoHandlerFactory factory;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws URISyntaxException {
-        File config = getConfigFile("dataset-factory.properties");
-        factory = new DataRepositoryFactory(config);
+        File config = getConfigFile("dataset-io-factory.properties");
+        factory = new DefaultIoHandlerFactory(config);
     }
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        DataRepositoryFactory m = new DataRepositoryFactory();
+        DatasetFactory<IoHandlerFactory> m = new DefaultIoHandlerFactory();
         assertFalse(m.isKnown("text"));
-        assertFalse(m.isKnown("count"));
-        assertTrue(m.create("measurement").getClass() == MeasurementDataRepository.class);
+        assertTrue(m.create("measurement").getClass() == MeasurementIoHandlerFactory.class);
     }
 
+    
     @Test
     public void when_mapToText_then_returnTextDataRepository() throws DatasetFactoryException {
         assertTrue(factory.create("text").getClass() == TextDataRepository.class);
@@ -93,8 +93,15 @@ public class DataRepositoryFactoryTest {
         Assert.assertNotNull(instance.getServiceInfo());
     }
 
+    @Test
+    public void when_mapToInvalid_then_throwException() throws DatasetFactoryException {
+        thrown.expect(DatasetFactoryException.class);
+        thrown.expectMessage(is("No datasets available for 'invalid'."));
+        factory.create("invalid");
+    }
+
     private File getConfigFile(String name) throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/files").toURI());
+        Path root = Paths.get(getClass().getResource("/").toURI());
         return root.resolve(name).toFile();
     }
 

@@ -34,5 +34,5 @@ public interface IoHandlerFactory {
 
     IoHandler<? extends Data> createHandler(String datasetType);
 
-    boolean isKnown(String datasetType);
+    boolean isAbleToCreate(String datasetType);
 }

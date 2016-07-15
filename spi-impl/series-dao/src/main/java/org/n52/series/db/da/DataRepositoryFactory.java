@@ -66,10 +66,8 @@ public class DataRepositoryFactory extends DatasetFactory<DataRepository> {
     }
 
     @Override
-    protected InputStream getFallbackConfigResource() {
-        final String jarResource = "/" + DEFAULT_CONFIG_FILE;
-        Class<?> clazz = DataRepositoryFactory.class;
-        return new BufferedInputStream(clazz.getResourceAsStream(jarResource));
+    protected String getFallbackConfigResource() {
+        return DEFAULT_CONFIG_FILE;
     }
 
     @Override

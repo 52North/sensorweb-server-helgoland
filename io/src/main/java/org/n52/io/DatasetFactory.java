@@ -68,11 +68,8 @@ public abstract class DatasetFactory<T> {
     }
 
     protected DatasetFactory(File configFile) {
-        if (configFile == null) {
-            throw new NullPointerException("mapping file must not be null");
-        }
         this.configFile = configFile;
-        mappings = new Properties();
+        this.mappings = new Properties();
         loadMappings(mappings, configFile);
     }
 
@@ -94,39 +91,40 @@ public abstract class DatasetFactory<T> {
         }
 
         LOGGER.debug("loading fallback config.");
-        return new BufferedInputStream(getFallbackConfigResource());
+        final String jarResource = getFallbackConfigResource();
+        return new BufferedInputStream(getTargetType().getResourceAsStream(jarResource));
     }
 
-    public boolean isKnown(String datasetType) {
-        return mappings.containsKey(datasetType);
+    public boolean isKnown(String type) {
+        return mappings.containsKey(type);
     }
 
-    public boolean hasCacheEntry(String datasetType) {
-        return cache.containsKey(datasetType);
+    public boolean hasCacheEntry(String type) {
+        return cache.containsKey(type);
     }
 
-    public T getCacheEntry(String datasetType) {
-        return cache.get(datasetType);
+    public T getCacheEntry(String type) {
+        return cache.get(type);
     }
 
-    public T create(String datasetType) throws DatasetFactoryException {
-        if (cache.containsKey(datasetType)) {
-            return cache.get(datasetType);
+    public T create(String type) throws DatasetFactoryException {
+        if (cache.containsKey(type)) {
+            return cache.get(type);
         }
-        if ( !mappings.containsKey(datasetType)) {
-            LOGGER.debug("No mapping entry for type '{}'", datasetType);
-            throw new DatasetFactoryException("No datasets available for '" + datasetType + "'.");
+        if ( !mappings.containsKey(type)) {
+            LOGGER.debug("No mapping entry for type '{}'", type);
+            throw new DatasetFactoryException("No datasets available for '" + type + "'.");
         }
-        final String clazz = mappings.getProperty(datasetType);
+        final String clazz = mappings.getProperty(type);
         try {
-            final Class<?> type = Class.forName(clazz);
-            T instance = createInstance(type);
-            cache.put(datasetType, instance);
+            final Class<?> instanceType = Class.forName(clazz);
+            T instance = createInstance(instanceType);
+            cache.put(type, instance);
             initInstance(instance);
             return instance;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
-            LOGGER.error("Invalid mapping entry '{}'='{}'", datasetType, clazz, e);
-            throw new DatasetFactoryException("No datasets available for '" + datasetType + "'.");
+            LOGGER.error("Invalid mapping entry '{}'='{}'", type, clazz, e);
+            throw new DatasetFactoryException("No datasets available for '" + type + "'.");
         }
     }
 
@@ -142,7 +140,7 @@ public abstract class DatasetFactory<T> {
         }
     }
 
-    protected abstract InputStream getFallbackConfigResource();
+    protected abstract String getFallbackConfigResource();
 
     protected T initInstance(T instance) {
         return instance; // override if needed

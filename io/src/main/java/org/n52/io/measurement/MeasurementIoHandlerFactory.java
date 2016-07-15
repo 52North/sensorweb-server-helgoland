@@ -34,6 +34,7 @@ import static org.n52.io.MimeType.TEXT_CSV;
 
 import java.net.URI;
 import org.n52.io.IoHandler;
+import org.n52.io.IoHandlerFactory;
 
 import org.n52.io.MimeType;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
@@ -43,7 +44,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.series.csv.CsvIoHandler;
 
-public final class MeasurementIoHandlerFactory {
+public final class MeasurementIoHandlerFactory implements IoHandlerFactory {
 
     private MimeType mimeType = IMAGE_PNG;
 

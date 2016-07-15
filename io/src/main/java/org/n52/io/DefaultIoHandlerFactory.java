@@ -31,9 +31,8 @@ package org.n52.io;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
-import org.n52.io.response.dataset.Data;
 
-public class DefaultIoHandlerFactory extends DatasetFactory<IoHandler> implements IoHandlerFactory {
+public class DefaultIoHandlerFactory extends DatasetFactory<IoHandlerFactory> {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-io-factory.properties";
 
@@ -46,25 +45,21 @@ public class DefaultIoHandlerFactory extends DatasetFactory<IoHandler> implement
     }
 
     @Override
-    public IoHandler<? extends Data> createHandler(String datasetType) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected String getFallbackConfigResource() {
+        return "/" + DEFAULT_CONFIG_FILE;
     }
 
     @Override
-    protected InputStream getFallbackConfigResource() {
-         final String jarResource = "/" + DEFAULT_CONFIG_FILE;
-        Class<?> clazz = DefaultIoHandlerFactory.class;
-        return new BufferedInputStream(clazz.getResourceAsStream(jarResource));
-    }
-
-    @Override
-    protected IoHandler initInstance(IoHandler instance) {
+    protected IoHandlerFactory initInstance(IoHandlerFactory instance) {
+        
+        // TODO
+        
         return instance;
     }
 
     @Override
-    protected Class<IoHandler> getTargetType() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected Class<IoHandlerFactory> getTargetType() {
+        return IoHandlerFactory.class;
     }
 
 
