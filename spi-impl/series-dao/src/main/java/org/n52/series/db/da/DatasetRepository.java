@@ -47,9 +47,9 @@ import org.n52.io.response.dataset.count.CountObservationSeriesOutput;
 import org.n52.io.response.dataset.count.CountValue;
 import org.n52.io.response.dataset.text.TextObservationSeriesOutput;
 import org.n52.io.response.dataset.text.TextValue;
-import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;
-import org.n52.sensorweb.spi.search.SearchResult;
+import org.n52.io.response.v1.ext.DatasetType;
+import org.n52.series.spi.search.SearchResult;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
@@ -82,7 +82,7 @@ public class DatasetRepository<T extends Data>
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
-            id = ObservationType.extractId(id);
+            id = DatasetType.extractId(id);
             SeriesDao<DatasetEntity> dao = new SeriesDao<>(session, DatasetEntity.class);
             return dao.hasInstance(parseId(id), DatasetEntity.class);
         } finally {
@@ -144,8 +144,8 @@ public class DatasetRepository<T extends Data>
     public DatasetOutput getInstance(String id, DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            String seriesId = ObservationType.extractId(id);
-            final String datasetType = ObservationType.extractType(id).getObservationType();
+            String seriesId = DatasetType.extractId(id);
+            final String datasetType = DatasetType.extractType(id);
             SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
             DatasetEntity instance = dao.getInstance(Long.parseLong(seriesId), query);
             return createExpanded(instance, query, session);

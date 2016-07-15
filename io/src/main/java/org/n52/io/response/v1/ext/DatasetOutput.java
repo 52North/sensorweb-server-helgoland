@@ -39,29 +39,27 @@ import org.n52.io.response.dataset.SeriesReferenceValueOutput;
 
 public abstract class DatasetOutput<T extends SeriesReferenceValueOutput> extends ParameterOutput {
 
-    private final ObservationType observationType;
+    private final String datasetType;
 
     private SeriesParameters seriesParameters;
 
-    private String uom;
-
     private Set<String> rawFormats;
 
-    public DatasetOutput(ObservationType observationType) {
-        this.observationType = observationType;
+    private T[] referenceValues;
+
+    private String uom;
+
+    public DatasetOutput(String datasetType){
+        this.datasetType = datasetType;
     }
 
     @Override
     public void setId(String id) {
-        super.setId(getIdPrefix() + "/" + id);
+        super.setId(DatasetType.createId(datasetType, id));
     }
 
-    public String getObservationType() {
-        return observationType.getObservationType();
-    }
-
-    protected String getIdPrefix() {
-        return observationType.getIdPrefix();
+    public String getDatasetType() {
+        return datasetType;
     }
 
     public SeriesParameters getSeriesParameters() {

@@ -41,11 +41,8 @@ public enum ObservationType {
     // TODO refactor to configuration
 
     MEASUREMENT,
-    PROFILE,
     TEXT,
-    COUNT,
-    URI,
-    ALL;
+    COUNT;
 
     public String getIdPrefix() {
         return name().toLowerCase();

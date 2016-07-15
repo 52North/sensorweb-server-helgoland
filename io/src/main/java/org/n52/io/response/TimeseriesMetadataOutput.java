@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.v1.ext.DatasetType;
 
 /**
  *
@@ -58,13 +59,13 @@ public class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
 
     @Override
     @JsonIgnore
-    public String getObservationType() {
-        return super.getObservationType();
+    public String getDatasetType() {
+        return super.getDatasetType();
     }
 
     @Override
     public String getId() {
-        return super.getId().replace(getIdPrefix() + "/", "");
+        return DatasetType.extractId(super.getId());
     }
 
     public StationOutput getStation() {
