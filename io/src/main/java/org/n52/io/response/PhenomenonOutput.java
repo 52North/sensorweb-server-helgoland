@@ -26,9 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1;
+package org.n52.io.response;
 
 import org.n52.io.response.AbstractOutput;
 
-public class CategoryOutput extends AbstractOutput {
+public class PhenomenonOutput extends AbstractOutput {
 }

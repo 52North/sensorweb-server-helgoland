@@ -33,11 +33,11 @@ import java.util.Collection;
 import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.v1.CategoryOutput;
-import org.n52.io.response.v1.FeatureOutput;
-import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.v1.ProcedureOutput;
-import org.n52.io.response.v1.StationOutput;
+import org.n52.io.response.CategoryOutput;
+import org.n52.io.response.FeatureOutput;
+import org.n52.io.response.PhenomenonOutput;
+import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.StationOutput;
 
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.sensorweb.spi.search.SearchService;

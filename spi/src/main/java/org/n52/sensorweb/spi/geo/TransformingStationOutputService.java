@@ -31,7 +31,7 @@ package org.n52.sensorweb.spi.geo;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.StationOutput;
+import org.n52.io.response.StationOutput;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.ParameterService;
 import org.n52.sensorweb.spi.RawDataService;

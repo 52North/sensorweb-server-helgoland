@@ -34,7 +34,6 @@ import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
-import org.n52.io.response.v1.StationOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.n52.io.response.dataset.SeriesParameters;

@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.v1.ProcedureOutput;
+import org.n52.io.response.ProcedureOutput;
 
 public class ProcedureOutputCollection extends OutputCollection<ProcedureOutput> {
 

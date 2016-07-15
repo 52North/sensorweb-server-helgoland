@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.response.PhenomenonOutput;
 
 public class PhenomenonOutputCollection extends OutputCollection<PhenomenonOutput> {
 

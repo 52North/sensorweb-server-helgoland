@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.CategoryOutput;
+import org.n52.io.response.CategoryOutput;
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.sensorweb.spi.search.CategorySearchResult;
 import org.n52.series.db.dao.CategoryDao;

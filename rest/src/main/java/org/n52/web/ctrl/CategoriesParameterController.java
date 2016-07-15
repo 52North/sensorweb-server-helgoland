@@ -29,7 +29,7 @@
 package org.n52.web.ctrl;
 
 
-import org.n52.io.response.v1.CategoryOutput;
+import org.n52.io.response.CategoryOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

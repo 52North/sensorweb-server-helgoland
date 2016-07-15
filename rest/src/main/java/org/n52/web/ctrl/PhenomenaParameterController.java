@@ -29,7 +29,7 @@
 package org.n52.web.ctrl;
 
 
-import org.n52.io.response.v1.PhenomenonOutput;
+import org.n52.io.response.PhenomenonOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -35,9 +35,9 @@ import java.util.List;
 
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.FeatureOutput;
-import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.io.response.v1.ProcedureOutput;
+import org.n52.io.response.FeatureOutput;
+import org.n52.io.response.PhenomenonOutput;
+import org.n52.io.response.ProcedureOutput;
 
 /**
  * TODO: JavaDoc

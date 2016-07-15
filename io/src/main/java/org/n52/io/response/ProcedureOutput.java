@@ -26,40 +26,45 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1;
+package org.n52.io.response;
 
-import org.n52.io.response.AbstractOutput;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.n52.io.v1.data.RawFormats;
 
-public class FeatureOutput extends AbstractOutput {
+public class ProcedureOutput extends OfferingOutput implements RawFormats {
+
+    private Set<String> rawFormats;
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        return result;
+    public String[] getRawFormats() {
+        if (rawFormats != null) {
+            return rawFormats.toArray(new String[0]);
+        }
+        return null;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof FeatureOutput)) {
-            return false;
-        }
-        FeatureOutput other = (FeatureOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
+    public void addRawFormat(String format) {
+        if (format != null && !format.isEmpty()) {
+            if (rawFormats == null) {
+                rawFormats = new HashSet<String>();
             }
-        } else if (!service.equals(other.service)) {
-            return false;
+            rawFormats.add(format);
         }
-        return true;
+    }
+
+    @Override
+    public void setRawFormats(Collection<String> formats) {
+        if (formats != null && !formats.isEmpty()) {
+            if (rawFormats == null) {
+                rawFormats = new HashSet<String>();
+            } else {
+                rawFormats.clear();
+            }
+            this.rawFormats.addAll(formats);
+        }
     }
 
 }

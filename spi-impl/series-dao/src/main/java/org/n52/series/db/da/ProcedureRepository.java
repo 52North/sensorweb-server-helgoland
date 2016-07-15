@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.ProcedureOutput;
+import org.n52.io.response.ProcedureOutput;
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.sensorweb.spi.search.ProcedureSearchResult;
 import org.n52.series.db.DataAccessException;

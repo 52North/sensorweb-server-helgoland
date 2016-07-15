@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.v1.FeatureOutput;
+import org.n52.io.response.FeatureOutput;
 
 public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
