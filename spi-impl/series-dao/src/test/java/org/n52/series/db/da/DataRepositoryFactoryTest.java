@@ -36,11 +36,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.web.exception.ResourceNotFoundException;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.n52.io.DatasetFactoryException;
 import org.n52.series.db.beans.ServiceInfo;
 
 public class DataRepositoryFactoryTest {
@@ -57,55 +57,55 @@ public class DataRepositoryFactoryTest {
     }
 
     @Test
-    public void when_createdWithNoConfig_useDefaultConfig() {
+    public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
         DataRepositoryFactory m = new DataRepositoryFactory();
-        assertFalse(m.isKnownEntry("text"));
-        assertFalse(m.isKnownEntry("count"));
-        assertTrue(m.createRepository("measurement").getClass() == MeasurementDataRepository.class);
+        assertFalse(m.isKnown("text"));
+        assertFalse(m.isKnown("count"));
+        assertTrue(m.create("measurement").getClass() == MeasurementDataRepository.class);
     }
 
     @Test
-    public void when_havingInvalidEntry_then_throwException() throws URISyntaxException {
-        thrown.expect(ResourceNotFoundException.class);
+    public void when_havingInvalidEntry_then_throwException() throws URISyntaxException, DatasetFactoryException {
+        thrown.expect(DatasetFactoryException.class);
         thrown.expectMessage(is("No datasets available for 'invalid'."));
         File configFile = getConfigFile("dataset-factory_with-invalid-entries.properties");
-        new DataRepositoryFactory(configFile).createRepository("invalid");
+        new DataRepositoryFactory(configFile).create("invalid");
     }
 
     @Test
-    public void when_mapToText_then_returnTextDataRepository() {
-        assertTrue(factory.createRepository("text").getClass() == TextDataRepository.class);
+    public void when_mapToText_then_returnTextDataRepository() throws DatasetFactoryException {
+        assertTrue(factory.create("text").getClass() == TextDataRepository.class);
     }
 
     @Test
-    public void when_mapToText_then_returnCountDataRepository() {
-        assertTrue(factory.createRepository("count").getClass() == CountDataRepository.class);
+    public void when_mapToText_then_returnCountDataRepository() throws DatasetFactoryException {
+        assertTrue(factory.create("count").getClass() == CountDataRepository.class);
     }
 
     @Test
-    public void when_mapToText_then_returnMeasurementDataRepository() {
-        assertTrue(factory.createRepository("measurement").getClass() == MeasurementDataRepository.class);
+    public void when_mapToText_then_returnMeasurementDataRepository() throws DatasetFactoryException {
+        assertTrue(factory.create("measurement").getClass() == MeasurementDataRepository.class);
     }
 
     @Test
-    public void when_instanceCreated_then_nextTimeFromCache() {
-        DataRepository instance = factory.createRepository("measurement");
+    public void when_instanceCreated_then_nextTimeFromCache() throws DatasetFactoryException {
+        DataRepository instance = factory.create("measurement");
         Assert.assertTrue(factory.hasCacheEntry("measurement"));
-        Assert.assertTrue(instance == factory.createRepository("measurement"));
+        Assert.assertTrue(instance == factory.create("measurement"));
     }
 
     @Test
-    public void when_serviceInfoAvailable_then_instanceHasServiceInfo() {
+    public void when_serviceInfoAvailable_then_instanceHasServiceInfo() throws DatasetFactoryException {
         factory.setServiceInfo(new ServiceInfo());
-        DataRepository instance = factory.createRepository("measurement");
+        DataRepository instance = factory.create("measurement");
         Assert.assertNotNull(instance.getServiceInfo());
     }
 
     @Test
-    public void when_mapToInvalid_then_throwException() {
-        thrown.expect(ResourceNotFoundException.class);
+    public void when_mapToInvalid_then_throwException() throws DatasetFactoryException {
+        thrown.expect(DatasetFactoryException.class);
         thrown.expectMessage(is("No datasets available for 'invalid'."));
-        factory.createRepository("invalid");
+        factory.create("invalid");
     }
 
     private File getConfigFile(String name) throws URISyntaxException {

@@ -28,6 +28,7 @@
  */
 package org.n52.series.srv;
 
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.Data;
@@ -42,6 +43,7 @@ import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.web.exception.InternalServerException;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.db.da.DataRepository;
+import org.n52.web.exception.ResourceNotFoundException;
 
 /**
  * TODO: JavaDoc
@@ -79,8 +81,19 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         String datasetType = DatasetType.extractType(seriesId);
-        DataRepository dataRepository = factory.createRepository(datasetType);
+        DataRepository dataRepository = createRepository(datasetType);
         return dataRepository.getData(seriesId, dbQuery);
+    }
+
+    private DataRepository createRepository(String datasetType) throws DataAccessException {
+        if ( !factory.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
+        try {
+            return factory.create(datasetType);
+        } catch (DatasetFactoryException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
 }

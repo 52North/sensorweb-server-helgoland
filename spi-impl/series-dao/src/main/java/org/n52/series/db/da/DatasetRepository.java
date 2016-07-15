@@ -38,6 +38,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
@@ -63,6 +64,7 @@ import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -114,9 +116,16 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private SeriesDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) {
-        final DataRepository dataRepository = factory.createRepository(datasetType);
-        return getSeriesDao(dataRepository.getEntityType(), session);
+    private SeriesDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) throws DataAccessException {
+        if ( !factory.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
+        try {
+            DataRepository dataRepository = factory.create(datasetType);
+            return getSeriesDao(dataRepository.getEntityType(), session);
+        } catch (DatasetFactoryException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     private SeriesDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {

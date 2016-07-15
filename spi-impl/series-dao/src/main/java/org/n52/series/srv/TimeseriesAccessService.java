@@ -29,6 +29,7 @@
 
 package org.n52.series.srv;
 
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
@@ -44,6 +45,7 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.db.da.DataRepository;
 import org.n52.series.db.da.DataRepositoryFactory;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Deprecated
@@ -77,8 +79,19 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     private MeasurementData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
-        DataRepository dataRepository = factory.createRepository("measurement");
+        DataRepository dataRepository = createRepository("measurement");
         return (MeasurementData) dataRepository.getData(timeseriesId, dbQuery);
+    }
+
+    private DataRepository createRepository(String datasetType) throws DataAccessException {
+        if ( !factory.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
+        try {
+            return factory.create(datasetType);
+        } catch (DatasetFactoryException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public DataRepositoryFactory getFactory() {

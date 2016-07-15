@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Session;
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
@@ -176,7 +177,7 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
-        MeasurementDataRepository repository = (MeasurementDataRepository) factory.createRepository("measurement");
+        MeasurementDataRepository repository = createRepository("measurement");
 
         output.setReferenceValues(createReferenceValueOutputs(series, query, repository));
         output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series));
@@ -184,6 +185,16 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
         return output;
     }
 
+    private MeasurementDataRepository createRepository(String datasetType) throws DataAccessException {
+        if ( !factory.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
+        try {
+            return (MeasurementDataRepository) factory.create(datasetType);
+        } catch (DatasetFactoryException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
     private MeasurementReferenceValueOutput[] createReferenceValueOutputs(MeasurementDatasetEntity series,
             DbQuery query, MeasurementDataRepository repository) throws DataAccessException {
         List<MeasurementReferenceValueOutput> outputs = new ArrayList<>();
