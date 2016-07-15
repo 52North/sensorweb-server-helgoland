@@ -109,7 +109,11 @@ public abstract class DatasetOutput<T extends SeriesReferenceValueOutput> extend
         }
     }
 
-    public abstract T[] getReferenceValues();
+    public T[] getReferenceValues() {
+        return Utils.copy(referenceValues);
+    }
 
-    public abstract void setReferenceValues(T[] referenceValues);
+    public void setReferenceValues(T[] referenceValues) {
+        this.referenceValues = Utils.copy(referenceValues);
+    }
 }
