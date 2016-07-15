@@ -31,8 +31,8 @@ package org.n52.io.measurement.img;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.n52.io.IoHandler;
+
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;

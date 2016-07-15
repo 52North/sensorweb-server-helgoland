@@ -28,7 +28,6 @@
  */
 package org.n52.io.measurement.report;
 
-import static java.io.File.createTempFile;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 
@@ -37,7 +36,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.Files;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -58,7 +56,6 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
-import org.n52.io.IoParseException;
 import org.n52.io.measurement.img.ChartRenderer;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
@@ -78,6 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import static java.io.File.createTempFile;
+import org.n52.io.IoParseException;
 
 public class PDFReportGenerator extends ReportGenerator {
 

@@ -34,8 +34,6 @@ import static java.awt.Color.WHITE;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 import static org.n52.io.measurement.img.BarRenderer.BAR_CHART_TYPE;
@@ -74,8 +72,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoHandler;
-import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
@@ -88,10 +84,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static javax.imageio.ImageIO.write;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import org.n52.io.IoHandler;
+import org.n52.io.IoParseException;
 
 public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 

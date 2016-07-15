@@ -33,8 +33,8 @@ import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
 
 import java.net.URI;
-
 import org.n52.io.IoHandler;
+
 import org.n52.io.MimeType;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
 import org.n52.io.measurement.img.MeasurementRenderingContext;

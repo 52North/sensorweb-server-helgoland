@@ -44,7 +44,6 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.series.RenderingContext;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
