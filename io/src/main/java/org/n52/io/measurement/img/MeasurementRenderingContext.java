@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import org.n52.io.IoHandler;
 
-import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
@@ -66,7 +66,7 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
      * <code>null</code>.
      * @throws IllegalStateException if amount of timeseries described by the
      * given arguments is not in sync.
-     * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
+     * @return a rendering context to be used by {@link MeasurementIoHandlerFactory} to create an
      * {@link IoHandler}.
      */
     public static MeasurementRenderingContext createContextWith(RequestStyledParameterSet styles,

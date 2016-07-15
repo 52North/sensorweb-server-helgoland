@@ -43,7 +43,7 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.response.dataset.text.TextObservationSeriesOutput;
-import org.n52.io.text.TextObservationIoFactory;
+import org.n52.io.text.TextIoHandlerFactory;
 import org.n52.io.text.TextObservationRenderingContext;
 import org.n52.io.text.format.FormatterFactory;
 
@@ -54,7 +54,7 @@ public class TextSeriesDataControllerService extends DatasetServiceBundle {
         String[] seriesIds = parameters.getSeriesIds();
         OutputCollection<TextObservationSeriesOutput> metadatas = getMetadataService().getParameters(seriesIds, map);
         TextObservationRenderingContext context = createContextWith(parameters, metadatas.getItems());
-        return TextObservationIoFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
+        return TextIoHandlerFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TextSeriesDataControllerService extends DatasetServiceBundle {
       String seriesId = parameters.getSeriesIds()[0];
       TextObservationSeriesOutput metadata = (TextObservationSeriesOutput)getMetadataService().getParameter(seriesId, map);
       TextObservationRenderingContext context = createContextForSingleSeries(metadata, map);
-      return TextObservationIoFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
+      return TextIoHandlerFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
 
     }
 
@@ -71,7 +71,7 @@ public class TextSeriesDataControllerService extends DatasetServiceBundle {
         String[] seriesIds = parameters.getSeriesIds();
         OutputCollection<TextObservationSeriesOutput> metadatas = getMetadataService().getParameters(seriesIds, map);
         TextObservationRenderingContext context = createContextWith(parameters, metadatas.getItems());
-        return TextObservationIoFactory.createWith(map).createIOHandler(context);
+        return TextIoHandlerFactory.createWith(map).createIOHandler(context);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TextSeriesDataControllerService extends DatasetServiceBundle {
         String seriesId = parameters.getSeriesIds()[0];
         TextObservationSeriesOutput metadata = (TextObservationSeriesOutput)getMetadataService().getParameter(seriesId, map);
         TextObservationRenderingContext context = createContextForSingleSeries(metadata, map);
-        return TextObservationIoFactory.createWith(map).createIOHandler(context);
+        return TextIoHandlerFactory.createWith(map).createIOHandler(context);
     }
 
     @Override

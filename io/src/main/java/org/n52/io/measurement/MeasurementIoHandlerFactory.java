@@ -43,7 +43,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.series.csv.CsvIoHandler;
 
-public final class MeasurementIoFactory {
+public final class MeasurementIoHandlerFactory {
 
     private MimeType mimeType = IMAGE_PNG;
 
@@ -51,25 +51,25 @@ public final class MeasurementIoFactory {
 
     private URI servletContextRoot;
 
-    private MeasurementIoFactory(IoParameters parameters) {
+    private MeasurementIoHandlerFactory(IoParameters parameters) {
         this.config = parameters;
     }
 
     /**
-     * @return An {@link MeasurementIoFactory} instance with default values set. Configure
+     * @return An {@link MeasurementIoHandlerFactory} instance with default values set. Configure
      * factory by passing an {@link IoParameters} instance. After creating the
      * factory an apropriately configured {@link IoHandler} is returned when
      * calling {@link #createIOHandler(MeasurementRenderingContext)}.
      */
-    public static MeasurementIoFactory create() {
+    public static MeasurementIoHandlerFactory create() {
         return createWith(null);
     }
 
-    public static MeasurementIoFactory createWith(IoParameters parameters) {
+    public static MeasurementIoHandlerFactory createWith(IoParameters parameters) {
         if (parameters == null) {
             parameters = IoParameters.createDefaults();
         }
-        return new MeasurementIoFactory(parameters);
+        return new MeasurementIoHandlerFactory(parameters);
     }
 
     /**
@@ -77,12 +77,12 @@ public final class MeasurementIoFactory {
      * {@link MimeType#IMAGE_PNG}).
      * @return this instance for parameter chaining.
      */
-    public MeasurementIoFactory forMimeType(MimeType mimeType) {
+    public MeasurementIoHandlerFactory forMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
         return this;
     }
 
-    public MeasurementIoFactory withServletContextRoot(URI servletContextRoot) {
+    public MeasurementIoHandlerFactory withServletContextRoot(URI servletContextRoot) {
         this.servletContextRoot = servletContextRoot;
         return this;
     }

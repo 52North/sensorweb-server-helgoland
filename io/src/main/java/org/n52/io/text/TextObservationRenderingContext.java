@@ -31,8 +31,8 @@ package org.n52.io.text;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.n52.io.IoHandler;
+
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -41,6 +41,7 @@ import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.RenderingContext;
 
 public final class TextObservationRenderingContext implements RenderingContext<TextObservationSeriesOutput> {
+
     private final RequestStyledParameterSet chartStyleDefinitions;
 
     private final List<TextObservationSeriesOutput> seriesMetadatas;
@@ -92,15 +93,18 @@ public final class TextObservationRenderingContext implements RenderingContext<T
         return createContextWith(parameters, Collections.singletonList(metadata));
     }
 
+    @Override
     public void setDimensions(ChartDimension dimension) {
         chartStyleDefinitions.setWidth(dimension.getWidth());
         chartStyleDefinitions.setHeight(dimension.getHeight());
     }
 
+    @Override
     public RequestStyledParameterSet getChartStyleDefinitions() {
         return chartStyleDefinitions;
     }
 
+    @Override
     public List<TextObservationSeriesOutput> getSeriesMetadatas() {
         return seriesMetadatas;
     }
@@ -110,6 +114,7 @@ public final class TextObservationRenderingContext implements RenderingContext<T
         return new ArrayList<DatasetOutput>(seriesMetadatas);
     }
 
+    @Override
     public String getTimeAxisFormat() {
         if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
             return chartStyleDefinitions.getAsString("timeaxis.format");

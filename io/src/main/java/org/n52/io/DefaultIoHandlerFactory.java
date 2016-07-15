@@ -28,16 +28,43 @@
  */
 package org.n52.io;
 
-public class DatasetFactoryException extends Exception {
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
+import org.n52.io.response.dataset.Data;
 
-    private static final long serialVersionUID = -6474285099278656900L;
+public class DefaultIoHandlerFactory extends DatasetFactory<IoHandler> implements IoHandlerFactory {
 
-    public DatasetFactoryException(String message) {
-        super(message);
+    private static final String DEFAULT_CONFIG_FILE = "dataset-io-factory.properties";
+
+    public DefaultIoHandlerFactory() {
+        super(DEFAULT_CONFIG_FILE);
     }
 
-    public DatasetFactoryException(String message, Throwable cause) {
-        super(message, cause);
+    public DefaultIoHandlerFactory(File configFile) {
+        super(configFile);
+    }
+
+    @Override
+    public IoHandler<? extends Data> createHandler(String datasetType) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected InputStream getFallbackConfigResource() {
+         final String jarResource = "/" + DEFAULT_CONFIG_FILE;
+        Class<?> clazz = DefaultIoHandlerFactory.class;
+        return new BufferedInputStream(clazz.getResourceAsStream(jarResource));
+    }
+
+    @Override
+    protected IoHandler initInstance(IoHandler instance) {
+        return instance;
+    }
+
+    @Override
+    protected Class<IoHandler> getTargetType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

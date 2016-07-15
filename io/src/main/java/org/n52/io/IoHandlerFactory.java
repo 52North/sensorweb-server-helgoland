@@ -28,17 +28,11 @@
  */
 package org.n52.io;
 
-public class DatasetFactoryException extends Exception {
+import org.n52.io.response.dataset.Data;
 
-    private static final long serialVersionUID = -6474285099278656900L;
+public interface IoHandlerFactory {
 
-    public DatasetFactoryException(String message) {
-        super(message);
-    }
+    IoHandler<? extends Data> createHandler(String datasetType);
 
-    public DatasetFactoryException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-
+    boolean isKnown(String datasetType);
 }

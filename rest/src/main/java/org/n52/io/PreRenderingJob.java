@@ -50,7 +50,7 @@ import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
-import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.request.IoParameters;
@@ -193,7 +193,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(config)
                 .createIOHandler(context);
         String chartQualifier = renderingConfig.getChartQualifier();

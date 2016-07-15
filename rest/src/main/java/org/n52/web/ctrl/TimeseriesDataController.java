@@ -61,7 +61,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.request.IoParameters;
@@ -88,6 +88,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.n52.series.spi.srv.DataService;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
@@ -209,7 +213,7 @@ public class TimeseriesDataController extends BaseController {
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
                 .withServletContextRoot(getRootResource())
@@ -239,7 +243,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
                 .withServletContextRoot(getRootResource())
@@ -274,7 +278,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .forMimeType(TEXT_CSV)
                 .createIOHandler(context);
@@ -304,7 +308,7 @@ public class TimeseriesDataController extends BaseController {
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
         MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .createIOHandler(context);
 
@@ -331,7 +335,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<MeasurementData> renderer = MeasurementIoFactory
+        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .createIOHandler(context);
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());

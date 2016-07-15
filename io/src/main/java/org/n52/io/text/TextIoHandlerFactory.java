@@ -28,49 +28,44 @@
  */
 package org.n52.io.text;
 
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
 
 import java.net.URI;
-
 import org.n52.io.IoHandler;
+
 import org.n52.io.MimeType;
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.MultipleChartsRenderer;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
-import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.series.csv.CsvIoHandler;
 
-public class TextObservationIoFactory {
-    private MimeType mimeType = IMAGE_PNG;
+public class TextIoHandlerFactory {
+
+    private MimeType mimeType = TEXT_CSV;
 
     private final IoParameters config;
 
     private URI servletContextRoot;
 
-    private TextObservationIoFactory(IoParameters parameters) {
+    private TextIoHandlerFactory(IoParameters parameters) {
         this.config = parameters;
     }
 
     /**
-     * @return An {@link TextObservationIoFactory} instance with default values set. Configure
-     * factory by passing an {@link IoParameters} instance. After creating the
-     * factory an apropriately configured {@link IoHandler} is returned when
-     * calling {@link #createIOHandler(TextObservationRenderingContext)}.
+     * @return An {@link TextIoHandlerFactory} instance with default values
+     * set. Configure factory by passing an {@link IoParameters} instance. After
+     * creating the factory an apropriately configured {@link IoHandler} is
+     * returned when calling
+     * {@link #createIOHandler(TextObservationRenderingContext)}.
      */
-    public static TextObservationIoFactory create() {
+    public static TextIoHandlerFactory create() {
         return createWith(null);
     }
 
-    public static TextObservationIoFactory createWith(IoParameters parameters) {
+    public static TextIoHandlerFactory createWith(IoParameters parameters) {
         if (parameters == null) {
             parameters = IoParameters.createDefaults();
         }
-        return new TextObservationIoFactory(parameters);
+        return new TextIoHandlerFactory(parameters);
     }
 
     /**
@@ -78,25 +73,20 @@ public class TextObservationIoFactory {
      * {@link MimeType#IMAGE_PNG}).
      * @return this instance for parameter chaining.
      */
-    public TextObservationIoFactory forMimeType(MimeType mimeType) {
+    public TextIoHandlerFactory forMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
         return this;
     }
 
-    public TextObservationIoFactory withServletContextRoot(URI servletContextRoot) {
+    public TextIoHandlerFactory withServletContextRoot(URI servletContextRoot) {
         this.servletContextRoot = servletContextRoot;
         return this;
     }
 
     public IoHandler<TextObservationData> createIOHandler(TextObservationRenderingContext context) {
 
-        if (mimeType == APPLICATION_PDF) {
-            return null;
-        } else if (mimeType == IMAGE_PNG) {
-
-            return null;
-        } else if (mimeType == TEXT_CSV) {
-            CsvIoHandler<TextObservationData> handler = new CsvIoHandler<TextObservationData>(context, config.getLocale());
+        if (mimeType == TEXT_CSV) {
+            CsvIoHandler<TextObservationData> handler = new CsvIoHandler<>(context, config.getLocale());
             handler.setTokenSeparator(config.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
