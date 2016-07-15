@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.v1.StationOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.n52.io.response.dataset.SeriesParameters;
 
 /**
  *
@@ -44,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @deprecated since 2.0.0. use {@link MeasurementSeriesOutput} instead.
  */
 @Deprecated
-public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
+public class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
 
     @Deprecated
     private StyleProperties renderingHints;
@@ -125,4 +126,90 @@ public abstract class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
         this.statusIntervals = statusIntervals;
     }
 
+    @Override
+    public SeriesParameters getSeriesParameters() {
+        return new AdaptedSeriesParameters(super.getSeriesParameters());
+    }
+
+    private class AdaptedSeriesParameters extends SeriesParameters {
+
+        private final SeriesParameters parameters;
+
+        public AdaptedSeriesParameters(SeriesParameters parameters) {
+            this.parameters = parameters == null
+                    ? new SeriesParameters()
+                    : parameters;
+        }
+
+        @Override
+        public ParameterOutput getPlatform() {
+            return TimeseriesMetadataOutput.this.getStation();
+        }
+
+        @Override
+        public void setPhenomenon(ParameterOutput phenomenon) {
+            parameters.setPhenomenon(phenomenon);
+        }
+
+        @Override
+        public void setProcedure(ParameterOutput procedure) {
+            parameters.setProcedure(procedure);
+        }
+
+        @Override
+        public void setCategory(ParameterOutput category) {
+            parameters.setCategory(category);
+        }
+
+        @Override
+        public void setOffering(ParameterOutput offering) {
+            parameters.setOffering(offering);
+        }
+
+        @Override
+        public void setFeature(ParameterOutput feature) {
+            parameters.setFeature(feature);
+        }
+
+        @Override
+        public void setService(ServiceOutput service) {
+            parameters.setService(service);
+        }
+
+        @Override
+        public void setPlatform(ParameterOutput platform) {
+            parameters.setPlatform(platform);
+        }
+
+        @Override
+        public ParameterOutput getPhenomenon() {
+            return parameters.getPhenomenon();
+        }
+
+        @Override
+        public ParameterOutput getProcedure() {
+            return parameters.getProcedure();
+        }
+
+        @Override
+        public ParameterOutput getCategory() {
+            return parameters.getCategory();
+        }
+
+        @Override
+        public ParameterOutput getOffering() {
+            return parameters.getOffering();
+        }
+
+        @Override
+        public ParameterOutput getFeature() {
+            return parameters.getFeature();
+        }
+
+        @Override
+        public ParameterOutput getService() {
+            return parameters.getService();
+        }
+
+    }
 }

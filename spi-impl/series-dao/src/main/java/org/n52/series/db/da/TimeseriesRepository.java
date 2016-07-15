@@ -38,7 +38,6 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
-import org.n52.io.response.v1.SeriesMetadataV1Output;
 import org.n52.io.response.v1.StationOutput;
 import org.n52.sensorweb.spi.search.SearchResult;
 import org.n52.sensorweb.spi.search.TimeseriesSearchResult;
@@ -186,7 +185,7 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     }
 
     private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
-        SeriesMetadataV1Output output = createCondensed(series, query);
+        TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(dataRepository.createSeriesValueFor(series.getFirstValue(), series));
@@ -213,8 +212,8 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
         return outputs.toArray(new MeasurementReferenceValueOutput[0]);
     }
 
-    private SeriesMetadataV1Output createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
-        SeriesMetadataV1Output output = new SeriesMetadataV1Output();
+    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+        TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
         String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
