@@ -30,13 +30,13 @@ package org.n52.io.response.series.count;
 
 import org.n52.io.response.series.SeriesReferenceValueOutput;
 
-public class CountObservationReferenceValueOutput implements SeriesReferenceValueOutput<CountObservationValue>{
+public class CountObservationReferenceValueOutput implements SeriesReferenceValueOutput<CountValue>{
 
     private String referenceValueId;
 
     private String label;
 
-    private CountObservationValue lastValue;
+    private CountValue lastValue;
 
     public String getReferenceValueId() {
         return referenceValueId;
@@ -54,11 +54,11 @@ public class CountObservationReferenceValueOutput implements SeriesReferenceValu
         this.label = label;
     }
 
-    public CountObservationValue getLastValue() {
+    public CountValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(CountObservationValue lastValue) {
+    public void setLastValue(CountValue lastValue) {
         this.lastValue = lastValue;
     }
 }

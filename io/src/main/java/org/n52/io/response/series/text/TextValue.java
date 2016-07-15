@@ -30,31 +30,23 @@ package org.n52.io.response.series.text;
 
 import org.n52.io.response.series.AbstractValue;
 
-public class TextObservationValue extends AbstractValue<String> {
+public class TextValue extends AbstractValue<String> {
 
     private static final long serialVersionUID = -7292181682632614697L;
 
-    private String value;
-
-    public TextObservationValue() {
+    public TextValue() {
         // for serialization
     }
 
-    public TextObservationValue(long timestamp, String value) {
-        super(timestamp);
-        this.value = value;
+    public TextValue(long timestamp, String value) {
+        super(timestamp, value);
     }
 
     @Override
     public String getValue() {
-        return value == null
-                ? ""
-                : value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
+        return super.getValue() == null 
+                ? ""  // TODO null for no_data
+                : super.getValue();
     }
 
 }

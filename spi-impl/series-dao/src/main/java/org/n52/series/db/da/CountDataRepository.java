@@ -38,7 +38,7 @@ import org.hibernate.Session;
 import org.joda.time.Interval;
 import org.n52.io.response.series.count.CountObservationData;
 import org.n52.io.response.series.count.CountObservationDataMetadata;
-import org.n52.io.response.series.count.CountObservationValue;
+import org.n52.io.response.series.count.CountValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
@@ -114,24 +114,24 @@ public class CountDataRepository extends AbstractDataRepository<CountObservation
         return result;
     }
 
-    private CountObservationValue[] expandToInterval(Interval interval, CountDataEntity entity, CountDatasetEntity series) {
+    private CountValue[] expandToInterval(Interval interval, CountDataEntity entity, CountDatasetEntity series) {
         CountDataEntity referenceStart = new CountDataEntity();
         CountDataEntity referenceEnd = new CountDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
         referenceEnd.setValue(entity.getValue());
-        return new CountObservationValue[]{createSeriesValueFor(referenceStart, series),
+        return new CountValue[]{createSeriesValueFor(referenceStart, series),
             createSeriesValueFor(referenceEnd, series)};
 
     }
 
-    CountObservationValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series) {
+    CountValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         }
-        CountObservationValue value = new CountObservationValue();
+        CountValue value = new CountValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
         addGeometry(observation, value);

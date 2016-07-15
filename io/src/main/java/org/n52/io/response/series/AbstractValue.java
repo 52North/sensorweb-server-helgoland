@@ -35,12 +35,15 @@ public abstract class AbstractValue<T> extends Data implements Comparable<Abstra
     private static final long serialVersionUID = -1606015864495830281L;
 
     private Long timestamp;
+    
+    private T value;
 
     public AbstractValue() {
     }
 
-    public AbstractValue(long timestamp) {
+    public AbstractValue(long timestamp, T value) {
         this.timestamp = timestamp;
+        this.value = value;
     }
 
     public Long getTimestamp() {
@@ -51,9 +54,13 @@ public abstract class AbstractValue<T> extends Data implements Comparable<Abstra
         this.timestamp = timestamp;
     }
 
-    public abstract T getValue();
+    public T getValue() {
+        return value;
+    }
 
-    public abstract void setValue(T value);
+    public void setValue(T value) {
+        this.value = value;
+    }
 
     @Override
     public boolean hasReferenceValues() {

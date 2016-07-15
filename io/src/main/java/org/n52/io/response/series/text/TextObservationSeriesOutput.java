@@ -28,53 +28,34 @@
  */
 package org.n52.io.response.series.text;
 
-import org.n52.io.Utils;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;
 
 public class TextObservationSeriesOutput extends DatasetOutput<TextObservationReferenceValueOutput> {
 
-    private String uom;
-
     private TextObservationReferenceValueOutput[] referenceValues;
 
-    private TextObservationValue firstValue;
+    private TextValue firstValue;
 
-    private TextObservationValue lastValue;
+    private TextValue lastValue;
 
     public TextObservationSeriesOutput() {
-        super(ObservationType.TEXT);
+        super(ObservationType.TEXT.name());
     }
 
-    public String getUom() {
-        return uom;
-    }
-
-    public void setUom(String uom) {
-        this.uom = uom;
-    }
-
-    public TextObservationReferenceValueOutput[] getReferenceValues() {
-        return Utils.copy(referenceValues);
-    }
-
-    public void setReferenceValues(TextObservationReferenceValueOutput[] referenceValues) {
-        this.referenceValues = Utils.copy(referenceValues);
-    }
-
-    public TextObservationValue getFirstValue() {
+    public TextValue getFirstValue() {
         return firstValue;
     }
 
-    public void setFirstValue(TextObservationValue firstValue) {
+    public void setFirstValue(TextValue firstValue) {
         this.firstValue = firstValue;
     }
 
-    public TextObservationValue getLastValue() {
+    public TextValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(TextObservationValue lastValue) {
+    public void setLastValue(TextValue lastValue) {
         this.lastValue = lastValue;
     }
 

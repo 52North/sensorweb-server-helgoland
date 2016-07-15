@@ -44,9 +44,9 @@ import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.series.Data;
 import org.n52.io.response.series.SeriesParameters;
 import org.n52.io.response.series.count.CountObservationSeriesOutput;
-import org.n52.io.response.series.count.CountObservationValue;
+import org.n52.io.response.series.count.CountValue;
 import org.n52.io.response.series.text.TextObservationSeriesOutput;
-import org.n52.io.response.series.text.TextObservationValue;
+import org.n52.io.response.series.text.TextValue;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.sensorweb.spi.search.SearchResult;
@@ -236,29 +236,29 @@ public class DatasetRepository<T extends Data>
         return value;
     }
 
-    private TextObservationValue createSeriesValueFor(TextDataEntity observation,
+    private TextValue createSeriesValueFor(TextDataEntity observation,
             TextDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         } else if (observation.getValue() == null) {
-            return (TextObservationValue)queryObservationFor(observation, series, null);
+            return (TextValue)queryObservationFor(observation, series, null);
         }
-        TextObservationValue value = new TextObservationValue();
+        TextValue value = new TextValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
         return value;
     }
 
-    private CountObservationValue createSeriesValueFor(CountDataEntity observation,
+    private CountValue createSeriesValueFor(CountDataEntity observation,
             CountDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         } else if (observation.getValue() == null) {
-            return (CountObservationValue)queryObservationFor(observation, series, null);
+            return (CountValue)queryObservationFor(observation, series, null);
         }
-        CountObservationValue value = new CountObservationValue();
+        CountValue value = new CountValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
         return value;

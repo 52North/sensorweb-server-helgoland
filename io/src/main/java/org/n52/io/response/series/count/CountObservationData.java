@@ -44,11 +44,11 @@ public class CountObservationData extends Data {
 
     private static final long serialVersionUID = -3990317208637642482L;
 
-    private List<CountObservationValue> values = new ArrayList<>();
+    private List<CountValue> values = new ArrayList<>();
 
     private CountObservationDataMetadata metadata;
 
-    public void addValues(CountObservationValue... values) {
+    public void addValues(CountValue... values) {
         if (values != null && values.length > 0) {
             this.values.addAll(Arrays.asList(values));
         }
@@ -66,25 +66,25 @@ public class CountObservationData extends Data {
         return timeseries;
     }
 
-    public static CountObservationData newCountObservationData(CountObservationValue... values) {
+    public static CountObservationData newCountObservationData(CountValue... values) {
         CountObservationData timeseries = new CountObservationData();
         timeseries.addValues(values);
         return timeseries;
     }
 
     private void addNewValue(Long timestamp, Integer value) {
-        values.add(new CountObservationValue(timestamp, value));
+        values.add(new CountValue(timestamp, value));
     }
 
     /**
      * @return a sorted list of measurement values.
      */
-    public CountObservationValue[] getValues() {
+    public CountValue[] getValues() {
         Collections.sort(values);
-        return values.toArray(new CountObservationValue[0]);
+        return values.toArray(new CountValue[0]);
     }
 
-    void setValues(CountObservationValue[] values) {
+    void setValues(CountValue[] values) {
         this.values = Arrays.asList(values);
     }
 

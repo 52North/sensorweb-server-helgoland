@@ -49,9 +49,9 @@ import org.n52.io.response.series.MeasurementValue;
 import org.n52.io.response.series.Data;
 import org.n52.io.response.series.DataCollection;
 import org.n52.io.response.series.count.CountObservationData;
-import org.n52.io.response.series.count.CountObservationValue;
+import org.n52.io.response.series.count.CountValue;
 import org.n52.io.response.series.text.TextObservationData;
-import org.n52.io.response.series.text.TextObservationValue;
+import org.n52.io.response.series.text.TextValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,7 +181,7 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
         //: ((SeriesMetadataV2Output) metadata).getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
-        for (TextObservationValue value : series.getValues()) {
+        for (TextValue value : series.getValues()) {
             String[] values = new String[HEADER.length];
             values[0] = station;
             values[1] = phenomenon;
@@ -201,7 +201,7 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
         //: ((SeriesMetadataV2Output) metadata).getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
-        for (CountObservationValue value : series.getValues()) {
+        for (CountValue value : series.getValues()) {
             String[] values = new String[HEADER.length];
             values[0] = station;
             values[1] = phenomenon;

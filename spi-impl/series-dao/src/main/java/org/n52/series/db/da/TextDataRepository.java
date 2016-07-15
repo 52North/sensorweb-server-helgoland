@@ -38,7 +38,7 @@ import org.hibernate.Session;
 import org.joda.time.Interval;
 import org.n52.io.response.series.text.TextObservationData;
 import org.n52.io.response.series.text.TextObservationDataMetadata;
-import org.n52.io.response.series.text.TextObservationValue;
+import org.n52.io.response.series.text.TextValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
@@ -114,24 +114,24 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
         return result;
     }
 
-    private TextObservationValue[] expandToInterval(Interval interval, TextDataEntity entity, TextDatasetEntity series) {
+    private TextValue[] expandToInterval(Interval interval, TextDataEntity entity, TextDatasetEntity series) {
         TextDataEntity referenceStart = new TextDataEntity();
         TextDataEntity referenceEnd = new TextDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
         referenceStart.setValue(entity.getValue());
         referenceEnd.setValue(entity.getValue());
-        return new TextObservationValue[]{createSeriesValueFor(referenceStart, series),
+        return new TextValue[]{createSeriesValueFor(referenceStart, series),
             createSeriesValueFor(referenceEnd, series)};
 
     }
 
-    TextObservationValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
+    TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         }
-        TextObservationValue value = new TextObservationValue();
+        TextValue value = new TextValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observation.getValue());
         addGeometry(observation, value);

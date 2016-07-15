@@ -32,27 +32,19 @@ public class MeasurementValue extends AbstractValue<Double> {
 
     private static final long serialVersionUID = -7292181682632614697L;
 
-    private Double value;
-
     public MeasurementValue() {
         // for serialization
     }
 
     public MeasurementValue(long timestamp, Double value) {
-        super(timestamp);
-        this.value = value;
+        super(timestamp, value);
     }
 
     @Override
     public Double getValue() {
-        return value == null
-                ? Double.NaN
-                : value;
-    }
-
-    @Override
-    public void setValue(Double value) {
-        this.value = value;
+        return super.getValue() == null
+                ? Double.NaN // TODO null for no_data
+                : super.getValue();
     }
 
 }

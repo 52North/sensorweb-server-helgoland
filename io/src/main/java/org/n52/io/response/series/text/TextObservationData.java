@@ -44,11 +44,11 @@ public class TextObservationData extends Data {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<TextObservationValue> values = new ArrayList<>();
+    private List<TextValue> values = new ArrayList<>();
 
     private TextObservationDataMetadata metadata;
 
-    public void addValues(TextObservationValue... values) {
+    public void addValues(TextValue... values) {
         if (values != null && values.length > 0) {
             this.values.addAll(Arrays.asList(values));
         }
@@ -66,25 +66,25 @@ public class TextObservationData extends Data {
         return timeseries;
     }
 
-    public static TextObservationData newTextObservationData(TextObservationValue... values) {
+    public static TextObservationData newTextObservationData(TextValue... values) {
         TextObservationData timeseries = new TextObservationData();
         timeseries.addValues(values);
         return timeseries;
     }
 
     private void addNewValue(Long timestamp, String value) {
-        values.add(new TextObservationValue(timestamp, value));
+        values.add(new TextValue(timestamp, value));
     }
 
     /**
      * @return a sorted list of measurement values.
      */
-    public TextObservationValue[] getValues() {
+    public TextValue[] getValues() {
         Collections.sort(values);
-        return values.toArray(new TextObservationValue[0]);
+        return values.toArray(new TextValue[0]);
     }
 
-    void setValues(TextObservationValue[] values) {
+    void setValues(TextValue[] values) {
         this.values = Arrays.asList(values);
     }
 

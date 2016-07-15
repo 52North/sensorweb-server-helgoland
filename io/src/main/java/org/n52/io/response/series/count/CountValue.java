@@ -30,31 +30,23 @@ package org.n52.io.response.series.count;
 
 import org.n52.io.response.series.AbstractValue;
 
-public class CountObservationValue extends AbstractValue<Integer> {
+public class CountValue extends AbstractValue<Integer> {
 
     private static final long serialVersionUID = 635165564503748527L;
 
-    private Integer value;
-
-    public CountObservationValue() {
+    public CountValue() {
         // for serialization
     }
 
-    public CountObservationValue(long timestamp, Integer value) {
-        super(timestamp);
-        this.value = value;
+    public CountValue(long timestamp, Integer value) {
+        super(timestamp, value);
     }
 
     @Override
     public Integer getValue() {
-        return value == null
-                ? Integer.MIN_VALUE
-                : value;
-    }
-
-    @Override
-    public void setValue(Integer value) {
-        this.value = value;
+        return super.getValue() == null
+                ? Integer.MIN_VALUE // TODO null for no_data
+                : super.getValue();
     }
 
 }

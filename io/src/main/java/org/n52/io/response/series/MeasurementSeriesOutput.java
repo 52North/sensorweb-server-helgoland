@@ -28,7 +28,6 @@
  */
 package org.n52.io.response.series;
 
-import org.n52.io.Utils;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;
 
@@ -39,8 +38,6 @@ import org.n52.io.response.v1.ext.DatasetOutput;
  */
 public class MeasurementSeriesOutput extends DatasetOutput<MeasurementReferenceValueOutput> {
 
-    private String uom;
-
     private MeasurementReferenceValueOutput[] referenceValues;
 
     private MeasurementValue firstValue;
@@ -48,23 +45,7 @@ public class MeasurementSeriesOutput extends DatasetOutput<MeasurementReferenceV
     private MeasurementValue lastValue;
 
     public MeasurementSeriesOutput() {
-        super(ObservationType.MEASUREMENT);
-    }
-
-    public String getUom() {
-        return uom;
-    }
-
-    public void setUom(String uom) {
-        this.uom = uom;
-    }
-
-    public MeasurementReferenceValueOutput[] getReferenceValues() {
-        return Utils.copy(referenceValues);
-    }
-
-    public void setReferenceValues(MeasurementReferenceValueOutput[] referenceValues) {
-        this.referenceValues = Utils.copy(referenceValues);
+        super(ObservationType.MEASUREMENT.name());
     }
 
     public MeasurementValue getFirstValue() {

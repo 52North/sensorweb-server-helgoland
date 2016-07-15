@@ -30,13 +30,13 @@ package org.n52.io.response.series.text;
 
 import org.n52.io.response.series.SeriesReferenceValueOutput;
 
-public class TextObservationReferenceValueOutput implements SeriesReferenceValueOutput<TextObservationValue> {
+public class TextObservationReferenceValueOutput implements SeriesReferenceValueOutput<TextValue> {
 
     private String referenceValueId;
 
     private String label;
 
-    private TextObservationValue lastValue;
+    private TextValue lastValue;
 
     public String getReferenceValueId() {
         return referenceValueId;
@@ -54,11 +54,11 @@ public class TextObservationReferenceValueOutput implements SeriesReferenceValue
         this.label = label;
     }
 
-    public TextObservationValue getLastValue() {
+    public TextValue getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(TextObservationValue lastValue) {
+    public void setLastValue(TextValue lastValue) {
         this.lastValue = lastValue;
     }
 }

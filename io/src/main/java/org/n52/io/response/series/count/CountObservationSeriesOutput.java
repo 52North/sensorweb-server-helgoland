@@ -28,43 +28,34 @@
  */
 package org.n52.io.response.series.count;
 
-import org.n52.io.Utils;
 import org.n52.io.response.v1.ext.ObservationType;
 import org.n52.io.response.v1.ext.DatasetOutput;
 
 public class CountObservationSeriesOutput extends DatasetOutput<CountObservationReferenceValueOutput> {
 
-        private CountObservationReferenceValueOutput[] referenceValues;
+    private CountObservationReferenceValueOutput[] referenceValues;
 
-        private CountObservationValue firstValue;
+    private CountValue firstValue;
 
-        private CountObservationValue lastValue;
+    private CountValue lastValue;
 
-        public CountObservationSeriesOutput() {
-            super(ObservationType.COUNT);
-        }
+    public CountObservationSeriesOutput() {
+        super(ObservationType.COUNT.name());
+    }
 
-        public CountObservationReferenceValueOutput[] getReferenceValues() {
-            return Utils.copy(referenceValues);
-        }
+    public CountValue getFirstValue() {
+        return firstValue;
+    }
 
-        public void setReferenceValues(CountObservationReferenceValueOutput[] referenceValues) {
-            this.referenceValues = Utils.copy(referenceValues);
-        }
+    public void setFirstValue(CountValue firstValue) {
+        this.firstValue = firstValue;
+    }
 
-        public CountObservationValue getFirstValue() {
-            return firstValue;
-        }
+    public CountValue getLastValue() {
+        return lastValue;
+    }
 
-        public void setFirstValue(CountObservationValue firstValue) {
-            this.firstValue = firstValue;
-        }
-
-        public CountObservationValue getLastValue() {
-            return lastValue;
-        }
-
-        public void setLastValue(CountObservationValue lastValue) {
-            this.lastValue = lastValue;
-        }
+    public void setLastValue(CountValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }
