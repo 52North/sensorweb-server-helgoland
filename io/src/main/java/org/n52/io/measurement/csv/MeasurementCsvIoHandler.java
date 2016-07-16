@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.series.csv;
+package org.n52.io.measurement.csv;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -34,39 +34,38 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.joda.time.DateTime;
+import org.n52.io.CsvIoHandler;
 import org.n52.io.I18N;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
-import org.n52.io.series.RenderingContext;
+import org.n52.io.measurement.IoContext;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.count.CountObservationData;
 import org.n52.io.response.dataset.count.CountValue;
+import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CsvIoHandler<T extends Data> implements IoHandler<T> {
+public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CsvIoHandler.class);
-
-    private static final String[] HEADER = {"station", "phenomenon", "uom", "date", "value"};
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementCsvIoHandler.class);
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     // needed by some clients to detect UTF-8 encoding (e.g. excel)
     private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
 
-    private RenderingContext context;
+    private IoContext context;
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
@@ -78,10 +77,15 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
 
     private String tokenSeparator = ";";
 
-    public CsvIoHandler(RenderingContext context, String locale) {
+    public MeasurementCsvIoHandler(IoContext context, String locale) {
         this.context = context;
         I18N i18n = I18N.getMessageLocalizer(locale);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
+    }
+
+    @Override
+    protected String[] getHeader() {
+        return new String[] {"station", "phenomenon", "uom", "date", "value"};
     }
 
     public void setTokenSeparator(String tokenSeparator) {
@@ -133,7 +137,7 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
     }
 
     private void writeHeader(OutputStream stream) throws IOException {
-        String csvLine = csvEncode(HEADER);
+        String csvLine = csvEncode(getHeader());
         if (useByteOrderMark) {
             csvLine = UTF8_BYTE_ORDER_MARK + csvLine;
         }
@@ -141,14 +145,17 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
     }
 
     private void writeData(OutputStream stream) throws IOException {
-        for (DatasetOutput metadata : (List<DatasetOutput>)context.getTyplessSeriesMetadatas()) {
+        for (MeasurementSeriesOutput metadata : context.getSeriesMetadatas()) {
             Data series = data.getSeries(metadata.getId());
             if (series instanceof MeasurementData) {
                 writeData(metadata, (MeasurementData) series, stream);
-            } else if (series instanceof TextObservationData) {
-                writeData(metadata, (TextObservationData) series, stream);
-            } else if (series instanceof CountObservationData) {
-                writeData(metadata, (CountObservationData) series, stream);
+                
+                // TODO make csv handler more generic to handle different dataset types
+                
+//            } else if (series instanceof TextObservationData) {
+//                writeData(metadata, (TextObservationData) series, stream);
+//            } else if (series instanceof CountObservationData) {
+//                writeData(metadata, (CountObservationData) series, stream);
             }
         }
     }
@@ -158,7 +165,7 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
         for (MeasurementValue timeseriesValue : series.getValues()) {
-            String[] values = new String[HEADER.length];
+            String[] values = new String[getHeader().length];
             values[0] = station;
             values[1] = phenomenon;
             values[2] = uom;
@@ -172,13 +179,10 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
 
     private void writeData(DatasetOutput metadata, TextObservationData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
-        // instanceof SeriesMetadataV1Output // XXX hack
-        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
-        //: ((SeriesMetadataV2Output) metadata).getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
         for (TextValue value : series.getValues()) {
-            String[] values = new String[HEADER.length];
+            String[] values = new String[getHeader().length];
             values[0] = station;
             values[1] = phenomenon;
             values[2] = uom;
@@ -192,13 +196,10 @@ public class CsvIoHandler<T extends Data> implements IoHandler<T> {
 
     private void writeData(DatasetOutput metadata, CountObservationData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
-        // instanceof SeriesMetadataV1Output // XXX hack
-        //? (String) ((SeriesMetadataV1Output) metadata).getStation().getProperties().get("label")
-        //: ((SeriesMetadataV2Output) metadata).getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
         for (CountValue value : series.getValues()) {
-            String[] values = new String[HEADER.length];
+            String[] values = new String[getHeader().length];
             values[0] = station;
             values[1] = phenomenon;
             values[2] = uom;

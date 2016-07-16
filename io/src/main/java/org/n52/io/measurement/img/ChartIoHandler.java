@@ -28,6 +28,7 @@
  */
 package org.n52.io.measurement.img;
 
+import org.n52.io.measurement.IoContext;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
@@ -37,9 +38,9 @@ import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.n52.io.I18N.getDefaultLocalizer;
 import static org.n52.io.I18N.getMessageLocalizer;
 import static org.n52.io.measurement.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.measurement.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
+import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.COLOR;
+import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.FONT_LABEL;
+import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.FONT_LABEL_SMALL;
 import static org.n52.io.measurement.img.LineRenderer.LINE_CHART_TYPE;
 
 import java.awt.Color;
@@ -82,18 +83,18 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
 
-public abstract class ChartRenderer implements IoHandler<MeasurementData> {
+public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChartRenderer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
     protected I18N i18n = getDefaultLocalizer();
 
-    private MeasurementRenderingContext context;
+    private IoContext context;
 
     private boolean showTooltips;
 
@@ -109,7 +110,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
 
     private XYPlot xyPlot;
 
-    public ChartRenderer(MeasurementRenderingContext context, String locale) {
+    public ChartIoHandler(IoContext context, String locale) {
         if (locale != null) {
             i18n = getMessageLocalizer(locale);
         }
@@ -154,7 +155,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
         return xyPlot;
     }
 
-    public MeasurementRenderingContext getRenderingContext() {
+    public IoContext getRenderingContext() {
         return context;
     }
 
@@ -198,7 +199,7 @@ public abstract class ChartRenderer implements IoHandler<MeasurementData> {
         this.showTooltips = showTooltips;
     }
 
-    private XYPlot createChart(MeasurementRenderingContext context) {
+    private XYPlot createChart(IoContext context) {
         DateTime end = getTimespan() != null
                 ? DateTime.parse(getTimespan().split("/")[1])
                 : new DateTime();

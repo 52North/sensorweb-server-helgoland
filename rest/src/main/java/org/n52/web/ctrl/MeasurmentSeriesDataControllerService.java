@@ -28,9 +28,9 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextWith;
+import static org.n52.io.measurement.IoContext.createContextWith;
 import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
+import static org.n52.io.measurement.IoContext.createContextForSingleSeries;
 
 import java.net.URI;
 
@@ -38,7 +38,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
 import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.format.FormatterFactory;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
+import org.n52.io.measurement.IoContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -54,7 +54,7 @@ public class MeasurmentSeriesDataControllerService extends DatasetServiceBundle 
     public IoHandler<MeasurementData> getIoHandler(RequestStyledParameterSet parameters, IoParameters map, MimeType mimeType, URI rootResource) {
         String[] seriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> metadatas = getMetadataService().getParameters(seriesIds, map);
-        MeasurementRenderingContext context = createContextWith(parameters, metadatas.getItems());
+        IoContext context = createContextWith(parameters, metadatas.getItems());
         return MeasurementIoHandlerFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
     }
 
@@ -62,7 +62,7 @@ public class MeasurmentSeriesDataControllerService extends DatasetServiceBundle 
     public IoHandler<MeasurementData> getIoHandler(RequestParameterSet parameters, IoParameters map, MimeType mimeType, URI rootResource) {
       String seriesId = parameters.getSeriesIds()[0];
       MeasurementSeriesOutput metadata = (MeasurementSeriesOutput)getMetadataService().getParameter(seriesId, map);
-      MeasurementRenderingContext context = createContextForSingleSeries(metadata, map);
+      IoContext context = createContextForSingleSeries(metadata, map);
       return MeasurementIoHandlerFactory.createWith(map).forMimeType(mimeType).withServletContextRoot(rootResource).createIOHandler(context);
 
     }
@@ -71,7 +71,7 @@ public class MeasurmentSeriesDataControllerService extends DatasetServiceBundle 
     public IoHandler<MeasurementData> getIoHandler(RequestStyledParameterSet parameters, IoParameters map) {
         String[] seriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> metadatas = getMetadataService().getParameters(seriesIds, map);
-        MeasurementRenderingContext context = createContextWith(parameters, metadatas.getItems());
+        IoContext context = createContextWith(parameters, metadatas.getItems());
         return MeasurementIoHandlerFactory.createWith(map).createIOHandler(context);
     }
 
@@ -79,7 +79,7 @@ public class MeasurmentSeriesDataControllerService extends DatasetServiceBundle 
     public IoHandler<MeasurementData> getIoHandler(RequestSimpleParameterSet parameters, IoParameters map) {
         String seriesId = parameters.getSeriesIds()[0];
         MeasurementSeriesOutput metadata = (MeasurementSeriesOutput)getMetadataService().getParameter(seriesId, map);
-        MeasurementRenderingContext context = createContextForSingleSeries(metadata, map);
+        IoContext context = createContextForSingleSeries(metadata, map);
         return MeasurementIoHandlerFactory.createWith(map).createIOHandler(context);
     }
 

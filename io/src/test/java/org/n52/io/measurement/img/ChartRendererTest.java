@@ -28,6 +28,7 @@
  */
 package org.n52.io.measurement.img;
 
+import org.n52.io.measurement.IoContext;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -54,7 +55,7 @@ public class ChartRendererTest {
     @Before
     public void
             setUp() {
-        this.chartRenderer = new MyChartRenderer(MeasurementRenderingContext.createEmpty());
+        this.chartRenderer = new MyChartRenderer(IoContext.createEmpty());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoContext context = IoContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -93,7 +94,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoContext context = IoContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(null);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -103,7 +104,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoContext context = IoContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -111,9 +112,9 @@ public class ChartRendererTest {
         assertThat(label, is("Time (UTC)"));
     }
 
-    static class MyChartRenderer extends ChartRenderer {
+    static class MyChartRenderer extends ChartIoHandler {
 
-        public MyChartRenderer(MeasurementRenderingContext context) {
+        public MyChartRenderer(IoContext context) {
             super(context, null);
         }
 

@@ -26,42 +26,40 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.measurement.img;
+package org.n52.io.measurement;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.n52.io.IoHandler;
 
-import org.n52.io.measurement.MeasurementIoHandlerFactory;
+import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
-import org.n52.io.response.v1.ext.DatasetOutput;
-import org.n52.io.series.RenderingContext;
 
-public final class MeasurementRenderingContext implements RenderingContext<MeasurementSeriesOutput> {
+public final class IoContext {
 
     private final RequestStyledParameterSet chartStyleDefinitions;
 
     private final List<MeasurementSeriesOutput> seriesMetadatas;
 
-    public MeasurementRenderingContext() {
+    public IoContext() {
         this.chartStyleDefinitions = new RequestStyledParameterSet();
         this.seriesMetadatas = Collections.emptyList();
     }
 
     // use static constructors
-    private MeasurementRenderingContext(RequestStyledParameterSet timeseriesStyles, List<MeasurementSeriesOutput> metadatas) {
+    private IoContext(RequestStyledParameterSet timeseriesStyles, List<MeasurementSeriesOutput> metadatas) {
         this.seriesMetadatas = metadatas.isEmpty()
                 ? Collections.<MeasurementSeriesOutput>emptyList()
                 : metadatas;
         this.chartStyleDefinitions = timeseriesStyles;
     }
 
-    public static MeasurementRenderingContext createEmpty() {
+    public static IoContext createEmpty() {
         List<MeasurementSeriesOutput> emptyList = Collections.emptyList();
-        return new MeasurementRenderingContext(new RequestStyledParameterSet(), emptyList);
+        return new IoContext(new RequestStyledParameterSet(), emptyList);
     }
 
     /**
@@ -74,7 +72,7 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
      * @return a rendering context to be used by {@link MeasurementIoHandlerFactory} to create an
      * {@link IoHandler}.
      */
-    public static MeasurementRenderingContext createContextWith(RequestStyledParameterSet styles,
+    public static IoContext createContextWith(RequestStyledParameterSet styles,
             List<MeasurementSeriesOutput> metadatas) {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
@@ -89,10 +87,10 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
             sb.append("#Metadatas: ").append(amountMetadatas);
             throw new IllegalStateException(sb.toString());
         }
-        return new MeasurementRenderingContext(styles, metadatas);
+        return new IoContext(styles, metadatas);
     }
 
-    public static MeasurementRenderingContext createContextForSingleSeries(MeasurementSeriesOutput metadata, IoParameters ioConfig) {
+    public static IoContext createContextForSingleSeries(MeasurementSeriesOutput metadata, IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toDesignedParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
@@ -110,12 +108,7 @@ public final class MeasurementRenderingContext implements RenderingContext<Measu
     public List<MeasurementSeriesOutput> getSeriesMetadatas() {
         return seriesMetadatas;
     }
-
-    @Override
-    public List<DatasetOutput> getTyplessSeriesMetadatas() {
-        return new ArrayList<DatasetOutput>(seriesMetadatas);
-    }
-
+    
     public String getTimeAxisFormat() {
         if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
             return chartStyleDefinitions.getAsString("timeaxis.format");

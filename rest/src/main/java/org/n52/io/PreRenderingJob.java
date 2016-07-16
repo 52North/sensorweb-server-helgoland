@@ -28,7 +28,7 @@
  */
 package org.n52.io;
 
-import static org.n52.io.measurement.img.MeasurementRenderingContext.createContextForSingleSeries;
+import static org.n52.io.measurement.IoContext.createContextForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
@@ -52,7 +52,7 @@ import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
 import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.img.ChartDimension;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
+import org.n52.io.measurement.IoContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -188,7 +188,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-        MeasurementRenderingContext context = createContextForSingleSeries(metadata, config);
+        IoContext context = createContextForSingleSeries(metadata, config);
         int width = context.getChartStyleDefinitions().getWidth();
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));

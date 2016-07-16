@@ -28,6 +28,7 @@
  */
 package org.n52.io.measurement.img;
 
+import org.n52.io.measurement.IoContext;
 import static org.n52.io.measurement.img.BarRenderer.createBarRenderer;
 import static org.n52.io.measurement.img.LineRenderer.createStyledLineRenderer;
 import static org.n52.io.style.BarStyle.createBarStyle;
@@ -59,9 +60,9 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
 
-public class MultipleChartsRenderer extends ChartRenderer {
+public class MultipleChartsRenderer extends ChartIoHandler {
 
-    public MultipleChartsRenderer(MeasurementRenderingContext context, String locale) {
+    public MultipleChartsRenderer(IoContext context, String locale) {
         super(context, locale);
     }
 

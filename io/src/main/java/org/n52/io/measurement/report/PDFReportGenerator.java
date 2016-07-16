@@ -56,7 +56,7 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
-import org.n52.io.measurement.img.ChartRenderer;
+import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
@@ -76,6 +76,9 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import static java.io.File.createTempFile;
 import org.n52.io.IoParseException;
+import static java.io.File.createTempFile;
+import static java.io.File.createTempFile;
+import static java.io.File.createTempFile;
 
 public class PDFReportGenerator extends ReportGenerator {
 
@@ -89,11 +92,11 @@ public class PDFReportGenerator extends ReportGenerator {
 
     private final DocumentStructureDocument document;
 
-    private final ChartRenderer renderer;
+    private final ChartIoHandler renderer;
 
     private URI baseURI;
 
-    public PDFReportGenerator(ChartRenderer renderer, String locale) {
+    public PDFReportGenerator(ChartIoHandler renderer, String locale) {
         super(renderer.getRenderingContext(), locale);
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
@@ -104,7 +107,7 @@ public class PDFReportGenerator extends ReportGenerator {
         this.baseURI = baseURI;
     }
 
-    private ChartRenderer configureRenderer(ChartRenderer renderer) {
+    private ChartIoHandler configureRenderer(ChartIoHandler renderer) {
         renderer.setMimeType(IMAGE_PNG);
         renderer.setShowTooltips(false);
         renderer.setDrawLegend(true);

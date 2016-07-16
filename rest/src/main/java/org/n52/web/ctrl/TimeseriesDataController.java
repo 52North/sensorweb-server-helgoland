@@ -63,7 +63,7 @@ import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.format.FormatterFactory;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
+import org.n52.io.measurement.IoContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -88,6 +88,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.n52.series.spi.srv.DataService;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
@@ -211,7 +235,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        IoContext context = IoContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
 
         IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
@@ -242,7 +266,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
+        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .forMimeType(APPLICATION_PDF)
@@ -277,7 +301,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
+        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
         IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .forMimeType(TEXT_CSV)
@@ -307,7 +331,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getSeriesIds();
         OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
+        IoContext context = IoContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
         IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
                 .createWith(map)
                 .createIOHandler(context);
@@ -325,7 +349,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        MeasurementRenderingContext context = MeasurementRenderingContext.createContextForSingleSeries(metadata, map);
+        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);

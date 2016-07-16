@@ -38,11 +38,10 @@ import org.n52.io.IoHandlerFactory;
 
 import org.n52.io.MimeType;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.series.csv.CsvIoHandler;
+import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
 
 public final class MeasurementIoHandlerFactory implements IoHandlerFactory {
 
@@ -50,11 +49,11 @@ public final class MeasurementIoHandlerFactory implements IoHandlerFactory {
 
     private URI servletContextRoot;
 
-    private MeasurementRenderingContext context;
+    private IoContext context;
 
     public MeasurementIoHandlerFactory() {
         this.parameters = IoParameters.createDefaults();
-        this.context = new MeasurementRenderingContext();
+        this.context = new IoContext();
     }
 
     public MeasurementIoHandlerFactory withParameters(IoParameters parameters) {
@@ -67,7 +66,7 @@ public final class MeasurementIoHandlerFactory implements IoHandlerFactory {
         return this;
     }
 
-    public MeasurementIoHandlerFactory withContext(MeasurementRenderingContext context) {
+    public MeasurementIoHandlerFactory withContext(IoContext context) {
         this.context = context;
         return this;
     }
@@ -95,7 +94,7 @@ public final class MeasurementIoHandlerFactory implements IoHandlerFactory {
         } else if (mimeType == IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
         } else if (mimeType == TEXT_CSV) {
-            CsvIoHandler<MeasurementData> handler = new CsvIoHandler(context, parameters.getLocale());
+            MeasurementCsvIoHandler<MeasurementData> handler = new MeasurementCsvIoHandler(context, parameters.getLocale());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
