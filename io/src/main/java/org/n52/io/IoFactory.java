@@ -81,7 +81,11 @@ public abstract class IoFactory<T extends Data> {
         return this;
     }
 
-    public abstract IoHandler<T> createHandler(String outputMimeType);
+    public IoHandler<T> createHandler(String outputMimeType) {
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
+        IllegalArgumentException exception = new IllegalArgumentException(msg);
+        throw exception;
+    }
 
     public IoProcessChain createProcessChain() {
         return new IoProcessChain() {
