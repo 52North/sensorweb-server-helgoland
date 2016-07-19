@@ -21,7 +21,7 @@
 
     <!-- ############################## JDBC MANAGED DATASOURCE ####################################### -->
 
-    <bean class="org.n52.series.db.da.SeriesHibernateSessionHolder" destroy-method="shutdown" />
+    <bean class="org.n52.series.db.SeriesHibernateSessionHolder" destroy-method="shutdown" />
 
     <bean id="seriesDatasource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="jdbcUrl" value="${series.database.url}" />
@@ -43,7 +43,7 @@
         </property>
         <property name="mappingLocations">
             <list>
-                <value>classpath:hbm/sos/v44/*.hbm.xml</value>
+                <value>classpath*:/hbm/sos/v44/*.hbm.xml</value>
             </list>
         </property>
     </bean>

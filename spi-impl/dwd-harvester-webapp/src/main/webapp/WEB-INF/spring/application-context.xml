@@ -22,8 +22,6 @@
 
     <!-- timeseries api web controller bindings -->
     <import resource="spi-impl-dwd_v1_beans.xml"/>
-    <import resource="spi-impl-dwd_v1_beans_ext.xml"/>
-
 
     <import resource="spi-impl-dwd_tasks.xml" />
 

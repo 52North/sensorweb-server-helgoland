@@ -30,6 +30,7 @@ package org.n52.io.geojson.old;
 
 import java.util.Arrays;
 
+@Deprecated
 public abstract class GeojsonGeometry extends GeojsonObject {
 
     private static final long serialVersionUID = -2611259809054586079L;

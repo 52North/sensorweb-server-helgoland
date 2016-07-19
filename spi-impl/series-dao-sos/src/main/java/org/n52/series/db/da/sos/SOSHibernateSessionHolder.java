@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import org.hibernate.Session;
-import org.n52.series.db.da.HibernateSessionStore;
+import org.n52.series.db.HibernateSessionStore;
 import org.n52.sos.ds.hibernate.HibernateSessionHolder;
 import org.n52.sos.ds.hibernate.SessionFactoryProvider;
 import org.n52.sos.ogc.ows.OwsExceptionReport;

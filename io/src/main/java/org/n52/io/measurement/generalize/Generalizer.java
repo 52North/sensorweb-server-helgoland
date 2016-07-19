@@ -29,10 +29,10 @@
 package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.series.SeriesData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
-public abstract class Generalizer<T extends SeriesData> {
+public abstract class Generalizer<T extends Data> {
 
     private IoParameters parameters;
 
@@ -40,7 +40,7 @@ public abstract class Generalizer<T extends SeriesData> {
         this.parameters = parameters;
     }
 
-    public abstract SeriesDataCollection<T> generalize(SeriesDataCollection<T> data) throws GeneralizerException;
+    public abstract DataCollection<T> generalize(DataCollection<T> data) throws GeneralizerException;
 
     public IoParameters getParameters() {
         return parameters == null

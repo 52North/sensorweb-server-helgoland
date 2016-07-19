@@ -39,7 +39,7 @@
     <logger name="org.geotools" level="WARN" />
     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="INFO" />
     <logger name="org.jboss.logging" level="WARN" />
-<!--     <logger name="org.hibernate.type" level="TRACE" /> -->
+     <logger name="org.hibernate.type" level="TRACE" />
 
     <root level="INFO">
         <appender-ref ref="FILE" />

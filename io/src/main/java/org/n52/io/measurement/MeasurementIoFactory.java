@@ -32,103 +32,94 @@ import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
 
-import java.net.URI;
-
 import org.n52.io.IoHandler;
+import org.n52.io.IoFactory;
+import org.n52.io.IoProcessChain;
+
 import org.n52.io.MimeType;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
-import org.n52.io.measurement.img.MeasurementRenderingContext;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.series.csv.CsvIoHandler;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
+import org.n52.io.measurement.format.FormatterFactory;
+import org.n52.io.measurement.img.ChartIoHandler;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.series.spi.srv.DataService;
+import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
-public final class MeasurementIoFactory {
+public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
 
-    private MimeType mimeType = IMAGE_PNG;
-
-    private final IoParameters config;
-
-    private URI servletContextRoot;
-
-    private MeasurementIoFactory(IoParameters parameters) {
-        this.config = parameters;
+    @Override
+    public IoProcessChain createProcessChain() {
+        return new IoProcessChain() {
+            @Override
+            public DataCollection getData() {
+                final boolean generalize = getParameters().isGeneralize();
+                DataService<MeasurementData> dataService = generalize
+                        ? composeDataService(getDataService())
+                        : getDataService();
+                return dataService.getData(getSimpleRequest());
+            }
+            @Override
+            public DataCollection<? extends Data> getProcessedData() {
+                String format = getParameters().getFormat();
+                return FormatterFactory
+                        .createFormatterFactory(format)
+                        .create()
+                        .format(getData());
+            }
+        };
     }
 
-    /**
-     * @return An {@link MeasurementIoFactory} instance with default values set. Configure
-     * factory by passing an {@link IoParameters} instance. After creating the
-     * factory an apropriately configured {@link IoHandler} is returned when
-     * calling {@link #createIOHandler(MeasurementRenderingContext)}.
-     */
-    public static MeasurementIoFactory create() {
-        return createWith(null);
+    @Override
+    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
+        return MimeType.isKnownMimeType(outputMimeType)
+                && supportsMimeType(MimeType.toInstance(outputMimeType));
     }
 
-    public static MeasurementIoFactory createWith(IoParameters parameters) {
-        if (parameters == null) {
-            parameters = IoParameters.createDefaults();
-        }
-        return new MeasurementIoFactory(parameters);
+    private static boolean supportsMimeType(MimeType mimeType) {
+        return mimeType == MimeType.TEXT_CSV
+                || mimeType == MimeType.IMAGE_PNG
+                || mimeType == mimeType.APPLICATION_PDF;
     }
 
-    /**
-     * @param mimeType the MIME-Type of the image to be rendered (default is
-     * {@link MimeType#IMAGE_PNG}).
-     * @return this instance for parameter chaining.
-     */
-    public MeasurementIoFactory forMimeType(MimeType mimeType) {
-        this.mimeType = mimeType;
-        return this;
-    }
-
-    public MeasurementIoFactory withServletContextRoot(URI servletContextRoot) {
-        this.servletContextRoot = servletContextRoot;
-        return this;
-    }
-
-    public IoHandler<MeasurementData> createIOHandler(MeasurementRenderingContext context) {
-
-        if (mimeType == APPLICATION_PDF) {
-            MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);
-            PDFReportGenerator reportGenerator = new PDFReportGenerator(imgRenderer, config.getLocale());
-            reportGenerator.setBaseURI(servletContextRoot);
-
-            // TODO
+    @Override
+    public IoHandler<MeasurementData> createHandler(String outputMimeType) {
+        IoParameters parameters = getParameters();
+        MimeType mimeType = MimeType.toInstance(outputMimeType);
+        if (mimeType == IMAGE_PNG) {
+            return createMultiChartRenderer(mimeType);
+        } else if (mimeType == APPLICATION_PDF) {
+            ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
+            PDFReportGenerator reportGenerator = new PDFReportGenerator(
+                    getSimpleRequest(), createProcessChain(), imgRenderer);
+            reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
-        } else if (mimeType == IMAGE_PNG) {
-
-            /*
-             * Depending on the parameters set, we can choose at this point which ChartRenderer might be the
-             * best for doing the work.
-             *
-             * However, for now we only support a Default one ...
-             */
-            // TODO create an OverviewChartRenderer
-            MultipleChartsRenderer chartRenderer = createMultiChartRenderer(context);
-
-            // TODO do further settings?!
-            return chartRenderer;
         } else if (mimeType == TEXT_CSV) {
-            CsvIoHandler handler = new CsvIoHandler(context, config.getLocale());
-            handler.setTokenSeparator(config.getOther("tokenSeparator"));
+            MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
+                    getSimpleRequest(), createProcessChain(), createContext());
+            handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
-            boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
-            boolean zipOutput = Boolean.parseBoolean(config.getOther("zip"));
+            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
+            boolean zipOutput = Boolean.parseBoolean(parameters.getOther("zip"));
             handler.setIncludeByteOrderMark(byteOderMark);
             handler.setZipOutput(zipOutput);
             return handler;
         }
 
-        String msg = "The requested media type '" + mimeType.getMimeType() + "' is not supported.";
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
     }
 
-    private MultipleChartsRenderer createMultiChartRenderer(MeasurementRenderingContext context) {
-        MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, config.getLocale());
-        chartRenderer.setDrawLegend(config.isLegend());
-        chartRenderer.setShowGrid(config.isGrid());
+    private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
+        MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
+                getSimpleRequest(), createProcessChain(), createContext());
+
+        chartRenderer.setDrawLegend(getParameters().isLegend());
+        chartRenderer.setShowGrid(getParameters().isGrid());
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;
     }

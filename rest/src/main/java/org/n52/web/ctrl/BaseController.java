@@ -44,7 +44,6 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.n52.web.ctrl.v1.ResourcesController;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;

@@ -92,13 +92,13 @@ This project includes:
   Series REST API under GNU General Public License, Version 2.0
   Series REST API - DAO module under GNU General Public License, Version 2.0
   Series REST API - DAO Webapp under GNU General Public License, Version 2.0
+  Series REST API - DWD DAO module under GNU General Public License, Version 2.0
   Series REST API - DWD module under GNU General Public License, Version 2.0
   Series REST API - DWD webapp module under GNU General Public License, Version 2.0
   Series REST API - IO module under GNU General Public License, Version 2.0
   Series REST API - REST module under GNU General Public License, Version 2.0
   Series REST API - SOS DAO module under GNU General Public License, Version 2.0
   Series REST API - SPI implementations under GNU General Public License, Version 2.0
-  Series REST API - SPI module under GNU General Public License, Version 2.0
   servlet-api under CDDL 1.1 or GPL2 w/ CPE
   Shapefile module under Lesser General Public License (LGPL)
   SLF4J API Module under MIT License

@@ -42,7 +42,7 @@ import org.n52.io.v1.data.RawFormats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public abstract class ParameterOutput implements CondensedParameterOutput, CollatorComparable<ParameterOutput>, RawFormats {
+public abstract class ParameterOutput implements CollatorComparable<ParameterOutput>, RawFormats {
 
     /**
      * Takes the labels to compare.
@@ -76,7 +76,6 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     private Set<String> rawFormats;
 
-    @Override
     public String getId() {
         return id;
     }
@@ -85,7 +84,6 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
         this.id = id;
     }
 
-    @Override
     public String getHref() {
         if (getHrefBase() == null && href == null) {
             return null;
@@ -143,7 +141,6 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
     /**
      * @return the label or the id if label is not set.
      */
-    @Override
     public String getLabel() {
         // ensure that label is never null
         return label == null ? id : label;

@@ -48,8 +48,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.sensorweb.spi.LocaleAwareSortService;
-import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.spi.srv.LocaleAwareSortService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -59,8 +59,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
-public abstract class ParameterController<T extends ParameterOutput> extends BaseController {
+public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -68,6 +71,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     private ParameterService<T> parameterService;
 
+    @Override
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -83,6 +87,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
         }
     }
 
+    @Override
     public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
@@ -107,6 +112,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
         return overridableKeys;
     }
 
+    @Override
     public ModelAndView getCollection(MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
@@ -114,17 +120,14 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
             Stopwatch stopwatch = startStopwatch();
             OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-            // TODO add paging
             return createModelAndView(result);
         } else {
             OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
-
-            // TODO add paging
             return createModelAndView(results);
         }
     }
 
+    @Override
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
         T item = parameterService.getParameter(id, queryMap);
@@ -152,7 +155,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     protected ModelAndView createModelAndView(OutputCollection<T> items) {
-        return new ModelAndView().addObject(items);
+        return new ModelAndView().addObject(items.getItems());
     }
 
     public ParameterService<T> getParameterService() {

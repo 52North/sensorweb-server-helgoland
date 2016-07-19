@@ -32,29 +32,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.format.SeriesDataFormatter;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementDataMetadata;
-import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.DataCollection;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import org.n52.io.DataFormatter;
 
-public class FlotFormatter implements SeriesDataFormatter<MeasurementData, FlotSeries> {
+public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
 
     @Override
-    public FlotDataCollection format(SeriesDataCollection<MeasurementData> toFormat) {
+    public FlotDataCollection format(DataCollection<MeasurementData> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
             MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);
-            FlotSeries series = createFlotSeries(seriesToFormat);
+            FlotData series = createFlotSeries(seriesToFormat);
             flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotSeries createFlotSeries(MeasurementData seriesToFormat) {
-        FlotSeries flotSeries = new FlotSeries();
+    private FlotData createFlotSeries(MeasurementData seriesToFormat) {
+        FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
         MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
         if (metadata != null) {

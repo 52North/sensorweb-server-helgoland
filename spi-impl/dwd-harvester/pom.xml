@@ -15,10 +15,6 @@
     <properties>
     </properties>
     <dependencies>
-    	<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spi</artifactId>
-        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io</artifactId>

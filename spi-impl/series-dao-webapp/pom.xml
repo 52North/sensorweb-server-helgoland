@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.n52.series-api</groupId>
         <artifactId>spi-impl</artifactId>
@@ -16,7 +16,7 @@
         <postgis.version>2.2.0</postgis.version>
         <aspectj.version>1.8.9</aspectj.version>
         <postgresql.version>9.4.1208.jre7</postgresql.version>
-        <webapp.target.dir>${project.build.directory}/${project.build.finalName}</webapp.target.dir>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
     </properties>
 
@@ -89,10 +89,10 @@
             <artifactId>postgis-jdbc</artifactId>
             <version>${postgis.version}</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>postgresql</groupId>
-            		<artifactId>postgresql</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
             </exclusions>
             <scope>runtime</scope>
         </dependency>
@@ -118,6 +118,7 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -156,16 +157,16 @@
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>rest</artifactId>
                                 <includes>api-doc/**</includes>
-                                <outputDirectory>${webapp.target.dir}</outputDirectory>
+                                <outputDirectory>${webappDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>
-                            <artifactItem>
+<!--                            <artifactItem>
                                 <groupId>${project.groupId}</groupId>
                                 <artifactId>series-dao</artifactId>
                                 <includes>hbm/**</includes>
                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                 <overWrite>true</overWrite>
-                            </artifactItem>
+                            </artifactItem>-->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
@@ -177,21 +178,11 @@
                     <version>2.6</version>
                     <configuration>
                         <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-                        <webappDirectory>${webapp.target.dir}</webappDirectory>
+                        <webappDirectory>${webappDirectory}</webappDirectory>
                         <webResources>
                             <resource>
                                 <directory>src/main/webapp</directory>
                                 <filtering>true</filtering>
-                                <excludes>
-                                    <!-- exclude files from filtering -->
-                                    <exclude>img/*</exclude>
-                                    <exclude>cache/*</exclude>
-                                </excludes>
-                            </resource>
-                            <resource>
-                                <directory>src/main/resources</directory>
-                                <filtering>true</filtering>
-                                <targetPath>WEB-INF/classes</targetPath>
                             </resource>
                         </webResources>
                     </configuration>
@@ -207,22 +198,35 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
+                        <scanTargets>
+                            <scanTarget>/target/classes/</scanTarget>
+                            <scanTarget>../series-dao/target/classes</scanTarget>
+                            <scanTarget>../../io/target/classes</scanTarget>
+                            <scanTarget>../../spi/target/classes</scanTarget>
+                            <scanTarget>../../rest/target/classes</scanTarget>
+                        </scanTargets>
                         <systemProperties>
                             <systemProperty>
                                 <name>catalina.base</name>
                                 <value>${project.build.directory}</value>
                             </systemProperty>
                         </systemProperties>
-                        <scanTargets>
-                            <scanTarget>target/classes</scanTarget>
-                            <scanTarget>../series-dao/target/classes</scanTarget>
-                            <scanTarget>../../io/target/classes</scanTarget>
-                            <scanTarget>../../spi/target/classes</scanTarget>
-                            <scanTarget>../../rest/target/classes</scanTarget>
-                        </scanTargets>
                     </configuration>
+<!--                    <dependencies>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>series-dao</artifactId>
+                            <version>${project.version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>series-mappings</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                    </dependencies>-->
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -37,9 +37,10 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
+import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.DataCollection;
 
 public class ChartRendererTest {
 
@@ -54,7 +55,7 @@ public class ChartRendererTest {
     @Before
     public void
             setUp() {
-        this.chartRenderer = new MyChartRenderer(MeasurementRenderingContext.createEmpty());
+        this.chartRenderer = new MyChartRenderer(IoStyleContext.createEmpty());
     }
 
     @Test
@@ -83,7 +84,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoStyleContext context = IoStyleContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -93,7 +94,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoStyleContext context = IoStyleContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(null);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -103,7 +104,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        MeasurementRenderingContext context = MeasurementRenderingContext.createEmpty();
+        IoStyleContext context = IoStyleContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
         this.chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
@@ -111,14 +112,14 @@ public class ChartRendererTest {
         assertThat(label, is("Time (UTC)"));
     }
 
-    static class MyChartRenderer extends ChartRenderer {
+    static class MyChartRenderer extends ChartIoHandler {
 
-        public MyChartRenderer(MeasurementRenderingContext context) {
-            super(context, null);
+        public MyChartRenderer(IoStyleContext context) {
+            super(null, null, context);
         }
 
         public MyChartRenderer() {
-            super(null, null);
+            super(null, null, null);
         }
 
         @Override
@@ -137,7 +138,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void generateOutput(SeriesDataCollection<MeasurementData> data) {
+        public void generateOutput(DataCollection<MeasurementData> data) {
             throw new UnsupportedOperationException();
         }
 

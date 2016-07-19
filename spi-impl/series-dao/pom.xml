@@ -19,10 +19,6 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>io</artifactId>
         </dependency>
         <dependency>
@@ -52,10 +48,10 @@
             <artifactId>jts</artifactId>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -123,45 +119,6 @@
             <artifactId>hamcrest-all</artifactId>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
-                        <resources>
-                            <resource>
-                                <directory>src/main/webapp</directory>
-                                <includes>
-                                    <include>**</include>
-                                </includes>
-                                <filtering>false</filtering>
-                            </resource>
-                        </resources>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>
 

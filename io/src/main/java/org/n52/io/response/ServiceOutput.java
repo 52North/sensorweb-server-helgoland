@@ -36,6 +36,8 @@ public class ServiceOutput extends ParameterOutput {
 
     private String type;
 
+    private ParameterCount quantities;
+
     private Boolean supportsFirstLatest;
 
     public String getServiceUrl() {
@@ -67,7 +69,88 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void setSupportsFirstLatest(boolean supportsFirstLatest) {
-        this.supportsFirstLatest = Boolean.valueOf(supportsFirstLatest);
+        this.supportsFirstLatest = supportsFirstLatest;
+    }
+
+    public ParameterCount getQuantities() {
+        return quantities;
+    }
+
+    public void setQuantities(ParameterCount countedParameters) {
+        this.quantities = countedParameters;
+    }
+
+    public static class ParameterCount {
+
+        private int amountOfferings;
+
+        private int amountFeatures;
+
+        private int amountProcedures;
+
+        private int amountPhenomena;
+
+        private int amountStations;
+
+        private int amountTimeseries;
+
+        private int amountCategories;
+
+        public int getOfferings() {
+            return amountOfferings;
+        }
+
+        public void setOfferingsSize(int size) {
+            this.amountOfferings = size;
+        }
+
+        public int getFeatures() {
+            return amountFeatures;
+        }
+
+        public void setFeaturesSize(int size) {
+            this.amountFeatures = size;
+        }
+
+        public int getProcedures() {
+            return amountProcedures;
+        }
+
+        public void setProceduresSize(int size) {
+            this.amountProcedures = size;
+        }
+
+        public int getPhenomena() {
+            return amountPhenomena;
+        }
+
+        public void setPhenomenaSize(int size) {
+            this.amountPhenomena = size;
+        }
+
+        public int getStations() {
+            return amountStations;
+        }
+
+        public void setStationsSize(int size) {
+            this.amountStations = size;
+        }
+
+        public void setTimeseriesSize(int countTimeseries) {
+            this.amountTimeseries = countTimeseries;
+        }
+
+        public int getTimeseries() {
+            return this.amountTimeseries;
+        }
+
+        public int getCategories() {
+            return amountCategories;
+        }
+
+        public void setCategoriesSize(Integer amountCategories) {
+            this.amountCategories = amountCategories;
+        }
     }
 
     @Override
@@ -75,8 +158,8 @@ public class ServiceOutput extends ParameterOutput {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
 

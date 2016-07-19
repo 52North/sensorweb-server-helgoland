@@ -20,11 +20,7 @@
         <property name="serializationInclusion" value="NON_NULL" />
     </bean>
 
-
-    <bean class="org.n52.web.ctrl.RootController" />
-    <bean class="org.n52.web.ctrl.v1.ext.ExtResourcesController">
-        <property name="metadataService" ref="metadataService" />
-    </bean>
+    <!--<bean class="org.n52.web.ctrl.RootController" />-->
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
         <property name="metadataExtensions">
             <list>
@@ -34,7 +30,7 @@
     </bean>
 
     <import resource="api_v1_mvc.xml" />
-    <import resource="api_v1_mvc_ext.xml" />
+    <import resource="api_v1_mvc_legacy.xml" />
 
     <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager" />
 

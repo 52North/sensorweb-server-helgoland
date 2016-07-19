@@ -48,27 +48,33 @@ import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
+import org.n52.io.IoProcessChain;
+import org.n52.io.IoStyleContext;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.series.MeasurementData;
-import org.n52.io.response.series.MeasurementDataMetadata;
-import org.n52.io.response.series.MeasurementReferenceValueOutput;
-import org.n52.io.response.series.MeasurementSeriesOutput;
-import org.n52.io.response.series.MeasurementValue;
-import org.n52.io.response.series.SeriesDataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.ReferenceValueOutput;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
+import org.n52.series.spi.srv.DataService;
 
-public class MultipleChartsRenderer extends ChartRenderer {
+public class MultipleChartsRenderer extends ChartIoHandler {
 
-    public MultipleChartsRenderer(MeasurementRenderingContext context, String locale) {
-        super(context, locale);
+    public MultipleChartsRenderer(RequestSimpleParameterSet request,
+            IoProcessChain<MeasurementData> processChain,
+            IoStyleContext context) {
+        super(request, processChain, context);
     }
 
     @Override
-    public void generateOutput(SeriesDataCollection<MeasurementData> data) {
+    public void generateOutput(DataCollection<MeasurementData> data) {
         Map<String, MeasurementData> allTimeseries = data.getAllSeries();
-        List<MeasurementSeriesOutput> timeseriesMetadatas = getTimeseriesMetadataOutputs();
+        List<? extends DatasetOutput> timeseriesMetadatas = getMetadataOutputs();
 
         int rendererCount = timeseriesMetadatas.size();
         for (int rendererIndex = 0; rendererIndex < timeseriesMetadatas.size(); rendererIndex++) {
@@ -79,7 +85,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
              * As each timeseries may define its custom styling and different chart types we have to loop over
              * all timeseries to configure chart rendering.
              */
-            MeasurementSeriesOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
+            DatasetOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
 
             String timeseriesId = timeseriesMetadata.getId();
             StyleProperties style = getTimeseriesStyleFor(timeseriesId);
@@ -101,7 +107,7 @@ public class MultipleChartsRenderer extends ChartRenderer {
                 Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, MeasurementData> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();
-                    MeasurementReferenceValueOutput referenceOutput = getReferenceValue(referenceTimeseriesId, timeseriesMetadata);
+                    ReferenceValueOutput referenceOutput = getReferenceValue(referenceTimeseriesId, timeseriesMetadata);
                     String referenceChartId = createChartId(timeseriesMetadata, referenceOutput.getLabel());
 
                     MeasurementData referenceData = referenceValues.get(referenceTimeseriesId);
@@ -116,11 +122,11 @@ public class MultipleChartsRenderer extends ChartRenderer {
         }
     }
 
-    private String createChartId(MeasurementSeriesOutput metadata) {
+    private String createChartId(DatasetOutput metadata) {
         return createChartId(metadata, null);
     }
 
-    private String createChartId(MeasurementSeriesOutput metadata, String referenceId) {
+    private String createChartId(DatasetOutput metadata, String referenceId) {
         ParameterOutput feature = metadata.getSeriesParameters().getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
@@ -142,8 +148,8 @@ public class MultipleChartsRenderer extends ChartRenderer {
         return createStyledLineRenderer(lineStyle);
     }
 
-    private MeasurementReferenceValueOutput getReferenceValue(String id, MeasurementSeriesOutput timeseriesMetadata) {
-        for (MeasurementReferenceValueOutput referenceOutput : timeseriesMetadata.getReferenceValues()) {
+    private ReferenceValueOutput getReferenceValue(String id, DatasetOutput metadata) {
+        for (ReferenceValueOutput referenceOutput : metadata.getReferenceValues()) {
             if (referenceOutput.getReferenceValueId().equals(id)) {
                 return referenceOutput;
             }
@@ -171,14 +177,14 @@ public class MultipleChartsRenderer extends ChartRenderer {
             renderer.setColorForSeries();
         }
 
-        public void setData(MeasurementData data, MeasurementSeriesOutput timeMetadata, StyleProperties style) {
+        public void setData(MeasurementData data, DatasetOutput timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
             ValueAxis rangeAxis = createRangeAxis(timeMetadata);
             getXYPlot().setRangeAxis(timeseriesIndex, rangeAxis);
             getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
-        public void setReferenceData(MeasurementData data, MeasurementSeriesOutput timeMetadata, StyleProperties style) {
+        public void setReferenceData(MeasurementData data, DatasetOutput timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
         }
 

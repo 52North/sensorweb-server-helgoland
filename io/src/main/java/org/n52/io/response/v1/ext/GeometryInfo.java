@@ -37,7 +37,6 @@ import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.ServiceOutput;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -47,11 +46,11 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class GeometryInfo extends AbstractOutput implements CondensedGeometryInfo, GeoJSONFeature {
+public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     private Geometry geometry;
 
-    private PlatformItemOutput platform;
+    private PlatformOutput platform;
 
     private final GeometryType geometyCategory;
 
@@ -65,41 +64,39 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
     }
 
     @Override
-    @JsonIgnore
     public String getLabel() {
         return super.getLabel();
     }
 
     @Override
-    @JsonIgnore
     public String getDomainId() {
         return super.getDomainId();
     }
 
-    @JsonIgnore
+    @Override
     public ServiceOutput getService() {
         return super.getService();
     }
 
-    @Override
-    public PlatformItemOutput getPlatform() {
+    public PlatformOutput getPlatform() {
         return platform;
     }
 
-    public void setPlatform(PlatformItemOutput platform) {
+    public void setPlatform(PlatformOutput platform) {
         this.platform = platform;
     }
 
+    @Override
     public Geometry getGeometry() {
         return geometry;
     }
 
+    @Override
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
 
 
-    @JsonIgnore
     @Override
     public String getHrefBase() {
         String base = super.getHrefBase();
@@ -113,7 +110,6 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
         return getType().getGeometryType();
     }
 
-    @JsonIgnore
     public GeometryType getType() {
         return geometyCategory;
     }
@@ -122,6 +118,7 @@ public class GeometryInfo extends AbstractOutput implements CondensedGeometryInf
         return geometyCategory.getGeometryType();
     }
 
+    @Override
     public Map<String, Object> getProperties() {
         HashMap<String, Object> properties = new HashMap<>();
         properties.put("geometryType", getGeometyCategory());

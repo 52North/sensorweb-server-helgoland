@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.response.v1.ext.ObservationType;
+import org.n52.io.response.v1.ext.DatasetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,14 +134,14 @@ public abstract class RequestParameterSet {
      * @return A language code to determine the requested locale. "en" is the
      * default.
      */
-    public String getLanguage() {
+    public String getLocale() {
         return getAsString("language");
     }
 
     /**
      * @param language A language code to determine the requested locale.
      */
-    public void setLanguage(String language) {
+    public void setLocale(String language) {
         language = !(language == null || language.isEmpty())
                 ? language
                 : "en";
@@ -248,12 +248,11 @@ public abstract class RequestParameterSet {
 
     public abstract String[] getSeriesIds();
 
-    public String getObservationType() {
+    public String getDatasetTypeFromFirst() {
         String[] seriesIds = getSeriesIds();
-        if (seriesIds.length > 0) {
-            return ObservationType.extractType(seriesIds[0]).getObservationType();
-        }
-        return ObservationType.MEASUREMENT.getObservationType();
+        return seriesIds.length > 0
+                ? DatasetType.extractType(seriesIds[0])
+                : "measurement"; // default
     }
 
 }
