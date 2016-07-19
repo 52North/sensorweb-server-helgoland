@@ -130,32 +130,34 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private List<PlatformEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
+        IoParameters parameters = query.getParameters();
         if (parameters.shallIncludeStationaryPlatformTypes()) {
-            platforms.addAll(getAllStationary(parameters, session));
+            platforms.addAll(getAllStationary(query, session));
         }
         if (parameters.shallIncludeMobilePlatformTypes()) {
-            platforms.addAll(getAllMobile(parameters, session));
+            platforms.addAll(getAllMobile(query, session));
         }
         return platforms;
     }
 
-    private List<PlatformEntity> getAllStationary(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationary(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
+        IoParameters parameters = query.getParameters();
         if (parameters.shallIncludeInsituPlatformTypes()) {
-            platforms.addAll(getAllStationaryInsitu(parameters, session));
+            platforms.addAll(getAllStationaryInsitu(query, session));
         }
         if (parameters.shallIncludeRemotePlatformTypes()) {
-            platforms.addAll(getAllStationaryRemote(parameters, session));
+            platforms.addAll(getAllStationaryRemote(query, session));
         }
         return platforms;
     }
 
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "stationary","insitu"));
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","insitu"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
@@ -183,34 +185,35 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
     private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "stationary","insitu"));
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","insitu"));
         return convertAll(featureDao.getAllInstances(query));
     }
 
-    private List<PlatformEntity> getAllMobile(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
+        IoParameters parameters = query.getParameters();
         if (parameters.shallIncludeInsituPlatformTypes()) {
-            platforms.addAll(getAllMobileInsitu(parameters, session));
+            platforms.addAll(getAllMobileInsitu(query, session));
         }
         if (parameters.shallIncludeRemotePlatformTypes()) {
-            platforms.addAll(getAllMobileRemote(parameters, session));
+            platforms.addAll(getAllMobileRemote(query, session));
         }
         return platforms;
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "mobile","insitu"));
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile","insitu"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "mobile","remote"));
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile","remote"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }

@@ -90,8 +90,8 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     }
 
     private IoParameters ensureBackwardsCompatibility(IoParameters query) {
-        return !query.containsParameter(Parameters.PLATFORM_TYPES)
-                ?  query.extendWith(Parameters.PLATFORM_TYPES, "stationary", "insitu")
+        return !query.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
+                ?  query.extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
                 : query;
     }
 

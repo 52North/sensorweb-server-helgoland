@@ -28,8 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.web.ctrl.UrlSettings;
-
 public class UrlHelper {
 
     public String getServicesHrefBaseUrl(String hrefBase) {
