@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = COLLECTION_GEOMETRIES)
 public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
-    
+
     @Override
     public void setParameterService(ParameterService<GeometryInfo> parameterService) {
         super.setParameterService(new TransformingGeometryOutputService(parameterService));
