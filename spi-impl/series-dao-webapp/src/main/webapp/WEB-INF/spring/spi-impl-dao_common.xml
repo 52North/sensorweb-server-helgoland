@@ -13,10 +13,6 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean class="org.n52.web.ctrl.ResourcesController">
-        <property name="metadataService" ref="metadataService" />
-    </bean>
-
     <bean id="serviceInfo" class="org.n52.series.db.beans.ServiceInfo">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="My Timeseries Service." />

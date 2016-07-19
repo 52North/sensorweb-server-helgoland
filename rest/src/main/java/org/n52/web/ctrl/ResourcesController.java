@@ -43,9 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
@@ -91,8 +88,8 @@ public class ResourcesController {
         resources.add(phenomena);
 
         // since 2.0.0
-        ResourceCollection platforms = createResource("platforms").withLabel("Station").withDescription(i18n.get("msg.web.resources.platforms"));
-        ResourceCollection series = createResource("series").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.series"));
+        ResourceCollection platforms = createResource("platforms").withLabel("Platforms").withDescription(i18n.get("msg.web.resources.platforms"));
+        ResourceCollection series = createResource("datasets").withLabel("Datasets").withDescription(i18n.get("msg.web.resources.datasets"));
         resources.add(platforms);
         resources.add(series);
 
