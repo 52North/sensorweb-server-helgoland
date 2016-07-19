@@ -29,6 +29,7 @@
 package org.n52.io.response.v1.ext;
 
 import java.util.Locale;
+import static org.n52.io.response.v1.ext.GeometryType.isKnownType;
 
 /**
  * TODO: JavaDoc
@@ -76,11 +77,19 @@ public enum PlatformType {
     }
 
     public static boolean isStationaryId(String id) {
-        return id.startsWith("stationary");
+        return startsWith("stationary", id);
     }
 
     public static boolean isMobileId(String id) {
-        return id.startsWith("mobile");
+        return startsWith("mobile", id);
+    }
+
+    private static boolean startsWith(String prefix, String id) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
+            return false;
+        }
+        return id.toLowerCase().startsWith(prefix);
     }
 
     public static boolean isRemoteId(String id) {
@@ -92,10 +101,11 @@ public enum PlatformType {
     }
 
     private static boolean hasSuffix(String suffix, String id) {
-        if ( !isKnownType(id)) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
             return false;
         }
-        final PlatformType geometryType = extractType(id.toLowerCase());
+        final PlatformType geometryType = toInstance(idPrefix);
         return geometryType.getPlatformType().endsWith(suffix);
     }
 
@@ -106,6 +116,16 @@ public enum PlatformType {
             }
         }
         return false;
+    }
+
+    private static String extractPrefix(String id) {
+        for (PlatformType type : PlatformType.values()) {
+            final String prefix = type.getPlatformType();
+            if (id != null && id.toLowerCase().startsWith(prefix)) {
+                return prefix;
+            }
+        }
+        return id;
     }
 
     public static PlatformType toInstance(String typeName) {
@@ -130,15 +150,6 @@ public enum PlatformType {
                     ? STATIONARY_INSITU
                     : STATIONARY_REMOTE;
         }
-    }
-
-    public static PlatformType extractType(String id) {
-        for (PlatformType platformType : PlatformType.values()) {
-            if (platformType.name().toLowerCase(Locale.ROOT).startsWith(id)) {
-                return platformType;
-            }
-        }
-        throw new IllegalArgumentException("no type for '" + id + "'.");
     }
 
 }

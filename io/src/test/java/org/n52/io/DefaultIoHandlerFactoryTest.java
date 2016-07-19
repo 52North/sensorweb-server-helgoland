@@ -58,7 +58,6 @@ public class DefaultIoHandlerFactoryTest {
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
         ConfigTypedFactory<IoFactory> m = new DefaultIoFactory();
         assertTrue(m.isKnown("text"));
-        assertFalse(m.isKnown("count"));
         assertTrue(m.create("measurement").getClass() == MeasurementIoFactory.class);
     }
 

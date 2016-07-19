@@ -56,7 +56,7 @@ public class PlatformTypeTest {
 
     @Test
     public void when_stationaryRemoteString_then_recognizeType() {
-        Assert.assertThat(PlatformType.toInstance("stationary-remote"), Matchers.is(PlatformType.STATIONARY_REMOTE));
+        Assert.assertThat(PlatformType.toInstance("stationary_remote"), Matchers.is(PlatformType.STATIONARY_REMOTE));
     }
 
     @Test
@@ -81,7 +81,6 @@ public class PlatformTypeTest {
         Assert.assertThat(PlatformType.extractId("stationary"), Matchers.is("stationary"));
     }
 
-
     @Test
     public void when_mobileOnlyPrefix_then_expectIdentity() {
         Assert.assertThat(PlatformType.extractId("mobile"), Matchers.is("mobile"));
@@ -89,12 +88,12 @@ public class PlatformTypeTest {
 
     @Test
     public void when_idWithStationaryPrefix_then_detectType() {
-        Assert.assertTrue(PlatformType.isStationaryId("stationary_something"));
+        Assert.assertTrue(PlatformType.isStationaryId("stationary_remote_something"));
     }
 
     @Test
     public void when_idWithMobilePrefix_then_detectType() {
-        Assert.assertTrue(PlatformType.isMobileId("mobile_something"));
+        Assert.assertTrue(PlatformType.isMobileId("mobile_insitu_something"));
     }
 
     @Test

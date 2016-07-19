@@ -75,8 +75,13 @@ public class GeometryTypeTest {
     }
 
     @Test
-    public void when_nullPlatformId_then_handledWhenDetectType() {
+    public void when_nullId_then_handledWhenDetectPlatform() {
         Assert.assertFalse(GeometryType.isPlatformGeometryId(null));
+    }
+
+    @Test
+    public void when_nullId_then_handledWhenDetectSite() {
+        Assert.assertFalse(GeometryType.isSiteId(null));
     }
 
 }

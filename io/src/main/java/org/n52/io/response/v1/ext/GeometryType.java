@@ -112,7 +112,7 @@ public enum GeometryType {
     private static String extractPrefix(String id) {
         for (GeometryType geometryType : GeometryType.values()) {
             final String prefix = geometryType.getGeometryType();
-            if (id.toLowerCase().startsWith(prefix)) {
+            if (id != null && id.toLowerCase().startsWith(prefix)) {
                 return prefix;
             }
         }
