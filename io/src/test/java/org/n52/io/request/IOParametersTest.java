@@ -141,59 +141,59 @@ public class IOParametersTest {
         IoParameters extended = defaults.extendWith("test", "value");
         Assert.assertFalse(defaults == extended);
     }
-    
+
     @Test
     public void when_defaults_then_allPlatformGeometryFiltersActive() {
         IoParameters defaults = createDefaults();
         Assert.assertTrue(defaults.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(defaults.shallIncludePlatformGeometriesTrack());
     }
-    
+
     @Test
     public void when_defaults_then_allObservedGeometryFiltersActive() {
         IoParameters defaults = createDefaults();
         Assert.assertTrue(defaults.shallIncludeObservedGeometriesDynamic());
         Assert.assertTrue(defaults.shallIncludeObservedGeometriesStatic());
     }
-    
+
     @Test
     public void when_allObservedGeometries_then_allObservedGeometryFiltersActive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all");
         Assert.assertTrue(parameters.shallIncludeObservedGeometriesDynamic());
         Assert.assertTrue(parameters.shallIncludeObservedGeometriesStatic());
     }
-    
+
     @Test
     public void when_allPlatformGeometries_then_allPlatformGeometryFiltersActive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "all");
         Assert.assertTrue(parameters.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(parameters.shallIncludePlatformGeometriesTrack());
     }
-    
+
     @Test
     public void when_sitePlatformGeometries_then_siteFilterActive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "site");
         Assert.assertTrue(parameters.shallIncludePlatformGeometriesSite());
     }
-    
+
     @Test
     public void when_sitePlatformGeometries_then_trackFilterInactive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "site");
         Assert.assertFalse(parameters.shallIncludePlatformGeometriesTrack());
     }
-    
+
     @Test
     public void when_staticObservedGeometries_then_dynamicFilterActive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "static");
         Assert.assertTrue(parameters.shallIncludeObservedGeometriesStatic());
     }
-    
+
     @Test
     public void when_staticObservedGeometries_then_dynamicFilterInactive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "static");
         Assert.assertFalse(parameters.shallIncludeObservedGeometriesDynamic());
     }
-    
+
     @Test
     public void when_defaults_then_insituFilterActive() {
         IoParameters defaults = createDefaults();

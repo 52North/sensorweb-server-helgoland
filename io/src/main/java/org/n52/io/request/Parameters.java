@@ -330,9 +330,9 @@ public interface Parameters {
     public static final String FILTER_DATASET_TYPES = "datasetTypes";
 
     public static final String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
-    
+
     public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
-    
+
     public static final String HREF_BASE = "internal.href.base";
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";

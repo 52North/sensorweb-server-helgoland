@@ -459,11 +459,11 @@ public class IoParameters implements Parameters {
     public Set<String> getPlatformTypes() {
         return getValuesOf(FILTER_PLATFORM_TYPES);
     }
-    
+
     public Set<String> getPlatformGeometryTypes() {
         return getValuesOf(FILTER_PLATFORM_GEOMETRIES);
     }
-    
+
     public Set<String> getObservedGeometryTypes() {
         return getValuesOf(FILTER_OBSERVED_GEOMETRIES);
     }
@@ -471,11 +471,11 @@ public class IoParameters implements Parameters {
     public Set<String> getDatasetTypes() {
         return getValuesOf(FILTER_DATASET_TYPES);
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     public boolean shallIncludeMobilePlatformTypes() {
         return shallIncludeAllPlatformTypes() || isSetMobileFilter();
     }
@@ -510,16 +510,16 @@ public class IoParameters implements Parameters {
         return isSetPlatformGeometryFilter()
                 && isSetObservedGeometryFilter();
     }
-    
+
     private boolean shallIncludeAllPlatformGeometries() {
         return !isSetPlatformGeometryFilter()
                 || getPlatformGeometryTypes().contains("all");
     }
-    
+
     private boolean isSetPlatformGeometryFilter() {
         return !getPlatformGeometryTypes().isEmpty();
     }
-    
+
     private boolean shallIncludeAllObservedGeometries() {
         return !isSetObservedGeometryFilter()
                 || getObservedGeometryTypes().contains("all");
@@ -528,30 +528,30 @@ public class IoParameters implements Parameters {
     private boolean isSetObservedGeometryFilter() {
         return !getObservedGeometryTypes().isEmpty();
     }
-    
+
     public boolean shallIncludePlatformGeometriesSite() {
         return shallIncludeAllPlatformGeometries()
                 || getPlatformGeometryTypes().contains("site");
     }
-    
+
     public boolean shallIncludePlatformGeometriesTrack() {
         return shallIncludeAllPlatformGeometries()
                 || getPlatformGeometryTypes().contains("track");
     }
-    
+
     public boolean shallIncludeObservedGeometriesStatic() {
         return shallIncludeAllObservedGeometries()
                 || getObservedGeometryTypes().contains("static");
     }
-    
+
     public boolean shallIncludeObservedGeometriesDynamic() {
         return shallIncludeAllObservedGeometries()
                 || getObservedGeometryTypes().contains("dynamic");
     }
-  
-    
-    
-    
+
+
+
+
 
     private Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
