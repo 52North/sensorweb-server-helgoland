@@ -55,40 +55,6 @@ public class PlatformEntity extends DescribableEntity {
         return PlatformType.toInstance(mobile, insitu);
     }
 
-//    private PlatformType platformType;
-//    public void setPlatformType(String platformType) {
-//        this.platformType = PlatformType.isKnownType(platformType)
-//                ? PlatformType.toInstance(platformType)
-//                : null;
-//    }
-/*
-    public PlatformType getPlatformType() {
-        PlatformType type = platformType;
-        if (series == null) {
-            return PlatformType.STATIONARY_INSITU;
-        }
-        for (AbstractSeriesEntity entity : series) {
-            final FeatureEntity feature = entity.getFeature();
-            final String concept = feature.getFeatureConcept();
-            if (!PlatformType.isKnownType(concept)) {
-                LOGGER.warn("unknown feature concept for feature '{}': {}", feature.getPkid(), concept);
-                continue;
-            }
-            // TODO log warning when not consistent?!
-//            PlatformType tmp = PlatformType.toInstance(concept);
-//            if (type != null && tmp != type) {
-//                LOGGER.warn("Different platform type referenced: {} vs. {}", tmp, type);
-//            } else {
-//                type = tmp;
-//            }
-            type = PlatformType.toInstance(concept);
-            break;
-        }
-        return type == null
-                ? PlatformType.STATIONARY_INSITU
-                : type;
-    }
-     */
     public boolean isMobile() {
         return mobile;
     }
