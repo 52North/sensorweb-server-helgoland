@@ -28,95 +28,12 @@
  */
 package org.n52.web.ctrl;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
-import java.util.Map;
-
-import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.io.response.v1.ext.PlatformType;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(path = UrlSettings.COLLECTION_PLATFORMS, method = GET, produces = {"application/json"})
+@RequestMapping(path = UrlSettings.COLLECTION_PLATFORMS)
 public class PlatformsParameterController extends ParameterRequestMappingAdapter<PlatformOutput> {
-
-    @Override
-    @RequestMapping(path = "")
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "all");
-        return super.getCollection(query);
-    }
-
-    /* ******************************************************************
-                        REMOTE REQUEST MAPPINGS
-     * ******************************************************************/
-
-    // TODO remote
-
-    /* ******************************************************************
-                        STATIONARY REQUEST MAPPINGS
-     * ******************************************************************/
-
-    @RequestMapping(path = "/stationary")
-    public ModelAndView getStationaryCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "stationary");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(path = "/stationary/insitu")
-    public ModelAndView getStationaryInsituCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "stationary");
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "insitu");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(path = "/stationary/insitu/{id}")
-    public ModelAndView getStationaryInsituItem(@PathVariable("id") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "stationary");
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "insitu");
-        return super.getItem(PlatformType.STATIONARY_INSITU.createId(id), query);
-    }
-
-    @RequestMapping(path = "/stationary/insitu/{id}/extras")
-    public Map<String, Object> getStationaryInsituItemExtras(String id, MultiValueMap<String, String> query) {
-        return super.getExtras(PlatformType.MOBILE_INSITU.createId(id), query);
-    }
-
-    /* ******************************************************************
-                        MOBILE REQUEST MAPPINGS
-     * ******************************************************************/
-
-    @RequestMapping(path = "/mobile")
-    public ModelAndView getMobileCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "mobile");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/mobile/insitu")
-    public ModelAndView getMobileInsituCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "mobile");
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "insitu");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/mobile/insitu/{id}")
-    public ModelAndView getMobileInsituItem(@PathVariable("id") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "mobile");
-        query.add(Parameters.FILTER_PLATFORM_TYPES, "insitu");
-        return super.getItem(PlatformType.MOBILE_INSITU.createId(id), query);
-    }
-
-    @RequestMapping(method = GET, path = "/mobile/insitu/{id}/extras")
-    public Map<String, Object> getMobileInsituItemExtras(String id, MultiValueMap<String, String> query) {
-        return super.getExtras(PlatformType.MOBILE_INSITU.createId(id), query);
-    }
 
 }
