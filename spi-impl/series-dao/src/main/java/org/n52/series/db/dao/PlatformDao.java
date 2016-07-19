@@ -38,6 +38,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.dao.AbstractDao;
@@ -66,14 +67,15 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PlatformEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+    public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = getDefaultCriteria("platform"); // TODO filter
 
         // TODO translation
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("platform");
+        DetachedCriteria filter = query.createDetachedFilterCriteria("platform");
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
 
+        IoParameters parameters = query.getParameters();
         if (!parameters.shallIncludeAllPlatformTypes()) {
             if (parameters.shallIncludeStationaryPlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
@@ -81,7 +83,8 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
             if (parameters.shallIncludeMobilePlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.MOBILE, true));
             }
-            if (parameters.shallIncludeInsituPlatformTypes() || parameters.shallIncludeStationaryPlatformTypes()) {
+            if (parameters.shallIncludeInsituPlatformTypes()
+                    || parameters.shallIncludeStationaryPlatformTypes()) {
                 criteria.add(Restrictions.eq(PlatformEntity.INSITU, true));
             }
             if (parameters.shallIncludeRemotePlatformTypes()) {

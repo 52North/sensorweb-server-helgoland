@@ -131,20 +131,21 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         return null;
     }
 
-    private List<GeometryInfo> getAllInstances(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
+    private List<GeometryInfo> getAllInstances(DbQuery query, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometries = new ArrayList<>();
-        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-        if (shallIncludePlatformLocationsSites(parameters)) {
-            geometries.addAll(getAllSites(parameters, session, expanded));
+        query.setDatabaseAuthorityCode(getDatabaseSrid());
+        final IoParameters parameters = query.getParameters();
+        if (parameters.shallIncludePlatformGeometriesSite()) {
+            geometries.addAll(getAllSites(query, session, expanded));
         }
-        if (shallIncludePlatformLocationsTracks(parameters)) {
-            geometries.addAll(getAllTracks(parameters, session, expanded));
+        if (parameters.shallIncludePlatformGeometriesTrack()) {
+            geometries.addAll(getAllTracks(query, session, expanded));
         }
-        if (shallIncludeObservedGeometriesStatic(parameters)) {
-            geometries.addAll(getAllObservedGeometriesStatic(parameters, session, expanded));
+        if (parameters.shallIncludeObservedGeometriesStatic()) {
+            geometries.addAll(getAllObservedGeometriesStatic(query, session, expanded));
         }
-        if (shallIncludeObservedGeometriesDynamic(parameters)) {
-            geometries.addAll(getAllObservedGeometriesDynamic(parameters, session, expanded));
+        if (parameters.shallIncludeObservedGeometriesDynamic()) {
+            geometries.addAll(getAllObservedGeometriesDynamic(query, session, expanded));
         }
         return geometries;
     }
@@ -173,8 +174,8 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao dao = new FeatureDao(session);
         DbQuery siteQuery = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "stationary")
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary")
         );
         for (FeatureEntity featureEntity : dao.getAllInstances(siteQuery)) {
             if (featureEntity.isSetGeometry()) {
@@ -205,8 +206,8 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao featureDao = new FeatureDao(session);
         DbQuery trackQuery = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.PLATFORM_TYPES)
-                .extendWith(Parameters.PLATFORM_TYPES, "mobile")
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")
         );
         for (FeatureEntity featureEntity : featureDao.getAllInstances(trackQuery)) {
             geometryInfoList.add(createTrack(featureEntity, parameters, expanded, session));
@@ -256,33 +257,33 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         return null;
     }
 
-    private static boolean shallIncludeAll(DbQuery parameters) {
-        return parameters.isAllGeomentries();
-    }
-
-    private static boolean shallIncludeAllPlatformLocations(DbQuery parameters) {
-        return parameters.isAllPlatformLocations() || shallIncludeAll(parameters);
-    }
-
-    private boolean shallIncludePlatformLocationsSites(DbQuery parameters) {
-        return parameters.isSites() || shallIncludeAllPlatformLocations(parameters);
-    }
-
-    private boolean shallIncludePlatformLocationsTracks(DbQuery parameters) {
-        return parameters.isTracks() || shallIncludeAllPlatformLocations(parameters);
-    }
-
-    private boolean shallIncludeObservedGeometries(DbQuery parameters) {
-        return parameters.isAllObservedGeometries() || shallIncludeAll(parameters);
-    }
-
-    private boolean shallIncludeObservedGeometriesDynamic(DbQuery parameters) {
-        return parameters.isStaticObservedGeometries() || shallIncludeObservedGeometries(parameters);
-    }
-
-    private boolean shallIncludeObservedGeometriesStatic(DbQuery parameters) {
-        return parameters.isDynamicObservedGeometries() || shallIncludeObservedGeometries(parameters);
-    }
+//    private static boolean shallIncludeAll(DbQuery parameters) {
+//        return parameters();
+//    }
+//
+//    private static boolean shallIncludeAllPlatformLocations(DbQuery parameters) {
+//        return parameters.isAllPlatformLocations() || shallIncludeAll(parameters);
+//    }
+//
+//    private boolean shallIncludePlatformLocationsSites(DbQuery parameters) {
+//        return parameters.isSites() || shallIncludeAllPlatformLocations(parameters);
+//    }
+//
+//    private boolean shallIncludePlatformLocationsTracks(DbQuery parameters) {
+//        return parameters.isTracks() || shallIncludeAllPlatformLocations(parameters);
+//    }
+//
+//    private boolean shallIncludeObservedGeometries(DbQuery parameters) {
+//        return parameters.isAllObservedGeometries() || shallIncludeAll(parameters);
+//    }
+//
+//    private boolean shallIncludeObservedGeometriesDynamic(DbQuery parameters) {
+//        return parameters.isStaticObservedGeometries() || shallIncludeObservedGeometries(parameters);
+//    }
+//
+//    private boolean shallIncludeObservedGeometriesStatic(DbQuery parameters) {
+//        return parameters.isDynamicObservedGeometries() || shallIncludeObservedGeometries(parameters);
+//    }
 
     private GeometryInfo addCondensedValues(GeometryInfo geometryInfo, FeatureEntity featureEntity,
             DbQuery parameters) throws DataAccessException {
@@ -295,7 +296,7 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
     private PlatformOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         DbQuery platformQuery = DbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
-                .extendWith(Parameters.PLATFORM_TYPES, "all")
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all")
         );
         List<PlatformOutput> platforms = platformRepository.getAllCondensed(platformQuery);
         return platforms.iterator().next();

@@ -453,16 +453,105 @@ public class IoParameters implements Parameters {
     }
 
     public Set<String> getFields() {
-        return getValuesOf(FIELDS);
+        return getValuesOf(FILTER_FIELDS);
     }
 
     public Set<String> getPlatformTypes() {
-        return getValuesOf(PLATFORM_TYPES);
+        return getValuesOf(FILTER_PLATFORM_TYPES);
+    }
+    
+    public Set<String> getPlatformGeometryTypes() {
+        return getValuesOf(FILTER_PLATFORM_GEOMETRIES);
+    }
+    
+    public Set<String> getObservedGeometryTypes() {
+        return getValuesOf(FILTER_OBSERVED_GEOMETRIES);
     }
 
     public Set<String> getDatasetTypes() {
-        return getValuesOf(DATASET_TYPES);
+        return getValuesOf(FILTER_DATASET_TYPES);
     }
+    
+    
+    
+    
+    
+    public boolean shallIncludeMobilePlatformTypes() {
+        return shallIncludeAllPlatformTypes() || isSetMobileFilter();
+    }
+
+    public boolean shallIncludeStationaryPlatformTypes() {
+        return shallIncludeAllPlatformTypes() || !isSetMobileFilter();
+    }
+
+    public boolean shallIncludeInsituPlatformTypes() {
+        return shallIncludeAllPlatformTypes() || isSetInsituFilter();
+    }
+
+    public boolean shallIncludeRemotePlatformTypes() {
+        return shallIncludeAllPlatformTypes() || !isSetInsituFilter();
+    }
+
+    public boolean isSetMobileFilter() {
+        Set<String> platformTypes = getPlatformTypes();
+        return platformTypes.contains("mobile"); // stationary by default true
+    }
+
+    public boolean isSetInsituFilter() {
+        Set<String> platformTypes = getPlatformTypes();
+        return !platformTypes.contains("remote"); // insitu by default true
+    }
+
+    public boolean shallIncludeAllPlatformTypes() {
+        return getPlatformTypes().contains("all");
+    }
+
+    private boolean isSetBothGeometriesFilter() {
+        return isSetPlatformGeometryFilter()
+                && isSetObservedGeometryFilter();
+    }
+    
+    private boolean shallIncludeAllPlatformGeometries() {
+        return !isSetPlatformGeometryFilter()
+                || getPlatformGeometryTypes().contains("all");
+    }
+    
+    private boolean isSetPlatformGeometryFilter() {
+        return !getPlatformGeometryTypes().isEmpty();
+    }
+    
+    private boolean shallIncludeAllObservedGeometries() {
+        return !isSetObservedGeometryFilter()
+                || getObservedGeometryTypes().contains("all");
+    }
+
+    private boolean isSetObservedGeometryFilter() {
+        return !getObservedGeometryTypes().isEmpty();
+    }
+    
+    public boolean shallIncludePlatformGeometriesSite() {
+        return shallIncludeAllPlatformGeometries()
+                || getPlatformGeometryTypes().contains("site");
+    }
+    
+    public boolean shallIncludePlatformGeometriesTrack() {
+        return shallIncludeAllPlatformGeometries()
+                || getPlatformGeometryTypes().contains("track");
+    }
+    
+    public boolean shallIncludeObservedGeometriesStatic() {
+        return shallIncludeAllObservedGeometries()
+                || getObservedGeometryTypes().contains("static");
+    }
+    
+    public boolean shallIncludeObservedGeometriesDynamic() {
+        return shallIncludeAllObservedGeometries()
+                || getObservedGeometryTypes().contains("dynamic");
+    }
+  
+    
+    
+    
 
     private Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)

@@ -26,23 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.series.db.dao;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 
-import org.n52.io.response.v1.ext.GeometryInfo;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.geo.TransformingGeometryOutputService;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_GEOMETRIES;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+public class DbQueryTest {
 
-@RestController
-@RequestMapping(value = COLLECTION_GEOMETRIES)
-public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
-    
-    @Override
-    public void setParameterService(ParameterService<GeometryInfo> parameterService) {
-        super.setParameterService(new TransformingGeometryOutputService(parameterService));
+    @Test
+    public void when_createWithNull_then_defaults() {
+        Assert.assertNotNull(DbQuery.createFrom(null));
     }
+
+
 
 }
