@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Locale;
+
 /**
  * TODO: JavaDoc
  *
@@ -35,23 +37,21 @@ package org.n52.io.response.v1.ext;
  */
 public enum PlatformType {
 
-    STATIONARY_INSITU("stationary/insitu"),
-    STATIONARY_REMOTE("stationary/remote"),
-    MOBILE_INSITU("mobile/insitu"),
-    MOBILE_REMOTE("mobile/remote");
-
-    private final String idPrefix;
-
-    private PlatformType(String typeName) {
-        this.idPrefix = typeName;
-    }
+    STATIONARY_INSITU,
+    STATIONARY_REMOTE,
+    MOBILE_INSITU,
+    MOBILE_REMOTE;
 
     public String getPlatformType() {
-        return idPrefix;
+        return name().toLowerCase();
+    }
+
+    private String getIdPrefix() {
+        return name().toLowerCase();
     }
 
     public String createId(String id) {
-        return idPrefix + "/" + id;
+        return getIdPrefix() + "_" + id;
     }
 
     public static String extractId(String id) {
@@ -69,7 +69,7 @@ public enum PlatformType {
     }
 
     private static String extractId(PlatformType type, String id) {
-        final int maxLength = type.idPrefix.length() + 1;
+        final int maxLength = type.getIdPrefix().length() + 1;
         return id.length() >= maxLength
                 ? id.substring(maxLength)
                 : id;
@@ -84,11 +84,19 @@ public enum PlatformType {
     }
 
     public static boolean isRemoteId(String id) {
-        return id.endsWith("remote");
+        return hasSuffix("remote", id);
     }
 
     public static boolean isInsitu(String id) {
-        return id.endsWith("insitu");
+        return hasSuffix("insitu", id);
+    }
+
+    private static boolean hasSuffix(String suffix, String id) {
+        if ( !isKnownType(id)) {
+            return false;
+        }
+        final PlatformType geometryType = extractType(id.toLowerCase());
+        return geometryType.getPlatformType().endsWith(suffix);
     }
 
     public static boolean isKnownType(String typeName) {
@@ -102,7 +110,7 @@ public enum PlatformType {
 
     public static PlatformType toInstance(String typeName) {
         for (PlatformType type : values()) {
-            if (type.idPrefix.equalsIgnoreCase(typeName)) {
+            if (type.getIdPrefix().equalsIgnoreCase(typeName)) {
                 return type;
             }
             if (type.getPlatformType().equalsIgnoreCase(typeName)) {
@@ -122,6 +130,15 @@ public enum PlatformType {
                     ? STATIONARY_INSITU
                     : STATIONARY_REMOTE;
         }
+    }
+
+    public static PlatformType extractType(String id) {
+        for (PlatformType platformType : PlatformType.values()) {
+            if (platformType.name().toLowerCase(Locale.ROOT).startsWith(id)) {
+                return platformType;
+            }
+        }
+        throw new IllegalArgumentException("no type for '" + id + "'.");
     }
 
 }

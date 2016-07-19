@@ -66,12 +66,12 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
-            if (GeometryType.isPlatformLocation(id)) {
+            if (GeometryType.isPlatformGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
                 return new FeatureDao(session).hasInstance(parseId(id), FeatureEntity.class);
             }
-            else if (GeometryType.isObservedGeometry(id)) {
+            else if (GeometryType.isObservedGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // TODO class of observed geometries
 //                return new FeatureDao(session).hasInstance(parseId(id), clazz);
@@ -108,7 +108,7 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            if (GeometryType.isPlatformLocation(id)) {
+            if (GeometryType.isPlatformGeometryId(id)) {
                 return getPlatformLocationGeometry(id, parameters, session);
             } else {
                 // TODO observed Geometry tpyes

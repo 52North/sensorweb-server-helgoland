@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Locale;
+
 /**
  * TODO: JavaDoc
  *
@@ -35,58 +37,95 @@ package org.n52.io.response.v1.ext;
  */
 public enum GeometryType {
 
-    PLATFORM_SITE("platformLocations/sites"),
-    PLATFORM_TRACK("platformLocations/tracks"),
-    STATIC_OBSERVERATION("observedGeometries/static"),
-    DYNAMIC_OBSERVATION("observedGeometries/dynamic");
+    PLATFORM_SITE,
+    PLATFORM_TRACK,
+    OBSERVED_STATIC,
+    OBSERVED_DYNAMIC;
 
-    private final String category;
+    private static final String SEPARATOR = "_";
 
-    private GeometryType(String category) {
-        this.category = category;
-    }
-
-    public String getIdPrefix() {
-        return this.name().toLowerCase();
+    public String createId(String id) {
+        return getGeometryType() + SEPARATOR + id;
     }
 
     public String getGeometryType() {
-        return category;
+        return this.name().toLowerCase();
     }
 
-    public static boolean isPlatformLocation(String id) {
-        return id != null && id.toLowerCase().startsWith("platformlocation");
+    public static boolean isPlatformGeometryId(String id) {
+        return startsWith("platform", id);
     }
 
+    public static boolean isObservedGeometryId(String id) {
+        return startsWith("observed", id);
+    }
 
-    public static boolean isObservedGeometry(String id) {
-        return id != null && id.toLowerCase().startsWith("observedGeometry");
+    private static boolean startsWith(String prefix, String id) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
+            return false;
+        }
+        return id.toLowerCase().startsWith(prefix);
     }
 
     public static boolean isSiteId(String id) {
-        return id.startsWith(PLATFORM_SITE.getGeometryType());
+        return hasSuffix("site", id);
     }
 
     public static boolean isTrackId(String id) {
-        return id.startsWith(PLATFORM_TRACK.getGeometryType());
+        return hasSuffix("track", id);
     }
 
     public static boolean isStaticId(String id) {
-        return id.endsWith(STATIC_OBSERVERATION.getGeometryType());
+        return hasSuffix("static", id);
     }
 
-    public static boolean isDynamic(String id) {
-        return id.endsWith(DYNAMIC_OBSERVATION.getGeometryType());
+    public static boolean isDynamicId(String id) {
+        return hasSuffix("dynamic", id);
     }
 
-    public String createId(String id) {
-        return getGeometryType() + "/" + id;
+    private static boolean hasSuffix(String suffix, String id) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
+            return false;
+        }
+        final GeometryType geometryType = toInstance(idPrefix);
+        return geometryType.getGeometryType().endsWith(suffix);
+    }
+
+    public static boolean isKnownType(String typeName) {
+        for (GeometryType type : values()) {
+            if (type.getGeometryType().equalsIgnoreCase(typeName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String extractId(String id) {
         for (GeometryType geometryType : values()) {
-            id = id.replaceAll(geometryType.getGeometryType() + "/", "");
+            id = id.replaceAll(geometryType.getGeometryType() + SEPARATOR, "");
         }
         return id;
     }
+
+    private static String extractPrefix(String id) {
+        for (GeometryType geometryType : GeometryType.values()) {
+            final String prefix = geometryType.getGeometryType();
+            if (id.toLowerCase().startsWith(prefix)) {
+                return prefix;
+            }
+        }
+        return id;
+    }
+
+    public static GeometryType toInstance(String id) {
+        for (GeometryType geometryType : GeometryType.values()) {
+            if (geometryType.name().toLowerCase(Locale.ROOT).startsWith(id)) {
+                return geometryType;
+            }
+        }
+        throw new IllegalArgumentException("no type for '" + id + "'.");
+    }
 }
+

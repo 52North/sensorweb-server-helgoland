@@ -60,7 +60,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     @Override
     public void setId(String id) {
-        super.setId(getUrlIdPrefix() + "/" + id);
+        super.setId(geometyCategory.createId(id));
     }
 
     @Override
@@ -95,7 +95,6 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
     }
-
 
     @Override
     public String getHrefBase() {

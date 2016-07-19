@@ -41,22 +41,22 @@ public class PlatformTypeTest {
 
     @Test
     public void when_mobileInsituString_then_recognizeType() {
-        Assert.assertThat(PlatformType.toInstance("mobile/insitu"), Matchers.is(PlatformType.MOBILE_INSITU));
+        Assert.assertThat(PlatformType.toInstance("mobile_insitu"), Matchers.is(PlatformType.MOBILE_INSITU));
     }
 
     @Test
     public void when_mobileRemoteString_then_recognizeType() {
-        Assert.assertThat(PlatformType.toInstance("mobile/remote"), Matchers.is(PlatformType.MOBILE_REMOTE));
+        Assert.assertThat(PlatformType.toInstance("mobile_remote"), Matchers.is(PlatformType.MOBILE_REMOTE));
     }
 
     @Test
     public void when_stationaryInsituString_then_recognizeType() {
-        Assert.assertThat(PlatformType.toInstance("stationary/insitu"), Matchers.is(PlatformType.STATIONARY_INSITU));
+        Assert.assertThat(PlatformType.toInstance("stationary_insitu"), Matchers.is(PlatformType.STATIONARY_INSITU));
     }
 
     @Test
     public void when_stationaryRemoteString_then_recognizeType() {
-        Assert.assertThat(PlatformType.toInstance("stationary/remote"), Matchers.is(PlatformType.STATIONARY_REMOTE));
+        Assert.assertThat(PlatformType.toInstance("stationary-remote"), Matchers.is(PlatformType.STATIONARY_REMOTE));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class PlatformTypeTest {
 
     @Test
     public void when_extractingId_then_typePrefixGone() {
-        Assert.assertThat(PlatformType.extractId("mobile/insitu/foobar"), Matchers.is("foobar"));
+        Assert.assertThat(PlatformType.extractId("mobile_insitu_foobar"), Matchers.is("foobar"));
     }
 
     @Test
@@ -89,12 +89,17 @@ public class PlatformTypeTest {
 
     @Test
     public void when_idWithStationaryPrefix_then_detectType() {
-        Assert.assertTrue(PlatformType.isStationaryId("stationary/something"));
+        Assert.assertTrue(PlatformType.isStationaryId("stationary_something"));
     }
 
     @Test
     public void when_idWithMobilePrefix_then_detectType() {
-        Assert.assertTrue(PlatformType.isMobileId("mobile/something"));
+        Assert.assertTrue(PlatformType.isMobileId("mobile_something"));
+    }
+
+    @Test
+    public void when_idWithInsituSuffix_then_detectType() {
+        Assert.assertTrue(PlatformType.isInsitu("mobile_insitu_10"));
     }
 
 }
