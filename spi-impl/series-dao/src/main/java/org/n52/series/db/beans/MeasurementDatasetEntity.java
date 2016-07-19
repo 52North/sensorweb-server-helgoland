@@ -31,8 +31,6 @@ package org.n52.series.db.beans;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.UnitEntity;
 
 public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntity> {
 

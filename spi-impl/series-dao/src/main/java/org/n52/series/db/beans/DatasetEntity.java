@@ -31,12 +31,8 @@ package org.n52.series.db.beans;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.n52.io.response.v1.ext.ObservationType;
-import org.n52.series.db.beans.CategoryEntity;
-import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db.beans.PhenomenonEntity;
-import org.n52.series.db.beans.ProcedureEntity;
+
 
 public class DatasetEntity<T extends DataEntity> {
 
@@ -46,8 +42,6 @@ public class DatasetEntity<T extends DataEntity> {
     public static final String FEATURE = "feature";
     public static final String PLATFORM = "platform";
     public static final String OBSERVATION_TYPE = "observationType";
-
-    private final Class<T> entityType;
 
     private Long pkid;
 
@@ -71,9 +65,7 @@ public class DatasetEntity<T extends DataEntity> {
 
     private T lastValue;
 
-
     public DatasetEntity() {
-        this.entityType = (Class<T>) DataEntity.class;
         this.observations = new ArrayList<>();
     }
 
@@ -158,13 +150,13 @@ public class DatasetEntity<T extends DataEntity> {
     }
 
     public String getDatasetType() {
-        return !ObservationType.isKnownType(datasetType)
-            ? ObservationType.MEASUREMENT.getObservationType()
-            : datasetType;
+        return datasetType == null ||datasetType.isEmpty()
+                ? ObservationType.MEASUREMENT.name() // backward compatible
+                : datasetType;
     }
 
     public void setDatasetType(String datasetType) {
-        this.datasetType = ObservationType.toInstance(datasetType).getObservationType();
+        this.datasetType = datasetType;
     }
 
     @Override

@@ -14,7 +14,6 @@
         <module>series-dao</module>
         <module>series-dao-sos</module>
         <module>series-dao-webapp</module>
-        <module>series-mappings</module>
     </modules>
 
     <properties>
@@ -36,11 +35,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>series-dao-webapp</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>series-mappings</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

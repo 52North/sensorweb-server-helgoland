@@ -33,8 +33,6 @@ import org.n52.io.response.v1.ext.DatasetOutput;
 
 public class TextObservationSeriesOutput extends DatasetOutput<TextObservationReferenceValueOutput> {
 
-    private TextObservationReferenceValueOutput[] referenceValues;
-
     private TextValue firstValue;
 
     private TextValue lastValue;
