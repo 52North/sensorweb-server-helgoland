@@ -186,6 +186,7 @@ public class DatasetRepository<T extends Data>
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    // XXX refactor instanceof hell here
     private DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
         if (series instanceof MeasurementDatasetEntity) {
             MeasurementSeriesOutput output = new MeasurementSeriesOutput();
@@ -209,6 +210,7 @@ public class DatasetRepository<T extends Data>
         return null;
     }
 
+    // XXX refactor instanceof hell here
     private DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         DatasetOutput result = createCondensed(series, query);
         result.setSeriesParameters(getParameters(series, query));
