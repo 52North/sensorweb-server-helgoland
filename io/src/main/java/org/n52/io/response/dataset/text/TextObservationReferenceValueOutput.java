@@ -28,9 +28,9 @@
  */
 package org.n52.io.response.dataset.text;
 
-import org.n52.io.response.dataset.SeriesReferenceValueOutput;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class TextObservationReferenceValueOutput implements SeriesReferenceValueOutput<TextValue> {
+public class TextObservationReferenceValueOutput implements ReferenceValueOutput<TextValue> {
 
     private String referenceValueId;
 

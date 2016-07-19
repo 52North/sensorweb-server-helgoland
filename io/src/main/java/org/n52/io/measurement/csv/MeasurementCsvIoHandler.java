@@ -39,24 +39,25 @@ import java.util.zip.ZipOutputStream;
 
 import org.joda.time.DateTime;
 import org.n52.io.CsvIoHandler;
-import org.n52.io.I18N;
-import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
-import org.n52.io.measurement.IoContext;
+import org.n52.io.IoProcessChain;
+import org.n52.io.IoStyleContext;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.count.CountObservationData;
 import org.n52.io.response.dataset.count.CountValue;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.text.TextObservationData;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.series.spi.srv.DataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
+// TODO extract non measurement specifics to csvhandler
+
+public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementCsvIoHandler.class);
 
@@ -65,11 +66,9 @@ public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
     // needed by some clients to detect UTF-8 encoding (e.g. excel)
     private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
 
-    private IoContext context;
+    private final IoStyleContext context;
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
-
-    private DataCollection data = new DataCollection<>();
 
     private boolean useByteOrderMark = true;
 
@@ -77,10 +76,12 @@ public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
 
     private String tokenSeparator = ";";
 
-    public MeasurementCsvIoHandler(IoContext context, String locale) {
-        this.context = context;
-        I18N i18n = I18N.getMessageLocalizer(locale);
+    public MeasurementCsvIoHandler(RequestSimpleParameterSet simpleRequest,
+            IoProcessChain<MeasurementData> processChain,
+            IoStyleContext context) {
+        super(simpleRequest, processChain);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
+        this.context = context;
     }
 
     @Override
@@ -103,36 +104,30 @@ public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
     }
 
     @Override
-    public void generateOutput(DataCollection data) throws IoParseException {
-        // hold the data so we can stream it directly when #encodeAndWriteTo is called
-        this.data = data;
-    }
-
-    @Override
-    public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
         try {
             if (zipOutput) {
-                writeAsZipStream(stream);
+                writeAsZipStream(data, stream);
             } else {
-                writeAsPlainCsv(stream);
+                writeAsPlainCsv(data, stream);
             }
         } catch (IOException e) {
             throw new IoParseException("Could not write CSV to output stream.", e);
         }
     }
 
-    private void writeAsPlainCsv(OutputStream stream) throws IOException {
+    private void writeAsPlainCsv(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
         BufferedOutputStream bos = new BufferedOutputStream(stream);
         writeHeader(bos);
-        writeData(bos);
+        writeData(data, bos);
         bos.flush();
     }
 
-    private void writeAsZipStream(OutputStream stream) throws IOException {
+    private void writeAsZipStream(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
         ZipOutputStream zipStream = new ZipOutputStream(stream);
         zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
         writeHeader(zipStream);
-        writeData(zipStream);
+        writeData(data, zipStream);
         zipStream.flush();
     }
 
@@ -144,19 +139,10 @@ public class MeasurementCsvIoHandler<T extends Data> extends CsvIoHandler<T> {
         writeCsvLine(csvLine, stream);
     }
 
-    private void writeData(OutputStream stream) throws IOException {
-        for (MeasurementSeriesOutput metadata : context.getSeriesMetadatas()) {
-            Data series = data.getSeries(metadata.getId());
-            if (series instanceof MeasurementData) {
-                writeData(metadata, (MeasurementData) series, stream);
-                
-                // TODO make csv handler more generic to handle different dataset types
-                
-//            } else if (series instanceof TextObservationData) {
-//                writeData(metadata, (TextObservationData) series, stream);
-//            } else if (series instanceof CountObservationData) {
-//                writeData(metadata, (CountObservationData) series, stream);
-            }
+    private void writeData(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
+        for (DatasetOutput metadata : context.getSeriesMetadatas()) {
+            MeasurementData series = data.getSeries(metadata.getId());
+            writeData(metadata, (MeasurementData) series, stream);
         }
     }
 

@@ -32,13 +32,13 @@ package org.n52.series.db.da;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
-import org.n52.io.DatasetFactory;
+import org.n52.io.ConfigTypedFactory;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.ServiceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-public class DataRepositoryFactory extends DatasetFactory<DataRepository> {
+public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-repository-factory.properties";
 

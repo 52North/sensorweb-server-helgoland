@@ -17,7 +17,7 @@ import org.junit.rules.ExpectedException;
 
 public class DatasetFactoryTest {
 
-    private DatasetFactory<Collection> factory;
+    private ConfigTypedFactory<Collection> factory;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -41,7 +41,7 @@ public class DatasetFactoryTest {
 
     @Test
     public void when_createdWithNullConfig_then_configureWithFallback() {
-        DatasetFactory<Collection> f = createCollectionFactory(null);
+        ConfigTypedFactory<Collection> f = createCollectionFactory(null);
         Assert.assertTrue(f.isKnown("hashmap"));
     }
 
@@ -50,7 +50,7 @@ public class DatasetFactoryTest {
         thrown.expect(DatasetFactoryException.class);
         thrown.expectMessage(is("No datasets available for 'invalid'."));
         File configFile = getConfigFile("dataset-collection-factory-invalid-entry.properties");
-        new DefaultIoHandlerFactory(configFile).create("invalid");
+        new DefaultIoFactory(configFile).create("invalid");
     }
 
     @Test
@@ -65,8 +65,8 @@ public class DatasetFactoryTest {
         return root.resolve(name).toFile();
     }
 
-    private DatasetFactory<Collection> createCollectionFactory(File config) {
-        return new DatasetFactory<Collection>(config) {
+    private ConfigTypedFactory<Collection> createCollectionFactory(File config) {
+        return new ConfigTypedFactory<Collection>(config) {
             @Override
             protected String getFallbackConfigResource() {
                 return "/dataset-collection-factory-fallback.properties";

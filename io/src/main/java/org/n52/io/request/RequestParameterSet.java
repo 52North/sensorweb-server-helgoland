@@ -134,14 +134,14 @@ public abstract class RequestParameterSet {
      * @return A language code to determine the requested locale. "en" is the
      * default.
      */
-    public String getLanguage() {
+    public String getLocale() {
         return getAsString("language");
     }
 
     /**
      * @param language A language code to determine the requested locale.
      */
-    public void setLanguage(String language) {
+    public void setLocale(String language) {
         language = !(language == null || language.isEmpty())
                 ? language
                 : "en";

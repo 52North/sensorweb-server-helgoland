@@ -28,14 +28,14 @@
  */
 package org.n52.io.measurement.format;
 
-import org.n52.io.SeriesDataFormatter;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.DataFormatter;
 
 /**
  * Represents the identity transformation. Input is equal to output.
  */
-public class TvpFormatter implements SeriesDataFormatter<MeasurementData, MeasurementData> {
+public class TvpFormatter implements DataFormatter<MeasurementData, MeasurementData> {
 
     @Override
     public DataCollection<MeasurementData> format(DataCollection<MeasurementData> toFormat) {

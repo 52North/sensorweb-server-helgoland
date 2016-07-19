@@ -28,9 +28,7 @@
  */
 package org.n52.io;
 
-import static org.n52.io.measurement.IoContext.createContextForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -50,16 +48,13 @@ import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
-import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.img.ChartDimension;
-import org.n52.io.measurement.IoContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
@@ -79,6 +74,8 @@ import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.n52.io.IoStyleContext.createContextForSingleSeries;
+import org.n52.io.response.dataset.Data;
 import org.n52.series.spi.srv.DataService;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
@@ -183,31 +180,31 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException {
+    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException, DatasetFactoryException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-        IoContext context = createContextForSingleSeries(metadata, config);
+        IoStyleContext context = createContextForSingleSeries(metadata, config);
         int width = context.getChartStyleDefinitions().getWidth();
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
+
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
-        IoHandler<MeasurementData> renderer = new MeasurementIoHandlerFactory()
-                .withParameters(config)
-                .withContext(context)
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .withSimpleRequest(parameters)
                 .createHandler("png");
+
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(timeseriesId, interval, chartQualifier);
-        renderChartFile(renderer, parameters, fos);
-    }
 
-    private void renderChartFile(IoHandler<MeasurementData> renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
         try (FileOutputStream out = fos;) {
-            renderer.generateOutput(getTimeseriesData(parameters));
-            renderer.encodeAndWriteTo(out);
+            ioHandler.writeBinary(out);
             fos.flush();
-        } catch (IoParseException | IOException e) {
+        } catch (IoHandlerException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }
     }
@@ -349,11 +346,5 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return QueryParameters.createFromQuery(configuration);
     }
 
-    private DataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
-        //return timeseriesDataService.getSeriesData(parameters);
-        return parameters.isGeneralize()
-                ? composeDataService(timeseriesDataService).getData(parameters)
-                : timeseriesDataService.getData(parameters);
-    }
 
 }

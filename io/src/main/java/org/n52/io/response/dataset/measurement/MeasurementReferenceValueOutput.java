@@ -28,9 +28,9 @@
  */
 package org.n52.io.response.dataset.measurement;
 
-import org.n52.io.response.dataset.SeriesReferenceValueOutput;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class MeasurementReferenceValueOutput implements SeriesReferenceValueOutput<MeasurementValue> {
+public class MeasurementReferenceValueOutput implements ReferenceValueOutput<MeasurementValue> {
 
     private String referenceValueId;
 

@@ -28,9 +28,9 @@
  */
 package org.n52.io.response.dataset.count;
 
-import org.n52.io.response.dataset.SeriesReferenceValueOutput;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class CountObservationReferenceValueOutput implements SeriesReferenceValueOutput<CountValue>{
+public class CountObservationReferenceValueOutput implements ReferenceValueOutput<CountValue>{
 
     private String referenceValueId;
 

@@ -28,15 +28,12 @@
  */
 package org.n52.io.measurement.img;
 
-import org.n52.io.measurement.IoContext;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
 import static org.n52.io.measurement.img.BarRenderer.BAR_CHART_TYPE;
 import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.COLOR;
 import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.FONT_LABEL;
@@ -71,30 +68,33 @@ import org.jfree.ui.VerticalAlignment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.n52.io.I18N;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.MimeType;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
+import org.n52.io.IoStyleContext;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import static javax.imageio.ImageIO.write;
 import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import org.n52.series.spi.srv.DataService;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import org.n52.io.IoProcessChain;
 
-public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
+public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
-    protected I18N i18n = getDefaultLocalizer();
-
-    private IoContext context;
+    private final IoStyleContext context;
 
     private boolean showTooltips;
 
@@ -110,19 +110,19 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
 
     private XYPlot xyPlot;
 
-    public ChartIoHandler(IoContext context, String locale) {
-        if (locale != null) {
-            i18n = getMessageLocalizer(locale);
-        }
+    public ChartIoHandler(RequestSimpleParameterSet request,
+            IoProcessChain<MeasurementData> processChain,
+            IoStyleContext context) {
+        super(request, processChain);
         this.context = context;
     }
 
-    @Override
     public abstract void generateOutput(DataCollection<MeasurementData> data) throws IoParseException;
 
     @Override
-    public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
         try {
+            generateOutput(data);
             JPEGImageWriteParam p = new JPEGImageWriteParam(null);
             p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
             write(drawChartToImage(), mimeType.getFormatName(), stream);
@@ -150,12 +150,12 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
 
     public XYPlot getXYPlot() {
         if (xyPlot == null) {
-            xyPlot = createChart(context);
+            xyPlot = createChart(getRenderingContext());
         }
         return xyPlot;
     }
 
-    public IoContext getRenderingContext() {
+    public IoStyleContext getRenderingContext() {
         return context;
     }
 
@@ -199,7 +199,7 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
         this.showTooltips = showTooltips;
     }
 
-    private XYPlot createChart(IoContext context) {
+    private XYPlot createChart(IoStyleContext context) {
         DateTime end = getTimespan() != null
                 ? DateTime.parse(getTimespan().split("/")[1])
                 : new DateTime();
@@ -289,7 +289,7 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
         return new IntervalWithTimeZone(getTimespan()).getTimezone();
     }
 
-    public ValueAxis createRangeAxis(MeasurementSeriesOutput metadata) {
+    public ValueAxis createRangeAxis(DatasetOutput metadata) {
         NumberAxis axis = new NumberAxis(createRangeLabel(metadata));
         axis.setTickLabelFont(FONT_LABEL);
         axis.setLabelFont(FONT_LABEL);
@@ -298,7 +298,7 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
         return axis;
     }
 
-    protected String createRangeLabel(MeasurementSeriesOutput timeseriesMetadata) {
+    protected String createRangeLabel(DatasetOutput timeseriesMetadata) {
         SeriesParameters parameters = timeseriesMetadata.getSeriesParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
@@ -316,7 +316,7 @@ public abstract class ChartIoHandler implements IoHandler<MeasurementData> {
         }
     }
 
-    protected List<MeasurementSeriesOutput> getTimeseriesMetadataOutputs() {
+    protected List<? extends DatasetOutput> getMetadataOutputs() {
         return context.getSeriesMetadatas();
     }
 

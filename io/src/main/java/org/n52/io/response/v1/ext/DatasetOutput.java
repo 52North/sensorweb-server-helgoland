@@ -35,9 +35,9 @@ import org.n52.io.Utils;
 
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.SeriesReferenceValueOutput;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public abstract class DatasetOutput<T extends SeriesReferenceValueOutput> extends ParameterOutput {
+public abstract class DatasetOutput<T extends ReferenceValueOutput> extends ParameterOutput {
 
     private final String datasetType;
 

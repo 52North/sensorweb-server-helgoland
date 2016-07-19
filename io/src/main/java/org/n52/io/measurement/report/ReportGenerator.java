@@ -28,39 +28,37 @@
  */
 package org.n52.io.measurement.report;
 
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
 
 import java.util.List;
 
-import org.n52.io.I18N;
 import org.n52.io.IoHandler;
-import org.n52.io.measurement.IoContext;
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
+import org.n52.io.IoProcessChain;
+import org.n52.io.IoStyleContext;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.v1.ext.DatasetOutput;
 
-public abstract class ReportGenerator implements IoHandler<MeasurementData> {
+public abstract class ReportGenerator<T extends Data> extends IoHandler<T> {
 
-    protected I18N i18n = getDefaultLocalizer();
-
-    private IoContext context;
+    private final IoStyleContext context;
 
     /**
+     * @param simpleRequest
+     * @param processChain
      * @param context the rendering context.
-     * @param language the ISO639 locale to be used.
      */
-    public ReportGenerator(IoContext context, String language) {
-        if (language != null) {
-            i18n = getMessageLocalizer(language);
-        }
+    public ReportGenerator(RequestSimpleParameterSet simpleRequest,
+            IoProcessChain processChain,
+            IoStyleContext context) {
+        super(simpleRequest, processChain);
         this.context = context;
     }
 
-    public IoContext getContext() {
+    public IoStyleContext getContext() {
         return context;
     }
 
-    protected List<MeasurementSeriesOutput> getSeriesMetadatas() {
+    protected List<? extends DatasetOutput> getSeriesMetadatas() {
         return getContext().getSeriesMetadatas();
     }
 

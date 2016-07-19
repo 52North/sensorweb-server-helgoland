@@ -38,12 +38,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.n52.io.measurement.MeasurementIoHandlerFactory;
-import org.n52.io.text.TextIoHandlerFactory;
+import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {
 
-    private DefaultIoHandlerFactory factory;
+    private DefaultIoFactory factory;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -51,25 +51,25 @@ public class DefaultIoHandlerFactoryTest {
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoHandlerFactory(config);
+        factory = new DefaultIoFactory(config);
     }
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        DatasetFactory<IoHandlerFactory> m = new DefaultIoHandlerFactory();
+        ConfigTypedFactory<IoFactory> m = new DefaultIoFactory();
         assertTrue(m.isKnown("text"));
         assertFalse(m.isKnown("count"));
-        assertTrue(m.create("measurement").getClass() == MeasurementIoHandlerFactory.class);
+        assertTrue(m.create("measurement").getClass() == MeasurementIoFactory.class);
     }
 
     @Test
     public void when_mapToText_then_returnTextIoHandler() throws DatasetFactoryException {
-        assertTrue(factory.create("text").getClass() == TextIoHandlerFactory.class);
+        assertTrue(factory.create("text").getClass() == TextIoFactory.class);
     }
 
     @Test
     public void when_mapToText_then_returnMeasurementDataRepository() throws DatasetFactoryException {
-        assertTrue(factory.create("measurement").getClass() == MeasurementIoHandlerFactory.class);
+        assertTrue(factory.create("measurement").getClass() == MeasurementIoFactory.class);
     }
 
     private File getConfigFile(String name) throws URISyntaxException {

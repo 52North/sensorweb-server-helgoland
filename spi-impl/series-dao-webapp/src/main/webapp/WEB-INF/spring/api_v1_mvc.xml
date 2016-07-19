@@ -82,7 +82,9 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.DataController">
-        <property name="serviceByObservationType">
+        <property name="datasetService" ref="datasetService" />
+        <property name="dataService" ref="datasetService" />
+<!--        <property name="serviceByObservationType">
             <map key-type="org.n52.io.response.v1.ext.ObservationType">
                 <entry key="MEASUREMENT">
                     <bean class="org.n52.web.ctrl.MeasurmentSeriesDataControllerService">
@@ -97,7 +99,7 @@
                     </bean>
                 </entry>
             </map>
-        </property>
+        </property>-->
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 

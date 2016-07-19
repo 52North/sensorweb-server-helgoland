@@ -32,22 +32,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.SeriesDataFormatter;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.DataCollection;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import org.n52.io.DataFormatter;
 
-public class HighchartFormatter implements SeriesDataFormatter<MeasurementData, HighchartSeries> {
+public class HighchartFormatter implements DataFormatter<MeasurementData, HighchartData> {
 
     @Override
     public HighchartDataCollection format(DataCollection<MeasurementData> toFormat) {
         HighchartDataCollection dataCollection = new HighchartDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
             MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);
-            HighchartSeries series = createHighchartSeries(timeseriesId, seriesToFormat);
+            HighchartData series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewSeries(timeseriesId, series);
 
             MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
@@ -55,7 +55,7 @@ public class HighchartFormatter implements SeriesDataFormatter<MeasurementData, 
                 Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
                 for (String referenceValueId : referenceValues.keySet()) {
                     MeasurementData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
-                    HighchartSeries referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
+                    HighchartData referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
                     dataCollection.addNewSeries(referenceValueId, referenceSeries);
                 }
             }
@@ -63,16 +63,16 @@ public class HighchartFormatter implements SeriesDataFormatter<MeasurementData, 
         return dataCollection;
     }
 
-    private HighchartSeries createHighchartSeries(String seriesId, MeasurementData seriesToFormat) {
+    private HighchartData createHighchartSeries(String seriesId, MeasurementData seriesToFormat) {
         List<Number[]> formattedSeries = formatSeries(seriesToFormat);
-        HighchartSeries series = new HighchartSeries();
+        HighchartData series = new HighchartData();
         series.setName(seriesId);
         series.setData(formattedSeries);
         return series;
     }
 
     private List<Number[]> formatSeries(MeasurementData timeseries) {
-        List<Number[]> series = new ArrayList<Number[]>();
+        List<Number[]> series = new ArrayList<>();
         for (MeasurementValue currentValue : timeseries.getValues()) {
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());

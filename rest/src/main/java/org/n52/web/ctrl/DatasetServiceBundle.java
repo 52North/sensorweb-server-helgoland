@@ -43,35 +43,35 @@ import org.n52.series.spi.srv.DataService;
 
 public abstract class DatasetServiceBundle {
 
-    private ParameterService metadataService;
-
-    private DataService dataService;
-
-    public ParameterService getMetadataService() {
-        return metadataService;
-    }
-
-    public void setMetadataService(ParameterService seriesMetadataService) {
-        this.metadataService = new WebExceptionAdapter(seriesMetadataService);
-    }
-
-    public DataService getDataService() {
-        return dataService;
-    }
-
-    public void setDataService(DataService seriesDataService) {
-        this.dataService = seriesDataService;
-    }
-
-    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
-
-    public abstract IoHandler getIoHandler(RequestParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
-
-    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map);
-
-    public abstract IoHandler getIoHandler(RequestSimpleParameterSet parameters, IoParameters map);
-
-    public abstract DataCollection<?> format(DataCollection seriesData, String format);
-
-    public abstract DataCollection getSeriesData(RequestSimpleParameterSet parameters);
+//    private ParameterService metadataService;
+//
+//    private DataService dataService;
+//
+//    public ParameterService getMetadataService() {
+//        return metadataService;
+//    }
+//
+//    public void setMetadataService(ParameterService seriesMetadataService) {
+//        this.metadataService = new WebExceptionAdapter(seriesMetadataService);
+//    }
+//
+//    public DataService getDataService() {
+//        return dataService;
+//    }
+//
+//    public void setDataService(DataService seriesDataService) {
+//        this.dataService = seriesDataService;
+//    }
+//
+//    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
+//
+//    public abstract IoHandler getIoHandler(RequestParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
+//
+//    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map);
+//
+//    public abstract IoHandler getIoHandler(RequestSimpleParameterSet parameters, IoParameters map);
+//
+//    public abstract DataCollection<?> format(DataCollection seriesData, String format);
+//
+//    public abstract DataCollection getSeriesData(RequestSimpleParameterSet parameters);
 }

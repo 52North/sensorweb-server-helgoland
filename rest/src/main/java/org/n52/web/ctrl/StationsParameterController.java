@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import static org.n52.web.ctrl.UrlSettings.COLLECTION_STATIONS;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 @Deprecated
 @RestController

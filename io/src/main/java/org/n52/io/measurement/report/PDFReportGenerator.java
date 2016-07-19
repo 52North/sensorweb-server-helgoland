@@ -59,7 +59,6 @@ import org.joda.time.DateTime;
 import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
@@ -74,13 +73,14 @@ import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import static java.io.File.createTempFile;
 import org.n52.io.IoParseException;
 import static java.io.File.createTempFile;
-import static java.io.File.createTempFile;
-import static java.io.File.createTempFile;
+import org.n52.io.IoProcessChain;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.series.spi.srv.DataService;
 
-public class PDFReportGenerator extends ReportGenerator {
+public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
 
@@ -96,8 +96,10 @@ public class PDFReportGenerator extends ReportGenerator {
 
     private URI baseURI;
 
-    public PDFReportGenerator(ChartIoHandler renderer, String locale) {
-        super(renderer.getRenderingContext(), locale);
+    public PDFReportGenerator(RequestSimpleParameterSet simpleRequest,
+            IoProcessChain<MeasurementData> processChain,
+            ChartIoHandler renderer) {
+        super(simpleRequest, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
         this.renderer = configureRenderer(renderer);
@@ -114,7 +116,6 @@ public class PDFReportGenerator extends ReportGenerator {
         return renderer;
     }
 
-    @Override
     public void generateOutput(DataCollection<MeasurementData> data) throws IoParseException {
         try {
             generateTimeseriesChart(data);
@@ -128,7 +129,7 @@ public class PDFReportGenerator extends ReportGenerator {
         renderer.generateOutput(data);
         File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)){
-            renderer.encodeAndWriteTo(stream);
+            renderer.encodeAndWriteTo(data, stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
 //            String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
 //            document.getDocumentStructure().setDiagramURL(absoluteFilePath);
@@ -141,7 +142,7 @@ public class PDFReportGenerator extends ReportGenerator {
     }
 
     private void generateTimeseriesMetadata() {
-        for (MeasurementSeriesOutput metadata : getSeriesMetadatas()) {
+        for (DatasetOutput metadata : getSeriesMetadatas()) {
             TimeSeries timeseries = addTimeseries(metadata);
             // addDataTable(timeseries, metadata, data);
             addMetadata(timeseries, metadata);
@@ -149,8 +150,9 @@ public class PDFReportGenerator extends ReportGenerator {
     }
 
     @Override
-    public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
         try {
+            generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             Configuration cfg = cfgBuilder.build(document.newInputStream());
             FopFactory fopFactory = new FopFactoryBuilder(baseURI)
@@ -199,7 +201,7 @@ public class PDFReportGenerator extends ReportGenerator {
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 
-    private TimeSeries addTimeseries(MeasurementSeriesOutput metadata) {
+    private TimeSeries addTimeseries(DatasetOutput metadata) {
         DocumentStructureType report = document.getDocumentStructure();
         TimeSeries timeseries = report.addNewTimeSeries();
 
@@ -210,7 +212,7 @@ public class PDFReportGenerator extends ReportGenerator {
         return timeseries;
     }
 
-    private MetadataType addMetadata(TimeSeries timeseries, MeasurementSeriesOutput timeseriesMetadata) {
+    private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput timeseriesMetadata) {
         MetadataType metadata = timeseries.addNewMetadata();
         GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
 

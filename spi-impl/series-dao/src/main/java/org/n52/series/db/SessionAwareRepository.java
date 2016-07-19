@@ -204,7 +204,7 @@ public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
         return serviceOutput;
     }
 
-    private org.n52.io.response.ServiceOutput getCondensedExtendedService(DbQuery parameters) {
+    private ServiceOutput getCondensedExtendedService(DbQuery parameters) {
         String serviceId = serviceRepository.getServiceId();
         ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
         ServiceOutput serviceOutput = new ServiceOutput();

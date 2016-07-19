@@ -84,9 +84,13 @@ public class DatasetRepository<T extends Data>
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
-            id = DatasetType.extractId(id);
-            SeriesDao<DatasetEntity> dao = new SeriesDao<>(session, DatasetEntity.class);
-            return dao.hasInstance(parseId(id), DatasetEntity.class);
+            String dbId = DatasetType.extractId(id);
+            final String datasetType = DatasetType.extractType(id);
+            DataRepository dataRepository = factory.create(datasetType);
+            SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+            return dao.hasInstance(parseId(dbId), dataRepository.getEntityType());
+        } catch (DatasetFactoryException ex) {
+            throw new DataAccessException("Could not determine if id exists.", ex);
         } finally {
             returnSession(session);
         }
@@ -99,10 +103,11 @@ public class DatasetRepository<T extends Data>
             List<DatasetOutput> results = new ArrayList<>();
             if (query.isSetDatasetTypeFilter()) {
                 for (String datasetType : query.getDatasetTypes()) {
-                    addResults(getSeriesDao(datasetType, session), query, results);
+                    addCondensedResults(getSeriesDao(datasetType, session), query, results);
                 }
             } else {
-                addResults(getSeriesDao(DatasetEntity.class, session), query, results);
+                // XXX filter on configured types
+                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             }
             return results;
         } finally {
@@ -110,7 +115,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
+    private void addCondensedResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createCondensed(series, query));
         }
@@ -137,15 +142,23 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
-            for (String datasetType : query.getDatasetTypes()) {
-                SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-                for (DatasetEntity series : dao.getAllInstances(query)) {
-                    results.add(createExpanded(series, query, session));
+            if (query.isSetDatasetTypeFilter()) {
+                for (String datasetType : query.getDatasetTypes()) {
+                    addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
                 }
+            } else {
+                // XXX filter on configured types
+                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             }
             return results;
         } finally {
             returnSession(session);
+        }
+    }
+
+    private void addExpandedResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
+        for (DatasetEntity series : dao.getAllInstances(query)) {
+            results.add(createExpanded(series, query, session));
         }
     }
 

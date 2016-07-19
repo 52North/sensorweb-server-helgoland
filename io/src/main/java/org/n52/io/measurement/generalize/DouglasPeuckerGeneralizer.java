@@ -45,6 +45,10 @@ import org.slf4j.LoggerFactory;
 import static java.lang.Integer.parseInt;
 import static java.lang.Integer.parseInt;
 import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
+import static java.lang.Integer.parseInt;
 
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm

@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.io.request.QueryParameters.createFromQuery;
@@ -40,7 +39,6 @@ import static org.n52.web.ctrl.UrlSettings.COLLECTION_TIMESERIES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -50,24 +48,21 @@ import java.util.Arrays;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
-import org.n52.io.IoParseException;
+import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.measurement.MeasurementIoHandlerFactory;
 import org.n52.io.measurement.format.FormatterFactory;
-import org.n52.io.measurement.IoContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
 import org.n52.io.response.dataset.DataCollection;
@@ -88,6 +83,231 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.n52.series.spi.srv.DataService;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import org.n52.io.response.dataset.Data;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromQuery;
@@ -233,19 +453,16 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        String[] timeseriesIds = parameters.getSeriesIds();
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        IoContext context = IoContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
-
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(map)
-                .forMimeType(APPLICATION_PDF)
-                .withServletContextRoot(getRootResource())
-                .createIOHandler(context);
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withBasePath(getRootResource())
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .createHandler("image/png");
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        handleBinaryResponse(response, parameters, renderer);
-
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
@@ -266,15 +483,16 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(map)
-                .forMimeType(APPLICATION_PDF)
-                .withServletContextRoot(getRootResource())
-                .createIOHandler(context);
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withBasePath(getRootResource())
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .createHandler("text/csv");
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        handleBinaryResponse(response, parameters, renderer);
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/zip"}, method = GET)
@@ -301,11 +519,12 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(map)
-                .forMimeType(TEXT_CSV)
-                .createIOHandler(context);
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .createHandler("text/csv");
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -313,7 +532,7 @@ public class TimeseriesDataController extends BaseController {
         } else {
             response.setContentType(TEXT_CSV.toString());
         }
-        handleBinaryResponse(response, parameters, renderer);
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/getData", produces = {"image/png"}, method = POST)
@@ -329,15 +548,14 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        String[] timeseriesIds = parameters.getSeriesIds();
-        OutputCollection<MeasurementSeriesOutput> timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        IoContext context = IoContext.createContextWith(requestParameters, timeseriesMetadatas.getItems());
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(map)
-                .createIOHandler(context);
-
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .createHandler("image/png");
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        handleBinaryResponse(response, parameters, renderer);
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"image/png"}, method = GET)
@@ -349,7 +567,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters map = createFromQuery(query);
         MeasurementSeriesOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        IoContext context = IoContext.createContextForSingleSeries(metadata, map);
+        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, map);
         context.setDimensions(map.getChartDimension());
 
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
@@ -359,11 +577,14 @@ public class TimeseriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<MeasurementData> renderer = MeasurementIoHandlerFactory
-                .createWith(map)
-                .createIOHandler(context);
+        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService)
+                .createHandler("image/png");
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        handleBinaryResponse(response, parameters, renderer);
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
@@ -396,40 +617,40 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    /**
-     * @param response the response to write binary on.
-     * @param parameters the timeseries parameter to request raw data.
-     * @param renderer an output renderer.
-     * @throws InternalServerException if data processing fails for some reason.
-     */
-    private void handleBinaryResponse(HttpServletResponse response,
-            RequestSimpleParameterSet parameters,
-            IoHandler<MeasurementData> renderer) {
-        try {
-            renderer.generateOutput(getTimeseriesData(parameters));
-            if (parameters.isBase64()) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                renderer.encodeAndWriteTo(baos);
-                byte[] imageData = baos.toByteArray();
-                byte[] encode = Base64.encodeBase64(imageData);
-                response.getOutputStream().write(encode);
-            } else {
-                renderer.encodeAndWriteTo(response.getOutputStream());
-            }
-        } catch (IOException e) { // handled by BaseController
-            throw new InternalServerException("Error handling output stream.", e);
-        } catch (IoParseException e) { // handled by BaseController
-            throw new InternalServerException("Could not write binary to stream.", e);
-        } finally {
-            try {
-                if ( !response.isCommitted()) {
-                    response.flushBuffer();
-                }
-            } catch (IOException e) {
-                throw new InternalServerException("Could not flush buffer.", e);
-            }
-        }
-    }
+//    /**
+//     * @param response the response to write binary on.
+//     * @param parameters the timeseries parameter to request raw data.
+//     * @param renderer an output renderer.
+//     * @throws InternalServerException if data processing fails for some reason.
+//     */
+//    private void handleBinaryResponse(HttpServletResponse response,
+//            RequestSimpleParameterSet parameters,
+//            IoHandler<MeasurementData> renderer) {
+//        try {
+//            renderer.generateOutput(getTimeseriesData(parameters));
+//            if (parameters.isBase64()) {
+//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                renderer.encodeAndWriteTo(baos);
+//                byte[] imageData = baos.toByteArray();
+//                byte[] encode = Base64.encodeBase64(imageData);
+//                response.getOutputStream().write(encode);
+//            } else {
+//                renderer.encodeAndWriteTo(response.getOutputStream());
+//            }
+//        } catch (IOException e) { // handled by BaseController
+//            throw new InternalServerException("Error handling output stream.", e);
+//        } catch (IoParseException e) { // handled by BaseController
+//            throw new InternalServerException("Could not write binary to stream.", e);
+//        } finally {
+//            try {
+//                if ( !response.isCommitted()) {
+//                    response.flushBuffer();
+//                }
+//            } catch (IOException e) {
+//                throw new InternalServerException("Could not flush buffer.", e);
+//            }
+//        }
+//    }
 
     private DataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = startStopwatch();

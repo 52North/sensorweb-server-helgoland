@@ -722,7 +722,7 @@ public class IoParameters implements Parameters {
         return parameterSet;
     }
 
-    public RequestStyledParameterSet toDesignedParameterSet() {
+    public RequestStyledParameterSet toRequestStyledParameterSet() {
         RequestStyledParameterSet parameterSet = new RequestStyledParameterSet();
         addValuesToParameterSet(parameterSet);
         return parameterSet;
