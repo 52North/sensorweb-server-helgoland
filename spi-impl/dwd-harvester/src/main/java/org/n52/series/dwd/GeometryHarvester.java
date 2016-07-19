@@ -28,31 +28,9 @@
  */
 package org.n52.series.dwd;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.n52.series.dwd.store.InMemoryAlertStore;
+public interface GeometryHarvester {
 
-public class GeometryHarvesterTest {
-
-    private ShapeFileHarvester harvester;
-
-    @Before
-    public void setUp() throws IOException, URISyntaxException {
-        InMemoryAlertStore store = new InMemoryAlertStore();
-        this.harvester = new ShapeFileHarvester(store);
-        File file = new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI());
-        harvester.setFile(file);
-        this.harvester.harvest();
-    }
-
-    @Test
-    public void when_notYetHarvested_then_emptyStore() {
-        Assert.assertTrue(harvester != null);
-    }
+    void harvest();
 
 }

@@ -53,6 +53,10 @@ public class UpdateAlertStoreJob extends ScheduledJob implements InterruptableJo
     @Qualifier("harvester")
     private DwdHarvester harvester;
 
+    @Autowired
+    @Qualifier("geometryHarvester")
+    private GeometryHarvester geometryHarvester;
+
     private boolean interrupted;
 
     @Override
@@ -72,6 +76,7 @@ public class UpdateAlertStoreJob extends ScheduledJob implements InterruptableJo
         final JobDetail details = context.getJobDetail();
         JobDataMap jobDataMap = details.getJobDataMap();
         getHarvester().harvest();
+        getGeometryHarvester().harvest();
         LOGGER.debug("update took '{}'", stopwatch.stopInSeconds());
     }
 
@@ -88,6 +93,14 @@ public class UpdateAlertStoreJob extends ScheduledJob implements InterruptableJo
 
     public void setHarvester(DwdHarvester harvester) {
         this.harvester = harvester;
+    }
+
+    public GeometryHarvester getGeometryHarvester() {
+        return geometryHarvester;
+    }
+
+    public void setGeometryHarvester(GeometryHarvester geometryHarvester) {
+        this.geometryHarvester = geometryHarvester;
     }
 
     @Override

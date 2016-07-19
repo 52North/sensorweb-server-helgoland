@@ -38,20 +38,20 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.PhenomenonOutput;
-import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
-import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.ctrl.v1.ext.UrlHelper;
 
-public class PhenomenonOutputAdapter extends ParameterService<PhenomenonOutput> {
+public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutput> {
 
     private final AlertStore store;
 
     private final UrlHelper urlHelper = new UrlHelper();
 
-    public PhenomenonOutputAdapter(AlertStore store) {
+    public PhenomenonOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
+        super(serviceInfo);
         this.store = store;
     }
 
@@ -83,12 +83,12 @@ public class PhenomenonOutputAdapter extends ParameterService<PhenomenonOutput> 
     }
 
     private Set<String> getPhenonmenon() {
-        Set<String> offerings = new HashSet<String>();
+        Set<String> phenomenon = new HashSet<String>();
         if (store.getCurrentAlerts().hasWarning()) {
             Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
             for (List<WarnungAlert> list : warnings.values()) {
                 for (WarnungAlert warnungAlert : list) {
-                    offerings.add(warnungAlert.getEvent());
+                    phenomenon.add(createPhenomenonId(warnungAlert.getEvent()));
                 }
             }
         }
@@ -96,11 +96,11 @@ public class PhenomenonOutputAdapter extends ParameterService<PhenomenonOutput> 
             Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
             for (List<VorabInformationAlert> list : vorabInformation.values()) {
                 for (VorabInformationAlert vorabInformationAlert : list) {
-                    offerings.add(vorabInformationAlert.getEvent());
+                    phenomenon.add(createPhenomenonId(vorabInformationAlert.getEvent()));
                 }
             }
         }
-        return offerings;
+        return phenomenon;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class PhenomenonOutputAdapter extends ParameterService<PhenomenonOutput> 
             if (query.isExpanded()) {
                 outputCollection.addItem(createExpanded(alertType, query));
             } else {
-                outputCollection.addItem(createExpanded(alertType, query));
+                outputCollection.addItem(createCondensed(alertType, query));
             }
         }
         return outputCollection;
@@ -132,19 +132,17 @@ public class PhenomenonOutputAdapter extends ParameterService<PhenomenonOutput> 
 
     private PhenomenonOutput createExpanded(String item, IoParameters query) {
         PhenomenonOutput result = createCondensed(item, query);
-//        result.setService(getServiceOutput());
+        result.setService(getServiceOutput());
         return result;
     }
 
     @Override
     public boolean exists(String id) {
-        return getPhenonmenon().contains(id);
+        return getPhenonmenon().contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(PhenomenonOutput result, IoParameters parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
-            result.setHrefBase(urlHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
-        }
+        result.setHrefBase(urlHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
     }
 
 }

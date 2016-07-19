@@ -20,9 +20,7 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
-    <!--    <bean class="org.n52.web.ctrl.v1.ResourcesController">
-        <property name="metadataService" ref="metadataService" />
-    </bean>-->
+    <bean class="org.n52.web.ctrl.v1.ext.ExtResourcesController"/>
 
     <bean class="org.n52.web.ctrl.v1.OfferingsParameterController" parent="parameterController">
         <property name="parameterService" ref="offeringParameterService" />

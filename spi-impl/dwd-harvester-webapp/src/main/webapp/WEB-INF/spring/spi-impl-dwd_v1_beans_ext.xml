@@ -12,6 +12,21 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+	<bean id="seriesService" name="seriestDataService" class="org.n52.series.dwd.srv.v1.SeriesOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="platformParameterService" class="org.n52.series.dwd.srv.v1.PlatformOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="geometryParameterService" class="org.n52.series.dwd.srv.v1.GeometryOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
     <!-- <bean name="platformRepository" class="org.n52.series.db.da.v1.PlatformRepository" />
     <bean name="seriesRepository" class="org.n52.series.db.da.v1.SeriesRepository" />
     <bean name="measurementDataRepository" class="org.n52.series.db.da.v1.MeasurementDataRepository" />

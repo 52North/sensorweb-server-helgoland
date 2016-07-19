@@ -39,21 +39,22 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.OfferingOutput;
 import org.n52.sensorweb.spi.ParameterService;
-import org.n52.series.dwd.beans.AlertMessage;
-import org.n52.series.dwd.rest.Alert.AlertTypes;
+import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
 import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.ctrl.v1.ext.UrlHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class OfferingOutputAdapter extends ParameterService<OfferingOutput> {
+public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> {
 
     private final AlertStore store;
 
     private final UrlHelper urlHelper = new UrlHelper();
 
-    public OfferingOutputAdapter(AlertStore store) {
+    public OfferingOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
+        super(serviceInfo);
         this.store = store;
     }
 
@@ -112,7 +113,7 @@ public class OfferingOutputAdapter extends ParameterService<OfferingOutput> {
             if (query.isExpanded()) {
                 outputCollection.addItem(createExpanded(alertType, query));
             } else {
-                outputCollection.addItem(createExpanded(alertType, query));
+                outputCollection.addItem(createCondensed(alertType, query));
             }
         }
         return outputCollection;
@@ -134,7 +135,7 @@ public class OfferingOutputAdapter extends ParameterService<OfferingOutput> {
 
     private OfferingOutput createExpanded(String item, IoParameters query) {
         OfferingOutput result = createCondensed(item, query);
-//        result.setService(getServiceOutput());
+        result.setService(getServiceOutput());
         return result;
     }
 
@@ -144,9 +145,7 @@ public class OfferingOutputAdapter extends ParameterService<OfferingOutput> {
     }
 
     private void checkForHref(OfferingOutput result, IoParameters parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
-            result.setHrefBase(urlHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
-        }
+        result.setHrefBase(urlHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
 }

@@ -14,20 +14,33 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+    <bean id="serviceParameterService" class="org.n52.series.dwd.srv.v1.ServiceOutputAdapter">
+    	<constructor-arg index="0" ref="serviceInfo" />
+    </bean>
+
 	<bean id="procedureParameterService" class="org.n52.series.dwd.srv.v1.ProcedureOutputAdapter">
         <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
     </bean>
 
     <bean id="offeringParameterService" class="org.n52.series.dwd.srv.v1.OfferingOutputAdapter">
         <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
     </bean>
 
     <bean id="phenomenonParameterService" class="org.n52.series.dwd.srv.v1.PhenomenonOutputAdapter">
         <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
     </bean>
 
     <bean id="categoryParameterService" class="org.n52.series.dwd.srv.v1.CategoryOutputAdapter">
         <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="featureParameterService" class="org.n52.series.dwd.srv.v1.FeatureOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
     </bean>
 
     <!-- <bean id="categoryRepository" class="org.n52.series.db.da.v1.CategoryRepository" />

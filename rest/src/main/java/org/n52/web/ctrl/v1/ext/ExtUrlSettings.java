@@ -48,7 +48,9 @@ public interface ExtUrlSettings extends RestfulUrls {
     /**
      * Subpath identifying the api version and extension.
      */
-    static final String API_VERSION_EXTENSION_PATH = API_VERSION_PATH + EXT;
+//    static final String API_VERSION_EXTENSION_PATH = API_VERSION_PATH + EXT;
+    static final String API_VERSION_EXTENSION_PATH = API_VERSION_PATH;
+
 
     /**
      * Subpath identifying a collection of services available.

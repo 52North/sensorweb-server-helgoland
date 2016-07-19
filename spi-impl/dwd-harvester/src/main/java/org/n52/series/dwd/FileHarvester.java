@@ -86,6 +86,10 @@ class FileHarvester implements DwdHarvester {
         this.file = file;
     }
 
+    public void setFilePath(String filePath) {
+        this.file = new File(filePath);
+    }
+
     public static FileHarvester.Builder aHarvester(AlertStore store) {
         return new Builder(store);
     }

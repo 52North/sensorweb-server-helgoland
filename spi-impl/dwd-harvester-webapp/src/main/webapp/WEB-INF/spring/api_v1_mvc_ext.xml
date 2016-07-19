@@ -14,6 +14,25 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+	<bean class="org.n52.web.ctrl.v1.ext.SeriesMetadataController" parent="parameterController">
+        <property name="parameterService" ref="seriesService" />
+        <property name="metadataExtensions">
+            <list merge="true">
+                <bean class="org.n52.io.extension.v1.RenderingHintsExtension" />
+                <bean class="org.n52.io.extension.v1.StatusIntervalsExtension" />
+                <!-- Using DatabaseMetadataExtension requires some preparation work. -->
+                <!-- Have a look at the README.md at TBD -->
+                <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->
+            </list>
+        </property>
+    </bean>
 
+	<bean class="org.n52.web.ctrl.v1.ext.PlatformsParameterController" parent="parameterController">
+        <property name="parameterService" ref="platformParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v1.ext.GeometriesController" parent="parameterController">
+        <property name="parameterService" ref="geometryParameterService" />
+    </bean>
 
 </beans>

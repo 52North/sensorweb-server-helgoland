@@ -43,7 +43,7 @@ public class DwdAlertObservationSeriesOutput extends SeriesMetadataOutput<DwdAle
     private DwdAlertObservationValue lastValue;
 
     public DwdAlertObservationSeriesOutput() {
-        super(ObservationType.TEXT);
+        super(ObservationType.DWD_ALERT);
     }
 
     public String getUom() {

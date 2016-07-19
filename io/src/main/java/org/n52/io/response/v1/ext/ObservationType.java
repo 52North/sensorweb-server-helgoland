@@ -43,7 +43,7 @@ public enum ObservationType {
     COUNT,
     URI,
     UNSUPPORTED,
-    ALL;
+    ALL, DWD_ALERT;
 
     public String getIdPrefix() {
         return name().toLowerCase();

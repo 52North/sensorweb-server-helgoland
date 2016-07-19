@@ -36,26 +36,38 @@ import java.util.Map;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.n52.series.dwd.FileHarvester.Builder;
 import org.n52.series.dwd.store.AlertStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class ShapeFileHarvester {
+public class ShapeFileHarvester implements GeometryHarvester {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShapeFileHarvester.class);
+
+    private AlertStore store;
 
     private File file;
+
+    public ShapeFileHarvester(AlertStore store) {
+        this.store = store;
+    }
 
     public ShapeFileHarvester setFile(File file) {
         this.file = file;
         return this;
     }
 
-    public Map<String, Geometry> loadGeometries() throws IOException {
+    public ShapeFileHarvester setFilePath(String filePath) {
+        return setFile(new File(filePath));
+    }
+
+    protected Map<String, Geometry> loadGeometries() throws IOException {
         Map<String, Geometry> result = new HashMap<String, Geometry>();
         if (file != null) {
             Map<String, Object> map = new HashMap<String, Object>();
@@ -76,6 +88,15 @@ public class ShapeFileHarvester {
             }
         }
         return result;
+    }
+
+    @Override
+    public void harvest() {
+        try {
+            store.setWarnCellGeometries(loadGeometries());
+        } catch (IOException e) {
+            LOGGER.warn("Unable to harvest file.", e);
+        }
     }
 
 

@@ -20,10 +20,21 @@
     </bean>
 
 	<bean id="alertStore" class="org.n52.series.dwd.store.InMemoryAlertStore" />
-	<bean id="harvester" class="org.n52.series.dwd.UrlHarvester">
+
+	<!-- <bean id="harvester" class="org.n52.series.dwd.UrlHarvester">
 		<constructor-arg index="0" ref="alertStore" />
 		<property name="url" value="http://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json" />
+	</bean> -->
+
+	<bean id="harvester" class="org.n52.series.dwd.FileHarvester">
+		<constructor-arg index="0" ref="alertStore" />
+		<property name="filePath" value="c:/dwd-example.json" />
 	</bean>
+
+	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester">
+    	<constructor-arg index="0" ref="alertStore" />
+    	<property name="filePath" value="c:/VG2500_DWD/DWD-PVW-Customer_VG2500.shp"/>
+    </bean>
 
 
    <!--  <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />

@@ -28,6 +28,8 @@
  */
 package org.n52.io.response;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;

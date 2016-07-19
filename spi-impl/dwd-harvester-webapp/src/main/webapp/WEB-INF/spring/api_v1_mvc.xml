@@ -14,6 +14,10 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+    <bean class="org.n52.web.ctrl.v1.ServicesParameterController" parent="parameterController">
+        <property name="parameterService" ref="serviceParameterService" />
+    </bean>
+
 	<bean class="org.n52.web.ctrl.v1.ProceduresParameterController" parent="parameterController">
         <property name="parameterService" ref="procedureParameterService" />
     </bean>
@@ -28,6 +32,10 @@
 
     <bean class="org.n52.web.ctrl.v1.CategoriesParameterController" parent="parameterController">
         <property name="parameterService" ref="categoryParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.v1.FeaturesParameterController" parent="parameterController">
+        <property name="parameterService" ref="featureParameterService" />
     </bean>
 
 </beans>

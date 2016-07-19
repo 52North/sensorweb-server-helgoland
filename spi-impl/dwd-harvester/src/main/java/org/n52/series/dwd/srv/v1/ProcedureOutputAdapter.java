@@ -35,18 +35,21 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.ProcedureOutput;
 import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.Alert.AlertTypes;
 import org.n52.series.dwd.store.AlertStore;
 import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.ctrl.v1.ext.UrlHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class ProcedureOutputAdapter extends ParameterService<ProcedureOutput> {
+public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput> {
 
     private final AlertStore store;
 
     private final UrlHelper urlHelper = new UrlHelper();
 
-    public ProcedureOutputAdapter(AlertStore store) {
+    public ProcedureOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
+        super(serviceInfo);
         this.store = store;
     }
 
@@ -84,7 +87,7 @@ public class ProcedureOutputAdapter extends ParameterService<ProcedureOutput> {
             if (query.isExpanded()) {
                 outputCollection.addItem(createExpanded(alertType, query));
             } else {
-                outputCollection.addItem(createExpanded(alertType, query));
+                outputCollection.addItem(createCondensed(alertType, query));
             }
         }
         return outputCollection;
@@ -106,7 +109,7 @@ public class ProcedureOutputAdapter extends ParameterService<ProcedureOutput> {
 
     private ProcedureOutput createExpanded(String item, IoParameters query) {
         ProcedureOutput result = createCondensed(item, query);
-//        result.setService(getServiceOutput());
+        result.setService(getServiceOutput());
         return result;
     }
 
@@ -116,9 +119,7 @@ public class ProcedureOutputAdapter extends ParameterService<ProcedureOutput> {
     }
 
     private void checkForHref(ProcedureOutput result, IoParameters parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
-            result.setHrefBase(urlHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
-        }
+        result.setHrefBase(urlHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
     }
 
 }

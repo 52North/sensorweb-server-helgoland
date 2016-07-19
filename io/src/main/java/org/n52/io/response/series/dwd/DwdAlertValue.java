@@ -36,7 +36,7 @@ public class DwdAlertValue {
     private int type;
     private int level;
     private String state;
-    private String statreShort;
+    private String stateShort;
     private int altitudeStart;
     private int altitudeEnd;
     private long validFrom;
@@ -97,11 +97,11 @@ public class DwdAlertValue {
     }
 
     public String getStatreShort() {
-        return statreShort;
+        return stateShort;
     }
 
-    public DwdAlertValue setStatreShort(String statreShort) {
-        this.statreShort = statreShort;
+    public DwdAlertValue setStateShort(String stateShort) {
+        this.stateShort = stateShort;
         return this;
     }
 

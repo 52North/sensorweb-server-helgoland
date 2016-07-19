@@ -38,21 +38,23 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.v1.CategoryOutput;
-import org.n52.io.response.v1.CategoryOutput;
 import org.n52.sensorweb.spi.ParameterService;
+import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
 import org.n52.web.ctrl.v1.ext.ExtUrlSettings;
 import org.n52.web.ctrl.v1.ext.UrlHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class CategoryOutputAdapter extends ParameterService<CategoryOutput> {
+public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> {
 
     private final AlertStore store;
 
     private final UrlHelper urlHelper = new UrlHelper();
 
-    public CategoryOutputAdapter(AlertStore store) {
+    public CategoryOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
+        super(serviceInfo);
         this.store = store;
     }
 
@@ -89,7 +91,7 @@ public class CategoryOutputAdapter extends ParameterService<CategoryOutput> {
             Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
             for (List<WarnungAlert> list : warnings.values()) {
                 for (WarnungAlert warnungAlert : list) {
-                    offerings.add(warnungAlert.getEvent());
+                    offerings.add(createPhenomenonId(warnungAlert.getEvent()));
                 }
             }
         }
@@ -97,7 +99,7 @@ public class CategoryOutputAdapter extends ParameterService<CategoryOutput> {
             Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
             for (List<VorabInformationAlert> list : vorabInformation.values()) {
                 for (VorabInformationAlert vorabInformationAlert : list) {
-                    offerings.add(vorabInformationAlert.getEvent());
+                    offerings.add(createPhenomenonId(vorabInformationAlert.getEvent()));
                 }
             }
         }
@@ -111,7 +113,7 @@ public class CategoryOutputAdapter extends ParameterService<CategoryOutput> {
             if (query.isExpanded()) {
                 outputCollection.addItem(createExpanded(alertType, query));
             } else {
-                outputCollection.addItem(createExpanded(alertType, query));
+                outputCollection.addItem(createCondensed(alertType, query));
             }
         }
         return outputCollection;
@@ -133,19 +135,17 @@ public class CategoryOutputAdapter extends ParameterService<CategoryOutput> {
 
     private CategoryOutput createExpanded(String item, IoParameters query) {
         CategoryOutput result = createCondensed(item, query);
-//        result.setService(getServiceOutput());
+        result.setService(getServiceOutput());
         return result;
     }
 
     @Override
     public boolean exists(String id) {
-        return getCategory().contains(id);
+        return getCategory().contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(CategoryOutput result, IoParameters parameters) {
-        if (parameters.getHrefBase() != null && parameters.getHrefBase().contains(ExtUrlSettings.EXT)) {
-            result.setHrefBase(urlHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
-        }
+        result.setHrefBase(urlHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
 }

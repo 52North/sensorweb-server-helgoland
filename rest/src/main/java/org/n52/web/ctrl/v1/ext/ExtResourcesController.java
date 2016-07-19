@@ -54,11 +54,11 @@ public class ExtResourcesController extends ResourcesController {
 
         ResourceCollection platforms = createResource("platforms").withLabel("Station").withDescription(i18n.get("msg.web.resources.platforms"));
         ResourceCollection series = createResource("series").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.series"));
-        ResourceCollection extCategories = createResource("ext/categories").withLabel("Category").withDescription(i18n.get("msg.web.resources.ext.categories"));
-        ResourceCollection extOfferings = createResource("ext/offerings").withLabel("Offering").withDescription(i18n.get("msg.web.resources.ext.offerings"));
-        ResourceCollection extFeatures = createResource("ext/features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.ext.features"));
-        ResourceCollection extProcedures = createResource("ext/procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.ext.procedures"));
-        ResourceCollection extPhenomena = createResource("ext/phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.ext.phenomena"));
+        ResourceCollection extCategories = createResource("categories").withLabel("Category").withDescription(i18n.get("msg.web.resources.ext.categories"));
+        ResourceCollection extOfferings = createResource("offerings").withLabel("Offering").withDescription(i18n.get("msg.web.resources.ext.offerings"));
+        ResourceCollection extFeatures = createResource("features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.ext.features"));
+        ResourceCollection extProcedures = createResource("procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.ext.procedures"));
+        ResourceCollection extPhenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.ext.phenomena"));
 //        if (params.isExpanded()) {
 //            platforms.setSize(getMetadataService().getPlatformCount());
 //            series.setSize(getMetadataService().getSeriesCount());

@@ -83,8 +83,8 @@ public class JacksonBasedAlertParserTest {
     public void when_dwdExampleAlerts_then_nonEmptyAlerts() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
-        store.setWarnCellGeometries(new ShapeFileHarvester().setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).loadGeometries());
         parser.parse(streamOf("/dwd-example.json"), store);
+        new ShapeFileHarvester(store).setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).harvest();
         Assert.assertFalse(store.getAllAlerts().isEmpty());
     }
 
@@ -92,9 +92,8 @@ public class JacksonBasedAlertParserTest {
     public void when_dwdExampleAlerts_then_warningCellsWithId() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
-        store.setWarnCellGeometries(new ShapeFileHarvester().setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).loadGeometries());
         parser.parse(streamOf("/dwd-example.json"), store);
-
+        new ShapeFileHarvester(store).setFile(new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI())).harvest();
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
         Coordinate coord = new Coordinate(1, 1);
         Point point = geometryFactory.createPoint(coord);
