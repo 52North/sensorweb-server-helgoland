@@ -33,8 +33,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.dwd.DwdAlertObservationSeriesOutput;
 import org.n52.io.response.dataset.dwd.DwdAlertObservationValue;
@@ -48,9 +51,10 @@ import org.n52.series.dwd.rest.AlertCollection;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
+import org.n52.series.spi.srv.DataService;
 import org.n52.web.ctrl.UrlHelper;
 
-public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> {
+public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> implements DataService<Data> {
 
     private final AlertStore store;
 
@@ -205,6 +209,11 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> {
         String[] split = id.split("_");
         split[1] = parsePhenomenonId(split[1]);
         return Arrays.asList(split);
+    }
+
+    @Override
+    public DataCollection<Data> getData(RequestSimpleParameterSet parameters) {
+        return null;
     }
 
 }

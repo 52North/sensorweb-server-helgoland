@@ -63,7 +63,7 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : store.getAllWarnCells()) {
+        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
             outputCollection.addItem(createExpanded(warnCell, query));
         }
         return outputCollection;
@@ -72,7 +72,7 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : store.getAllWarnCells()) {
+        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
             outputCollection.addItem(createCondensed(warnCell, query));
         }
         return outputCollection;

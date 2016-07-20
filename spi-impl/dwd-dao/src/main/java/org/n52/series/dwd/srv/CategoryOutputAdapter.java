@@ -39,6 +39,7 @@ import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
+import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
@@ -67,7 +68,7 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     @Override
     public OutputCollection<CategoryOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<CategoryOutput> outputCollection = createOutputCollection();
-        for (String alertType : store.getAlertTypes()) {
+        for (String alertType : getCategory(query)) {
             outputCollection.addItem(createExpanded(alertType, query));
         }
         return outputCollection;
@@ -76,30 +77,33 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     @Override
     public OutputCollection<CategoryOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<CategoryOutput> outputCollection = createOutputCollection();
-        for (String category : getCategory()) {
+        for (String category : getCategory(query)) {
             outputCollection.addItem(createCondensed(category, query));
         }
         return outputCollection;
     }
 
-    private Set<String> getCategory() {
+    private Set<String> getCategory(IoParameters query) {
         Set<String> offerings = new HashSet<String>();
-        if (store.getCurrentAlerts().hasWarning()) {
-            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
-            for (List<WarnungAlert> list : warnings.values()) {
-                for (WarnungAlert warnungAlert : list) {
-                    offerings.add(createPhenomenonId(warnungAlert.getEvent()));
-                }
-            }
+        for (Alert alert : getFilteredAlerts(query, store)) {
+            offerings.add(createPhenomenonId(alert.getEvent()));
         }
-        if (store.getCurrentAlerts().hasVorabInformation()) {
-            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
-            for (List<VorabInformationAlert> list : vorabInformation.values()) {
-                for (VorabInformationAlert vorabInformationAlert : list) {
-                    offerings.add(createPhenomenonId(vorabInformationAlert.getEvent()));
-                }
-            }
-        }
+//        if (store.getCurrentAlerts().hasWarning()) {
+//            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
+//            for (List<WarnungAlert> list : warnings.values()) {
+//                for (WarnungAlert warnungAlert : list) {
+//                    offerings.add(createPhenomenonId(warnungAlert.getEvent()));
+//                }
+//            }
+//        }
+//        if (store.getCurrentAlerts().hasVorabInformation()) {
+//            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
+//            for (List<VorabInformationAlert> list : vorabInformation.values()) {
+//                for (VorabInformationAlert vorabInformationAlert : list) {
+//                    offerings.add(createPhenomenonId(vorabInformationAlert.getEvent()));
+//                }
+//            }
+//        }
         return offerings;
     }
 
@@ -138,7 +142,7 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
 
     @Override
     public boolean exists(String id) {
-        return getCategory().contains(parsePhenomenonId(id));
+        return getCategory(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(CategoryOutput result, IoParameters parameters) {

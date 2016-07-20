@@ -26,37 +26,40 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.dwd;
+package org.n52.io.dwd;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.n52.series.dwd.store.InMemoryAlertStore;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.extension.MetadataExtension;
+import org.n52.series.dwd.store.AlertStore;
 
-public class GeometryHarvesterTest {
+public class CopyrightExtension extends MetadataExtension<ParameterOutput> {
 
-    private ShapeFileHarvester harvester;
-    
-    /*
-     * This test requires the sources in src/main/resources
-     */
+    private static final String EXTENSION_NAME = "copyright";
+    private AlertStore store;
 
-//    @Before
-    public void setUp() throws IOException, URISyntaxException {
-        InMemoryAlertStore store = new InMemoryAlertStore();
-        this.harvester = new ShapeFileHarvester(store);
-        File file = new File(getClass().getResource("/VG2500_DWD/DWD-PVW-Customer_VG2500.shp").toURI());
-        harvester.setFile(file);
-        this.harvester.harvest();
+    public CopyrightExtension(AlertStore store) {
+        this.store = store;
     }
 
-//    @Test
-    public void when_notYetHarvested_then_emptyStore() {
-        Assert.assertTrue(harvester != null);
+    @Override
+    public String getExtensionName() {
+        return EXTENSION_NAME;
+    }
+
+    @Override
+    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
+        return hasExtrasToReturn(output, parameters)
+                ? wrapSingleIntoMap(store.getCurrentAlerts().getCopyright())
+                : Collections.<String, Object>emptyMap();
+    }
+
+    @Override
+    public void addExtraMetadataFieldNames(ParameterOutput output) {
+        output.addExtra(EXTENSION_NAME);
     }
 
 }

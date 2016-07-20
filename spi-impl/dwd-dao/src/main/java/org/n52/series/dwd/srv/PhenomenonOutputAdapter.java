@@ -39,6 +39,7 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
+import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
@@ -67,7 +68,7 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     @Override
     public OutputCollection<PhenomenonOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<PhenomenonOutput> outputCollection = createOutputCollection();
-        for (String alertType : store.getAlertTypes()) {
+        for (String alertType : getPhenonmenon(query)) {
             outputCollection.addItem(createExpanded(alertType, query));
         }
         return outputCollection;
@@ -76,30 +77,33 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     @Override
     public OutputCollection<PhenomenonOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<PhenomenonOutput> outputCollection = createOutputCollection();
-        for (String phenomenon : getPhenonmenon()) {
+        for (String phenomenon : getPhenonmenon(query)) {
             outputCollection.addItem(createCondensed(phenomenon, query));
         }
         return outputCollection;
     }
 
-    private Set<String> getPhenonmenon() {
+    private Set<String> getPhenonmenon(IoParameters query) {
         Set<String> phenomenon = new HashSet<String>();
-        if (store.getCurrentAlerts().hasWarning()) {
-            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
-            for (List<WarnungAlert> list : warnings.values()) {
-                for (WarnungAlert warnungAlert : list) {
-                    phenomenon.add(createPhenomenonId(warnungAlert.getEvent()));
-                }
-            }
+        for (Alert alert : getFilteredAlerts(query, store)) {
+            phenomenon.add(createPhenomenonId(alert.getEvent()));
         }
-        if (store.getCurrentAlerts().hasVorabInformation()) {
-            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
-            for (List<VorabInformationAlert> list : vorabInformation.values()) {
-                for (VorabInformationAlert vorabInformationAlert : list) {
-                    phenomenon.add(createPhenomenonId(vorabInformationAlert.getEvent()));
-                }
-            }
-        }
+//        if (store.getCurrentAlerts().hasWarning()) {
+//            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
+//            for (List<WarnungAlert> list : warnings.values()) {
+//                for (WarnungAlert warnungAlert : list) {
+//                    phenomenon.add(createPhenomenonId(warnungAlert.getEvent()));
+//                }
+//            }
+//        }
+//        if (store.getCurrentAlerts().hasVorabInformation()) {
+//            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
+//            for (List<VorabInformationAlert> list : vorabInformation.values()) {
+//                for (VorabInformationAlert vorabInformationAlert : list) {
+//                    phenomenon.add(createPhenomenonId(vorabInformationAlert.getEvent()));
+//                }
+//            }
+//        }
         return phenomenon;
     }
 
@@ -138,7 +142,7 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
 
     @Override
     public boolean exists(String id) {
-        return getPhenonmenon().contains(parsePhenomenonId(id));
+        return getPhenonmenon(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(PhenomenonOutput result, IoParameters parameters) {

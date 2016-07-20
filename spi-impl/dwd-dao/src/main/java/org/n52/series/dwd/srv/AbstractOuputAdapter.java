@@ -30,6 +30,7 @@ package org.n52.series.dwd.srv;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.n52.io.request.IoParameters;
@@ -150,35 +151,43 @@ public abstract class AbstractOuputAdapter<T extends ParameterOutput> extends Pa
         return alerts;
     }
 
+    protected Set<Alert> getFilteredAlerts(IoParameters query, AlertStore store) {
+        Set<Alert> filteredAlerts = new HashSet<>();
+        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
+            filteredAlerts.addAll(getFilteredAlerts(warnCell, query, store));
+        }
+        return filteredAlerts;
+    }
+
     private boolean checkAlert(Alert alert, IoParameters query) {
-        boolean offering = false;
-        boolean category = false;
-        boolean phenomenon = false;
+        boolean offering = true;
+        boolean category = true;
+        boolean phenomenon = true;
         if (query.containsParameter(Parameters.PHENOMENA) && query.containsParameter(Parameters.CATEGORIES)) {
-            phenomenon = query.getPhenomena().contains(createPhenomenonId(alert.getEvent())) && query.getCategories().contains(createPhenomenonId(alert.getEvent()));
+            phenomenon = query.getPhenomena().contains(toLowerCase(createPhenomenonId(alert.getEvent()))) && query.getCategories().contains(toLowerCase(createPhenomenonId(alert.getEvent())));
             category = phenomenon;
         } else {
             if (query.containsParameter(Parameters.PHENOMENA)) {
-                phenomenon = query.getPhenomena().contains(createPhenomenonId(alert.getEvent()));
-            } else if (query.containsParameter(Parameters.CATEGORIES)) {
-                category = query.getCategories().contains(createPhenomenonId(alert.getEvent()));
-            } else {
-                category = true;
-                phenomenon = true;
+                phenomenon = query.getPhenomena().contains(toLowerCase(createPhenomenonId(alert.getEvent())));
+            }
+            if (query.containsParameter(Parameters.CATEGORIES)) {
+                category = query.getCategories().contains(toLowerCase(createPhenomenonId(alert.getEvent())));
             }
         }
 
         if (query.containsParameter(Parameters.OFFERINGS)) {
             offering = query.getOfferings().contains(Integer.toString(alert.getType()));
-        } else {
-            offering = true;
         }
         return offering && category && phenomenon;
     }
 
+    private String toLowerCase(String id) {
+        return id.toLowerCase(Locale.ROOT);
+    }
+
     private boolean checkProcedures(IoParameters query, AlertTypes alertType) {
         if (query.containsParameter(Parameters.PROCEDURES)) {
-            return query.getProcedures().contains(alertType.name());
+            return query.getProcedures().contains(toLowerCase(alertType.name()));
         }
         return true;
     }

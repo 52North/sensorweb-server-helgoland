@@ -71,7 +71,7 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
     @Override
     public OutputCollection<GeometryInfo> getExpandedParameters(IoParameters query) {
         OutputCollection<GeometryInfo> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : store.getAllWarnCells()) {
+        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
             outputCollection.addItem(createExpanded(warnCell, query));
         }
         return outputCollection;
@@ -80,7 +80,7 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
     @Override
     public OutputCollection<GeometryInfo> getCondensedParameters(IoParameters query) {
         OutputCollection<GeometryInfo> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : store.getAllWarnCells()) {
+        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
             outputCollection.addItem(createCondensed(warnCell, query));
         }
         return outputCollection;
@@ -112,13 +112,7 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
     }
 
     private WarnCell getWarnCell(String id) {
-        String cellId = GeometryType.extractId(id);
-        for (WarnCell warnCell : store.getAllWarnCells()) {
-            if (warnCell.getId().equals(cellId)) {
-                return warnCell;
-            }
-        }
-        return null;
+        return super.getWarnCell(GeometryType.extractId(id), store);
     }
 
     private GeometryInfo createCondensed(WarnCell item, IoParameters query) {
@@ -130,17 +124,6 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
         result.setPlatform(platforms.iterator().next());
         checkForHref(result, query);
         return result;
-    }
-
-    private String getLabel(String id) {
-        AlertCollection currentAlerts = store.getCurrentAlerts();
-        if (currentAlerts.hasWarning() && currentAlerts.getWarnings().containsKey(id)) {
-            return currentAlerts.getWarnings().get(id).get(0).getRegionName();
-        }
-        if (currentAlerts.hasVorabInformation() && currentAlerts.getVorabInformation().containsKey(id)) {
-            return currentAlerts.getVorabInformation().get(id).get(0).getRegionName();
-        }
-        return "";
     }
 
     private GeometryInfo createExpanded(WarnCell item, IoParameters query) {

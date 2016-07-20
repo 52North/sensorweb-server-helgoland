@@ -26,23 +26,51 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.series.dwd.srv;
 
+import java.util.Comparator;
 
-import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.StationOutput;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.geo.TransformingGeometryOutputService;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_GEOMETRIES;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping(value = COLLECTION_GEOMETRIES)
-public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
+public class StationOutputAdapter <T extends ParameterOutput> extends ParameterService<StationOutput> {
+
+    private OutputCollection<StationOutput> createOutputCollection() {
+        return new OutputCollection<StationOutput>() {
+            @Override
+            protected Comparator<StationOutput> getComparator() {
+                return ParameterOutput.defaultComparator();
+            }
+        };
+    }
 
     @Override
-    public void setParameterService(ParameterService<GeometryInfo> parameterService) {
-        super.setParameterService(new TransformingGeometryOutputService(parameterService));
+    public OutputCollection<StationOutput> getExpandedParameters(IoParameters query) {
+        return createOutputCollection();
     }
+
+    @Override
+    public OutputCollection<StationOutput> getCondensedParameters(IoParameters query) {
+        return createOutputCollection();
+    }
+
+    @Override
+    public OutputCollection<StationOutput> getParameters(String[] items, IoParameters query) {
+        return createOutputCollection();
+    }
+
+    @Override
+    public StationOutput getParameter(String item, IoParameters query) {
+        return null;
+    }
+
+    @Override
+    public boolean exists(String id) {
+        return false;
+    }
+
 
 }

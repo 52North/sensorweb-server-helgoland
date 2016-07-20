@@ -39,6 +39,7 @@ import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
+import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
@@ -67,7 +68,7 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     @Override
     public OutputCollection<OfferingOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<OfferingOutput> outputCollection = createOutputCollection();
-        for (String alertType : store.getAlertTypes()) {
+        for (String alertType : getOfferings(query)) {
             outputCollection.addItem(createExpanded(alertType, query));
         }
         return outputCollection;
@@ -76,30 +77,33 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     @Override
     public OutputCollection<OfferingOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<OfferingOutput> outputCollection = createOutputCollection();
-        for (String offering : getOfferings()) {
+        for (String offering : getOfferings(query)) {
             outputCollection.addItem(createCondensed(offering, query));
         }
         return outputCollection;
     }
 
-    private Set<String> getOfferings() {
+    private Set<String> getOfferings(IoParameters query) {
         Set<String> offerings = new HashSet<String>();
-        if (store.getCurrentAlerts().hasWarning()) {
-            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
-            for (List<WarnungAlert> list : warnings.values()) {
-                for (WarnungAlert warnungAlert : list) {
-                    offerings.add(Integer.toString(warnungAlert.getType()));
-                }
-            }
+        for (Alert alert : getFilteredAlerts(query, store)) {
+            offerings.add(Integer.toString(alert.getType()));
         }
-        if (store.getCurrentAlerts().hasVorabInformation()) {
-            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
-            for (List<VorabInformationAlert> list : vorabInformation.values()) {
-                for (VorabInformationAlert vorabInformationAlert : list) {
-                    offerings.add(Integer.toString(vorabInformationAlert.getType()));
-                }
-            }
-        }
+//        if (store.getCurrentAlerts().hasWarning()) {
+//            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
+//            for (List<WarnungAlert> list : warnings.values()) {
+//                for (WarnungAlert warnungAlert : list) {
+//                    offerings.add(Integer.toString(warnungAlert.getType()));
+//                }
+//            }
+//        }
+//        if (store.getCurrentAlerts().hasVorabInformation()) {
+//            Map<String, List<VorabInformationAlert>> vorabInformation = store.getCurrentAlerts().getVorabInformation();
+//            for (List<VorabInformationAlert> list : vorabInformation.values()) {
+//                for (VorabInformationAlert vorabInformationAlert : list) {
+//                    offerings.add(Integer.toString(vorabInformationAlert.getType()));
+//                }
+//            }
+//        }
         return offerings;
     }
 
@@ -138,7 +142,7 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
 
     @Override
     public boolean exists(String id) {
-        return getOfferings().contains(id);
+        return getOfferings(IoParameters.createDefaults()).contains(id);
     }
 
     private void checkForHref(OfferingOutput result, IoParameters parameters) {

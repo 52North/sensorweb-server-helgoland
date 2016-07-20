@@ -13,7 +13,7 @@
 
     <mvc:annotation-driven />
     <ctx:annotation-config />
-    
+
     <bean class="org.n52.web.ctrl.ResourcesController" />
     <!--     <property name="metadataService" ref="metadataService" />
     </bean> -->
@@ -61,6 +61,12 @@
 
     <bean class="org.n52.web.ctrl.GeometriesController" parent="parameterController">
         <property name="parameterService" ref="geometryParameterService" />
+    </bean>
+
+    <bean class="org.n52.web.ctrl.DataController">
+        <property name="datasetService" ref="seriesService" />
+        <property name="dataService" ref="seriesService" />
+        <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 
 </beans>

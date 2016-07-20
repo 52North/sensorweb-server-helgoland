@@ -29,12 +29,15 @@
 package org.n52.series.dwd.srv;
 
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
+import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.rest.Alert.AlertTypes;
 import org.n52.series.dwd.store.AlertStore;
 import org.n52.web.ctrl.UrlHelper;
@@ -62,7 +65,7 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     @Override
     public OutputCollection<ProcedureOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<ProcedureOutput> outputCollection = createOutputCollection();
-        for (String alertType : store.getAlertTypes()) {
+        for (String alertType : getProcedures(query)) {
             outputCollection.addItem(createExpanded(alertType, query));
         }
         return outputCollection;
@@ -71,10 +74,18 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     @Override
     public OutputCollection<ProcedureOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<ProcedureOutput> outputCollection = createOutputCollection();
-        for (String alertType : store.getAlertTypes()) {
+        for (String alertType : getProcedures(query)) {
             outputCollection.addItem(createCondensed(alertType, query));
         }
         return outputCollection;
+    }
+
+    private Set<String> getProcedures(IoParameters query) {
+        Set<String> procedures = new HashSet<String>();
+        for (Alert alert : getFilteredAlerts(query, store)) {
+            procedures.add(alert.getAlertType());
+        }
+        return procedures;
     }
 
     @Override
