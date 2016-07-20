@@ -31,7 +31,12 @@
             <artifactId>series-dao</artifactId>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>series-mappings</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -160,13 +165,13 @@
                                 <outputDirectory>${webappDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>
-<!--                            <artifactItem>
-                                <groupId>${project.groupId}</groupId>
-                                <artifactId>series-dao</artifactId>
-                                <includes>hbm/**</includes>
-                                <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                                <overWrite>true</overWrite>
-                            </artifactItem>-->
+<!--                             <artifactItem> -->
+<!--                                 <groupId>${project.groupId}</groupId> -->
+<!--                                 <artifactId>series-mappings</artifactId> -->
+<!--                                 <includes>hbm/**</includes> -->
+<!--                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
+<!--                                 <overWrite>true</overWrite> -->
+<!--                             </artifactItem> -->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
@@ -198,13 +203,13 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-mappings/target/classes;../series-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <scanTargets>
                             <scanTarget>/target/classes/</scanTarget>
                             <scanTarget>../series-dao/target/classes</scanTarget>
+                            <scanTarget>../series-mappings/target/classes</scanTarget>
                             <scanTarget>../../io/target/classes</scanTarget>
-                            <scanTarget>../../spi/target/classes</scanTarget>
                             <scanTarget>../../rest/target/classes</scanTarget>
                         </scanTargets>
                         <systemProperties>
@@ -214,19 +219,6 @@
                             </systemProperty>
                         </systemProperties>
                     </configuration>
-<!--                    <dependencies>
-                        <dependency>
-                            <groupId>${project.groupId}</groupId>
-                            <artifactId>series-dao</artifactId>
-                            <version>${project.version}</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>series-mappings</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </dependency>
-                    </dependencies>-->
                 </plugin>
             </plugins>
         </pluginManagement>
