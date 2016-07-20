@@ -28,78 +28,21 @@
  */
 package org.n52.web.ctrl;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-import java.util.Map;
-
-import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.GeometryInfo;
-import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import static org.n52.web.ctrl.UrlSettings.COLLECTION_GEOMETRIES;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = COLLECTION_GEOMETRIES)
 public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
-
-    @Override
-    @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_ALL, "true");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/platformLocations")
-    public ModelAndView getPlatformLocations(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL, "true");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/platformLocations/sites")
-    public ModelAndView getSites(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES, "true");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/platformLocations/sites/{id}")
-    public ModelAndView getSite(@PathVariable("id") String id,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES, "true");
-        return super.getItem(GeometryType.PLATFORM_SITE.createId(id), query);
-    }
-
-    @RequestMapping(value = "/platformLocations/sites/{id}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable String id,
-                                         @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES, "true");
-        return super.getExtras(GeometryType.PLATFORM_SITE.createId(id), query);
-    }
-
-    @RequestMapping(method = GET, path = "/platformLocations/tracks")
-    public ModelAndView getTracks(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS, "true");
-        return super.getCollection(query);
-    }
-
-    @RequestMapping(method = GET, path = "/platformLocations/tracks/{id}")
-    public ModelAndView getTrack(@PathVariable("id") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        query.add(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS, "true");
-        return super.getItem(GeometryType.PLATFORM_TRACK.createId(id), query);
-    }
-
+    
     @Override
     public void setParameterService(ParameterService<GeometryInfo> parameterService) {
         super.setParameterService(new TransformingGeometryOutputService(parameterService));
     }
-
-    // TODO observed geometries
 
 }

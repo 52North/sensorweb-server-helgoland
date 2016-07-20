@@ -26,14 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.series.db.dao;
 
-import org.n52.io.response.v1.ext.PlatformOutput;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.junit.Assert;
+import org.junit.Test;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 
-@RestController
-@RequestMapping(path = UrlSettings.COLLECTION_PLATFORMS)
-public class PlatformsParameterController extends ParameterRequestMappingAdapter<PlatformOutput> {
+public class DbQueryTest {
+
+    @Test
+    public void when_createWithNull_then_defaults() {
+        Assert.assertNotNull(DbQuery.createFrom(null));
+    }
+
+
 
 }

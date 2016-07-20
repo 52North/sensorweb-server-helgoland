@@ -65,6 +65,7 @@ import static org.hibernate.criterion.Restrictions.and;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
 import static java.lang.String.format;
+import static java.lang.String.format;
 
 public abstract class AbstractDbQuery {
 
@@ -158,8 +159,8 @@ public abstract class AbstractDbQuery {
      * @return the criteria to chain.
      */
     Criteria addPlatformTypesFilter(String parameter, Criteria criteria) {
-        boolean mobile = isSetMobileFilter();
-        boolean insitu = isSetInsituFilter();
+        boolean mobile = parameters.isSetMobileFilter();
+        boolean insitu = parameters.isSetInsituFilter();
         filterMobileInsitu(parameter, criteria, mobile, insitu);
         return criteria;
     }
@@ -181,71 +182,6 @@ public abstract class AbstractDbQuery {
     private ProjectionList createSeriesProjectionWith(String parameter) {
         final String filterProperty = format("series.%s.pkid", parameter);
         return projectionList().add(property(filterProperty));
-    }
-
-    public boolean shallIncludeMobilePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetMobileFilter();
-    }
-
-    public boolean shallIncludeStationaryPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || !isSetMobileFilter();
-    }
-
-    public boolean shallIncludeInsituPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetInsituFilter();
-    }
-
-    public boolean shallIncludeRemotePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || !isSetInsituFilter();
-    }
-
-    private boolean isSetMobileFilter() {
-        Set<String> platformTypes = parameters.getPlatformTypes();
-        return platformTypes.contains("mobile"); // stationary by default true
-    }
-
-    private boolean isSetInsituFilter() {
-        Set<String> platformTypes = parameters.getPlatformTypes();
-        return !platformTypes.contains("remote"); // insitu by default true
-    }
-
-    public boolean shallIncludeAllPlatformTypes() {
-        return parameters.getPlatformTypes().contains("all");
-    }
-
-    public boolean isAllGeomentries() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_ALL)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_ALL);
-    }
-
-    public boolean isAllPlatformLocations() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL);
-    }
-
-    public boolean isSites() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES);
-    }
-
-    public boolean isTracks() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS);
-    }
-
-    public boolean isAllObservedGeometries() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL);
-    }
-
-    public boolean isStaticObservedGeometries() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC);
-    }
-
-    public boolean isDynamicObservedGeometries() {
-        return parameters.containsParameter(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC)
-                && parameters.getAsBoolean(Parameters.GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC);
     }
 
     /**

@@ -323,24 +323,26 @@ public interface Parameters {
     /**
      * Determines the fields filter
      */
-    public static final String FIELDS = "fields";
+    public static final String FILTER_FIELDS = "fields";
 
-    public static final String PLATFORM_TYPES = "platformTypes";
+    public static final String FILTER_PLATFORM_TYPES = "platformTypes";
 
-    public static final String DATASET_TYPES = "datasetTypes";
+    public static final String FILTER_DATASET_TYPES = "datasetTypes";
+
+    public static final String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
+
+    public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
 
     public static final String HREF_BASE = "internal.href.base";
 
     public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";
 
-    /* geometries  */
-
-    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
-    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
-    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
-    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
-    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
-    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC = "internal.include.geometries.observedgeometries.static";
-    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC = "internal.include.geometries.observedgeometries.dynamic";
+//    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
+//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
+//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
+//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
+//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
+//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC = "internal.include.geometries.observedgeometries.static";
+//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC = "internal.include.geometries.observedgeometries.dynamic";
 
 }

@@ -26,54 +26,62 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.response.v1.ext;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.Before;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.text.TextIoFactory;
 
-public class DefaultIoHandlerFactoryTest {
-
-    private DefaultIoFactory factory;
+public class GeometryTypeTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void setUp() throws URISyntaxException {
-        File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoFactory(config);
+    @Test
+    public void when_extractingId_then_typePrefixGone() {
+        Assert.assertThat(GeometryType.extractId("observed_static_foobar"), Matchers.is("foobar"));
     }
 
     @Test
-    public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        ConfigTypedFactory<IoFactory> m = new DefaultIoFactory();
-        assertTrue(m.isKnown("text"));
-        assertTrue(m.create("measurement").getClass() == MeasurementIoFactory.class);
+    public void when_extractingWithInvalidPrefix_then_expectIdentity() {
+        Assert.assertThat(GeometryType.extractId("invalid_prefix"), Matchers.is("invalid_prefix"));
     }
 
     @Test
-    public void when_mapToText_then_returnTextIoHandler() throws DatasetFactoryException {
-        assertTrue(factory.create("text").getClass() == TextIoFactory.class);
+    public void when_observedGeometryOnlyPrefix_then_expectIdentity() {
+        Assert.assertThat(GeometryType.extractId("observed_static"), Matchers.is("observed_static"));
     }
 
     @Test
-    public void when_mapToText_then_returnMeasurementDataRepository() throws DatasetFactoryException {
-        assertTrue(factory.create("measurement").getClass() == MeasurementIoFactory.class);
+    public void when_observedOnlyPrefix_then_expectIdentity() {
+        Assert.assertThat(GeometryType.extractId("observed"), Matchers.is("observed"));
     }
 
-    private File getConfigFile(String name) throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/").toURI());
-        return root.resolve(name).toFile();
+    @Test
+    public void when_idWithObservedPrefix_then_detectType() {
+        Assert.assertTrue(GeometryType.isObservedGeometryId("observed_static"));
+    }
+
+    @Test
+    public void when_idWithPlatformPrefix_then_detectType() {
+        Assert.assertTrue(GeometryType.isPlatformGeometryId("platform_site"));
+    }
+
+    @Test
+    public void when_idWithSiteSuffix_then_detectType() {
+        Assert.assertTrue(GeometryType.isSiteId("platform_site_10"));
+    }
+
+    @Test
+    public void when_nullId_then_handledWhenDetectPlatform() {
+        Assert.assertFalse(GeometryType.isPlatformGeometryId(null));
+    }
+
+    @Test
+    public void when_nullId_then_handledWhenDetectSite() {
+        Assert.assertFalse(GeometryType.isSiteId(null));
     }
 
 }

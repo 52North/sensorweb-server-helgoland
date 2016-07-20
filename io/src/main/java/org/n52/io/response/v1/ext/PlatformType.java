@@ -28,6 +28,9 @@
  */
 package org.n52.io.response.v1.ext;
 
+import java.util.Locale;
+import static org.n52.io.response.v1.ext.GeometryType.isKnownType;
+
 /**
  * TODO: JavaDoc
  *
@@ -35,23 +38,21 @@ package org.n52.io.response.v1.ext;
  */
 public enum PlatformType {
 
-    STATIONARY_INSITU("stationary/insitu"),
-    STATIONARY_REMOTE("stationary/remote"),
-    MOBILE_INSITU("mobile/insitu"),
-    MOBILE_REMOTE("mobile/remote");
-
-    private final String idPrefix;
-
-    private PlatformType(String typeName) {
-        this.idPrefix = typeName;
-    }
+    STATIONARY_INSITU,
+    STATIONARY_REMOTE,
+    MOBILE_INSITU,
+    MOBILE_REMOTE;
 
     public String getPlatformType() {
-        return idPrefix;
+        return name().toLowerCase();
+    }
+
+    private String getIdPrefix() {
+        return name().toLowerCase();
     }
 
     public String createId(String id) {
-        return idPrefix + "/" + id;
+        return getIdPrefix() + "_" + id;
     }
 
     public static String extractId(String id) {
@@ -69,26 +70,43 @@ public enum PlatformType {
     }
 
     private static String extractId(PlatformType type, String id) {
-        final int maxLength = type.idPrefix.length() + 1;
+        final int maxLength = type.getIdPrefix().length() + 1;
         return id.length() >= maxLength
                 ? id.substring(maxLength)
                 : id;
     }
 
     public static boolean isStationaryId(String id) {
-        return id.startsWith("stationary");
+        return startsWith("stationary", id);
     }
 
     public static boolean isMobileId(String id) {
-        return id.startsWith("mobile");
+        return startsWith("mobile", id);
+    }
+
+    private static boolean startsWith(String prefix, String id) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
+            return false;
+        }
+        return id.toLowerCase().startsWith(prefix);
     }
 
     public static boolean isRemoteId(String id) {
-        return id.endsWith("remote");
+        return hasSuffix("remote", id);
     }
 
     public static boolean isInsitu(String id) {
-        return id.endsWith("insitu");
+        return hasSuffix("insitu", id);
+    }
+
+    private static boolean hasSuffix(String suffix, String id) {
+        final String idPrefix = extractPrefix(id);
+        if ( !isKnownType(idPrefix)) {
+            return false;
+        }
+        final PlatformType geometryType = toInstance(idPrefix);
+        return geometryType.getPlatformType().endsWith(suffix);
     }
 
     public static boolean isKnownType(String typeName) {
@@ -100,9 +118,19 @@ public enum PlatformType {
         return false;
     }
 
+    private static String extractPrefix(String id) {
+        for (PlatformType type : PlatformType.values()) {
+            final String prefix = type.getPlatformType();
+            if (id != null && id.toLowerCase().startsWith(prefix)) {
+                return prefix;
+            }
+        }
+        return id;
+    }
+
     public static PlatformType toInstance(String typeName) {
         for (PlatformType type : values()) {
-            if (type.idPrefix.equalsIgnoreCase(typeName)) {
+            if (type.getIdPrefix().equalsIgnoreCase(typeName)) {
                 return type;
             }
             if (type.getPlatformType().equalsIgnoreCase(typeName)) {

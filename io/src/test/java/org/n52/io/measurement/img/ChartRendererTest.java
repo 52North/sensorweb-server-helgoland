@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
 
@@ -115,11 +116,11 @@ public class ChartRendererTest {
     static class MyChartRenderer extends ChartIoHandler {
 
         public MyChartRenderer(IoStyleContext context) {
-            super(null, null, context);
+            super(new RequestSimpleParameterSet(), null, context);
         }
 
         public MyChartRenderer() {
-            super(null, null, null);
+            super(new RequestSimpleParameterSet(), null, null);
         }
 
         @Override
