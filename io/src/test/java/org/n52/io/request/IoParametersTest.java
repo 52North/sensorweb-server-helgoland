@@ -28,27 +28,29 @@
  */
 package org.n52.io.request;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
-import static org.n52.io.request.IoParameters.getJsonNodeFrom;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 import static org.n52.io.request.IoParameters.createFromMultiValueMap;
 import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromSingleValueMap;
+import static org.n52.io.request.IoParameters.getJsonNodeFrom;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 
-public class IOParametersTest {
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+public class IoParametersTest {
 
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/").toURI());
@@ -116,7 +118,7 @@ public class IOParametersTest {
         IoParameters parameters = createFromQuery(set);
         Assert.assertTrue(parameters.isGeneralize());
     }
-
+    
     @Test
     public void when_extending_then_parameterIsPresent() {
         IoParameters defaults = createDefaults();
@@ -124,6 +126,13 @@ public class IOParametersTest {
         Assert.assertFalse(defaults.containsParameter("test"));
         Assert.assertTrue(extended.containsParameter("test"));
         Assert.assertThat(extended.getAsString("test"), Matchers.is("value"));
+    }
+    
+    @Test
+    public void when_extendingMultiple_then_availableFromSet() {
+        IoParameters defaults = createDefaults();
+        IoParameters extended = defaults.extendWith("test", "value1", "value2");
+        assertThat(extended.getValuesOf("test").size(), is(2));
     }
 
     @Test
@@ -209,27 +218,53 @@ public class IOParametersTest {
     @Test
     public void when_defaults_then_remoteFilterInactive() {
         IoParameters defaults = createDefaults();
-        Assert.assertFalse(defaults.shallIncludeRemotePlatformTypes());
+        Assert.assertTrue(defaults.shallIncludeRemotePlatformTypes());
     }
 
     @Test
     public void when_defaults_then_mobileFilterInactive() {
         final IoParameters parameters = IoParameters.createDefaults();
-        Assert.assertFalse(parameters.shallIncludeMobilePlatformTypes());
-    }
-
-    @Test
-    public void when_setMobile_then_mobileFilterActive() {
-        final IoParameters parameters = IoParameters.createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile");
         Assert.assertTrue(parameters.shallIncludeMobilePlatformTypes());
     }
 
     @Test
-    public void when_setRemote_then_remoteFilterActive() {
+    public void when_setMobile_then_allMobilesFilterActive() {
+        final IoParameters parameters = IoParameters.createDefaults()
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile");
+        Assert.assertTrue(parameters.shallIncludeMobilePlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeInsituPlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeRemotePlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeStationaryPlatformTypes());
+    }
+
+    @Test
+    public void when_setRemote_then_allRemotesFilterActive() {
         final IoParameters parameters = IoParameters.createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote");
         Assert.assertTrue(parameters.shallIncludeRemotePlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeMobilePlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeStationaryPlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeInsituPlatformTypes());
+    }
+
+    @Test
+    public void when_setMobileInsitu_then_allMobileInsitusFilterActive() {
+        final IoParameters parameters = IoParameters.createDefaults()
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu");
+        Assert.assertTrue(parameters.shallIncludeMobilePlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeInsituPlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeStationaryPlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeRemotePlatformTypes());
+    }
+
+    @Test
+    public void when_setStationaryInsitu_then_allStationaryInsitusFilterActive() {
+        final IoParameters parameters = IoParameters.createDefaults()
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu");
+        Assert.assertTrue(parameters.shallIncludeInsituPlatformTypes());
+        Assert.assertTrue(parameters.shallIncludeStationaryPlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeMobilePlatformTypes());
+        Assert.assertFalse(parameters.shallIncludeRemotePlatformTypes());
     }
 
     @Test

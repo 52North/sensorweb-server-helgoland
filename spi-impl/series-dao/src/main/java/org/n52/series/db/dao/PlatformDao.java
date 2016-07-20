@@ -77,19 +77,17 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
 
         IoParameters parameters = query.getParameters();
         if (!parameters.shallIncludeAllPlatformTypes()) {
-            if (parameters.shallIncludeStationaryPlatformTypes()) {
-                criteria.add(Restrictions.eq(PlatformEntity.MOBILE, false));
-            }
-            if (parameters.shallIncludeMobilePlatformTypes()) {
-                criteria.add(Restrictions.eq(PlatformEntity.MOBILE, true));
-            }
-            if (parameters.shallIncludeInsituPlatformTypes()
-                    || parameters.shallIncludeStationaryPlatformTypes()) {
-                criteria.add(Restrictions.eq(PlatformEntity.INSITU, true));
-            }
-            if (parameters.shallIncludeRemotePlatformTypes()) {
-                criteria.add(Restrictions.eq(PlatformEntity.INSITU, false));
-            }
+            boolean includeStationary = parameters.shallIncludeStationaryPlatformTypes();
+			boolean includeMobile = parameters.shallIncludeMobilePlatformTypes();
+			criteria.add(Restrictions.or(
+            		Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+            		Restrictions.eq(PlatformEntity.MOBILE, includeMobile)));
+
+            boolean includeInsitu = parameters.shallIncludeInsituPlatformTypes();
+            boolean includeRemote = parameters.shallIncludeRemotePlatformTypes();
+			criteria.add(Restrictions.or(
+            		Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+            		Restrictions.eq(PlatformEntity.INSITU, !includeRemote))); // inverse to match filter
         }
         return (List<PlatformEntity>) criteria.list();
     }

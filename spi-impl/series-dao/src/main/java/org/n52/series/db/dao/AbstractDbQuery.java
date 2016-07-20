@@ -159,8 +159,8 @@ public abstract class AbstractDbQuery {
      * @return the criteria to chain.
      */
     Criteria addPlatformTypesFilter(String parameter, Criteria criteria) {
-        boolean mobile = parameters.isSetMobileFilter();
-        boolean insitu = parameters.isSetInsituFilter();
+        boolean mobile = parameters.shallIncludeMobilePlatformTypes();
+        boolean insitu = parameters.shallIncludeInsituPlatformTypes();
         filterMobileInsitu(parameter, criteria, mobile, insitu);
         return criteria;
     }

@@ -477,38 +477,43 @@ public class IoParameters implements Parameters {
 
 
     public boolean shallIncludeMobilePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetMobileFilter();
+        return shallIncludeAllPlatformTypes() || isSetMobileFilter() || !isSetStationaryFilter();
     }
 
     public boolean shallIncludeStationaryPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || !isSetMobileFilter();
+        return shallIncludeAllPlatformTypes() || isSetStationaryFilter() || !isSetMobileFilter();
     }
 
     public boolean shallIncludeInsituPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetInsituFilter();
+        return shallIncludeAllPlatformTypes() || isSetInsituFilter() || !isSetRemoteFilter();
     }
 
     public boolean shallIncludeRemotePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || !isSetInsituFilter();
+        return shallIncludeAllPlatformTypes() || isSetRemoteFilter() || !isSetInsituFilter();
+    }
+
+    public boolean isSetStationaryFilter() {
+        Set<String> platformTypes = getPlatformTypes();
+        return platformTypes.isEmpty() || platformTypes.contains("stationary");
     }
 
     public boolean isSetMobileFilter() {
         Set<String> platformTypes = getPlatformTypes();
-        return platformTypes.contains("mobile"); // stationary by default true
+        return platformTypes.isEmpty() || platformTypes.contains("mobile");
     }
 
     public boolean isSetInsituFilter() {
         Set<String> platformTypes = getPlatformTypes();
-        return !platformTypes.contains("remote"); // insitu by default true
+        return platformTypes.isEmpty() || platformTypes.contains("insitu");
+    }
+
+    public boolean isSetRemoteFilter() {
+        Set<String> platformTypes = getPlatformTypes();
+        return platformTypes.isEmpty() || platformTypes.contains("remote");
     }
 
     public boolean shallIncludeAllPlatformTypes() {
-        return getPlatformTypes().contains("all");
-    }
-
-    private boolean isSetBothGeometriesFilter() {
-        return isSetPlatformGeometryFilter()
-                && isSetObservedGeometryFilter();
+        return getPlatformTypes().isEmpty() || getPlatformTypes().contains("all");
     }
 
     private boolean shallIncludeAllPlatformGeometries() {
@@ -553,7 +558,7 @@ public class IoParameters implements Parameters {
 
 
 
-    private Set<String> getValuesOf(String parameterName) {
+    Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
                 : Collections.<String>emptySet();
@@ -771,11 +776,22 @@ public class IoParameters implements Parameters {
 
     public String getAsString(String parameter) {
         return containsParameter(parameter)
-                ? query.getFirst(parameter.toLowerCase()).asText()
+                ? asCsv(query.get(parameter.toLowerCase()))
                 : null;
     }
+    
+    private String asCsv(List<JsonNode> list) {
+    	StringBuilder sb = new StringBuilder();
+    	for (JsonNode jsonNode : list) {
+			if (sb.length() != 0) {
+				sb.append(",");
+			}
+			sb.append(jsonNode.asText());
+		}
+		return sb.toString();
+	}
 
-    /**
+	/**
      * @param parameter the parameter to parse to an <code>int</code> value.
      * @return an integer value.
      * @throws IoParseException if parsing to <code>int</code> fails.
