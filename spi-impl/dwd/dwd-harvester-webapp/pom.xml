@@ -73,7 +73,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -142,7 +142,7 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>target/classes;../series-dao/target/classes;../../io/target/classes;../../spi/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>target/classes;../dwd-harvester/target/classes;../dwd-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <systemProperties>
                             <systemProperty>
@@ -152,10 +152,10 @@
                         </systemProperties>
                         <scanTargets>
                             <scanTarget>target/classes</scanTarget>
-                            <scanTarget>../series-dao/target/classes</scanTarget>
-                            <scanTarget>../../io/target/classes</scanTarget>
-                            <scanTarget>../../spi/target/classes</scanTarget>
-                            <scanTarget>../../rest/target/classes</scanTarget>
+                            <scanTarget>../dwd-dao/target/classes</scanTarget>
+                            <scanTarget>../dwd-harvester/target/classes</scanTarget>
+                            <scanTarget>../../../io/target/classes</scanTarget>
+                            <scanTarget>../../../rest/target/classes</scanTarget>
                         </scanTargets>
                     </configuration>
                 </plugin>

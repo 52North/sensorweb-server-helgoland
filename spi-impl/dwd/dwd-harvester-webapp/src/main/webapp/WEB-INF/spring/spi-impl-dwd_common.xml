@@ -34,8 +34,8 @@
  	-->
 
 	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester">
-    	<constructor-arg index="0" ref="alertStore" />
-    	<property name="filePath" value="c:/VG2500_DWD/DWD-PVW-Customer_VG2500.shp"/>
+    	<constructor-arg index="0" value="c:/VG2500_DWD/DWD-PVW-Customer_VG2500.shp"/>
+        <constructor-arg index="1" ref="alertStore" />
     </bean>
 
 

@@ -101,5 +101,5 @@ public class JacksonBasedAlertParserTest {
     private InputStream streamOf(String file) {
         return getClass().getResourceAsStream(file);
     }
-    
+
 }

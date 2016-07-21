@@ -209,8 +209,8 @@
                             <scanTarget>/target/classes/</scanTarget>
                             <scanTarget>../series-dao/target/classes</scanTarget>
                             <scanTarget>../series-mappings/target/classes</scanTarget>
-                            <scanTarget>../../io/target/classes</scanTarget>
-                            <scanTarget>../../rest/target/classes</scanTarget>
+                            <scanTarget>../../../io/target/classes</scanTarget>
+                            <scanTarget>../../../rest/target/classes</scanTarget>
                         </scanTargets>
                         <systemProperties>
                             <systemProperty>

@@ -35,7 +35,7 @@ import java.util.Map;
 import org.n52.io.response.dataset.DatasetMetadata;
 
 
-public class DwdAlertDataset implements DatasetMetadata<Map<String, DwdAlertData>>, Serializable {
+public class DwdAlertDataMetadata implements DatasetMetadata<Map<String, DwdAlertData>>, Serializable {
 
     private static final long serialVersionUID = -5666064665815076013L;
 

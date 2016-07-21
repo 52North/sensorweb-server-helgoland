@@ -45,7 +45,7 @@ public class GeometryHarvesterTest {
 
     private static final String TEST_SHAPE_FILE = "geometries/DWD-PVW-Customer_VG2500_extract.shp";
     private InMemoryAlertStore store;
-    
+
     @Before
     public void setUp() {
         store = new InMemoryAlertStore();
@@ -56,7 +56,7 @@ public class GeometryHarvesterTest {
         ShapeFileHarvester harvester = new ShapeFileHarvester(getTestShapeFile(), store);
         assertTrue(harvester.loadGeometries().size() == 1);
     }
-    
+
     @Test
     public void when_harvestingTestShape_then_muensterWarnCellHasGeometry() throws URISyntaxException {
         new ShapeFileHarvester(getTestShapeFile(), store).harvest();

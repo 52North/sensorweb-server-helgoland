@@ -46,7 +46,7 @@ public class DwdAlertData extends Data {
 
     private List<DwdAlertValue> values = new ArrayList<>();
 
-    private DwdAlertDataset metadata;
+    private DwdAlertDataMetadata metadata;
 
     public void addValues(DwdAlertValue... values) {
         if (values != null && values.length > 0) {
@@ -89,11 +89,11 @@ public class DwdAlertData extends Data {
     }
 
     @JsonProperty("extra")
-    public DwdAlertDataset getMetadata() {
+    public DwdAlertDataMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(DwdAlertDataset metadata) {
+    public void setMetadata(DwdAlertDataMetadata metadata) {
         this.metadata = metadata;
     }
 

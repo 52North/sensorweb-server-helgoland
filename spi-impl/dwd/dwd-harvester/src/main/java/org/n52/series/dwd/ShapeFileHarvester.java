@@ -62,14 +62,18 @@ public class ShapeFileHarvester implements GeometryHarvester {
     public ShapeFileHarvester(AlertStore store) {
         this(getDefaultShapeFile(GEOMETRY_VERWALTUNGSGEBIETE_2500), store);
     }
+    
+    public ShapeFileHarvester(AlertStore store, String shpFile) {
+        this(getDefaultShapeFile(shpFile), store);
+    }
 
     protected static File getDefaultShapeFile(String configFile) {
         try {
             Path path = Paths.get(ShapeFileHarvester.class.getResource("/").toURI());
             return path.resolve(configFile).toFile();
         } catch (URISyntaxException e) {
-            LOGGER.info("Could not find shape file '{}'. Load from compiled default.", configFile, e);
-            return null;
+            LOGGER.info("Could not find shape file '{}'. Load from default.", configFile, e);
+            return getDefaultShapeFile(GEOMETRY_VERWALTUNGSGEBIETE_2500);
         }
     }
 
