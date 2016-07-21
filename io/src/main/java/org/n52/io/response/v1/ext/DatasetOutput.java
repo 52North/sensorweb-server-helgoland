@@ -31,13 +31,14 @@ package org.n52.io.response.v1.ext;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.n52.io.Utils;
-
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.ReferenceValueOutput;
+import org.n52.io.response.dataset.SeriesParameters;
 
-public abstract class DatasetOutput<T extends ReferenceValueOutput> extends ParameterOutput {
+public abstract class DatasetOutput<D extends Data, R extends ReferenceValueOutput<?>> extends ParameterOutput {
 
     private final String datasetType;
 
@@ -45,7 +46,11 @@ public abstract class DatasetOutput<T extends ReferenceValueOutput> extends Para
 
     private Set<String> rawFormats;
 
-    private T[] referenceValues;
+    private R[] referenceValues;
+
+    private D firstValue;
+
+    private D lastValue;
 
     private String uom;
 
@@ -108,11 +113,28 @@ public abstract class DatasetOutput<T extends ReferenceValueOutput> extends Para
         }
     }
 
-    public T[] getReferenceValues() {
+
+    public D getFirstValue() {
+        return firstValue;
+    }
+
+    public void setFirstValue(D firstValue) {
+        this.firstValue = firstValue;
+    }
+
+    public D getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(D lastValue) {
+        this.lastValue = lastValue;
+    }
+
+    public R[] getReferenceValues() {
         return Utils.copy(referenceValues);
     }
 
-    public void setReferenceValues(T[] referenceValues) {
+    public void setReferenceValues(R[] referenceValues) {
         this.referenceValues = Utils.copy(referenceValues);
     }
 }

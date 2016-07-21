@@ -33,15 +33,12 @@
  */
 package org.n52.io;
 
-import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.junit.Assert;
 import static org.junit.Assert.assertThat;
+
+import org.joda.time.Interval;
 import org.junit.Test;
-import org.opengis.temporal.DateAndTime;
 
 public class IntervalWithTimeZoneTest {
 

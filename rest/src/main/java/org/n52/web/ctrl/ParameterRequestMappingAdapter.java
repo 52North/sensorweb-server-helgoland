@@ -33,8 +33,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import org.n52.io.response.ParameterOutput;
 
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;

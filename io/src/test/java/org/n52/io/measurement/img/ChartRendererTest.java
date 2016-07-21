@@ -40,8 +40,8 @@ import org.junit.Test;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
 
 public class ChartRendererTest {
 

@@ -32,13 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.n52.io.DataFormatter;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.DataCollection;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import org.n52.io.DataFormatter;
 
 public class HighchartFormatter implements DataFormatter<MeasurementData, HighchartData> {
 

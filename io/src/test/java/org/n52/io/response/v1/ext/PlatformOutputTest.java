@@ -30,6 +30,7 @@ package org.n52.io.response.v1.ext;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 
 public class PlatformOutputTest {

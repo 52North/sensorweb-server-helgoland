@@ -28,16 +28,17 @@
  */
 package org.n52.io;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.text.TextIoFactory;
 

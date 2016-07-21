@@ -28,10 +28,10 @@
  */
 package org.n52.io.geojson;
 
-import org.n52.io.geojson.old.GeojsonPoint;
 import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.junit.Test;
+import org.n52.io.geojson.old.GeojsonPoint;
 
 public class GeojsonPointTest {
 

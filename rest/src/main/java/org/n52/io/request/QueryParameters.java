@@ -38,7 +38,6 @@ import org.n52.io.crs.BoundingBox;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
-import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

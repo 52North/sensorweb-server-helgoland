@@ -28,8 +28,6 @@
  */
 package org.n52.io.response;
 
-import org.n52.io.response.AbstractOutput;
-
 public class OfferingOutput extends AbstractOutput {
 
 }

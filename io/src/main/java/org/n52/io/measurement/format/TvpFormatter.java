@@ -28,9 +28,9 @@
  */
 package org.n52.io.measurement.format;
 
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.DataFormatter;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
 
 /**
  * Represents the identity transformation. Input is equal to output.

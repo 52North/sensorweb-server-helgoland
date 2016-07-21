@@ -28,21 +28,7 @@
  */
 package org.n52.io.geojson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.PrecisionModel;
 import static java.lang.Integer.parseInt;
-import org.n52.io.crs.CRSUtils;
 import static org.n52.io.geojson.JSONConstants.COORDINATES;
 import static org.n52.io.geojson.JSONConstants.CRS;
 import static org.n52.io.geojson.JSONConstants.GEOMETRIES;
@@ -58,6 +44,22 @@ import static org.n52.io.geojson.JSONConstants.POINT;
 import static org.n52.io.geojson.JSONConstants.POLYGON;
 import static org.n52.io.geojson.JSONConstants.PROPERTIES;
 import static org.n52.io.geojson.JSONConstants.TYPE;
+
+import org.n52.io.crs.CRSUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  *

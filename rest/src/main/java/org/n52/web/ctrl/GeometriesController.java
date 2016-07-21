@@ -29,10 +29,11 @@
 package org.n52.web.ctrl;
 
 
-import org.n52.io.response.v1.ext.GeometryInfo;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import static org.n52.web.ctrl.UrlSettings.COLLECTION_GEOMETRIES;
+
+import org.n52.io.response.v1.ext.GeometryInfo;
+import org.n52.series.spi.geo.TransformingGeometryOutputService;
+import org.n52.series.spi.srv.ParameterService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

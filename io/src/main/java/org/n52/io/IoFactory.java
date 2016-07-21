@@ -29,6 +29,7 @@
 package org.n52.io;
 
 import java.net.URI;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;

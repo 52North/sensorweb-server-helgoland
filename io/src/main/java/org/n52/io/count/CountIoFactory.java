@@ -29,9 +29,8 @@
 package org.n52.io.count;
 
 
-import org.n52.io.IoHandler;
 import org.n52.io.IoFactory;
-
+import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
 import org.n52.io.response.dataset.count.CountObservationData;
 

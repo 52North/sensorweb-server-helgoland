@@ -33,19 +33,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.dataset.measurement.MeasurementSeriesOutput;
+import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.v1.ext.DatasetType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.v1.ext.DatasetType;
 
 /**
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- * @deprecated since 2.0.0. use {@link MeasurementSeriesOutput} instead.
+ * @deprecated since 2.0.0. use {@link MeasurementDatasetOutput} instead.
  */
 @Deprecated
-public class TimeseriesMetadataOutput extends MeasurementSeriesOutput {
+public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
     @Deprecated
     private StyleProperties renderingHints;
