@@ -29,8 +29,17 @@
 
 package org.n52.series.db.dao;
 
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
+import static org.hibernate.criterion.Restrictions.and;
 import static org.hibernate.criterion.Restrictions.between;
+import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Restrictions.isNull;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
+import static org.hibernate.criterion.Subqueries.propertyIn;
 import static org.n52.series.db.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
@@ -39,12 +48,14 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.db.beans.DatasetEntity;
@@ -55,17 +66,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.criterion.ProjectionList;
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Subqueries.propertyIn;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Restrictions.and;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
-import static java.lang.String.format;
-import static java.lang.String.format;
 
 public abstract class AbstractDbQuery {
 
@@ -151,7 +151,7 @@ public abstract class AbstractDbQuery {
         return criteria;
     }
 
-    /**
+    /**	
      * Adds a external defined filters to the query.
      *
      * @param parameter parameters containing the filters.
@@ -159,8 +159,9 @@ public abstract class AbstractDbQuery {
      * @return the criteria to chain.
      */
     Criteria addPlatformTypesFilter(String parameter, Criteria criteria) {
-        boolean mobile = parameters.shallIncludeMobilePlatformTypes();
-        boolean insitu = parameters.shallIncludeInsituPlatformTypes();
+        FilterResolver filterResolver = getFilterResolver();
+		boolean mobile = filterResolver.shallIncludeMobilePlatformTypes();
+        boolean insitu = filterResolver.shallIncludeInsituPlatformTypes();
         filterMobileInsitu(parameter, criteria, mobile, insitu);
         return criteria;
     }
@@ -236,6 +237,10 @@ public abstract class AbstractDbQuery {
 
     public IoParameters getParameters() {
         return parameters;
+    }
+    
+    public FilterResolver getFilterResolver() {
+    	return parameters.getFilterResolver();
     }
 
 }

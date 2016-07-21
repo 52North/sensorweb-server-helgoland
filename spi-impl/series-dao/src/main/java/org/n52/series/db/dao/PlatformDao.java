@@ -38,13 +38,9 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
-import org.n52.io.request.IoParameters;
+import org.n52.io.request.FilterResolver;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.PlatformEntity;
-import org.n52.series.db.dao.AbstractDao;
-import org.n52.series.db.dao.AbstractDao;
-import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -75,16 +71,16 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         DetachedCriteria filter = query.createDetachedFilterCriteria("platform");
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
 
-        IoParameters parameters = query.getParameters();
-        if (!parameters.shallIncludeAllPlatformTypes()) {
-            boolean includeStationary = parameters.shallIncludeStationaryPlatformTypes();
-			boolean includeMobile = parameters.shallIncludeMobilePlatformTypes();
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (!filterResolver.shallIncludeAllPlatformTypes()) {
+            boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
+			boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
 			criteria.add(Restrictions.or(
             		Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
             		Restrictions.eq(PlatformEntity.MOBILE, includeMobile)));
 
-            boolean includeInsitu = parameters.shallIncludeInsituPlatformTypes();
-            boolean includeRemote = parameters.shallIncludeRemotePlatformTypes();
+            boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
+            boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
 			criteria.add(Restrictions.or(
             		Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
             		Restrictions.eq(PlatformEntity.INSITU, !includeRemote))); // inverse to match filter

@@ -472,91 +472,9 @@ public class IoParameters implements Parameters {
         return getValuesOf(FILTER_DATASET_TYPES);
     }
 
-
-
-
-
-    public boolean shallIncludeMobilePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetMobileFilter() || !isSetStationaryFilter();
+    public FilterResolver getFilterResolver() {
+    	return new FilterResolver(this);
     }
-
-    public boolean shallIncludeStationaryPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetStationaryFilter() || !isSetMobileFilter();
-    }
-
-    public boolean shallIncludeInsituPlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetInsituFilter() || !isSetRemoteFilter();
-    }
-
-    public boolean shallIncludeRemotePlatformTypes() {
-        return shallIncludeAllPlatformTypes() || isSetRemoteFilter() || !isSetInsituFilter();
-    }
-
-    public boolean isSetStationaryFilter() {
-        Set<String> platformTypes = getPlatformTypes();
-        return platformTypes.isEmpty() || platformTypes.contains("stationary");
-    }
-
-    public boolean isSetMobileFilter() {
-        Set<String> platformTypes = getPlatformTypes();
-        return platformTypes.isEmpty() || platformTypes.contains("mobile");
-    }
-
-    public boolean isSetInsituFilter() {
-        Set<String> platformTypes = getPlatformTypes();
-        return platformTypes.isEmpty() || platformTypes.contains("insitu");
-    }
-
-    public boolean isSetRemoteFilter() {
-        Set<String> platformTypes = getPlatformTypes();
-        return platformTypes.isEmpty() || platformTypes.contains("remote");
-    }
-
-    public boolean shallIncludeAllPlatformTypes() {
-        return getPlatformTypes().isEmpty() || getPlatformTypes().contains("all");
-    }
-
-    private boolean shallIncludeAllPlatformGeometries() {
-        return !isSetPlatformGeometryFilter()
-                || getPlatformGeometryTypes().contains("all");
-    }
-
-    private boolean isSetPlatformGeometryFilter() {
-        return !getPlatformGeometryTypes().isEmpty();
-    }
-
-    private boolean shallIncludeAllObservedGeometries() {
-        return !isSetObservedGeometryFilter()
-                || getObservedGeometryTypes().contains("all");
-    }
-
-    private boolean isSetObservedGeometryFilter() {
-        return !getObservedGeometryTypes().isEmpty();
-    }
-
-    public boolean shallIncludePlatformGeometriesSite() {
-        return shallIncludeAllPlatformGeometries()
-                || getPlatformGeometryTypes().contains("site");
-    }
-
-    public boolean shallIncludePlatformGeometriesTrack() {
-        return shallIncludeAllPlatformGeometries()
-                || getPlatformGeometryTypes().contains("track");
-    }
-
-    public boolean shallIncludeObservedGeometriesStatic() {
-        return shallIncludeAllObservedGeometries()
-                || getObservedGeometryTypes().contains("static");
-    }
-
-    public boolean shallIncludeObservedGeometriesDynamic() {
-        return shallIncludeAllObservedGeometries()
-                || getObservedGeometryTypes().contains("dynamic");
-    }
-
-
-
-
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
@@ -779,7 +697,7 @@ public class IoParameters implements Parameters {
                 ? asCsv(query.get(parameter.toLowerCase()))
                 : null;
     }
-    
+
     private String asCsv(List<JsonNode> list) {
     	StringBuilder sb = new StringBuilder();
     	for (JsonNode jsonNode : list) {

@@ -28,24 +28,25 @@
  */
 package org.n52.series.db.da;
 
-import org.n52.series.db.dao.DbQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
-import org.n52.series.spi.search.SearchResult;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PlatformDao;
+import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,7 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PlatformRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<PlatformOutput> {
 
     @Autowired
-    private DatasetRepository seriesRepository;
+    private DatasetRepository	 seriesRepository;
 
     @Override
     public boolean exists(String id) throws DataAccessException {
@@ -132,11 +133,11 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
 
     private List<PlatformEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        IoParameters parameters = query.getParameters();
-        if (parameters.shallIncludeStationaryPlatformTypes()) {
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (filterResolver.shallIncludeStationaryPlatformTypes()) {
             platforms.addAll(getAllStationary(query, session));
         }
-        if (parameters.shallIncludeMobilePlatformTypes()) {
+        if (filterResolver.shallIncludeMobilePlatformTypes()) {
             platforms.addAll(getAllMobile(query, session));
         }
         return platforms;
@@ -144,11 +145,11 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
 
     private List<PlatformEntity> getAllStationary(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        IoParameters parameters = query.getParameters();
-        if (parameters.shallIncludeInsituPlatformTypes()) {
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (filterResolver.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllStationaryInsitu(query, session));
         }
-        if (parameters.shallIncludeRemotePlatformTypes()) {
+        if (filterResolver.shallIncludeRemotePlatformTypes()) {
             platforms.addAll(getAllStationaryRemote(query, session));
         }
         return platforms;
@@ -192,11 +193,11 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
 
     private List<PlatformEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
-        IoParameters parameters = query.getParameters();
-        if (parameters.shallIncludeInsituPlatformTypes()) {
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (filterResolver.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllMobileInsitu(query, session));
         }
-        if (parameters.shallIncludeRemotePlatformTypes()) {
+        if (filterResolver.shallIncludeRemotePlatformTypes()) {
             platforms.addAll(getAllMobileRemote(query, session));
         }
         return platforms;

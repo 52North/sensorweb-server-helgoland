@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.da;
 
-import org.n52.series.db.dao.DbQuery;
 import static org.n52.io.request.Parameters.FEATURES;
 import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_SITE;
 import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_TRACK;
@@ -38,24 +37,26 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.v1.ext.GeometryInfo;
 import org.n52.io.response.v1.ext.GeometryType;
 import org.n52.io.response.v1.ext.PlatformOutput;
-import org.n52.series.spi.search.SearchResult;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.GeometryEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.SamplingGeometryDao;
+import org.n52.series.spi.search.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import org.n52.series.db.SessionAwareRepository;
 
 public class GeometriesRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<GeometryInfo> {
 
@@ -134,18 +135,22 @@ public class GeometriesRepository extends SessionAwareRepository<DbQuery> implem
     private List<GeometryInfo> getAllInstances(DbQuery query, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometries = new ArrayList<>();
         query.setDatabaseAuthorityCode(getDatabaseSrid());
-        final IoParameters parameters = query.getParameters();
-        if (parameters.shallIncludePlatformGeometriesSite()) {
-            geometries.addAll(getAllSites(query, session, expanded));
-        }
-        if (parameters.shallIncludePlatformGeometriesTrack()) {
-            geometries.addAll(getAllTracks(query, session, expanded));
-        }
-        if (parameters.shallIncludeObservedGeometriesStatic()) {
-            geometries.addAll(getAllObservedGeometriesStatic(query, session, expanded));
-        }
-        if (parameters.shallIncludeObservedGeometriesDynamic()) {
-            geometries.addAll(getAllObservedGeometriesDynamic(query, session, expanded));
+        final FilterResolver filterResolver = query.getFilterResolver();
+        if (filterResolver.shallIncludeInsituPlatformTypes()) {
+            if (filterResolver.shallIncludePlatformGeometriesSite()) {
+                geometries.addAll(getAllSites(query, session, expanded));
+            }
+            if (filterResolver.shallIncludePlatformGeometriesTrack()) {
+                geometries.addAll(getAllTracks(query, session, expanded));
+            }
+		}
+        if (filterResolver.shallIncludeRemotePlatformTypes()) {
+            if (filterResolver.shallIncludeObservedGeometriesStatic()) {
+                geometries.addAll(getAllObservedGeometriesStatic(query, session, expanded));
+            }
+            if (filterResolver.shallIncludeObservedGeometriesDynamic()) {
+                geometries.addAll(getAllObservedGeometriesDynamic(query, session, expanded));
+            }
         }
         return geometries;
     }
