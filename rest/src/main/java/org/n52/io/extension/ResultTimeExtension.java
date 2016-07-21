@@ -28,20 +28,21 @@
  */
 package org.n52.io.extension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.series.spi.srv.ResultTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 

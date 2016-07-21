@@ -29,16 +29,15 @@
 package org.n52.series.spi.srv;
 
 import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
+import static org.n52.io.request.IoParameters.createFromQuery;
 
 import org.n52.io.measurement.generalize.Generalizer;
 import org.n52.io.measurement.generalize.GeneralizerException;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromQuery;
 
 /**
  * Composes a {@link DataService} instance to generalize requested

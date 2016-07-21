@@ -28,19 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import java.net.URI;
-
-import org.n52.io.IoHandler;
-import org.n52.io.MimeType;
-import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestParameterSet;
-import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.dataset.DataCollection;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.web.exception.WebExceptionAdapter;
-import org.n52.series.spi.srv.DataService;
-
 public abstract class DatasetServiceBundle {
 
 //    private ParameterService metadataService;

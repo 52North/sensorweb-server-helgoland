@@ -33,8 +33,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.StationOutput;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawDataService;
 
 /**

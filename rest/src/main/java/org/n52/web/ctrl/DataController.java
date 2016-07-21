@@ -31,9 +31,11 @@ package org.n52.web.ctrl;
 
 import static org.n52.io.MimeType.APPLICATION_ZIP;
 import static org.n52.io.MimeType.TEXT_CSV;
+import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
+import static org.n52.web.ctrl.UrlSettings.COLLECTION_DATASETS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -55,16 +57,22 @@ import org.joda.time.Period;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoHandler;
 import org.n52.io.IoFactory;
+import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.io.v1.data.RawFormats;
+import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.n52.series.spi.srv.RawDataService;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -77,14 +85,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_DATASETS;
-import org.n52.series.spi.srv.DataService;
-import org.n52.io.response.v1.ext.DatasetType;
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.v1.ext.DatasetOutput;
-import org.n52.series.spi.srv.RawDataService;
-import static org.n52.io.request.IoParameters.createFromQuery;
 
 @RestController
 @RequestMapping(value = COLLECTION_DATASETS, produces = {"application/json"})

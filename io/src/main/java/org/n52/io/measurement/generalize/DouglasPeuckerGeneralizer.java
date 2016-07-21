@@ -36,19 +36,12 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.parseInt;
 
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm

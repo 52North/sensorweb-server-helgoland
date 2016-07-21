@@ -28,20 +28,20 @@
  */
 package org.n52.io.response.extension;
 
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 

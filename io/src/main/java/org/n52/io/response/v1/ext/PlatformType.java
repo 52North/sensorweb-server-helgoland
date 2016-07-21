@@ -28,9 +28,6 @@
  */
 package org.n52.io.response.v1.ext;
 
-import java.util.Locale;
-import static org.n52.io.response.v1.ext.GeometryType.isKnownType;
-
 /**
  * TODO: JavaDoc
  *

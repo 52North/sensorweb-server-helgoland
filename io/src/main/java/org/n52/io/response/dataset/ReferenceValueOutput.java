@@ -26,15 +26,21 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
-public interface ReferenceValueOutput<T> {
+public interface ReferenceValueOutput<T extends Data> {
 
     String getReferenceValueId();
+
     void setReferenceValueId(String referenceValueId);
+
     String getLabel();
+
     void setLabel(String label);
+
     T getLastValue();
+
     void setLastValue(T lastValue);
 
 }

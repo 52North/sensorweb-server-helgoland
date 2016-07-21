@@ -29,9 +29,8 @@
 package org.n52.io.text;
 
 
-import org.n52.io.IoHandler;
 import org.n52.io.IoFactory;
-
+import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
 import org.n52.io.response.dataset.text.TextObservationData;
 

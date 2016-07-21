@@ -29,6 +29,7 @@
 package org.n52.series.spi.search;
 
 import java.util.Collection;
+
 import org.n52.io.request.IoParameters;
 
 /**

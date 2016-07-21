@@ -28,11 +28,13 @@
  */
 package org.n52.io.response.v1.ext;
 
-import org.n52.io.response.OutputCollection;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+
+import org.n52.io.response.OutputCollection;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GeometryOutputCollection extends OutputCollection<GeometryInfo> {
 

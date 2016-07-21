@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+
+    <mvc:annotation-driven />
+    <ctx:annotation-config />
+
+    <bean id="serviceInfo" class="org.n52.series.dwd.beans.ServiceInfo">
+        <property name="serviceId" value="1" />
+        <property name="serviceDescription" value="DWD Warnings Series Service." />
+        <property name="noDataValues" value="-9999.0,99999" />
+    </bean>
+
+	<bean id="alertStore" class="org.n52.series.dwd.store.InMemoryAlertStore" />
+
+	<bean id="harvester" class="org.n52.series.dwd.UrlHarvester">
+		<constructor-arg index="0" ref="alertStore" />
+		<property name="url" value="http://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json" />
+	</bean>
+
+	<!--
+	<bean id="harvester" class="org.n52.series.dwd.FileHarvester">
+		<constructor-arg index="0" ref="alertStore" />
+		<property name="filePath" value="c:/dwd-example.json" />
+	</bean>
+ 	-->
+
+	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester">
+    	<constructor-arg index="0" ref="alertStore" />
+    	<property name="filePath" value="c:/VG2500_DWD/DWD-PVW-Customer_VG2500.shp"/>
+    </bean>
+
+
+   <!--  <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
+    <bean id="metadataService" class="org.n52.series.db.srv.v1.ExtCountingMetadataAccessService" /> -->
+
+</beans>

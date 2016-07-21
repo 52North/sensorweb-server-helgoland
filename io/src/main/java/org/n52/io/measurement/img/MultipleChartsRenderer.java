@@ -53,15 +53,14 @@ import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.ReferenceValueOutput;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
-import org.n52.series.spi.srv.DataService;
 
 public class MultipleChartsRenderer extends ChartIoHandler {
 

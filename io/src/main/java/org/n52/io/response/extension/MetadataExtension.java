@@ -29,8 +29,9 @@
 package org.n52.io.response.extension;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 

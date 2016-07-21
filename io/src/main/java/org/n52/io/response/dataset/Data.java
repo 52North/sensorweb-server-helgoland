@@ -28,11 +28,11 @@
  */
 package org.n52.io.response.dataset;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 

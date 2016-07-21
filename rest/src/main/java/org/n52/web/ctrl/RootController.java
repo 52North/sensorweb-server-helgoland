@@ -30,7 +30,9 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 import javax.servlet.ServletConfig;
+
 import org.n52.web.common.RequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

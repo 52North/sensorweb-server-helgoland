@@ -29,13 +29,14 @@
 package org.n52.io.task;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
-import org.quartz.DateBuilder;
 import static org.quartz.DateBuilder.futureDate;
+import static org.quartz.TriggerBuilder.newTrigger;
+
+import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
-import static org.quartz.TriggerBuilder.newTrigger;
 
 public abstract class ScheduledJob {
 

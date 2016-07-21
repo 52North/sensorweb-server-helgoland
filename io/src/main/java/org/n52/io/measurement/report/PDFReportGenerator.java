@@ -28,6 +28,7 @@
  */
 package org.n52.io.measurement.report;
 
+import static java.io.File.createTempFile;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 
@@ -56,12 +57,16 @@ import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
+import org.n52.io.IoParseException;
+import org.n52.io.IoProcessChain;
 import org.n52.io.measurement.img.ChartIoHandler;
+import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
@@ -73,12 +78,6 @@ import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import org.n52.io.IoParseException;
-import static java.io.File.createTempFile;
-import org.n52.io.IoProcessChain;
-import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.v1.ext.DatasetOutput;
-import org.n52.series.spi.srv.DataService;
 
 public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 

@@ -28,15 +28,16 @@
  */
 package org.n52.io;
 
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.apache.commons.codec.binary.Base64;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 

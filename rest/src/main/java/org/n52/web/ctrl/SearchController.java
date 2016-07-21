@@ -33,14 +33,13 @@ import static org.n52.web.ctrl.UrlSettings.SEARCH;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
-
-import org.n52.web.exception.BadRequestException;
-import org.n52.web.ctrl.BaseController;
-import org.n52.series.spi.search.SearchService;
 import org.n52.series.spi.search.SearchResult;
+import org.n52.series.spi.search.SearchService;
+import org.n52.web.exception.BadRequestException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;

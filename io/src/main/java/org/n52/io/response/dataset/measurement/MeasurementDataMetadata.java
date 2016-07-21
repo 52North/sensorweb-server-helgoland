@@ -31,6 +31,7 @@ package org.n52.io.response.dataset.measurement;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.n52.io.response.dataset.DatasetMetadata;
 
 public class MeasurementDataMetadata implements DatasetMetadata<Map<String, MeasurementData>>, Serializable {

@@ -34,8 +34,8 @@
 package org.n52.io.measurement.generalize;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.measurement.MeasurementData;
 
 public class NoActionGeneralizer extends Generalizer<MeasurementData> {
 

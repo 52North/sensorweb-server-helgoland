@@ -31,9 +31,9 @@ package org.n52.io.measurement.generalize;
 import static java.lang.Double.parseDouble;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

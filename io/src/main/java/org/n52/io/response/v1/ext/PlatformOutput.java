@@ -28,16 +28,17 @@
  */
 package org.n52.io.response.v1.ext;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vividsolutions.jts.geom.Geometry;
 import java.util.Collection;
 import java.util.List;
 
 import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.FeatureOutput;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.ProcedureOutput;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc

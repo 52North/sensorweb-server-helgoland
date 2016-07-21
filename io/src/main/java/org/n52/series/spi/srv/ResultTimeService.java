@@ -29,6 +29,7 @@
 package org.n52.series.spi.srv;
 
 import java.util.ArrayList;
+
 import org.n52.io.request.IoParameters;
 
 public interface ResultTimeService {

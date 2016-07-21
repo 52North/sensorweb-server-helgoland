@@ -28,14 +28,15 @@
  */
 package org.n52.io;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.io.File;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import static org.hamcrest.CoreMatchers.is;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;

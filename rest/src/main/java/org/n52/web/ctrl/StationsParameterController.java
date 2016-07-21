@@ -30,15 +30,16 @@ package org.n52.web.ctrl;
 
 import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.common.Stopwatch.startStopwatch;
+import static org.n52.web.ctrl.UrlSettings.COLLECTION_STATIONS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.StationOutput;
+import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
@@ -50,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_STATIONS;
 
 @Deprecated
 @RestController

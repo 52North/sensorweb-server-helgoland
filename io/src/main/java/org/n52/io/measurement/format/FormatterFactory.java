@@ -28,8 +28,8 @@
  */
 package org.n52.io.measurement.format;
 
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.DataFormatter;
+import org.n52.io.response.dataset.measurement.MeasurementData;
 
 public final class FormatterFactory {
 
