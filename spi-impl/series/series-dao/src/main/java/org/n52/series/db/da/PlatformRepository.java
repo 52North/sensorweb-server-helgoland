@@ -222,8 +222,8 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
-//                .extendWith(Parameters.PLATFORMS, String.valueOf(entity.getPkid())));
-                .extendWith(Parameters.PLATFORMS, result.getId()));
+                .extendWith(Parameters.PLATFORMS, result.getId())
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
         result.setSeries(seriesRepository.getAllCondensed(query));
         return result;
     }

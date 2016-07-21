@@ -48,6 +48,7 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
@@ -59,6 +60,7 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -160,13 +162,41 @@ public abstract class AbstractDbQuery {
      */
     Criteria addPlatformTypesFilter(String parameter, Criteria criteria) {
         FilterResolver filterResolver = getFilterResolver();
-        boolean mobile = filterResolver.shallIncludeMobilePlatformTypes();
-        boolean insitu = filterResolver.shallIncludeInsituPlatformTypes();
-        filterMobileInsitu(parameter, criteria, mobile, insitu);
+        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
+            if ("series".equalsIgnoreCase(parameter)) {
+                criteria.createCriteria("platform")
+                        .add(createMobileExpression(filterResolver))
+                        .add(createInsituExpression(filterResolver));
+            } else {
+                DetachedCriteria c = forClass(DatasetEntity.class, "series")
+                        .createCriteria("procedure")
+                        .add(createMobileExpression(filterResolver))
+                        .add(createInsituExpression(filterResolver));
+                    c.setProjection(createSeriesProjectionWith(parameter));
+                    criteria.add(propertyIn(format("%s.pkid", parameter), c));
+            }
+        }
         return criteria;
     }
 
-    Criteria filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
+    private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
+        boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
+        boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+                 Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
+    }
+    
+
+    private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
+        boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
+        boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+                 Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
+    }
+
+    private Criteria filterMobileInsitu(String parameter, Criteria criteria, boolean mobile, boolean insitu) {
         if ("series".equalsIgnoreCase(parameter)) {
             criteria.createCriteria("platform")
                     .add(and(eq("mobile", mobile), eq("insitu", insitu)));
