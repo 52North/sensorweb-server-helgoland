@@ -31,6 +31,14 @@
             </bean>
         </property>
     </bean>
+    
+    <bean class="org.n52.web.ctrl.ServicesParameterController" parent="parameterController">
+        <property name="parameterService">
+            <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
+                <constructor-arg index="0" ref="serviceParameterService" />
+            </bean>
+        </property>
+    </bean>
 
     <bean class="org.n52.web.ctrl.CategoriesParameterController" parent="parameterController">
         <property name="parameterService">
@@ -86,24 +94,8 @@
     </bean>
 
     <bean class="org.n52.web.ctrl.DataController">
-        <property name="datasetService" ref="datasetService" />
         <property name="dataService" ref="datasetService" />
-<!--        <property name="serviceByObservationType">
-            <map key-type="org.n52.io.response.v1.ext.ObservationType">
-                <entry key="MEASUREMENT">
-                    <bean class="org.n52.web.ctrl.MeasurmentSeriesDataControllerService">
-                        <property name="metadataService" ref="datasetService" />
-                        <property name="dataService" ref="datasetService" />
-                    </bean>
-                </entry>
-                <entry key="TEXT">
-                    <bean class="org.n52.web.ctrl.TextSeriesDataControllerService">
-                        <property name="metadataService" ref="datasetService" />
-                        <property name="dataService" ref="datasetService" />
-                    </bean>
-                </entry>
-            </map>
-        </property>-->
+        <property name="datasetService" ref="datasetService" />
         <property name="requestIntervalRestriction" value="P1Y1D" />
     </bean>
 
