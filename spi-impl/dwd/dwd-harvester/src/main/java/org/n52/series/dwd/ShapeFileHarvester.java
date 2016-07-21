@@ -62,7 +62,7 @@ public class ShapeFileHarvester implements GeometryHarvester {
     public ShapeFileHarvester(AlertStore store) {
         this(getDefaultShapeFile(GEOMETRY_VERWALTUNGSGEBIETE_2500), store);
     }
-    
+
     public ShapeFileHarvester(AlertStore store, String shpFile) {
         this(getDefaultShapeFile(shpFile), store);
     }

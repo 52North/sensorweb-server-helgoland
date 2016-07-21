@@ -64,10 +64,13 @@ public class JacksonBasedAlertParser implements AlertParser {
             AlertCollection c = objectMapper.readValue(stream, AlertCollection.class);
             store.updateCurrentAlerts(c);
         } catch (IOException e) {
-            try(Scanner scanner = new Scanner(stream)) {
-                String line = scanner.nextLine();
-                LOGGER.warn("Unable to parse from input stream! Started with '{}'", line, e);
+            String line = null;
+            if (stream != null) {
+                try(Scanner scanner = new Scanner(stream)) {
+                    line = scanner.nextLine();
+                }
             }
+            LOGGER.warn("Unable to parse from input stream! First line was '{}'", line, e);
             throw new ParseException("Parsing input was not possible.", e);
         }
     }
