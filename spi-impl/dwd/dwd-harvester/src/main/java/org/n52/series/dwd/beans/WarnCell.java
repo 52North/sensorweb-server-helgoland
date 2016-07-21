@@ -38,6 +38,12 @@ public class WarnCell {
 
     private Geometry geometry;
 
+    // TODO add alert list
+
+    public WarnCell(String id) {
+        this(id, null);
+    }
+
     public WarnCell(String id, Geometry geometry) {
         if (id == null) {
             throw new NullPointerException("Id must not be null.");

@@ -46,6 +46,8 @@ public interface AlertStore {
 
     List<WarnCell> getAllWarnCells();
 
+    WarnCell getWarnCell(String warnCellId);
+
     List<AlertMessage> getAllAlerts();
 
     AlertCollection getCurrentAlerts();

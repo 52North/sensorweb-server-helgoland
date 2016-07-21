@@ -40,7 +40,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureIterator;
-import org.n52.io.DatasetFactory;
 import org.n52.series.dwd.store.AlertStore;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
