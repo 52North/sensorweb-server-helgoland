@@ -72,7 +72,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
 
         FilterResolver filterResolver = query.getFilterResolver();
-        if (!filterResolver.shallIncludeAllPlatformTypes()) {
+        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
             boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
             boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
             criteria.add(Restrictions.or(
