@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -107,6 +106,8 @@ public class DataController extends BaseController {
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
                                                 @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
+        LOGGER.debug("get data collection with parameter set: {}", parameters);
+        
         checkForUnknownSeriesIds(parameters.getSeriesIds());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
@@ -125,6 +126,8 @@ public class DataController extends BaseController {
                                       @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
+        
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         checkForUnknownSeriesIds(seriesId);
@@ -146,6 +149,8 @@ public class DataController extends BaseController {
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
         checkForUnknownSeriesIds(parameters.getSeriesIds());
+
+        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
     }
 
@@ -155,6 +160,7 @@ public class DataController extends BaseController {
                                  @RequestParam MultiValueMap<String, String> query) {
         checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("getSeriesCollection() with query: {}", map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         writeRawData(parameters, response);
     }
@@ -179,6 +185,7 @@ public class DataController extends BaseController {
                                           @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
         IoParameters map = createFromQuery(requestParameters);
+        LOGGER.debug("get data collection report with query: {}", map);
 //        parameters.setGeneralize(map.isGeneralize());
 //        parameters.setExpanded(map.isExpanded());
 
@@ -200,6 +207,7 @@ public class DataController extends BaseController {
                                 @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -231,6 +239,7 @@ public class DataController extends BaseController {
 
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -260,7 +269,8 @@ public class DataController extends BaseController {
 
         checkForUnknownSeriesIds(requestParameters.getSeriesIds());
 
-//        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
+        LOGGER.debug("get data collection chart with query: {}", map);
 //        checkAgainstTimespanRestriction(requestParameters.getTimespan());
 //        requestParameters.setGeneralize(map.isGeneralize());
 //        requestParameters.setExpanded(map.isExpanded());
@@ -279,6 +289,7 @@ public class DataController extends BaseController {
                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan().toString());
         checkForUnknownSeriesIds(seriesId);
 
@@ -302,6 +313,8 @@ public class DataController extends BaseController {
         if ( !preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
         }
+
+        LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
     }
 
