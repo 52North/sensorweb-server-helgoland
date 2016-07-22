@@ -31,8 +31,6 @@ package org.n52.io.request;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 
 public class ParameterSetTest {
 

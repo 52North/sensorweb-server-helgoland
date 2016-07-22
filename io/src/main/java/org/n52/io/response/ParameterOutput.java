@@ -30,17 +30,17 @@ package org.n52.io.response;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import org.n52.io.response.v2.test.CondensedParameterOutput;
+
 import org.n52.io.v1.data.RawFormats;
 
-public abstract class ParameterOutput implements CondensedParameterOutput, CollatorComparable<ParameterOutput>, RawFormats {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public abstract class ParameterOutput implements CollatorComparable<ParameterOutput>, RawFormats {
 
     /**
      * Takes the labels to compare.
@@ -48,7 +48,7 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
      * @param <T> the actual type.
      * @return a label comparing {@link Comparator}
      */
-    public static <T extends CondensedParameterOutput> Comparator<T> defaultComparator() {
+    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
         return new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
@@ -61,6 +61,8 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     private String href;
 
+    private String hrefBase;
+
     private String domainId;
 
     private String label;
@@ -72,7 +74,6 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
 
     private Set<String> rawFormats;
 
-    @Override
     public String getId() {
         return id;
     }
@@ -81,13 +82,26 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
         this.id = id;
     }
 
-    @Override
     public String getHref() {
-        return href;
+        if (getHrefBase() == null && href == null) {
+            return null;
+        }
+        return href == null && getHrefBase() != null
+                ? getHrefBase() + "/" + getId()
+                : href;
     }
 
     public void setHref(String href) {
         this.href = href;
+    }
+
+    public void setHrefBase(String hrefBase) {
+        this.hrefBase = hrefBase;
+    }
+
+    @JsonIgnore
+    public String getHrefBase() {
+        return hrefBase;
     }
 
     /**
@@ -125,7 +139,6 @@ public abstract class ParameterOutput implements CondensedParameterOutput, Colla
     /**
      * @return the label or the id if label is not set.
      */
-    @Override
     public String getLabel() {
         // ensure that label is never null
         return label == null ? id : label;

@@ -53,6 +53,26 @@ public enum MimeType {
         return formatName;
     }
 
+    public static boolean isKnownMimeType(String value) {
+        for (MimeType type : values()) {
+            if (type.formatName.equalsIgnoreCase(value)
+                    || type.mimeType.equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static MimeType toInstance(String value) {
+        for (MimeType type : values()) {
+            if (type.formatName.equalsIgnoreCase(value)
+                    || type.mimeType.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("'" + value + "' is not of type " + MimeType.class.getName());
+    }
+
     @Override
     public String toString() {
         return getMimeType();

@@ -28,7 +28,6 @@
  */
 package org.n52.io.request;
 
-import org.n52.io.request.Vicinity;
 import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;

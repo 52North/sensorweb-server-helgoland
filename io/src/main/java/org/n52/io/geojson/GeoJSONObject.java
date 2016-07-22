@@ -28,11 +28,12 @@
  */
 package org.n52.io.geojson;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @since 2.0

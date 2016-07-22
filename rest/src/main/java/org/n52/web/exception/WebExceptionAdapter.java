@@ -29,18 +29,20 @@
 package org.n52.web.exception;
 
 import java.io.InputStream;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.RawDataService;
+import org.n52.io.response.ParameterOutput;
+import org.n52.series.spi.srv.ParameterService;
+import org.n52.series.spi.srv.RawDataService;
 
 /**
  * Adapts SPI exceptions to HTTP specified Web exceptions.
  *
  * @param <T> the parameter type of the service to adapt execptions for.
  */
-public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDataService {
+public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterService<T> implements RawDataService {
 
     private final ParameterService<T> composedService;
 
@@ -67,15 +69,6 @@ public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDa
     }
 
     @Override
-    public OutputCollection<T> getParameters(String[] items) {
-        OutputCollection<T> parameters = composedService.getParameters(items);
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
-        return parameters;
-    }
-
-    @Override
     public OutputCollection<T> getParameters(String[] items, IoParameters query) {
         OutputCollection<T> parameters = composedService.getParameters(items, query);
         if (parameters == null) {
@@ -85,21 +78,20 @@ public class WebExceptionAdapter<T> extends ParameterService<T> implements RawDa
     }
 
     @Override
-    public T getParameter(String item) {
-        T parameter = composedService.getParameter(item);
-        if (parameter == null) {
+    public T getParameter(String item, IoParameters query) {
+        assertItemExists(item);
+        return composedService.getParameter(item, query);
+    }
+
+    private void assertItemExists(String item) {
+        if ( !exists(item)) {
             throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
         }
-        return parameter;
     }
 
     @Override
-    public T getParameter(String item, IoParameters query) {
-        T parameter = composedService.getParameter(item, query);
-        if (parameter == null) {
-            throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
-        }
-        return parameter;
+    public boolean exists(String id) {
+        return composedService.exists(id);
     }
 
     @Override

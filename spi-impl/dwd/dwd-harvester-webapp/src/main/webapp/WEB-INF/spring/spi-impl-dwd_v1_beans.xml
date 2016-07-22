@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <mvc:annotation-driven />
+    <ctx:annotation-config />
+
+    <bean id="serviceParameterService" class="org.n52.series.dwd.srv.ServiceOutputAdapter">
+    	<constructor-arg index="0" ref="serviceInfo" />
+    </bean>
+
+	<bean id="procedureParameterService" class="org.n52.series.dwd.srv.ProcedureOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="offeringParameterService" class="org.n52.series.dwd.srv.OfferingOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="phenomenonParameterService" class="org.n52.series.dwd.srv.PhenomenonOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="categoryParameterService" class="org.n52.series.dwd.srv.CategoryOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="featureParameterService" class="org.n52.series.dwd.srv.FeatureOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="seriesService" name="seriestDataService" class="org.n52.series.dwd.srv.DatasetOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="platformParameterService" class="org.n52.series.dwd.srv.PlatformOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+    <bean id="geometryParameterService" class="org.n52.series.dwd.srv.GeometryOutputAdapter">
+        <constructor-arg index="0" ref="alertStore" />
+        <constructor-arg index="1" ref="serviceInfo" />
+    </bean>
+
+</beans>

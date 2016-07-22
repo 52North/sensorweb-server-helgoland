@@ -28,8 +28,9 @@
  */
 package org.n52.io.geojson;
 
-import com.vividsolutions.jts.geom.Geometry;
 import java.util.Map;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc

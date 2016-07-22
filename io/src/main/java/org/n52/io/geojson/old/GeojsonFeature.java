@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class GeojsonFeature extends GeojsonObject {
 
     public static <T extends GeojsonFeature> Comparator<T> defaultComparator() {

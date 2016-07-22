@@ -33,36 +33,47 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
-import org.n52.io.Utils;
+import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.v1.ext.DatasetType;
 
-public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters> extends ParameterOutput {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    private String uom;
+/**
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ * @deprecated since 2.0.0. use {@link MeasurementDatasetOutput} instead.
+ */
+@Deprecated
+public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
-    private ReferenceValueOutput[] referenceValues;
-
-    private TimeseriesValue firstValue;
-
-    private TimeseriesValue lastValue;
-
-    private T parameters;
-
-    // TODO add as extra
     @Deprecated
     private StyleProperties renderingHints;
 
-    // TODO add as extra
     @Deprecated
     private StatusInterval[] statusIntervals;
 
+    private StationOutput station;
+
     private Set<String> rawFormats;
 
-    public String getUom() {
-        return uom;
+    @Override
+    @JsonIgnore
+    public String getDatasetType() {
+        return super.getDatasetType();
     }
 
-    public void setUom(String uom) {
-        this.uom = uom;
+    @Override
+    public String getId() {
+        return DatasetType.extractId(super.getId());
+    }
+
+    public StationOutput getStation() {
+        return station;
+    }
+
+    public void setStation(StationOutput station) {
+        this.station = station;
     }
 
     @Override
@@ -77,7 +88,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
     public void addRawFormat(String format) {
         if (format != null && !format.isEmpty()) {
             if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
+                rawFormats = new HashSet<>();
             }
             rawFormats.add(format);
         }
@@ -87,7 +98,7 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
     public void setRawFormats(Collection<String> formats) {
         if (formats != null && !formats.isEmpty()) {
             if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
+                rawFormats = new HashSet<>();
             } else {
                 rawFormats.clear();
             }
@@ -95,60 +106,110 @@ public abstract class TimeseriesMetadataOutput<T extends CommonSeriesParameters>
         }
     }
 
-    public ReferenceValueOutput[] getReferenceValues() {
-        return Utils.copy(referenceValues);
-    }
-
-    public void setReferenceValues(ReferenceValueOutput[] referenceValues) {
-        this.referenceValues = Utils.copy(referenceValues);
-    }
-
-    public TimeseriesValue getFirstValue() {
-        return firstValue;
-    }
-
-    public void setFirstValue(TimeseriesValue firstValue) {
-        this.firstValue = firstValue;
-    }
-
-    public TimeseriesValue getLastValue() {
-        return lastValue;
-    }
-
-    public void setLastValue(TimeseriesValue lastValue) {
-        this.lastValue = lastValue;
-    }
-
-    public T getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(T seriesOutput) {
-        this.parameters = seriesOutput;
-    }
-
-    // TODO add as extra
     @Deprecated
     public StyleProperties getRenderingHints() {
         return this.renderingHints;
     }
 
-    // TODO add as extra
     @Deprecated
     public void setRenderingHints(StyleProperties renderingHints) {
         this.renderingHints = renderingHints;
     }
 
-    // TODO add as extra
     @Deprecated
     public StatusInterval[] getStatusIntervals() {
         return statusIntervals;
     }
 
-    // TODO add as extra
     @Deprecated
     public void setStatusIntervals(StatusInterval[] statusIntervals) {
         this.statusIntervals = statusIntervals;
     }
 
+    @Override
+    public SeriesParameters getSeriesParameters() {
+        return new AdaptedSeriesParameters(super.getSeriesParameters());
+    }
+
+    private class AdaptedSeriesParameters extends SeriesParameters {
+
+        private final SeriesParameters parameters;
+
+        public AdaptedSeriesParameters(SeriesParameters parameters) {
+            this.parameters = parameters == null
+                    ? new SeriesParameters()
+                    : parameters;
+        }
+
+        @Override
+        public ParameterOutput getPlatform() {
+            return TimeseriesMetadataOutput.this.getStation();
+        }
+
+        @Override
+        public void setPhenomenon(ParameterOutput phenomenon) {
+            parameters.setPhenomenon(phenomenon);
+        }
+
+        @Override
+        public void setProcedure(ParameterOutput procedure) {
+            parameters.setProcedure(procedure);
+        }
+
+        @Override
+        public void setCategory(ParameterOutput category) {
+            parameters.setCategory(category);
+        }
+
+        @Override
+        public void setOffering(ParameterOutput offering) {
+            parameters.setOffering(offering);
+        }
+
+        @Override
+        public void setFeature(ParameterOutput feature) {
+            parameters.setFeature(feature);
+        }
+
+        @Override
+        public void setService(ServiceOutput service) {
+            parameters.setService(service);
+        }
+
+        @Override
+        public void setPlatform(ParameterOutput platform) {
+            parameters.setPlatform(platform);
+        }
+
+        @Override
+        public ParameterOutput getPhenomenon() {
+            return parameters.getPhenomenon();
+        }
+
+        @Override
+        public ParameterOutput getProcedure() {
+            return parameters.getProcedure();
+        }
+
+        @Override
+        public ParameterOutput getCategory() {
+            return parameters.getCategory();
+        }
+
+        @Override
+        public ParameterOutput getOffering() {
+            return parameters.getOffering();
+        }
+
+        @Override
+        public ParameterOutput getFeature() {
+            return parameters.getFeature();
+        }
+
+        @Override
+        public ParameterOutput getService() {
+            return parameters.getService();
+        }
+
+    }
 }

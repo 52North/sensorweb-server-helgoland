@@ -28,24 +28,66 @@
  */
 package org.n52.io;
 
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 
-import org.n52.io.format.TvpDataCollection;
+import org.apache.commons.codec.binary.Base64;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 
-public interface IoHandler {
+// TODO actually this interface describes an prepares and writes an output only
+// TODO consider a plain JSON Writer to get rid of ModelAndView in controllers
+public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
+
+    protected final I18N i18n;
+
+    private final IoProcessChain<T> processChain;
+
+    private final RequestSimpleParameterSet request;
+
+    public IoHandler(RequestSimpleParameterSet request, IoProcessChain<T> processChain) {
+        this.processChain = processChain;
+        this.request = request;
+        i18n = request.containsParameter(Parameters.LOCALE)
+                ? getMessageLocalizer(request.getLocale())
+                : getDefaultLocalizer();
+    }
 
     /**
-     * @param data the input data collection to create an output for.
-     * @throws IoParseException if ouput generation fails.
-     */
-    public void generateOutput(TvpDataCollection data) throws IoParseException;
-
-    /**
-     * Encodes and writes previously generated output to the given stream. After
-     * handling the stream gets flushed and closed.
+     * Encodes and writes previously generated output to the given stream.
      *
+     * @param data the input data collection to create an output for.
      * @param stream the stream to write on the generated ouput.
      * @throws IoParseException if writing output to stream fails.
      */
-    public void encodeAndWriteTo(OutputStream stream) throws IoParseException;
+    protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoParseException;
+
+    public void writeBinary(OutputStream outputStream) throws IoHandlerException {
+        try {
+            if (request.isBase64()) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                encodeAndWriteTo(processChain.getData(), baos);
+                byte[] data = baos.toByteArray();
+                byte[] encode = Base64.encodeBase64(data);
+                outputStream.write(encode);
+            }
+            else {
+                encodeAndWriteTo(processChain.getData(), outputStream);
+            }
+        }
+        catch (IOException e) {
+            throw new IoHandlerException("Error handling output stream.", e);
+        }
+        catch (IoParseException e) {
+            throw new IoHandlerException("Could not write binary to stream.", e);
+        }
+    }
+
 }

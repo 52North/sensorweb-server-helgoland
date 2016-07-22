@@ -15,10 +15,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>io</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>spi</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -39,10 +35,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -60,6 +52,10 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
+        <!--        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>

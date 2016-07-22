@@ -28,9 +28,11 @@
  */
 package org.n52.web.ctrl;
 
+import static org.n52.io.request.QueryParameters.createFromQuery;
+import static org.n52.web.common.Stopwatch.startStopwatch;
+
 import java.io.IOException;
 import java.io.InputStream;
-import org.n52.web.common.Stopwatch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,52 +40,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
-import static org.n52.web.common.Stopwatch.startStopwatch;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import org.n52.io.response.ParameterOutput;
-import org.n52.web.exception.ResourceNotFoundException;
-import org.n52.sensorweb.spi.LocaleAwareSortService;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.ServiceParameterService;
-import org.n52.web.exception.WebExceptionAdapter;
-import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.v1.data.RawFormats;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.extension.MetadataExtension;
+import org.n52.series.spi.srv.LocaleAwareSortService;
+import org.n52.series.spi.srv.ParameterService;
+import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
+import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(produces = {"application/json"})
-public abstract class ParameterController extends BaseController {
+public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
-    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<>();
+    private List<MetadataExtension<T>> metadataExtensions = new ArrayList<>();
 
-    private ServiceParameterService serviceParameterService;
+    private ParameterService<T> parameterService;
 
-    private ParameterService<ParameterOutput> parameterService;
-
-    @RequestMapping(value = "/{item}", method = GET, params = {RawFormats.RAW_FORMAT})
-    public void getRawData(HttpServletResponse response,
-            @PathVariable("item") String id,
-            @RequestParam MultiValueMap<String, String> query) {
+    @Override
+    public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
         }
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
+
+        IoParameters queryMap = createFromQuery(query);
+        LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
+
         try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
@@ -94,14 +87,15 @@ public abstract class ParameterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/{item}/extras", method = GET)
-    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
+    @Override
+    public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
+
         IoParameters queryMap = createFromQuery(query);
+        LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, queryMap);
 
         Map<String, Object> extras = new HashMap<>();
-        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
-            ParameterOutput from = parameterService.getParameter(resourceId, queryMap);
+        for (MetadataExtension<T> extension : metadataExtensions) {
+            T from = parameterService.getParameter(resourceId, queryMap);
             final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if (!overridableKeys.isEmpty()) {
@@ -120,78 +114,71 @@ public abstract class ParameterController extends BaseController {
         return overridableKeys;
     }
 
-    @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
+    @Override
+    public ModelAndView getCollection(MultiValueMap<String, String> query) {
+
         IoParameters queryMap = createFromQuery(query);
+        LOGGER.debug("getCollection() with query '{}'", queryMap);
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
-            OutputCollection<ParameterOutput> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-
-            // TODO add paging
             return createModelAndView(result);
         } else {
-            OutputCollection<ParameterOutput> results = parameterService.getCondensedParameters(queryMap);
-
-            // TODO add paging
+            OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
             return createModelAndView(results);
         }
     }
 
-    protected ModelAndView createModelAndView(OutputCollection<?> items) {
-        return new ModelAndView().addObject(items);
-    }
+    @Override
+    public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
 
-    @RequestMapping(value = "/{item}", method = GET)
-    public ModelAndView getItem(@PathVariable("item") String id,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
-        ParameterOutput parameter = addExtensionInfos(parameterService.getParameter(id, queryMap));
+        LOGGER.debug("getItem() with id '{}' and query '{}'", id, queryMap);
 
-        if (parameter == null) {
+        T item = parameterService.getParameter(id, queryMap);
+
+        if (item == null) {
             throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
         }
 
+        T parameter = addExtensionInfos(item);
         return new ModelAndView().addObject(parameter);
     }
 
-    protected OutputCollection<ParameterOutput> addExtensionInfos(OutputCollection<ParameterOutput> toBeProcessed) {
-        for (ParameterOutput parameterOutput : toBeProcessed) {
+    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed) {
+        for (T parameterOutput : toBeProcessed) {
             addExtensionInfos(parameterOutput);
         }
         return toBeProcessed;
     }
 
-    protected ParameterOutput addExtensionInfos(ParameterOutput output) {
-        for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
+    protected T addExtensionInfos(T output) {
+        for (MetadataExtension<T> extension : metadataExtensions) {
             extension.addExtraMetadataFieldNames(output);
         }
         return output;
     }
 
-    public ServiceParameterService getServiceParameterService() {
-        return serviceParameterService;
+    protected ModelAndView createModelAndView(OutputCollection<T> items) {
+        return new ModelAndView().addObject(items.getItems());
     }
 
-    public void setServiceParameterService(ServiceParameterService serviceParameterService) {
-        this.serviceParameterService = serviceParameterService;
-    }
-
-    public ParameterService<ParameterOutput> getParameterService() {
+    public ParameterService<T> getParameterService() {
         return parameterService;
     }
 
-    public void setParameterService(ParameterService<ParameterOutput> parameterService) {
-        ParameterService<ParameterOutput> service = new WebExceptionAdapter<>(parameterService);
+    public void setParameterService(ParameterService<T> parameterService) {
+        ParameterService<T> service = new WebExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);
     }
 
-    public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {
+    public List<MetadataExtension<T>> getMetadataExtensions() {
         return metadataExtensions;
     }
 
-    public void setMetadataExtensions(List<MetadataExtension<ParameterOutput>> metadataExtensions) {
+    public void setMetadataExtensions(List<MetadataExtension<T>> metadataExtensions) {
         this.metadataExtensions = metadataExtensions;
     }
 }

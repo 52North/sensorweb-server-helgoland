@@ -28,18 +28,21 @@
  */
 package org.n52.io.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
+import org.n52.io.response.v1.ext.DatasetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class RequestParameterSet {
 
@@ -47,7 +50,6 @@ public abstract class RequestParameterSet {
 
     private final Map<String, JsonNode> parameters;
 
-    // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
     protected RequestParameterSet() {
         parameters = new HashMap<>();
         parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
@@ -134,14 +136,14 @@ public abstract class RequestParameterSet {
      * @return A language code to determine the requested locale. "en" is the
      * default.
      */
-    public String getLanguage() {
+    public String getLocale() {
         return getAsString("language");
     }
 
     /**
      * @param language A language code to determine the requested locale.
      */
-    public void setLanguage(String language) {
+    public void setLocale(String language) {
         language = !(language == null || language.isEmpty())
                 ? language
                 : "en";
@@ -163,6 +165,12 @@ public abstract class RequestParameterSet {
 
     public final Object getParameter(String parameter) {
         return parameters.get(parameter);
+    }
+
+    public void removeParameter(String parameter) {
+        if (parameter != null && !parameter.isEmpty()) {
+            parameters.remove(parameter);
+        }
     }
 
     public final void setParameters(Map<String, JsonNode> parameters) {
@@ -240,6 +248,18 @@ public abstract class RequestParameterSet {
                 : defaultValue;
     }
 
-    public abstract String[] getTimeseries();
+    public abstract String[] getSeriesIds();
+
+    public String getDatasetTypeFromFirst() {
+        String[] seriesIds = getSeriesIds();
+        return seriesIds.length > 0
+                ? DatasetType.extractType(seriesIds[0])
+                : "measurement"; // default
+    }
+
+    @Override
+    public String toString() {
+        return "RequestParameterSet{" + "parameters=" + parameters + '}';
+    }
 
 }

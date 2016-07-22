@@ -29,104 +29,112 @@
 package org.n52.io;
 
 import java.net.URI;
+import java.util.Set;
+
 import org.n52.io.request.IoParameters;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-import static org.n52.io.MimeType.TEXT_CSV;
-import org.n52.io.csv.CsvIoHandler;
-import org.n52.io.img.MultipleChartsRenderer;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.report.PDFReportGenerator;
-import org.n52.io.report.ReportGenerator;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.ParameterService;
 
-public final class IoFactory {
+public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> {
 
-    private MimeType mimeType = IMAGE_PNG;
+    private DataService<D> dataService;
 
-    private final IoParameters config;
+    private ParameterService<DS> datasetService;
 
-    private URI servletContextRoot;
+    private RequestSimpleParameterSet simpleRequest;
 
-    private IoFactory(IoParameters parameters) {
-        this.config = parameters;
-    }
+    private RequestStyledParameterSet styledRequest;
 
-    /**
-     * @return An {@link IoFactory} instance with default values set. Configure
-     * factory by passing an {@link IoParameters} instance. After creating the
-     * factory an apropriately configured {@link IoHandler} is returned when
-     * calling {@link #createIOHandler(RenderingContext)}.
-     */
-    public static IoFactory create() {
-        return createWith(null);
-    }
+    private URI basePath;
 
-    public static IoFactory createWith(IoParameters parameters) {
-        if (parameters == null) {
-            parameters = IoParameters.createDefaults();
-        }
-        return new IoFactory(parameters);
-    }
-
-    /**
-     * @param mimeType the MIME-Type of the image to be rendered (default is
-     * {@link MimeType#IMAGE_PNG}).
-     * @return this instance for parameter chaining.
-     */
-    public IoFactory forMimeType(MimeType mimeType) {
-        this.mimeType = mimeType;
+    public IoFactory<D, DS, V> withSimpleRequest(RequestSimpleParameterSet request) {
+        this.simpleRequest = request;
         return this;
     }
 
-    public IoFactory withServletContextRoot(URI servletContextRoot) {
-        this.servletContextRoot = servletContextRoot;
+    public IoFactory<D, DS, V> withStyledRequest(RequestStyledParameterSet request) {
+        this.styledRequest = request;
         return this;
     }
 
-    public IoHandler createIOHandler(RenderingContext context) {
+    public IoFactory<D, DS, V> withServletContextRoot(URI servletContextRoot) {
+        this.basePath = servletContextRoot;
+        return this;
+    }
 
-        if (mimeType == APPLICATION_PDF) {
-            MultipleChartsRenderer imgRenderer = createMultiChartRenderer(context);
-            PDFReportGenerator reportGenerator = new PDFReportGenerator(imgRenderer, config.getLocale());
-            reportGenerator.setBaseURI(servletContextRoot);
+    public IoFactory<D, DS, V> withDataService(DataService<D> dataService) {
+        this.dataService = dataService;
+        return this;
+    }
 
-            // TODO
-            return reportGenerator;
-        } else if (mimeType == IMAGE_PNG) {
+    public IoFactory<D, DS, V> withDatasetService(ParameterService<DS> datasetService) {
+        this.datasetService = datasetService;
+        return this;
+    }
 
-            /*
-             * Depending on the parameters set, we can choose at this point which ChartRenderer might be the
-             * best for doing the work.
-             *
-             * However, for now we only support a Default one ...
-             */
-            // TODO create an OverviewChartRenderer
-            MultipleChartsRenderer chartRenderer = createMultiChartRenderer(context);
+    public IoFactory<D, DS, V> withBasePath(URI basePath) {
+        this.basePath = basePath;
+        return this;
+    }
 
-            // TODO do further settings?!
-            return chartRenderer;
-        } else if (mimeType == TEXT_CSV) {
-            CsvIoHandler handler = new CsvIoHandler(context, config.getLocale());
-            handler.setTokenSeparator(config.getOther("tokenSeparator"));
-
-            boolean byteOderMark = Boolean.parseBoolean(config.getOther("bom"));
-            boolean zipOutput = Boolean.parseBoolean(config.getOther("zip"));
-            handler.setIncludeByteOrderMark(byteOderMark);
-            handler.setZipOutput(zipOutput);
-            return handler;
-        }
-
-        String msg = "The requested media type '" + mimeType.getMimeType() + "' is not supported.";
+    public IoHandler<D> createHandler(String outputMimeType) {
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
     }
 
-    private MultipleChartsRenderer createMultiChartRenderer(RenderingContext context) {
-        MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, config.getLocale());
-        chartRenderer.setDrawLegend(config.isLegend());
-        chartRenderer.setShowGrid(config.isGrid());
-        chartRenderer.setMimeType(mimeType);
-        return chartRenderer;
+    public IoProcessChain<D> createProcessChain() {
+        return new IoProcessChain<D>() {
+            @Override
+            public DataCollection<D> getData() {
+                return getDataService().getData(getSimpleRequest());
+            }
+            @Override
+            public DataCollection<?> getProcessedData() {
+                return getData(); // empty chain
+            }
+        };
+    }
+
+    public abstract boolean isAbleToCreateHandlerFor(String outputMimeType);
+
+    public abstract Set<String> getSupportedMimeTypes();
+
+    protected IoStyleContext createContext() {
+        if (datasetService == null || styledRequest == null) {
+            return IoStyleContext.createEmpty();
+        }
+        OutputCollection<? extends DatasetOutput<V, ?>> metadatas = getMetadatas(styledRequest.getSeriesIds());
+        return IoStyleContext.createContextWith(styledRequest, metadatas.getItems());
+    }
+
+    private OutputCollection<? extends DatasetOutput<V, ?>> getMetadatas(String[] seriesIds) {
+        return datasetService.getParameters(seriesIds, getParameters());
+    }
+
+    protected IoParameters getParameters() {
+        return simpleRequest != null
+                ? IoParameters.createFromQuery(simpleRequest)
+                : IoParameters.createFromQuery(styledRequest);
+    }
+
+    protected DataService<D> getDataService() {
+        return dataService;
+    }
+
+    public RequestSimpleParameterSet getSimpleRequest() {
+        return simpleRequest;
+    }
+
+    public URI getBasePath() {
+        return basePath;
     }
 
 }

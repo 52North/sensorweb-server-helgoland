@@ -28,8 +28,9 @@
  */
 package org.n52.io;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.n52.io.IoStyleContext.createContextForSingleSeries;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,30 +38,32 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.io.format.TvpDataCollection;
-import org.n52.io.img.ChartDimension;
-import org.n52.io.img.RenderingContext;
-import org.n52.io.request.IoParameters;
-import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.request.StyleProperties;
-import org.n52.io.response.TimeseriesMetadataOutput;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleTimeseries;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.task.ScheduledJob;
-import static org.n52.sensorweb.spi.GeneralizingTimeseriesDataService.composeDataService;
-import org.n52.sensorweb.spi.ParameterService;
-import org.n52.sensorweb.spi.SeriesDataService;
+import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.quartz.InterruptableJob;
@@ -75,6 +78,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
@@ -93,7 +99,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Autowired
     @Qualifier("timeseriesService")
-    private SeriesDataService timeseriesDataService;
+    private DataService<MeasurementData> timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
 
@@ -141,7 +147,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
-            IoParameters query = IoParameters.createFromQuery(parameters);
+            IoParameters query = QueryParameters.createFromQuery(parameters);
             OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
                 String timeseriesId = metadata.getId();
@@ -178,31 +184,39 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException {
+    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException, DatasetFactoryException, URISyntaxException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-        RenderingContext context = createContextForSingleTimeseries(metadata, config);
+        IoStyleContext context = createContextForSingleSeries(metadata, config);
         int width = context.getChartStyleDefinitions().getWidth();
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
-        RequestSimpleParameterSet parameters = createForSingleTimeseries(timeseriesId, config);
-        IoHandler renderer = IoFactory
-                .createWith(config)
-                .createIOHandler(context);
+
+        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
+
+
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(timeseriesId, interval, chartQualifier);
-        renderChartFile(renderer, parameters, fos);
-    }
 
-    private void renderChartFile(IoHandler renderer, RequestSimpleParameterSet parameters, FileOutputStream fos) {
         try (FileOutputStream out = fos;) {
-            renderer.generateOutput(getTimeseriesData(parameters));
-            renderer.encodeAndWriteTo(out);
-        } catch (IoParseException | IOException e) {
+            createIoFactory(parameters)
+                .createHandler("png")
+                .writeBinary(out);
+            fos.flush();
+        } catch (IoHandlerException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }
+    }
+
+    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+            throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+        return new DefaultIoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService);
     }
 
     @Override
@@ -232,11 +246,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public SeriesDataService getTimeseriesDataService() {
+    public DataService<MeasurementData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(SeriesDataService timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<MeasurementData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
@@ -339,14 +353,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             LOGGER.warn("Invalid rendering style.", e);
         }
 
-        return IoParameters.createFromQuery(configuration);
+        return QueryParameters.createFromQuery(configuration);
     }
 
-    private TvpDataCollection getTimeseriesData(RequestSimpleParameterSet parameters) {
-        //return timeseriesDataService.getSeriesData(parameters);
-        return parameters.isGeneralize()
-                ? composeDataService(timeseriesDataService).getSeriesData(parameters)
-                : timeseriesDataService.getSeriesData(parameters);
-    }
 
 }

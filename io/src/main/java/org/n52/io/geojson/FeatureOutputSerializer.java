@@ -28,11 +28,6 @@
  */
 package org.n52.io.geojson;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.vividsolutions.jts.geom.Geometry;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,12 +35,16 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.vividsolutions.jts.geom.Geometry;
+
 public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureOutputSerializer.class);
 
-    // TODO transform to requested crs
-    // configure encoder
     @Override
     public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
         if (value.isSetGeometry()) {
@@ -59,7 +58,6 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
         gen.writeStartObject();
         gen.writeStringField("type", "Feature");
         gen.writeStringField("id", value.getId());
-//        gen.writeObjectField("properties", encodeProperties(value));
         gen.writeObjectField("properties", value.getProperties());
         gen.writeObjectField("geometry", encodeGeometry(value));
         gen.writeEndObject();
@@ -67,7 +65,6 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
 
     private void writeGeometryLessFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-//        writeMap(encodeProperties(value), gen);
         writeMap(value.getProperties(), gen);
         gen.writeEndObject();
     }
@@ -78,17 +75,6 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
         }
     }
 
-//    private Map<String, Object> encodeProperties(GeoJSONFeature value) {
-//        Map<String, Object> properties = new HashMap<>();
-//        properties.put("id", value.getId());
-//        properties.put("label", value.getLabel());
-//        properties.put("type", value.getFeatureType());
-//        if (value.isSetDomainId()) {
-//            properties.put("domainId", value.getDomainId());
-//        }
-//        properties.putAll(value.getProperties());
-//        return properties;
-//    }
     private Object encodeGeometry(GeoJSONFeature value) {
         try {
             final GeoJSONEncoder enc = new GeoJSONEncoder();

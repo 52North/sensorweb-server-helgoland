@@ -33,6 +33,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Deprecated
 public class GeojsonCrs extends GeojsonObject {
 
     private static final long serialVersionUID = 5964748458745655509L;

@@ -28,13 +28,15 @@
  */
 package org.n52.io.task;
 
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import static org.quartz.TriggerBuilder.newTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
