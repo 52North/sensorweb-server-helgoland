@@ -36,8 +36,6 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
 
     private int numberOfDecimals;
 
-    private UnitEntity unit;
-
     private Set<MeasurementDatasetEntity> referenceValues = new HashSet<>();
 
     public Set<MeasurementDatasetEntity> getReferenceValues() {
@@ -56,29 +54,9 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
         this.numberOfDecimals = numberOfDecimals;
     }
 
-    public UnitEntity getUnit() {
-        return unit;
-    }
-
-    public void setUnit(UnitEntity unit) {
-        this.unit = unit;
-    }
-
-    public boolean hasUnit() {
-        return unit != null;
-    }
-
-    public String getUnitI18nName(String locale) {
-        String name = null;
-        if (unit != null) {
-            name = unit.getNameI18n(locale);
-        }
-        return name;
-    }
-
     @Override
     public MeasurementDataEntity getFirstValue() {
-        final MeasurementDataEntity firstValue = super.getFirstValue();
+        final MeasurementDataEntity firstValue = getLastValue();
         if (firstValue != null) {
             Date when = firstValue.getTimestamp();
             Double value = firstValue.getValue();
@@ -91,7 +69,7 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
 
     @Override
     public MeasurementDataEntity getLastValue() {
-        final MeasurementDataEntity lastValue = super.getLastValue();
+        final MeasurementDataEntity lastValue = getFirstValue();
         if (lastValue != null) {
             Date when = lastValue.getTimestamp();
             Double value = lastValue.getValue();

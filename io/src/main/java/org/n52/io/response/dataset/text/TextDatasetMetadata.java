@@ -26,60 +26,28 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.text;
 
-import org.n52.io.response.v1.ext.PlatformType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.response.dataset.DatasetMetadata;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- * @since 2.0.0
- */
-public class PlatformEntity extends DescribableEntity {
+public class TextDatasetMetadata implements DatasetMetadata<Map<String, TextData>>, Serializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformEntity.class);
+    private static final long serialVersionUID = -5666064665815076013L;
 
-    public static final String COLUMN_PKID = "pkid";
-    public static final String INSITU = "insitu";
-    public static final String MOBILE = "mobile";
+    private Map<String, TextData> referenceValues = new HashMap<>();
 
-    private boolean mobile = false;
-
-    private boolean insitu = true;
-
-    private Geometry geometry;
-
-    public PlatformType getPlatformType() {
-        return PlatformType.toInstance(mobile, insitu);
+    @Override
+    public Map<String, TextData> getReferenceValues() {
+        return referenceValues;
     }
 
-    public boolean isMobile() {
-        return mobile;
-    }
-
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
-
-    public boolean isInsitu() {
-        return insitu;
-    }
-
-    public void setInsitu(boolean insitu) {
-        this.insitu = insitu;
-    }
-
-    public Geometry getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
+    @Override
+    public void setReferenceValues(Map<String, TextData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

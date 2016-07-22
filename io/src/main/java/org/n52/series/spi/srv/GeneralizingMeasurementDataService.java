@@ -76,8 +76,8 @@ public class GeneralizingMeasurementDataService implements DataService<Measureme
         for (String timeseriesId : ungeneralizedData.getAllSeries().keySet()) {
             MeasurementData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
             MeasurementData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
-            int originalAmount = originalTimeseries.getValues().length;
-            int generalizedAmount = generalizedTimeseries.getValues().length;
+            int originalAmount = originalTimeseries.getValues().size();
+            int generalizedAmount = generalizedTimeseries.getValues().size();
             LOGGER.debug("Generalized timeseries: {} (#{} --> #{}).", timeseriesId, originalAmount, generalizedAmount);
         }
     }

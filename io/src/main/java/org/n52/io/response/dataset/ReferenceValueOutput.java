@@ -29,7 +29,7 @@
 
 package org.n52.io.response.dataset;
 
-public interface ReferenceValueOutput<T extends Data> {
+public interface ReferenceValueOutput<T extends AbstractValue<?>> {
 
     String getReferenceValueId();
 

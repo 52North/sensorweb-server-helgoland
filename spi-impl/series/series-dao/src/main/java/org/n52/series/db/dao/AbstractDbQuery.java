@@ -186,7 +186,7 @@ public abstract class AbstractDbQuery {
                  Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
                  Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
     }
-    
+
 
     private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
         boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();

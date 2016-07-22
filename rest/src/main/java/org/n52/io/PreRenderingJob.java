@@ -38,6 +38,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,8 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -180,7 +184,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException, DatasetFactoryException {
+    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException, DatasetFactoryException, URISyntaxException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
@@ -191,22 +195,28 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         context.setDimensions(new ChartDimension(width, height));
 
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
-                .create("measurement")
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .withSimpleRequest(parameters)
-                .createHandler("png");
+
 
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(timeseriesId, interval, chartQualifier);
 
         try (FileOutputStream out = fos;) {
-            ioHandler.writeBinary(out);
+            createIoFactory(parameters)
+                .createHandler("png")
+                .writeBinary(out);
             fos.flush();
         } catch (IoHandlerException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }
+    }
+
+    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+            throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+        return new DefaultIoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>()
+                .create("measurement")
+                .withSimpleRequest(parameters)
+                .withDataService(timeseriesDataService)
+                .withDatasetService(timeseriesMetadataService);
     }
 
     @Override

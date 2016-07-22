@@ -26,12 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.measurement;
 
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
 import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
@@ -43,31 +49,37 @@ import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.spi.srv.DataService;
 
-public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
+public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
+
+    private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(new MimeType[] {
+                                                                                            MimeType.TEXT_CSV,
+                                                                                            MimeType.IMAGE_PNG,
+                                                                                            MimeType.APPLICATION_ZIP,
+                                                                                            MimeType.APPLICATION_PDF
+    });
 
     @Override
-    public IoProcessChain createProcessChain() {
-        return new IoProcessChain() {
+    public IoProcessChain<MeasurementData> createProcessChain() {
+        return new IoProcessChain<MeasurementData>() {
             @Override
-            public DataCollection getData() {
+            public DataCollection<MeasurementData> getData() {
                 final boolean generalize = getParameters().isGeneralize();
                 DataService<MeasurementData> dataService = generalize
-                        ? composeDataService(getDataService())
-                        : getDataService();
+                    ? composeDataService(getDataService())
+                    : getDataService();
                 return dataService.getData(getSimpleRequest());
             }
+
             @Override
-            public DataCollection<? extends Data> getProcessedData() {
+            public DataCollection<?> getProcessedData() {
                 String format = getParameters().getFormat();
-                return FormatterFactory
-                        .createFormatterFactory(format)
-                        .create()
-                        .format(getData());
+                return FormatterFactory.createFormatterFactory(format).create().format(getData());
             }
         };
     }
@@ -78,10 +90,17 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
                 && supportsMimeType(MimeType.toInstance(outputMimeType));
     }
 
+    @Override
+    public Set<String> getSupportedMimeTypes() {
+        HashSet<String> mimeTypes = new HashSet<>();
+        for (MimeType supportedMimeType : SUPPORTED_MIMETYPES) {
+            mimeTypes.add(supportedMimeType.getMimeType());
+        }
+        return mimeTypes;
+    }
+
     private static boolean supportsMimeType(MimeType mimeType) {
-        return mimeType == MimeType.TEXT_CSV
-                || mimeType == MimeType.IMAGE_PNG
-                || mimeType == mimeType.APPLICATION_PDF;
+        return SUPPORTED_MIMETYPES.contains(mimeType);
     }
 
     @Override
@@ -90,15 +109,21 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
         MimeType mimeType = MimeType.toInstance(outputMimeType);
         if (mimeType == IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        } else if (mimeType == APPLICATION_PDF) {
+        }
+        else if (mimeType == APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                    getSimpleRequest(), createProcessChain(), imgRenderer);
+                                                                        getSimpleRequest(),
+                                                                        createProcessChain(),
+                                                                        imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
-        } else if (mimeType == TEXT_CSV) {
+        }
+        else if (mimeType == TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
-                    getSimpleRequest(), createProcessChain(), createContext());
+                                                                          getSimpleRequest(),
+                                                                          createProcessChain(),
+                                                                          createContext());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
@@ -115,7 +140,9 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
 
     private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                getSimpleRequest(), createProcessChain(), createContext());
+                                                                          getSimpleRequest(),
+                                                                          createProcessChain(),
+                                                                          createContext());
 
         chartRenderer.setDrawLegend(getParameters().isLegend());
         chartRenderer.setShowGrid(getParameters().isGrid());

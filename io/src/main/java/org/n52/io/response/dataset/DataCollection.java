@@ -31,18 +31,12 @@ package org.n52.io.response.dataset;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataCollection<T extends Data> {
+public class DataCollection<T> {
 
     /**
      * Associates series to a (custom client) id.
      */
     private Map<String, T> allSeries = new HashMap<>();
-
-    private Class<T> dataType;
-
-    public DataCollection() {
-        this.dataType = (Class<T>) Data.class;
-    }
 
     public void addAll(DataCollection<T> seriesCollection) {
         allSeries.putAll(seriesCollection.getAllSeries());

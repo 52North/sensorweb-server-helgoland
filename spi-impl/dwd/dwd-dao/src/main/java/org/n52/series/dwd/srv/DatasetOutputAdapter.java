@@ -36,6 +36,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
@@ -54,7 +55,7 @@ import org.n52.series.dwd.store.AlertStore;
 import org.n52.series.spi.srv.DataService;
 import org.n52.web.ctrl.UrlHelper;
 
-public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> implements DataService<Data> {
+public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> implements DataService<Data<? extends AbstractValue<?>>> {
 
     private final AlertStore store;
 
@@ -212,7 +213,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     @Override
-    public DataCollection<Data> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestSimpleParameterSet parameters) {
         return null;
     }
 

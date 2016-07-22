@@ -40,6 +40,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +101,10 @@ public abstract class ConfigTypedFactory<T> {
         return mappings.containsKey(type);
     }
 
+    public Set<String> getKnownTypes() {
+        return mappings.stringPropertyNames();
+    }
+
     public boolean hasCacheEntry(String type) {
         return cache.containsKey(type);
     }
@@ -147,6 +152,6 @@ public abstract class ConfigTypedFactory<T> {
         return instance; // override if needed
     }
 
-    protected abstract Class<T> getTargetType();
+    protected abstract Class<?> getTargetType();
 
 }

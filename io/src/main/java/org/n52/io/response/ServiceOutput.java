@@ -28,6 +28,14 @@
  */
 package org.n52.io.response;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ServiceOutput extends ParameterOutput {
 
     private String serviceUrl;
@@ -36,8 +44,12 @@ public class ServiceOutput extends ParameterOutput {
 
     private String type;
 
+    private Map<String, Object> features;
+
+    @Deprecated
     private ParameterCount quantities;
 
+    @Deprecated
     private Boolean supportsFirstLatest;
 
     public String getServiceUrl() {
@@ -64,22 +76,65 @@ public class ServiceOutput extends ParameterOutput {
         this.type = type;
     }
 
+    public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
+        addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
+    }
+
+    @JsonAnyGetter
+    public Map<String, Object> getFeatures() {
+        return features != null
+                ? Collections.unmodifiableMap(features)
+                : null;
+    }
+
+    public void setFeatures(Map<String, Object> features) {
+        this.features = features;
+    }
+
+    public void addFeature(String featureName, Object featureInfo) {
+        if (features == null) {
+            features = new HashMap<>();
+        }
+        features.put(featureName, featureInfo);
+    }
+
+    /**
+     * @return if service supports first and latest values
+     * @deprecated since 2.0.0, {@link #features} get serialized instead
+     */
+    @JsonIgnore
     public Boolean isSupportsFirstLatest() {
         return supportsFirstLatest;
     }
 
-    public void setSupportsFirstLatest(boolean supportsFirstLatest) {
+    public void setSupportsFirstLatest(Boolean supportsFirstLatest) {
+        addFeature("supportsFirstLatest", supportsFirstLatest);
         this.supportsFirstLatest = supportsFirstLatest;
     }
 
+    /**
+     * @return the parameter count
+     * @deprecated since 2.0.0, {@link #features} get serialized instead
+     */
+    @JsonIgnore
     public ParameterCount getQuantities() {
         return quantities;
     }
 
+    /**
+     * @param countedParameters
+     * @deprecated since 2.0.0, use {@link #addFeature(String, Object)}
+     */
+    @Deprecated
     public void setQuantities(ParameterCount countedParameters) {
+        addFeature("quantities", countedParameters);
         this.quantities = countedParameters;
     }
 
+    /**
+     * @deprecated since 2.0.0
+     */
+    @Deprecated
     public static class ParameterCount {
 
         private int amountOfferings;
@@ -198,4 +253,5 @@ public class ServiceOutput extends ParameterOutput {
         }
         return true;
     }
+
 }

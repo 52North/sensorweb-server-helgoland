@@ -75,7 +75,7 @@ public class FilterResolver {
         return !isSetPlatformTypeFilter() || getPlatformTypes().contains("all");
     }
 
-    private boolean isSetPlatformTypeFilter() {
+    public boolean isSetPlatformTypeFilter() {
         return !getPlatformTypes().isEmpty();
     }
 

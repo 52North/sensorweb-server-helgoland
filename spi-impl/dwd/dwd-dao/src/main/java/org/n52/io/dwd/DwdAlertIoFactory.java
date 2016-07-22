@@ -28,16 +28,26 @@
  */
 package org.n52.io.dwd;
 
+import java.util.Set;
+
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
 import org.n52.io.response.dataset.dwd.DwdAlertData;
+import org.n52.io.response.dataset.dwd.DwdAlertDatasetOutput;
+import org.n52.io.response.dataset.dwd.DwdAlertValue;
 
-public class DwdAlertIoFactory extends IoFactory<DwdAlertData>{
+public class DwdAlertIoFactory extends IoFactory<DwdAlertData, DwdAlertDatasetOutput, DwdAlertValue>{
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
         return MimeType.isKnownMimeType(outputMimeType);
+    }
+
+    @Override
+    public Set<String> getSupportedMimeTypes() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override

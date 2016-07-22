@@ -35,12 +35,13 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public class TimeseriesOutputAdapter <T extends ParameterOutput> extends ParameterService<TimeseriesMetadataOutput> implements DataService<Data> {
+public class TimeseriesOutputAdapter <T extends ParameterOutput> extends ParameterService<TimeseriesMetadataOutput> implements DataService<Data<? extends AbstractValue<?>>> {
 
     private OutputCollection<TimeseriesMetadataOutput> createOutputCollection() {
         return new OutputCollection<TimeseriesMetadataOutput>() {
@@ -77,7 +78,7 @@ public class TimeseriesOutputAdapter <T extends ParameterOutput> extends Paramet
     }
 
     @Override
-    public DataCollection<Data> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestSimpleParameterSet parameters) {
         return null;
     }
 

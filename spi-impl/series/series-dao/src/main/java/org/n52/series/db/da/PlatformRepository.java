@@ -33,13 +33,18 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.response.v1.ext.PlatformOutput;
 import org.n52.io.response.v1.ext.PlatformType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
@@ -48,7 +53,11 @@ import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc
@@ -57,8 +66,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class PlatformRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<PlatformOutput> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
+
     @Autowired
-    private DatasetRepository seriesRepository;
+    private DatasetRepository<Data> seriesRepository;
+
+    @Autowired
+    private DataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id) throws DataAccessException {
@@ -224,8 +238,48 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.PLATFORMS, result.getId())
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
-        result.setSeries(seriesRepository.getAllCondensed(query));
+
+        List<DatasetOutput> datasets = seriesRepository.getAllCondensed(query);
+        result.setSeries(datasets);
+
+        Geometry geometry = entity.getGeometry();
+        result.setGeometry(geometry == null
+                ? getLastSamplingGeometry(datasets, query, session)
+                : geometry);
         return result;
+    }
+
+    private Geometry getLastSamplingGeometry(List<DatasetOutput> datasets, DbQuery query, Session session) throws DataAccessException {
+        AbstractValue<?> currentLastValue = null;
+        for (DatasetOutput dataset : datasets) {
+            // XXX fix generics and inheritance of Data, AbstractValue, etc.
+            // https://trello.com/c/dMVa0fg9/78-refactor-data-abstractvalue
+            try {
+                String id = dataset.getId();
+                DataRepository dataRepository = factory.create(dataset.getDatasetType());
+                DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
+                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session);
+                currentLastValue = getLaterValue(currentLastValue, valueToCheck);
+            } catch (DatasetFactoryException e) {
+                LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());
+            }
+        }
+
+        return currentLastValue != null && currentLastValue.isSetGeometry()
+                ? currentLastValue.getGeometry()
+                : null;
+    }
+
+    private AbstractValue< ? > getLaterValue(AbstractValue< ? > currentLastValue, AbstractValue< ? > valueToCheck) {
+        if (currentLastValue == null) {
+            return valueToCheck;
+        }
+        if (valueToCheck == null) {
+            return currentLastValue;
+        }
+        return currentLastValue.getTimestamp() > valueToCheck.getTimestamp()
+                ? currentLastValue
+                : valueToCheck;
     }
 
     private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
@@ -252,6 +306,7 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
         result.setName(entity.getName());
         result.setTranslations(entity.getTranslations());
         result.setDescription(entity.getDescription());
+        result.setGeometry(entity.getGeometry());
         return result;
     }
 

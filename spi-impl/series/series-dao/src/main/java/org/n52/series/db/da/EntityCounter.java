@@ -46,6 +46,9 @@ public class EntityCounter {
     @Autowired
     private HibernateSessionStore sessionStore;
 
+    @Autowired
+    private DataRepositoryFactory dataRepository;
+
     public int countStations() throws DataAccessException {
         return countFeatures();
     }

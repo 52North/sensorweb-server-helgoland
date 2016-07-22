@@ -28,31 +28,16 @@
  */
 package org.n52.io.response.dataset.dwd;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class DwdAlertData extends Data {
+public class DwdAlertData extends Data<DwdAlertValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<DwdAlertValue> values = new ArrayList<>();
-
     private DwdAlertDataMetadata metadata;
-
-    public void addValues(DwdAlertValue... values) {
-        if (values != null && values.length > 0) {
-            this.values.addAll(Arrays.asList(values));
-        }
-    }
 
     /**
      * @param values the timestamp &lt;-&gt; value map.
@@ -73,22 +58,10 @@ public class DwdAlertData extends Data {
     }
 
     private void addNewValue(Long timestamp, DwdAlert value) {
-        values.add(new DwdAlertValue(timestamp, value));
+        addNewValue(new DwdAlertValue(timestamp, value));
     }
 
-    /**
-     * @return a sorted list of measurement values.
-     */
-    public DwdAlertValue[] getValues() {
-        Collections.sort(values);
-        return values.toArray(new DwdAlertValue[0]);
-    }
-
-    void setValues(DwdAlertValue[] values) {
-        this.values = Arrays.asList(values);
-    }
-
-    @JsonProperty("extra")
+    @Override
     public DwdAlertDataMetadata getMetadata() {
         return metadata;
     }
@@ -97,15 +70,5 @@ public class DwdAlertData extends Data {
         this.metadata = metadata;
     }
 
-    public long size() {
-        return values.size();
-    }
-
-    @JsonIgnore
-    public boolean hasReferenceValues() {
-        return metadata != null
-                && metadata.getReferenceValues() != null
-                && !metadata.getReferenceValues().isEmpty();
-    }
 
 }

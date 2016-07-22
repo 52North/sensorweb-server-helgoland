@@ -29,34 +29,53 @@
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
-
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.Geometry;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class Data implements Serializable {
+public abstract class Data<T extends AbstractValue<?>> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
-    private Geometry geometry;
+    private List<T> values = new ArrayList<>();
 
-    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
-    public Geometry getGeometry() {
-        return geometry;
+    public void addValues(T... values) {
+        if (values != null && values.length > 0) {
+            this.values.addAll(Arrays.asList(values));
+        }
     }
 
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
+    public void setValues(T[] values) {
+        this.values = Arrays.asList(values);
+    }
+
+    public void addNewValue(T value) {
+        values.add(value);
+    }
+
+    /**
+     * @return a sorted list of measurement values.
+     */
+    public List<T> getValues() {
+        return Collections.unmodifiableList(values);
+    }
+
+    public long size() {
+        return values.size();
     }
 
     @JsonIgnore
-    public boolean isSetGeometry() {
-        return geometry != null && !geometry.isEmpty();
+    public boolean hasReferenceValues() {
+        return getMetadata() != null
+                && getMetadata().getReferenceValues() != null;
     }
 
-    public abstract boolean hasReferenceValues();
+    @JsonProperty("extra")
+    public abstract DatasetMetadata<?> getMetadata();
 
-    public abstract DatasetMetadata getMetadata();
+
 }

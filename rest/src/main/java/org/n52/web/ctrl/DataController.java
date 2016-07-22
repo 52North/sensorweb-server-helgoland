@@ -44,7 +44,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,15 +57,14 @@ import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
-import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.io.v1.data.RawFormats;
@@ -78,6 +76,7 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,9 +91,12 @@ public class DataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
-    private DataService<? extends Data> dataService;
+    @Autowired
+    private DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> ioFactoryCreator;
 
-    private ParameterService<? extends DatasetOutput> datasetService;
+    private DataService<Data<AbstractValue<?>>> dataService;
+
+    private ParameterService<DatasetOutput<AbstractValue<?>, ?>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -104,11 +106,13 @@ public class DataController extends BaseController {
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
                                                 @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
+        LOGGER.debug("get data collection with parameter set: {}", parameters);
+
         checkForUnknownSeriesIds(parameters.getSeriesIds());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoProcessChain ioChain = createIoFactory(datasetType)
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
 
@@ -122,17 +126,19 @@ public class DataController extends BaseController {
                                       @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
+
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         checkForUnknownSeriesIds(seriesId);
 
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         String datasetType = DatasetType.extractType(seriesId);
-        IoProcessChain ioChain = createIoFactory(datasetType)
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
 
-        DataCollection<? extends Data> formattedDataCollection = ioChain.getProcessedData();
+        DataCollection<?> formattedDataCollection = ioChain.getProcessedData();
         final Map<String, ?> processed = formattedDataCollection.getAllSeries();
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
@@ -143,6 +149,8 @@ public class DataController extends BaseController {
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
         checkForUnknownSeriesIds(parameters.getSeriesIds());
+
+        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
     }
 
@@ -152,6 +160,7 @@ public class DataController extends BaseController {
                                  @RequestParam MultiValueMap<String, String> query) {
         checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("getSeriesCollection() with query: {}", map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         writeRawData(parameters, response);
     }
@@ -176,6 +185,7 @@ public class DataController extends BaseController {
                                           @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
         IoParameters map = createFromQuery(requestParameters);
+        LOGGER.debug("get data collection report with query: {}", map);
 //        parameters.setGeneralize(map.isGeneralize());
 //        parameters.setExpanded(map.isExpanded());
 
@@ -183,11 +193,11 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(requestParameters.getTimespan());
 
         final String datasetType = requestParameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        createIoFactory(datasetType)
                 .withSimpleRequest(createFromDesignedParameters(requestParameters))
                 .withStyledRequest(requestParameters)
-                .createHandler("application/pdf");
-        ioHandler.writeBinary(response.getOutputStream());
+                .createHandler("application/pdf")
+                .writeBinary(response.getOutputStream());
 
     }
 
@@ -197,6 +207,7 @@ public class DataController extends BaseController {
                                 @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -206,10 +217,10 @@ public class DataController extends BaseController {
 //        parameters.setExpanded(map.isExpanded());
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
-                .createHandler("application/pdf");
-        ioHandler.writeBinary(response.getOutputStream());
+                .createHandler("application/pdf")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"application/zip"}, method = GET)
@@ -217,8 +228,28 @@ public class DataController extends BaseController {
                                      @PathVariable String seriesId,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
                                              throws Exception {
-        query.put("zip", Arrays.asList(new String[] {Boolean.TRUE.toString()}));
-        getSeriesAsCsv(response, seriesId, query);
+//        IoParameters map = createFromQuery(query);
+//        LOGGER.debug("get data collection report with query: {}", map);
+//        getSeriesAsCsv(response, seriesId, query);
+
+        IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        checkForUnknownSeriesIds(seriesId);
+
+//        parameters.setGeneralize(map.isGeneralize());
+//        parameters.setExpanded(map.isExpanded());
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(APPLICATION_ZIP.toString());
+
+        final String datasetType = parameters.getDatasetTypeFromFirst();
+        createIoFactory(datasetType)
+                .withSimpleRequest(parameters)
+                .createHandler(APPLICATION_ZIP.toString())
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"text/csv"}, method = GET)
@@ -226,8 +257,8 @@ public class DataController extends BaseController {
                               @PathVariable String seriesId,
                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -245,10 +276,10 @@ public class DataController extends BaseController {
         }
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
-                .createHandler("text/csv");
-        ioHandler.writeBinary(response.getOutputStream());
+                .createHandler(TEXT_CSV.toString())
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/data", produces = {"image/png"}, method = POST)
@@ -257,17 +288,18 @@ public class DataController extends BaseController {
 
         checkForUnknownSeriesIds(requestParameters.getSeriesIds());
 
-//        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(requestParameters);
+        LOGGER.debug("get data collection chart with query: {}", map);
 //        checkAgainstTimespanRestriction(requestParameters.getTimespan());
 //        requestParameters.setGeneralize(map.isGeneralize());
 //        requestParameters.setExpanded(map.isExpanded());
 //        requestParameters.setBase64(map.isBase64());
 
         final String datasetType = requestParameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        createIoFactory(datasetType)
                 .withStyledRequest(requestParameters)
-                .createHandler("image/png");
-        ioHandler.writeBinary(response.getOutputStream());
+                .createHandler("image/png")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"image/png"}, method = GET)
@@ -276,15 +308,16 @@ public class DataController extends BaseController {
                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
         IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan().toString());
         checkForUnknownSeriesIds(seriesId);
 
         String observationType = DatasetType.extractType(seriesId);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
-        IoHandler<? extends Data> ioHandler = createIoFactory(observationType)
+        createIoFactory(observationType)
                 .withSimpleRequest(parameters)
-                .createHandler("image/png");
-        ioHandler.writeBinary(response.getOutputStream());
+                .createHandler("image/png")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
@@ -299,6 +332,8 @@ public class DataController extends BaseController {
         if ( !preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
         }
+
+        LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
     }
 
@@ -318,8 +353,8 @@ public class DataController extends BaseController {
         }
     }
 
-    private IoFactory<MeasurementData> createIoFactory(final String datasetType) throws DatasetFactoryException {
-        return new DefaultIoFactory()
+    private IoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> createIoFactory(final String datasetType) throws DatasetFactoryException {
+        return ioFactoryCreator
                 .create(datasetType)
 //                .withBasePath(getRootResource())
                 .withDataService(dataService)
@@ -350,19 +385,19 @@ public class DataController extends BaseController {
         this.requestIntervalRestriction = requestIntervalRestriction;
     }
 
-    public DataService<? extends Data> getDataService() {
+    public DataService<Data<AbstractValue<?>>> getDataService() {
         return dataService;
     }
 
-    public void setDataService(DataService<? extends Data> dataService) {
+    public void setDataService(DataService<Data<AbstractValue<?>>> dataService) {
         this.dataService = dataService;
     }
 
-    public ParameterService<? extends DatasetOutput> getDatasetService() {
+    public ParameterService<DatasetOutput<AbstractValue<?>, ?>> getDatasetService() {
         return datasetService;
     }
 
-    public void setDatasetService(ParameterService<? extends DatasetOutput> datasetService) {
+    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue<?>, ?>> datasetService) {
         this.datasetService = datasetService;
     }
 

@@ -28,84 +28,46 @@
  */
 package org.n52.io.response.dataset.text;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class TextObservationData extends Data {
+public class TextData extends Data<TextValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<TextValue> values = new ArrayList<>();
-
-    private TextObservationDataMetadata metadata;
-
-    public void addValues(TextValue... values) {
-        if (values != null && values.length > 0) {
-            this.values.addAll(Arrays.asList(values));
-        }
-    }
+    private TextDatasetMetadata metadata;
 
     /**
      * @param values the timestamp &lt;-&gt; value map.
      * @return a measurement data object.
      */
-    public static TextObservationData newTextObservationData(Map<Long, String> values) {
-        TextObservationData timeseries = new TextObservationData();
+    public static TextData newTextObservationData(Map<Long, String> values) {
+        TextData timeseries = new TextData();
         for (Entry<Long, String> data : values.entrySet()) {
             timeseries.addNewValue(data.getKey(), data.getValue());
         }
         return timeseries;
     }
 
-    public static TextObservationData newTextObservationData(TextValue... values) {
-        TextObservationData timeseries = new TextObservationData();
+    public static TextData newTextObservationData(TextValue... values) {
+        TextData timeseries = new TextData();
         timeseries.addValues(values);
         return timeseries;
     }
 
     private void addNewValue(Long timestamp, String value) {
-        values.add(new TextValue(timestamp, value));
+        addNewValue(new TextValue(timestamp, value));
     }
 
-    /**
-     * @return a sorted list of measurement values.
-     */
-    public TextValue[] getValues() {
-        Collections.sort(values);
-        return values.toArray(new TextValue[0]);
-    }
-
-    void setValues(TextValue[] values) {
-        this.values = Arrays.asList(values);
-    }
-
-    @JsonProperty("extra")
-    public TextObservationDataMetadata getMetadata() {
+    @Override
+    public TextDatasetMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(TextObservationDataMetadata metadata) {
+    public void setMetadata(TextDatasetMetadata metadata) {
         this.metadata = metadata;
-    }
-
-    public long size() {
-        return values.size();
-    }
-
-    @JsonIgnore
-    public boolean hasReferenceValues() {
-        return metadata != null
-                && metadata.getReferenceValues() != null
-                && !metadata.getReferenceValues().isEmpty();
     }
 
 }

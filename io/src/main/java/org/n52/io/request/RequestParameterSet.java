@@ -257,4 +257,9 @@ public abstract class RequestParameterSet {
                 : "measurement"; // default
     }
 
+    @Override
+    public String toString() {
+        return "RequestParameterSet{" + "parameters=" + parameters + '}';
+    }
+
 }

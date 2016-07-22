@@ -203,12 +203,11 @@
                         <reload>manual</reload>
                         <webAppConfig>
                             <contextPath>/</contextPath>
-                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-mappings/target/classes;../series-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <scanTargets>
                             <scanTarget>/target/classes/</scanTarget>
                             <scanTarget>../series-dao/target/classes</scanTarget>
-                            <scanTarget>../series-mappings/target/classes</scanTarget>
                             <scanTarget>../../../io/target/classes</scanTarget>
                             <scanTarget>../../../rest/target/classes</scanTarget>
                         </scanTargets>

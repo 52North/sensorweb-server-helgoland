@@ -15,50 +15,30 @@
     <property column="published" insert="false" name="published" type="org.hibernate.type.TrueFalseType" update="false"/>
     <property column="seriesType" insert="false" name="datasetType" type="string" update="false"/>
 
+    <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
+    <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
+
     <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
       <property formula="3" name="numberOfDecimals" type="int"/>
       <many-to-one class="UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
-      <component class="MeasurementDataEntity" name="firstValue">
-        <property column="firsttimestamp" name="timestamp" type="timestamp"/>
-        <property column="firstnumericvalue" name="value" type="double"/>
-      </component>
-      <component class="MeasurementDataEntity" name="lastValue">
-        <property column="lasttimestamp" name="timestamp" type="timestamp"/>
-        <property column="lastnumericvalue" name="value" type="double"/>
-      </component>
-      <list fetch="select" inverse="true" name="observations" table="observation">
+      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
         <key column="seriesid"/>
-        <index column="phenomenonTimeStart"/>
         <one-to-many class="DataEntity"/>
-      </list>
+      </bag>
     </subclass>
 
     <subclass discriminator-value="text" name="TextDatasetEntity">
-      <component class="TextDataEntity" name="firstValue">
-        <property column="firsttimestamp" name="timestamp" type="timestamp"/>
-      </component>
-      <component class="TextDataEntity" name="lastValue">
-        <property column="lasttimestamp" name="timestamp" type="timestamp"/>
-      </component>
-      <list fetch="select" inverse="true" name="observations" table="observation">
+      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
         <key column="seriesid"/>
-        <index column="phenomenonTimeStart"/>
         <one-to-many class="DataEntity"/>
-      </list>
+      </bag>
     </subclass>
 
     <subclass discriminator-value="count" name="CountDatasetEntity">
-      <component class="CountDataEntity" name="firstValue">
-        <property column="firsttimestamp" name="timestamp" type="timestamp"/>
-      </component>
-      <component class="CountDataEntity" name="lastValue">
-        <property column="lasttimestamp" name="timestamp" type="timestamp"/>
-      </component>
-      <list fetch="select" inverse="true" name="observations" table="observation">
+      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
         <key column="seriesid"/>
-        <index column="phenomenonTimeStart"/>
         <one-to-many class="DataEntity"/>
-      </list>
+      </bag>
     </subclass>
   </class>
 </hibernate-mapping>

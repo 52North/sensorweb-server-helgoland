@@ -28,10 +28,11 @@
  */
 package org.n52.io;
 
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
-public interface DataFormatter<IN extends Data, OUT extends Data> {
+public interface DataFormatter<IN extends Data<? extends AbstractValue<?>>, OUT> {
 
     public DataCollection<OUT> format(DataCollection<IN> toFormat);
 }

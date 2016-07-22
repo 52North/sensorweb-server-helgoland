@@ -89,7 +89,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
     }
 
     private MeasurementData generalize(MeasurementData timeseries) {
-        MeasurementValue[] data = timeseries.getValues();
+        MeasurementValue[] data = timeseries.getValues().toArray(new MeasurementValue[0]);
 
         int dataLength = data.length;
 

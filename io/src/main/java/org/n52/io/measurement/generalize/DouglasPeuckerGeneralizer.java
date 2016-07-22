@@ -127,7 +127,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     private MeasurementData generalize(MeasurementData timeseries) throws GeneralizerException {
-        MeasurementValue[] originalValues = timeseries.getValues();
+        MeasurementValue[] originalValues = getValueArray(timeseries);
         if (originalValues.length < 3 || toleranceValue <= 0) {
             return timeseries;
         }
@@ -157,8 +157,12 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         return generalizedTimeseries;
     }
 
+    private MeasurementValue[] getValueArray(MeasurementData timeseries) {
+        return timeseries.getValues().toArray(new MeasurementValue[0]);
+    }
+
     private MeasurementValue[] recursiveGeneralize(MeasurementData timeseries) {
-        MeasurementValue[] values = timeseries.getValues();
+        MeasurementValue[] values = getValueArray(timeseries);
         MeasurementValue startValue = getFirstValue(timeseries);
         MeasurementValue endValue = getLastValue(timeseries);
         Line2D.Double line = createTendencyLine(startValue, endValue);
@@ -179,7 +183,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         }
 
         if (maxDist < toleranceValue) {
-            return timeseries.getValues();
+            return getValueArray(timeseries);
         } else {
             // split and handle both parts separately
             MeasurementData generalizedData = new MeasurementData();
@@ -189,7 +193,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
             restPartToBeGeneralized.addValues(Arrays.copyOfRange(values, index + 1, values.length));
             generalizedData.addValues(recursiveGeneralize(firstPartToBeGeneralized));
             generalizedData.addValues(recursiveGeneralize(restPartToBeGeneralized));
-            return generalizedData.getValues();
+            return getValueArray(generalizedData);
         }
 
     }
@@ -216,7 +220,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     private MeasurementValue getFirstValue(MeasurementData timeseries) {
-        MeasurementValue[] values = timeseries.getValues();
+        MeasurementValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Timeseries must not be empty.");
         }
@@ -224,7 +228,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     private MeasurementValue getLastValue(MeasurementData timeseries) {
-        MeasurementValue[] values = timeseries.getValues();
+        MeasurementValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Timeseries must not be empty.");
         }

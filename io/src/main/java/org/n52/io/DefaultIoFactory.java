@@ -30,7 +30,11 @@ package org.n52.io;
 
 import java.io.File;
 
-public class DefaultIoFactory extends ConfigTypedFactory<IoFactory> {
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.v1.ext.DatasetOutput;
+
+public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> extends ConfigTypedFactory<IoFactory<D, DS, V>> {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-io-factory.properties";
 
@@ -48,12 +52,12 @@ public class DefaultIoFactory extends ConfigTypedFactory<IoFactory> {
     }
 
     @Override
-    protected IoFactory initInstance(IoFactory instance) {
+    protected IoFactory<D, DS, V> initInstance(IoFactory<D, DS, V> instance) {
         return instance;
     }
 
     @Override
-    protected Class<IoFactory> getTargetType() {
+    protected Class<?> getTargetType() {
         return IoFactory.class;
     }
 

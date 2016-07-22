@@ -31,6 +31,7 @@ package org.n52.io.response.v1.ext;
 import java.util.Collection;
 import java.util.List;
 
+import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OutputCollection;
@@ -38,6 +39,7 @@ import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.ProcedureOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
@@ -98,6 +100,7 @@ public class PlatformOutput extends AbstractOutput {
         this.series = series;
     }
 
+    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
     public Geometry getGeometry() {
         return geometry;
     }

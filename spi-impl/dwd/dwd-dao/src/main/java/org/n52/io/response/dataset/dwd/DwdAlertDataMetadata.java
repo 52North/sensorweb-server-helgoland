@@ -41,10 +41,12 @@ public class DwdAlertDataMetadata implements DatasetMetadata<Map<String, DwdAler
 
     private Map<String, DwdAlertData> referenceValues = new HashMap<>();
 
+    @Override
     public Map<String, DwdAlertData> getReferenceValues() {
         return referenceValues;
     }
 
+    @Override
     public void setReferenceValues(Map<String, DwdAlertData> referenceValues) {
         this.referenceValues = referenceValues;
     }

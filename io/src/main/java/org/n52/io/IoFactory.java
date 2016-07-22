@@ -29,22 +29,24 @@
 package org.n52.io;
 
 import java.net.URI;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public abstract class IoFactory<T extends Data> {
+public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> {
 
-    private DataService<T> dataService;
+    private DataService<D> dataService;
 
-    private ParameterService<? extends DatasetOutput> datasetService;
+    private ParameterService<DS> datasetService;
 
     private RequestSimpleParameterSet simpleRequest;
 
@@ -52,50 +54,50 @@ public abstract class IoFactory<T extends Data> {
 
     private URI basePath;
 
-    public IoFactory withSimpleRequest(RequestSimpleParameterSet request) {
+    public IoFactory<D, DS, V> withSimpleRequest(RequestSimpleParameterSet request) {
         this.simpleRequest = request;
         return this;
     }
 
-    public IoFactory withStyledRequest(RequestStyledParameterSet request) {
+    public IoFactory<D, DS, V> withStyledRequest(RequestStyledParameterSet request) {
         this.styledRequest = request;
         return this;
     }
 
-    public IoFactory withServletContextRoot(URI servletContextRoot) {
+    public IoFactory<D, DS, V> withServletContextRoot(URI servletContextRoot) {
         this.basePath = servletContextRoot;
         return this;
     }
 
-    public IoFactory withDataService(DataService<T> dataService) {
+    public IoFactory<D, DS, V> withDataService(DataService<D> dataService) {
         this.dataService = dataService;
         return this;
     }
 
-    public IoFactory withDatasetService(ParameterService<? extends DatasetOutput> datasetService) {
+    public IoFactory<D, DS, V> withDatasetService(ParameterService<DS> datasetService) {
         this.datasetService = datasetService;
         return this;
     }
 
-    public IoFactory withBasePath(URI basePath) {
+    public IoFactory<D, DS, V> withBasePath(URI basePath) {
         this.basePath = basePath;
         return this;
     }
 
-    public IoHandler<T> createHandler(String outputMimeType) {
+    public IoHandler<D> createHandler(String outputMimeType) {
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
     }
 
-    public IoProcessChain createProcessChain() {
-        return new IoProcessChain() {
+    public IoProcessChain<D> createProcessChain() {
+        return new IoProcessChain<D>() {
             @Override
-            public DataCollection getData() {
+            public DataCollection<D> getData() {
                 return getDataService().getData(getSimpleRequest());
             }
             @Override
-            public DataCollection<? extends Data> getProcessedData() {
+            public DataCollection<?> getProcessedData() {
                 return getData(); // empty chain
             }
         };
@@ -103,15 +105,17 @@ public abstract class IoFactory<T extends Data> {
 
     public abstract boolean isAbleToCreateHandlerFor(String outputMimeType);
 
+    public abstract Set<String> getSupportedMimeTypes();
+
     protected IoStyleContext createContext() {
         if (datasetService == null || styledRequest == null) {
             return IoStyleContext.createEmpty();
         }
-        OutputCollection<? extends DatasetOutput> metadatas = getMetadatas(styledRequest.getSeriesIds());
+        OutputCollection<? extends DatasetOutput<V, ?>> metadatas = getMetadatas(styledRequest.getSeriesIds());
         return IoStyleContext.createContextWith(styledRequest, metadatas.getItems());
     }
 
-    private OutputCollection<? extends DatasetOutput> getMetadatas(String[] seriesIds) {
+    private OutputCollection<? extends DatasetOutput<V, ?>> getMetadatas(String[] seriesIds) {
         return datasetService.getParameters(seriesIds, getParameters());
     }
 
@@ -121,7 +125,7 @@ public abstract class IoFactory<T extends Data> {
                 : IoParameters.createFromQuery(styledRequest);
     }
 
-    protected DataService<T> getDataService() {
+    protected DataService<D> getDataService() {
         return dataService;
     }
 

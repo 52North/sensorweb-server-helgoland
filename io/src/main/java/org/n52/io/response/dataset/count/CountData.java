@@ -26,26 +26,48 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.measurement;
+package org.n52.io.response.dataset.count;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.n52.io.response.dataset.DatasetMetadata;
+import org.n52.io.response.dataset.Data;
 
-public class MeasurementDataMetadata implements DatasetMetadata<Map<String, MeasurementData>>, Serializable {
+public class CountData extends Data<CountValue> {
 
-    private static final long serialVersionUID = 7422416308386483575L;
+    private static final long serialVersionUID = -3990317208637642482L;
 
-    private Map<String, MeasurementData> referenceValues = new HashMap<>();
+    private CountDatasetMetadata metadata;
 
-    public Map<String, MeasurementData> getReferenceValues() {
-        return referenceValues;
+    /**
+     * @param values the timestamp &lt;-&gt; value map.
+     * @return a measurement data object.
+     */
+    public static CountData newCountObservationData(Map<Long, Integer> values) {
+        CountData timeseries = new CountData();
+        for (Entry<Long, Integer> data : values.entrySet()) {
+            timeseries.addNewValue(data.getKey(), data.getValue());
+        }
+        return timeseries;
     }
 
-    public void setReferenceValues(Map<String, MeasurementData> referenceValues) {
-        this.referenceValues = referenceValues;
+    public static CountData newCountObservationData(CountValue... values) {
+        CountData timeseries = new CountData();
+        timeseries.addValues(values);
+        return timeseries;
+    }
+
+    private void addNewValue(Long timestamp, Integer value) {
+        addNewValue(new CountValue(timestamp, value));
+    }
+
+    @Override
+    public CountDatasetMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(CountDatasetMetadata metadata) {
+        this.metadata = metadata;
     }
 
 }

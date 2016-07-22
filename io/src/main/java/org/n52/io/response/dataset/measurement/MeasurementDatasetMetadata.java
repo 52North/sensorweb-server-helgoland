@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.count;
+package org.n52.io.response.dataset.measurement;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -34,17 +34,19 @@ import java.util.Map;
 
 import org.n52.io.response.dataset.DatasetMetadata;
 
-public class CountObservationDataMetadata implements DatasetMetadata<Map<String, CountObservationData>>, Serializable {
+public class MeasurementDatasetMetadata implements DatasetMetadata<Map<String, MeasurementData>>, Serializable {
 
-    private static final long serialVersionUID = -5666064665815076013L;
+    private static final long serialVersionUID = 7422416308386483575L;
 
-    private Map<String, CountObservationData> referenceValues = new HashMap<>();
+    private Map<String, MeasurementData> referenceValues = new HashMap<>();
 
-    public Map<String, CountObservationData> getReferenceValues() {
+    @Override
+    public Map<String, MeasurementData> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Map<String, CountObservationData> referenceValues) {
+    @Override
+    public void setReferenceValues(Map<String, MeasurementData> referenceValues) {
         this.referenceValues = referenceValues;
     }
 

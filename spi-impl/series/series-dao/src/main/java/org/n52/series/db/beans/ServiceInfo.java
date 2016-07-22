@@ -53,6 +53,8 @@ public class ServiceInfo {
 
     private List<Double> noDataValues;
 
+    private String version;
+
     public ServiceInfo() {
         noDataValues = Collections.emptyList();
     }
@@ -125,5 +127,14 @@ public class ServiceInfo {
             this.noDataValues = validatedValues;
         }
     }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
 
 }

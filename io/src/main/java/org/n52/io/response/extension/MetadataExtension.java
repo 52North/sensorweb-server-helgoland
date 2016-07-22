@@ -58,7 +58,7 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
     public abstract void addExtraMetadataFieldNames(T output);
 
     protected boolean hasExtrasToReturn(ParameterOutput output, IoParameters parameters) {
-        return parameters.getFields() == null
+        return parameters.getFields().isEmpty()
                 || containsIgnoreCase(parameters.getFields());
     }
 
