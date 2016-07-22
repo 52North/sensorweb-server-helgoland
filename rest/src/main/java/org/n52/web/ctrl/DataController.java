@@ -228,15 +228,34 @@ public class DataController extends BaseController {
                                      @PathVariable String seriesId,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
                                              throws Exception {
-        query.put("zip", Arrays.asList(new String[] {Boolean.TRUE.toString()}));
-        getSeriesAsCsv(response, seriesId, query);
+//        IoParameters map = createFromQuery(query);
+//        LOGGER.debug("get data collection report with query: {}", map);
+//        getSeriesAsCsv(response, seriesId, query);
+        
+        IoParameters map = createFromQuery(query);
+        LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
+        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        checkForUnknownSeriesIds(seriesId);
+
+//        parameters.setGeneralize(map.isGeneralize());
+//        parameters.setExpanded(map.isExpanded());
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType(APPLICATION_ZIP.toString());
+
+        final String datasetType = parameters.getDatasetTypeFromFirst();
+        IoHandler ioHandler = createIoFactory(datasetType)
+                .withSimpleRequest(parameters)
+                .createHandler(APPLICATION_ZIP.toString());
+        ioHandler.writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/data", produces = {"text/csv"}, method = GET)
     public void getSeriesAsCsv(HttpServletResponse response,
                               @PathVariable String seriesId,
                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-
 
         IoParameters map = createFromQuery(query);
         LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
@@ -259,7 +278,7 @@ public class DataController extends BaseController {
         final String datasetType = parameters.getDatasetTypeFromFirst();
         IoHandler ioHandler = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
-                .createHandler("text/csv");
+                .createHandler(TEXT_CSV.toString());
         ioHandler.writeBinary(response.getOutputStream());
     }
 
