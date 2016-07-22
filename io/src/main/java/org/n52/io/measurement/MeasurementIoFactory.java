@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.measurement;
 
 import static org.n52.io.MimeType.APPLICATION_PDF;
@@ -77,10 +78,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
             @Override
             public DataCollection< ? extends Data> getProcessedData() {
                 String format = getParameters().getFormat();
-                return FormatterFactory
-                        .createFormatterFactory(format)
-                        .create()
-                        .format(getData());
+                return FormatterFactory.createFormatterFactory(format).create().format(getData());
             }
         };
     }
@@ -110,16 +108,21 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
         MimeType mimeType = MimeType.toInstance(outputMimeType);
         if (mimeType == IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        } else if (mimeType == APPLICATION_PDF) {
+        }
+        else if (mimeType == APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                    getSimpleRequest(), createProcessChain(), imgRenderer);
+                                                                        getSimpleRequest(),
+                                                                        createProcessChain(),
+                                                                        imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
         }
         else if (mimeType == TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
-                    getSimpleRequest(), createProcessChain(), createContext());
+                                                                          getSimpleRequest(),
+                                                                          createProcessChain(),
+                                                                          createContext());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
@@ -136,7 +139,9 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
 
     private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                getSimpleRequest(), createProcessChain(), createContext());
+                                                                          getSimpleRequest(),
+                                                                          createProcessChain(),
+                                                                          createContext());
 
         chartRenderer.setDrawLegend(getParameters().isLegend());
         chartRenderer.setShowGrid(getParameters().isGrid());
