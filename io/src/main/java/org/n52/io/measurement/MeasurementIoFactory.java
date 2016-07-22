@@ -63,18 +63,19 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
     });
 
     @Override
-    public IoProcessChain createProcessChain() {
-        return new IoProcessChain() {
+    public IoProcessChain<MeasurementData> createProcessChain() {
+        return new IoProcessChain<MeasurementData>() {
             @Override
-            public DataCollection getData() {
+            public DataCollection<MeasurementData> getData() {
                 final boolean generalize = getParameters().isGeneralize();
                 DataService<MeasurementData> dataService = generalize
-                        ? composeDataService(getDataService())
-                        : getDataService();
+                    ? composeDataService(getDataService())
+                    : getDataService();
                 return dataService.getData(getSimpleRequest());
             }
+
             @Override
-            public DataCollection<? extends Data> getProcessedData() {
+            public DataCollection< ? extends Data> getProcessedData() {
                 String format = getParameters().getFormat();
                 return FormatterFactory
                         .createFormatterFactory(format)
