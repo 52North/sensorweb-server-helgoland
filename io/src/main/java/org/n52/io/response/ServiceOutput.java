@@ -77,7 +77,9 @@ public class ServiceOutput extends ParameterOutput {
 
     @JsonAnyGetter
     public Map<String, Object> getFeatures() {
-        return Collections.unmodifiableMap(features);
+        return features != null 
+                ? Collections.unmodifiableMap(features)
+                : null;
     }
 
     public void setFeatures(Map<String, Object> features) {
