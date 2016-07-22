@@ -264,12 +264,12 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
                 LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());
             }
         }
-        
+
         return currentLastValue != null && currentLastValue.isSetGeometry()
                 ? currentLastValue.getGeometry()
                 : null;
     }
-        
+
     private AbstractValue< ? > getLaterValue(AbstractValue< ? > currentLastValue, AbstractValue< ? > valueToCheck) {
         if (currentLastValue == null) {
             return valueToCheck;
@@ -277,7 +277,7 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
         if (valueToCheck == null) {
             return currentLastValue;
         }
-        return currentLastValue.getTimestamp() > valueToCheck.getTimestamp() 
+        return currentLastValue.getTimestamp() > valueToCheck.getTimestamp()
                 ? currentLastValue
                 : valueToCheck;
     }
