@@ -49,9 +49,9 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     private T value;
 
     private Geometry geometry;
-    
+
     private Map<String, Object> parameters;
-    
+
     private ValidTime validTime;
 
     public AbstractValue() {
@@ -91,11 +91,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();
     }
-    
+
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = new HashMap<>(parameters);
     }
-    
+
     @JsonAnyGetter
     public Map<String, Object> getParameters() {
         return parameters != null
@@ -130,7 +130,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
         sb.append("value: ").append(getValue());
         return sb.append(" ]").toString();
     }
-    
+
     public static class ValidTime {
         private Long start;
         private Long end;
