@@ -32,6 +32,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.n52.io.response.PlatformOutput;
+import org.n52.io.response.PlatformType;
 
 public class PlatformOutputTest {
 

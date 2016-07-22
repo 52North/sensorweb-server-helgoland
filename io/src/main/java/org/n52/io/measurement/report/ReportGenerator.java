@@ -37,7 +37,7 @@ import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
 

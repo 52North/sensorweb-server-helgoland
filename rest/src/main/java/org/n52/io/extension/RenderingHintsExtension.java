@@ -36,8 +36,8 @@ import java.util.Map;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

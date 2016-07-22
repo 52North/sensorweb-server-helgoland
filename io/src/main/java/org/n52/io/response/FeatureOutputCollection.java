@@ -26,40 +26,36 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.PhenomenonOutput;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PhenomenonOutputCollection extends OutputCollection<PhenomenonOutput> {
+public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
 
-    public PhenomenonOutputCollection() {
+    public FeatureOutputCollection() {
         // empty collection
     }
 
-    public PhenomenonOutputCollection(Collection<PhenomenonOutput> results) {
+    public FeatureOutputCollection(Collection<FeatureOutput> results) {
         super(results);
     }
 
-    public PhenomenonOutputCollection(PhenomenonOutput... items) {
+    public FeatureOutputCollection(FeatureOutput... items) {
         super(items);
     }
 
     @Override
-    @JsonProperty(value = "phenemena")
-    public List<PhenomenonOutput> getItems() {
+    @JsonProperty(value = "features")
+    public List<FeatureOutput> getItems() {
         return super.getItems();
     }
 
     @Override
-    protected Comparator<PhenomenonOutput> getComparator() {
+    protected Comparator<FeatureOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
 

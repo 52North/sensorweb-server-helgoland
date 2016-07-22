@@ -36,7 +36,7 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.response.v1.ext.DatasetType;
+import org.n52.io.response.dataset.DatasetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

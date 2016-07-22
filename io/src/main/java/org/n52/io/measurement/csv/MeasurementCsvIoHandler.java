@@ -44,13 +44,13 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.count.CountData;
 import org.n52.io.response.dataset.count.CountValue;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextValue;
-import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

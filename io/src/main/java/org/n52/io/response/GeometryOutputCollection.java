@@ -26,39 +26,37 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response;
 
-public class DatasetType {
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
-    private static final String SEPERATOR = "_";
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public static String extractType(String id) {
-        if (id == null || id.isEmpty()) {
-            return id;
-        }
-        return id.substring(0, id.indexOf(SEPERATOR));
+public class GeometryOutputCollection extends OutputCollection<GeometryInfo> {
+
+    public GeometryOutputCollection() {
+        // empty collection
     }
 
-    public static String extractId(String id) {
-        if (id == null || id.isEmpty()) {
-            return id;
-        }
-        return id.substring(id.indexOf(SEPERATOR) + 1);
+    public GeometryOutputCollection(Collection<GeometryInfo> results) {
+        super(results);
     }
 
-    public static String createId(String type, String id) {
-        if (id == null) {
-            throw new NullPointerException("Cannot create from null id.");
-        }
-        if (id.isEmpty()) {
-            throw new IllegalArgumentException("Cannot create from empty id.");
-        }
-        return assertNotNullOrEmpty(type)
-                ? type.toLowerCase().concat(SEPERATOR).concat(id)
-                : id;
+    public GeometryOutputCollection(GeometryInfo... items) {
+        super(items);
     }
 
-    private static boolean assertNotNullOrEmpty(String type) {
-        return !(type == null || type.isEmpty());
+    @Override
+    @JsonProperty(value = "geometries")
+    public List<GeometryInfo> getItems() {
+        return super.getItems();
     }
+
+    @Override
+    protected Comparator<GeometryInfo> getComparator() {
+        return GeometryInfo.defaultComparator();
+    }
+
 }

@@ -26,17 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
-import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.FeatureOutput;
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.PhenomenonOutput;
-import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

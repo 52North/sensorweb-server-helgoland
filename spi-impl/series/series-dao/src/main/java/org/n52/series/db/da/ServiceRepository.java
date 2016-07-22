@@ -45,7 +45,7 @@ import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ServiceOutput.ParameterCount;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceInfo;

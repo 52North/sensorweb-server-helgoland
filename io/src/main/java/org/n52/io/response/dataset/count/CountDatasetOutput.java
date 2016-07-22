@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.dataset.count;
 
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 public class CountDatasetOutput extends DatasetOutput<CountValue, CountReferenceValueOutput> {
 

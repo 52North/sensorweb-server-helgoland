@@ -35,7 +35,7 @@ import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 public final class IoStyleContext {
 
