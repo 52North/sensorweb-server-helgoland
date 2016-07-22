@@ -29,6 +29,7 @@
 package org.n52.io;
 
 import java.net.URI;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -102,6 +103,8 @@ public abstract class IoFactory<T extends Data> {
     }
 
     public abstract boolean isAbleToCreateHandlerFor(String outputMimeType);
+    
+    public abstract Set<String> getSupportedMimeTypes();
 
     protected IoStyleContext createContext() {
         if (datasetService == null || styledRequest == null) {

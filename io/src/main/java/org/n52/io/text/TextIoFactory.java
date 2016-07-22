@@ -29,6 +29,9 @@
 package org.n52.io.text;
 
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
@@ -39,6 +42,11 @@ public class TextIoFactory extends IoFactory<TextObservationData> {
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
         return MimeType.isKnownMimeType(outputMimeType);
+    }
+
+    @Override
+    public Set<String> getSupportedMimeTypes() {
+        return Collections.emptySet();
     }
 
     @Override
