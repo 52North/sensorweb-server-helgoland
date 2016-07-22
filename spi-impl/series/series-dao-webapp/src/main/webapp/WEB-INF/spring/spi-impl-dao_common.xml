@@ -15,7 +15,8 @@
 
     <bean id="serviceInfo" class="org.n52.series.db.beans.ServiceInfo">
         <property name="serviceId" value="1" />
-        <property name="serviceDescription" value="My Timeseries Service." />
+        <property name="version" value="2.0" />
+        <property name="serviceDescription" value="My RESTful Dataset Service." />
         <property name="noDataValues" value="-9999.0,99999" />
     </bean>
 
@@ -28,4 +29,5 @@
     </bean>
 
     <bean class="org.n52.series.db.da.DataRepositoryFactory" />
+    <bean class="org.n52.io.DefaultIoFactory" />
 </beans>

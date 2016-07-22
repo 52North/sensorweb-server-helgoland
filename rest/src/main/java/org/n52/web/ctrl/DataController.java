@@ -66,7 +66,6 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.io.v1.data.RawFormats;
@@ -78,6 +77,7 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -91,10 +91,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class DataController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataController.class);
+    
+    @Autowired
+    private DefaultIoFactory ioFactoryCreator;
 
     private DataService<? extends Data> dataService;
 
-    private ParameterService<? extends DatasetOutput> datasetService;
+    private ParameterService<? extends DatasetOutput<?, ?>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -108,7 +111,7 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoProcessChain ioChain = createIoFactory(datasetType)
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
 
@@ -128,7 +131,7 @@ public class DataController extends BaseController {
 
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         String datasetType = DatasetType.extractType(seriesId);
-        IoProcessChain ioChain = createIoFactory(datasetType)
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
 
@@ -183,7 +186,7 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(requestParameters.getTimespan());
 
         final String datasetType = requestParameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        IoHandler ioHandler = createIoFactory(datasetType)
                 .withSimpleRequest(createFromDesignedParameters(requestParameters))
                 .withStyledRequest(requestParameters)
                 .createHandler("application/pdf");
@@ -206,7 +209,7 @@ public class DataController extends BaseController {
 //        parameters.setExpanded(map.isExpanded());
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        IoHandler ioHandler = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler("application/pdf");
         ioHandler.writeBinary(response.getOutputStream());
@@ -245,7 +248,7 @@ public class DataController extends BaseController {
         }
 
         final String datasetType = parameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        IoHandler ioHandler = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler("text/csv");
         ioHandler.writeBinary(response.getOutputStream());
@@ -264,7 +267,7 @@ public class DataController extends BaseController {
 //        requestParameters.setBase64(map.isBase64());
 
         final String datasetType = requestParameters.getDatasetTypeFromFirst();
-        IoHandler<? extends Data> ioHandler = createIoFactory(datasetType)
+        IoHandler ioHandler = createIoFactory(datasetType)
                 .withStyledRequest(requestParameters)
                 .createHandler("image/png");
         ioHandler.writeBinary(response.getOutputStream());
@@ -281,7 +284,7 @@ public class DataController extends BaseController {
 
         String observationType = DatasetType.extractType(seriesId);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
-        IoHandler<? extends Data> ioHandler = createIoFactory(observationType)
+        IoHandler ioHandler = createIoFactory(observationType)
                 .withSimpleRequest(parameters)
                 .createHandler("image/png");
         ioHandler.writeBinary(response.getOutputStream());
@@ -318,8 +321,8 @@ public class DataController extends BaseController {
         }
     }
 
-    private IoFactory<MeasurementData> createIoFactory(final String datasetType) throws DatasetFactoryException {
-        return new DefaultIoFactory()
+    private IoFactory<? extends Data> createIoFactory(final String datasetType) throws DatasetFactoryException {
+        return ioFactoryCreator
                 .create(datasetType)
 //                .withBasePath(getRootResource())
                 .withDataService(dataService)
@@ -362,7 +365,7 @@ public class DataController extends BaseController {
         return datasetService;
     }
 
-    public void setDatasetService(ParameterService<? extends DatasetOutput> datasetService) {
+    public void setDatasetService(ParameterService<? extends DatasetOutput<?,?>> datasetService) {
         this.datasetService = datasetService;
     }
 
