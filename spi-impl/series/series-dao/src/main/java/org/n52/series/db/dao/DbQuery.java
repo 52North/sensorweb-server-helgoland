@@ -37,7 +37,7 @@ import java.util.Set;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.v1.ext.PlatformType;
+import org.n52.io.response.PlatformType;
 import org.n52.series.db.beans.DatasetEntity;
 
 public class DbQuery extends AbstractDbQuery {

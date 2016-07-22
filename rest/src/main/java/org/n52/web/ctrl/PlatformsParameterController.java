@@ -28,7 +28,7 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.response.v1.ext.PlatformOutput;
+import org.n52.io.response.PlatformOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

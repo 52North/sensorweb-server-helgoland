@@ -26,15 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ProcedureOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

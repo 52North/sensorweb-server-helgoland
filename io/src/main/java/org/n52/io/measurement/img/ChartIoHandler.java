@@ -81,9 +81,9 @@ import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

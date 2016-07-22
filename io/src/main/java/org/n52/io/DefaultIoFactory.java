@@ -32,7 +32,7 @@ import java.io.File;
 
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> extends ConfigTypedFactory<IoFactory<D, DS, V>> {
 
@@ -44,6 +44,16 @@ public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>,
 
     public DefaultIoFactory(File configFile) {
         super(configFile);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> create() {
+        return new DefaultIoFactory();
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> create(File configFile) {
+        return new DefaultIoFactory(configFile);
     }
 
     @Override

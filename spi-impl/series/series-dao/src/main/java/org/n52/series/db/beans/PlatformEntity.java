@@ -28,7 +28,7 @@
  */
 package org.n52.series.db.beans;
 
-import org.n52.io.response.v1.ext.PlatformType;
+import org.n52.io.response.PlatformType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

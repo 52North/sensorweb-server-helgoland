@@ -26,40 +26,34 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.v1.ext;
+package org.n52.io.response;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.n52.io.response.FeatureOutput;
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FeatureOutputCollection extends OutputCollection<FeatureOutput> {
+public class SeriesOutputCollection extends OutputCollection<DatasetOutput> {
 
-    public FeatureOutputCollection() {
+    public SeriesOutputCollection() {
         // empty collection
     }
 
-    public FeatureOutputCollection(Collection<FeatureOutput> results) {
+    public SeriesOutputCollection(Collection<DatasetOutput> results) {
         super(results);
     }
 
-    public FeatureOutputCollection(FeatureOutput... items) {
-        super(items);
-    }
-
     @Override
-    @JsonProperty(value = "features")
-    public List<FeatureOutput> getItems() {
+    @JsonProperty(value = "series")
+    public List<DatasetOutput> getItems() {
         return super.getItems();
     }
 
     @Override
-    protected Comparator<FeatureOutput> getComparator() {
+    protected Comparator<DatasetOutput> getComparator() {
         return ParameterOutput.defaultComparator();
     }
 

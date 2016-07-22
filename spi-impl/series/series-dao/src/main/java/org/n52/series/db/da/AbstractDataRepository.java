@@ -35,7 +35,7 @@ import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.v1.ext.DatasetType;
+import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DataEntity;

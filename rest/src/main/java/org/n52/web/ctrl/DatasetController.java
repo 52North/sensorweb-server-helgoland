@@ -32,7 +32,7 @@ package org.n52.web.ctrl;
 import static org.n52.web.ctrl.UrlSettings.COLLECTION_DATASETS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-import org.n52.io.response.v1.ext.DatasetOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

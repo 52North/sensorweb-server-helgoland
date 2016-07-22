@@ -30,7 +30,7 @@ package org.n52.series.spi.geo;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.v1.ext.PlatformOutput;
+import org.n52.io.response.PlatformOutput;
 import org.n52.series.spi.srv.ParameterService;
 
 import com.vividsolutions.jts.geom.Geometry;

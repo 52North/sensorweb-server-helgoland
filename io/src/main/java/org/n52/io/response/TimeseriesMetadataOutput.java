@@ -33,9 +33,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.StyleProperties;
+import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
-import org.n52.io.response.v1.ext.DatasetType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

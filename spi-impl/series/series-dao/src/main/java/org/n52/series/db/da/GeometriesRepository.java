@@ -29,8 +29,8 @@
 package org.n52.series.db.da;
 
 import static org.n52.io.request.Parameters.FEATURES;
-import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_SITE;
-import static org.n52.io.response.v1.ext.GeometryType.PLATFORM_TRACK;
+import static org.n52.io.response.GeometryType.PLATFORM_SITE;
+import static org.n52.io.response.GeometryType.PLATFORM_TRACK;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,9 +40,9 @@ import org.hibernate.Session;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.v1.ext.GeometryInfo;
-import org.n52.io.response.v1.ext.GeometryType;
-import org.n52.io.response.v1.ext.PlatformOutput;
+import org.n52.io.response.GeometryInfo;
+import org.n52.io.response.GeometryType;
+import org.n52.io.response.PlatformOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
