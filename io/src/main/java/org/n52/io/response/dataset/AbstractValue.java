@@ -29,9 +29,13 @@
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
@@ -45,6 +49,10 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     private T value;
 
     private Geometry geometry;
+    
+    private Map<String, Object> parameters;
+    
+    private ValidTime validTime;
 
     public AbstractValue() {
     }
@@ -83,7 +91,32 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();
     }
+    
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = new HashMap<>(parameters);
+    }
+    
+    @JsonAnyGetter
+    public Map<String, Object> getParameters() {
+        return parameters != null
+                ? Collections.unmodifiableMap(parameters)
+                : null;
+    }
 
+    public void addParameter(String parameterName, Object parameterValue) {
+        if (parameterName != null && parameters == null) {
+            parameters = new HashMap<>();
+        }
+        parameters.put(parameterName, parameterValue);
+    }
+
+    public ValidTime getValidTime() {
+        return validTime;
+    }
+
+    public void setValidTime(ValidTime validTime) {
+        this.validTime = validTime;
+    }
 
     @Override
     public int compareTo(AbstractValue<?> o) {
@@ -96,6 +129,27 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
         sb.append("timestamp: ").append(getTimestamp()).append(", ");
         sb.append("value: ").append(getValue());
         return sb.append(" ]").toString();
+    }
+    
+    public static class ValidTime {
+        private Long start;
+        private Long end;
+        public ValidTime(Long start, Long end) {
+            this.start = start;
+            this.end = end;
+        }
+        public Long getStart() {
+            return start;
+        }
+        public void setStart(Long start) {
+            this.start = start;
+        }
+        public Long getEnd() {
+            return end;
+        }
+        public void setEnd(Long end) {
+            this.end = end;
+        }
     }
 
 }
