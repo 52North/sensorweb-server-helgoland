@@ -28,11 +28,20 @@
  */
 package org.n52.series.db.da;
 
+import static org.junit.matchers.JUnitMatchers.isThrowable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.n52.io.DatasetFactoryException;
+import org.n52.io.DefaultIoFactory;
+import org.n52.io.IoFactory;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ServiceOutput.ParameterCount;
@@ -44,15 +53,22 @@ import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.ServiceSearchResult;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.InternalServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceRepository implements OutputAssembler<ServiceOutput> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 
     @Autowired
     private ServiceInfo serviceInfo;
 
     @Autowired
     private EntityCounter counter;
+
+    @Autowired
+    private DefaultIoFactory ioFactory;
 
     public String getServiceId() {
         return serviceInfo.getServiceId();
@@ -113,11 +129,40 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     private ServiceOutput getExpandedService(DbQuery parameters) {
         ServiceOutput service = getCondensedService(parameters);
         service.setSupportsFirstLatest(true);
-        service.setQuantities(countParameters(service));
-        service.setType("Thin DB access layer service.");
-        service.setVersion("1.0.0");
-        // service.setServiceUrl("/");
+        
+        FilterResolver filterResolver = parameters.getFilterResolver();
+        if ( !filterResolver.isSetPlatformTypeFilter()) {
+            // ensure backwards compatibility
+            service.setVersion("1.0.0");
+            service.setType("Thin DB access layer service.");
+            service.setQuantities(countParameters(service));
+        } else {
+            service.setType(serviceInfo.getType() == null
+                    ? "Thin DB access layer service."
+                    : serviceInfo.getType());
+            service.setVersion(serviceInfo.getVersion() != null
+                    ? serviceInfo.getVersion()
+                    : "2.0");
+            addSupportedDatasetsTo(service);
+            
+            // TODO add features
+            // TODO different counts
+            
+        }
         return service;
+    }
+
+    private void addSupportedDatasetsTo(ServiceOutput service) {
+        Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
+        for (String datasetType : ioFactory.getKnownTypes()) {
+            try {
+                IoFactory factory = ioFactory.create(datasetType);
+                mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
+            } catch (DatasetFactoryException e) {
+                LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);
+            }
+        }
+        service.addSupportedDatasets(mimeTypesByDatasetTypes);
     }
 
     private ServiceOutput getCondensedService(DbQuery parameters) {
