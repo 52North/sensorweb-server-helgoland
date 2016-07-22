@@ -30,6 +30,7 @@
 package org.n52.series.db.beans;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
@@ -62,9 +63,17 @@ public class DatasetEntity<T extends DataEntity<?>> {
 
     private String datasetType;
 
+    @Deprecated
     private T firstValue;
 
+    @Deprecated
     private T lastValue;
+
+    private Date firstValueAt;
+
+    private Date lastValueAt;
+
+    private UnitEntity unit;
 
     public DatasetEntity() {
         this.observations = new ArrayList<>();
@@ -134,20 +143,56 @@ public class DatasetEntity<T extends DataEntity<?>> {
         this.published = published;
     }
 
+    /**
+     * @return
+     * @deprecated since 2.0.0, use {@link #getFirstValueAt()}
+     */
+    @Deprecated
     public T getFirstValue() {
         return firstValue;
     }
 
+    /**
+     * @param firstValue
+     * @deprecated since 2.0.0, use {@link #setFirstValueAt(Date)}
+     */
+    @Deprecated
     public void setFirstValue(T firstValue) {
         this.firstValue = firstValue;
     }
 
+    /**
+     * @return
+     * @deprecated since 2.0.0, use {@link #getLastValueAt()}
+     */
+    @Deprecated
     public T getLastValue() {
         return lastValue;
     }
 
+    /**
+     * @param lastValue
+     * @deprecated since 2.0.0, use {@link #setLastValueAt(Date)}
+     */
+    @Deprecated
     public void setLastValue(T lastValue) {
         this.lastValue = lastValue;
+    }
+
+    public Date getFirstValueAt() {
+        return firstValueAt;
+    }
+
+    public void setFirstValueAt(Date firstValueAt) {
+        this.firstValueAt = firstValueAt;
+    }
+
+    public Date getLastValueAt() {
+        return lastValueAt;
+    }
+
+    public void setLastValueAt(Date lastValueAt) {
+        this.lastValueAt = lastValueAt;
     }
 
     public String getDatasetType() {
@@ -158,6 +203,26 @@ public class DatasetEntity<T extends DataEntity<?>> {
 
     public void setDatasetType(String datasetType) {
         this.datasetType = datasetType;
+    }
+
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean hasUnit() {
+        return unit != null;
+    }
+
+    public String getUnitI18nName(String locale) {
+        String name = null;
+        if (unit != null) {
+            name = unit.getNameI18n(locale);
+        }
+        return name;
     }
 
     @Override

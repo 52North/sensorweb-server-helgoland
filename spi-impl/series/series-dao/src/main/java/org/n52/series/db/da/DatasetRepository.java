@@ -28,40 +28,22 @@
  */
 package org.n52.series.db.da;
 
-import static java.math.RoundingMode.HALF_UP;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.count.CountDatasetOutput;
-import org.n52.io.response.dataset.count.CountValue;
-import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
-import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.text.TextDatasetOutput;
-import org.n52.io.response.dataset.text.TextValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.response.v1.ext.DatasetType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.CountDataEntity;
-import org.n52.series.db.beans.CountDatasetEntity;
-import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.MeasurementDataEntity;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
-import org.n52.series.db.beans.TextDataEntity;
-import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -164,16 +146,20 @@ public class DatasetRepository<T extends Data>
 
     @Override
     public DatasetOutput getInstance(String id, DbQuery query) throws DataAccessException {
-        Session session = getSession();
+            Session session = getSession();
         try {
-            String seriesId = DatasetType.extractId(id);
-            final String datasetType = DatasetType.extractType(id);
-            SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-            DatasetEntity instance = dao.getInstance(Long.parseLong(seriesId), query);
-            return createExpanded(instance, query, session);
+            DatasetEntity< ? > instanceEntity = getInstanceEntity(id, query, session);
+            return createExpanded(instanceEntity, query, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
+        String seriesId = DatasetType.extractId(id);
+        final String datasetType = DatasetType.extractType(id);
+        SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+        return dao.getInstance(Long.parseLong(seriesId), query);
     }
 
     @Override
@@ -186,52 +172,28 @@ public class DatasetRepository<T extends Data>
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    // XXX refactor instanceof hell here
+    // XXX refactor generics
     private DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
-        if (series instanceof MeasurementDatasetEntity) {
-            MeasurementDatasetOutput output = new MeasurementDatasetOutput();
-            output.setLabel(createSeriesLabel(series, query.getLocale()));
-            output.setId(series.getPkid().toString());
-            output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
-            return output;
-        } else if (series instanceof TextDatasetEntity) {
-            TextDatasetOutput output = new TextDatasetOutput();
-            output.setLabel(createSeriesLabel(series, query.getLocale()));
-            output.setId(series.getPkid().toString());
-            output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
-            return output;
-        } else if (series instanceof CountDatasetEntity) {
-            CountDatasetOutput output = new CountDatasetOutput();
-            output.setLabel(createSeriesLabel(series, query.getLocale()));
-            output.setId(series.getPkid().toString());
-            output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
-            return output;
-        }
-        return null;
+        DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
+        output.setLabel(createSeriesLabel(series, query.getLocale()));
+        output.setId(series.getPkid().toString());
+        output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
+        return output;
     }
 
-    // XXX refactor instanceof hell here
+    // XXX refactor generics
     private DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
-        DatasetOutput result = createCondensed(series, query);
-        result.setSeriesParameters(getParameters(series, query));
-        if (series instanceof MeasurementDatasetEntity && result instanceof MeasurementDatasetOutput) {
-            MeasurementDatasetEntity measurementSeries = (MeasurementDatasetEntity) series;
-            MeasurementDatasetOutput output = (MeasurementDatasetOutput) result;
-            output.setUom(measurementSeries.getUnitI18nName(query.getLocale()));
-            output.setFirstValue(createSeriesValueFor(measurementSeries.getFirstValue(), measurementSeries));
-            output.setLastValue(createSeriesValueFor(measurementSeries.getLastValue(), measurementSeries));
-        } else if (series instanceof TextDatasetEntity && result instanceof TextDatasetOutput) {
-            TextDatasetEntity textObservationSeries = (TextDatasetEntity) series;
-            TextDatasetOutput output = (TextDatasetOutput) result;
-            output.setFirstValue(createSeriesValueFor(textObservationSeries.getFirstValue(), textObservationSeries));
-            output.setLastValue(createSeriesValueFor(textObservationSeries.getLastValue(), textObservationSeries));
-        } else if (series instanceof CountDatasetEntity && result instanceof CountDatasetOutput) {
-            CountDatasetEntity countObservationSeries = (CountDatasetEntity) series;
-            CountDatasetOutput output = (CountDatasetOutput) result;
-            output.setFirstValue(createSeriesValueFor(countObservationSeries.getFirstValue(), countObservationSeries));
-            output.setLastValue(createSeriesValueFor(countObservationSeries.getLastValue(), countObservationSeries));
+        try {
+            DatasetOutput result = createCondensed(series, query);
+            result.setSeriesParameters(getParameters(series, query));
+            result.setUom(series.getUnitI18nName(query.getLocale()));
+            DataRepository dataRepository = factory.create(series.getDatasetType());
+            result.setFirstValue(dataRepository.getFirstValue(series, session));
+            result.setLastValue(dataRepository.getLastValue(series, session));
+            return result;
+        } catch (DatasetFactoryException ex) {
+            throw new DataAccessException("Could not determine if id exists.", ex);
         }
-        return result;
     }
 
     private SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
@@ -246,77 +208,6 @@ public class DatasetRepository<T extends Data>
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");
         return sb.append(station).toString();
-    }
-
-    private MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
-        if (observation == null) {
-            // do not fail on empty observations
-            return null;
-        }
-        MeasurementValue value = new MeasurementValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        Double observationValue = !getServiceInfo().isNoDataValue(observation)
-                ? formatDecimal(observation.getValue(), series)
-                : Double.NaN;
-        value.setValue(observationValue);
-        return value;
-    }
-
-    private TextValue createSeriesValueFor(TextDataEntity observation,
-            TextDatasetEntity series) {
-        if (observation == null) {
-            // do not fail on empty observations
-            return null;
-        } else if (observation.getValue() == null) {
-            return (TextValue)queryObservationFor(observation, series, null);
-        }
-        TextValue value = new TextValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observation.getValue());
-        return value;
-    }
-
-    private CountValue createSeriesValueFor(CountDataEntity observation,
-            CountDatasetEntity series) {
-        if (observation == null) {
-            // do not fail on empty observations
-            return null;
-        } else if (observation.getValue() == null) {
-            return (CountValue)queryObservationFor(observation, series, null);
-        }
-        CountValue value = new CountValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observation.getValue());
-        return value;
-    }
-
-    private Data queryObservationFor(DataEntity observation, DatasetEntity<?> series, DbQuery query) {
-        if (observation == null) {
-            // do not fail on empty observations
-            return null;
-        }
-        if (query == null) {
-            query = DbQuery.createFrom(IoParameters.createDefaults());
-        }
-        DateTime timestamp = new DateTime(observation.getTimestamp());
-        List<DataEntity> observations = new ObservationDao(getSession()).getInstancesFor(timestamp, series, query);
-        if (observations != null && !observations.isEmpty()) {
-            if (series instanceof MeasurementDatasetEntity) {
-                return createSeriesValueFor((MeasurementDataEntity)observations.iterator().next(), (MeasurementDatasetEntity)series);
-            } else if (series instanceof TextDatasetEntity) {
-                return createSeriesValueFor((TextDataEntity)observations.iterator().next(), (TextDatasetEntity)series);
-            } else if (series instanceof CountDatasetEntity) {
-                return createSeriesValueFor((CountDataEntity)observations.iterator().next(), (CountDatasetEntity)series);
-            }
-        }
-        return null;
-    }
-
-    private Double formatDecimal(Double value, MeasurementDatasetEntity series) {
-        int scale = series.getNumberOfDecimals();
-        return new BigDecimal(value)
-                .setScale(scale, HALF_UP)
-                .doubleValue();
     }
 
     public DataRepositoryFactory getDataRepositoryFactory() {

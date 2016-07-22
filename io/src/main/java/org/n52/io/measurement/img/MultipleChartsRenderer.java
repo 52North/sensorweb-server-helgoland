@@ -198,7 +198,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             TimeSeries timeseries = new TimeSeries(chartId);
             if (hasValues(timeseriesData)) {
                 if (isBarStyle(style)) {
-                    MeasurementValue timeseriesValue = timeseriesData.getValues()[0];
+                    MeasurementValue timeseriesValue = timeseriesData.getValues().get(0);
                     Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
@@ -227,7 +227,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         }
 
         private boolean hasValues(MeasurementData timeseriesData) {
-            return timeseriesData.getValues().length > 0;
+            return timeseriesData.getValues().size() > 0;
         }
 
         private RegularTimePeriod determineTimeInterval(Date date, StyleProperties styleProperties) {

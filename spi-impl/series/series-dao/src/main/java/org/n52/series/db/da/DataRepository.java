@@ -28,6 +28,8 @@
  */
 package org.n52.series.db.da;
 
+import org.hibernate.Session;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
@@ -35,9 +37,13 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.dao.DbQuery;
 
-public interface DataRepository<T extends Data, E extends DatasetEntity> {
+public interface DataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> {
 
-    T getData(String id, DbQuery dbQuery) throws DataAccessException;
+    Data<? extends AbstractValue<?>> getData(String id, DbQuery dbQuery) throws DataAccessException;
+
+    V getFirstValue(DSE entity, Session session);
+
+    V getLastValue(DSE entity, Session session);
 
     void setSessionStore(HibernateSessionStore sessionStore);
 
@@ -45,5 +51,5 @@ public interface DataRepository<T extends Data, E extends DatasetEntity> {
 
     ServiceInfo getServiceInfo();
 
-    Class<E> getEntityType();
+    Class<DSE> getEntityType();
 }

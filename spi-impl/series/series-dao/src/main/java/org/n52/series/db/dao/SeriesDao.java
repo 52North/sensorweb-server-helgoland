@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
+@SuppressWarnings("rawtypes") // infer entitType runtime
 public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
@@ -64,6 +65,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
     }
 
+    @SuppressWarnings("unchecked")
     public SeriesDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DatasetEntity.class;
@@ -159,8 +161,8 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         alias = prepareForConcatenation(alias);
         criteria.add(Restrictions.and(
                 Restrictions.and(
-                        Restrictions.isNotNull(alias.concat("firstValue")),
-                        Restrictions.isNotNull(alias.concat("lastValue"))),
+                        Restrictions.isNotNull(alias.concat("firstValueAt")),
+                        Restrictions.isNotNull(alias.concat("lastValueAt"))),
                 Restrictions.eq(alias.concat("published"), true)));
         return criteria;
     }

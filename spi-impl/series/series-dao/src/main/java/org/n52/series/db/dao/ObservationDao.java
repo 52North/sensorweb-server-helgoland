@@ -28,6 +28,9 @@
  */
 package org.n52.series.db.dao;
 
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.eq;
 
 import java.util.Collections;
@@ -55,6 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <T> the data entity type
  */
 @Transactional
+@SuppressWarnings("rawtypes") // infer entitType runtime
 public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObservationDao.class);
@@ -66,6 +70,11 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
     private final Class<T> entityType;
+
+    public ObservationDao(Session session, Class<T> clazz) {
+        super(session);
+        this.entityType = clazz;
+    }
 
     public ObservationDao(Session session) {
         super(session);
@@ -81,7 +90,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get instance '{}': {}", key, parameters);
-        return (T) session.get(entityType, key);
+        return entityType.cast(session.get(entityType, key));
     }
 
     /**
@@ -106,7 +115,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws DataAccessException if accessing database fails.
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") // cast from hibernate
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = getDefaultCriteria();
@@ -124,8 +133,8 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
      * match the given query.
      * @throws DataAccessException if accessing database fails.
      */
-    @SuppressWarnings("unchecked")
-    public List<T> getAllInstancesFor(DatasetEntity<?> series, AbstractDbQuery parameters) throws DataAccessException {
+    @SuppressWarnings("unchecked") // cast from hibernate
+    public List<T> getAllInstancesFor(DatasetEntity<T> series, AbstractDbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
@@ -153,15 +162,16 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<DataEntity> getInstancesFor(DateTime timestamp, DatasetEntity series, DbQuery parameters) {
-        LOGGER.debug("get instances @{} for '{}': {}", timestamp, series.getPkid(), parameters);
+    public T getDataValueAt(DateTime timestamp, DatasetEntity series) {
+        LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp.toDate()));
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
+        DetachedCriteria filter = forClass(DatasetEntity.class)
+                .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        return criteria.list();
+        return (T) criteria.uniqueResult();
     }
 
 }

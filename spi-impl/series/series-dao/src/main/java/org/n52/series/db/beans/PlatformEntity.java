@@ -32,6 +32,8 @@ import org.n52.io.response.v1.ext.PlatformType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 /**
  * TODO: JavaDoc
  *
@@ -49,6 +51,8 @@ public class PlatformEntity extends DescribableEntity {
     private boolean mobile = false;
 
     private boolean insitu = true;
+
+    private Geometry geometry;
 
     public PlatformType getPlatformType() {
         return PlatformType.toInstance(mobile, insitu);
@@ -69,4 +73,13 @@ public class PlatformEntity extends DescribableEntity {
     public void setInsitu(boolean insitu) {
         this.insitu = insitu;
     }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
 }

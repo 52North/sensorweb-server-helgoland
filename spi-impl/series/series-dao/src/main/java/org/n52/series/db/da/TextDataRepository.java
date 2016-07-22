@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.da;
 
 import java.util.HashMap;
@@ -35,8 +36,8 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.joda.time.Interval;
-import org.n52.io.response.dataset.text.TextObservationData;
-import org.n52.io.response.dataset.text.TextObservationDataMetadata;
+import org.n52.io.response.dataset.text.TextData;
+import org.n52.io.response.dataset.text.TextDatasetMetadata;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
@@ -44,7 +45,7 @@ import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ObservationDao;
 
-public class TextDataRepository extends AbstractDataRepository<TextObservationData, TextDatasetEntity> {
+public class TextDataRepository extends AbstractDataRepository<TextData, TextDatasetEntity, TextDataEntity, TextValue> {
 
     @Override
     public Class<TextDatasetEntity> getEntityType() {
@@ -52,26 +53,28 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
     }
 
     @Override
-    protected TextObservationData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
-                                                            DbQuery dbQuery,
-                                                            Session session) throws DataAccessException {
-        TextObservationData result = assembleData(timeseries, dbQuery, session);
+    protected TextData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
+                                                       DbQuery dbQuery,
+                                                       Session session)
+            throws DataAccessException {
+        TextData result = assembleData(timeseries, dbQuery, session);
         Set<TextDatasetEntity> referenceValues = timeseries.getReferenceValues();
         if (referenceValues != null && !referenceValues.isEmpty()) {
-            TextObservationDataMetadata metadata = new TextObservationDataMetadata();
+            TextDatasetMetadata metadata = new TextDatasetMetadata();
             metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
             result.setMetadata(metadata);
         }
         return result;
     }
 
-    private Map<String, TextObservationData> assembleReferenceSeries(Set<TextDatasetEntity> referenceValues,
-                                                                 DbQuery query,
-                                                                 Session session) throws DataAccessException {
-        Map<String, TextObservationData> referenceSeries = new HashMap<>();
+    private Map<String, TextData> assembleReferenceSeries(Set<TextDatasetEntity> referenceValues,
+                                                          DbQuery query,
+                                                          Session session)
+            throws DataAccessException {
+        Map<String, TextData> referenceSeries = new HashMap<>();
         for (TextDatasetEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
-                TextObservationData referenceSeriesData = assembleData(referenceSeriesEntity, query, session);
+                TextData referenceSeriesData = assembleData(referenceSeriesEntity, query, session);
                 if (haveToExpandReferenceData(referenceSeriesData)) {
                     referenceSeriesData = expandReferenceDataIfNecessary(referenceSeriesEntity, query, session);
                 }
@@ -81,29 +84,31 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
         return referenceSeries;
     }
 
-    private boolean haveToExpandReferenceData(TextObservationData referenceSeriesData) {
-        return referenceSeriesData.getValues().length <= 1;
+    private boolean haveToExpandReferenceData(TextData referenceSeriesData) {
+        return referenceSeriesData.getValues().size() <= 1;
     }
 
-    private TextObservationData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
-        TextObservationData result = new TextObservationData();
+    private TextData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, DbQuery query, Session session)
+            throws DataAccessException {
+        TextData result = new TextData();
         ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
-        if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            TextDataEntity lastValidEntity = seriesEntity.getLastValue();
-            result.addValues(expandToInterval(query.getTimespan(), lastValidEntity, seriesEntity));
+        if ( !hasValidEntriesWithinRequestedTimespan(observations)) {
+            TextValue lastValidValue = getLastValue(seriesEntity, session);
+            result.addValues(expandToInterval(query.getTimespan(), lastValidValue.getValue(), seriesEntity));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
             TextDataEntity entity = observations.get(0);
-            result.addValues(expandToInterval(query.getTimespan(), entity, seriesEntity));
+            result.addValues(expandToInterval(query.getTimespan(), entity.getValue(), seriesEntity));
         }
         return result;
     }
 
     @Override
-    protected TextObservationData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
-        TextObservationData result = new TextObservationData();
+    protected TextData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session)
+            throws DataAccessException {
+        TextData result = new TextData();
         ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (TextDataEntity observation : observations) {
@@ -114,19 +119,23 @@ public class TextDataRepository extends AbstractDataRepository<TextObservationDa
         return result;
     }
 
-    private TextValue[] expandToInterval(Interval interval, TextDataEntity entity, TextDatasetEntity series) {
+    // XXX
+    private TextValue[] expandToInterval(Interval interval, String value, TextDatasetEntity series) {
         TextDataEntity referenceStart = new TextDataEntity();
         TextDataEntity referenceEnd = new TextDataEntity();
         referenceStart.setTimestamp(interval.getStart().toDate());
         referenceEnd.setTimestamp(interval.getEnd().toDate());
-        referenceStart.setValue(entity.getValue());
-        referenceEnd.setValue(entity.getValue());
-        return new TextValue[]{createSeriesValueFor(referenceStart, series),
-            createSeriesValueFor(referenceEnd, series)};
+        referenceStart.setValue(value);
+        referenceEnd.setValue(value);
+        return new TextValue[] {
+                                createSeriesValueFor(referenceStart, series),
+                                createSeriesValueFor(referenceEnd, series)
+        };
 
     }
 
-    TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
+    @Override
+    public TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
