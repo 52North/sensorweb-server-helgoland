@@ -31,8 +31,12 @@ package org.n52.io.response;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import org.hsqldb.lib.HashSet;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ServiceOutput extends ParameterOutput {
@@ -75,6 +79,10 @@ public class ServiceOutput extends ParameterOutput {
         this.type = type;
     }
 
+    public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
+        addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
+    }
+    
     @JsonAnyGetter
     public Map<String, Object> getFeatures() {
         return features != null 
@@ -248,4 +256,5 @@ public class ServiceOutput extends ParameterOutput {
         }
         return true;
     }
+
 }
