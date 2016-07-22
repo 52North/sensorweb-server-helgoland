@@ -28,8 +28,6 @@
  */
 package org.n52.series.db.da;
 
-import static org.junit.matchers.JUnitMatchers.isThrowable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +43,9 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ServiceOutput.ParameterCount;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceInfo;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceRepository implements OutputAssembler<ServiceOutput> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 
     @Autowired
@@ -68,7 +69,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     private EntityCounter counter;
 
     @Autowired
-    private DefaultIoFactory ioFactory;
+    private DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> ioFactoryCreator;
 
     public String getServiceId() {
         return serviceInfo.getServiceId();
@@ -129,7 +130,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     private ServiceOutput getExpandedService(DbQuery parameters) {
         ServiceOutput service = getCondensedService(parameters);
         service.setSupportsFirstLatest(true);
-        
+
         FilterResolver filterResolver = parameters.getFilterResolver();
         if ( !filterResolver.isSetPlatformTypeFilter()) {
             // ensure backwards compatibility
@@ -144,19 +145,19 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
                     ? serviceInfo.getVersion()
                     : "2.0");
             addSupportedDatasetsTo(service);
-            
+
             // TODO add features
             // TODO different counts
-            
+
         }
         return service;
     }
 
     private void addSupportedDatasetsTo(ServiceOutput service) {
         Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
-        for (String datasetType : ioFactory.getKnownTypes()) {
+        for (String datasetType : ioFactoryCreator.getKnownTypes()) {
             try {
-                IoFactory factory = ioFactory.create(datasetType);
+                IoFactory factory = ioFactoryCreator.create(datasetType);
                 mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
             } catch (DatasetFactoryException e) {
                 LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);

@@ -33,10 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hsqldb.lib.HashSet;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ServiceOutput extends ParameterOutput {
@@ -54,7 +51,7 @@ public class ServiceOutput extends ParameterOutput {
 
     @Deprecated
     private Boolean supportsFirstLatest;
-    
+
     public String getServiceUrl() {
         return serviceUrl;
     }
@@ -82,10 +79,10 @@ public class ServiceOutput extends ParameterOutput {
     public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
         addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
     }
-    
+
     @JsonAnyGetter
     public Map<String, Object> getFeatures() {
-        return features != null 
+        return features != null
                 ? Collections.unmodifiableMap(features)
                 : null;
     }
@@ -93,7 +90,7 @@ public class ServiceOutput extends ParameterOutput {
     public void setFeatures(Map<String, Object> features) {
         this.features = features;
     }
-    
+
     public void addFeature(String featureName, Object featureInfo) {
         if (features == null) {
             features = new HashMap<>();
@@ -114,7 +111,7 @@ public class ServiceOutput extends ParameterOutput {
         addFeature("supportsFirstLatest", supportsFirstLatest);
         this.supportsFirstLatest = supportsFirstLatest;
     }
-    
+
     /**
      * @return the parameter count
      * @deprecated since 2.0.0, {@link #features} get serialized instead

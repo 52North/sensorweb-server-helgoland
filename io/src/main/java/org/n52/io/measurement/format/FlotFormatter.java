@@ -35,7 +35,7 @@ import java.util.Map;
 import org.n52.io.DataFormatter;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -56,7 +56,7 @@ public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
     private FlotData createFlotSeries(MeasurementData seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
-        MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
+        MeasurementDatasetMetadata metadata = seriesToFormat.getMetadata();
         if (metadata != null) {
             Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
             for (String referenceValueId : referenceValues.keySet()) {
@@ -77,7 +77,7 @@ public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
                 Coordinate coordinate = currentValue.getGeometry().getCoordinate();
                 list.add(coordinate.x);
                 list.add(coordinate.y);
-                if (!Double.isNaN(coordinate.z)) {
+                if ( !Double.isNaN(coordinate.z)) {
                     list.add(coordinate.z);
                 }
             }

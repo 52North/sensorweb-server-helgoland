@@ -44,6 +44,7 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.DataService;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * TODO: JavaDoc
@@ -51,21 +52,21 @@ import org.n52.web.exception.ResourceNotFoundException;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 public class DatasetAccessService extends AccessService<DatasetOutput>
-        implements DataService<Data> {
+        implements DataService<Data<?>> {
 
-    private final DataRepositoryFactory factory;
+    @Autowired
+    private DataRepositoryFactory factory;
 
-    public DatasetAccessService(DatasetRepository repository) {
+    public DatasetAccessService(DatasetRepository<Data<?>> repository) {
         super(repository);
-        factory = repository.getDataRepositoryFactory();
     }
 
     @Override
-    public DataCollection<Data> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<?>> getData(RequestSimpleParameterSet parameters) {
         try {
-            TvpDataCollection<Data> dataCollection = new TvpDataCollection<>();
+            TvpDataCollection<Data<?>> dataCollection = new TvpDataCollection<>();
             for (String seriesId : parameters.getSeriesIds()) {
-                Data data = getDataFor(seriesId, parameters);
+                Data<?> data = getDataFor(seriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(seriesId, data);
                 }
@@ -77,7 +78,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
         }
     }
 
-    private Data getDataFor(String seriesId, RequestSimpleParameterSet parameters)
+    private Data<?> getDataFor(String seriesId, RequestSimpleParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         String datasetType = DatasetType.extractType(seriesId);

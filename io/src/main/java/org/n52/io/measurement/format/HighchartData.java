@@ -30,12 +30,7 @@ package org.n52.io.measurement.format;
 
 import java.util.List;
 
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DatasetMetadata;
-
-public class HighchartData extends Data {
-
-    private static final long serialVersionUID = 6663267440167980890L;
+public class HighchartData {
 
     private String name;
 
@@ -55,16 +50,6 @@ public class HighchartData extends Data {
 
     public void setData(List<Number[]> series) {
         this.data = series;
-    }
-
-    @Override
-    public boolean hasReferenceValues() {
-        return false;
-    }
-
-    @Override
-    public DatasetMetadata getMetadata() {
-        return null;
     }
 
 }

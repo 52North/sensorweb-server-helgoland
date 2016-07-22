@@ -76,7 +76,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
         IoParameters queryMap = createFromQuery(query);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
-        
+
         try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
@@ -116,7 +116,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     @Override
     public ModelAndView getCollection(MultiValueMap<String, String> query) {
-        
+
         IoParameters queryMap = createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
 
@@ -133,10 +133,10 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     @Override
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
-        
+
         IoParameters queryMap = createFromQuery(query);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, queryMap);
-        
+
         T item = parameterService.getParameter(id, queryMap);
 
         if (item == null) {

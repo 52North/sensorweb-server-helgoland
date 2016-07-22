@@ -34,17 +34,19 @@ import java.util.Map;
 
 import org.n52.io.response.dataset.DatasetMetadata;
 
-public class TextObservationDataMetadata implements DatasetMetadata<Map<String, TextObservationData>>, Serializable {
+public class TextDatasetMetadata implements DatasetMetadata<Map<String, TextData>>, Serializable {
 
     private static final long serialVersionUID = -5666064665815076013L;
 
-    private Map<String, TextObservationData> referenceValues = new HashMap<>();
+    private Map<String, TextData> referenceValues = new HashMap<>();
 
-    public Map<String, TextObservationData> getReferenceValues() {
+    @Override
+    public Map<String, TextData> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Map<String, TextObservationData> referenceValues) {
+    @Override
+    public void setReferenceValues(Map<String, TextData> referenceValues) {
         this.referenceValues = referenceValues;
     }
 

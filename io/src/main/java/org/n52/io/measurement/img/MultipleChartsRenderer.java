@@ -56,7 +56,7 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.ReferenceValueOutput;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.n52.io.style.BarStyle;
@@ -102,7 +102,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                  * Configure timeseries reference value renderers with the same metadata and add it at the end
                  * of the plot's renderer list.
                  */
-                MeasurementDataMetadata metadata = timeseriesData.getMetadata();
+                MeasurementDatasetMetadata metadata = timeseriesData.getMetadata();
                 Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, MeasurementData> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();

@@ -49,12 +49,13 @@ import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
 import org.n52.io.measurement.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.spi.srv.DataService;
 
-public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
+public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
 
     private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(new MimeType[] {
                                                                                             MimeType.TEXT_CSV,
@@ -76,7 +77,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData> {
             }
 
             @Override
-            public DataCollection< ? extends Data> getProcessedData() {
+            public DataCollection<?> getProcessedData() {
                 String format = getParameters().getFormat();
                 return FormatterFactory.createFormatterFactory(format).create().format(getData());
             }

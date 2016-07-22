@@ -35,7 +35,7 @@ import java.util.Map;
 import org.n52.io.DataFormatter;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementDataMetadata;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -50,7 +50,7 @@ public class HighchartFormatter implements DataFormatter<MeasurementData, Highch
             HighchartData series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewSeries(timeseriesId, series);
 
-            MeasurementDataMetadata metadata = seriesToFormat.getMetadata();
+            MeasurementDatasetMetadata metadata = seriesToFormat.getMetadata();
             if (metadata != null) {
                 Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
                 for (String referenceValueId : referenceValues.keySet()) {

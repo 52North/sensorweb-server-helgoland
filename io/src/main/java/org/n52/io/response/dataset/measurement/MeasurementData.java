@@ -28,31 +28,16 @@
  */
 package org.n52.io.response.dataset.measurement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class MeasurementData extends Data {
+public class MeasurementData extends Data<MeasurementValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private List<MeasurementValue> values = new ArrayList<>();
-
-    private MeasurementDataMetadata metadata;
-
-    public void addValues(MeasurementValue... values) {
-        if (values != null && values.length > 0) {
-            this.values.addAll(Arrays.asList(values));
-        }
-    }
+    private MeasurementDatasetMetadata metadata;
 
     /**
      * @param values the timestamp &lt;-&gt; value map.
@@ -73,39 +58,17 @@ public class MeasurementData extends Data {
     }
 
     private void addNewValue(Long timestamp, Double value) {
-        values.add(new MeasurementValue(timestamp, value));
+        addNewValue(new MeasurementValue(timestamp, value));
     }
 
-    /**
-     * @return a sorted list of measurement values.
-     */
-    public MeasurementValue[] getValues() {
-        Collections.sort(values);
-        return values.toArray(new MeasurementValue[0]);
-    }
-
-    void setValues(MeasurementValue[] values) {
-        this.values = Arrays.asList(values);
-    }
-
-    @JsonProperty("extra")
-    public MeasurementDataMetadata getMetadata() {
+    @Override
+    public MeasurementDatasetMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(MeasurementDataMetadata metadata) {
+    public void setMetadata(MeasurementDatasetMetadata metadata) {
         this.metadata = metadata;
     }
 
-    public long size() {
-        return values.size();
-    }
-
-    @JsonIgnore
-    public boolean hasReferenceValues() {
-        return metadata != null
-                && metadata.getReferenceValues() != null
-                && !metadata.getReferenceValues().isEmpty();
-    }
 
 }

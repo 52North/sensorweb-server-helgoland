@@ -32,12 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DatasetMetadata;
-
-public class FlotData extends Data {
-
-    private static final long serialVersionUID = -3294537734635511620L;
+public class FlotData {
 
     private List<Number[]> values;
 
@@ -65,16 +60,6 @@ public class FlotData extends Data {
 
     public void addReferenceValues(String id, List<Number[]> values) {
         this.referenceValues.put(id, values);
-    }
-
-    @Override
-    public boolean hasReferenceValues() {
-        return false;
-    }
-
-    @Override
-    public DatasetMetadata getMetadata() {
-        return null;
     }
 
 }

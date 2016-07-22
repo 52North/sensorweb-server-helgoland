@@ -54,9 +54,10 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoHandler;
+import org.n52.io.IoFactory;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
@@ -64,10 +65,10 @@ import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.v1.data.RawFormats;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -199,16 +200,20 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
+        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
+        createIoFactory(parameters)
+                .createHandler(MimeType.APPLICATION_PDF.getMimeType())
+                .writeBinary(response.getOutputStream());
+    }
+
+    private IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+            throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+        return new DefaultIoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue>()
                 .create("measurement")
                 .withSimpleRequest(parameters)
                 .withBasePath(getRootResource())
                 .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .createHandler("image/png");
-
-        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        ioHandler.writeBinary(response.getOutputStream());
+                .withDatasetService(timeseriesMetadataService);
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
@@ -229,16 +234,10 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
-                .create("measurement")
-                .withSimpleRequest(parameters)
-                .withBasePath(getRootResource())
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .createHandler("text/csv");
-
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        ioHandler.writeBinary(response.getOutputStream());
+        createIoFactory(parameters)
+                .createHandler(MimeType.APPLICATION_PDF.getMimeType())
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"application/zip"}, method = GET)
@@ -265,12 +264,6 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
-                .create("measurement")
-                .withSimpleRequest(parameters)
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .createHandler("text/csv");
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -278,7 +271,10 @@ public class TimeseriesDataController extends BaseController {
         } else {
             response.setContentType(TEXT_CSV.toString());
         }
-        ioHandler.writeBinary(response.getOutputStream());
+
+        createIoFactory(parameters)
+                .createHandler("text/csv")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/getData", produces = {"image/png"}, method = POST)
@@ -294,14 +290,10 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
-                .create("measurement")
-                .withSimpleRequest(parameters)
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .createHandler("image/png");
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        ioHandler.writeBinary(response.getOutputStream());
+        createIoFactory(parameters)
+                .createHandler("image/png")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = {"image/png"}, method = GET)
@@ -323,14 +315,10 @@ public class TimeseriesDataController extends BaseController {
         parameters.setBase64(map.isBase64());
         parameters.setExpanded(map.isExpanded());
 
-        IoHandler<? extends Data> ioHandler = new DefaultIoFactory()
-                .create("measurement")
-                .withSimpleRequest(parameters)
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService)
-                .createHandler("image/png");
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        ioHandler.writeBinary(response.getOutputStream());
+        createIoFactory(parameters)
+                .createHandler("image/png")
+                .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)

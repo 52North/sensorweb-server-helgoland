@@ -44,15 +44,15 @@ import org.n52.io.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {
 
-    private DefaultIoFactory factory;
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
+
+    private ConfigTypedFactory<IoFactory> factory;
 
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoFactory(config);
+        factory = new DefaultIoFactory();
     }
 
     @Test

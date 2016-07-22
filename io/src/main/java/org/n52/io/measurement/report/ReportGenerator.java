@@ -35,10 +35,11 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.v1.ext.DatasetOutput;
 
-public abstract class ReportGenerator<T extends Data> extends IoHandler<T> {
+public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
 
     private final IoStyleContext context;
 
@@ -48,7 +49,7 @@ public abstract class ReportGenerator<T extends Data> extends IoHandler<T> {
      * @param context the rendering context.
      */
     public ReportGenerator(RequestSimpleParameterSet simpleRequest,
-            IoProcessChain processChain,
+            IoProcessChain<T> processChain,
             IoStyleContext context) {
         super(simpleRequest, processChain);
         this.context = context;

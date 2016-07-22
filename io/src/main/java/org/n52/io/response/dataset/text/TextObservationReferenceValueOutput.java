@@ -38,26 +38,32 @@ public class TextObservationReferenceValueOutput implements ReferenceValueOutput
 
     private TextValue lastValue;
 
+    @Override
     public String getReferenceValueId() {
         return referenceValueId;
     }
 
+    @Override
     public void setReferenceValueId(String referenceValueId) {
         this.referenceValueId = referenceValueId;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
+    @Override
     public TextValue getLastValue() {
         return lastValue;
     }
 
+    @Override
     public void setLastValue(TextValue lastValue) {
         this.lastValue = lastValue;
     }

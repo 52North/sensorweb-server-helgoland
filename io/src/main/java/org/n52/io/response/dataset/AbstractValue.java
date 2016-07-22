@@ -30,13 +30,21 @@ package org.n52.io.response.dataset;
 
 import java.io.Serializable;
 
-public abstract class AbstractValue<T> extends Data implements Comparable<AbstractValue<?>>,Serializable {
+import org.n52.io.geojson.GeoJSONGeometrySerializer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.vividsolutions.jts.geom.Geometry;
+
+public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
     private Long timestamp;
 
     private T value;
+
+    private Geometry geometry;
 
     public AbstractValue() {
     }
@@ -62,15 +70,20 @@ public abstract class AbstractValue<T> extends Data implements Comparable<Abstra
         this.value = value;
     }
 
-    @Override
-    public boolean hasReferenceValues() {
-        return false;
+    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    @Override
-    public DatasetMetadata getMetadata() {
-        return null;
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
+
+    @JsonIgnore
+    public boolean isSetGeometry() {
+        return geometry != null && !geometry.isEmpty();
+    }
+
 
     @Override
     public int compareTo(AbstractValue<?> o) {

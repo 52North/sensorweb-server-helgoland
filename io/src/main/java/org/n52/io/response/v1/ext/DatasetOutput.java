@@ -34,11 +34,11 @@ import java.util.Set;
 
 import org.n52.io.Utils;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.ReferenceValueOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 
-public abstract class DatasetOutput<D extends Data, R extends ReferenceValueOutput<?>> extends ParameterOutput {
+public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>> extends ParameterOutput {
 
     private final String datasetType;
 
@@ -48,9 +48,9 @@ public abstract class DatasetOutput<D extends Data, R extends ReferenceValueOutp
 
     private R[] referenceValues;
 
-    private D firstValue;
+    private V firstValue;
 
-    private D lastValue;
+    private V lastValue;
 
     private String uom;
 
@@ -114,19 +114,19 @@ public abstract class DatasetOutput<D extends Data, R extends ReferenceValueOutp
     }
 
 
-    public D getFirstValue() {
+    public V getFirstValue() {
         return firstValue;
     }
 
-    public void setFirstValue(D firstValue) {
+    public void setFirstValue(V firstValue) {
         this.firstValue = firstValue;
     }
 
-    public D getLastValue() {
+    public V getLastValue() {
         return lastValue;
     }
 
-    public void setLastValue(D lastValue) {
+    public void setLastValue(V lastValue) {
         this.lastValue = lastValue;
     }
 

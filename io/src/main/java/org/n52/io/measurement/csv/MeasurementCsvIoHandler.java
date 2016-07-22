@@ -44,11 +44,11 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.count.CountObservationData;
+import org.n52.io.response.dataset.count.CountData;
 import org.n52.io.response.dataset.count.CountValue;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.text.TextObservationData;
+import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.io.response.v1.ext.DatasetOutput;
 import org.slf4j.Logger;
@@ -162,7 +162,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
         }
     }
 
-    private void writeData(DatasetOutput metadata, TextObservationData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, TextData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
@@ -179,7 +179,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
         }
     }
 
-    private void writeData(DatasetOutput metadata, CountObservationData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, CountData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();

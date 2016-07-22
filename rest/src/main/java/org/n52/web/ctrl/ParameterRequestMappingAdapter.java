@@ -44,7 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(method = GET, produces = {"application/json"})
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T>  {
-    
+
     @Override
     @RequestMapping(path = "")
     public ModelAndView getCollection(

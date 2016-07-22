@@ -100,7 +100,7 @@ public abstract class ConfigTypedFactory<T> {
     public boolean isKnown(String type) {
         return mappings.containsKey(type);
     }
-    
+
     public Set<String> getKnownTypes() {
         return mappings.stringPropertyNames();
     }
@@ -152,6 +152,6 @@ public abstract class ConfigTypedFactory<T> {
         return instance; // override if needed
     }
 
-    protected abstract Class<T> getTargetType();
+    protected abstract Class<?> getTargetType();
 
 }

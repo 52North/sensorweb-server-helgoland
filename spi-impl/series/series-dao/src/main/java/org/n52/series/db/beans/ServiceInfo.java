@@ -52,7 +52,7 @@ public class ServiceInfo {
     private String type = "Thin DB access layer service.";
 
     private List<Double> noDataValues;
-    
+
     private String version;
 
     public ServiceInfo() {
@@ -135,6 +135,6 @@ public class ServiceInfo {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
 
 }

@@ -37,7 +37,7 @@ import org.n52.io.response.dataset.DataCollection;
  * {@link RequestSimpleParameterSet}.
  * @param <T>
  */
-public interface DataService<T extends Data> extends RawDataInfo {
+public interface DataService<T extends Data<?>> extends RawDataInfo {
 
     public DataCollection<T> getData(RequestSimpleParameterSet parameters);
 

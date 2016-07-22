@@ -31,7 +31,7 @@
             </bean>
         </property>
     </bean>
-    
+
     <bean class="org.n52.web.ctrl.ServicesParameterController" parent="parameterController">
         <property name="parameterService">
             <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">

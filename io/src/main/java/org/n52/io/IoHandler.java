@@ -38,12 +38,13 @@ import java.io.OutputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
 // TODO actually this interface describes an prepares and writes an output only
 // TODO consider a plain JSON Writer to get rid of ModelAndView in controllers
-public abstract class IoHandler<T extends Data> {
+public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
 
     protected final I18N i18n;
 

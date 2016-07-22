@@ -28,10 +28,7 @@
  */
 package org.n52.io.response.dataset;
 
-import java.util.Map;
-
-@SuppressWarnings("rawtypes")
-public interface DatasetMetadata<T extends Map> {
+public interface DatasetMetadata<T> {
 
     public T getReferenceValues();
 

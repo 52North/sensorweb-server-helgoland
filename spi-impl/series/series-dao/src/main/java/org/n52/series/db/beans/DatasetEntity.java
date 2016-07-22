@@ -35,7 +35,7 @@ import java.util.List;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 
-public class DatasetEntity<T extends DataEntity> {
+public class DatasetEntity<T extends DataEntity<?>> {
 
     public static final String PROCEDURE = "procedure";
     public static final String CATEGORY = "category";
