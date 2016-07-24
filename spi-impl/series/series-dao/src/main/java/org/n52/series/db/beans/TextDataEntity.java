@@ -28,6 +28,14 @@
  */
 package org.n52.series.db.beans;
 
-public class TextDataEntity extends DataEntity<String> {
+import java.util.Collection;
 
+public class TextDataEntity extends DataEntity<String> {
+    
+    @Override
+    public boolean isNoDataValue(Collection<String> noDataValues) {
+        String value = getValue();
+        return value == null
+                || noDataValues.contains(value);
+    }
 }
