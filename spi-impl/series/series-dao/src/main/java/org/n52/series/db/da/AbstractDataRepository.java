@@ -34,6 +34,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.AbstractValue.ValidTime;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.DataAccessException;
@@ -116,21 +117,21 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     protected void addValidTime(DataEntity<?> observation, AbstractValue<?> value) {
-        // TODO add validTime to value
-        if (observation.isSetValidStartTime()) {
-            observation.getValidTimeStart().getTime();
-        }
-        if (observation.isSetValidEndTime()) {
-            observation.getValidTimeEnd().getTime();
+        if (observation.isSetValidStartTime() || observation.isSetValidEndTime()) {
+            Long validFrom = observation.isSetValidStartTime()
+                    ? observation.getValidTimeStart().getTime()
+                    : null;
+            Long validUntil = observation.isSetValidEndTime()
+                    ? observation.getValidTimeEnd().getTime()
+                    : null;
+            value.setValidTime(new ValidTime(validFrom, validUntil));
         }
     }
 
     protected void addParameter(DataEntity<?> observation, AbstractValue<?> value) {
         if (observation.hasParameters()) {
             for (DataParameter<?> parameter : observation.getParameters()) {
-                // TODO add parameters to value
-                parameter.getName();
-                parameter.getValue();
+                value.addParameter(parameter.getName(), parameter.getValue());
             }
         }
     }
