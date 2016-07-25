@@ -182,6 +182,23 @@ public class DbQuery {
         return criteria;
     }
     
+    Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
+        Set<String> datasetTypes = getParameters().getDatasetTypes();
+        FilterResolver filterResolver = getFilterResolver();
+        if ( !filterResolver.shallIncludeAllDatasetTypes()) {
+            if ("pkid".equalsIgnoreCase(parameter)) {
+                // series table itself
+                criteria.add(Restrictions.in("datasetType", datasetTypes));
+            } else {
+                // join parameter table with series table
+                DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
+                        .add(Restrictions.in("datasetType", datasetTypes))
+                        .setProjection(onPkidProjection(parameter));
+                criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+            }
+        }
+        return criteria;
+    }
 
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
@@ -365,5 +382,6 @@ public class DbQuery {
     public String toString() {
         return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
     }
+
 
 }

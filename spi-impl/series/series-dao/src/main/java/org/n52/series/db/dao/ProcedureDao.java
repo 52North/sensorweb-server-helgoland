@@ -34,9 +34,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.ProcedureEntity;
@@ -45,6 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
+    private static final String SERIES_PROPERTY = "procedure";
+    
     private static final String COLUMN_REFERENCE = "reference";
 
     public ProcedureDao(Session session) {
@@ -59,7 +59,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
             criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFiltersTo(criteria, query).list();
+        return addFilters(criteria, query).list();
     }
 
     @Override
@@ -70,17 +70,17 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("procedure").add(eq(COLUMN_REFERENCE, Boolean.FALSE));
+        Criteria criteria = getDefaultCriteria(getSeriesProperty())
+                .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
-        return (List<ProcedureEntity>) addFiltersTo(criteria, parameters).list();
+        return (List<ProcedureEntity>) addFilters(criteria, parameters).list();
     }
 
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
-        return parameters.addPlatformTypesFilter("procedure", criteria)
-                .add(Subqueries.propertyIn("procedure.pkid", filter));
+    @Override
+    protected String getSeriesProperty() {
+        return SERIES_PROPERTY;
     }
 
     @Override

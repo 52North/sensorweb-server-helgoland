@@ -119,15 +119,20 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
 
-        return (List<T>) addFiltersTo(criteria, parameters).list();
+        return (List<T>) addFilters(criteria, parameters).list();
+    }
+    
+    @Override
+    protected String getSeriesProperty() {
+        return COLUMN_PKID;
     }
 
-
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
+    @Override
+    protected Criteria addFilters(Criteria criteria, DbQuery parameters) {
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        return parameters.addPlatformTypesFilter("series", criteria)
+        criteria = parameters.addPlatformTypeFilter("pkid", criteria)
                 .add(Subqueries.propertyIn("series.pkid", filter));
+        return addIgnoreNonPublishedSeriesTo(criteria, "series");
     }
 
     @SuppressWarnings("unchecked")

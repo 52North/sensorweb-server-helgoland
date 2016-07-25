@@ -45,6 +45,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CategoryDao extends AbstractDao<CategoryEntity> {
 
+    private static final String SERIES_PROPERTY = "category";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDao.class);
 
     public CategoryDao(Session session) {
@@ -60,7 +62,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
             criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFiltersTo(criteria, query).list();
+        return addFilters(criteria, query).list();
     }
 
     @Override
@@ -73,17 +75,16 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria("category", CategoryEntity.class);
+        Criteria criteria = getDefaultCriteria(getSeriesProperty(), CategoryEntity.class);
         if (hasTranslation(parameters, I18nCategoryEntity.class)) {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
-        return addFiltersTo(criteria, parameters).list();
+        return addFilters(criteria, parameters).list();
     }
-
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("category");
-        return parameters.addPlatformTypesFilter("category", criteria)
-                .add(Subqueries.propertyIn("category.pkid", filter));
+    
+    @Override
+    protected String getSeriesProperty() {
+        return SERIES_PROPERTY;
     }
 
     @Override
