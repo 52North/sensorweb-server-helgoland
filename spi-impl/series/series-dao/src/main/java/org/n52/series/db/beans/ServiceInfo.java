@@ -80,7 +80,7 @@ public class ServiceInfo {
     }
 
     @JsonIgnore
-    public boolean isNoDataValue(MeasurementDataEntity observation) {
+    public boolean isNoDataValue(DataEntity<?> observation) {
         return observation.isNoDataValue(noDataValues);
     }
 

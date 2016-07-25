@@ -28,6 +28,8 @@
  */
 package org.n52.series.db.beans;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.Is;
 import org.junit.Before;
@@ -42,16 +44,23 @@ public class ServiceInfoTest {
         serviceInfo = new ServiceInfo();
     }
 
+    public void shouldNotFailWhenSettingInvalidNoDataValues() {
+        TextDataEntity entity = new TextDataEntity();
+        serviceInfo.setNoDataValues("4.3,9,no-data");
+        entity.setValue("no-data");
+        MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), is(true));
+    }
+
     @Test
     public void shouldTreatNullAsNoDataValue() {
-        ObservationEntity entity = new ObservationEntity();
+        MeasurementDataEntity entity = new MeasurementDataEntity();
         entity.setValue(null);
         MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
     }
 
     @Test
     public void shouldTreatNaNAsNoDataValue() {
-        ObservationEntity entity = new ObservationEntity();
+        MeasurementDataEntity entity = new MeasurementDataEntity();
         entity.setValue(Double.NaN);
         MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
     }
@@ -59,7 +68,7 @@ public class ServiceInfoTest {
     @Test
     public void shouldHandleDoubleValues() {
         serviceInfo.setNoDataValues("4.3,9,foo");
-        ObservationEntity entity = new ObservationEntity();
+        MeasurementDataEntity entity = new MeasurementDataEntity();
         entity.setValue(new Double(9));
         MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));
 

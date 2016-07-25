@@ -33,6 +33,8 @@ import java.io.Serializable;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -62,6 +64,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
         this.timestamp = timestamp;
     }
 
+    @JsonInclude(content = Include.ALWAYS)
     public T getValue() {
         return value;
     }

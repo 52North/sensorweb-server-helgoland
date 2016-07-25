@@ -138,9 +138,12 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         }
         MeasurementValue value = new MeasurementValue();
         value.setTimestamp(observation.getTimestamp().getTime());
+        
         Double observationValue = !getServiceInfo().isNoDataValue(observation)
                 ? formatDecimal(observation.getValue(), series)
-                : Double.NaN;
+                : null;
+                //: Double.NaN; // TODO
+                
         value.setValue(observationValue);
         addGeometry(observation, value);
         addValidTime(observation, value);

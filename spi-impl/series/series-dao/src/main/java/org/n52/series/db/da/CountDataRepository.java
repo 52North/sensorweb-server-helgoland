@@ -133,9 +133,14 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
             // do not fail on empty observations
             return null;
         }
+        
+        Integer observationValue = !getServiceInfo().isNoDataValue(observation)
+                ? observation.getValue()
+                : null;
+        
         CountValue value = new CountValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observation.getValue());
+        value.setValue(observationValue);
         addGeometry(observation, value);
         addValidTime(observation, value);
         return value;
