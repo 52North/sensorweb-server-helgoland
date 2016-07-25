@@ -806,6 +806,15 @@ public class IoParameters implements Parameters {
         return parameters;
     }
 
+    @Override
+    public String toString() {
+        return "IoParameters{" + "query=" + query + '}';
+    }
+
+    public String getHrefBase() {
+        return getAsString(Parameters.HREF_BASE);
+    }
+
     /* ****************************************************************
      *                    FACTORY METHODS
      * ************************************************************** */
@@ -851,13 +860,31 @@ public class IoParameters implements Parameters {
         return new IoParameters(queryParameters, defaultConfig);
     }
 
-    @Override
-    public String toString() {
-        return "IoParameters{" + "query=" + query + '}';
+    public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
+        return parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
+                || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES)
+                ? parameters
+                : parameters
+                    .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
+                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
+    }
+    
+    public boolean isPureStationaryInsituQuery() {
+        Set<String> platformTypes = getPlatformTypes();
+        Set<String> datasetTypes = getDatasetTypes();
+        return isStationaryInsituOnly(platformTypes)
+                && isMeasurementOnly(datasetTypes);
     }
 
-    public String getHrefBase() {
-        return getAsString(Parameters.HREF_BASE);
+    private boolean isStationaryInsituOnly(Set<String> platformTypes) {
+        return platformTypes.size() == 2
+                && platformTypes.contains("stationary") 
+                && platformTypes.contains("insitu");
     }
-
+    
+    private boolean isMeasurementOnly(Set<String> datasetTypes) {
+        return datasetTypes.size() == 1
+                && datasetTypes.contains("measurement");
+    }
+    
 }

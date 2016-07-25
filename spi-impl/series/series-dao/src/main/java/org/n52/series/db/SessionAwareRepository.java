@@ -50,7 +50,6 @@ import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.da.ServiceRepository;
-import org.n52.series.db.dao.AbstractDbQuery;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -59,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class SessionAwareRepository<DBQ extends AbstractDbQuery> {
+public abstract class SessionAwareRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionAwareRepository.class);
 

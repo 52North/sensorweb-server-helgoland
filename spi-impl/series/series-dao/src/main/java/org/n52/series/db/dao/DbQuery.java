@@ -26,27 +26,252 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.dao;
 
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
+import static org.hibernate.criterion.Restrictions.between;
+import static org.hibernate.criterion.Restrictions.isNull;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
+import static org.hibernate.criterion.Subqueries.propertyIn;
+import static org.n52.series.db.DataModelUtil.isEntitySupported;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.spatial.criterion.SpatialRestrictions;
+import org.hibernate.sql.JoinType;
+import org.joda.time.Interval;
+import org.n52.io.crs.BoundingBox;
+import org.n52.io.crs.CRSUtils;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
 import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.PlatformEntity;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DbQuery extends AbstractDbQuery {
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
 
-    private DbQuery(IoParameters parameters) {
-        super(parameters);
+public class DbQuery {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbQuery.class);
+
+    protected static final String COLUMN_KEY = "pkid";
+
+    private static final String COLUMN_LOCALE = "locale";
+
+    private static final String COLUMN_TIMESTAMP = "timestamp";
+
+    private IoParameters parameters = IoParameters.createDefaults();
+
+    private String sridAuthorityCode = "EPSG:4326"; // default
+
+    protected DbQuery(IoParameters parameters) {
+        if (parameters != null) {
+            this.parameters = parameters;
+        }
     }
 
-    @Override
+    public static DbQuery createFrom(IoParameters parameters) {
+        return new DbQuery(parameters);
+    }
+
+    public void setDatabaseAuthorityCode(String code) {
+        this.sridAuthorityCode = code;
+    }
+
+    public String getHrefBase() {
+        return parameters.getHrefBase();
+    }
+
+    public String getLocale() {
+        return parameters.getLocale();
+    }
+
+    public String getSearchTerm() {
+        return parameters.getAsString(Parameters.SEARCH_TERM);
+    }
+
+    public Interval getTimespan() {
+        return parameters.getTimespan().toInterval();
+    }
+
+    public BoundingBox getSpatialFilter() {
+        return parameters.getSpatialFilter();
+    }
+
+    public boolean isExpanded() {
+        return parameters.isExpanded();
+    }
+
+    public Set<String> getDatasetTypes() {
+        return parameters.getDatasetTypes();
+    }
+
+    public boolean isSetDatasetTypeFilter() {
+        return !parameters.getDatasetTypes().isEmpty();
+    }
+
+    public boolean checkTranslationForLocale(Criteria criteria) {
+        return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
+    }
+
+    public Criteria addLocaleTo(Criteria criteria, Class< ? > clazz) {
+        if (getLocale() != null && isEntitySupported(clazz, criteria)) {
+            Criteria translations = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN);
+            criteria = translations.add(or(like(COLUMN_LOCALE, getCountryCode()), isNull(COLUMN_LOCALE)));
+        }
+        return criteria;
+    }
+
+    private String getCountryCode() {
+        return getLocale().split("_")[0];
+    }
+
+    public Criteria addTimespanTo(Criteria criteria) {
+        if (parameters.getTimespan() != null) {
+            Interval interval = parameters.getTimespan().toInterval();
+            Date start = interval.getStart().toDate();
+            Date end = interval.getEnd().toDate();
+            criteria.add(between(COLUMN_TIMESTAMP, start, end));
+        }
+        return criteria;
+    }
+
+    /**
+     * Adds an platform type filter to the query.
+     *
+     * @param parameter the parameter to filter on.
+     * @param criteria the criteria to add the filter to.
+     * @return the criteria to chain.
+     */
+    Criteria addPlatformTypeFilter(String parameter, Criteria criteria) {
+        FilterResolver filterResolver = getFilterResolver();
+        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
+            if ("pkid".equalsIgnoreCase(parameter)) {
+                // series table itself
+                criteria.createCriteria("platform")
+                        .add(createMobileExpression(filterResolver))
+                        .add(createInsituExpression(filterResolver));
+            } else {
+                // join parameter table via series table
+                DetachedCriteria c = forClass(DatasetEntity.class, "series")
+                        .createCriteria("procedure")
+                        .add(createMobileExpression(filterResolver))
+                        .add(createInsituExpression(filterResolver))
+                        .setProjection(onPkidProjection(parameter));
+                criteria.add(propertyIn(format("%s.pkid", parameter), c));
+            }
+        }
+        return criteria;
+    }
+    
+    Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
+        Set<String> datasetTypes = getParameters().getDatasetTypes();
+        FilterResolver filterResolver = getFilterResolver();
+        if ( !filterResolver.shallIncludeAllDatasetTypes()) {
+            if ("pkid".equalsIgnoreCase(parameter)) {
+                // series table itself
+                criteria.add(Restrictions.in("datasetType", datasetTypes));
+            } else {
+                // join parameter table with series table
+                DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
+                        .add(Restrictions.in("datasetType", datasetTypes))
+                        .setProjection(onPkidProjection(parameter));
+                criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+            }
+        }
+        return criteria;
+    }
+
+    private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
+        boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
+        boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+                 Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
+    }
+
+
+    private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
+        boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
+        boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+                 Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
+    }
+
+    private ProjectionList onPkidProjection(String parameter) {
+        final String filterProperty = format("series.%s.pkid", parameter);
+        return projectionList().add(property(filterProperty));
+    }
+
+    /**
+     * @param id
+     *        the id string to parse.
+     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
+     *         long.
+     */
+    public Long parseToId(String id) {
+        try {
+            if (id.contains("/")) {
+                return Long.parseLong(id.substring(id.lastIndexOf("/")+1));
+            }
+            return Long.parseLong(id);
+        }
+        catch (NumberFormatException e) {
+            return Long.MIN_VALUE;
+        }
+    }
+
+    public Set<Long> parseToIds(Set<String> ids) {
+        Set<Long> parsedIds = new HashSet<>(ids.size());
+        for (String id : ids) {
+            parsedIds.add(parseToId(id));
+        }
+        return parsedIds;
+    }
+
+    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery parameters) {
+        BoundingBox spatialFilter = parameters.getSpatialFilter();
+        if (spatialFilter != null) {
+            try {
+                CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
+                int databaseSrid = crsUtils.getSrsIdFrom(sridAuthorityCode);
+                Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
+                Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
+                Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
+                criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
+
+                // TODO intersect with linestring
+
+            }
+            catch (FactoryException e) {
+                LOGGER.error("Could not create transformation facilities.", e);
+            }
+            catch (TransformException e) {
+                LOGGER.error("Could not perform transformation.", e);
+            }
+        }
+        return criteria;
+    }
+
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
         DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class);
 
@@ -145,13 +370,18 @@ public class DbQuery extends AbstractDbQuery {
         }
     }
 
-    public static DbQuery createFrom(IoParameters parameters) {
-        return new DbQuery(parameters);
+    public IoParameters getParameters() {
+        return parameters;
     }
 
+    public FilterResolver getFilterResolver() {
+        return parameters.getFilterResolver();
+    }
+    
     @Override
     public String toString() {
         return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
     }
+
 
 }

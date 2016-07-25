@@ -36,10 +36,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
@@ -81,7 +78,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
          * for given pattern on any of the stored labels.
          */
         List<T> series = new ArrayList<>();
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria(), "s");
+        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
 
@@ -103,7 +100,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get instance '{}': {}", key, parameters);
-        Criteria criteria = session.createCriteria(entityType, "series");
+        Criteria criteria = getDefaultCriteria("series");
         criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
         return entityType.cast(criteria
                 .add(eq("pkid", key))
@@ -114,26 +111,27 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = session.createCriteria(entityType, "series");
-
+        Criteria criteria = getDefaultCriteria();
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
-
-        return (List<T>) addFiltersTo(criteria, parameters).list();
+        return (List<T>) addFilters(criteria, parameters).list();
+    }
+    
+    @Override
+    protected String getSeriesProperty() {
+        return COLUMN_PKID;
     }
 
-
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        return parameters.addPlatformTypesFilter("series", criteria)
-                .add(Subqueries.propertyIn("series.pkid", filter));
+    @Override
+    protected Criteria addFilters(Criteria criteria, DbQuery parameters) {
+        criteria = super.addFilters(criteria, parameters);
+        return addIgnoreNonPublishedSeriesTo(criteria, "");
     }
 
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(FeatureEntity feature) {
         LOGGER.debug("get instance for feature '{}'", feature);
-        Criteria criteria = session.createCriteria(entityType, "s");
+        Criteria criteria = getDefaultCriteria("s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
@@ -143,18 +141,11 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(PlatformEntity platform) {
         LOGGER.debug("get instance for platform '{}'", platform);
-        Criteria criteria = session.createCriteria(entityType, "s");
+        Criteria criteria = getDefaultCriteria("s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, platform.getPkid()));
         return (List<T>) criteria.list();
-    }
-
-    @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
@@ -170,13 +161,18 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     private String prepareForConcatenation(String alias) {
         return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
+    
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        if (entityType != null) {
-            return session.createCriteria(entityType);
-        }
-        return session.createCriteria(DatasetEntity.class);
+    protected Class<T> getEntityClass() {
+        return entityType;
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria(String alias) {
+        return entityType != null
+            ? super.getDefaultCriteria(alias)
+            : session.createCriteria(DatasetEntity.class, alias);
     }
 
 }

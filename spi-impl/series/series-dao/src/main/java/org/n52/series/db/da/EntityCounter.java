@@ -29,12 +29,16 @@
 package org.n52.series.db.da;
 
 import org.hibernate.Session;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.CategoryDao;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PhenomenonDao;
+import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProcedureDao;
 import org.n52.series.db.dao.SeriesDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,60 +50,89 @@ public class EntityCounter {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-    @Autowired
-    private DataRepositoryFactory dataRepository;
-
-    public int countStations() throws DataAccessException {
-        return countFeatures();
-    }
-
-    public int countFeatures() throws DataAccessException {
+    public Integer countFeatures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new FeatureDao(session).getCount();
+            return new FeatureDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
 
-    public int countOfferings() throws DataAccessException {
+    public Integer countOfferings(DbQuery query) throws DataAccessException {
         // offerings equals procedures in our case
-        return countProcedures();
+        return countProcedures(query);
     }
-
-    public int countProcedures() throws DataAccessException {
+    
+    public Integer countProcedures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new ProcedureDao(session).getCount();
+            return new ProcedureDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
 
-    public int countPhenomena() throws DataAccessException {
+    public Integer countPhenomena(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new PhenomenonDao(session).getCount();
+            return new PhenomenonDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
 
-    public int countCategories() throws DataAccessException {
+    public Integer countCategories(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new CategoryDao(session).getCount();
+            return new CategoryDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
 
-    public int countTimeseries() throws DataAccessException {
+    public Integer countPlatforms(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new SeriesDao<MeasurementDatasetEntity>(session, MeasurementDatasetEntity.class).getCount();
+            return new PlatformDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
+    
+    public Integer countDatasets(DbQuery query) throws DataAccessException {
+        Session session = sessionStore.getSession();
+        try {
+            return new SeriesDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
+        } finally {
+            sessionStore.returnSession(session);
+        }
+    }
+    
+    public Integer countStations() throws DataAccessException {
+        Session session = sessionStore.getSession();
+        try {
+            DbQuery query = createBackwardsCompatibleQuery();
+            return countFeatures(query);
+        } finally {
+            sessionStore.returnSession(session);
+        }
+    }
+    
+    public Integer countTimeseries() throws DataAccessException {
+        Session session = sessionStore.getSession();
+        try {
+            DbQuery query = createBackwardsCompatibleQuery();
+            return countDatasets(query);
+        } finally {
+            sessionStore.returnSession(session);
+        }
+    }
+
+    private DbQuery createBackwardsCompatibleQuery() {
+        return DbQuery.createFrom(IoParameters.createDefaults()
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
+                .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement"));
+    }
+
 }

@@ -45,6 +45,7 @@ import org.hibernate.criterion.Subqueries;
 import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.slf4j.Logger;
@@ -134,7 +135,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked") // cast from hibernate
-    public List<T> getAllInstancesFor(DatasetEntity series, AbstractDbQuery parameters) throws DataAccessException {
+    public List<T> getAllInstancesFor(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
@@ -142,25 +143,22 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-    /**
-     * Counts all observations not including deleted observations.
-     *
-     * @return amount of observations
-     * @throws org.n52.series.db.DataAccessException if accessing database
-     * fails.
-     */
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected String getSeriesProperty() {
+        return ""; // there's no series property for observation
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return session.createCriteria(entityType).add(eq(COLUMN_DELETED, Boolean.FALSE));
+    protected Criteria getDefaultCriteria(String alias) {
+        return super.getDefaultCriteria(alias)
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
-
+    
+    @Override
+    protected Class<T> getEntityClass() {
+        return entityType;
+    }
+    
     @SuppressWarnings("unchecked")
     public T getDataValueAt(DateTime timestamp, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());

@@ -82,11 +82,11 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     }
 
     private DataRepository createRepository(String datasetType) throws DataAccessException {
-        if ( !factory.isKnown(datasetType)) {
+        if ( !"measurement".equalsIgnoreCase(datasetType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
-            return factory.create(datasetType);
+            return factory.create("measurement");
         } catch (DatasetFactoryException e) {
             throw new DataAccessException(e.getMessage());
         }
