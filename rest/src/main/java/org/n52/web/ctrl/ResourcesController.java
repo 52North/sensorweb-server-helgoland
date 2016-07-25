@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.io.I18N;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
@@ -71,7 +72,7 @@ public class ResourcesController {
         ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
             services.setSize(getMetadataService().getServiceCount(parameters));
-            if (parameters.isPureStationaryInsituQuery()) {
+            if (new FilterResolver(parameters).shallBehaveBackwardsCompatible()) {
                 // ensure backwards compatibility
                 stations.setSize(getMetadataService().getStationCount());
                 timeseries.setSize(getMetadataService().getTimeseriesCount());

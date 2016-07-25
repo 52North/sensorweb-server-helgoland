@@ -861,13 +861,12 @@ public class IoParameters implements Parameters {
     }
 
     public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
-        parameters = !parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
-                ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                : parameters;
-                parameters = !parameters.containsParameter(Parameters.FILTER_DATASET_TYPES)
-                ? parameters.extendWith(Parameters.FILTER_DATASET_TYPES, "measurement")
-                : parameters;
-        return parameters;
+        return parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
+                || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES)
+                ? parameters
+                : parameters
+                    .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
+                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
     }
     
     public boolean isPureStationaryInsituQuery() {

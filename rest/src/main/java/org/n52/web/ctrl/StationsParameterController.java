@@ -63,6 +63,7 @@ public class StationsParameterController {
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = createFromQuery(query);
+        map = IoParameters.ensureBackwardsCompatibility(map);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -85,6 +86,7 @@ public class StationsParameterController {
     public ModelAndView getItem(@PathVariable("item") String procedureId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = createFromQuery(query);
+        map = IoParameters.ensureBackwardsCompatibility(map);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
         Stopwatch stopwatch = startStopwatch();

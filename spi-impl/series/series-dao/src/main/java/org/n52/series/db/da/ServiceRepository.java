@@ -132,7 +132,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         service.setSupportsFirstLatest(true);
 
         FilterResolver filterResolver = parameters.getFilterResolver();
-        if ( !filterResolver.isSetPlatformTypeFilter()) {
+        if (filterResolver.shallBehaveBackwardsCompatible()) {
             // ensure backwards compatibility
             service.setVersion("1.0.0");
             service.setType("Thin DB access layer service.");
@@ -187,10 +187,13 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
             quantities.setOfferingsSize(counter.countProcedures(query));
             quantities.setProceduresSize(counter.countProcedures(query));
             quantities.setCategoriesSize(counter.countCategories(query));
-            quantities.setTimeseriesSize(counter.countTimeseries());
             quantities.setPhenomenaSize(counter.countPhenomena(query));
             quantities.setFeaturesSize(counter.countFeatures(query));
-            quantities.setStationsSize(counter.countStations());
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallBehaveBackwardsCompatible()) {
+                quantities.setTimeseriesSize(counter.countTimeseries());
+                quantities.setStationsSize(counter.countStations());
+            }
             return quantities;
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count parameter entities.", e);
