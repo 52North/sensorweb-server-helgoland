@@ -86,7 +86,6 @@ public class StationsParameterController {
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         IoParameters map = createFromQuery(query);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
@@ -99,10 +98,6 @@ public class StationsParameterController {
         }
 
         return new ModelAndView().addObject(result);
-    }
-
-    protected void hookQueryParameters(MultiValueMap<String, String> query) {
-        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
     }
 
     public ParameterService<StationOutput> getParameterService() {
