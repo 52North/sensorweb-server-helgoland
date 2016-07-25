@@ -28,6 +28,7 @@
  */
 package org.n52.io.request;
 
+import static org.junit.Assert.assertTrue;
 import static org.n52.io.request.IoParameters.createDefaults;
 
 import org.junit.Assert;
@@ -38,7 +39,27 @@ public class FilterResolverTest {
 	private FilterResolver createResolver(IoParameters resolver) {
 		return new FilterResolver(resolver);
 	}
+	
+	@Test
+	public void when_defaults_then_behaveBackwardsCompatible() {
+	    FilterResolver resolver = createResolver(createDefaults());
+	    assertTrue(resolver.shallBehaveBackwardsCompatible());
+	}
+	
+	@Test
+    public void when_setPlatformTypeFilter_then_dontBehaveBackwardsCompatible() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "blah"));
+        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+    }
 
+    @Test
+    public void when_setDatasetTypeFiltre_then_dontBehaveBackwardsCompatible() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "blah"));
+        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+    }
+    
     @Test
     public void when_defaults_then_allPlatformGeometryFiltersActive() {
         FilterResolver resolver = createResolver(createDefaults());

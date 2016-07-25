@@ -38,6 +38,10 @@ public class FilterResolver {
     public FilterResolver(IoParameters parameters) {
         this.parameters = parameters;
     }
+    
+    public boolean shallBehaveBackwardsCompatible() {
+        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter());
+        }
 
     public boolean shallIncludeMobilePlatformTypes() {
         return shallIncludeAllPlatformTypes()
