@@ -269,21 +269,21 @@ public class FilterResolverTest {
     }
 
     @Test
-    public void when_setAll_then_insituFilterActive() {
+    public void when_setAllPlatformTypes_then_insituFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
     }
 
     @Test
-    public void when_setAll_then_stationaryFilterActive() {
+    public void when_setAllPlatformTypes_then_stationaryFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
     }
 
     @Test
-    public void when_setAll_then_remoteFilterActive() {
+    public void when_setAllPlatformTypes_then_remoteFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
@@ -291,10 +291,25 @@ public class FilterResolverTest {
 
 
     @Test
-    public void when_setAll_then_mobileFilterActive() {
+    public void when_setAllPlatformTypes_then_mobileFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
     }
-
+    
+    @Test
+    public void when_setAllDatasetTypes_then_noFilterActive() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "all"));
+        Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
+    }
+    
+    @Test
+    public void when_setDatasetTypeFilter_then_filterActive() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "foobar"));
+        Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
+        Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
+    }
+    
 }
