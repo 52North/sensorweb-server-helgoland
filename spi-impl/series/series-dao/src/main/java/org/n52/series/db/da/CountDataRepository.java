@@ -43,7 +43,6 @@ import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
 
 public class CountDataRepository extends AbstractDataRepository<CountData, CountDatasetEntity, CountDataEntity, CountValue> {
 

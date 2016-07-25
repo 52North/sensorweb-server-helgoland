@@ -159,7 +159,7 @@ public class ServiceOutput extends ParameterOutput {
             this.selectedPlatformTypes = selectedPlatformTypes;
         }
 
-        public int getOfferings() {
+        public Integer getOfferings() {
             return amountOfferings;
         }
 
@@ -167,7 +167,7 @@ public class ServiceOutput extends ParameterOutput {
             this.amountOfferings = size;
         }
 
-        public int getFeatures() {
+        public Integer getFeatures() {
             return amountFeatures;
         }
 
@@ -175,7 +175,7 @@ public class ServiceOutput extends ParameterOutput {
             this.amountFeatures = size;
         }
 
-        public int getProcedures() {
+        public Integer getProcedures() {
             return amountProcedures;
         }
 
@@ -183,7 +183,7 @@ public class ServiceOutput extends ParameterOutput {
             this.amountProcedures = size;
         }
 
-        public int getPhenomena() {
+        public Integer getPhenomena() {
             return amountPhenomena;
         }
 
@@ -191,7 +191,7 @@ public class ServiceOutput extends ParameterOutput {
             this.amountPhenomena = size;
         }
 
-        public int getCategories() {
+        public Integer getCategories() {
             return amountCategories;
         }
 
@@ -216,7 +216,7 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         @Deprecated
-        public int getStations() {
+        public Integer getStations() {
             return amountStations;
         }
 
@@ -231,7 +231,7 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         @Deprecated
-        public int getTimeseries() {
+        public Integer getTimeseries() {
             return this.amountTimeseries;
         }
     }

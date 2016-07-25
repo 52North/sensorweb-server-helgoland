@@ -33,7 +33,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.CategoryDao;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
@@ -103,7 +103,7 @@ public class EntityCounter {
     public Integer countDatasets(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new SeriesDao<MeasurementDatasetEntity>(session, MeasurementDatasetEntity.class).getCount(query);
+            return new SeriesDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
@@ -114,7 +114,6 @@ public class EntityCounter {
         try {
             DbQuery query = createBackwardsCompatibleQuery();
             return countFeatures(query);
-//            return countPlatforms(query);
         } finally {
             sessionStore.returnSession(session);
         }

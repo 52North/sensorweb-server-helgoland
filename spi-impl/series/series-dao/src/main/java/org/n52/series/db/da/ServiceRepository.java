@@ -129,6 +129,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     private ServiceOutput getExpandedService(DbQuery parameters) {
         ServiceOutput service = getCondensedService(parameters);
+        service.setQuantities(countParameters(service, parameters));
         service.setSupportsFirstLatest(true);
 
         FilterResolver filterResolver = parameters.getFilterResolver();
@@ -136,7 +137,6 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
             // ensure backwards compatibility
             service.setVersion("1.0.0");
             service.setType("Thin DB access layer service.");
-            service.setQuantities(countParameters(service, parameters));
         } else {
             service.setType(serviceInfo.getType() == null
                     ? "Thin DB access layer service."
@@ -189,6 +189,9 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
             quantities.setCategoriesSize(counter.countCategories(query));
             quantities.setPhenomenaSize(counter.countPhenomena(query));
             quantities.setFeaturesSize(counter.countFeatures(query));
+            quantities.setPlatformsSize(counter.countPlatforms(query));
+            quantities.setDatasetsSize(counter.countDatasets(query));
+            
             FilterResolver filterResolver = query.getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible()) {
                 quantities.setTimeseriesSize(counter.countTimeseries());
