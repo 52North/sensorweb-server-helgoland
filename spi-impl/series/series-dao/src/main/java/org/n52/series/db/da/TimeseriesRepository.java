@@ -186,11 +186,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     private MeasurementDataRepository createRepository(String datasetType) throws DataAccessException {
-        if ( !factory.isKnown(datasetType)) {
+        if ( !"measurement".equalsIgnoreCase(datasetType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
-            return (MeasurementDataRepository) factory.create(datasetType);
+            return (MeasurementDataRepository) factory.create("measurement");
         } catch (DatasetFactoryException e) {
             throw new DataAccessException(e.getMessage());
         }

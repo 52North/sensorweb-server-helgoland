@@ -87,7 +87,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
     }
 
     private DataRepository createRepository(String datasetType) throws DataAccessException {
-        if ( !factory.isKnown(datasetType)) {
+        if ( !("all".equalsIgnoreCase(datasetType) || factory.isKnown(datasetType))) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
