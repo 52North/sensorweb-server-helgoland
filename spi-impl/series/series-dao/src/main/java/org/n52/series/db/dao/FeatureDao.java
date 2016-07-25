@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     private static final String SERIES_FILTER_PROPERTY = "feature";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
 
     public FeatureDao(Session session) {

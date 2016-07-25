@@ -153,12 +153,12 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         return super.getDefaultCriteria(alias)
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
-    
+
     @Override
     protected Class<T> getEntityClass() {
         return entityType;
     }
-    
+
     @SuppressWarnings("unchecked")
     public T getDataValueAt(DateTime timestamp, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());

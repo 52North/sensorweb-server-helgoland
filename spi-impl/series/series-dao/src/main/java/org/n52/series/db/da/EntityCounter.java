@@ -63,7 +63,7 @@ public class EntityCounter {
         // offerings equals procedures in our case
         return countProcedures(query);
     }
-    
+
     public Integer countProcedures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
@@ -99,7 +99,7 @@ public class EntityCounter {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countDatasets(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
@@ -108,7 +108,7 @@ public class EntityCounter {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countStations() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
@@ -118,7 +118,7 @@ public class EntityCounter {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countTimeseries() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {

@@ -38,7 +38,7 @@ public class FilterResolver {
     public FilterResolver(IoParameters parameters) {
         this.parameters = parameters;
     }
-    
+
     public boolean shallBehaveBackwardsCompatible() {
         return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter());
         }
@@ -181,7 +181,7 @@ public class FilterResolver {
     private Set<String> getPlatformGeometryTypes() {
         return parameters.getPlatformGeometryTypes();
     }
-    
+
     public boolean shallIncludeAllDatasetTypes() {
         Set<String> datasetTypes = parameters.getDatasetTypes();
         return !isSetDatasetTypeFilter()
