@@ -49,21 +49,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
+public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
     private static final String COLUMN_PKID = "pkid";
 
     private final Class<T> entityType;
 
-    public SeriesDao(Session session, Class<T> clazz) {
+    public DatasetDao(Session session, Class<T> clazz) {
         super(session);
         this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
     }
 
     @SuppressWarnings("unchecked")
-    public SeriesDao(Session session) {
+    public DatasetDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DatasetEntity.class;
     }

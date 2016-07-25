@@ -44,8 +44,8 @@ import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
+import org.n52.series.db.dao.DataDao;
+import org.n52.series.db.dao.DatasetDao;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
@@ -54,7 +54,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<DSE> seriesDao = getSeriesDao(session);
+            DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(parseId(id), dbQuery);
             return dbQuery.isExpanded()
@@ -78,17 +78,17 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
 
     private V getValueAt(Date valueAt, DSE datasetEntity, Session session) {
         DateTime timestamp = new DateTime(valueAt);
-        ObservationDao<DE> dao = createDataDao(session);
+        DataDao<DE> dao = createDataDao(session);
         DE valueEntity = dao.getDataValueAt(timestamp, datasetEntity);
         return createSeriesValueFor(valueEntity, datasetEntity);
     }
 
-    protected SeriesDao<DSE> getSeriesDao(Session session) {
-        return new SeriesDao<>(session);
+    protected DatasetDao<DSE> getSeriesDao(Session session) {
+        return new DatasetDao<>(session);
     }
 
-    protected ObservationDao<DE> createDataDao(Session session) {
-        return new ObservationDao<>(session);
+    protected DataDao<DE> createDataDao(Session session) {
+        return new DataDao<>(session);
     }
 
 //    protected abstract SeriesDao<DSE> getSeriesDao(Session session);

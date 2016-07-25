@@ -43,7 +43,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.DataDao;
 
 public class TextDataRepository extends AbstractDataRepository<TextData, TextDatasetEntity, TextDataEntity, TextValue> {
 
@@ -91,7 +91,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     private TextData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, DbQuery query, Session session)
             throws DataAccessException {
         TextData result = new TextData();
-        ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
+        DataDao<TextDataEntity> dao = new DataDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if ( !hasValidEntriesWithinRequestedTimespan(observations)) {
             TextValue lastValidValue = getLastValue(seriesEntity, session);
@@ -109,7 +109,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     protected TextData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session)
             throws DataAccessException {
         TextData result = new TextData();
-        ObservationDao<TextDataEntity> dao = new ObservationDao<>(session);
+        DataDao<TextDataEntity> dao = new DataDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (TextDataEntity observation : observations) {
             if (observation != null) {

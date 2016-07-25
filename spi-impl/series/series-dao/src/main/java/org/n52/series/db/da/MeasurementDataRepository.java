@@ -46,7 +46,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.DataDao;
 
 public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity, MeasurementDataEntity, MeasurementValue> {
 
@@ -91,7 +91,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
 
     private MeasurementData expandReferenceDataIfNecessary(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementDataEntity> dao = createDataDao(session);
+        DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             MeasurementValue lastValue = getLastValue(seriesEntity, session);
@@ -108,7 +108,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     @Override
     protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementDataEntity> dao = createDataDao(session);
+        DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (MeasurementDataEntity observation : observations) {
             if (observation != null) {

@@ -39,13 +39,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.slf4j.Logger;
@@ -60,9 +58,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
+public class DataDao<T extends DataEntity> extends AbstractDao<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ObservationDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataDao.class);
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -72,12 +70,12 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
 
     private final Class<T> entityType;
 
-    public ObservationDao(Session session, Class<T> clazz) {
+    public DataDao(Session session, Class<T> clazz) {
         super(session);
         this.entityType = clazz;
     }
 
-    public ObservationDao(Session session) {
+    public DataDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DataEntity.class;
     }

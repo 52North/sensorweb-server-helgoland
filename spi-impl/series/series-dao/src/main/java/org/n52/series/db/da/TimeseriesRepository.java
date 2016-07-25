@@ -47,7 +47,7 @@ import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.SeriesDao;
+import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.TimeseriesSearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -77,22 +77,22 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public boolean exists(String id) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementDatasetEntity> dao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
             return dao.hasInstance(parseId(id), MeasurementDatasetEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private SeriesDao<MeasurementDatasetEntity> createDao(Session session) {
-        return new SeriesDao<>(session, MeasurementDatasetEntity.class);
+    private DatasetDao<MeasurementDatasetEntity> createDao(Session session) {
+        return new DatasetDao<>(session, MeasurementDatasetEntity.class);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
@@ -126,7 +126,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createCondensed(timeseries, query));
@@ -144,7 +144,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createExpanded(session, timeseries, query));
@@ -162,7 +162,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             if (result == null || !result.hasUnit()) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
