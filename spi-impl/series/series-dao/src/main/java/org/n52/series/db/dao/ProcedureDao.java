@@ -83,13 +83,10 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
         return SERIES_PROPERTY;
     }
 
-    @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null);
-    }
 
-    private Criteria getDefaultCriteria(String alias) {
-        return super.getDefaultCriteria(alias, ProcedureEntity.class);
+    @Override
+    protected Class<ProcedureEntity> getEntityClass() {
+        return ProcedureEntity.class;
     }
 
 }

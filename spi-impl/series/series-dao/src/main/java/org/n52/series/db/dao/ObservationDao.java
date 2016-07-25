@@ -45,6 +45,7 @@ import org.hibernate.criterion.Subqueries;
 import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.slf4j.Logger;
@@ -148,10 +149,16 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return session.createCriteria(entityType).add(eq(COLUMN_DELETED, Boolean.FALSE));
+    protected Criteria getDefaultCriteria(String alias) {
+        return super.getDefaultCriteria(alias)
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
-
+    
+    @Override
+    protected Class<T> getEntityClass() {
+        return entityType;
+    }
+    
     @SuppressWarnings("unchecked")
     public T getDataValueAt(DateTime timestamp, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());

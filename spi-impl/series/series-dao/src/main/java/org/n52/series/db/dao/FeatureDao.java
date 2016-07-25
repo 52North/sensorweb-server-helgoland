@@ -73,7 +73,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria(getSeriesProperty(), FeatureEntity.class);
+        Criteria criteria = getDefaultCriteria();
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
@@ -86,8 +86,8 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null, FeatureEntity.class);
+    protected Class<FeatureEntity> getEntityClass() {
+        return FeatureEntity.class;
     }
 
 }

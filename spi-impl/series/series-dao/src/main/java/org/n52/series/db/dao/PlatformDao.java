@@ -94,13 +94,11 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         return SERIES_PROPERTY;
     }
 
+
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null);
+    protected Class<PlatformEntity> getEntityClass() {
+        return PlatformEntity.class;
     }
 
-    private Criteria getDefaultCriteria(String alias) {
-        return session.createCriteria(PlatformEntity.class, alias);
-    }
 
 }

@@ -52,7 +52,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     public abstract List<T> find(DbQuery query);
 
-    protected abstract Criteria getDefaultCriteria();
+    protected abstract Class<T> getEntityClass();
     
     protected abstract String getSeriesProperty();
 
@@ -75,15 +75,15 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         return query.addSpatialFilterTo(criteria, query)
                 .add(propertyIn(filterProperty + ".pkid", filter));
     }
+    
+    protected Criteria getDefaultCriteria() {
+        return getDefaultCriteria(getSeriesProperty());
+    }
 
-    protected Criteria getDefaultCriteria(String alias, Class<? extends T> clazz) {
-        Criteria criteria;
-        if (alias == null || alias.isEmpty()) {
-            criteria = session.createCriteria(clazz);
-        } else {
-            criteria = session.createCriteria(clazz, alias);
-        }
-        return criteria;
+    protected Criteria getDefaultCriteria(String alias) {
+        return alias == null || alias.isEmpty()
+            ? session.createCriteria(getEntityClass())
+            : session.createCriteria(getEntityClass(), alias);
     }
 
     @Override

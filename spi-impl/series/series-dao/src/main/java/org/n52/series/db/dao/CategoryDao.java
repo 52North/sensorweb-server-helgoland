@@ -32,9 +32,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.I18nCategoryEntity;
@@ -75,7 +73,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria(getSeriesProperty(), CategoryEntity.class);
+        Criteria criteria = getDefaultCriteria();
         if (hasTranslation(parameters, I18nCategoryEntity.class)) {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
@@ -88,8 +86,8 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null, CategoryEntity.class);
+    protected Class<CategoryEntity> getEntityClass() {
+        return CategoryEntity.class;
     }
 
 }
