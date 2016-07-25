@@ -72,27 +72,24 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> find(DbQuery query) {
         LOGGER.debug("find entities: {}", query);
+        
+        List<T> series = new ArrayList<>();
+        String searchTerm = "%" + query.getSearchTerm() + "%";
+
         /*
          * Timeseries labels are constructed from labels of related feature
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-        List<T> series = new ArrayList<>();
+        
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
+        series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
+
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
-
-        if (hasTranslation(query, I18nFeatureEntity.class)) {
-            featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
-        }
-        featureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        series.addAll(featureCriteria.list());
-
-        if (hasTranslation(query, I18nProcedureEntity.class)) {
-            procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
-        }
-        procedureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        series.addAll(procedureCriteria.list());
+        series.addAll(translate(I18nProcedureEntity.class, procedureCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
 
         return series;
     }

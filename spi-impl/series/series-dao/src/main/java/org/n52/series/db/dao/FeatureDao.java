@@ -55,29 +55,23 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nFeatureEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
     }
 
     @Override
-    public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
+    public FeatureEntity getInstance(Long key, DbQuery query) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, query);
         return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(parameters, I18nFeatureEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
-        }
-        return (List<FeatureEntity>) addFilters(criteria, parameters).list();
+    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        LOGGER.debug("get all instances: {}", query);
+        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
+        return (List<FeatureEntity>) addFilters(criteria, query).list();
     }
 
     @Override

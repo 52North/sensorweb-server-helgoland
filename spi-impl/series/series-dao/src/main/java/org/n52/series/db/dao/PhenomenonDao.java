@@ -50,11 +50,8 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> find(DbQuery query) {
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nPhenomenonEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
     }
 
@@ -65,12 +62,9 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
-        }
-        return (List<PhenomenonEntity>) addFilters(criteria, parameters).list();
+    public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
+        return (List<PhenomenonEntity>) addFilters(criteria, query).list();
     }
 
     @Override

@@ -54,11 +54,8 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> find(DbQuery query) {
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nProcedureEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
     }
 
@@ -69,20 +66,21 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria(getSeriesProperty())
+    public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);
+        return (List<ProcedureEntity>) addFilters(criteria, query).list();
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria() {
+        return super.getDefaultCriteria()
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
-        if (hasTranslation(parameters, I18nProcedureEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
-        }
-        return (List<ProcedureEntity>) addFilters(criteria, parameters).list();
     }
 
     @Override
     protected String getSeriesProperty() {
         return SERIES_PROPERTY;
     }
-
 
     @Override
     protected Class<ProcedureEntity> getEntityClass() {
