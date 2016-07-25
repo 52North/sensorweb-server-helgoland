@@ -36,16 +36,12 @@ import org.n52.series.db.DataAccessException;
 /**
  * @param <T> entity type
  * @param <PK> primary key
- * @param <DBQ> DB query
  */
 public interface GenericDao<T, PK extends Serializable> {
 
-//    T getInstance(PK key) throws DataAccessException;
-    T getInstance(PK key, DBQ parameters) throws DataAccessException;
+    T getInstance(PK key, DbQuery parameters) throws DataAccessException;
 
-//    List<T> getAllInstances() throws DataAccessException;
-    List<T> getAllInstances(DBQ parameters) throws DataAccessException;
-
+    List<T> getAllInstances(DbQuery parameters) throws DataAccessException;
     int getCount(/*PK key*/) throws DataAccessException;
 
     boolean hasInstance(Long id, Class<? extends T> clazz) throws DataAccessException;

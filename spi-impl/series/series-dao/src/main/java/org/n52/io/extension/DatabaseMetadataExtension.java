@@ -39,7 +39,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.dao.AbstractDbQuery;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 
@@ -65,7 +64,7 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
         }
     }
 
-    private class MetadataRepository extends SessionAwareRepository<AbstractDbQuery> {
+    private class MetadataRepository extends SessionAwareRepository {
 
         private List<String> getFieldNames(String id) {
             Session session = getSession();

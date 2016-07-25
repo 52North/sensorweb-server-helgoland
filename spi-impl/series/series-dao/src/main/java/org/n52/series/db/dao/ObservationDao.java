@@ -134,7 +134,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked") // cast from hibernate
-    public List<T> getAllInstancesFor(DatasetEntity series, AbstractDbQuery parameters) throws DataAccessException {
+    public List<T> getAllInstancesFor(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
