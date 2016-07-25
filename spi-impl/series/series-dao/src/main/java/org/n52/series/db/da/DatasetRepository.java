@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -83,13 +84,13 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
-            if (query.isSetDatasetTypeFilter()) {
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallIncludeAllDatasetTypes()) {
+                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
+            } else {
                 for (String datasetType : query.getDatasetTypes()) {
                     addCondensedResults(getSeriesDao(datasetType, session), query, results);
                 }
-            } else {
-                // XXX filter on configured types
-                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             }
             return results;
         } finally {
@@ -124,13 +125,13 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
-            if (query.isSetDatasetTypeFilter()) {
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallIncludeAllDatasetTypes()) {
+                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
+            } else {
                 for (String datasetType : query.getDatasetTypes()) {
                     addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
                 }
-            } else {
-                // XXX filter on configured types
-                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             }
             return results;
         } finally {
