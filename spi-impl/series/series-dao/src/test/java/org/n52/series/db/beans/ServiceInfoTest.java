@@ -43,12 +43,6 @@ public class ServiceInfoTest {
     }
 
     @Test
-    public void shouldNotFailWhenSettingInvalidNoDataValues() {
-        serviceInfo.setNoDataValues("4.3,9,invalid");
-        MatcherAssert.assertThat(serviceInfo.getNoDataValues().split(",").length, Is.is(2));
-    }
-
-    @Test
     public void shouldTreatNullAsNoDataValue() {
         ObservationEntity entity = new ObservationEntity();
         entity.setValue(null);
@@ -64,7 +58,7 @@ public class ServiceInfoTest {
 
     @Test
     public void shouldHandleDoubleValues() {
-        serviceInfo.setNoDataValues("4.3,9,invalid");
+        serviceInfo.setNoDataValues("4.3,9,foo");
         ObservationEntity entity = new ObservationEntity();
         entity.setValue(new Double(9));
         MatcherAssert.assertThat(serviceInfo.isNoDataValue(entity), Is.is(true));

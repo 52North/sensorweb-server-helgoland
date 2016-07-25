@@ -31,7 +31,7 @@ package org.n52.series.db.beans;
 import java.util.Collection;
 
 public class TextDataEntity extends DataEntity<String> {
-    
+
     @Override
     public boolean isNoDataValue(Collection<String> noDataValues) {
         String value = getValue();

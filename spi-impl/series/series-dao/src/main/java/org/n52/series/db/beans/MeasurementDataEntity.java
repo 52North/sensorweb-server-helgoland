@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 public class MeasurementDataEntity extends DataEntity<Double> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementDataEntity.class);
 
     private static final Double DOUBLE_THRESHOLD = 0.01;
@@ -65,7 +65,7 @@ public class MeasurementDataEntity extends DataEntity<Double> {
         }
         return false;
     }
-    
+
     private Collection<Double> convertToDoubles(Collection<String> collection) {
         List<Double> validatedValues = new ArrayList<>();
         for (String value : collection) {

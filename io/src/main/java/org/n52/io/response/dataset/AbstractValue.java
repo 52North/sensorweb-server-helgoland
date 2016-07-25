@@ -69,7 +69,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     public void setValue(T value) {
         this.value = value;
     }
-    
+
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
     public Geometry getGeometry() {
         return geometry;

@@ -79,7 +79,7 @@ public abstract class DataEntity<T> {
     }
 
     public abstract boolean isNoDataValue(Collection<String> noDataValues);
-    
+
     public Long getSeriesPkid() {
         return seriesPkid;
     }
