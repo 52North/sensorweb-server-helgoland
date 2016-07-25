@@ -45,7 +45,7 @@ import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class FeatureRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<FeatureOutput> {
+public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
 
     @Override
     public boolean exists(String id) throws DataAccessException {

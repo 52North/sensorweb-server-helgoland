@@ -62,7 +62,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @deprecated since 2.0.0
  */
 @Deprecated
-public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<TimeseriesMetadataOutput> {
+public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 

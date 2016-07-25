@@ -45,7 +45,7 @@ import org.n52.series.spi.search.ProcedureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class ProcedureRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<ProcedureOutput> {
+public class ProcedureRepository extends SessionAwareRepository implements OutputAssembler<ProcedureOutput> {
 
     @Override
     public boolean exists(String id) throws DataAccessException {

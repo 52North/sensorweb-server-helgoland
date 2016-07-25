@@ -48,7 +48,7 @@ import org.n52.series.db.dao.ObservationDao;
 import org.n52.series.db.dao.SeriesDao;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
-        extends SessionAwareRepository<DbQuery> implements DataRepository<DSE, V> {
+        extends SessionAwareRepository implements DataRepository<DSE, V> {
 
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {

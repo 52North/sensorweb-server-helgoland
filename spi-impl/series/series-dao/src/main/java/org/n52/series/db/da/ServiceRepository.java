@@ -136,7 +136,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
             // ensure backwards compatibility
             service.setVersion("1.0.0");
             service.setType("Thin DB access layer service.");
-            service.setQuantities(countParameters(service));
+            service.setQuantities(countParameters(service, parameters));
         } else {
             service.setType(serviceInfo.getType() == null
                     ? "Thin DB access layer service."
@@ -180,20 +180,16 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         }
     }
 
-    private ParameterCount countParameters(ServiceOutput service) {
-        return countEntities(service);
-    }
-
-    private ParameterCount countEntities(ServiceOutput service) {
+    private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
             // #procedures == #offerings
-            quantities.setOfferingsSize(counter.countProcedures());
-            quantities.setProceduresSize(counter.countProcedures());
-            quantities.setCategoriesSize(counter.countCategories());
+            quantities.setOfferingsSize(counter.countProcedures(query));
+            quantities.setProceduresSize(counter.countProcedures(query));
+            quantities.setCategoriesSize(counter.countCategories(query));
             quantities.setTimeseriesSize(counter.countTimeseries());
-            quantities.setPhenomenaSize(counter.countPhenomena());
-            quantities.setFeaturesSize(counter.countFeatures());
+            quantities.setPhenomenaSize(counter.countPhenomena(query));
+            quantities.setFeaturesSize(counter.countFeatures(query));
             quantities.setStationsSize(counter.countStations());
             return quantities;
         } catch (DataAccessException e) {

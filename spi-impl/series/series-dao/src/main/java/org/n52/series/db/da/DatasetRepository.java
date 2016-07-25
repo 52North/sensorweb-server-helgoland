@@ -56,7 +56,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <T> the dataset's type this repository is responsible for.
  */
 public class DatasetRepository<T extends Data>
-        extends SessionAwareRepository<DbQuery>
+        extends SessionAwareRepository
         implements OutputAssembler<DatasetOutput>{
 
     @Autowired

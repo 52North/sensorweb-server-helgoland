@@ -45,7 +45,7 @@ import org.n52.series.spi.search.CategorySearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class CategoryRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<CategoryOutput> {
+public class CategoryRepository extends SessionAwareRepository implements OutputAssembler<CategoryOutput> {
 
     private CategoryDao createDao(Session session) {
         return new CategoryDao(session);

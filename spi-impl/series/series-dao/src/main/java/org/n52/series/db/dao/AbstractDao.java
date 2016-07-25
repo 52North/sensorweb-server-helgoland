@@ -36,7 +36,7 @@ import org.hibernate.criterion.Projections;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nEntity;
 
-public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     protected Session session;
 

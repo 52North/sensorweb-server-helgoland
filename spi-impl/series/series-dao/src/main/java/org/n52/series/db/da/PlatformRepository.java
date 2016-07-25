@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class PlatformRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<PlatformOutput> {
+public class PlatformRepository extends SessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
 
