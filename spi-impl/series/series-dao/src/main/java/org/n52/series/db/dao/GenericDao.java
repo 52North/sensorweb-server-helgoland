@@ -42,8 +42,9 @@ public interface GenericDao<T, PK extends Serializable> {
     T getInstance(PK key, DbQuery parameters) throws DataAccessException;
 
     List<T> getAllInstances(DbQuery parameters) throws DataAccessException;
-    int getCount(/*PK key*/) throws DataAccessException;
 
+    Integer getCount(DbQuery query) throws DataAccessException;
+    
     boolean hasInstance(Long id, Class<? extends T> clazz) throws DataAccessException;
 
 }

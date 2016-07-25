@@ -37,7 +37,6 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
@@ -153,13 +152,6 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, platform.getPkid()));
         return (List<T>) criteria.list();
-    }
-
-    @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {

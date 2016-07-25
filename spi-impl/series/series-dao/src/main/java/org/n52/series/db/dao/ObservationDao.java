@@ -142,18 +142,9 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-    /**
-     * Counts all observations not including deleted observations.
-     *
-     * @return amount of observations
-     * @throws org.n52.series.db.DataAccessException if accessing database
-     * fails.
-     */
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected String getSeriesProperty() {
+        return ""; // there's no series property for observation
     }
 
     @Override

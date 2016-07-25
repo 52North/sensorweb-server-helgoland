@@ -60,7 +60,21 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
     }
+    
+    @Override
+    public Integer getCount(DbQuery query) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria().setProjection(rowCount());
+        return ((Long)  addFilters(criteria, query)
+                .uniqueResult()).intValue();
+    }
 
+    protected Criteria addFilters(Criteria criteria, DbQuery query) {
+        String filterProperty = getSeriesProperty();
+        DetachedCriteria filter = query.createDetachedFilterCriteria(filterProperty);
+        criteria = query.addPlatformTypeFilter(filterProperty, criteria);
+        criteria = query.addDatasetTypeFilter(filterProperty, criteria);
+        return query.addSpatialFilterTo(criteria, query)
+                .add(propertyIn(filterProperty + ".pkid", filter));
     }
 
     protected Criteria getDefaultCriteria(String alias, Class<? extends T> clazz) {

@@ -46,7 +46,6 @@ public class ServiceOutput extends ParameterOutput {
 
     private Map<String, Object> features;
 
-    @Deprecated
     private ParameterCount quantities;
 
     @Deprecated
@@ -114,7 +113,6 @@ public class ServiceOutput extends ParameterOutput {
 
     /**
      * @return the parameter count
-     * @deprecated since 2.0.0, {@link #features} get serialized instead
      */
     @JsonIgnore
     public ParameterCount getQuantities() {
@@ -123,39 +121,49 @@ public class ServiceOutput extends ParameterOutput {
 
     /**
      * @param countedParameters
-     * @deprecated since 2.0.0, use {@link #addFeature(String, Object)}
      */
-    @Deprecated
     public void setQuantities(ParameterCount countedParameters) {
         addFeature("quantities", countedParameters);
         this.quantities = countedParameters;
     }
 
-    /**
-     * @deprecated since 2.0.0
-     */
-    @Deprecated
     public static class ParameterCount {
+        
+        private String[] selectedPlatformTypes;
 
-        private int amountOfferings;
+        private Integer amountOfferings;
 
-        private int amountFeatures;
+        private Integer amountFeatures;
 
-        private int amountProcedures;
+        private Integer amountProcedures;
 
-        private int amountPhenomena;
+        private Integer amountPhenomena;
 
-        private int amountStations;
+        private Integer amountCategories;
 
-        private int amountTimeseries;
+        private Integer amountPlatforms;
+        
+        private Integer amountDatasets;
 
-        private int amountCategories;
+        @Deprecated // since 2.0.0
+        private Integer amountStations;
+
+        @Deprecated // since 2.0.0
+        private Integer amountTimeseries;
+
+        public String[] getSelectedPlatformTypes() {
+            return selectedPlatformTypes;
+        }
+
+        public void setSelectedPlatformTypes(String... selectedPlatformTypes) {
+            this.selectedPlatformTypes = selectedPlatformTypes;
+        }
 
         public int getOfferings() {
             return amountOfferings;
         }
 
-        public void setOfferingsSize(int size) {
+        public void setOfferingsSize(Integer size) {
             this.amountOfferings = size;
         }
 
@@ -163,7 +171,7 @@ public class ServiceOutput extends ParameterOutput {
             return amountFeatures;
         }
 
-        public void setFeaturesSize(int size) {
+        public void setFeaturesSize(Integer size) {
             this.amountFeatures = size;
         }
 
@@ -171,7 +179,7 @@ public class ServiceOutput extends ParameterOutput {
             return amountProcedures;
         }
 
-        public void setProceduresSize(int size) {
+        public void setProceduresSize(Integer size) {
             this.amountProcedures = size;
         }
 
@@ -179,32 +187,52 @@ public class ServiceOutput extends ParameterOutput {
             return amountPhenomena;
         }
 
-        public void setPhenomenaSize(int size) {
+        public void setPhenomenaSize(Integer size) {
             this.amountPhenomena = size;
-        }
-
-        public int getStations() {
-            return amountStations;
-        }
-
-        public void setStationsSize(int size) {
-            this.amountStations = size;
-        }
-
-        public void setTimeseriesSize(int countTimeseries) {
-            this.amountTimeseries = countTimeseries;
-        }
-
-        public int getTimeseries() {
-            return this.amountTimeseries;
         }
 
         public int getCategories() {
             return amountCategories;
         }
 
-        public void setCategoriesSize(Integer amountCategories) {
-            this.amountCategories = amountCategories;
+        public void setCategoriesSize(Integer size) {
+            this.amountCategories = size;
+        }
+
+        public Integer getPlatforms() {
+            return amountPlatforms;
+        }
+
+        public void setPlatformsSize(Integer size) {
+            this.amountPlatforms = size;
+        }
+
+        public Integer getDatasets() {
+            return amountDatasets;
+        }
+
+        public void setDatasetsSize(Integer size) {
+            this.amountDatasets = size;
+        }
+
+        @Deprecated
+        public int getStations() {
+            return amountStations;
+        }
+
+        @Deprecated
+        public void setStationsSize(int size) {
+            this.amountStations = size;
+        }
+
+        @Deprecated
+        public void setTimeseriesSize(int countTimeseries) {
+            this.amountTimeseries = countTimeseries;
+        }
+
+        @Deprecated
+        public int getTimeseries() {
+            return this.amountTimeseries;
         }
     }
 
