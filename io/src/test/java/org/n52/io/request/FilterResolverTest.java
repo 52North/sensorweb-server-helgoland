@@ -39,13 +39,13 @@ public class FilterResolverTest {
 	private FilterResolver createResolver(IoParameters resolver) {
 		return new FilterResolver(resolver);
 	}
-	
+
 	@Test
 	public void when_defaults_then_behaveBackwardsCompatible() {
 	    FilterResolver resolver = createResolver(createDefaults());
 	    assertTrue(resolver.shallBehaveBackwardsCompatible());
 	}
-	
+
 	@Test
     public void when_setPlatformTypeFilter_then_dontBehaveBackwardsCompatible() {
         FilterResolver resolver = createResolver(createDefaults()
@@ -59,7 +59,7 @@ public class FilterResolverTest {
                  .extendWith(Parameters.FILTER_DATASET_TYPES, "blah"));
         Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
     }
-    
+
     @Test
     public void when_defaults_then_allPlatformGeometryFiltersActive() {
         FilterResolver resolver = createResolver(createDefaults());
@@ -317,14 +317,14 @@ public class FilterResolverTest {
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
     }
-    
+
     @Test
     public void when_setAllDatasetTypes_then_noFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                  .extendWith(Parameters.FILTER_DATASET_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
     }
-    
+
     @Test
     public void when_setDatasetTypeFilter_then_filterActive() {
         FilterResolver resolver = createResolver(createDefaults()
@@ -332,5 +332,5 @@ public class FilterResolverTest {
         Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
         Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
     }
-    
+
 }

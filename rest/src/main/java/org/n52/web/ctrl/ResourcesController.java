@@ -61,7 +61,7 @@ public class ResourcesController {
     protected List<ResourceCollection> createResources(IoParameters parameters) {
         parameters = IoParameters.ensureBackwardsCompatibility(parameters);
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
-        
+
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription(i18n.get("msg.web.resources.services"));
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription(i18n.get("msg.web.resources.stations"));
         ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.timeseries"));
@@ -83,7 +83,7 @@ public class ResourcesController {
             procedures.setSize(getMetadataService().getProcedureCount(parameters));
             phenomena.setSize(getMetadataService().getPhenomenaCount(parameters));
         }
-        
+
         List<ResourceCollection> resources = new ArrayList<>();
         resources.add(services);
         resources.add(stations);

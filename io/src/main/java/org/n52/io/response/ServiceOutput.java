@@ -128,7 +128,7 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public static class ParameterCount {
-        
+
         private String[] selectedPlatformTypes;
 
         private Integer amountOfferings;
@@ -142,7 +142,7 @@ public class ServiceOutput extends ParameterOutput {
         private Integer amountCategories;
 
         private Integer amountPlatforms;
-        
+
         private Integer amountDatasets;
 
         @Deprecated // since 2.0.0

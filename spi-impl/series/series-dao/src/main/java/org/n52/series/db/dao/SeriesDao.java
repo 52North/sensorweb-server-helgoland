@@ -116,7 +116,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         procedureCreateria.add(eq("reference", false));
         return (List<T>) addFilters(criteria, parameters).list();
     }
-    
+
     @Override
     protected String getSeriesProperty() {
         return COLUMN_PKID;
@@ -161,7 +161,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     private String prepareForConcatenation(String alias) {
         return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
-    
+
 
     @Override
     protected Class<T> getEntityClass() {

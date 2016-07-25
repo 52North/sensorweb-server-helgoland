@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     private static final String SERIES_PROPERTY = "category";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDao.class);
 
     public CategoryDao(Session session) {
@@ -79,7 +79,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
         }
         return addFilters(criteria, parameters).list();
     }
-    
+
     @Override
     protected String getSeriesProperty() {
         return SERIES_PROPERTY;

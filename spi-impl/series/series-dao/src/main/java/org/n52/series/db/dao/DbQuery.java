@@ -181,7 +181,7 @@ public class DbQuery {
         }
         return criteria;
     }
-    
+
     Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
         Set<String> datasetTypes = getParameters().getDatasetTypes();
         FilterResolver filterResolver = getFilterResolver();
@@ -377,7 +377,7 @@ public class DbQuery {
     public FilterResolver getFilterResolver() {
         return parameters.getFilterResolver();
     }
-    
+
     @Override
     public String toString() {
         return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
