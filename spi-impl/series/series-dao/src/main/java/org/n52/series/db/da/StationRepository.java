@@ -56,7 +56,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @deprecated since 2.0.0.
  */
 @Deprecated
-public class StationRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<StationOutput> {
+public class StationRepository extends SessionAwareRepository implements OutputAssembler<StationOutput> {
 
     @Override
     public boolean exists(String id) throws DataAccessException {

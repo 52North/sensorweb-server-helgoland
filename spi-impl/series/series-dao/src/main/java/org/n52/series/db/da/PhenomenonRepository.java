@@ -45,7 +45,7 @@ import org.n52.series.spi.search.PhenomenonSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class PhenomenonRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<PhenomenonOutput> {
+public class PhenomenonRepository extends SessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 
     @Override
     public boolean exists(String id) throws DataAccessException {

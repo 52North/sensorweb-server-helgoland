@@ -34,7 +34,6 @@ import static org.n52.web.ctrl.UrlSettings.COLLECTION_STATIONS;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.StationOutput;
 import org.n52.series.spi.geo.TransformingStationOutputService;
@@ -63,8 +62,8 @@ public class StationsParameterController {
 
     @RequestMapping(method = GET)
     public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         IoParameters map = createFromQuery(query);
+        map = IoParameters.ensureBackwardsCompatibility(map);
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -86,8 +85,8 @@ public class StationsParameterController {
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
-        hookQueryParameters(query);
         IoParameters map = createFromQuery(query);
+        map = IoParameters.ensureBackwardsCompatibility(map);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
         Stopwatch stopwatch = startStopwatch();
@@ -99,10 +98,6 @@ public class StationsParameterController {
         }
 
         return new ModelAndView().addObject(result);
-    }
-
-    protected void hookQueryParameters(MultiValueMap<String, String> query) {
-        query.add(Parameters.PURE_STATION_INSITU_CONCEPT, "true");
     }
 
     public ParameterService<StationOutput> getParameterService() {

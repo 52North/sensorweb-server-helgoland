@@ -58,7 +58,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class GeometriesRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<GeometryInfo> {
+public class GeometriesRepository extends SessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
     @Autowired
     private PlatformRepository platformRepository;

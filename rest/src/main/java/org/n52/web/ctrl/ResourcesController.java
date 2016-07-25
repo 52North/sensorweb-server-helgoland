@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.io.I18N;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
@@ -51,15 +52,16 @@ public class ResourcesController {
     private CountingMetadataService metadataService;
 
     @RequestMapping("/")
-    public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        return new ModelAndView().addObject(createResources(createFromQuery(query)));
+    public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> parameters) {
+        IoParameters query = createFromQuery(parameters);
+        query = IoParameters.ensureBackwardsCompatibility(query);
+        return new ModelAndView().addObject(createResources(query));
     }
 
-    protected List<ResourceCollection> createResources(IoParameters params) {
-        List<ResourceCollection> resources = new ArrayList<>();
-
-        I18N i18n = I18N.getMessageLocalizer(params.getLocale());
-
+    protected List<ResourceCollection> createResources(IoParameters parameters) {
+        parameters = IoParameters.ensureBackwardsCompatibility(parameters);
+        I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
+        
         ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription(i18n.get("msg.web.resources.services"));
         ResourceCollection stations = createResource("stations").withLabel("Station").withDescription(i18n.get("msg.web.resources.stations"));
         ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.timeseries"));
@@ -68,16 +70,21 @@ public class ResourcesController {
         ResourceCollection features = createResource("features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.features"));
         ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.procedures"));
         ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.phenomena"));
-        if (params.isExpanded()) {
-            services.setSize(getMetadataService().getServiceCount());
-            stations.setSize(getMetadataService().getStationsCount());
-            timeseries.setSize(getMetadataService().getTimeseriesCount());
-            categories.setSize(getMetadataService().getCategoriesCount());
-            offerings.setSize(getMetadataService().getOfferingsCount());
-            features.setSize(getMetadataService().getFeaturesCount());
-            procedures.setSize(getMetadataService().getProceduresCount());
-            phenomena.setSize(getMetadataService().getPhenomenaCount());
+        if (parameters.isExpanded()) {
+            services.setSize(getMetadataService().getServiceCount(parameters));
+            if (new FilterResolver(parameters).shallBehaveBackwardsCompatible()) {
+                // ensure backwards compatibility
+                stations.setSize(getMetadataService().getStationCount());
+                timeseries.setSize(getMetadataService().getTimeseriesCount());
+            }
+            categories.setSize(getMetadataService().getCategoryCount(parameters));
+            offerings.setSize(getMetadataService().getOfferingCount(parameters));
+            features.setSize(getMetadataService().getFeatureCount(parameters));
+            procedures.setSize(getMetadataService().getProcedureCount(parameters));
+            phenomena.setSize(getMetadataService().getPhenomenaCount(parameters));
         }
+        
+        List<ResourceCollection> resources = new ArrayList<>();
         resources.add(services);
         resources.add(stations);
         resources.add(timeseries);
@@ -89,9 +96,13 @@ public class ResourcesController {
 
         // since 2.0.0
         ResourceCollection platforms = createResource("platforms").withLabel("Platforms").withDescription(i18n.get("msg.web.resources.platforms"));
-        ResourceCollection series = createResource("datasets").withLabel("Datasets").withDescription(i18n.get("msg.web.resources.datasets"));
+        ResourceCollection datasets = createResource("datasets").withLabel("Datasets").withDescription(i18n.get("msg.web.resources.datasets"));
         resources.add(platforms);
-        resources.add(series);
+        resources.add(datasets);
+        if (parameters.isExpanded()) {
+            platforms.setSize(getMetadataService().getPlatformCount(parameters));
+            datasets.setSize(getMetadataService().getDatasetCount(parameters));
+        }
 
         return resources;
     }

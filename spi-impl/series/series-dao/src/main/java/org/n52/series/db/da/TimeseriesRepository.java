@@ -62,7 +62,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @deprecated since 2.0.0
  */
 @Deprecated
-public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<TimeseriesMetadataOutput> {
+public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 
@@ -186,11 +186,11 @@ public class TimeseriesRepository extends SessionAwareRepository<DbQuery> implem
     }
 
     private MeasurementDataRepository createRepository(String datasetType) throws DataAccessException {
-        if ( !factory.isKnown(datasetType)) {
+        if ( !"measurement".equalsIgnoreCase(datasetType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
-            return (MeasurementDataRepository) factory.create(datasetType);
+            return (MeasurementDataRepository) factory.create("measurement");
         } catch (DatasetFactoryException e) {
             throw new DataAccessException(e.getMessage());
         }
