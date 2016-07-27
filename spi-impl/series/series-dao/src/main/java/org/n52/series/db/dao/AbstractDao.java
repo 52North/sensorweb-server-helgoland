@@ -53,9 +53,10 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     public abstract List<T> find(DbQuery query);
 
     protected abstract Class<T> getEntityClass();
-    
+
     protected abstract String getSeriesProperty();
 
+    
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
         Criteria criteria = getDefaultCriteria().setProjection(rowCount());
