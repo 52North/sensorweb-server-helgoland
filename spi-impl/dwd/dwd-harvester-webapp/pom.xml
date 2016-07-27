@@ -63,6 +63,9 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <excludes>
+                   <exclude>geometries/*</exclude>
+                </excludes>
                 <filtering>true</filtering>
             </resource>
         </resources>
@@ -126,7 +129,15 @@
                             <resource>
                                 <directory>src/main/resources</directory>
                                 <filtering>true</filtering>
+                                <excludes>
+                                    <exclude>geometries/*</exclude>
+                                </excludes>
                                 <targetPath>WEB-INF/classes</targetPath>
+                            </resource>
+                             <resource>
+                                <directory>src/main/resources/geometries</directory>
+                                <filtering>false</filtering>
+                                <targetPath>WEB-INF/classes/geometries</targetPath>
                             </resource>
                         </webResources>
                     </configuration>
