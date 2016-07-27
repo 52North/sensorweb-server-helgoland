@@ -42,7 +42,7 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
-import org.n52.series.db.dao.SeriesDao;
+import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.StationSearchResult;
 import org.n52.web.exception.BadRequestException;
@@ -170,7 +170,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        SeriesDao<MeasurementDatasetEntity> seriesDao = new SeriesDao<>(session, MeasurementDatasetEntity.class);
+        DatasetDao<MeasurementDatasetEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetEntity.class);
         List<MeasurementDatasetEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));

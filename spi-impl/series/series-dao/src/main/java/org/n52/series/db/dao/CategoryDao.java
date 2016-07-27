@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     private static final String SERIES_PROPERTY = "category";
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDao.class);
 
     public CategoryDao(Session session) {
@@ -55,11 +55,8 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nCategoryEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
     }
 
@@ -71,15 +68,12 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(parameters, I18nCategoryEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
-        }
-        return addFilters(criteria, parameters).list();
+    public List<CategoryEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        LOGGER.debug("get all instances: {}", query);
+        Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query);
+        return addFilters(criteria, query).list();
     }
-    
+
     @Override
     protected String getSeriesProperty() {
         return SERIES_PROPERTY;

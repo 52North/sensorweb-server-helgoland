@@ -42,7 +42,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
+import org.n52.series.db.dao.DataDao;
 
 public class CountDataRepository extends AbstractDataRepository<CountData, CountDatasetEntity, CountDataEntity, CountValue> {
 
@@ -87,7 +87,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
 
     private CountData expandReferenceDataIfNecessary(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
-        ObservationDao<CountDataEntity> dao = createDataDao(session);
+        DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
             CountValue lastValue = getLastValue(seriesEntity, session);
@@ -104,7 +104,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
     @Override
     protected CountData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
-        ObservationDao<CountDataEntity> dao = createDataDao(session);
+        DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (CountDataEntity observation : observations) {
             if (observation != null) {

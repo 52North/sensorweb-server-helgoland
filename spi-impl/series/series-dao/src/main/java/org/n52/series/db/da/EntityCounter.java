@@ -40,7 +40,7 @@ import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PhenomenonDao;
 import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProcedureDao;
-import org.n52.series.db.dao.SeriesDao;
+import org.n52.series.db.dao.DatasetDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +63,7 @@ public class EntityCounter {
         // offerings equals procedures in our case
         return countProcedures(query);
     }
-    
+
     public Integer countProcedures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
@@ -99,16 +99,16 @@ public class EntityCounter {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countDatasets(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new SeriesDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
+            return new DatasetDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countStations() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
@@ -118,7 +118,7 @@ public class EntityCounter {
             sessionStore.returnSession(session);
         }
     }
-    
+
     public Integer countTimeseries() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {

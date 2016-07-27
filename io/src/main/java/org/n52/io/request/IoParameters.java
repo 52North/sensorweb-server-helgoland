@@ -868,7 +868,7 @@ public class IoParameters implements Parameters {
                     .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
                     .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
     }
-    
+
     public boolean isPureStationaryInsituQuery() {
         Set<String> platformTypes = getPlatformTypes();
         Set<String> datasetTypes = getDatasetTypes();
@@ -878,13 +878,13 @@ public class IoParameters implements Parameters {
 
     private boolean isStationaryInsituOnly(Set<String> platformTypes) {
         return platformTypes.size() == 2
-                && platformTypes.contains("stationary") 
+                && platformTypes.contains("stationary")
                 && platformTypes.contains("insitu");
     }
-    
+
     private boolean isMeasurementOnly(Set<String> datasetTypes) {
         return datasetTypes.size() == 1
                 && datasetTypes.contains("measurement");
     }
-    
+
 }

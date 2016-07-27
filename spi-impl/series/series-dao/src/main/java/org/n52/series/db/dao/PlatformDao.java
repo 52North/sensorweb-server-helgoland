@@ -39,11 +39,16 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.FilterResolver;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.I18nPlatformEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class PlatformDao extends AbstractDao<PlatformEntity> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformDao.class);
 
     private static final String SERIES_PROPERTY = "platform";
 
@@ -52,8 +57,12 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<PlatformEntity> find(DbQuery query) {
-        throw new UnsupportedOperationException("not implemented yet.");
+        LOGGER.debug("find instance: {}", query);
+        Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(), query);
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        return addFilters(criteria, query).list();
     }
 
     @Override
@@ -65,9 +74,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria(SERIES_PROPERTY); // TODO filter
-
-        // TODO translation
+        Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
 
         DetachedCriteria filter = query.createDetachedFilterCriteria(SERIES_PROPERTY);
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
@@ -99,6 +106,5 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     protected Class<PlatformEntity> getEntityClass() {
         return PlatformEntity.class;
     }
-
-
+    
 }

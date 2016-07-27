@@ -53,13 +53,9 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     public abstract List<T> find(DbQuery query);
 
     protected abstract Class<T> getEntityClass();
-    
+
     protected abstract String getSeriesProperty();
 
-    public boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
-        Criteria i18nCriteria = session.createCriteria(clazz);
-        return parameters.checkTranslationForLocale(i18nCriteria);
-    }
     
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
@@ -75,7 +71,18 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         return query.addSpatialFilterTo(criteria, query)
                 .add(propertyIn(filterProperty + ".pkid", filter));
     }
+
+    protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {
+        return hasTranslation(query, clazz)
+                ? query.addLocaleTo(criteria, clazz)
+                : criteria;
+    }
     
+    private <I extends I18nEntity> boolean hasTranslation(DbQuery parameters, Class<I> clazz) {
+        Criteria i18nCriteria = session.createCriteria(clazz);
+        return parameters.checkTranslationForLocale(i18nCriteria);
+    }
+
     protected Criteria getDefaultCriteria() {
         return getDefaultCriteria(getSeriesProperty());
     }

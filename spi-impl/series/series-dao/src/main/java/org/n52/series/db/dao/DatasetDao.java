@@ -49,21 +49,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
+public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
     private static final String COLUMN_PKID = "pkid";
 
     private final Class<T> entityType;
 
-    public SeriesDao(Session session, Class<T> clazz) {
+    public DatasetDao(Session session, Class<T> clazz) {
         super(session);
         this.entityType = clazz;//(Class<T>) AbstractSeriesEntity.class;
     }
 
     @SuppressWarnings("unchecked")
-    public SeriesDao(Session session) {
+    public DatasetDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DatasetEntity.class;
     }
@@ -72,27 +72,24 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> find(DbQuery query) {
         LOGGER.debug("find entities: {}", query);
+        
+        List<T> series = new ArrayList<>();
+        String searchTerm = "%" + query.getSearchTerm() + "%";
+
         /*
          * Timeseries labels are constructed from labels of related feature
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-        List<T> series = new ArrayList<>();
+        
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
+        series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
+
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
-
-        if (hasTranslation(query, I18nFeatureEntity.class)) {
-            featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
-        }
-        featureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        series.addAll(featureCriteria.list());
-
-        if (hasTranslation(query, I18nProcedureEntity.class)) {
-            procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
-        }
-        procedureCriteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        series.addAll(procedureCriteria.list());
+        series.addAll(translate(I18nProcedureEntity.class, procedureCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
 
         return series;
     }
@@ -116,7 +113,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
         procedureCreateria.add(eq("reference", false));
         return (List<T>) addFilters(criteria, parameters).list();
     }
-    
+
     @Override
     protected String getSeriesProperty() {
         return COLUMN_PKID;
@@ -161,7 +158,7 @@ public class SeriesDao<T extends DatasetEntity> extends AbstractDao<T> {
     private String prepareForConcatenation(String alias) {
         return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
-    
+
 
     @Override
     protected Class<T> getEntityClass() {

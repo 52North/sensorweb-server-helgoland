@@ -28,18 +28,14 @@
  */
 package org.n52.web.ctrl;
 
+import static org.n52.io.request.IoParameters.ensureBackwardsCompatibility;
+import static org.n52.io.request.QueryParameters.createFromQuery;
 import static org.n52.web.ctrl.UrlSettings.SEARCH;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
-import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.SearchService;
-import org.n52.web.exception.BadRequestException;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,18 +49,12 @@ public class SearchController extends BaseController {
     private SearchService searchService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView searchResources(@RequestParam String q, @RequestParam(defaultValue = "en") String locale) {
-
-        if (q == null) {
-            throw new BadRequestException("Use parameter 'q' with search string to define your search term.");
-        }
-
-        Map<String, String> query = new HashMap<>();
-        query.put(Parameters.SEARCH_TERM, q);
-        query.put(Parameters.LOCALE, locale);
-        final IoParameters parameters = QueryParameters.createFromQuery(query);
-        Collection<SearchResult> result = searchService.searchResources(parameters);
-        return new ModelAndView().addObject(result);
+    public ModelAndView searchResources(@RequestParam String q, @RequestParam(defaultValue = "en") String locale,
+                                        @RequestParam(required=false) MultiValueMap<String, String> parameters) {
+        IoParameters query = ensureBackwardsCompatibility(createFromQuery(parameters)
+                    .extendWith(Parameters.SEARCH_TERM, q)
+                    .extendWith(Parameters.LOCALE, locale));
+        return new ModelAndView().addObject(searchService.searchResources(query));
     }
 
     public SearchService getSearchService() {

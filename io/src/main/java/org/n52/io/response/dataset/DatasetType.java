@@ -36,7 +36,10 @@ public class DatasetType {
         if (id == null || id.isEmpty()) {
             return id;
         }
-        return id.substring(0, id.indexOf(SEPERATOR));
+        int separatorIndex = id.indexOf(SEPERATOR);
+        return separatorIndex >= 0
+                ? id.substring(0, separatorIndex)
+                : id;
     }
 
     public static String extractId(String id) {
