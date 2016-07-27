@@ -33,13 +33,13 @@
 	</bean>
  	-->
 
-	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester">
-    	<constructor-arg index="0" value="c:/VG2500_DWD/DWD-PVW-Customer_VG2500.shp"/>
-        <constructor-arg index="1" ref="alertStore" />
+	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester" destroy-method="shutdown">
+        <constructor-arg index="0" ref="alertStore" />
+        <!-- <constructor-arg index="1" value="/geometries/DWD-PVW-Customer_VG2500.shp"/> -->
     </bean>
 
 
    <!--  <bean id="searchService" class="org.n52.series.db.srv.v1.Search" />
     <bean id="metadataService" class="org.n52.series.db.srv.v1.ExtCountingMetadataAccessService" /> -->
-
+	<bean class="org.n52.io.DefaultIoFactory" />
 </beans>
