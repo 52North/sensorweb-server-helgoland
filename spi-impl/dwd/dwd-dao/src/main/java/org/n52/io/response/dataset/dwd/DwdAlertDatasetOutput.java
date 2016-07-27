@@ -32,7 +32,7 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 public class DwdAlertDatasetOutput extends DatasetOutput<DwdAlertValue, DwdAlertReferenceValueOutput> {
 
-    public static final String DATASET_TYPE = "dwd_alert";
+    public static final String DATASET_TYPE = "dwd-alert";
 
     public DwdAlertDatasetOutput() {
         super(DATASET_TYPE);
