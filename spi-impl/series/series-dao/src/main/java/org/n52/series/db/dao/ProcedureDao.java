@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     private static final String SERIES_PROPERTY = "procedure";
-    
+
     private static final String COLUMN_REFERENCE = "reference";
 
     public ProcedureDao(Session session) {

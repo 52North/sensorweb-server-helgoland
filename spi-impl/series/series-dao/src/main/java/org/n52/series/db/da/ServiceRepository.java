@@ -191,7 +191,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
             quantities.setFeaturesSize(counter.countFeatures(query));
             quantities.setPlatformsSize(counter.countPlatforms(query));
             quantities.setDatasetsSize(counter.countDatasets(query));
-            
+
             FilterResolver filterResolver = query.getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible()) {
                 quantities.setTimeseriesSize(counter.countTimeseries());

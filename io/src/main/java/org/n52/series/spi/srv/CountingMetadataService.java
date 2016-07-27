@@ -46,14 +46,14 @@ public interface CountingMetadataService {
     int getProcedureCount(IoParameters parameters);
 
     int getPhenomenaCount(IoParameters parameters);
-    
+
     int getPlatformCount(IoParameters paramters);
-    
+
     int getDatasetCount(IoParameters parameters);
-    
-    
+
+
     // TODO check with Jan, what more might be interesting for a client
-    
+
 
     @Deprecated
     int getStationCount();
