@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.n52.io.MimeType;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -76,6 +78,9 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
+        for (Set<String> supportedMimeTypes : mimeTypesByDatasetTypes.values()) {
+            supportedMimeTypes.add(MimeType.APPLICATION_JSON.getMimeType());
+        }
         addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
     }
 
