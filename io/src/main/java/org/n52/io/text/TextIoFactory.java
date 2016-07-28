@@ -30,6 +30,7 @@ package org.n52.io.text;
 
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.IoFactory;
@@ -48,7 +49,7 @@ public class TextIoFactory extends IoFactory<TextData, TextDatasetOutput, TextVa
 
     @Override
     public Set<String> getSupportedMimeTypes() {
-        return Collections.emptySet();
+        return new HashSet<>();
     }
 
     @Override

@@ -72,7 +72,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> find(DbQuery query) {
         LOGGER.debug("find entities: {}", query);
-        
+
         List<T> series = new ArrayList<>();
         String searchTerm = "%" + query.getSearchTerm() + "%";
 
@@ -81,7 +81,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-        
+
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)

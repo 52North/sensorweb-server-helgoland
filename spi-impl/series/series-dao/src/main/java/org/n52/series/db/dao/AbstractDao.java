@@ -56,7 +56,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     protected abstract String getSeriesProperty();
 
-    
+
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
         Criteria criteria = getDefaultCriteria().setProjection(rowCount());
@@ -77,7 +77,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
                 ? query.addLocaleTo(criteria, clazz)
                 : criteria;
     }
-    
+
     private <I extends I18nEntity> boolean hasTranslation(DbQuery parameters, Class<I> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
