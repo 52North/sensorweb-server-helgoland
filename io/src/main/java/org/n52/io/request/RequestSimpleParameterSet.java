@@ -47,7 +47,9 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     @Override
     public String[] getSeriesIds() {
-        return Utils.copy(seriesIds);
+        return seriesIds != null
+                ? Utils.copy(seriesIds)
+                : new String[0];
     }
 
     /**
@@ -55,6 +57,11 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     void setSeriesIds(String[] seriesIds) {
         this.seriesIds = Utils.copy(seriesIds);
+    }
+
+    @Deprecated
+    void setTimeseriesIds(String[] timeseriesIds) {
+        setSeriesIds(timeseriesIds);
     }
 
     /**
