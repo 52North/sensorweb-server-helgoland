@@ -35,30 +35,32 @@ import org.n52.io.request.IoParameters;
  */
 public interface CountingMetadataService {
 
-    int getServiceCount(IoParameters parameters);
+    Integer getServiceCount(IoParameters parameters);
 
-    int getOfferingCount(IoParameters parameters);
+    Integer getOfferingCount(IoParameters parameters);
 
-    int getCategoryCount(IoParameters parameters);
+    Integer getCategoryCount(IoParameters parameters);
 
-    int getFeatureCount(IoParameters parameters);
+    Integer getFeatureCount(IoParameters parameters);
 
-    int getProcedureCount(IoParameters parameters);
+    Integer getProcedureCount(IoParameters parameters);
 
-    int getPhenomenaCount(IoParameters parameters);
+    Integer getPhenomenaCount(IoParameters parameters);
 
-    int getPlatformCount(IoParameters paramters);
+    Integer getPlatformCount(IoParameters paramters);
 
-    int getDatasetCount(IoParameters parameters);
+    Integer getDatasetCount(IoParameters parameters);
+
+    Integer getGeometryCount(IoParameters parameters);
 
 
     // TODO check with Jan, what more might be interesting for a client
 
 
     @Deprecated
-    int getStationCount();
+    Integer getStationCount();
 
     @Deprecated
-    int getTimeseriesCount();
+    Integer getTimeseriesCount();
 
 }
