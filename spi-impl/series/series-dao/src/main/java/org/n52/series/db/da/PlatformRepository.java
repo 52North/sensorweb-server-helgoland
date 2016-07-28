@@ -258,7 +258,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 String id = dataset.getId();
                 DataRepository dataRepository = factory.create(dataset.getDatasetType());
                 DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
-                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session);
+                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session, query);
                 currentLastValue = getLaterValue(currentLastValue, valueToCheck);
             } catch (DatasetFactoryException e) {
                 LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());
