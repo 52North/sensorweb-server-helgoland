@@ -47,7 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class PlatformDao extends AbstractDao<PlatformEntity> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformDao.class);
 
     private static final String SERIES_PROPERTY = "platform";
@@ -106,5 +106,5 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     protected Class<PlatformEntity> getEntityClass() {
         return PlatformEntity.class;
     }
-    
+
 }
