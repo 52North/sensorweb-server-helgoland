@@ -270,9 +270,9 @@
                     <!-- Backward Compatibility Whats New -->
                     <h3>What's New?</h3>
 
-                    <p>With the new version further types of sensor platforms and observation types. That's why
-                        a few new endpoints are available from v2. These provide access to all types of sensor
-                        platforms and observation types made.</p>
+                    <p>With the new version further types of sensor platforms and observation types. That's why a
+                        few new endpoints are available from v2. These provide access to all types of sensor platforms
+                        and observation types made.</p>
 
                     <p>
                         However, to keep the easy access to (the most common case so far) measurement data from
@@ -285,8 +285,8 @@
                     </p>
                     <div class="n52-callout n52-callout-v2">
                         <p>
-                            It is worth to mention, that if both parameters are missing, all returning data from the
-                            API will relate to just
+                            It is worth to mention, that if both parameters are missing, all returning data from the API
+                            will relate to just
                             <code>stationary</code>
                             <code>insitu</code>
                             platforms and
@@ -308,8 +308,7 @@
                         <li><code>remote</code> sensor platforms</li>
                     </ul>
                     <p>
-                        The former <a href="#stations">Stations</a> resource collection relates to the combination
-                        of
+                        The former <a href="#stations">Stations</a> resource collection relates to the combination of
                         <code>stationary</code>
                         and
                         <code>insitu</code>
@@ -326,8 +325,8 @@
                     <p>
                         The query parameter
                         <code>platformTypes</code>
-                        can be used to filter on all resources which ensures to only get those resources related to
-                        the given filter.
+                        can be used to filter on all resources which ensures to only get those resources related to the
+                        given filter.
                     </p>
                 </div>
 
@@ -349,8 +348,8 @@
                     <p>
                         The query parameter
                         <code>datasetTypes</code>
-                        can be used to filter on all resources which ensures to only get those resources related to
-                        the given filter.
+                        can be used to filter on all resources which ensures to only get those resources related to the
+                        given filter.
                     </p>
                 </div>
 
@@ -2739,14 +2738,14 @@ http://localhost:8080/api/v1/timeseries/getData > img.png
                 </div>
 
                 <div id="geometries-examples">
-                        <!-- Examples -->
-                        <h3>Examples</h3>
-                        <div>
-                            <h4>Simple Collection</h4>
-                            <pre>GET /api/v1/geometries/ HTTP/1.1
+                    <!-- Examples -->
+                    <h3>Examples</h3>
+                    <div>
+                        <h4>Simple Collection</h4>
+                        <pre>GET /api/v1/geometries/ HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
-                            <pre id="geometries-examples-simple" class="collapse">HTTP/1.1 200 OK
+                        <pre id="geometries-examples-simple" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 [
@@ -2775,24 +2774,24 @@ Content-Type: application/json;charset=UTF-8
     }
   }
 ]</pre>
-                            <button data-toggle="collapse" data-parent="#geometries-examples"
-                                data-target="#geometries-examples-simple" class="btn btn-primary">Show/Hide
-                                Response</button>
-                            <div class="n52-callout n52-callout-info">
-                                As <a href="#general-common-query-parameters">noted above</a>
-                                <code>expanded=false</code>
-                                is the default. Setting the parameter to
-                                <code>false</code>
-                                explicitly will have the same effect.
-                            </div>
+                        <button data-toggle="collapse" data-parent="#geometries-examples"
+                            data-target="#geometries-examples-simple" class="btn btn-primary">Show/Hide
+                            Response</button>
+                        <div class="n52-callout n52-callout-info">
+                            As <a href="#general-common-query-parameters">noted above</a>
+                            <code>expanded=false</code>
+                            is the default. Setting the parameter to
+                            <code>false</code>
+                            explicitly will have the same effect.
                         </div>
+                    </div>
 
-                        <div>
-                            <h4>Expanded Collection</h4>
-                            <pre>GET /api/v1/geometries/?expanded=true HTTP/1.1
+                    <div>
+                        <h4>Expanded Collection</h4>
+                        <pre>GET /api/v1/geometries/?expanded=true HTTP/1.1
 Host: sensorweb.demo.52north.org
 Accept: application/json</pre>
-                            <pre id="geometries-examples-expanded" class="collapse">HTTP/1.1 200 OK
+                        <pre id="geometries-examples-expanded" class="collapse">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 [
@@ -2843,17 +2842,17 @@ Content-Type: application/json;charset=UTF-8
     }
   }
 ]</pre>
-                            <button data-toggle="collapse" data-parent="#geometries-examples"
-                                data-target="#geometries-examples-expanded" class="btn btn-primary">Show/Hide
-                                Response</button>
-                        </div>
+                        <button data-toggle="collapse" data-parent="#geometries-examples"
+                            data-target="#geometries-examples-expanded" class="btn btn-primary">Show/Hide
+                            Response</button>
+                    </div>
 
-                        <div>
-                            <h4>Item</h4>
-                            <pre>GET /api/v1/geometries/platform_site_12/ HTTP/1.1
+                    <div>
+                        <h4>Item</h4>
+                        <pre>GET /api/v1/geometries/platform_site_12/ HTTP/1.1
   Host: sensorweb.demo.52north.org
   Accept: application/json</pre>
-                            <pre id="geometries-examples-item" class="collapse">HTTP/1.1 200 OK
+                        <pre id="geometries-examples-item" class="collapse">HTTP/1.1 200 OK
   Content-Type: application/json;charset=UTF-8
 
 {
@@ -2879,12 +2878,11 @@ Content-Type: application/json;charset=UTF-8
     ]
   }
 }</pre>
-                            <button data-toggle="collapse" data-parent="#geometries-examples"
-                                data-target="#geometries-examples-item" class="btn btn-primary">Show/Hide
-                                Response</button>
-                        </div>
-
+                        <button data-toggle="collapse" data-parent="#geometries-examples"
+                            data-target="#geometries-examples-item" class="btn btn-primary">Show/Hide Response</button>
                     </div>
+
+                </div>
 
             </section>
 
@@ -3212,6 +3210,22 @@ Content-Type: application/json;charset=UTF-8
                     <p class="pull-right up-link">
                         <a href="#"><i class="icon-chevron-up"></i> top</a>
                     </p>
+                </div>
+
+                <div class="n52-callout n52-callout-v2">
+                    Use the query parameters
+                    <code>platformTypes</code>
+                    and/or
+                    <code>datasetTypes</code>
+                    to get access to those parameters related to the given filter. To enable easy access to the most
+                    common use case (and for <a href="#backwards-compatibility">backwards compatibility</a>) the default
+                    filter is set on
+                    <code>platformTypes=stationary,insitu</code>
+                    (and
+                    <code>AND</code>
+                    filter) and
+                    <code>datasetTypes=measurement</code>
+                    .
                 </div>
 
                 <div id="parameter-services">
