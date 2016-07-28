@@ -93,6 +93,7 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
                      Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
                      Restrictions.eq(PlatformEntity.INSITU, !includeRemote))); // inverse to match filter
         }
+        query.addLimitAndOffsetFilter(criteria);
         return (List<PlatformEntity>) criteria.list();
     }
 
