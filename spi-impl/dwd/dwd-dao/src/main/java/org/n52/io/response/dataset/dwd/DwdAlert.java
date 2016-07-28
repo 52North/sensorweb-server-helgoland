@@ -96,7 +96,7 @@ public class DwdAlert {
         return this;
     }
 
-    public String getStatreShort() {
+    public String getStateShort() {
         return stateShort;
     }
 
