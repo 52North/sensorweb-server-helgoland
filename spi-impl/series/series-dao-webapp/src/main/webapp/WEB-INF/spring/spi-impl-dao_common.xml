@@ -22,12 +22,8 @@
 
     <bean class="org.n52.series.db.da.EntityCounter" />
     <bean id="metadataService" class="org.n52.series.srv.CountingMetadataAccessService" />
-
     <bean id="searchService" class="org.n52.series.srv.Search" />
-    <bean class="org.n52.web.ctrl.SearchController">
-        <property name="searchService" ref="searchService"/>
-    </bean>
-
+    
     <bean class="org.n52.series.db.da.DataRepositoryFactory" />
     <bean class="org.n52.io.DefaultIoFactory" />
 </beans>

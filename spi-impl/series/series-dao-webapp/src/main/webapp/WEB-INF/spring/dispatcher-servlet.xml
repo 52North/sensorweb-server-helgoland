@@ -28,6 +28,10 @@
             </list>
         </property>
     </bean>
+    <bean class="org.n52.web.ctrl.SearchController">
+        <property name="searchService" ref="searchService"/>
+    </bean>
+    
 
     <import resource="api_v1_mvc.xml" />
     <import resource="api_v1_mvc_legacy.xml" />
