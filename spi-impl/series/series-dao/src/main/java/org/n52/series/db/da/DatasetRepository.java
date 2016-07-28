@@ -44,8 +44,8 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.DatasetDao;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,8 +189,8 @@ public class DatasetRepository<T extends Data>
             result.setSeriesParameters(getParameters(series, query));
             result.setUom(series.getUnitI18nName(query.getLocale()));
             DataRepository dataRepository = factory.create(series.getDatasetType());
-            result.setFirstValue(dataRepository.getFirstValue(series, session));
-            result.setLastValue(dataRepository.getLastValue(series, session));
+            result.setFirstValue(dataRepository.getFirstValue(series, session, query));
+            result.setLastValue(dataRepository.getLastValue(series, session, query));
             return result;
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
