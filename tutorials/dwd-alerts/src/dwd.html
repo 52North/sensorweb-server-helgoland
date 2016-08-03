@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<meta charset="ISO-8859-1"> </meta>
+		<title>DWD Alerts Tutorial</title>
+
+		<!-- JQuery for easier element access and execute Web requests -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"> </script>
+	
+		<!-- Bootstrap for beautification and page layout -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"> </script>
+
+		<!-- Leaflet to display a map -->
+		<link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.css">
+
+		<script src="https://npmcdn.com/leaflet@1.0.0-rc.2/dist/leaflet.js"> </script>
+		
+		
+		<!-- application css and js files -->
+		<link rel="stylesheet" href="app.css">
+		<script src="app.js"> </script>
+
+	</head>
+	<body>
+	
+		<!-- simple Bootstrap layout; use 9/12 of width for map and 3/12 for form-->
+		<div class="row" id="applicationContainer">
+			<div class="col-sm-9" id="mapArea">
+
+				<!-- div container for leaflet map -->
+				<div id="mapid"> </div>
+
+			</div>
+			<div class="col-sm-3" id="formArea" align="center"> 
+
+				<h2>Get DWD Alert Geometries</h2>
+			
+				<!-- button to query available geometries -->
+				<button type="button" class="btn btn-info" onclick="getAllGeometries()">Get currently available DWD alert geometries</button>
+
+			</div>
+		</div>
+
+	</body>
+</html>

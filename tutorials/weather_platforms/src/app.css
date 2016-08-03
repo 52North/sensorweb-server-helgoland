@@ -1,0 +1,14 @@
+#applicationContainer{
+   margin-top: 10px;
+   margin-left: 5px;
+   margin-right: 5px;
+   margin-bottom: 5px;
+}
+
+#mapid {
+  height: 98vh;
+}
+
+.leaflet-popup {
+    width: auto;
+}
