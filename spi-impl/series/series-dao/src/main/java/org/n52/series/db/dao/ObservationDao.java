@@ -39,6 +39,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
@@ -94,19 +95,6 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     /**
-     * Retrieves all available observations belonging to a particular series.
-     *
-     * @param series the entity to get all observations for.
-     * @return all observation entities belonging to the series.
-     * @throws org.n52.series.db.DataAccessException if accessing database
-     * fails.
-     */
-    public List<T> getAllInstancesFor(DatasetEntity series) throws DataAccessException {
-        LOGGER.debug("get all instances for series '{}'", series.getPkid());
-        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
-    }
-
-    /**
      * <p>
      * Retrieves all available observation instances.</p>
      *
@@ -121,6 +109,19 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         Criteria criteria = getDefaultCriteria();
         parameters.addTimespanTo(criteria);
         return (List<T>) criteria.list();
+    }
+
+    /**
+     * Retrieves all available observations belonging to a particular series.
+     *
+     * @param series the entity to get all observations for.
+     * @return all observation entities belonging to the series.
+     * @throws org.n52.series.db.DataAccessException if accessing database
+     * fails.
+     */
+    public List<T> getAllInstancesFor(DatasetEntity series) throws DataAccessException {
+        LOGGER.debug("get all instances for series '{}'", series.getPkid());
+        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
 
     /**
@@ -158,7 +159,9 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
 
     @Override
     protected Criteria getDefaultCriteria() {
-        return session.createCriteria(entityType).add(eq(COLUMN_DELETED, Boolean.FALSE));
+        return session.createCriteria(entityType)
+                .addOrder(Order.asc(COLUMN_TIMESTAMP))
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
 
     @SuppressWarnings("unchecked")

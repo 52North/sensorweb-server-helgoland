@@ -20,25 +20,38 @@
 
     <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
       <property formula="3" name="numberOfDecimals" type="int"/>
+      <!-- first value for backwards compatibility -->
+      <component class="org.n52.series.db.beans.ObservationEntity" name="firstValue">
+        <property column="firsttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
+        <property column="firstnumericvalue" name="value" type="double"/>
+      </component>
+      <!-- last value for backwards compatibility -->
+      <component class="org.n52.series.db.beans.ObservationEntity" name="lastValue">
+        <property column="lasttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
+        <property column="lastnumericvalue" name="value" type="double"/>
+      </component>
       <many-to-one class="UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
-      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
-        <key column="seriesid"/>
+      <list fetch="select" inverse="true" name="observations" table="observation">
+        <key column="observationid"/>
+        <index column="seriesid"/>
         <one-to-many class="DataEntity"/>
-      </bag>
+      </list>
     </subclass>
 
     <subclass discriminator-value="text" name="TextDatasetEntity">
-      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
-        <key column="seriesid"/>
+      <list fetch="select" inverse="true" name="observations" table="observation">
+        <key column="observationid"/>
+        <index column="seriesid"/>
         <one-to-many class="DataEntity"/>
-      </bag>
+      </list>
     </subclass>
 
     <subclass discriminator-value="count" name="CountDatasetEntity">
-      <bag fetch="select" inverse="true" name="observations" table="observation" order-by="phenomenonTimeStart">
-        <key column="seriesid"/>
+      <list fetch="select" inverse="true" name="observations" table="observation">
+        <key column="observationid"/>
+        <index column="seriesid"/>
         <one-to-many class="DataEntity"/>
-      </bag>
+      </list>
     </subclass>
   </class>
 </hibernate-mapping>
