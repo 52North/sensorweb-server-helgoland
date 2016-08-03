@@ -73,7 +73,7 @@ public class MeasurementDataEntity extends DataEntity<Double> {
             try {
                 validatedValues.add(Double.parseDouble(trimmed));
             } catch (NumberFormatException e) {
-                LOGGER.debug("Ignoring NO_DATA value {} (not a double).", trimmed);
+                LOGGER.trace("Ignoring NO_DATA value {} (not a double).", trimmed);
             }
         }
         return validatedValues;

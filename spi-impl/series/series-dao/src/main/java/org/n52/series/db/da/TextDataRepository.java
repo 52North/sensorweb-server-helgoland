@@ -144,7 +144,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
         String observationValue = !getServiceInfo().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
-        
+
         TextValue value = new TextValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observationValue);

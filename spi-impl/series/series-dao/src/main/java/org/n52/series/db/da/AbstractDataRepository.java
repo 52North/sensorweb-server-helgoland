@@ -90,10 +90,6 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         return new ObservationDao<>(session);
     }
 
-//    protected abstract SeriesDao<DSE> getSeriesDao(Session session);
-//
-//    protected abstract ObservationDao<DE> createDataDao(Session session);
-
     protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity);
 
     protected abstract D assembleData(DSE datasetEntity, DbQuery query, Session session) throws DataAccessException;
