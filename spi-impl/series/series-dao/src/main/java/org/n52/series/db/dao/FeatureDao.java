@@ -32,9 +32,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
@@ -44,6 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class FeatureDao extends AbstractDao<FeatureEntity> {
+
+    private static final String SERIES_FILTER_PROPERTY = "feature";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
 
@@ -55,41 +55,33 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nFeatureEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFiltersTo(criteria, query).list();
+        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        return addFilters(criteria, query).list();
     }
 
     @Override
-    public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
+    public FeatureEntity getInstance(Long key, DbQuery query) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, query);
         return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria("feature", FeatureEntity.class);
-        if (hasTranslation(parameters, I18nFeatureEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
-        }
-        return (List<FeatureEntity>) addFiltersTo(criteria, parameters).list();
-    }
-
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
-        criteria = parameters.addPlatformTypesFilter("feature", criteria);
-        return parameters.addSpatialFilterTo(criteria, parameters)
-                .add(Subqueries.propertyIn("feature.pkid", filter));
+    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        LOGGER.debug("get all instances: {}", query);
+        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
+        return (List<FeatureEntity>) addFilters(criteria, query).list();
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null, FeatureEntity.class);
+    protected String getSeriesProperty() {
+        return SERIES_FILTER_PROPERTY;
+    }
+
+    @Override
+    protected Class<FeatureEntity> getEntityClass() {
+        return FeatureEntity.class;
     }
 
 }

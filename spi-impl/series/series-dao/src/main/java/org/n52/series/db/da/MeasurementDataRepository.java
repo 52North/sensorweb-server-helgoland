@@ -38,15 +38,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.joda.time.Interval;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
 
 public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity, MeasurementDataEntity, MeasurementValue> {
 
@@ -91,16 +90,16 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
 
     private MeasurementData expandReferenceDataIfNecessary(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementDataEntity> dao = createDataDao(session);
+        DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            MeasurementValue lastValue = getLastValue(seriesEntity, session);
-            result.addValues(expandToInterval(query.getTimespan(), lastValue.getValue(), seriesEntity));
+            MeasurementValue lastValue = getLastValue(seriesEntity, session, query);
+            result.addValues(expandToInterval(lastValue.getValue(), seriesEntity, query));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
             MeasurementDataEntity entity = observations.get(0);
-            result.addValues(expandToInterval(query.getTimespan(), entity.getValue(), seriesEntity));
+            result.addValues(expandToInterval(entity.getValue(), seriesEntity, query));
         }
         return result;
     }
@@ -108,30 +107,30 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     @Override
     protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
-        ObservationDao<MeasurementDataEntity> dao = createDataDao(session);
+        DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (MeasurementDataEntity observation : observations) {
             if (observation != null) {
-                result.addValues(createSeriesValueFor(observation, seriesEntity));
+                result.addValues(createSeriesValueFor(observation, seriesEntity, query));
             }
         }
         return result;
     }
 
-    private MeasurementValue[] expandToInterval(Interval interval, Double value, MeasurementDatasetEntity series) {
+    private MeasurementValue[] expandToInterval(Double value, MeasurementDatasetEntity series, DbQuery query) {
         MeasurementDataEntity referenceStart = new MeasurementDataEntity();
         MeasurementDataEntity referenceEnd = new MeasurementDataEntity();
-        referenceStart.setTimestamp(interval.getStart().toDate());
-        referenceEnd.setTimestamp(interval.getEnd().toDate());
+        referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
+        referenceEnd.setTimestamp(query.getTimespan().getEnd().toDate());
         referenceStart.setValue(value);
         referenceEnd.setValue(value);
-        return new MeasurementValue[]{createSeriesValueFor(referenceStart, series),
-            createSeriesValueFor(referenceEnd, series)};
+        return new MeasurementValue[]{createSeriesValueFor(referenceStart, series, query),
+            createSeriesValueFor(referenceEnd, series, query)};
 
     }
 
     @Override
-    public MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
+    public MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -144,9 +143,11 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
                 : null;
 
         value.setValue(observationValue);
-        addGeometry(observation, value);
-        addValidTime(observation, value);
-        addParameter(observation, value);
+        if (query.isExpanded()) {
+            addGeometry(observation, value);
+            addValidTime(observation, value);
+            addParameter(observation, value);
+        }
         return value;
     }
 

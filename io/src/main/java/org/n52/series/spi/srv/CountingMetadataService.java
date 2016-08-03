@@ -28,25 +28,37 @@
  */
 package org.n52.series.spi.srv;
 
+import org.n52.io.request.IoParameters;
+
 /**
  * Provides access to resource quantities available.
  */
 public interface CountingMetadataService {
 
-    int getServiceCount();
+    int getServiceCount(IoParameters parameters);
 
-    int getStationsCount();
+    int getOfferingCount(IoParameters parameters);
 
+    int getCategoryCount(IoParameters parameters);
+
+    int getFeatureCount(IoParameters parameters);
+
+    int getProcedureCount(IoParameters parameters);
+
+    int getPhenomenaCount(IoParameters parameters);
+
+    int getPlatformCount(IoParameters paramters);
+
+    int getDatasetCount(IoParameters parameters);
+
+
+    // TODO check with Jan, what more might be interesting for a client
+
+
+    @Deprecated
+    int getStationCount();
+
+    @Deprecated
     int getTimeseriesCount();
-
-    int getOfferingsCount();
-
-    int getCategoriesCount();
-
-    int getFeaturesCount();
-
-    int getProceduresCount();
-
-    int getPhenomenaCount();
 
 }

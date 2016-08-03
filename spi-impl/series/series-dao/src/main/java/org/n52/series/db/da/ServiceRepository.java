@@ -129,14 +129,14 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     private ServiceOutput getExpandedService(DbQuery parameters) {
         ServiceOutput service = getCondensedService(parameters);
+        service.setQuantities(countParameters(service, parameters));
         service.setSupportsFirstLatest(true);
 
         FilterResolver filterResolver = parameters.getFilterResolver();
-        if ( !filterResolver.isSetPlatformTypeFilter()) {
+        if (filterResolver.shallBehaveBackwardsCompatible()) {
             // ensure backwards compatibility
             service.setVersion("1.0.0");
             service.setType("Thin DB access layer service.");
-            service.setQuantities(countParameters(service));
         } else {
             service.setType(serviceInfo.getType() == null
                     ? "Thin DB access layer service."
@@ -180,21 +180,23 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         }
     }
 
-    private ParameterCount countParameters(ServiceOutput service) {
-        return countEntities(service);
-    }
-
-    private ParameterCount countEntities(ServiceOutput service) {
+    private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
             // #procedures == #offerings
-            quantities.setOfferingsSize(counter.countProcedures());
-            quantities.setProceduresSize(counter.countProcedures());
-            quantities.setCategoriesSize(counter.countCategories());
-            quantities.setTimeseriesSize(counter.countTimeseries());
-            quantities.setPhenomenaSize(counter.countPhenomena());
-            quantities.setFeaturesSize(counter.countFeatures());
-            quantities.setStationsSize(counter.countStations());
+            quantities.setOfferingsSize(counter.countProcedures(query));
+            quantities.setProceduresSize(counter.countProcedures(query));
+            quantities.setCategoriesSize(counter.countCategories(query));
+            quantities.setPhenomenaSize(counter.countPhenomena(query));
+            quantities.setFeaturesSize(counter.countFeatures(query));
+            quantities.setPlatformsSize(counter.countPlatforms(query));
+            quantities.setDatasetsSize(counter.countDatasets(query));
+
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallBehaveBackwardsCompatible()) {
+                quantities.setTimeseriesSize(counter.countTimeseries());
+                quantities.setStationsSize(counter.countStations());
+            }
             return quantities;
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count parameter entities.", e);

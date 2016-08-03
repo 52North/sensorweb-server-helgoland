@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -43,8 +44,8 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.SeriesDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <T> the dataset's type this repository is responsible for.
  */
 public class DatasetRepository<T extends Data>
-        extends SessionAwareRepository<DbQuery>
+        extends SessionAwareRepository
         implements OutputAssembler<DatasetOutput>{
 
     @Autowired
@@ -69,7 +70,7 @@ public class DatasetRepository<T extends Data>
             String dbId = DatasetType.extractId(id);
             final String datasetType = DatasetType.extractType(id);
             DataRepository dataRepository = factory.create(datasetType);
-            SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+            DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
             return dao.hasInstance(parseId(dbId), dataRepository.getEntityType());
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
@@ -83,13 +84,13 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
-            if (query.isSetDatasetTypeFilter()) {
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallIncludeAllDatasetTypes()) {
+                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
+            } else {
                 for (String datasetType : query.getDatasetTypes()) {
                     addCondensedResults(getSeriesDao(datasetType, session), query, results);
                 }
-            } else {
-                // XXX filter on configured types
-                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             }
             return results;
         } finally {
@@ -97,14 +98,14 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addCondensedResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
+    private void addCondensedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createCondensed(series, query));
         }
     }
 
-    private SeriesDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) throws DataAccessException {
-        if ( !factory.isKnown(datasetType)) {
+    private DatasetDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) throws DataAccessException {
+        if ( !("all".equalsIgnoreCase(datasetType) || factory.isKnown(datasetType))) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
@@ -115,8 +116,8 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private SeriesDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
-        return new SeriesDao<>(session, clazz);
+    private DatasetDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
+        return new DatasetDao<>(session, clazz);
     }
 
     @Override
@@ -124,13 +125,13 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
-            if (query.isSetDatasetTypeFilter()) {
+            FilterResolver filterResolver = query.getFilterResolver();
+            if (filterResolver.shallIncludeAllDatasetTypes()) {
+                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
+            } else {
                 for (String datasetType : query.getDatasetTypes()) {
                     addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
                 }
-            } else {
-                // XXX filter on configured types
-                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             }
             return results;
         } finally {
@@ -138,7 +139,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addExpandedResults(SeriesDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
+    private void addExpandedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createExpanded(series, query, session));
         }
@@ -158,7 +159,7 @@ public class DatasetRepository<T extends Data>
     DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
         String seriesId = DatasetType.extractId(id);
         final String datasetType = DatasetType.extractType(id);
-        SeriesDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+        DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
         return dao.getInstance(Long.parseLong(seriesId), query);
     }
 
@@ -188,8 +189,8 @@ public class DatasetRepository<T extends Data>
             result.setSeriesParameters(getParameters(series, query));
             result.setUom(series.getUnitI18nName(query.getLocale()));
             DataRepository dataRepository = factory.create(series.getDatasetType());
-            result.setFirstValue(dataRepository.getFirstValue(series, session));
-            result.setLastValue(dataRepository.getLastValue(series, session));
+            result.setFirstValue(dataRepository.getFirstValue(series, session, query));
+            result.setLastValue(dataRepository.getLastValue(series, session, query));
             return result;
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);

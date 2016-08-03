@@ -30,7 +30,6 @@ package org.n52.web.ctrl;
 
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.ParameterService;
@@ -90,9 +89,7 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     }
 
     private IoParameters ensureBackwardsCompatibility(IoParameters query) {
-        return !query.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
-                ?  query.extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                : query;
+        return IoParameters.ensureBackwardsCompatibility(query);
     }
 
 }

@@ -35,24 +35,34 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.FilterResolver;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.I18nPlatformEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class PlatformDao extends AbstractDao<PlatformEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlatformDao.class);
+
+    private static final String SERIES_PROPERTY = "platform";
 
     public PlatformDao(Session session) {
         super(session);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<PlatformEntity> find(DbQuery query) {
-        throw new UnsupportedOperationException("not implemented yet.");
+        LOGGER.debug("find instance: {}", query);
+        Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(), query);
+        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        return addFilters(criteria, query).list();
     }
 
     @Override
@@ -64,11 +74,9 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("platform"); // TODO filter
+        Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
 
-        // TODO translation
-
-        DetachedCriteria filter = query.createDetachedFilterCriteria("platform");
+        DetachedCriteria filter = query.createDetachedFilterCriteria(SERIES_PROPERTY);
         criteria.add(Subqueries.propertyIn("platform.pkid", filter));
 
         FilterResolver filterResolver = query.getFilterResolver();
@@ -89,19 +97,14 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     }
 
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected String getSeriesProperty() {
+        return SERIES_PROPERTY;
     }
+
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null);
-    }
-
-    private Criteria getDefaultCriteria(String alias) {
-        return session.createCriteria(PlatformEntity.class, alias);
+    protected Class<PlatformEntity> getEntityClass() {
+        return PlatformEntity.class;
     }
 
 }

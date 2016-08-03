@@ -34,6 +34,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.AbstractValue.ValidTime;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.DataAccessException;
@@ -43,17 +44,17 @@ import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
+import org.n52.series.db.dao.DataDao;
+import org.n52.series.db.dao.DatasetDao;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
-        extends SessionAwareRepository<DbQuery> implements DataRepository<DSE, V> {
+        extends SessionAwareRepository implements DataRepository<DSE, V> {
 
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao<DSE> seriesDao = getSeriesDao(session);
+            DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(parseId(id), dbQuery);
             return dbQuery.isExpanded()
@@ -66,31 +67,31 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     @Override
-    public V getFirstValue(DSE entity, Session session) {
-        return getValueAt(entity.getFirstValueAt(), entity, session);
+    public V getFirstValue(DSE entity, Session session, DbQuery query) {
+        return getValueAt(entity.getFirstValueAt(), entity, session, query);
     }
 
     @Override
-    public V getLastValue(DSE entity, Session session) {
-        return getValueAt(entity.getLastValueAt(), entity, session);
+    public V getLastValue(DSE entity, Session session, DbQuery query) {
+        return getValueAt(entity.getLastValueAt(), entity, session, query);
     }
 
-    private V getValueAt(Date valueAt, DSE datasetEntity, Session session) {
+    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
         DateTime timestamp = new DateTime(valueAt);
-        ObservationDao<DE> dao = createDataDao(session);
+        DataDao<DE> dao = createDataDao(session);
         DE valueEntity = dao.getDataValueAt(timestamp, datasetEntity);
-        return createSeriesValueFor(valueEntity, datasetEntity);
+        return createSeriesValueFor(valueEntity, datasetEntity, query);
     }
 
-    protected SeriesDao<DSE> getSeriesDao(Session session) {
-        return new SeriesDao<>(session);
+    protected DatasetDao<DSE> getSeriesDao(Session session) {
+        return new DatasetDao<>(session);
     }
 
-    protected ObservationDao<DE> createDataDao(Session session) {
-        return new ObservationDao<>(session);
+    protected DataDao<DE> createDataDao(Session session) {
+        return new DataDao<>(session);
     }
 
-    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity);
+    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity, DbQuery query);
 
     protected abstract D assembleData(DSE datasetEntity, DbQuery query, Session session) throws DataAccessException;
 
@@ -112,21 +113,21 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     protected void addValidTime(DataEntity<?> observation, AbstractValue<?> value) {
-        // TODO add validTime to value
-        if (observation.isSetValidStartTime()) {
-            observation.getValidTimeStart().getTime();
-        }
-        if (observation.isSetValidEndTime()) {
-            observation.getValidTimeEnd().getTime();
+        if (observation.isSetValidStartTime() || observation.isSetValidEndTime()) {
+            Long validFrom = observation.isSetValidStartTime()
+                    ? observation.getValidTimeStart().getTime()
+                    : null;
+            Long validUntil = observation.isSetValidEndTime()
+                    ? observation.getValidTimeEnd().getTime()
+                    : null;
+            value.setValidTime(new ValidTime(validFrom, validUntil));
         }
     }
 
     protected void addParameter(DataEntity<?> observation, AbstractValue<?> value) {
         if (observation.hasParameters()) {
             for (DataParameter<?> parameter : observation.getParameters()) {
-                // TODO add parameters to value
-                parameter.getName();
-                parameter.getValue();
+                value.addParameter(parameter.getName(), parameter.getValue());
             }
         }
     }

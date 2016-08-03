@@ -34,16 +34,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.joda.time.Interval;
 import org.n52.io.response.dataset.count.CountData;
 import org.n52.io.response.dataset.count.CountDatasetMetadata;
 import org.n52.io.response.dataset.count.CountValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
+import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ObservationDao;
-import org.n52.series.db.dao.SeriesDao;
 
 public class CountDataRepository extends AbstractDataRepository<CountData, CountDatasetEntity, CountDataEntity, CountValue> {
 
@@ -88,16 +86,16 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
 
     private CountData expandReferenceDataIfNecessary(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
-        ObservationDao<CountDataEntity> dao = createDataDao(session);
+        DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if (!hasValidEntriesWithinRequestedTimespan(observations)) {
-            CountValue lastValue = getLastValue(seriesEntity, session);
-            result.addValues(expandToInterval(query.getTimespan(), lastValue.getValue(), seriesEntity));
+            CountValue lastValue = getLastValue(seriesEntity, session, query);
+            result.addValues(expandToInterval(lastValue.getValue(), seriesEntity, query));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
             CountDataEntity entity = observations.get(0);
-            result.addValues(expandToInterval(query.getTimespan(), entity.getValue(), seriesEntity));
+            result.addValues(expandToInterval(entity.getValue(), seriesEntity, query));
         }
         return result;
     }
@@ -105,30 +103,30 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
     @Override
     protected CountData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
-        ObservationDao<CountDataEntity> dao = createDataDao(session);
+        DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (CountDataEntity observation : observations) {
             if (observation != null) {
-                result.addValues(createSeriesValueFor(observation, seriesEntity));
+                result.addValues(createSeriesValueFor(observation, seriesEntity, query));
             }
         }
         return result;
     }
 
-    private CountValue[] expandToInterval(Interval interval, Integer value, CountDatasetEntity series) {
+    private CountValue[] expandToInterval(Integer value, CountDatasetEntity series, DbQuery query) {
         CountDataEntity referenceStart = new CountDataEntity();
         CountDataEntity referenceEnd = new CountDataEntity();
-        referenceStart.setTimestamp(interval.getStart().toDate());
-        referenceEnd.setTimestamp(interval.getEnd().toDate());
+        referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
+        referenceEnd.setTimestamp(query.getTimespan().getEnd().toDate());
         referenceStart.setValue(value);
         referenceEnd.setValue(value);
-        return new CountValue[]{createSeriesValueFor(referenceStart, series),
-            createSeriesValueFor(referenceEnd, series)};
+        return new CountValue[]{createSeriesValueFor(referenceStart, series, query),
+            createSeriesValueFor(referenceEnd, series, query)};
 
     }
 
     @Override
-    public CountValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series) {
+    public CountValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
@@ -141,8 +139,10 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
         CountValue value = new CountValue();
         value.setTimestamp(observation.getTimestamp().getTime());
         value.setValue(observationValue);
-        addGeometry(observation, value);
-        addValidTime(observation, value);
+        if (query.isExpanded()) {
+            addGeometry(observation, value);
+            addValidTime(observation, value);
+        }
         return value;
     }
 

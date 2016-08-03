@@ -32,9 +32,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nPhenomenonEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
@@ -43,6 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
+    private static final String SERIES_PROPERTY = "phenomenon";
+
     public PhenomenonDao(Session session) {
         super(session);
     }
@@ -50,12 +50,9 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> find(DbQuery query) {
-        Criteria criteria = getDefaultCriteria();
-        if (hasTranslation(query, I18nPhenomenonEntity.class)) {
-            criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
-        }
-        criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFiltersTo(criteria, query).list();
+        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
+                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
+        return addFilters(criteria, query).list();
     }
 
     @Override
@@ -65,23 +62,19 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("phenomenon", PhenomenonEntity.class);
-        if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
-            parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
-        }
-        return (List<PhenomenonEntity>) addFiltersTo(criteria, parameters).list();
-    }
-
-    private Criteria addFiltersTo(Criteria criteria, DbQuery parameters) {
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
-        return parameters.addPlatformTypesFilter("phenomenon", criteria)
-                .add(Subqueries.propertyIn("phenomenon.pkid", filter));
+    public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
+        return (List<PhenomenonEntity>) addFilters(criteria, query).list();
     }
 
     @Override
-    protected Criteria getDefaultCriteria() {
-        return getDefaultCriteria(null, PhenomenonEntity.class);
+    protected String getSeriesProperty() {
+        return SERIES_PROPERTY;
+    }
+
+    @Override
+    protected Class<PhenomenonEntity> getEntityClass() {
+        return PhenomenonEntity.class;
     }
 
 }

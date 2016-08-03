@@ -28,15 +28,18 @@
  */
 package org.n52.series.db.dao;
 
+import static org.hibernate.criterion.Projections.rowCount;
+import static org.hibernate.criterion.Subqueries.propertyIn;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.DetachedCriteria;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nEntity;
 
-public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     protected Session session;
 
@@ -49,28 +52,45 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long, DbQuery> {
 
     public abstract List<T> find(DbQuery query);
 
-    protected abstract Criteria getDefaultCriteria();
+    protected abstract Class<T> getEntityClass();
 
-    public boolean hasTranslation(AbstractDbQuery parameters, Class<? extends I18nEntity> clazz) {
+    protected abstract String getSeriesProperty();
+
+
+    @Override
+    public Integer getCount(DbQuery query) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria().setProjection(rowCount());
+        return ((Long) addFilters(criteria, query).uniqueResult()).intValue();
+    }
+
+    protected Criteria addFilters(Criteria criteria, DbQuery query) {
+        String filterProperty = getSeriesProperty();
+        DetachedCriteria filter = query.createDetachedFilterCriteria(filterProperty);
+        criteria = query.addPlatformTypeFilter(filterProperty, criteria);
+        criteria = query.addDatasetTypeFilter(filterProperty, criteria);
+        return query.addSpatialFilterTo(criteria, query)
+                .add(propertyIn(filterProperty + ".pkid", filter));
+    }
+
+    protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {
+        return hasTranslation(query, clazz)
+                ? query.addLocaleTo(criteria, clazz)
+                : criteria;
+    }
+
+    private <I extends I18nEntity> boolean hasTranslation(DbQuery parameters, Class<I> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
     }
 
-    @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected Criteria getDefaultCriteria() {
+        return getDefaultCriteria(getSeriesProperty());
     }
 
-    protected Criteria getDefaultCriteria(String alias, Class<? extends T> clazz) {
-        Criteria criteria;
-        if (alias == null || alias.isEmpty()) {
-            criteria = session.createCriteria(clazz);
-        } else {
-            criteria = session.createCriteria(clazz, alias);
-        }
-        return criteria;
+    protected Criteria getDefaultCriteria(String alias) {
+        return alias == null || alias.isEmpty()
+            ? session.createCriteria(getEntityClass())
+            : session.createCriteria(getEntityClass(), alias);
     }
 
     @Override

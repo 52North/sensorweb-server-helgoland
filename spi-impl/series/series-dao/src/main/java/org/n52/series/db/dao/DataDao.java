@@ -60,9 +60,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
+public class DataDao<T extends DataEntity> extends AbstractDao<T> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ObservationDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataDao.class);
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -72,12 +72,12 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
 
     private final Class<T> entityType;
 
-    public ObservationDao(Session session, Class<T> clazz) {
+    public DataDao(Session session, Class<T> clazz) {
         super(session);
         this.entityType = clazz;
     }
 
-    public ObservationDao(Session session) {
+    public DataDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DataEntity.class;
     }
@@ -135,7 +135,7 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked") // cast from hibernate
-    public List<T> getAllInstancesFor(DatasetEntity series, AbstractDbQuery parameters) throws DataAccessException {
+    public List<T> getAllInstancesFor(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
@@ -143,18 +143,9 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-    /**
-     * Counts all observations not including deleted observations.
-     *
-     * @return amount of observations
-     * @throws org.n52.series.db.DataAccessException if accessing database
-     * fails.
-     */
     @Override
-    public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria()
-                .setProjection(Projections.rowCount());
-        return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    protected String getSeriesProperty() {
+        return ""; // there's no series property for observation
     }
 
     @Override
@@ -162,6 +153,11 @@ public class ObservationDao<T extends DataEntity> extends AbstractDao<T> {
         return session.createCriteria(entityType)
                 .addOrder(Order.asc(COLUMN_TIMESTAMP))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
+    }
+
+    @Override
+    protected Class<T> getEntityClass() {
+        return entityType;
     }
 
     @SuppressWarnings("unchecked")

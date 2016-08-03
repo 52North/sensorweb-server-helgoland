@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.n52.io.MimeType;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -46,7 +48,6 @@ public class ServiceOutput extends ParameterOutput {
 
     private Map<String, Object> features;
 
-    @Deprecated
     private ParameterCount quantities;
 
     @Deprecated
@@ -77,6 +78,9 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
+        for (Set<String> supportedMimeTypes : mimeTypesByDatasetTypes.values()) {
+            supportedMimeTypes.add(MimeType.APPLICATION_JSON.getMimeType());
+        }
         addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
     }
 
@@ -114,7 +118,6 @@ public class ServiceOutput extends ParameterOutput {
 
     /**
      * @return the parameter count
-     * @deprecated since 2.0.0, {@link #features} get serialized instead
      */
     @JsonIgnore
     public ParameterCount getQuantities() {
@@ -123,88 +126,118 @@ public class ServiceOutput extends ParameterOutput {
 
     /**
      * @param countedParameters
-     * @deprecated since 2.0.0, use {@link #addFeature(String, Object)}
      */
-    @Deprecated
     public void setQuantities(ParameterCount countedParameters) {
         addFeature("quantities", countedParameters);
         this.quantities = countedParameters;
     }
 
-    /**
-     * @deprecated since 2.0.0
-     */
-    @Deprecated
     public static class ParameterCount {
 
-        private int amountOfferings;
+        private String[] selectedPlatformTypes;
 
-        private int amountFeatures;
+        private Integer amountOfferings;
 
-        private int amountProcedures;
+        private Integer amountFeatures;
 
-        private int amountPhenomena;
+        private Integer amountProcedures;
 
-        private int amountStations;
+        private Integer amountPhenomena;
 
-        private int amountTimeseries;
+        private Integer amountCategories;
 
-        private int amountCategories;
+        private Integer amountPlatforms;
 
-        public int getOfferings() {
+        private Integer amountDatasets;
+
+        @Deprecated // since 2.0.0
+        private Integer amountStations;
+
+        @Deprecated // since 2.0.0
+        private Integer amountTimeseries;
+
+        public String[] getSelectedPlatformTypes() {
+            return selectedPlatformTypes;
+        }
+
+        public void setSelectedPlatformTypes(String... selectedPlatformTypes) {
+            this.selectedPlatformTypes = selectedPlatformTypes;
+        }
+
+        public Integer getOfferings() {
             return amountOfferings;
         }
 
-        public void setOfferingsSize(int size) {
+        public void setOfferingsSize(Integer size) {
             this.amountOfferings = size;
         }
 
-        public int getFeatures() {
+        public Integer getFeatures() {
             return amountFeatures;
         }
 
-        public void setFeaturesSize(int size) {
+        public void setFeaturesSize(Integer size) {
             this.amountFeatures = size;
         }
 
-        public int getProcedures() {
+        public Integer getProcedures() {
             return amountProcedures;
         }
 
-        public void setProceduresSize(int size) {
+        public void setProceduresSize(Integer size) {
             this.amountProcedures = size;
         }
 
-        public int getPhenomena() {
+        public Integer getPhenomena() {
             return amountPhenomena;
         }
 
-        public void setPhenomenaSize(int size) {
+        public void setPhenomenaSize(Integer size) {
             this.amountPhenomena = size;
         }
 
-        public int getStations() {
+        public Integer getCategories() {
+            return amountCategories;
+        }
+
+        public void setCategoriesSize(Integer size) {
+            this.amountCategories = size;
+        }
+
+        public Integer getPlatforms() {
+            return amountPlatforms;
+        }
+
+        public void setPlatformsSize(Integer size) {
+            this.amountPlatforms = size;
+        }
+
+        public Integer getDatasets() {
+            return amountDatasets;
+        }
+
+        public void setDatasetsSize(Integer size) {
+            this.amountDatasets = size;
+        }
+
+        @Deprecated
+        public Integer getStations() {
             return amountStations;
         }
 
+        @Deprecated
         public void setStationsSize(int size) {
             this.amountStations = size;
         }
 
+        @Deprecated
         public void setTimeseriesSize(int countTimeseries) {
             this.amountTimeseries = countTimeseries;
         }
 
-        public int getTimeseries() {
+        @Deprecated
+        public Integer getTimeseries() {
             return this.amountTimeseries;
-        }
-
-        public int getCategories() {
-            return amountCategories;
-        }
-
-        public void setCategoriesSize(Integer amountCategories) {
-            this.amountCategories = amountCategories;
         }
     }
 

@@ -28,6 +28,7 @@
  */
 package org.n52.io.request;
 
+import static org.junit.Assert.assertTrue;
 import static org.n52.io.request.IoParameters.createDefaults;
 
 import org.junit.Assert;
@@ -38,6 +39,26 @@ public class FilterResolverTest {
 	private FilterResolver createResolver(IoParameters resolver) {
 		return new FilterResolver(resolver);
 	}
+
+	@Test
+	public void when_defaults_then_behaveBackwardsCompatible() {
+	    FilterResolver resolver = createResolver(createDefaults());
+	    assertTrue(resolver.shallBehaveBackwardsCompatible());
+	}
+
+	@Test
+    public void when_setPlatformTypeFilter_then_dontBehaveBackwardsCompatible() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "blah"));
+        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+    }
+
+    @Test
+    public void when_setDatasetTypeFiltre_then_dontBehaveBackwardsCompatible() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "blah"));
+        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+    }
 
     @Test
     public void when_defaults_then_allPlatformGeometryFiltersActive() {
@@ -269,21 +290,21 @@ public class FilterResolverTest {
     }
 
     @Test
-    public void when_setAll_then_insituFilterActive() {
+    public void when_setAllPlatformTypes_then_insituFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
     }
 
     @Test
-    public void when_setAll_then_stationaryFilterActive() {
+    public void when_setAllPlatformTypes_then_stationaryFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
     }
 
     @Test
-    public void when_setAll_then_remoteFilterActive() {
+    public void when_setAllPlatformTypes_then_remoteFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
@@ -291,10 +312,25 @@ public class FilterResolverTest {
 
 
     @Test
-    public void when_setAll_then_mobileFilterActive() {
+    public void when_setAllPlatformTypes_then_mobileFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
+    }
+
+    @Test
+    public void when_setAllDatasetTypes_then_noFilterActive() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "all"));
+        Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
+    }
+
+    @Test
+    public void when_setDatasetTypeFilter_then_filterActive() {
+        FilterResolver resolver = createResolver(createDefaults()
+                 .extendWith(Parameters.FILTER_DATASET_TYPES, "foobar"));
+        Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
+        Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
     }
 
 }

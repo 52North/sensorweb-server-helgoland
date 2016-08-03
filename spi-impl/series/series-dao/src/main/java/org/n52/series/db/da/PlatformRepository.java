@@ -64,7 +64,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class PlatformRepository extends SessionAwareRepository<DbQuery> implements OutputAssembler<PlatformOutput> {
+public class PlatformRepository extends SessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
 
@@ -258,7 +258,7 @@ public class PlatformRepository extends SessionAwareRepository<DbQuery> implemen
                 String id = dataset.getId();
                 DataRepository dataRepository = factory.create(dataset.getDatasetType());
                 DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
-                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session);
+                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session, query);
                 currentLastValue = getLaterValue(currentLastValue, valueToCheck);
             } catch (DatasetFactoryException e) {
                 LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());

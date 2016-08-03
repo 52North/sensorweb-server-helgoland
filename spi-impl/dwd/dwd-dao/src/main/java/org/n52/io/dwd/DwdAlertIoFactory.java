@@ -28,6 +28,7 @@
  */
 package org.n52.io.dwd;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.IoFactory;
@@ -46,8 +47,7 @@ public class DwdAlertIoFactory extends IoFactory<DwdAlertData, DwdAlertDatasetOu
 
     @Override
     public Set<String> getSupportedMimeTypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return new HashSet<>();
     }
 
     @Override

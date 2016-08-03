@@ -335,8 +335,6 @@ public interface Parameters {
 
     public static final String HREF_BASE = "internal.href.base";
 
-    public static final String PURE_STATION_INSITU_CONCEPT = "internal.station.insitu.concept";
-
 //    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
 //    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
 //    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
