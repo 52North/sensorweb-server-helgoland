@@ -42,11 +42,4 @@ public class MeasurementValue extends AbstractValue<Double> {
         super(timestamp, value);
     }
 
-    @Override
-    public Double getValue() {
-        return super.getValue() == null
-                ? Double.NaN // TODO null for no_data
-                : super.getValue();
-    }
-
 }
