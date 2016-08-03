@@ -35,12 +35,12 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.CategoryDao;
+import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PhenomenonDao;
 import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProcedureDao;
-import org.n52.series.db.dao.DatasetDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -104,6 +104,16 @@ public class EntityCounter {
         Session session = sessionStore.getSession();
         try {
             return new DatasetDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
+        } finally {
+            sessionStore.returnSession(session);
+        }
+    }
+
+    public Integer countGeometries(DbQuery query) throws DataAccessException {
+        Session session = sessionStore.getSession();
+        try {
+            // TODO count geometries
+            return null;
         } finally {
             sessionStore.returnSession(session);
         }

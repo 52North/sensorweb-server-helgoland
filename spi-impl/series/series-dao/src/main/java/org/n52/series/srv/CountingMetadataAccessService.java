@@ -42,12 +42,12 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     private EntityCounter counter;
 
     @Override
-    public int getServiceCount(IoParameters parameters) {
+    public Integer getServiceCount(IoParameters parameters) {
         return 1; // we only provide 1 service
     }
 
     @Override
-    public int getOfferingCount(IoParameters parameters) {
+    public Integer getOfferingCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countOfferings(query);
@@ -57,7 +57,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getCategoryCount(IoParameters parameters) {
+    public Integer getCategoryCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countCategories(query);
@@ -67,7 +67,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getFeatureCount(IoParameters parameters) {
+    public Integer getFeatureCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countFeatures(query);
@@ -77,7 +77,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getProcedureCount(IoParameters parameters) {
+    public Integer getProcedureCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countProcedures(query);
@@ -87,7 +87,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getPhenomenaCount(IoParameters parameters) {
+    public Integer getPhenomenaCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countPhenomena(query);
@@ -97,28 +97,39 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     }
 
     @Override
-    public int getPlatformCount(IoParameters parameters) {
+    public Integer getPlatformCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countPlatforms(query);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not count Phenomenon entities.", e);
+            throw new InternalServerException("Could not count Platform entities.", e);
         }
     }
 
     @Override
-    public int getDatasetCount(IoParameters parameters) {
+    public Integer getDatasetCount(IoParameters parameters) {
         try {
             DbQuery query = DbQuery.createFrom(parameters);
             return counter.countDatasets(query);
         } catch (DataAccessException e) {
-            throw new InternalServerException("Could not count Phenomenon entities.", e);
+            throw new InternalServerException("Could not count Dataset entities.", e);
+        }
+    }
+
+
+    @Override
+    public Integer getGeometryCount(IoParameters parameters) {
+        try {
+            DbQuery query = DbQuery.createFrom(parameters);
+            return counter.countGeometries(query);
+        } catch (DataAccessException e) {
+            throw new InternalServerException("Could not count Geometry entities.", e);
         }
     }
 
     @Override
     @Deprecated
-    public int getStationCount() {
+    public Integer getStationCount() {
         try {
             return counter.countStations();
         } catch (DataAccessException e) {
@@ -128,7 +139,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
 
     @Override
     @Deprecated
-    public int getTimeseriesCount() {
+    public Integer getTimeseriesCount() {
         try {
             return counter.countTimeseries();
         } catch (DataAccessException e) {
