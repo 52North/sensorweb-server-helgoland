@@ -55,11 +55,13 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
     }
+    
+    public boolean isNoDataValue() {
+        return value == null;
+    }
 
     public Double getValue() {
-        return value == null 
-                ? Double.NaN
-                : value;
+        return value;
     }
 
     public void setValue(Double value) {

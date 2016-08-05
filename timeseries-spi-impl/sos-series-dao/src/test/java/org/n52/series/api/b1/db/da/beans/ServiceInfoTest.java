@@ -59,7 +59,6 @@ public class ServiceInfoTest {
     @Test
     public void shouldTreatNaNAsNoDataValue() {
         ObservationEntity entity = new ObservationEntity();
-        entity.setValue(Double.NaN);
         MatcherAssert.assertThat(serviceInfo.hasNoDataValue(entity), Is.is(true));
     }
     
