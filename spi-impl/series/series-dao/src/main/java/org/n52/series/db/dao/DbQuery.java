@@ -199,7 +199,7 @@ public class DbQuery {
         }
         return criteria;
     }
-    
+
     Criteria addLimitAndOffsetFilter(Criteria criteria) {
         if (getParameters().containsParameter(Parameters.OFFSET)) {
             criteria.setFirstResult(getParameters().getOffset());

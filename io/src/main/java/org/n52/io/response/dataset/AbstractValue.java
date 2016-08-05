@@ -73,6 +73,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     }
 
     @JsonInclude(content = Include.ALWAYS)
+    public boolean isNoDataValue() {
+        return value == null;
+    }
+
+    @JsonInclude(content = Include.ALWAYS)
     public T getValue() {
         return value;
     }

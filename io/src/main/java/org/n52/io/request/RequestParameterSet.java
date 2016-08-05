@@ -254,7 +254,7 @@ public abstract class RequestParameterSet {
     public String[] getTimeseriesIds() {
         return getSeriesIds();
     }
-    
+
     public String getDatasetTypeFromFirst() {
         String[] seriesIds = getSeriesIds();
         return seriesIds.length > 0
