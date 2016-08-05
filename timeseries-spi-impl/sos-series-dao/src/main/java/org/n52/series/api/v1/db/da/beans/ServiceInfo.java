@@ -72,7 +72,6 @@ public class ServiceInfo {
     public boolean hasNoDataValue(ObservationEntity observation) {
         Double value = observation.getValue();
         return value == null
-                || Double.isNaN(value)
                 || containsValue(noDataValues, value);
     }
 

@@ -28,13 +28,8 @@
 package org.n52.io.generalize;
 
 import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
-import java.util.ArrayList;
-import java.util.List;
 
-import java.util.Properties;
 import org.n52.io.IoParameters;
-
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesValue;
@@ -101,45 +96,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             return timeseries; // nothing to do
         }
         
-//        int amountOfNaN = 0;
-//        for (int i = 0 ; i < dataLength ; i++) {
-//            if (data[i].getValue().isNaN()) {
-//                amountOfNaN++;
-//            }
-//        }
-//        int offset = 0;
-//        int amountNaNsInSequence = 0;
-//        List<TimeseriesValue[]> dataChunks = new ArrayList<>();
-//        for (int i = 0 ; i < dataLength ; ) {
-//            if ( !data[i].getValue().isNaN()) {
-//                i++; // continue, if normal number
-//                continue;
-//            }
-//            for (int j = 0 ; i + j < dataLength ; j++) {
-//                final int currentIdx = i + j;
-//                final int lastIdx = currentIdx - 1;
-//                if (lastIdx >= 0 && !data[lastIdx].getValue().isNaN()) {
-//                    offset = currentIdx;
-//                }
-//                if (data[ currentIdx ].getValue().isNaN()) {
-//                    amountNaNsInSequence++;
-//                    if (amountNaNsInSequence == noDataGapThreshold) {
-//                        TimeseriesValue[] chunk = new TimeseriesValue[i - offset];
-//                        System.arraycopy(data, offset, chunk, 0, chunk.length);
-//                        dataChunks.add(chunk);
-//                    }
-//                    if (amountNaNsInSequence > noDataGapThreshold) {
-//                        offset++;
-//                    }
-//                } else {
-//                    // end of NaN sequence
-//                    amountNaNsInSequence = 0; // reset
-//                    i += j + 1; // index of next normal number
-//                    break; // 
-//                }
-//            }
-//        }
-        
         return generalizeData(data);
     }
     
@@ -161,7 +117,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             
             // first point of triangle
             TimeseriesValue triangleLeft = data[pointIndex];
-            if (triangleLeft.getValue().isNaN()) {
+            if (triangleLeft.isNoDataValue()) {
                 addNodataValue(sampled, triangleLeft.getTimestamp());
                 pointIndex = rangeTo - 1;
                 continue;
@@ -173,7 +129,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             // init fallback value
             BucketAverage avgCurrentBucket = calculateAverageOfBucket(bucketIndex, bucketSize, data);
             long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp();
-            TimeseriesValue maxAreaPoint = new TimeseriesValue(fallBackTimestamp, Double.NaN);
+            TimeseriesValue maxAreaPoint = new TimeseriesValue(fallBackTimestamp, null);
             
             double area;
             int amountOfNodataValues = 0;
@@ -189,12 +145,11 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
                 // calculate triangle area over three buckets
                 final TimeseriesValue triangleMiddle = data[rangeOff];
                 
-                if (triangleMiddle.getValue().isNaN()) {
+                if (triangleMiddle.isNoDataValue()) {
                     amountOfNodataValues++;
                     if (isExceededGapThreshold(amountOfNodataValues, bucketSize)) {
-                        if (triangleMiddle.getValue().isNaN()) {
+                        if (triangleMiddle.isNoDataValue()) {
                             maxAreaPoint = avgCurrentBucket.toTimeseriesValue();
-                            maxAreaPoint.setValue(Double.NaN);
                             LOGGER.debug("No data value for bucket {}.", bucketIndex);
                             pointIndex = rangeTo - 1;
                             break;
@@ -225,7 +180,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
     }
 
     private void addNodataValue(TimeseriesData sampled, long timestamp) {
-        sampled.addValues(new TimeseriesValue(timestamp, Double.NaN));
+        sampled.addValues(new TimeseriesValue(timestamp, null));
     }
 
     private static double calcTriangleArea(TimeseriesValue left, BucketAverage right, TimeseriesValue middle) {
@@ -258,10 +213,9 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
             if (noDataThresholdExceeded) {
                 continue; // keep on calc avg timestamp
             }
-            if (current.getValue().isNaN()) {
+            if (current.isNoDataValue()) {
                 amountOfNodataValues++;
                 if (amountOfNodataValues == noDataGapThreshold) {
-                    avgValue = Double.NaN;
                     noDataThresholdExceeded = true;
                 }
             } else {
@@ -280,9 +234,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer {
         BucketAverage(Double timestamp, Double value) {
             this.timestamp = timestamp;
             this.value = value;
-        }
-        boolean isNoDataBucket() {
-            return value.isNaN();
         }
         TimeseriesValue toTimeseriesValue() {
             return new TimeseriesValue(timestamp.longValue(), value);
