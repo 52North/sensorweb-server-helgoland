@@ -58,7 +58,7 @@ public class GeometryEntity {
 
     private Double lat;
 
-    private Double alt = Double.NaN;
+    private Double alt;
 
     public boolean isSetGeometry() {
         return geometry != null && !geometry.isEmpty();
