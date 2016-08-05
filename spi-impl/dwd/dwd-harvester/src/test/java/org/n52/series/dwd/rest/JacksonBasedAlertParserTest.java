@@ -30,9 +30,12 @@ package org.n52.series.dwd.rest;
 
 import static org.hamcrest.CoreMatchers.is;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -41,10 +44,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.series.dwd.AlertParser;
 import org.n52.series.dwd.ParseException;
+import org.n52.series.dwd.ShapeFileHarvester;
 import org.n52.series.dwd.beans.WarnCell;
+import org.n52.series.dwd.store.AlertStore;
 import org.n52.series.dwd.store.InMemoryAlertStore;
 
 public class JacksonBasedAlertParserTest {
+
+    private static final String TEST_SHAPE_FILE = "geometries/DWD-PVW-Customer_VG2500_extract.shp";
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -83,6 +90,7 @@ public class JacksonBasedAlertParserTest {
     public void when_dwdExampleAlerts_then_nonEmptyAlerts() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
+        loadGeometries(store);
         parser.parse(streamOf("/dwd-example.json"), store);
         Assert.assertFalse(store.getAllAlerts().isEmpty());
     }
@@ -91,6 +99,7 @@ public class JacksonBasedAlertParserTest {
     public void when_dwdExampleAlerts_then_warningCellsWithId() throws ParseException, IOException, URISyntaxException {
         AlertParser parser = new JacksonBasedAlertParser();
         InMemoryAlertStore store = new InMemoryAlertStore();
+        loadGeometries(store);
         parser.parse(streamOf("/dwd-example.json"), store);
 
         final WarnCell cell = new WarnCell("105515000");
@@ -100,6 +109,15 @@ public class JacksonBasedAlertParserTest {
 
     private InputStream streamOf(String file) {
         return getClass().getResourceAsStream(file);
+    }
+
+    private void loadGeometries(AlertStore store) throws URISyntaxException {
+        new ShapeFileHarvester(getTestShapeFile(), store).harvest();
+    }
+
+    private File getTestShapeFile() throws URISyntaxException {
+        Path root = Paths.get(getClass().getResource("/").toURI());
+        return root.resolve(TEST_SHAPE_FILE).toFile();
     }
 
 }

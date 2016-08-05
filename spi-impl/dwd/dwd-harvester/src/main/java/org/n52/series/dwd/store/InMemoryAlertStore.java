@@ -86,7 +86,10 @@ public class InMemoryAlertStore implements AlertStore {
     private <A extends Alert> Collection<WarnCell> toWarnCells(Map<String, List<A>> alerts) {
         List<WarnCell> warnCells = new ArrayList<>();
         for (Map.Entry<String, List<A>> entry : alerts.entrySet()) {
-            warnCells.add(new WarnCell(entry.getKey(), warnCellGeometries.get(entry.getKey())));
+            WarnCell warnCell = getWarnCell(entry.getKey());
+            if (warnCell != null) {
+                warnCells.add(warnCell);
+            }
         }
         return warnCells;
     }
@@ -103,8 +106,10 @@ public class InMemoryAlertStore implements AlertStore {
         List<AlertMessage> messages = new ArrayList<>();
         for (Map.Entry<String, List<A>> entry : alerts.entrySet()) {
             final WarnCell warnCell = getWarnCell(entry.getKey());
-            for (Alert alert : entry.getValue()) {
-                messages.add(new AlertMessage(warnCell, alert));
+            if (warnCell != null) {
+                for (Alert alert : entry.getValue()) {
+                    messages.add(new AlertMessage(warnCell, alert));
+                }
             }
         }
         return messages;
@@ -112,7 +117,10 @@ public class InMemoryAlertStore implements AlertStore {
 
     @Override
     public WarnCell getWarnCell(String warnCellId) {
-        return new WarnCell(warnCellId, warnCellGeometries.get(warnCellId));
+        if (warnCellGeometries.containsKey(warnCellId)) {
+            return new WarnCell(warnCellId, warnCellGeometries.get(warnCellId));
+        }
+        return null;
     }
 
     @Override
