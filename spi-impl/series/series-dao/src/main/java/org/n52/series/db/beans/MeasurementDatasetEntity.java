@@ -56,7 +56,7 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
 
     @Override
     public MeasurementDataEntity getFirstValue() {
-        final MeasurementDataEntity firstValue = getLastValue();
+        final MeasurementDataEntity firstValue = super.getFirstValue();
         if (firstValue != null) {
             Date when = firstValue.getTimestamp();
             Double value = firstValue.getValue();
@@ -69,7 +69,7 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
 
     @Override
     public MeasurementDataEntity getLastValue() {
-        final MeasurementDataEntity lastValue = getFirstValue();
+        final MeasurementDataEntity lastValue = super.getLastValue();
         if (lastValue != null) {
             Date when = lastValue.getTimestamp();
             Double value = lastValue.getValue();

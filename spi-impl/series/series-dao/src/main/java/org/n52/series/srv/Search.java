@@ -61,7 +61,7 @@ public class Search extends ServiceInfo implements SearchService {
 
     @Autowired
     private OutputAssembler<CategoryOutput> categoryRepository;
-    
+
     @Autowired
     private OutputAssembler<PlatformOutput> platformRepository;
 
@@ -85,7 +85,7 @@ public class Search extends ServiceInfo implements SearchService {
         results.addAll(categoryRepository.searchFor(parameters));
         results.addAll(platformRepository.searchFor(parameters));
         results.addAll(datasetRepository.searchFor(parameters));
-        
+
         FilterResolver filterResolver = new FilterResolver(parameters);
         if (filterResolver.shallBehaveBackwardsCompatible()) {
             results.addAll(timeseriesRepository.searchFor(parameters));

@@ -97,8 +97,10 @@ public class ResourcesController {
         // since 2.0.0
         ResourceCollection platforms = createResource("platforms").withLabel("Platforms").withDescription(i18n.get("msg.web.resources.platforms"));
         ResourceCollection datasets = createResource("datasets").withLabel("Datasets").withDescription(i18n.get("msg.web.resources.datasets"));
+        ResourceCollection geometries = createResource("geometries").withLabel("Geometries").withDescription(i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
+        resources.add(geometries);
         if (parameters.isExpanded()) {
             platforms.setSize(getMetadataService().getPlatformCount(parameters));
             datasets.setSize(getMetadataService().getDatasetCount(parameters));

@@ -41,9 +41,9 @@ public interface DataRepository<DSE extends DatasetEntity<?>, V extends Abstract
 
     Data<? extends AbstractValue<?>> getData(String id, DbQuery dbQuery) throws DataAccessException;
 
-    V getFirstValue(DSE entity, Session session);
+    V getFirstValue(DSE entity, Session session, DbQuery query);
 
-    V getLastValue(DSE entity, Session session);
+    V getLastValue(DSE entity, Session session, DbQuery query);
 
     void setSessionStore(HibernateSessionStore sessionStore);
 

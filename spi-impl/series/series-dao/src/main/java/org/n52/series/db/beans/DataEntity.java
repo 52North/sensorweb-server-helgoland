@@ -28,12 +28,13 @@
  */
 package org.n52.series.db.beans;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class DataEntity<T> {
+public abstract class DataEntity<T> {
 
     private Long pkid;
 
@@ -76,6 +77,8 @@ public class DataEntity<T> {
     public void setValue(T value) {
         this.value = value;
     }
+
+    public abstract boolean isNoDataValue(Collection<String> noDataValues);
 
     public Long getSeriesPkid() {
         return seriesPkid;

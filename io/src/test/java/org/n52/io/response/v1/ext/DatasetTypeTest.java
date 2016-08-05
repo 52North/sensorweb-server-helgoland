@@ -47,12 +47,12 @@ public class DatasetTypeTest {
     public void when_extractingIdWithoutUnderscore_then_extractIdentity() {
         assertThat(DatasetType.extractId("1"), is("1"));
     }
-    
+
     @Test
     public void when_extractingTypeWithoutUnderscore_then_extractIdentity() {
         assertThat(DatasetType.extractType("1"), is("1"));
     }
-    
+
     @Test
     public void when_datasetId_then_extractDatasetType() {
         Assert.assertThat(DatasetType.extractType("text_234"), Matchers.is("text"));

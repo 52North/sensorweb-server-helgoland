@@ -2,7 +2,6 @@ target
 .settings
 .project
 .classpath
-gh-pages
 docs
 nbactions.xml
 /scratchpad.txt
