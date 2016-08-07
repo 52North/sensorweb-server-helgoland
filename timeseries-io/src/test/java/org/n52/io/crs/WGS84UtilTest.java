@@ -70,7 +70,7 @@ public class WGS84UtilTest {
         assertThat(shortestDistanceBetween(statueOfLiberty, tourDeEiffel), closeTo(5837.0, 0.5));
     }
 
-    private Point createXYOrderedWgs84Point(double lon, double lat) throws FactoryException {
+    private Point createXYOrderedWgs84Point(Double lon, Double lat) throws FactoryException {
         return helper.createPoint(lon, lat, EPSG_4326);
     }
     
