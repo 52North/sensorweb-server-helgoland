@@ -144,8 +144,6 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
                                                                           createProcessChain(),
                                                                           createContext());
 
-        chartRenderer.setDrawLegend(getParameters().isLegend());
-        chartRenderer.setShowGrid(getParameters().isGrid());
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;
     }

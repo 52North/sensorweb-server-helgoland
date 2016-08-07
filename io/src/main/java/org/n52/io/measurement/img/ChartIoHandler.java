@@ -97,12 +97,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private MimeType mimeType;
 
-    private boolean drawLegend;
-
-    private boolean generalize;
-
-    private boolean showGrid;
-
     private JFreeChart chart;
 
     private XYPlot xyPlot;
@@ -164,30 +158,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         this.mimeType = mimeType;
     }
 
-    public boolean isDrawLegend() {
-        return drawLegend;
-    }
-
-    public void setDrawLegend(boolean drawLegend) {
-        this.drawLegend = drawLegend;
-    }
-
-    public boolean isGeneralize() {
-        return generalize;
-    }
-
-    public void setGeneralize(boolean generalize) {
-        this.generalize = generalize;
-    }
-
-    public boolean isShowGrid() {
-        return showGrid;
-    }
-
-    public void setShowGrid(boolean showGrid) {
-        this.showGrid = showGrid;
-    }
-
     public boolean isShowTooltips() {
         return showTooltips;
     }
@@ -206,11 +176,12 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
+        boolean showLegend = getChartStyleDefinitions().isLegend();
         chart = createTimeSeriesChart(null,
                 domainAxisLabel.toString(),
                 i18n.get("msg.io.chart.value"),
                 null,
-                drawLegend,
+                showLegend,
                 showTooltips,
                 true);
         return createPlotArea(chart);
@@ -260,6 +231,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     private void showGridlinesOnChart(XYPlot xyPlot) {
+        boolean showGrid = getChartStyleDefinitions().isGrid();
         xyPlot.setDomainGridlinesVisible(showGrid);
         xyPlot.setRangeGridlinesVisible(showGrid);
     }
