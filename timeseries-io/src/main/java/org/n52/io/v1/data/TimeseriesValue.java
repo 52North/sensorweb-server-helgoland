@@ -30,6 +30,8 @@ package org.n52.io.v1.data;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializable {
@@ -62,6 +64,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
         return value == null;
     }
 
+    @JsonInclude(Include.ALWAYS)
     public Double getValue() {
         return value;
     }
