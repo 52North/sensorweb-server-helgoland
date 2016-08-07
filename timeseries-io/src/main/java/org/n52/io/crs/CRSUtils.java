@@ -149,8 +149,8 @@ public final class CRSUtils {
      *        .
      * @return a point referenced by the given spatial reference system.
      */
-    public Point createPoint(double x, double y, String srs) {
-        return createPoint(x, y, Double.NaN, srs);
+    public Point createPoint(Double x, Double y, String srs) {
+        return createPoint(x, y, null, srs);
     }
 
     /**
@@ -167,8 +167,10 @@ public final class CRSUtils {
      *        .
      * @return a point referenced by the given spatial reference system.
      */
-    public Point createPoint(double x, double y, double z, String srs) {
-        Coordinate coordinate = new Coordinate(x, y, z);
+    public Point createPoint(Double x, Double y, Double z, String srs) {
+        Coordinate coordinate = z != null && !z.isNaN()
+                ? new Coordinate(x, y, z)
+                : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createPoint(coordinate);
     }
