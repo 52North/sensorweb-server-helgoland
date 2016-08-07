@@ -89,7 +89,6 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     private ChartRenderer configureRenderer(ChartRenderer renderer) {
         renderer.setMimeType(IMAGE_PNG);
         renderer.setShowTooltips(false);
-        renderer.setDrawLegend(true);
         return renderer;
     }
 

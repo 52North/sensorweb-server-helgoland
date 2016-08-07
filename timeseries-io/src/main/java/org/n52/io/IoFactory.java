@@ -116,8 +116,6 @@ public final class IoFactory {
 
     private MultipleChartsRenderer createMultiChartRenderer(RenderingContext context) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(context, config.getLocale());
-        chartRenderer.setDrawLegend(config.isLegend());
-        chartRenderer.setShowGrid(config.isGrid());
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;
     }

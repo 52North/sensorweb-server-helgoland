@@ -222,8 +222,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
-                ObservationEntity lastValue = series.getLastValue();
-                refenceValueOutput.setLastValue(createTimeseriesValueFor(lastValue, series));
+                ObservationEntity lastValue = referenceSeriesEntity.getLastValue();
+                refenceValueOutput.setLastValue(createTimeseriesValueFor(lastValue, referenceSeriesEntity));
                 outputs.add(refenceValueOutput);
             }
         }

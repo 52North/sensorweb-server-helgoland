@@ -28,7 +28,6 @@
 package org.n52.series.api.v1.db.da.beans;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -141,9 +140,7 @@ public class SeriesEntity {
 
     public ObservationEntity getFirstValue() {
         if (firstValue != null) {
-           Date when = firstValue.getTimestamp();
-            Double value = firstValue.getValue();
-            if (when == null || value == null) {
+           if (firstValue.getTimestamp() == null) {
                 return null; // empty component
             }
         }
@@ -156,9 +153,7 @@ public class SeriesEntity {
 
     public ObservationEntity getLastValue() {
         if (lastValue != null) {
-            Date when = lastValue.getTimestamp();
-            Double value = lastValue.getValue();
-            if (when == null || value == null) {
+            if (lastValue.getTimestamp() == null) {
                 return null; // empty component
             }
         }

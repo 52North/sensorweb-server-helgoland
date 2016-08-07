@@ -33,10 +33,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Date;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.joda.time.format.ISODateTimeFormat;
-import org.joda.time.format.ISOPeriodFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.MimeType;
@@ -129,11 +126,6 @@ public class ChartRendererTest {
 
         @Override
         public void setShowTooltips(boolean tooltips) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void setDrawLegend(boolean drawLegend) {
             throw new UnsupportedOperationException();
         }
 
