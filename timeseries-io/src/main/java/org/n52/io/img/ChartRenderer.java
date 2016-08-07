@@ -27,25 +27,35 @@
  */
 package org.n52.io.img;
 
-import java.awt.Color;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.LIGHT_GRAY;
 import static java.awt.Color.WHITE;
-import java.awt.Font;
 import static java.awt.Font.BOLD;
 import static java.awt.Font.PLAIN;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static javax.imageio.ImageIO.write;
+import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+import static org.n52.io.I18N.getDefaultLocalizer;
+import static org.n52.io.I18N.getMessageLocalizer;
+import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
+import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
+import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
+import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
+
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static javax.imageio.ImageIO.write;
+
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -61,18 +71,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
-import static org.n52.io.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.img.ChartRenderer.LabelConstants.COLOR;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL;
-import static org.n52.io.img.ChartRenderer.LabelConstants.FONT_LABEL_SMALL;
-import static org.n52.io.img.LineRenderer.LINE_CHART_TYPE;
 import org.n52.io.v1.data.DesignedParameterSet;
 import org.n52.io.v1.data.PhenomenonOutput;
 import org.n52.io.v1.data.StyleProperties;
@@ -92,12 +95,6 @@ public abstract class ChartRenderer implements IoHandler {
     private boolean showTooltips;
 
     private MimeType mimeType;
-
-    private boolean drawLegend;
-
-    private boolean generalize;
-
-    private boolean showGrid;
 
     private JFreeChart chart;
 
@@ -167,30 +164,6 @@ public abstract class ChartRenderer implements IoHandler {
         this.mimeType = mimeType;
     }
 
-    public boolean isDrawLegend() {
-        return drawLegend;
-    }
-
-    public void setDrawLegend(boolean drawLegend) {
-        this.drawLegend = drawLegend;
-    }
-
-    public boolean isGeneralize() {
-        return generalize;
-    }
-
-    public void setGeneralize(boolean generalize) {
-        this.generalize = generalize;
-    }
-
-    public boolean isShowGrid() {
-        return showGrid;
-    }
-
-    public void setShowGrid(boolean showGrid) {
-        this.showGrid = showGrid;
-    }
-
     public boolean isShowTooltips() {
         return showTooltips;
     }
@@ -209,11 +182,12 @@ public abstract class ChartRenderer implements IoHandler {
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (").append(zoneName).append(")");
+        boolean legend = getChartStyleDefinitions().isLegend();
         chart = createTimeSeriesChart(null,
                 domainAxisLabel.toString(),
                 i18n.get("value"),
                 null,
-                drawLegend,
+                legend,
                 showTooltips,
                 true);
         return createPlotArea(chart);
@@ -263,8 +237,9 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private void showGridlinesOnChart(XYPlot xyPlot) {
-        xyPlot.setDomainGridlinesVisible(showGrid);
-        xyPlot.setRangeGridlinesVisible(showGrid);
+        boolean grid = getChartStyleDefinitions().isGrid();
+        xyPlot.setDomainGridlinesVisible(grid);
+        xyPlot.setRangeGridlinesVisible(grid);
     }
 
     private void configureTimeAxis(XYPlot xyPlot) {
