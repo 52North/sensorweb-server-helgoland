@@ -206,8 +206,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
-                MeasurementDataEntity lastValue = series.getLastValue();
-                refenceValueOutput.setLastValue(repository.createSeriesValueFor(lastValue, series, query));
+                MeasurementDataEntity lastValue = referenceSeriesEntity.getLastValue();
+                refenceValueOutput.setLastValue(repository.createSeriesValueFor(lastValue, referenceSeriesEntity, query));
                 outputs.add(refenceValueOutput);
             }
         }
