@@ -27,8 +27,9 @@
  */
 package org.n52.io.v1.data;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializable {
@@ -56,6 +57,7 @@ public class TimeseriesValue implements Comparable<TimeseriesValue>, Serializabl
         this.timestamp = timestamp;
     }
     
+    @JsonIgnore
     public boolean isNoDataValue() {
         return value == null;
     }
