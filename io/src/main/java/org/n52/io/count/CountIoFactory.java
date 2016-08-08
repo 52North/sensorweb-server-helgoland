@@ -30,6 +30,7 @@ package org.n52.io.count;
 
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.IoFactory;
@@ -48,7 +49,7 @@ public class CountIoFactory extends IoFactory<CountData, CountDatasetOutput, Cou
 
     @Override
     public Set<String> getSupportedMimeTypes() {
-        return Collections.emptySet();
+        return new HashSet<>();
     }
 
     @Override

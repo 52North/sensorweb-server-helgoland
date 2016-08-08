@@ -26,16 +26,23 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.dwd;
+package org.n52.io.extension;
 
-import org.n52.io.response.dataset.DatasetOutput;
+import static org.junit.Assert.assertTrue;
 
-public class DwdAlertDatasetOutput extends DatasetOutput<DwdAlertValue, DwdAlertReferenceValueOutput> {
+import java.util.Arrays;
+import java.util.Collection;
 
-    public static final String DATASET_TYPE = "dwd-alert";
+import org.junit.Test;
+import org.n52.series.db.beans.MeasurementDataEntity;
 
-    public DwdAlertDatasetOutput() {
-        super(DATASET_TYPE);
+public class MeasurementDataEntityTest {
+
+    @Test
+    public void when_noDataCollectionContainsValue_then_detectNoDataValue() {
+        Collection<String> noDataValues = Arrays.asList(new String[] {"9999","-9999.9"});
+        MeasurementDataEntity entity = new MeasurementDataEntity();
+        entity.setValue(9999d);
+        assertTrue(entity.isNoDataValue(noDataValues));
     }
-
 }

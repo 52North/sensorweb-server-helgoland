@@ -53,8 +53,9 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     public abstract List<T> find(DbQuery query);
 
     protected abstract Class<T> getEntityClass();
-    
+
     protected abstract String getSeriesProperty();
+
 
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
@@ -67,6 +68,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         DetachedCriteria filter = query.createDetachedFilterCriteria(filterProperty);
         criteria = query.addPlatformTypeFilter(filterProperty, criteria);
         criteria = query.addDatasetTypeFilter(filterProperty, criteria);
+        criteria = query.addLimitAndOffsetFilter(criteria);
         return query.addSpatialFilterTo(criteria, query)
                 .add(propertyIn(filterProperty + ".pkid", filter));
     }
@@ -76,7 +78,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
                 ? query.addLocaleTo(criteria, clazz)
                 : criteria;
     }
-    
+
     private <I extends I18nEntity> boolean hasTranslation(DbQuery parameters, Class<I> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);

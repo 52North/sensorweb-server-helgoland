@@ -210,8 +210,8 @@ public class DatasetRepository<T extends Data>
             result.setSeriesParameters(getParameters(series, query));
             result.setUom(series.getUnitI18nName(query.getLocale()));
             DataRepository dataRepository = factory.create(series.getDatasetType());
-            result.setFirstValue(dataRepository.getFirstValue(series, session));
-            result.setLastValue(dataRepository.getLastValue(series, session));
+            result.setFirstValue(dataRepository.getFirstValue(series, session, query));
+            result.setLastValue(dataRepository.getLastValue(series, session, query));
             return result;
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);

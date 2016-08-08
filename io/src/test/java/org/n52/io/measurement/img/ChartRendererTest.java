@@ -134,11 +134,6 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void setDrawLegend(boolean drawLegend) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void generateOutput(DataCollection<MeasurementData> data) {
             throw new UnsupportedOperationException();
         }

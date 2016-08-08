@@ -42,11 +42,4 @@ public class TextValue extends AbstractValue<String> {
         super(timestamp, value);
     }
 
-    @Override
-    public String getValue() {
-        return super.getValue() == null
-                ? ""  // TODO null for no_data
-                : super.getValue();
-    }
-
 }

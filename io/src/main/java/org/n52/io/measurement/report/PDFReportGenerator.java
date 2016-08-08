@@ -111,7 +111,6 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
     private ChartIoHandler configureRenderer(ChartIoHandler renderer) {
         renderer.setMimeType(IMAGE_PNG);
         renderer.setShowTooltips(false);
-        renderer.setDrawLegend(true);
         return renderer;
     }
 

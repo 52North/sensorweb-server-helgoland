@@ -35,15 +35,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.joda.time.Interval;
 import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextDatasetMetadata;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.DataDao;
+import org.n52.series.db.dao.DbQuery;
 
 public class TextDataRepository extends AbstractDataRepository<TextData, TextDatasetEntity, TextDataEntity, TextValue> {
 
@@ -94,13 +93,13 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
         DataDao<TextDataEntity> dao = new DataDao<>(session);
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         if ( !hasValidEntriesWithinRequestedTimespan(observations)) {
-            TextValue lastValidValue = getLastValue(seriesEntity, session);
-            result.addValues(expandToInterval(query.getTimespan(), lastValidValue.getValue(), seriesEntity));
+            TextValue lastValidValue = getLastValue(seriesEntity, session, query);
+            result.addValues(expandToInterval(lastValidValue.getValue(), seriesEntity, query));
         }
 
         if (hasSingleValidReferenceValue(observations)) {
             TextDataEntity entity = observations.get(0);
-            result.addValues(expandToInterval(query.getTimespan(), entity.getValue(), seriesEntity));
+            result.addValues(expandToInterval(entity.getValue(), seriesEntity, query));
         }
         return result;
     }
@@ -113,38 +112,45 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
         List<TextDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
         for (TextDataEntity observation : observations) {
             if (observation != null) {
-                result.addValues(createSeriesValueFor(observation, seriesEntity));
+                result.addValues(createSeriesValueFor(observation, seriesEntity, query));
             }
         }
         return result;
     }
 
     // XXX
-    private TextValue[] expandToInterval(Interval interval, String value, TextDatasetEntity series) {
+    private TextValue[] expandToInterval(String value, TextDatasetEntity series, DbQuery query) {
         TextDataEntity referenceStart = new TextDataEntity();
         TextDataEntity referenceEnd = new TextDataEntity();
-        referenceStart.setTimestamp(interval.getStart().toDate());
-        referenceEnd.setTimestamp(interval.getEnd().toDate());
+        referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
+        referenceEnd.setTimestamp(query.getTimespan().getEnd().toDate());
         referenceStart.setValue(value);
         referenceEnd.setValue(value);
         return new TextValue[] {
-                                createSeriesValueFor(referenceStart, series),
-                                createSeriesValueFor(referenceEnd, series)
+                                createSeriesValueFor(referenceStart, series, query),
+                                createSeriesValueFor(referenceEnd, series, query)
         };
 
     }
 
     @Override
-    public TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series) {
+    public TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;
         }
+
+        String observationValue = !getServiceInfo().isNoDataValue(observation)
+                ? observation.getValue()
+                : null;
+
         TextValue value = new TextValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observation.getValue());
-        addGeometry(observation, value);
-        addValidTime(observation, value);
+        value.setValue(observationValue);
+        if (query.isExpanded()) {
+            addGeometry(observation, value);
+            addValidTime(observation, value);
+        }
         return value;
     }
 

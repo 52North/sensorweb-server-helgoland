@@ -99,6 +99,8 @@ public class ShapeFileHarvester implements GeometryHarvester {
                     SimpleFeature feature = features.next();
                     result.put(feature.getAttribute("WARNCELLID").toString(), (Geometry)feature.getDefaultGeometryProperty().getValue());
                 }
+            } finally {
+                dataStore.dispose();
             }
         }
         return result;
@@ -116,5 +118,9 @@ public class ShapeFileHarvester implements GeometryHarvester {
         }
     }
 
+
+    public void shutdown() {
+        file = null;
+    }
 
 }

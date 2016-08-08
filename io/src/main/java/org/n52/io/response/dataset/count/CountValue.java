@@ -42,11 +42,4 @@ public class CountValue extends AbstractValue<Integer> {
         super(timestamp, value);
     }
 
-    @Override
-    public Integer getValue() {
-        return super.getValue() == null
-                ? Integer.MIN_VALUE // TODO null for no_data
-                : super.getValue();
-    }
-
 }

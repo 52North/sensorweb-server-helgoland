@@ -202,12 +202,12 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
 
-    private String createId(String warnCell, String phenomenon) {
-        return warnCell + "_" + createPhenomenonId(phenomenon);
+    protected String createId(String warnCell, String phenomenon) {
+        return warnCell + "-" + createPhenomenonId(phenomenon);
     }
 
-    private List<String> parseId(String id) {
-        String[] split = id.split("_");
+    protected List<String> parseId(String id) {
+        String[] split = id.split("-");
         split[1] = parsePhenomenonId(split[1]);
         return Arrays.asList(split);
     }

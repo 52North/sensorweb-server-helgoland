@@ -200,6 +200,16 @@ public class DbQuery {
         return criteria;
     }
 
+    Criteria addLimitAndOffsetFilter(Criteria criteria) {
+        if (getParameters().containsParameter(Parameters.OFFSET)) {
+            criteria.setFirstResult(getParameters().getOffset());
+        }
+        if (getParameters().containsParameter(Parameters.LIMIT)) {
+            criteria.setMaxResults(getParameters().getLimit());
+        }
+        return criteria;
+    }
+
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();

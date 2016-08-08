@@ -184,8 +184,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         MeasurementDataRepository repository = createRepository("measurement");
 
         output.setReferenceValues(createReferenceValueOutputs(series, query, repository));
-        output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series));
-        output.setLastValue(repository.createSeriesValueFor(series.getLastValue(), series));
+        output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series, query));
+        output.setLastValue(repository.createSeriesValueFor(series.getLastValue(), series, query));
         return output;
     }
 
@@ -210,8 +210,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
-                MeasurementDataEntity lastValue = series.getLastValue();
-                refenceValueOutput.setLastValue(repository.createSeriesValueFor(lastValue, series));
+                MeasurementDataEntity lastValue = referenceSeriesEntity.getLastValue();
+                refenceValueOutput.setLastValue(repository.createSeriesValueFor(lastValue, referenceSeriesEntity, query));
                 outputs.add(refenceValueOutput);
             }
         }

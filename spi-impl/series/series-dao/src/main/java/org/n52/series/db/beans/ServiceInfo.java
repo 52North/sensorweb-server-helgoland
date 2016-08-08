@@ -28,9 +28,7 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,15 +41,13 @@ public class ServiceInfo {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInfo.class);
 
-    private static final Double DOUBLE_THRESHOLD = 0.01;
-
     private String serviceId;
 
     private String serviceDescription;
 
     private String type = "Thin DB access layer service.";
 
-    private List<Double> noDataValues;
+    private List<String> noDataValues;
 
     private String version;
 
@@ -83,25 +79,9 @@ public class ServiceInfo {
         this.type = type;
     }
 
-    // TODO add further observation types
     @JsonIgnore
-    public boolean isNoDataValue(MeasurementDataEntity observation) {
-        Double value = observation.getValue();
-        return value == null
-                || Double.isNaN(value)
-                || containsValue(noDataValues, value);
-    }
-
-    private boolean containsValue(Collection<Double> collection, double key) {
-        if (collection == null) {
-            return false;
-        }
-        for (double d : collection) {
-            if (Math.abs(d / key - 1) < DOUBLE_THRESHOLD) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isNoDataValue(DataEntity<?> observation) {
+        return observation.isNoDataValue(noDataValues);
     }
 
     public String getNoDataValues() {
@@ -114,17 +94,8 @@ public class ServiceInfo {
         if (noDataValues == null || noDataValues.isEmpty()) {
             this.noDataValues = Collections.emptyList();
         } else {
-            List<Double> validatedValues = new ArrayList<>();
             String[] values = noDataValues.split(",");
-            for (String value : values) {
-                String trimmed = value.trim();
-                try {
-                    validatedValues.add(Double.parseDouble(trimmed));
-                } catch (NumberFormatException e) {
-                    LOGGER.warn("Ignoring configured NO_DATA value {} (not a double).", trimmed);
-                }
-            }
-            this.noDataValues = validatedValues;
+            this.noDataValues = Arrays.asList(values);
         }
     }
 

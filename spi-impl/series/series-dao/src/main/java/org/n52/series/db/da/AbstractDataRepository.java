@@ -67,20 +67,20 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     @Override
-    public V getFirstValue(DSE entity, Session session) {
-        return getValueAt(entity.getFirstValueAt(), entity, session);
+    public V getFirstValue(DSE entity, Session session, DbQuery query) {
+        return getValueAt(entity.getFirstValueAt(), entity, session, query);
     }
 
     @Override
-    public V getLastValue(DSE entity, Session session) {
-        return getValueAt(entity.getLastValueAt(), entity, session);
+    public V getLastValue(DSE entity, Session session, DbQuery query) {
+        return getValueAt(entity.getLastValueAt(), entity, session, query);
     }
 
-    private V getValueAt(Date valueAt, DSE datasetEntity, Session session) {
+    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
         DateTime timestamp = new DateTime(valueAt);
         DataDao<DE> dao = createDataDao(session);
         DE valueEntity = dao.getDataValueAt(timestamp, datasetEntity);
-        return createSeriesValueFor(valueEntity, datasetEntity);
+        return createSeriesValueFor(valueEntity, datasetEntity, query);
     }
 
     protected DatasetDao<DSE> getSeriesDao(Session session) {
@@ -91,11 +91,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         return new DataDao<>(session);
     }
 
-//    protected abstract SeriesDao<DSE> getSeriesDao(Session session);
-//
-//    protected abstract ObservationDao<DE> createDataDao(Session session);
-
-    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity);
+    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity, DbQuery query);
 
     protected abstract D assembleData(DSE datasetEntity, DbQuery query, Session session) throws DataAccessException;
 

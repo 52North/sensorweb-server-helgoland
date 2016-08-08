@@ -17,7 +17,7 @@
         <property name="serviceId" value="1" />
         <property name="version" value="2.0" />
         <property name="serviceDescription" value="My RESTful Dataset Service." />
-        <property name="noDataValues" value="-9999.0,99999" />
+        <property name="noDataValues" value="-9999.0,99999,NO_DATA" />
     </bean>
 
     <bean class="org.n52.series.db.da.EntityCounter" />
