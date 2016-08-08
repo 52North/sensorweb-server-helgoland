@@ -36,7 +36,7 @@ import java.util.List;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 
-public class DatasetEntity<T extends DataEntity<?>> {
+public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     public static final String PROCEDURE = "procedure";
     public static final String CATEGORY = "category";
@@ -44,8 +44,6 @@ public class DatasetEntity<T extends DataEntity<?>> {
     public static final String FEATURE = "feature";
     public static final String PLATFORM = "platform";
     public static final String OBSERVATION_TYPE = "observationType";
-
-    private Long pkid;
 
     private CategoryEntity category;
 
@@ -77,14 +75,6 @@ public class DatasetEntity<T extends DataEntity<?>> {
 
     public DatasetEntity() {
         this.observations = new ArrayList<>();
-    }
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
     }
 
     public CategoryEntity getCategory() {
@@ -229,7 +219,7 @@ public class DatasetEntity<T extends DataEntity<?>> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" id: ").append(pkid);
+        sb.append(" id: ").append(getPkid());
         sb.append(" , category: ").append(category);
         sb.append(" , phenomenon: ").append(phenomenon);
         sb.append(" , procedure: ").append(procedure);
