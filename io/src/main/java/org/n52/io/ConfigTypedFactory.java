@@ -61,9 +61,14 @@ public abstract class ConfigTypedFactory<T> {
         try {
             Path path = Paths.get(ConfigTypedFactory.class.getResource("/").toURI());
             File file = path.resolve(configLocation).toFile();
-            return !file.exists()
-                    ? ConfigTypedFactory.class.getResourceAsStream(configLocation)
-                    : new FileInputStream(file);
+            if (file.exists()) {
+                return new FileInputStream(file);
+            } else {
+                InputStream stream = ConfigTypedFactory.class.getResourceAsStream(configLocation);
+                return stream == null
+                        ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
+                        : stream;
+            }
         } catch (URISyntaxException | FileNotFoundException e) {
             LOGGER.info("Could not find config file '{}'. Load from compiled default.", configLocation, e);
             return null;
