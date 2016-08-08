@@ -81,8 +81,8 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
             results.add(new FeatureSearchResult(pkid, label));
+            String label = searchResult.getLabelFrom(locale);
         }
         return results;
     }
@@ -141,7 +141,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     private FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);
         return result;

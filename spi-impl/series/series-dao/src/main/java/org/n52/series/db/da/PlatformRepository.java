@@ -284,7 +284,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
         PlatformOutput result = new PlatformOutput(entity.getPlatformType());
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));

@@ -92,7 +92,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
+            String label = searchResult.getLabelFrom(locale);
             results.add(new StationSearchResult(pkid, label));
         }
         return results;
@@ -181,7 +181,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
         stationOutput.setId(Long.toString(entity.getPkid()));
-        stationOutput.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        stationOutput.setLabel(entity.getLabelFrom(parameters.getLocale()));
         return stationOutput;
     }
 

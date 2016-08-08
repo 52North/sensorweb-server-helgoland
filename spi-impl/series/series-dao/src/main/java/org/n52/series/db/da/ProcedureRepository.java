@@ -81,8 +81,8 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
             results.add(new ProcedureSearchResult(pkid, label));
+            String label = searchResult.getLabelFrom(locale);
         }
         return results;
     }
@@ -147,7 +147,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);

@@ -112,9 +112,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         List<SearchResult> results = new ArrayList<>();
         for (MeasurementDatasetEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
-            String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
-            String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
+            String phenomenonLabel = searchResult.getPhenomenon().getLabelFrom(locale);
+            String procedureLabel = searchResult.getProcedure().getLabelFrom(locale);
+            String stationLabel = searchResult.getFeature().getLabelFrom(locale);
             String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
@@ -217,9 +217,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
-        String stationLabel = getLabelFrom(entity.getFeature(), locale);
-        String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
-        String phenomenonLabel = getLabelFrom(entity.getPhenomenon(), locale);
+        String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
+        String procedureLabel = entity.getProcedure().getLabelFrom(locale);
+        String stationLabel = entity.getFeature().getLabelFrom(locale);
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnitI18nName(locale));
