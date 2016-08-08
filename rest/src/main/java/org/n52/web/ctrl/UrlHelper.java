@@ -73,7 +73,7 @@ public class UrlHelper {
     public String constructHref(String hrefBase, String path) {
         if (hrefBase == null || hrefBase.isEmpty()) {
             // backwards compatible relative link
-            return ".".concat(stripVersionFromPath(path)); 
+            return ".".concat(stripVersionFromPath(path));
         }
         hrefBase = hrefBase.endsWith("/")
                 ? hrefBase.substring(0, hrefBase.length() - 1)
@@ -89,7 +89,7 @@ public class UrlHelper {
                 ? hrefBase.substring(0, versionIndex)
                 : hrefBase;
     }
-    
+
     protected String stripVersionFromPath(String path) {
         int versionIndex = path.indexOf(UrlSettings.API_VERSION_PATH);
         return versionIndex >= 0

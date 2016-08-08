@@ -106,9 +106,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             DbQuery query) {
         // not needed, use #convertToResults() instead
-        
+
         // TODO fix interface here
-        
+
         return Collections.emptyList();
     }
 
