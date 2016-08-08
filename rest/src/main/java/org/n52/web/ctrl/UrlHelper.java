@@ -31,50 +31,70 @@ package org.n52.web.ctrl;
 public class UrlHelper {
 
     public String getServicesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_SERVICES);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_SERVICES);
     }
 
     public String getCategoriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_CATEGORIES);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_CATEGORIES);
     }
 
     public String getOfferingsHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_OFFERINGS);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_OFFERINGS);
     }
 
     public String getFeaturesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_FEATURES);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
     }
 
     public String getProceduresHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PROCEDURES);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_PROCEDURES);
     }
 
     public String getPhenomenaHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PHENOMENA);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_PHENOMENA);
     }
 
     public String getPlatformsHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_PLATFORMS);
+        return constructHref(hrefBase, UrlSettings.COLLECTION_PLATFORMS);
     }
 
-    public String getSeriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_DATASETS);
+    public String getDatasetsHrefBaseUrl(String hrefBase) {
+        return constructHref(hrefBase, UrlSettings.COLLECTION_DATASETS);
     }
 
     public String getGeometriesHrefBaseUrl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.COLLECTION_GEOMETRIES);
-    }
-
-    public String getVersionLessHrefBaseURl(String hrefBase) {
-        if (hrefBase.contains(UrlSettings.API_VERSION_PATH)) {
-            return hrefBase.substring(0, hrefBase.lastIndexOf(UrlSettings.API_VERSION_PATH));
-        }
-        return hrefBase;
+        return constructHref(hrefBase, UrlSettings.COLLECTION_GEOMETRIES);
     }
 
     public String getRootHrefBaseURl(String hrefBase) {
-        return getVersionLessHrefBaseURl(hrefBase).concat(UrlSettings.API_VERSION_PATH);
+        return constructHref(hrefBase, UrlSettings.API_VERSION_PATH);
+    }
+
+    public String constructHref(String hrefBase, String path) {
+        if (hrefBase == null || hrefBase.isEmpty()) {
+            // backwards compatible relative link
+            return ".".concat(stripVersionFromPath(path)); 
+        }
+        hrefBase = hrefBase.endsWith("/")
+                ? hrefBase.substring(0, hrefBase.length() - 1)
+                : hrefBase;
+        return hrefBase.contains(UrlSettings.API_VERSION_PATH)
+            ? stripVersionFromHrefBase(hrefBase).concat(path)
+            : hrefBase.concat(path);
+    }
+
+    protected String stripVersionFromHrefBase(String hrefBase) {
+        int versionIndex = hrefBase.lastIndexOf(UrlSettings.API_VERSION_PATH);
+        return versionIndex >= 0
+                ? hrefBase.substring(0, versionIndex)
+                : hrefBase;
+    }
+    
+    protected String stripVersionFromPath(String path) {
+        int versionIndex = path.indexOf(UrlSettings.API_VERSION_PATH);
+        return versionIndex >= 0
+                ? path.substring(UrlSettings.API_VERSION_PATH.length())
+                : path;
     }
 
 }

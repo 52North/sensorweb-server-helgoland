@@ -69,7 +69,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
             ProcedureDao procedureDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
             List<ProcedureEntity> found = procedureDao.find(query);
-            return convertToSearchResults(found, query.getLocale());
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
@@ -77,12 +77,14 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+                                                     DbQuery query) {
         List<SearchResult> results = new ArrayList<>();
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getProceduresHrefBaseUrl(query.getHrefBase());
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
-            results.add(new ProcedureSearchResult(pkid, label));
+            String label = searchResult.getLabelFrom(locale);
+            results.add(new ProcedureSearchResult(pkid, label, hrefBase));
         }
         return results;
     }
@@ -147,7 +149,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);

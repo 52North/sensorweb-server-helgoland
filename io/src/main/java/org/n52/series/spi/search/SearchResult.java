@@ -28,31 +28,47 @@
  */
 package org.n52.series.spi.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class SearchResult {
 
-    private String id;
+    private final String id;
 
-    private String label;
+    private final String label;
+
+    private final String baseUrl;
 
     public SearchResult(String id, String label) {
+        this(id, label, null);
+    }
+    
+    public SearchResult(String id, String label, String baseUrl) {
         this.id = id;
         this.label = label;
+        this.baseUrl = baseUrl != null && !baseUrl.endsWith("/")
+                ? baseUrl.concat("/")
+                : baseUrl;
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getLabel() {
         return label;
     }
-
-    public void setLabel(String label) {
-        this.label = label;
+    
+    public boolean hasBaseUrl() {
+        return baseUrl != null;
+    }
+    
+    @JsonIgnore
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+    
+    protected String createFullHref() {
+        return getBaseUrl() + getId();
     }
 
     public abstract String getHref();

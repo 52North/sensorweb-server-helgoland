@@ -47,7 +47,7 @@ public interface OutputAssembler<T> {
 
     Collection<SearchResult> searchFor(IoParameters parameters);
 
-    List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale);
+    List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query);
 
     boolean exists(String id) throws DataAccessException;
 

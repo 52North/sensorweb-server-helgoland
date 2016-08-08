@@ -34,9 +34,16 @@ public class ProcedureSearchResult extends SearchResult {
         super(id, label);
     }
 
+    public ProcedureSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
+
     @Override
     public String getHref() {
-        return "./procedures/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./procedures/" + getId();
     }
 
     @Override

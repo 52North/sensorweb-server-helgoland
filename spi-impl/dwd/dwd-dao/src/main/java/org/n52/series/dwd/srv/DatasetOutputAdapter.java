@@ -198,7 +198,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     private void checkForHref(DatasetOutput result, IoParameters parameters) {
-        result.setHrefBase(urlHelper.getSeriesHrefBaseUrl(parameters.getHrefBase()));
+        result.setHrefBase(urlHelper.getDatasetsHrefBaseUrl(parameters.getHrefBase()));
     }
 
 

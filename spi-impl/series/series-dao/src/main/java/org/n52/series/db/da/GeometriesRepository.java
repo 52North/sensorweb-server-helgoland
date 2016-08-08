@@ -34,6 +34,7 @@ import static org.n52.io.response.GeometryType.PLATFORM_TRACK;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -122,14 +123,12 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+        return Collections.emptyList();
     }
 
     private List<GeometryInfo> getAllInstances(DbQuery query, Session session, boolean expanded) throws DataAccessException {

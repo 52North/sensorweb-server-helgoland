@@ -80,7 +80,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
             FeatureDao stationDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<FeatureEntity> found = stationDao.find(query);
-            return convertToSearchResults(found, query.getLocale());
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
@@ -88,11 +88,12 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
-            String locale) {
+            DbQuery query) {
+        String locale = query.getLocale();
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
+            String label = searchResult.getLabelFrom(locale);
             results.add(new StationSearchResult(pkid, label));
         }
         return results;
@@ -181,7 +182,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
         stationOutput.setId(Long.toString(entity.getPkid()));
-        stationOutput.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        stationOutput.setLabel(entity.getLabelFrom(parameters.getLocale()));
         return stationOutput;
     }
 

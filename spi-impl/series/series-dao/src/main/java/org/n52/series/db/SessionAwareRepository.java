@@ -139,24 +139,6 @@ public abstract class SessionAwareRepository {
         }
     }
 
-    protected String getLabelFrom(DescribableEntity entity, String locale) {
-        if (isi18nNameAvailable(entity, locale)) {
-            return entity.getNameI18n(locale);
-        } else if (isNameAvailable(entity)) {
-            return entity.getName();
-        } else {
-            return entity.getDomainId();
-        }
-    }
-
-    private boolean isNameAvailable(DescribableEntity entity) {
-        return entity.getName() != null && !entity.getName().isEmpty();
-    }
-
-    private boolean isi18nNameAvailable(DescribableEntity entity, String locale) {
-        return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
-    }
-
     public void setDatabaseSrid(String databaseSrid) {
         this.databaseSrid = databaseSrid;
     }
@@ -231,7 +213,7 @@ public abstract class SessionAwareRepository {
     }
 
     private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
-        outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        outputvalue.setLabel(entity.getLabelFrom(parameters.getLocale()));
         outputvalue.setId(Long.toString(entity.getPkid()));
         return outputvalue;
     }

@@ -69,20 +69,21 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
             FeatureDao featureDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
-            return convertToSearchResults(found, query.getLocale());
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found, DbQuery query) {
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getFeaturesHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String label = getLabelFrom(searchResult, locale);
-            results.add(new FeatureSearchResult(pkid, label));
+            String label = searchResult.getLabelFrom(locale);
+            results.add(new FeatureSearchResult(pkid, label, hrefBase));
         }
         return results;
     }
@@ -141,7 +142,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     private FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);
         return result;

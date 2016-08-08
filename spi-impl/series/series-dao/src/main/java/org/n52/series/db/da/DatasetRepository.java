@@ -46,8 +46,11 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.spi.search.DatasetSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -58,7 +61,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class DatasetRepository<T extends Data>
         extends SessionAwareRepository
-        implements OutputAssembler<DatasetOutput>{
+        implements OutputAssembler<DatasetOutput> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatasetRepository.class);
 
     @Autowired
     private DataRepositoryFactory factory;
@@ -165,12 +170,28 @@ public class DatasetRepository<T extends Data>
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters paramters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session session = getSession();
+        try {
+            DatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
+            DbQuery query = getDbQuery(paramters);
+            List< ? extends DatasetEntity> found = dao.find(query);
+            return convertToSearchResults(found, query);
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getDatasetsHrefBaseUrl(query.getHrefBase());
+        List<SearchResult> results = new ArrayList<>();
+        for (DescribableEntity searchResult : found) {
+            String pkid = searchResult.getPkid().toString();
+            String label = searchResult.getLabelFrom(locale);
+            results.add(new DatasetSearchResult(pkid, label, hrefBase));
+        }
+        return results;
     }
 
     // XXX refactor generics
@@ -178,7 +199,7 @@ public class DatasetRepository<T extends Data>
         DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
         output.setLabel(createSeriesLabel(series, query.getLocale()));
         output.setId(series.getPkid().toString());
-        output.setHrefBase(urHelper.getSeriesHrefBaseUrl(query.getHrefBase()));
+        output.setHrefBase(urHelper.getDatasetsHrefBaseUrl(query.getHrefBase()));
         return output;
     }
 
@@ -202,9 +223,9 @@ public class DatasetRepository<T extends Data>
     }
 
     private String createSeriesLabel(DatasetEntity<?> series, String locale) {
-        String station = getLabelFrom(series.getFeature(), locale);
-        String procedure = getLabelFrom(series.getProcedure(), locale);
-        String phenomenon = getLabelFrom(series.getPhenomenon(), locale);
+        String station = series.getFeature().getLabelFrom(locale);
+        String procedure = series.getProcedure().getLabelFrom(locale);
+        String phenomenon = series.getPhenomenon().getLabelFrom(locale);
         StringBuilder sb = new StringBuilder();
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");

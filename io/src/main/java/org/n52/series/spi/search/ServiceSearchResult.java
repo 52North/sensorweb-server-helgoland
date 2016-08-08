@@ -33,10 +33,17 @@ public class ServiceSearchResult extends SearchResult {
     public ServiceSearchResult(String id, String label) {
         super(id, label);
     }
+    
+    public ServiceSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
 
     @Override
     public String getHref() {
-        return "./services/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./services/" + getId();
     }
 
     @Override

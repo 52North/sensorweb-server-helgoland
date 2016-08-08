@@ -30,6 +30,7 @@ package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -103,18 +104,21 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+            DbQuery query) {
         // not needed, use #convertToResults() instead
-        return new ArrayList<>();
+        
+        // TODO fix interface here
+        
+        return Collections.emptyList();
     }
 
     private List<SearchResult> convertToResults(List<MeasurementDatasetEntity> found, String locale) {
         List<SearchResult> results = new ArrayList<>();
         for (MeasurementDatasetEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
-            String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
-            String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
+            String phenomenonLabel = searchResult.getPhenomenon().getLabelFrom(locale);
+            String procedureLabel = searchResult.getProcedure().getLabelFrom(locale);
+            String stationLabel = searchResult.getFeature().getLabelFrom(locale);
             String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
@@ -217,9 +221,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
-        String stationLabel = getLabelFrom(entity.getFeature(), locale);
-        String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
-        String phenomenonLabel = getLabelFrom(entity.getPhenomenon(), locale);
+        String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
+        String procedureLabel = entity.getProcedure().getLabelFrom(locale);
+        String stationLabel = entity.getFeature().getLabelFrom(locale);
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnitI18nName(locale));

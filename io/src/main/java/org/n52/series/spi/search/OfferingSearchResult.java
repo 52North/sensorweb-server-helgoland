@@ -34,9 +34,16 @@ public class OfferingSearchResult extends SearchResult {
         super(id, label);
     }
 
+    public OfferingSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
+
     @Override
     public String getHref() {
-        return "./offerings/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./offerings/" + getId();
     }
 
     @Override

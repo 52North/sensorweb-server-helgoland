@@ -51,6 +51,7 @@ import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PlatformDao;
+import org.n52.series.spi.search.PlatformSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
@@ -137,12 +138,28 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Session session = getSession();
+        try {
+            PlatformDao dao = new PlatformDao(session);
+            DbQuery query = getDbQuery(parameters);
+            List<PlatformEntity> found = dao.find(query);
+            return convertToSearchResults(found, query);
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+        List<SearchResult> results = new ArrayList<>();
+        String locale = query.getLocale();
+        for (DescribableEntity searchResult : found) {
+            String pkid = searchResult.getPkid().toString();
+            String label = searchResult.getLabelFrom(locale);
+            String hrefBase = urHelper.getPlatformsHrefBaseUrl(query.getHrefBase());
+            results.add(new PlatformSearchResult(pkid, label, hrefBase));
+        }
+        return results;
     }
 
     private List<PlatformEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
@@ -284,7 +301,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
         PlatformOutput result = new PlatformOutput(entity.getPlatformType());
-        result.setLabel(getLabelFrom(entity, parameters.getLocale()));
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));

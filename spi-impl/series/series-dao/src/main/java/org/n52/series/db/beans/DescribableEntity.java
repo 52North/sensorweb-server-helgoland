@@ -118,6 +118,31 @@ public class DescribableEntity {
         return candidate;
     }
 
+    public String getLabelFrom(String locale) {
+        if (isi18nNameAvailable(locale)) {
+            return getNameI18n(locale);
+        } else if (isNameAvailable()) {
+            return getName();
+        } else if (isDomainIdAvailable()){
+            return getDomainId();
+        } else {
+            // absolute fallback
+            return Long.toString(getPkid());
+        }
+    }
+
+    private boolean isNameAvailable() {
+        return getName() != null && !getName().isEmpty();
+    }
+    
+    private boolean isDomainIdAvailable() {
+        return getDomainId() != null && !getDomainId().isEmpty();
+    }
+
+    private boolean isi18nNameAvailable(String locale) {
+        return getNameI18n(locale) != null && !getNameI18n(locale).isEmpty();
+    }
+
     private boolean noTranslationAvailable(String locale) {
         return translations == null
                 || locale == null

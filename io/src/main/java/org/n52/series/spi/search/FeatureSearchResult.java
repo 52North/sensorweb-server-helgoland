@@ -34,9 +34,16 @@ public class FeatureSearchResult extends SearchResult {
         super(id, label);
     }
 
+    public FeatureSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
+
     @Override
     public String getHref() {
-        return "./features/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./features/" + getId();
     }
 
     @Override

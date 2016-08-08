@@ -28,21 +28,27 @@
  */
 package org.n52.series.spi.search;
 
-@Deprecated
-public class TimeseriesSearchResult extends DatasetSearchResult {
+public class PlatformSearchResult extends SearchResult {
 
-    public TimeseriesSearchResult(String id, String label) {
+    public PlatformSearchResult(String id, String label) {
         super(id, label);
+    }
+    
+    public PlatformSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
     }
 
     @Override
     public String getHref() {
-        return "./timeseries/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./platforms/" + getId();
     }
 
     @Override
     public String getType() {
-        return "timeseries";
+        return "platform";
     }
 
 }
