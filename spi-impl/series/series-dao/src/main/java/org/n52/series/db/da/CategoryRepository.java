@@ -69,7 +69,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
             CategoryDao categoryDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
             List<CategoryEntity> found = categoryDao.find(query);
-            return convertToSearchResults(found, query.getLocale());
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
@@ -77,12 +77,14 @@ public class CategoryRepository extends SessionAwareRepository implements Output
 
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+            DbQuery query) {
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getProceduresHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            results.add(new CategorySearchResult(pkid, label));
             String label = searchResult.getLabelFrom(locale);
+            results.add(new CategorySearchResult(pkid, label, hrefBase));
         }
         return results;
     }

@@ -69,19 +69,21 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
             PhenomenonDao phenomenonDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
             List<PhenomenonEntity> found = phenomenonDao.find(query);
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
-            String locale) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getPhenomenaHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            results.add(new PhenomenonSearchResult(pkid, label));
             String label = searchResult.getLabelFrom(locale);
+            results.add(new PhenomenonSearchResult(pkid, label, hrefBase));
         }
         return results;
     }

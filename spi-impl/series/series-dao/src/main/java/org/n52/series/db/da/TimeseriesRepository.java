@@ -30,6 +30,7 @@ package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -103,9 +104,12 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+            DbQuery query) {
         // not needed, use #convertToResults() instead
-        return new ArrayList<>();
+        
+        // TODO fix interface here
+        
+        return Collections.emptyList();
     }
 
     private List<SearchResult> convertToResults(List<MeasurementDatasetEntity> found, String locale) {

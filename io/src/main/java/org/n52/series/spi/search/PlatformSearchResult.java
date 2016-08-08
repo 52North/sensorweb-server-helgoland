@@ -26,29 +26,29 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da;
+package org.n52.series.spi.search;
 
-import java.util.Collection;
-import java.util.List;
+public class PlatformSearchResult extends SearchResult {
 
-import org.n52.io.request.IoParameters;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.dao.DbQuery;
-import org.n52.series.spi.search.SearchResult;
+    public PlatformSearchResult(String id, String label) {
+        super(id, label);
+    }
+    
+    public PlatformSearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
 
-public interface OutputAssembler<T> {
+    @Override
+    public String getHref() {
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./platforms/" + getId();
+    }
 
-    List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;
-
-    List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
-
-    T getInstance(String id, DbQuery parameters) throws DataAccessException;
-
-    Collection<SearchResult> searchFor(IoParameters parameters);
-
-    List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query);
-
-    boolean exists(String id) throws DataAccessException;
+    @Override
+    public String getType() {
+        return "platform";
+    }
 
 }

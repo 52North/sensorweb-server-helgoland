@@ -50,6 +50,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.ServiceSearchResult;
 import org.n52.web.ctrl.UrlHelper;
@@ -90,8 +91,16 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, String locale) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+        List<SearchResult> results = new ArrayList<>();
+        String locale = query.getLocale();
+        for (DescribableEntity searchResult : found) {
+            String pkid = searchResult.getPkid().toString();
+            String label = searchResult.getLabelFrom(locale);
+            String hrefBase = new UrlHelper().getFeaturesHrefBaseUrl(query.getHrefBase());
+            results.add(new FeatureSearchResult(pkid, label, hrefBase));
+        }
+        return results;
     }
 
     @Override

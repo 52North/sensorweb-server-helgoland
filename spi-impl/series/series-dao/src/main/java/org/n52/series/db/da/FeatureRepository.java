@@ -69,20 +69,21 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
             FeatureDao featureDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
-            return convertToSearchResults(found, query.getLocale());
+            return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            String locale) {
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found, DbQuery query) {
+        String locale = query.getLocale();
+        String hrefBase = urHelper.getFeaturesHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
-            results.add(new FeatureSearchResult(pkid, label));
             String label = searchResult.getLabelFrom(locale);
+            results.add(new FeatureSearchResult(pkid, label, hrefBase));
         }
         return results;
     }
