@@ -24,6 +24,10 @@
         <property name="metadataService" ref="metadataService" />
     </bean>
 
+    <bean class="org.n52.web.ctrl.SearchController">
+        <property name="searchService" ref="searchService"/>
+    </bean>
+    
     <bean class="org.n52.web.ctrl.OfferingsParameterController" parent="parameterController">
         <property name="parameterService">
             <bean class="org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter">
