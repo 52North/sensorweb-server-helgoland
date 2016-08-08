@@ -29,7 +29,7 @@
 package org.n52.series.spi.search;
 
 @Deprecated
-public class TimeseriesSearchResult extends SearchResult {
+public class TimeseriesSearchResult extends DatasetSearchResult {
 
     public TimeseriesSearchResult(String id, String label) {
         super(id, label);

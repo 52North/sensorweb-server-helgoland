@@ -34,9 +34,16 @@ public class CategorySearchResult extends SearchResult {
         super(id, label);
     }
 
+    public CategorySearchResult(String id, String label, String baseUrl) {
+        super(id, label, baseUrl);
+    }
+
     @Override
     public String getHref() {
-        return "./categories/" + getId();
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./categories/" + getId();
     }
 
     @Override
