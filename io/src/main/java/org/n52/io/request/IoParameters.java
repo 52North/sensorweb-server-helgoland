@@ -34,9 +34,6 @@ import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,6 +67,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class IoParameters implements Parameters {
 
@@ -81,12 +83,15 @@ public class IoParameters implements Parameters {
 
     private final MultiValueMap<String, JsonNode> query;
 
-    private static File getDefaultConfigFile() {
+    private static InputStream getDefaultConfigFile() {
         try {
             Path path = Paths.get(IoParameters.class.getResource("/").toURI());
-            return path.resolve(DEFAULT_CONFIG_FILE).toFile();
-        } catch (URISyntaxException e) {
-            LOGGER.warn("Could not find default config file '{}'", DEFAULT_CONFIG_FILE, e);
+            File config = path.resolve(DEFAULT_CONFIG_FILE).toFile();
+            return config.exists()
+                ? new FileInputStream(config)
+                : IoParameters.class.getClassLoader().getResourceAsStream("/" + DEFAULT_CONFIG_FILE);
+        } catch (URISyntaxException | IOException e) {
+            LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
         }
     }
@@ -124,15 +129,14 @@ public class IoParameters implements Parameters {
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
-        if (config == null) {
-            config = getDefaultConfigFile();
-        }
-        try {
-            return om.readValue(config, TypeFactory
+        try (InputStream stream = config == null
+                ? getDefaultConfigFile()
+                : new FileInputStream(config)) {
+            return om.readValue(stream, TypeFactory
                     .defaultInstance()
                     .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
         } catch (IOException e) {
-            LOGGER.error("Could not load {}. Using empty config.", DEFAULT_CONFIG_FILE, e);
+            LOGGER.info("Could not load '{}'. Using empty config.", DEFAULT_CONFIG_FILE, e);
             return new HashMap<>();
         }
     }

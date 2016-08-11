@@ -29,15 +29,20 @@
 package org.n52.io.response.extension;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.slf4j.Logger;
@@ -68,15 +73,30 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
             File file = !Files.exists(target)
                     ? root.resolve(configFile).toFile()
                     : target.toFile();
-            if (!file.exists()) {
+            if (file.exists()) {
+                return FileUtils.readFileToString(file);
+            }
+            ClassLoader classLoader = getClass().getClassLoader();
+            InputStream is = classLoader.getResourceAsStream("/" + configFile);
+            if (is == null) {
                 LOGGER.error("Could not find license config file '{}'", file.getPath());
                 return "";
             }
-            return FileUtils.readFileToString(file);
+            return readFromInputStream(is);
         } catch (URISyntaxException | IOException e) {
             LOGGER.error("Could not load {}. Using empty license.", CONFIG_FILE, e);
         }
         return "";
+    }
+
+    private String readFromInputStream(InputStream stream) {
+        try (Scanner scanner = new Scanner(stream)) {
+            StringBuilder sb = new StringBuilder();
+            while (scanner.hasNextLine()) {
+                sb.append(scanner.nextLine());
+            }
+            return sb.toString();
+        }
     }
 
     @Override
