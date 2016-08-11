@@ -41,7 +41,7 @@ public abstract class SearchResult {
     public SearchResult(String id, String label) {
         this(id, label, null);
     }
-    
+
     public SearchResult(String id, String label, String baseUrl) {
         this.id = id;
         this.label = label;
@@ -57,16 +57,16 @@ public abstract class SearchResult {
     public String getLabel() {
         return label;
     }
-    
+
     public boolean hasBaseUrl() {
         return baseUrl != null;
     }
-    
+
     @JsonIgnore
     public String getBaseUrl() {
         return baseUrl;
     }
-    
+
     protected String createFullHref() {
         return getBaseUrl() + getId();
     }

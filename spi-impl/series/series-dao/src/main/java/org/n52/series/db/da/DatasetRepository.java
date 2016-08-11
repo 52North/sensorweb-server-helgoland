@@ -62,7 +62,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DatasetRepository<T extends Data>
         extends SessionAwareRepository
         implements OutputAssembler<DatasetOutput> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetRepository.class);
 
     @Autowired

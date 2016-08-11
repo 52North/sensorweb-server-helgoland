@@ -33,7 +33,7 @@ public class DatasetSearchResult extends SearchResult {
     public DatasetSearchResult(String id, String label) {
         super(id, label);
     }
-    
+
     public DatasetSearchResult(String id, String label, String baseUrl) {
         super(id, label, baseUrl);
     }

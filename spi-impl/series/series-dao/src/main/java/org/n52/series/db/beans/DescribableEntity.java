@@ -134,7 +134,7 @@ public class DescribableEntity {
     private boolean isNameAvailable() {
         return getName() != null && !getName().isEmpty();
     }
-    
+
     private boolean isDomainIdAvailable() {
         return getDomainId() != null && !getDomainId().isEmpty();
     }

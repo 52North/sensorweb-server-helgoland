@@ -51,35 +51,49 @@ public abstract class ConfigTypedFactory<T> {
 
     protected final Map<String, T> cache = new HashMap<>();
 
-    protected final File configFile;
-
     protected Properties mappings;
 
     protected ConfigTypedFactory(String defaultConfig) {
         this(getDefaultConfigFile(defaultConfig));
     }
 
-    protected static File getDefaultConfigFile(String configFile) {
+    protected static InputStream getDefaultConfigFile(String configLocation) {
         try {
             Path path = Paths.get(ConfigTypedFactory.class.getResource("/").toURI());
-            return path.resolve(configFile).toFile();
-        } catch (URISyntaxException e) {
-            LOGGER.info("Could not find config file '{}'. Load from compiled default.", configFile, e);
+            File file = path.resolve(configLocation).toFile();
+            if (file.exists()) {
+                return new FileInputStream(file);
+            } else {
+                InputStream stream = ConfigTypedFactory.class.getResourceAsStream(configLocation);
+                return stream == null
+                        ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
+                        : stream;
+            }
+        } catch (URISyntaxException | FileNotFoundException e) {
+            LOGGER.info("Could not find config file '{}'. Load from compiled default.", configLocation, e);
             return null;
         }
     }
 
     protected ConfigTypedFactory(File configFile) {
-        this.configFile = configFile;
         this.mappings = new Properties();
-        loadMappings(mappings, configFile);
+        try {
+            loadMappings(mappings, createConfigStream(configFile, getClass()));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Could not find mapping file: '{}'", configFile.getAbsolutePath(), e);
+        }
     }
 
-    private void loadMappings(Properties mappings, File file) {
-        try (InputStream is = createConfigStream(file, getClass())) {
-            mappings.load(is);
+    protected ConfigTypedFactory(InputStream is) {
+        this.mappings = new Properties();
+        loadMappings(mappings, is);
+    }
+
+    private void loadMappings(Properties mappings, InputStream is) {
+        try (InputStream stream = is) {
+            mappings.load(stream);
         } catch (IOException e) {
-            LOGGER.error("Could not load mapping file: '{}'", file.getAbsolutePath(), e);
+            LOGGER.error("Could not load mapping from stream!", e);
         }
     }
 

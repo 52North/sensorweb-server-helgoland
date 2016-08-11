@@ -33,7 +33,7 @@ public class PlatformSearchResult extends SearchResult {
     public PlatformSearchResult(String id, String label) {
         super(id, label);
     }
-    
+
     public PlatformSearchResult(String id, String label, String baseUrl) {
         super(id, label, baseUrl);
     }
