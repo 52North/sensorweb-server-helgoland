@@ -38,6 +38,7 @@ import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -127,6 +128,7 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
     }
 
     @Override
+    @JsonProperty("parameters")
     public SeriesParameters getSeriesParameters() {
         return new AdaptedSeriesParameters(super.getSeriesParameters());
     }
@@ -143,7 +145,7 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
         @Override
         public ParameterOutput getPlatform() {
-            return TimeseriesMetadataOutput.this.getStation();
+            return null; // stay backwards compatible
         }
 
         @Override
