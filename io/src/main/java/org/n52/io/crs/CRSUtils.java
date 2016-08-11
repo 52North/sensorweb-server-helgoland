@@ -152,13 +152,13 @@ public final class CRSUtils {
      *
      * @param x the point's x value.
      * @param y the point's y value.
-     * @param z the height or <code>null</code> if coordinate is 2D.
+     * @param z the height or <code>null</code> or <code>NaN</code> if coordinate is 2D.
      * @param srs an authoritive spatial reference system code, e.g.
      * <code>EPSG:4326</code> or <code>CRS:84</code> .
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, Double z, String srs) {
-        Coordinate coordinate = z != null
+        Coordinate coordinate = z != null && !z.isNaN()
                 ? new Coordinate(x, y, z)
                 : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
