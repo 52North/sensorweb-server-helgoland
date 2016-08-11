@@ -100,7 +100,7 @@ public abstract class ScheduledJob {
     }
 
     public Trigger createTrigger(JobKey jobKey) {
-        TriggerBuilder tb = newTrigger()
+        TriggerBuilder<Trigger> tb = newTrigger()
                 .forJob(jobKey)
                 .withIdentity(getTriggerName());
         if (getCronExpression() != null) {
