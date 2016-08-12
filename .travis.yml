@@ -2,7 +2,6 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk7
-# https://github.com/travis-ci/travis-ci/issues/5227#issuecomment-165131913
 before_install:
   - cat ~/.m2/settings.xml # check before
   # https://github.com/travis-ci/travis-ci/issues/4629
