@@ -1,0 +1,10 @@
+General Infos:
+==============
+project = ${artifactId}
+version = ${version}
+
+Details:
+========
+branch=${git.branch}
+commit=${git.commit.id}
+builtAt=${git.build.time}
