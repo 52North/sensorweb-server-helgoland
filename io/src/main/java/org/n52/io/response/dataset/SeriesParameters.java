@@ -96,7 +96,7 @@ public class SeriesParameters {
         return service;
     }
 
-    public void setService(ServiceOutput service) {
+    public void setService(ParameterOutput service) {
         this.service = service;
     }
 

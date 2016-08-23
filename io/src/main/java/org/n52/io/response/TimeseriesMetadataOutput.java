@@ -174,7 +174,7 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
         }
 
         @Override
-        public void setService(ServiceOutput service) {
+        public void setService(ParameterOutput service) {
             parameters.setService(service);
         }
 
