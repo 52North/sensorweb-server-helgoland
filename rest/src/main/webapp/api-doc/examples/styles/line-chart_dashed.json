@@ -1,0 +1,8 @@
+{
+    "type": "line",
+    "properties": {
+        "color": "#2f2f2f",
+        "variant": "dashed",
+        "width": 2
+    }
+}
