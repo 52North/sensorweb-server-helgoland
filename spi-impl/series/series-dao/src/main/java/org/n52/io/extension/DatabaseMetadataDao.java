@@ -46,15 +46,17 @@ public class DatabaseMetadataDao {
     }
 
     public MetadataEntity<?> getInstance(Long key) {
-        return (MetadataEntity) session.get(MetadataEntity.class, key);
+        return (MetadataEntity<?>) session.get(MetadataEntity.class, key);
     }
 
+    @SuppressWarnings("unchecked") // Hibernate
     public List<MetadataEntity<?>> getAllFor(Long id) {
         Criteria criteria = session.createCriteria(MetadataEntity.class)
                 .add(Restrictions.eq("seriesId", id));
         return (List<MetadataEntity<?>>) criteria.list();
     }
 
+    @SuppressWarnings("unchecked") // Hibernate
     List<MetadataEntity<?>> getSelected(Long id, Set<String> fields) {
         Criteria criteria = session.createCriteria(MetadataEntity.class)
                 .add(Restrictions.eq("seriesId", id));
@@ -71,6 +73,7 @@ public class DatabaseMetadataDao {
         criteria.add(disjunction);
     }
 
+    @SuppressWarnings("unchecked") // Hibernate
     List<String> getMetadataNames(Long id) {
         Criteria criteria = session.createCriteria(MetadataEntity.class)
                 .add(Restrictions.eq("seriesId", id))

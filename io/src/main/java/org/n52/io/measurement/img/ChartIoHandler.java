@@ -84,12 +84,8 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
     private final IoStyleContext context;
 

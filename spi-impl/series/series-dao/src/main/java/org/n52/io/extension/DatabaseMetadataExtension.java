@@ -94,7 +94,7 @@ public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput
                 return Collections.emptyMap();
             }
             Map<String, Object> outputs = new HashMap<>();
-            for (MetadataEntity entity : allInstances) {
+            for (MetadataEntity<?> entity : allInstances) {
                 outputs.put(entity.getName(), entity.toOutput());
             }
             return outputs;

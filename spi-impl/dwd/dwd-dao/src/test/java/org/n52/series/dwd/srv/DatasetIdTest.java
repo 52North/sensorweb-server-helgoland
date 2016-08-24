@@ -28,16 +28,13 @@
  */
 package org.n52.series.dwd.srv;
 
-import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.DatasetType;
-import org.n52.io.response.dataset.dwd.DwdAlertDatasetOutput;
-import org.n52.series.dwd.srv.DatasetOutputAdapter;
-
 import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.dwd.DwdAlertDatasetOutput;
 
 public class DatasetIdTest {
 

@@ -29,7 +29,6 @@
 package org.n52.io.response.dataset;
 
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ServiceOutput;
 
 /**
  * TODO: JavaDoc
