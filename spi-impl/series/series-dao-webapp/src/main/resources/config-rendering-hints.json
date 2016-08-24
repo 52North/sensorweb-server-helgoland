@@ -1,0 +1,51 @@
+{
+    "phenomenonStyles": {
+        "6": {
+            "style": {
+                "chartType": "bar",
+                "properties": {
+                    "interval": "byHour",
+                    "width": 0.8,
+                    "color": "#0000ff"
+                }
+            }
+        },
+        {
+            "id" : "4",
+            "interval": [
+                "lastWeek",
+                "lastMonth"
+            ],
+            "style": {
+                "chartType": "bar",
+                "properties": {
+                    "interval": "byDay",
+                    "color": "#ff0000",
+                    "width": 0.8
+                }
+            }
+        }
+    },
+    "timeseriesStyles": {
+        "1": {
+            "style": {
+                "chartType": "bar",
+                "properties": {
+                    "interval": "byDay",
+                    "width": 0.8,
+                    "color": "#0000ff",
+                    "referenceValueStyleProperties" : {
+                        "305" : {
+                            "chartType": "line",
+                            "properties": {
+                                "color": "#ff0000",
+                                "lineType": "solid",
+                                "width": 2
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

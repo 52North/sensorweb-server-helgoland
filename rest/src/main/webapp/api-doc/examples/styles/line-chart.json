@@ -1,0 +1,9 @@
+{
+    "type": "line",
+    "properties": {
+        "grid": true,
+        "color": "#2f2f2f",
+        "variant": "solid",
+        "width": 2
+    }
+}
