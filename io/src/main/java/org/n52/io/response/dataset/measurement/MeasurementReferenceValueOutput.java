@@ -38,26 +38,32 @@ public class MeasurementReferenceValueOutput implements ReferenceValueOutput<Mea
 
     private MeasurementValue lastValue;
 
+    @Override
     public String getReferenceValueId() {
         return referenceValueId;
     }
 
+    @Override
     public void setReferenceValueId(String referenceValueId) {
         this.referenceValueId = referenceValueId;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
+    @Override
     public MeasurementValue getLastValue() {
         return lastValue;
     }
 
+    @Override
     public void setLastValue(MeasurementValue lastValue) {
         this.lastValue = lastValue;
     }

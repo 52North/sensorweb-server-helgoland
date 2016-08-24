@@ -33,7 +33,12 @@ import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,11 +72,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class IoParameters implements Parameters {
 
@@ -472,8 +472,8 @@ public class IoParameters implements Parameters {
         return getValuesOf(FILTER_DATASET_TYPES);
     }
 
-    public FilterResolver getFilterResolver() {
-        return new FilterResolver(this);
+    public Set<String> getSearchTerms() {
+        return getValuesOf(SEARCH_TERM);
     }
 
     Set<String> getValuesOf(String parameterName) {
@@ -488,6 +488,10 @@ public class IoParameters implements Parameters {
             values[i] = values[i].toLowerCase();
         }
         return new HashSet<>(Arrays.asList(values));
+    }
+
+    public FilterResolver getFilterResolver() {
+        return new FilterResolver(this);
     }
 
     /**

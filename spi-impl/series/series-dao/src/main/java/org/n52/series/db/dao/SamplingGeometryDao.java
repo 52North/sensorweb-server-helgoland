@@ -49,6 +49,7 @@ public class SamplingGeometryDao {
         this.session = session;
     }
 
+    @SuppressWarnings("unchecked") // Hibernate
     public List<GeometryEntity> getGeometriesOrderedByTimestamp(DbQuery parameters) {
         Criteria criteria = session.createCriteria(SamplingGeometryEntity.class);
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
