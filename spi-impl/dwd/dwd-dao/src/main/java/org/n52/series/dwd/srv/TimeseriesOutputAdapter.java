@@ -28,8 +28,6 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
@@ -42,15 +40,6 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
 public class TimeseriesOutputAdapter <T extends ParameterOutput> extends ParameterService<TimeseriesMetadataOutput> implements DataService<Data<? extends AbstractValue<?>>> {
-
-    private OutputCollection<TimeseriesMetadataOutput> createOutputCollection() {
-        return new OutputCollection<TimeseriesMetadataOutput>() {
-            @Override
-            protected Comparator<TimeseriesMetadataOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
 
     @Override
     public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {

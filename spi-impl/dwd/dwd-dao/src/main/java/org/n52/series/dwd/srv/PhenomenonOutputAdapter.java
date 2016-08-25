@@ -28,13 +28,11 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.Alert;
@@ -50,15 +48,6 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     public PhenomenonOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<PhenomenonOutput> createOutputCollection() {
-        return new OutputCollection<PhenomenonOutput>() {
-            @Override
-            protected Comparator<PhenomenonOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override
