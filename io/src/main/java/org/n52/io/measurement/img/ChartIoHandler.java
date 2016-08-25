@@ -54,8 +54,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -100,23 +98,22 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
             IoStyleContext context) {
         super(request, processChain);
         this.context = context;
+        this.xyPlot = createChart(context);
     }
 
-    public abstract void generateOutput(DataCollection<MeasurementData> data) throws IoParseException;
+    public abstract void writeDataToChart(DataCollection<MeasurementData> data) throws IoParseException;
 
     @Override
     public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
         try {
-            generateOutput(data);
-            JPEGImageWriteParam p = new JPEGImageWriteParam(null);
-            p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
-            write(drawChartToImage(), mimeType.getFormatName(), stream);
+            writeDataToChart(data);
+            write(createImage(), mimeType.getFormatName(), stream);
         } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
         }
     }
 
-    private BufferedImage drawChartToImage() {
+    private BufferedImage createImage() {
         int width = getChartStyleDefinitions().getWidth();
         int height = getChartStyleDefinitions().getHeight();
         BufferedImage chartImage = new BufferedImage(width, height, TYPE_INT_RGB);
@@ -134,9 +131,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     public XYPlot getXYPlot() {
-        if (xyPlot == null) {
-            xyPlot = createChart(getRenderingContext());
-        }
         return xyPlot;
     }
 

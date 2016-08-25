@@ -110,7 +110,6 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private ChartIoHandler configureRenderer(ChartIoHandler renderer) {
         renderer.setMimeType(IMAGE_PNG);
-        renderer.setShowTooltips(false);
         return renderer;
     }
 
@@ -124,7 +123,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
     }
 
     private void generateTimeseriesChart(DataCollection<MeasurementData> data) throws IOException {
-        renderer.generateOutput(data);
+        renderer.writeDataToChart(data);
         File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)){
             renderer.encodeAndWriteTo(data, stream);
