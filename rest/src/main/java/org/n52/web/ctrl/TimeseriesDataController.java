@@ -58,7 +58,6 @@ import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
-import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.format.FormatterFactory;
@@ -202,6 +201,7 @@ public class TimeseriesDataController extends BaseController {
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
         createIoFactory(parameters)
+                .withStyledRequest(requestParameters)
                 .createHandler(MimeType.APPLICATION_PDF.getMimeType())
                 .writeBinary(response.getOutputStream());
     }
@@ -292,6 +292,7 @@ public class TimeseriesDataController extends BaseController {
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         createIoFactory(parameters)
+                .withStyledRequest(requestParameters)
                 .createHandler("image/png")
                 .writeBinary(response.getOutputStream());
     }
@@ -303,12 +304,10 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
-        MeasurementDatasetOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, map);
-        context.setDimensions(map.getChartDimension());
 
+        IoParameters map = createFromQuery(query);
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
+        RequestStyledParameterSet styledParameters = map.toRequestStyledParameterSet();
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());
@@ -317,6 +316,7 @@ public class TimeseriesDataController extends BaseController {
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         createIoFactory(parameters)
+                .withStyledRequest(styledParameters)
                 .createHandler("image/png")
                 .writeBinary(response.getOutputStream());
     }
