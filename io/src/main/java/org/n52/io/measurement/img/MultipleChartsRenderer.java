@@ -71,7 +71,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
     }
 
     @Override
-    public void generateOutput(DataCollection<MeasurementData> data) {
+    public void writeDataToChart(DataCollection<MeasurementData> data) {
         Map<String, MeasurementData> allTimeseries = data.getAllSeries();
         List<? extends DatasetOutput> timeseriesMetadatas = getMetadataOutputs();
 

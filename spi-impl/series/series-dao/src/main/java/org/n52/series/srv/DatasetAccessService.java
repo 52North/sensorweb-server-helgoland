@@ -51,8 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class DatasetAccessService extends AccessService<DatasetOutput>
-        implements DataService<Data<?>> {
+public class DatasetAccessService extends AccessService<DatasetOutput> implements DataService<Data<?>> {
 
     @Autowired
     private DataRepositoryFactory factory;
