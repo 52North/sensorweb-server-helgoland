@@ -42,7 +42,7 @@ import org.n52.io.CsvIoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.count.CountData;
@@ -71,7 +71,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private String tokenSeparator = ";";
 
-    public MeasurementCsvIoHandler(RequestSimpleParameterSet simpleRequest,
+    public MeasurementCsvIoHandler(RequestParameterSet simpleRequest,
             IoProcessChain<MeasurementData> processChain,
             IoStyleContext context) {
         super(simpleRequest, processChain);

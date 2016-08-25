@@ -29,7 +29,7 @@
 package org.n52.series.dwd.srv;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
@@ -67,7 +67,7 @@ public class TimeseriesOutputAdapter <T extends ParameterOutput> extends Paramet
     }
 
     @Override
-    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestParameterSet parameters) {
         return null;
     }
 

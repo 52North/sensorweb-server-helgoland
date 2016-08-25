@@ -74,6 +74,7 @@ import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
@@ -93,7 +94,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private XYPlot xyPlot;
 
-    public ChartIoHandler(RequestSimpleParameterSet request,
+    public ChartIoHandler(RequestParameterSet request,
             IoProcessChain<MeasurementData> processChain,
             IoStyleContext context) {
         super(request, processChain);

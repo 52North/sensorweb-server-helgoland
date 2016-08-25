@@ -60,7 +60,7 @@ import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.measurement.img.ChartIoHandler;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -95,7 +95,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private URI baseURI;
 
-    public PDFReportGenerator(RequestSimpleParameterSet simpleRequest,
+    public PDFReportGenerator(RequestParameterSet simpleRequest,
             IoProcessChain<MeasurementData> processChain,
             ChartIoHandler renderer) {
         super(simpleRequest, processChain, renderer.getRenderingContext());

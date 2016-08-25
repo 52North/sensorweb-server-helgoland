@@ -30,7 +30,7 @@ package org.n52.series.srv;
 
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -61,7 +61,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
     }
 
     @Override
-    public DataCollection<Data<?>> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<?>> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<Data<?>> dataCollection = new TvpDataCollection<>();
             for (String seriesId : parameters.getSeriesIds()) {
@@ -77,7 +77,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
         }
     }
 
-    private Data<?> getDataFor(String seriesId, RequestSimpleParameterSet parameters)
+    private Data<?> getDataFor(String seriesId, RequestParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         String datasetType = DatasetType.extractType(seriesId);

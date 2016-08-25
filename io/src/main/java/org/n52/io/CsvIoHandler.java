@@ -28,13 +28,13 @@
  */
 package org.n52.io;
 
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 
 public abstract class CsvIoHandler<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
 
-    public CsvIoHandler(RequestSimpleParameterSet request, IoProcessChain<T> processChain) {
+    public CsvIoHandler(RequestParameterSet request, IoProcessChain<T> processChain) {
         super(request, processChain);
     }
 
