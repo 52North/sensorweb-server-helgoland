@@ -89,8 +89,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private final IoStyleContext context;
 
-    private boolean showTooltips;
-
     private MimeType mimeType;
 
     private JFreeChart chart;
@@ -146,20 +144,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         return context;
     }
 
-    public MimeType getMimeType() {
-        return mimeType;
-    }
-
     public void setMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
-    }
-
-    public boolean isShowTooltips() {
-        return showTooltips;
-    }
-
-    public void setShowTooltips(boolean showTooltips) {
-        this.showTooltips = showTooltips;
     }
 
     private XYPlot createChart(IoStyleContext context) {
@@ -178,7 +164,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
                 i18n.get("msg.io.chart.value"),
                 null,
                 showLegend,
-                showTooltips,
+                false,
                 true);
         return createPlotArea(chart);
     }
