@@ -95,7 +95,7 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         return new IoProcessChain<D>() {
             @Override
             public DataCollection<D> getData() {
-                return getDataService().getData(getSimpleRequest());
+                return getDataService().getData(getRequestParameters());
             }
             @Override
             public DataCollection<?> getProcessedData() {
@@ -130,7 +130,7 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         return dataService;
     }
 
-    public RequestParameterSet getSimpleRequest() {
+    public RequestParameterSet getRequestParameters() {
         return simpleRequest == null
                 ? styledRequest
                 : simpleRequest;
