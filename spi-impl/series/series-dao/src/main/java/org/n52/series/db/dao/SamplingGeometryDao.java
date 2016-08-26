@@ -56,6 +56,7 @@ public class SamplingGeometryDao {
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc(COLUMN_TIMESTAMP));
+        parameters.addSpatialFilterTo(criteria);
         return (List<GeometryEntity>) criteria.list();
     }
 

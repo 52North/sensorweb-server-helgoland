@@ -258,7 +258,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery parameters) {
+    public Criteria addSpatialFilterTo(Criteria criteria) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
