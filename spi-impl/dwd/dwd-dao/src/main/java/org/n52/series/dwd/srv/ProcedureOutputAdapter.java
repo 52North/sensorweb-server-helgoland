@@ -28,13 +28,11 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.Alert;
@@ -51,15 +49,6 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     public ProcedureOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<ProcedureOutput> createOutputCollection() {
-        return new OutputCollection<ProcedureOutput>() {
-            @Override
-            protected Comparator<ProcedureOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override

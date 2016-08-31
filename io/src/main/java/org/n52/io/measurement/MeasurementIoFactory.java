@@ -73,7 +73,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
                 DataService<MeasurementData> dataService = generalize
                     ? composeDataService(getDataService())
                     : getDataService();
-                return dataService.getData(getSimpleRequest());
+                return dataService.getData(getRequestParameters());
             }
 
             @Override
@@ -113,7 +113,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
         else if (mimeType == APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                                                                        getSimpleRequest(),
+                                                                        getRequestParameters(),
                                                                         createProcessChain(),
                                                                         imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
@@ -121,7 +121,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
         }
         else if (mimeType == TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
-                                                                          getSimpleRequest(),
+                                                                          getRequestParameters(),
                                                                           createProcessChain(),
                                                                           createContext());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
@@ -140,7 +140,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
 
     private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                                                                          getSimpleRequest(),
+                                                                          getRequestParameters(),
                                                                           createProcessChain(),
                                                                           createContext());
 

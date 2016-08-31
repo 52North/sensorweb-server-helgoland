@@ -60,7 +60,7 @@ import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.measurement.img.ChartIoHandler;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -95,7 +95,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private URI baseURI;
 
-    public PDFReportGenerator(RequestSimpleParameterSet simpleRequest,
+    public PDFReportGenerator(RequestParameterSet simpleRequest,
             IoProcessChain<MeasurementData> processChain,
             ChartIoHandler renderer) {
         super(simpleRequest, processChain, renderer.getRenderingContext());
@@ -110,7 +110,6 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private ChartIoHandler configureRenderer(ChartIoHandler renderer) {
         renderer.setMimeType(IMAGE_PNG);
-        renderer.setShowTooltips(false);
         return renderer;
     }
 
@@ -124,7 +123,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
     }
 
     private void generateTimeseriesChart(DataCollection<MeasurementData> data) throws IOException {
-        renderer.generateOutput(data);
+        renderer.writeDataToChart(data);
         File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)){
             renderer.encodeAndWriteTo(data, stream);

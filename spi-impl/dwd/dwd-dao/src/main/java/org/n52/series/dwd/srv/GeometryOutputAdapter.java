@@ -28,15 +28,12 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.GeometryInfo;
 import org.n52.io.response.GeometryType;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.beans.WarnCell;
@@ -56,15 +53,6 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
     public GeometryOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<GeometryInfo> createOutputCollection() {
-        return new OutputCollection<GeometryInfo>() {
-            @Override
-            protected Comparator<GeometryInfo> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override

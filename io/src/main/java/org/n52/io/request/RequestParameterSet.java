@@ -150,6 +150,23 @@ public abstract class RequestParameterSet {
         parameters.put("language", IoParameters.getJsonNodeFrom(language));
     }
 
+    /**
+     * @return the result time.
+     */
+    public String getResultTime() {
+        return getAsString("resultTime");
+    }
+
+    /**
+     * @param resultTime Optional parameter, to define a result time in the
+     * request.
+     */
+    public void setResultTime(String resultTime) {
+        if (resultTime != null) {
+            parameters.put("resultTime", IoParameters.getJsonNodeFrom(resultTime));
+        }
+    }
+
     private String validateTimespan(String timespan) {
         return new IntervalWithTimeZone(timespan).toString();
     }

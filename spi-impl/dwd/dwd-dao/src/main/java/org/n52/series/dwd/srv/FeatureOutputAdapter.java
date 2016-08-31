@@ -28,12 +28,9 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.beans.WarnCell;
 import org.n52.series.dwd.rest.AlertCollection;
@@ -49,15 +46,6 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     public FeatureOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<FeatureOutput> createOutputCollection() {
-        return new OutputCollection<FeatureOutput>() {
-            @Override
-            protected Comparator<FeatureOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override

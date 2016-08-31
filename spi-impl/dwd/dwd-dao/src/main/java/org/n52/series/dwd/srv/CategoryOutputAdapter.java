@@ -28,14 +28,12 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.store.AlertStore;
@@ -50,15 +48,6 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     public CategoryOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<CategoryOutput> createOutputCollection() {
-        return new OutputCollection<CategoryOutput>() {
-            @Override
-            protected Comparator<CategoryOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override

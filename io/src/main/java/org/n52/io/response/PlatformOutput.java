@@ -52,12 +52,6 @@ public class PlatformOutput extends AbstractOutput {
 
     private Geometry geometry;
 
-    private PhenomenonOutputCollection phenomena;
-
-    private ProcedureOutputCollection procedures;
-
-    private FeatureOutputCollection features;
-
     public PlatformOutput(PlatformType platformType) {
         this.platformType = platformType;
     }
@@ -103,36 +97,6 @@ public class PlatformOutput extends AbstractOutput {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
-    }
-
-    public Collection<PhenomenonOutput> getPhenomena() {
-        return getNullSafeItems(phenomena);
-    }
-
-    public void setPhenomena(PhenomenonOutputCollection phenomena) {
-        this.phenomena = phenomena;
-    }
-
-    public Collection<ProcedureOutput> getProcedures() {
-        return getNullSafeItems(procedures);
-    }
-
-    public void setProcedures(ProcedureOutputCollection procedures) {
-        this.procedures = procedures;
-    }
-
-    public Collection<FeatureOutput> getFeatures() {
-        return getNullSafeItems(features);
-    }
-
-    public void setFeatures(FeatureOutputCollection features) {
-        this.features = features;
-    }
-
-    private <T> Collection<T> getNullSafeItems(OutputCollection<T> collection) {
-        return collection != null
-                ? collection.getItems()
-                : null;
     }
 
 }

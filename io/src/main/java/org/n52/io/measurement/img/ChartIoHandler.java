@@ -54,8 +54,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -76,6 +74,7 @@ import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
@@ -89,36 +88,33 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private final IoStyleContext context;
 
-    private boolean showTooltips;
-
     private MimeType mimeType;
 
     private JFreeChart chart;
 
     private XYPlot xyPlot;
 
-    public ChartIoHandler(RequestSimpleParameterSet request,
+    public ChartIoHandler(RequestParameterSet request,
             IoProcessChain<MeasurementData> processChain,
             IoStyleContext context) {
         super(request, processChain);
         this.context = context;
+        this.xyPlot = createChart(context);
     }
 
-    public abstract void generateOutput(DataCollection<MeasurementData> data) throws IoParseException;
+    public abstract void writeDataToChart(DataCollection<MeasurementData> data) throws IoParseException;
 
     @Override
     public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
         try {
-            generateOutput(data);
-            JPEGImageWriteParam p = new JPEGImageWriteParam(null);
-            p.setCompressionMode(JPEGImageWriteParam.MODE_DEFAULT);
-            write(drawChartToImage(), mimeType.getFormatName(), stream);
+            writeDataToChart(data);
+            write(createImage(), mimeType.getFormatName(), stream);
         } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
         }
     }
 
-    private BufferedImage drawChartToImage() {
+    private BufferedImage createImage() {
         int width = getChartStyleDefinitions().getWidth();
         int height = getChartStyleDefinitions().getHeight();
         BufferedImage chartImage = new BufferedImage(width, height, TYPE_INT_RGB);
@@ -136,9 +132,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     public XYPlot getXYPlot() {
-        if (xyPlot == null) {
-            xyPlot = createChart(getRenderingContext());
-        }
         return xyPlot;
     }
 
@@ -146,20 +139,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         return context;
     }
 
-    public MimeType getMimeType() {
-        return mimeType;
-    }
-
     public void setMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
-    }
-
-    public boolean isShowTooltips() {
-        return showTooltips;
-    }
-
-    public void setShowTooltips(boolean showTooltips) {
-        this.showTooltips = showTooltips;
     }
 
     private XYPlot createChart(IoStyleContext context) {
@@ -178,7 +159,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
                 i18n.get("msg.io.chart.value"),
                 null,
                 showLegend,
-                showTooltips,
+                false,
                 true);
         return createPlotArea(chart);
     }
