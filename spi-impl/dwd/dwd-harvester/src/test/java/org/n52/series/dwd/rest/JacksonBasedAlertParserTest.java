@@ -112,7 +112,7 @@ public class JacksonBasedAlertParserTest {
     }
 
     private void loadGeometries(AlertStore store) throws URISyntaxException {
-        new ShapeFileHarvester(getTestShapeFile(), store).harvest();
+        new ShapeFileHarvester(store, getTestShapeFile()).harvest();
     }
 
     private File getTestShapeFile() throws URISyntaxException {

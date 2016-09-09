@@ -53,13 +53,13 @@ public class GeometryHarvesterTest {
 
     @Test
     public void when_notYetHarvested_then_emptyStore() throws IOException, URISyntaxException {
-        ShapeFileHarvester harvester = new ShapeFileHarvester(getTestShapeFile(), store);
+        ShapeFileHarvester harvester = new ShapeFileHarvester(store, getTestShapeFile());
         assertTrue(harvester.loadGeometries().size() == 1);
     }
 
     @Test
     public void when_harvestingTestShape_then_muensterWarnCellHasGeometry() throws URISyntaxException {
-        new ShapeFileHarvester(getTestShapeFile(), store).harvest();
+        new ShapeFileHarvester(store, getTestShapeFile()).harvest();
         assertTrue(store.getWarnCell("105515000").getGeometry() != null);
         assertFalse(store.getWarnCell("105515000").getGeometry().isEmpty());
     }
