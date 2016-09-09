@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.geotools.geometry.jts.JTS;
+import org.n52.io.crs.BoundingBox;
+import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.CategoryOutput;
@@ -54,15 +57,28 @@ import org.n52.series.dwd.rest.WarnungAlert;
 import org.n52.series.dwd.store.AlertStore;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlHelper;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 public abstract class AbstractOuputAdapter<T extends ParameterOutput> extends ParameterService<T> {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractOuputAdapter.class);
     protected final UrlHelper urlHelper = new UrlHelper();
-
     private ServiceInfo serviceInfo;
+    private String sridAuthorityCode = "EPSG:4326"; // default
 
     public AbstractOuputAdapter(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
+    }
+
+    public void setDatabaseAuthorityCode(String code) {
+        this.sridAuthorityCode = code;
     }
 
     protected ServiceOutput getServiceOutput() {
@@ -84,9 +100,10 @@ public abstract class AbstractOuputAdapter<T extends ParameterOutput> extends Pa
     protected Set<WarnCell> getFilteredWarnCells(IoParameters query, AlertStore store) {
         Set<String> requestedWarnCells = getRequestedWarnCells(query);
         Set<WarnCell> warnCells = new HashSet<WarnCell>();
+        Polygon envelop = createEnvelopeFromSpatialFilter(query);
         if (requestedWarnCells != null) {
             for (WarnCell warnCell : store.getAllWarnCells()) {
-                if (requestedWarnCells.isEmpty() || requestedWarnCells.contains(warnCell.getId())) {
+                if ((requestedWarnCells.isEmpty() || requestedWarnCells.contains(warnCell.getId()) && checkForBboxFilter(envelop, warnCell))) {
                     if (!getFilteredAlerts(warnCell, query, store).isEmpty()) {
                         warnCells.add(warnCell);
                     }
@@ -94,6 +111,32 @@ public abstract class AbstractOuputAdapter<T extends ParameterOutput> extends Pa
             }
         }
         return warnCells;
+    }
+
+    private Polygon createEnvelopeFromSpatialFilter(IoParameters query) {
+        BoundingBox spatialFilter = query.getSpatialFilter();
+        if (spatialFilter != null) {
+            try {
+                CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
+                Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
+                Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
+                return JTS.toGeometry(new Envelope(ll.getCoordinate(), ur.getCoordinate()));
+            }
+            catch (FactoryException e) {
+                LOGGER.error("Could not create transformation facilities.", e);
+            }
+            catch (TransformException e) {
+                LOGGER.error("Could not perform transformation.", e);
+            }
+        }
+        return null;
+    }
+
+    private boolean checkForBboxFilter(Polygon envelop, WarnCell warnCell) {
+        if (envelop != null) {
+            return warnCell.getGeometry().within(envelop);
+        }
+        return true;
     }
 
     private Set<String> getRequestedWarnCells(IoParameters query) {

@@ -861,8 +861,8 @@ public class IoParameters implements Parameters {
 
     public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
-        for (String parameter : parameters.availableParameters()) {
-            JsonNode value = parameters.getAsJsonNode(parameter);
+        for (String parameter : parameters.availableParameterNames()) {
+            JsonNode value = parameters.getParameterValue(parameter);
             queryParameters.put(parameter.toLowerCase(), value);
         }
         return new IoParameters(queryParameters, defaultConfig);
