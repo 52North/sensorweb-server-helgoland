@@ -258,7 +258,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery parameters) {
+    public Criteria addSpatialFilterTo(Criteria criteria) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -270,6 +270,9 @@ public class DbQuery {
                 criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
+                
+                // XXX do sampling filter only on generated line strings stored in FOI table,
+                // otherwise we would have to check each observation row
 
             }
             catch (FactoryException e) {

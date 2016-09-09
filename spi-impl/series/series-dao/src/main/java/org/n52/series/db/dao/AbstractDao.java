@@ -69,7 +69,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         criteria = query.addPlatformTypeFilter(filterProperty, criteria);
         criteria = query.addDatasetTypeFilter(filterProperty, criteria);
         criteria = query.addLimitAndOffsetFilter(criteria);
-        return query.addSpatialFilterTo(criteria, query)
+        return query.addSpatialFilterTo(criteria)
                 .add(propertyIn(filterProperty + ".pkid", filter));
     }
 
