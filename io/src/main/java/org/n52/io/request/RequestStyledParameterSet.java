@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RequestStyledParameterSet extends RequestParameterSet {
 
     // TODO lean at revised prerendering config
-    
+
     /**
      * Style options for each timeseriesId of interest.
      */
