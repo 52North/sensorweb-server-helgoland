@@ -103,7 +103,8 @@ public abstract class AbstractOuputAdapter<T extends ParameterOutput> extends Pa
         Polygon envelop = createEnvelopeFromSpatialFilter(query);
         if (requestedWarnCells != null) {
             for (WarnCell warnCell : store.getAllWarnCells()) {
-                if ((requestedWarnCells.isEmpty() || requestedWarnCells.contains(warnCell.getId()) && checkForBboxFilter(envelop, warnCell))) {
+                if ((requestedWarnCells.isEmpty() || requestedWarnCells.contains(warnCell.getId()))
+                        && checkForBboxFilter(envelop, warnCell)) {
                     if (!getFilteredAlerts(warnCell, query, store).isEmpty()) {
                         warnCells.add(warnCell);
                     }
