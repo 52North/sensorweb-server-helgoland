@@ -133,5 +133,12 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
         result.setHrefBase(urlHelper.getGeometriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
+    public PlatformOutputAdapter getPlatformOutputAdapter() {
+        return platformOutputAdapter;
+    }
+
+    public void setPlatformOutputAdapter(PlatformOutputAdapter platformOutputAdapter) {
+        this.platformOutputAdapter = platformOutputAdapter;
+    }
 
 }
