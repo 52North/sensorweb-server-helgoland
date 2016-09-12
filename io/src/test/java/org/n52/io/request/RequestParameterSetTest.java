@@ -37,9 +37,9 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 public class RequestParameterSetTest {
-    
+
     private JsonNodeFactory jsonFactory = JsonNodeFactory.instance;
-    
+
     private RequestParameterSet createDummyParameterSet() {
         return new RequestParameterSet() {
             @Override
@@ -54,7 +54,7 @@ public class RequestParameterSetTest {
         RequestParameterSet parameterset = createDummyParameterSet();
         assertThat(parameterset.getAsString("notthere"), nullValue(String.class));
     }
-    
+
     @Test
     public void when_stringParameterNotPresent_then_returnDefault() {
         RequestParameterSet parameterset = createDummyParameterSet();
@@ -89,14 +89,14 @@ public class RequestParameterSetTest {
         parameterset.addParameter("myParameter", jsonFactory.textNode("value"));
         assertThat(parameterset.containsParameter("myParameter"), is(true));
     }
-    
+
     @Test
     public void when_addingCamelCasedParameter_then_caseInsensitiveAccess() {
         RequestParameterSet parameterset = createDummyParameterSet();
         parameterset.addParameter("myParameter", jsonFactory.textNode("value"));
         assertThat(parameterset.containsParameter("myparameter"), is(true));
     }
-    
+
 
 
 }

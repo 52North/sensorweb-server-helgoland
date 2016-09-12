@@ -35,7 +35,7 @@ public class BBox {
     private GeojsonPoint ll;
 
     private GeojsonPoint ur;
-    
+
     public BBox() {
         // for serialization
     }

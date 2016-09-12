@@ -28,6 +28,7 @@
  */
 package org.n52.series.dwd.rest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,20 @@ public class AlertCollection {
 
     public void setTime(Long time) {
         this.time = time;
+    }
+    
+    public void addWarnungAlert(String id, WarnungAlert alert) {
+        if ( !this.warnings.containsKey(id) && alert != null) {
+            this.warnings.put(id, new ArrayList<WarnungAlert>());
+        }
+        this.warnings.get(id).add(alert);
+    }
+    
+    public void addVorabInformationAlert(String id, VorabInformationAlert alert) {
+        if ( !this.vorabInformation.containsKey(id) && alert != null) {
+            this.vorabInformation.put(id, new ArrayList<VorabInformationAlert>());
+        }
+        this.vorabInformation.get(id).add(alert);
     }
 
     public Map<String, List<WarnungAlert>> getWarnings() {

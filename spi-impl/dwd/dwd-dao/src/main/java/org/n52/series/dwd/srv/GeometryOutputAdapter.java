@@ -42,7 +42,7 @@ import org.n52.web.ctrl.UrlHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
-
+    
     private final AlertStore store;
 
     private final UrlHelper urlHelper = new UrlHelper();
@@ -133,5 +133,12 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
         result.setHrefBase(urlHelper.getGeometriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
+    public PlatformOutputAdapter getPlatformOutputAdapter() {
+        return platformOutputAdapter;
+    }
+
+    public void setPlatformOutputAdapter(PlatformOutputAdapter platformOutputAdapter) {
+        this.platformOutputAdapter = platformOutputAdapter;
+    }
 
 }
