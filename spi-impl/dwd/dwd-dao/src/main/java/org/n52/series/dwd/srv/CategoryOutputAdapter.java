@@ -31,6 +31,7 @@ package org.n52.series.dwd.srv;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.OutputCollection;
@@ -53,8 +54,11 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     @Override
     public OutputCollection<CategoryOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<CategoryOutput> outputCollection = createOutputCollection();
-        for (String alertType : getCategory(query)) {
-            outputCollection.addItem(createExpanded(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String category : getCategories(query)) {
+                outputCollection.addItem(createExpanded(category, query));
+            }
         }
         return outputCollection;
     }
@@ -62,16 +66,19 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     @Override
     public OutputCollection<CategoryOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<CategoryOutput> outputCollection = createOutputCollection();
-        for (String category : getCategory(query)) {
-            outputCollection.addItem(createCondensed(category, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String category : getCategories(query)) {
+                outputCollection.addItem(createCondensed(category, query));
+            }
         }
         return outputCollection;
     }
 
-    private Set<String> getCategory(IoParameters query) {
-        Set<String> offerings = new HashSet<String>();
+    private Set<String> getCategories(IoParameters query) {
+        Set<String> categories = new HashSet<String>();
         for (Alert alert : getFilteredAlerts(query, store)) {
-            offerings.add(createPhenomenonId(alert.getEvent()));
+            categories.add(createPhenomenonId(alert.getEvent()));
         }
 //        if (store.getCurrentAlerts().hasWarning()) {
 //            Map<String, List<WarnungAlert>> warnings = store.getCurrentAlerts().getWarnings();
@@ -89,17 +96,20 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
 //                }
 //            }
 //        }
-        return offerings;
+        return categories;
     }
 
     @Override
     public OutputCollection<CategoryOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<CategoryOutput> outputCollection = createOutputCollection();
-        for (String alertType : items) {
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(alertType, query));
-            } else {
-                outputCollection.addItem(createCondensed(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : items) {
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(alertType, query));
+                } else {
+                    outputCollection.addItem(createCondensed(alertType, query));
+                }
             }
         }
         return outputCollection;
@@ -127,7 +137,7 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
 
     @Override
     public boolean exists(String id) {
-        return getCategory(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
+        return getCategories(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(CategoryOutput result, IoParameters parameters) {
