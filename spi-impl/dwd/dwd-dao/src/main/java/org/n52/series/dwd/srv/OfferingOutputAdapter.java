@@ -31,6 +31,7 @@ package org.n52.series.dwd.srv;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.OutputCollection;
@@ -53,8 +54,11 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     @Override
     public OutputCollection<OfferingOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<OfferingOutput> outputCollection = createOutputCollection();
-        for (String alertType : getOfferings(query)) {
-            outputCollection.addItem(createExpanded(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : getOfferings(query)) {
+                outputCollection.addItem(createExpanded(alertType, query));
+            }
         }
         return outputCollection;
     }
@@ -62,8 +66,11 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     @Override
     public OutputCollection<OfferingOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<OfferingOutput> outputCollection = createOutputCollection();
-        for (String offering : getOfferings(query)) {
-            outputCollection.addItem(createCondensed(offering, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String offering : getOfferings(query)) {
+                outputCollection.addItem(createCondensed(offering, query));
+            }
         }
         return outputCollection;
     }
@@ -95,11 +102,14 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     @Override
     public OutputCollection<OfferingOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<OfferingOutput> outputCollection = createOutputCollection();
-        for (String alertType : items) {
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(alertType, query));
-            } else {
-                outputCollection.addItem(createCondensed(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : items) {
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(alertType, query));
+                } else {
+                    outputCollection.addItem(createCondensed(alertType, query));
+                }
             }
         }
         return outputCollection;

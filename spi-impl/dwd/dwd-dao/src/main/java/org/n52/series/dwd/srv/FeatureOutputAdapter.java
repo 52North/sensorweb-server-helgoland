@@ -28,6 +28,7 @@
  */
 package org.n52.series.dwd.srv;
 
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OutputCollection;
@@ -51,8 +52,11 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
-            outputCollection.addItem(createExpanded(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
+                outputCollection.addItem(createExpanded(warnCell, query));
+            }
         }
         return outputCollection;
     }
@@ -60,8 +64,11 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
-            outputCollection.addItem(createCondensed(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
+                outputCollection.addItem(createCondensed(warnCell, query));
+            }
         }
         return outputCollection;
     }
@@ -69,12 +76,15 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (String id : items) {
-            WarnCell warnCell = getWarnCell(id, store);
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(warnCell, query));
-            } else {
-                outputCollection.addItem(createCondensed(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String id : items) {
+                WarnCell warnCell = getWarnCell(id, store);
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(warnCell, query));
+                } else {
+                    outputCollection.addItem(createCondensed(warnCell, query));
+                }
             }
         }
         return outputCollection;
