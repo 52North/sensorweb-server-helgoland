@@ -1,27 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-    <class name="DataEntity" table="validation.marker_locations">
+    <class name="DataEntity" table="observation">
         <id name="pkid" type="long">
-            <column name="validation_id"/>
+            <column name="observationid"/>
             <generator class="assigned"/>
         </id>
-        <property column="marker_id" name="seriesPkid" type="long"/>
-        <property column="deleted" name="deleted" type="'F'"/>
+        <property column="seriesid" name="seriesPkid" type="long"/>
+        <property formula="'F'" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <property column="`timestamp`" name="timestamp" type="timestamp"/>
         <component class="org.n52.series.db.beans.GeometryEntity" name="geometry">
             <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
-        
-<!--         <joined-subclass extends="DataEntity" name="MeasurementDataEntity" table="numericValue"> -->
-<!--             <key column="observationid"/> -->
-<!--             <property column="value" name="value" type="double"/> -->
-<!--         </joined-subclass> -->
 
-        <joined-subclass extends="DataEntity" name="TextDataEntity" table="textValue">
-            <key column="observationid"/>
-            <property column="value" name="value" type="string"/>
-        </joined-subclass>
+        <property column="value" name="value" type="string"/>
 
     </class>
 </hibernate-mapping>
