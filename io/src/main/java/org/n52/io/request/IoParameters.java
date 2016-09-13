@@ -873,10 +873,11 @@ public class IoParameters implements Parameters {
                 ? parameters
                 : parameters
                     .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
+                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement")
+                    .removeAllOf(Parameters.HREF_BASE);
     }
 
-    public static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
+    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
     }

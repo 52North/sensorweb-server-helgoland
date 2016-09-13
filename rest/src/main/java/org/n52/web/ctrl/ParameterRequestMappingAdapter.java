@@ -30,12 +30,19 @@ package org.n52.web.ctrl;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.v1.data.RawFormats;
+import org.n52.web.common.RequestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,18 +52,20 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(method = GET, produces = {"application/json"})
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T>  {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParameterRequestMappingAdapter.class);
+
     @Override
     @RequestMapping(path = "")
     public ModelAndView getCollection(
             @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(query);
+        return super.getCollection(addHrefBase(query));
     }
 
     @Override
     @RequestMapping(value = "/{item}")
     public ModelAndView getItem(@PathVariable("item") String id,
             @RequestParam MultiValueMap<String, String> query) {
-        return super.getItem(id, query);
+        return super.getItem(id, addHrefBase(query));
     }
 
     @Override
@@ -64,14 +73,24 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     public void getRawData(HttpServletResponse response,
             @PathVariable("item") String id,
             @RequestParam MultiValueMap<String, String> query) {
-        super.getRawData(response, id, query);
+        super.getRawData(response, id, addHrefBase(query));
     }
 
     @Override
     @RequestMapping(value = "/{item}/extras")
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
-        return super.getExtras(resourceId, query);
+        return super.getExtras(resourceId, addHrefBase(query));
+    }
+
+    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
+        try {
+            String hrefBase = RequestUtils.resolveQueryLessRequestUrl();
+            query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
+        } catch (IOException | URISyntaxException e) {
+            LOGGER.error("could not resolve href base URL.", e);
+        }
+        return query;
     }
 
 }
