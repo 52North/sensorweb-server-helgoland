@@ -258,34 +258,6 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
         return null;
     }
 
-//    private static boolean shallIncludeAll(DbQuery parameters) {
-//        return parameters();
-//    }
-//
-//    private static boolean shallIncludeAllPlatformLocations(DbQuery parameters) {
-//        return parameters.isAllPlatformLocations() || shallIncludeAll(parameters);
-//    }
-//
-//    private boolean shallIncludePlatformLocationsSites(DbQuery parameters) {
-//        return parameters.isSites() || shallIncludeAllPlatformLocations(parameters);
-//    }
-//
-//    private boolean shallIncludePlatformLocationsTracks(DbQuery parameters) {
-//        return parameters.isTracks() || shallIncludeAllPlatformLocations(parameters);
-//    }
-//
-//    private boolean shallIncludeObservedGeometries(DbQuery parameters) {
-//        return parameters.isAllObservedGeometries() || shallIncludeAll(parameters);
-//    }
-//
-//    private boolean shallIncludeObservedGeometriesDynamic(DbQuery parameters) {
-//        return parameters.isStaticObservedGeometries() || shallIncludeObservedGeometries(parameters);
-//    }
-//
-//    private boolean shallIncludeObservedGeometriesStatic(DbQuery parameters) {
-//        return parameters.isDynamicObservedGeometries() || shallIncludeObservedGeometries(parameters);
-//    }
-
     private GeometryInfo addCondensedValues(GeometryInfo geometryInfo, FeatureEntity featureEntity,
             DbQuery parameters) throws DataAccessException {
         geometryInfo.setId(Long.toString(featureEntity.getPkid()));
@@ -300,7 +272,6 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all")
         );
         
-//        return platformRepository.getInstance(String.valueOf(entity.getPkid()), parameters);
         List<PlatformOutput> platforms = platformRepository.getAllCondensed(platformQuery);
         return platforms.iterator().next();
     }
