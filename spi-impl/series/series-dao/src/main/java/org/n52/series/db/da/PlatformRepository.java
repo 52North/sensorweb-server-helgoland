@@ -189,7 +189,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","insitu"));
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","remote"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
