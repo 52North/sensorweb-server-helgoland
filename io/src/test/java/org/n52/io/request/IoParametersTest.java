@@ -170,4 +170,10 @@ public class IoParametersTest {
         Assert.assertFalse(defaults == extended);
     }
 
+    @Test
+    public void when_defaults_then_backwardCompatible() {
+        FilterResolver filterResolver = createDefaults().getFilterResolver();
+        assertThat(filterResolver.shallBehaveBackwardsCompatible(), is(true));
+    }
+
 }

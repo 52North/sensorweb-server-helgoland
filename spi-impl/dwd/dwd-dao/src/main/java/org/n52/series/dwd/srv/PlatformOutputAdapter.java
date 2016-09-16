@@ -124,7 +124,7 @@ public class PlatformOutputAdapter extends AbstractOuputAdapter<PlatformOutput> 
         result.setService(getServiceOutput());
         RequestSimpleParameterSet simpleParameterSet = query.toSimpleParameterSet();
         simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(item.getId()));
-        result.setSeries(seriesOutputAdapter.getCondensedParameters(IoParameters.createFromQuery(simpleParameterSet)).getItems());
+        result.setDatasets(seriesOutputAdapter.getCondensedParameters(IoParameters.createFromQuery(simpleParameterSet)).getItems());
         return result;
     }
 
