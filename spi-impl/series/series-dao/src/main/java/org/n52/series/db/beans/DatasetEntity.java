@@ -145,7 +145,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     /**
      * @param firstValue
-     * @deprecated since 2.0.0, use {@link #setFirstValueAt(Date)}
+     * @deprecated since 2.0.0, use {@link #setFirstValueAt(Timestamp)}
      */
     @Deprecated
     public void setFirstValue(T firstValue) {
@@ -163,7 +163,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     /**
      * @param lastValue
-     * @deprecated since 2.0.0, use {@link #setLastValueAt(Date)}
+     * @deprecated since 2.0.0, use {@link #setLastValueAt(Timestamp)}
      */
     @Deprecated
     public void setLastValue(T lastValue) {
