@@ -106,18 +106,13 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         }
     }
 
-    @Override
-    public List<PlatformOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
-        Session session = getSession();
-        try {
-            List<PlatformOutput> results = new ArrayList<>();
-            for (PlatformEntity entity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(entity, parameters, session));
-            }
-            return results;
-        } finally {
-            returnSession(session);
-        }
+    private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
+        PlatformOutput result = new PlatformOutput(entity.getPlatformType());
+        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
+        result.setId(Long.toString(entity.getPkid()));
+        result.setDomainId(entity.getDomainId());
+        result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
+        return result;
     }
 
     @Override
@@ -134,6 +129,91 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<PlatformOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            List<PlatformOutput> results = new ArrayList<>();
+            for (PlatformEntity entity : getAllInstances(parameters, session)) {
+                results.add(createExpanded(entity, parameters, session));
+            }
+            return results;
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
+        PlatformOutput result = createCondensed(entity, parameters);
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .extendWith(Parameters.PLATFORMS, result.getId())
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
+
+        List<DatasetOutput> datasets = seriesRepository.getAllCondensed(query);
+        result.setDatasets(datasets);
+
+        Geometry geometry = entity.getGeometry();
+        result.setGeometry(geometry == null
+                ? getLastSamplingGeometry(datasets, query, session)
+                : geometry);
+        return result;
+    }
+
+    private Geometry getLastSamplingGeometry(List<DatasetOutput> datasets, DbQuery query, Session session) throws DataAccessException {
+        AbstractValue<?> currentLastValue = null;
+        for (DatasetOutput dataset : datasets) {
+            // XXX fix generics and inheritance of Data, AbstractValue, etc.
+            // https://trello.com/c/dMVa0fg9/78-refactor-data-abstractvalue
+            try {
+                String id = dataset.getId();
+                DataRepository dataRepository = factory.create(dataset.getDatasetType());
+                DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
+                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session, query);
+                currentLastValue = getLaterValue(currentLastValue, valueToCheck);
+            } catch (DatasetFactoryException e) {
+                LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());
+            }
+        }
+
+        return currentLastValue != null && currentLastValue.isSetGeometry()
+                ? currentLastValue.getGeometry()
+                : null;
+    }
+
+    private AbstractValue< ? > getLaterValue(AbstractValue< ? > currentLastValue, AbstractValue< ? > valueToCheck) {
+        if (currentLastValue == null) {
+            return valueToCheck;
+        }
+        if (valueToCheck == null) {
+            return currentLastValue;
+        }
+        return currentLastValue.getTimestamp() > valueToCheck.getTimestamp()
+                ? currentLastValue
+                : valueToCheck;
+    }
+
+    private PlatformEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
+        String featureId = PlatformType.extractId(id);
+        FeatureDao featureDao = new FeatureDao(session);
+        FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
+        if (feature == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return PlatformType.isInsitu(id)
+                ? convertInsitu(feature)
+                : convertRemote(feature);
+    }
+
+    private PlatformEntity getPlatform(String id, DbQuery parameters, Session session) throws DataAccessException {
+        PlatformDao dao = new PlatformDao(session);
+        String platformId = PlatformType.extractId(id);
+        PlatformEntity result = dao.getInstance(Long.parseLong(platformId), parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return result;
     }
 
     @Override
@@ -186,40 +266,20 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","remote"));
-        PlatformDao dao = new PlatformDao(session);
-        return dao.getAllInstances(query);
-    }
-
-    private PlatformEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
-        String featureId = PlatformType.extractId(id);
-        FeatureDao featureDao = new FeatureDao(session);
-        FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
-        if (feature == null) {
-            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-        }
-        return convert(feature);
-    }
-
-    private PlatformEntity getPlatform(String id, DbQuery parameters, Session session) throws DataAccessException {
-        PlatformDao dao = new PlatformDao(session);
-        String platformId = PlatformType.extractId(id);
-        PlatformEntity result = dao.getInstance(Long.parseLong(platformId), parameters);
-        if (result == null) {
-            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-        }
-        return result;
-    }
-
     private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary","insitu"));
-        return convertAll(featureDao.getAllInstances(query));
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu"));
+        return convertAllInsitu(featureDao.getAllInstances(query));
+    }
+
+    private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
+        FeatureDao featureDao = new FeatureDao(session);
+        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote"));
+        return convertAllRemote(featureDao.getAllInstances(query));
     }
 
     private List<PlatformEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
@@ -237,7 +297,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile","insitu"));
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
@@ -245,78 +305,40 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile","remote"));
+                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
 
-    private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
-        PlatformOutput result = createCondensed(entity, parameters);
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
-                .extendWith(Parameters.PLATFORMS, result.getId())
-                .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
-
-        List<DatasetOutput> datasets = seriesRepository.getAllCondensed(query);
-        result.setSeries(datasets);
-
-        Geometry geometry = entity.getGeometry();
-        result.setGeometry(geometry == null
-                ? getLastSamplingGeometry(datasets, query, session)
-                : geometry);
-        return result;
-    }
-
-    private Geometry getLastSamplingGeometry(List<DatasetOutput> datasets, DbQuery query, Session session) throws DataAccessException {
-        AbstractValue<?> currentLastValue = null;
-        for (DatasetOutput dataset : datasets) {
-            // XXX fix generics and inheritance of Data, AbstractValue, etc.
-            // https://trello.com/c/dMVa0fg9/78-refactor-data-abstractvalue
-            try {
-                String id = dataset.getId();
-                DataRepository dataRepository = factory.create(dataset.getDatasetType());
-                DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
-                AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session, query);
-                currentLastValue = getLaterValue(currentLastValue, valueToCheck);
-            } catch (DatasetFactoryException e) {
-                LOGGER.error("Couldn't create data repository to determing last value of dataset '{}'", dataset.getId());
-            }
-        }
-
-        return currentLastValue != null && currentLastValue.isSetGeometry()
-                ? currentLastValue.getGeometry()
-                : null;
-    }
-
-    private AbstractValue< ? > getLaterValue(AbstractValue< ? > currentLastValue, AbstractValue< ? > valueToCheck) {
-        if (currentLastValue == null) {
-            return valueToCheck;
-        }
-        if (valueToCheck == null) {
-            return currentLastValue;
-        }
-        return currentLastValue.getTimestamp() > valueToCheck.getTimestamp()
-                ? currentLastValue
-                : valueToCheck;
-    }
-
-    private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
-        PlatformOutput result = new PlatformOutput(entity.getPlatformType());
-        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
-        result.setId(Long.toString(entity.getPkid()));
-        result.setDomainId(entity.getDomainId());
-        result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
-        return result;
-    }
-
-    private List<PlatformEntity> convertAll(List<FeatureEntity> entities) {
+    private List<PlatformEntity> convertAllInsitu(List<FeatureEntity> entities) {
         List<PlatformEntity> converted = new ArrayList<>();
         for (FeatureEntity entity : entities) {
-            converted.add(convert(entity));
+            converted.add(convertInsitu(entity));
         }
         return converted;
     }
 
-    private PlatformEntity convert(FeatureEntity entity) {
+    private List<PlatformEntity> convertAllRemote(List<FeatureEntity> entities) {
+        List<PlatformEntity> converted = new ArrayList<>();
+        for (FeatureEntity entity : entities) {
+            converted.add(convertRemote(entity));
+        }
+        return converted;
+    }
+
+    private PlatformEntity convertInsitu(FeatureEntity entity) {
+        PlatformEntity platform = convertToPlatform(entity);
+        platform.setInsitu(true);
+        return platform;
+    }
+
+    private PlatformEntity convertRemote(FeatureEntity entity) {
+        PlatformEntity platform = convertToPlatform(entity);
+        platform.setInsitu(false);
+        return platform;
+    }
+
+    private PlatformEntity convertToPlatform(FeatureEntity entity) {
         PlatformEntity result = new PlatformEntity();
         result.setDomainId(entity.getDomainId());
         result.setPkid(entity.getPkid());

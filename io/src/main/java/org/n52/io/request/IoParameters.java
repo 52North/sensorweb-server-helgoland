@@ -33,7 +33,12 @@ import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +48,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.xmlbeans.impl.tool.Extension.Param;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.IntervalWithTimeZone;
@@ -67,11 +73,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class IoParameters implements Parameters {
 
@@ -472,8 +473,8 @@ public class IoParameters implements Parameters {
         return getValuesOf(FILTER_DATASET_TYPES);
     }
 
-    public FilterResolver getFilterResolver() {
-        return new FilterResolver(this);
+    public Set<String> getSearchTerms() {
+        return getValuesOf(SEARCH_TERM);
     }
 
     Set<String> getValuesOf(String parameterName) {
@@ -488,6 +489,10 @@ public class IoParameters implements Parameters {
             values[i] = values[i].toLowerCase();
         }
         return new HashSet<>(Arrays.asList(values));
+    }
+
+    public FilterResolver getFilterResolver() {
+        return new FilterResolver(this);
     }
 
     /**
@@ -857,8 +862,8 @@ public class IoParameters implements Parameters {
 
     public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
-        for (String parameter : parameters.availableParameters()) {
-            JsonNode value = parameters.getAsJsonNode(parameter);
+        for (String parameter : parameters.availableParameterNames()) {
+            JsonNode value = parameters.getParameterValue(parameter);
             queryParameters.put(parameter.toLowerCase(), value);
         }
         return new IoParameters(queryParameters, defaultConfig);
@@ -867,12 +872,13 @@ public class IoParameters implements Parameters {
     public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
         return isBackwardsCompatibilityRequest(parameters)
                 ? parameters
-                : parameters
                     .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
+                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement")
+                    .removeAllOf(Parameters.HREF_BASE)
+                : parameters;
     }
 
-    public static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
+    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
     }

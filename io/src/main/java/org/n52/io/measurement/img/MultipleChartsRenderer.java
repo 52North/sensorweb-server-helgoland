@@ -50,6 +50,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
@@ -64,14 +65,14 @@ import org.n52.io.style.LineStyle;
 
 public class MultipleChartsRenderer extends ChartIoHandler {
 
-    public MultipleChartsRenderer(RequestSimpleParameterSet request,
+    public MultipleChartsRenderer(RequestParameterSet request,
             IoProcessChain<MeasurementData> processChain,
             IoStyleContext context) {
         super(request, processChain, context);
     }
 
     @Override
-    public void generateOutput(DataCollection<MeasurementData> data) {
+    public void writeDataToChart(DataCollection<MeasurementData> data) {
         Map<String, MeasurementData> allTimeseries = data.getAllSeries();
         List<? extends DatasetOutput> timeseriesMetadatas = getMetadataOutputs();
 

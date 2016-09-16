@@ -129,12 +129,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void setShowTooltips(boolean tooltips) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void generateOutput(DataCollection<MeasurementData> data) {
+        public void writeDataToChart(DataCollection<MeasurementData> data) {
             throw new UnsupportedOperationException();
         }
 

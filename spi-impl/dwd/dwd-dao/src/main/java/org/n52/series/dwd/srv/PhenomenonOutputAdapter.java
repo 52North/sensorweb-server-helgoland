@@ -28,13 +28,12 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.rest.Alert;
@@ -52,20 +51,14 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
         this.store = store;
     }
 
-    private OutputCollection<PhenomenonOutput> createOutputCollection() {
-        return new OutputCollection<PhenomenonOutput>() {
-            @Override
-            protected Comparator<PhenomenonOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
-
     @Override
     public OutputCollection<PhenomenonOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<PhenomenonOutput> outputCollection = createOutputCollection();
-        for (String alertType : getPhenonmenon(query)) {
-            outputCollection.addItem(createExpanded(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : getPhenonmenon(query)) {
+                outputCollection.addItem(createExpanded(alertType, query));
+            }
         }
         return outputCollection;
     }
@@ -73,8 +66,11 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     @Override
     public OutputCollection<PhenomenonOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<PhenomenonOutput> outputCollection = createOutputCollection();
-        for (String phenomenon : getPhenonmenon(query)) {
-            outputCollection.addItem(createCondensed(phenomenon, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String phenomenon : getPhenonmenon(query)) {
+                outputCollection.addItem(createCondensed(phenomenon, query));
+            }
         }
         return outputCollection;
     }
@@ -106,11 +102,14 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     @Override
     public OutputCollection<PhenomenonOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<PhenomenonOutput> outputCollection = createOutputCollection();
-        for (String alertType : items) {
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(alertType, query));
-            } else {
-                outputCollection.addItem(createCondensed(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : items) {
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(alertType, query));
+                } else {
+                    outputCollection.addItem(createCondensed(alertType, query));
+                }
             }
         }
         return outputCollection;

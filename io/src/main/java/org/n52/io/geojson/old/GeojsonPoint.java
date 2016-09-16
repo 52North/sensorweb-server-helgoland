@@ -55,6 +55,7 @@ public class GeojsonPoint extends GeojsonGeometry {
         // keep for serialization
     }
 
+    @Override
     public String getType() {
         return GEOJSON_TYPE_POINT;
     }

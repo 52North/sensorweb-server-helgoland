@@ -29,15 +29,14 @@
 package org.n52.io.count;
 
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
-import org.n52.io.response.dataset.count.CountDatasetOutput;
 import org.n52.io.response.dataset.count.CountData;
+import org.n52.io.response.dataset.count.CountDatasetOutput;
 import org.n52.io.response.dataset.count.CountValue;
 
 public class CountIoFactory extends IoFactory<CountData, CountDatasetOutput, CountValue> {

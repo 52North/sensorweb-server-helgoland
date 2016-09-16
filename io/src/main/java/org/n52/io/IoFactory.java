@@ -32,6 +32,7 @@ import java.net.URI;
 import java.util.Set;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.OutputCollection;
@@ -94,7 +95,7 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         return new IoProcessChain<D>() {
             @Override
             public DataCollection<D> getData() {
-                return getDataService().getData(getSimpleRequest());
+                return getDataService().getData(getRequestParameters());
             }
             @Override
             public DataCollection<?> getProcessedData() {
@@ -129,8 +130,10 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         return dataService;
     }
 
-    public RequestSimpleParameterSet getSimpleRequest() {
-        return simpleRequest;
+    public RequestParameterSet getRequestParameters() {
+        return simpleRequest == null
+                ? styledRequest
+                : simpleRequest;
     }
 
     public URI getBasePath() {

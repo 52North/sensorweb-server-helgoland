@@ -28,11 +28,8 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.spi.srv.ParameterService;
@@ -46,15 +43,6 @@ public class ServiceOutputAdapter extends ParameterService<ServiceOutput> {
 
     public ServiceOutputAdapter(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
-    }
-
-    private OutputCollection<ServiceOutput> createOutputCollection() {
-        return new OutputCollection<ServiceOutput>() {
-            @Override
-            protected Comparator<ServiceOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override

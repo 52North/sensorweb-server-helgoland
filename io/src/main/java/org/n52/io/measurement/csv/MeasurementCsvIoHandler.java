@@ -42,7 +42,7 @@ import org.n52.io.CsvIoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.count.CountData;
@@ -51,14 +51,10 @@ import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // TODO extract non measurement specifics to csvhandler
 
 public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementCsvIoHandler.class);
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -75,7 +71,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private String tokenSeparator = ";";
 
-    public MeasurementCsvIoHandler(RequestSimpleParameterSet simpleRequest,
+    public MeasurementCsvIoHandler(RequestParameterSet simpleRequest,
             IoProcessChain<MeasurementData> processChain,
             IoStyleContext context) {
         super(simpleRequest, processChain);

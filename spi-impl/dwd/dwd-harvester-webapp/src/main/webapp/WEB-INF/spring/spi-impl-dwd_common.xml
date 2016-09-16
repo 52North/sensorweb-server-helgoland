@@ -26,16 +26,14 @@
 		<property name="url" value="http://www.dwd.de/DWD/warnungen/warnapp/json/warnings.json" />
 	</bean>
 
-	<!--
-	<bean id="harvester" class="org.n52.series.dwd.FileHarvester">
-		<constructor-arg index="0" ref="alertStore" />
-		<property name="filePath" value="c:/dwd-example.json" />
-	</bean>
- 	-->
+<!-- 	<bean id="harvester" class="org.n52.series.dwd.FileHarvester"> -->
+<!-- 		<constructor-arg index="0" ref="alertStore" /> -->
+<!-- 		<property name="file" value="classpath:examples/dwd-example.json" /> -->
+<!-- 	</bean> -->
 
 	<bean id="geometryHarvester" class="org.n52.series.dwd.ShapeFileHarvester" destroy-method="shutdown">
         <constructor-arg index="0" ref="alertStore" />
-        <!-- <constructor-arg index="1" value="/geometries/DWD-PVW-Customer_VG2500.shp"/> -->
+        <constructor-arg index="1" value="classpath:geometries/DWD-PVW-Customer_VG2500.shp"/>
     </bean>
 
 

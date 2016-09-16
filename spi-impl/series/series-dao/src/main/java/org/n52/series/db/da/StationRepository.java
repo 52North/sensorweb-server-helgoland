@@ -40,9 +40,9 @@ import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
-import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.StationSearchResult;
 import org.n52.web.exception.BadRequestException;
@@ -123,6 +123,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
             List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
+
             List<StationOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : allFeatures) {
                 results.add(createExpanded(featureEntity, parameters, session));
@@ -133,7 +134,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    private List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = createDao(session);
         return featureDao.getAllInstances(parameters);
     }

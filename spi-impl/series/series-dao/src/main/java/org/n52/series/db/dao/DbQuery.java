@@ -184,17 +184,19 @@ public class DbQuery {
 
     Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
         Set<String> datasetTypes = getParameters().getDatasetTypes();
-        FilterResolver filterResolver = getFilterResolver();
-        if ( !filterResolver.shallIncludeAllDatasetTypes()) {
-            if ("pkid".equalsIgnoreCase(parameter)) {
-                // series table itself
-                criteria.add(Restrictions.in("datasetType", datasetTypes));
-            } else {
-                // join parameter table with series table
-                DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
-                        .add(Restrictions.in("datasetType", datasetTypes))
-                        .setProjection(onPkidProjection(parameter));
-                criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+        if ( !datasetTypes.isEmpty()) {
+            FilterResolver filterResolver = getFilterResolver();
+            if (filterResolver.shallBehaveBackwardsCompatible() || !filterResolver.shallIncludeAllDatasetTypes()) {
+                if ("pkid".equalsIgnoreCase(parameter)) {
+                    // series table itself
+                    criteria.add(Restrictions.in("datasetType", datasetTypes));
+                } else {
+                    // join parameter table with series table
+                    DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
+                            .add(Restrictions.in("datasetType", datasetTypes))
+                            .setProjection(onPkidProjection(parameter));
+                    criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+                }
             }
         }
         return criteria;
@@ -258,7 +260,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery parameters) {
+    public Criteria addSpatialFilterTo(Criteria criteria) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -270,6 +272,9 @@ public class DbQuery {
                 criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
+
+                // XXX do sampling filter only on generated line strings stored in FOI table,
+                // otherwise we would have to check each observation row
 
             }
             catch (FactoryException e) {

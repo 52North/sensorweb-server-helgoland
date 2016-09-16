@@ -36,8 +36,6 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     private String[] seriesIds;
 
-    private String resultTime;
-
     private String format;
 
     private String rawFormat;
@@ -62,21 +60,6 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     @Deprecated
     void setTimeseriesIds(String[] timeseriesIds) {
         setSeriesIds(timeseriesIds);
-    }
-
-    /**
-     * @return the result time.
-     */
-    public String getResultTime() {
-        return resultTime;
-    }
-
-    /**
-     * @param resultTime Optional parameter, to define a result time in the
-     * request.
-     */
-    public void setResultTime(String resultTime) {
-        this.resultTime = resultTime;
     }
 
     /**

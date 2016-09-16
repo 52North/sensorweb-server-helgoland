@@ -38,26 +38,32 @@ public class CountReferenceValueOutput implements ReferenceValueOutput<CountValu
 
     private CountValue lastValue;
 
+    @Override
     public String getReferenceValueId() {
         return referenceValueId;
     }
 
+    @Override
     public void setReferenceValueId(String referenceValueId) {
         this.referenceValueId = referenceValueId;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
 
+    @Override
     public void setLabel(String label) {
         this.label = label;
     }
 
+    @Override
     public CountValue getLastValue() {
         return lastValue;
     }
 
+    @Override
     public void setLastValue(CountValue lastValue) {
         this.lastValue = lastValue;
     }

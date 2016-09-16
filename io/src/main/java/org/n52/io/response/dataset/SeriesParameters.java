@@ -29,7 +29,6 @@
 package org.n52.io.response.dataset;
 
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.response.ServiceOutput;
 
 /**
  * TODO: JavaDoc
@@ -96,7 +95,7 @@ public class SeriesParameters {
         return service;
     }
 
-    public void setService(ServiceOutput service) {
+    public void setService(ParameterOutput service) {
         this.service = service;
     }
 

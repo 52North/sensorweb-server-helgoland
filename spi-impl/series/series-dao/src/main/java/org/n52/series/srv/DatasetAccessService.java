@@ -30,7 +30,7 @@ package org.n52.series.srv;
 
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -51,8 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class DatasetAccessService extends AccessService<DatasetOutput>
-        implements DataService<Data<?>> {
+public class DatasetAccessService extends AccessService<DatasetOutput> implements DataService<Data<?>> {
 
     @Autowired
     private DataRepositoryFactory factory;
@@ -62,7 +61,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
     }
 
     @Override
-    public DataCollection<Data<?>> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<?>> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<Data<?>> dataCollection = new TvpDataCollection<>();
             for (String seriesId : parameters.getSeriesIds()) {
@@ -78,7 +77,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput>
         }
     }
 
-    private Data<?> getDataFor(String seriesId, RequestSimpleParameterSet parameters)
+    private Data<?> getDataFor(String seriesId, RequestParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         String datasetType = DatasetType.extractType(seriesId);

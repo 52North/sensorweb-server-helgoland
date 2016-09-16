@@ -60,12 +60,12 @@ public class ShapeFileHarvester implements GeometryHarvester {
     private File file;
 
     public ShapeFileHarvester(AlertStore store) {
-        this(getDefaultShapeFile(GEOMETRY_VERWALTUNGSGEBIETE_2500), store);
+        this(store, getDefaultShapeFile(GEOMETRY_VERWALTUNGSGEBIETE_2500));
     }
 
-    public ShapeFileHarvester(AlertStore store, String shpFile) {
-        this(getDefaultShapeFile(shpFile), store);
-    }
+//    public ShapeFileHarvester(AlertStore store, String shpFile) {
+//        this(store, getDefaultShapeFile(shpFile));
+//    }
 
     protected static File getDefaultShapeFile(String configFile) {
         try {
@@ -77,7 +77,7 @@ public class ShapeFileHarvester implements GeometryHarvester {
         }
     }
 
-    public ShapeFileHarvester(File shpFile, AlertStore store) {
+    public ShapeFileHarvester(AlertStore store, File shpFile) {
         this.store = store;
         this.file = shpFile;
     }
