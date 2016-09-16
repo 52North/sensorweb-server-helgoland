@@ -33,7 +33,9 @@ import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.eq;
 
+import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -161,11 +163,11 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T getDataValueAt(DateTime timestamp, DatasetEntity series) {
+    public T getDataValueAt(Date timestamp, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
-                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp.toDate()));
+                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
 
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
