@@ -14,7 +14,7 @@
       <!--
             <property column="lat" name="lat" type="double" />
             <property column="lon" name="lon" type="double" />
-             -->
+       -->
       <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
     </component>
   </class>

@@ -6,26 +6,36 @@
       <column name="seriesid"/>
       <generator class="assigned"/>
     </id>
-    <discriminator formula="'text'" force="true" type="string"/>
+
+    <discriminator formula="'record'" force="true" type="string"/>
     
-    <many-to-one class="CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
+    <many-to-one class="CategoryEntity" column="categoryid" insert="false" name="category" update="false"/>
     <many-to-one class="ProcedureEntity" column="procedureid" insert="false" name="procedure" update="false"/>
     <many-to-one class="PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
     <many-to-one class="FeatureEntity" column="featureofinterestid" insert="false" name="feature" update="false"/>
-    <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
-    
+    <many-to-one class="PlatformEntity" column="featureofinterestid" insert="false" name="platform" update="false"/>
+
     <property column="published" insert="false" name="published" type="org.hibernate.type.TrueFalseType" update="false"/>
-    <property insert="false" name="datasetType" type="string" formula="'text'"/>
+    <property insert="false" name="datasetType" type="string" formula="'record'" update="false"/>
 
     <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
     <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
+    
+    
+<!--     <subclass discriminator-value="text" name="TextDatasetEntity"> -->
+<!--       <list fetch="select" inverse="true" name="observations" table="observation"> -->
+<!--         <key column="observationid"/> -->
+<!--         <index column="seriesid"/> -->
+<!--         <one-to-many class="DataEntity"/> -->
+<!--       </list> -->
+<!--     </subclass> -->
 
-    <subclass discriminator-value="text" name="TextDatasetEntity">
-      <list fetch="select" inverse="true" name="observations" table="observation">
-        <key column="observationid"/>
-        <index column="seriesid"/>
-        <one-to-many class="DataEntity"/>
-      </list>
+    <subclass discriminator-value="record" name="RecordDatasetEntity">
+        <list fetch="select" inverse="true" name="observations" table="observation">
+            <key column="observationid"/>
+            <index column="seriesid"/>
+            <one-to-many class="RecordDataEntity"/>
+        </list>
     </subclass>
 
   </class>
