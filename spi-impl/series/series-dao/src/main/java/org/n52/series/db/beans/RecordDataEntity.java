@@ -7,8 +7,7 @@ public class RecordDataEntity extends DataEntity<Map<String, Object>> {
 
     @Override
     public boolean isNoDataValue(Collection<String> noDataValues) {
-        // TODO Auto-generated method stub
-        return false;
+        return getValue() == null || getValue().isEmpty();
     }
 
     public int getDimension() {
