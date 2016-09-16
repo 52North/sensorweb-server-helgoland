@@ -66,14 +66,12 @@ public final class QueryParameters extends IoParameters {
     public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
         QueryParameters queryParameters = new QueryParameters(query);
         IoParameters parameters = IoParameters.createFromMultiValueMap(query);
-//        if ( !IoParameters.isBackwardsCompatibilityRequest(parameters)) {
-//            try {
-//                String hrefBase = RequestUtils.resolveQueryLessRequestUrl();
-//                return parameters.extendWith(HREF_BASE, hrefBase);
-//            } catch (IOException | URISyntaxException e) {
-//                LOGGER.error("could not resolve href base URL.", e);
-//            }
-//        }
+        try {
+            String hrefBase = RequestUtils.resolveQueryLessRequestUrl();
+            return parameters.extendWith(HREF_BASE, hrefBase);
+        } catch (IOException | URISyntaxException e) {
+            LOGGER.error("could not resolve href base URL.", e);
+        }
         return queryParameters;
     }
 
