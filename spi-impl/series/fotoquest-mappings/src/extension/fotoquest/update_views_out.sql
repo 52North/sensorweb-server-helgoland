@@ -141,8 +141,8 @@ select distinct
   c.procedure_id AS procedureid,
   'F' AS deleted,
   'T' AS published,
-  min(c.mediaitem_transaction) AS firsttimestamp,
-  max(c.mediaitem_transaction) AS lasttimestamp
+  min(c.fotoquest_item_timestamp) AS firsttimestamp,
+  max(c.fotoquest_item_timestamp) AS lasttimestamp
 from validation.common c
   group by c.series_id, c.foi_id, c.phenomenon_id, c.category_id, c.procedure_id
 WITH DATA;
