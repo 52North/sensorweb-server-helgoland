@@ -28,11 +28,11 @@
  */
 package org.n52.series.db.da;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.AbstractValue.ValidTime;
 import org.n52.io.response.dataset.Data;
@@ -43,9 +43,9 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DatasetDao;
+import org.n52.series.db.dao.DbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
@@ -77,9 +77,8 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
-        DateTime timestamp = new DateTime(valueAt);
         DataDao<DE> dao = createDataDao(session);
-        DE valueEntity = dao.getDataValueAt(timestamp, datasetEntity);
+        DE valueEntity = dao.getDataValueAt(valueAt, datasetEntity);
         return createSeriesValueFor(valueEntity, datasetEntity, query);
     }
 

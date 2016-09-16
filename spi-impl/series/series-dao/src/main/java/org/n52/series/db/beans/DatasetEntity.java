@@ -29,6 +29,7 @@
 
 package org.n52.series.db.beans;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,9 +68,9 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     @Deprecated
     private T lastValue;
 
-    private Date firstValueAt;
+    private Timestamp firstValueAt;
 
-    private Date lastValueAt;
+    private Timestamp lastValueAt;
 
     private UnitEntity unit;
 
@@ -173,7 +174,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return firstValueAt;
     }
 
-    public void setFirstValueAt(Date firstValueAt) {
+    public void setFirstValueAt(Timestamp firstValueAt) {
         this.firstValueAt = firstValueAt;
     }
 
@@ -181,7 +182,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return lastValueAt;
     }
 
-    public void setLastValueAt(Date lastValueAt) {
+    public void setLastValueAt(Timestamp lastValueAt) {
         this.lastValueAt = lastValueAt;
     }
 
