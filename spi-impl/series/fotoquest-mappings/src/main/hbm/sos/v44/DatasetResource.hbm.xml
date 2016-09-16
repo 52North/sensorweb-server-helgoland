@@ -8,7 +8,7 @@
     </id>
 
     <discriminator formula="'record'" force="true" type="string"/>
-    
+
     <many-to-one class="CategoryEntity" column="categoryid" insert="false" name="category" update="false"/>
     <many-to-one class="ProcedureEntity" column="procedureid" insert="false" name="procedure" update="false"/>
     <many-to-one class="PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
@@ -20,8 +20,8 @@
 
     <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
     <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
-    
-    
+
+
 <!--     <subclass discriminator-value="text" name="TextDatasetEntity"> -->
 <!--       <list fetch="select" inverse="true" name="observations" table="observation"> -->
 <!--         <key column="observationid"/> -->

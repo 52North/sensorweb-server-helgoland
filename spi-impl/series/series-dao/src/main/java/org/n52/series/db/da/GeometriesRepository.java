@@ -271,7 +271,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
                 .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all")
         );
-        
+
         List<PlatformOutput> platforms = platformRepository.getAllCondensed(platformQuery);
         return platforms.iterator().next();
     }

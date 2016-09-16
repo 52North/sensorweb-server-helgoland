@@ -12,7 +12,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class FotoquestMediaItem implements GeoJSONFeature {
-    
+
     private Long id;
 
     private String url;
@@ -60,5 +60,5 @@ public class FotoquestMediaItem implements GeoJSONFeature {
         properties.put("href", url);
         return properties;
     }
-    
+
 }

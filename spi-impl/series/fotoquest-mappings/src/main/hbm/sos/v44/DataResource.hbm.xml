@@ -6,23 +6,23 @@
             <column name="observationid" />
             <generator class="assigned" />
         </id>
-        
+
 <!--         <discriminator formula="'record'" force="true" type="string"/> -->
-        
+
         <property column="seriesid" name="seriesPkid" type="long" />
         <property formula="'F'" name="deleted"
             type="org.hibernate.type.TrueFalseType" />
         <property column="resulttime" name="timestamp" type="timestamp" />
-        
+
 <!--         <component class="org.n52.series.db.beans.GeometryEntity" name="geometry"> -->
 <!--             <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType" /> -->
 <!--         </component> -->
-        
+
 <!--         <subclass discriminator-value="text" name="TextDataEntity"> -->
 <!--             <property column="value" name="value" type="string"/> -->
-            
+
 <!--         </subclass> -->
-        
+
 <!--         <subclass extends="DataEntity" discriminator-value="record" name="RecordDataEntity"> -->
             <map lazy="false" name="value" table="observation_set">
                 <key column="observationid" />
@@ -30,9 +30,9 @@
                 <one-to-many class="FotoquestMediaItem" />
             </map>
 <!--         </subclass> -->
-        
+
     </class>
-    
+
     <class name="FotoquestMediaItem" table="observation_set">
         <id name="id" type="long">
             <column name="mediaitemid" />
@@ -41,5 +41,5 @@
         <property name="url" column="value" type="string"/>
         <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType" />
     </class>
-    
+
 </hibernate-mapping>

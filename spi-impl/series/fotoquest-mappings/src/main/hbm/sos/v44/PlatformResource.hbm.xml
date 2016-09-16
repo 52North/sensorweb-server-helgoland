@@ -8,7 +8,7 @@
     </id>
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
     <property column="name" name="name" type="string"/>
-    
+
     <property formula="'F'" insert="false" name="mobile" type="org.hibernate.type.TrueFalseType" update="false"/>
     <property formula="'F'" insert="false" name="insitu" type="org.hibernate.type.TrueFalseType" update="false"/>
   </class>

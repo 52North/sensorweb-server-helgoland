@@ -10,7 +10,7 @@ public class RecordDataEntity extends DataEntity<Map<String, Object>> {
         // TODO Auto-generated method stub
         return false;
     }
-    
+
     public int getDimension() {
         return getValue() != null
                 ? getValue().size()
