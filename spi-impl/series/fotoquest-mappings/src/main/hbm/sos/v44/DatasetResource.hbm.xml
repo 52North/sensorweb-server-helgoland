@@ -21,15 +21,6 @@
     <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
     <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
 
-
-<!--     <subclass discriminator-value="text" name="TextDatasetEntity"> -->
-<!--       <list fetch="select" inverse="true" name="observations" table="observation"> -->
-<!--         <key column="observationid"/> -->
-<!--         <index column="seriesid"/> -->
-<!--         <one-to-many class="DataEntity"/> -->
-<!--       </list> -->
-<!--     </subclass> -->
-
     <subclass discriminator-value="record" name="RecordDatasetEntity">
         <list fetch="select" inverse="true" name="observations" table="observation">
             <key column="observationid"/>
