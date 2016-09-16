@@ -184,17 +184,19 @@ public class DbQuery {
 
     Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
         Set<String> datasetTypes = getParameters().getDatasetTypes();
-        FilterResolver filterResolver = getFilterResolver();
-        if ( !filterResolver.shallIncludeAllDatasetTypes()) {
-            if ("pkid".equalsIgnoreCase(parameter)) {
-                // series table itself
-                criteria.add(Restrictions.in("datasetType", datasetTypes));
-            } else {
-                // join parameter table with series table
-                DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
-                        .add(Restrictions.in("datasetType", datasetTypes))
-                        .setProjection(onPkidProjection(parameter));
-                criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+        if ( !datasetTypes.isEmpty()) {
+            FilterResolver filterResolver = getFilterResolver();
+            if (filterResolver.shallBehaveBackwardsCompatible() || !filterResolver.shallIncludeAllDatasetTypes()) {
+                if ("pkid".equalsIgnoreCase(parameter)) {
+                    // series table itself
+                    criteria.add(Restrictions.in("datasetType", datasetTypes));
+                } else {
+                    // join parameter table with series table
+                    DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
+                            .add(Restrictions.in("datasetType", datasetTypes))
+                            .setProjection(onPkidProjection(parameter));
+                    criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+                }
             }
         }
         return criteria;
