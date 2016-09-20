@@ -275,7 +275,7 @@ public class DbQuery {
 
                 // XXX do sampling filter only on generated line strings stored in FOI table,
                 // otherwise we would have to check each observation row
-                
+
             }
             catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
@@ -284,7 +284,7 @@ public class DbQuery {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
-        
+
         Set<String> geometryTypes = parameters.getGeometryTypes();
         if ( !geometryTypes.isEmpty()) {
             for (String geometryType : geometryTypes) {

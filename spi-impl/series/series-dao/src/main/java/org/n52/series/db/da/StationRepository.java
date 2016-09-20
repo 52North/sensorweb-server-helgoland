@@ -193,11 +193,11 @@ public class StationRepository extends SessionAwareRepository implements OutputA
                 ? featureEntity.getGeometry(getDatabaseSrid())
                 : null;
     }
-    
+
     private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
         return addPointLocationOnlyRestriction(DbQuery.createFrom(parameters));
     }
-    
+
     private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
         return DbQuery.createFrom(query.getParameters()
                           .extendWith("geometryTypes", "Point"));

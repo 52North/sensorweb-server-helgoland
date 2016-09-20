@@ -332,7 +332,7 @@ public interface Parameters {
     public static final String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
 
     public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
-    
+
     /**
      * SimpleFeature types e.g. POINT, LINESTRING, ...
      */
