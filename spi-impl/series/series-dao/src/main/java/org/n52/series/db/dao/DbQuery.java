@@ -50,6 +50,8 @@ import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.GeometryType.Type;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
@@ -258,7 +260,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria) {
+    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -273,13 +275,25 @@ public class DbQuery {
 
                 // XXX do sampling filter only on generated line strings stored in FOI table,
                 // otherwise we would have to check each observation row
-
+                
             }
             catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
             }
             catch (TransformException e) {
                 LOGGER.error("Could not perform transformation.", e);
+            }
+        }
+        
+        Set<String> geometryTypes = parameters.getGeometryTypes();
+        if ( !geometryTypes.isEmpty()) {
+            for (String geometryType : geometryTypes) {
+                if ( !geometryType.isEmpty()) {
+                    String end = geometryType.toLowerCase().substring(1);
+                    String start = ("" + geometryType.charAt(0)).toUpperCase();
+                    Type type = GeometryType.Type.valueOf(start + end);
+                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                }
             }
         }
         return criteria;

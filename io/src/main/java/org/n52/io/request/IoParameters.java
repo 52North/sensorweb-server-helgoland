@@ -475,6 +475,10 @@ public class IoParameters implements Parameters {
     public Set<String> getSearchTerms() {
         return getValuesOf(SEARCH_TERM);
     }
+    
+    public Set<String> getGeometryTypes() {
+        return getValuesOf(GEOMETRY_TYPES);
+    }
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)

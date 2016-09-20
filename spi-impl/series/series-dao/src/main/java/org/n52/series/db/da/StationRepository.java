@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
@@ -41,6 +42,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.DbQueryTest;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
@@ -78,7 +80,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao stationDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = addPointLocationOnlyRestriction(parameters);
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -135,7 +137,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = createDao(session);
-        return featureDao.getAllInstances(parameters);
+        return featureDao.getAllInstances(addPointLocationOnlyRestriction(parameters));
     }
 
     @Override
@@ -190,6 +192,15 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         return featureEntity.isSetGeometry()
                 ? featureEntity.getGeometry(getDatabaseSrid())
                 : null;
+    }
+    
+    private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
+        return addPointLocationOnlyRestriction(DbQuery.createFrom(parameters));
+    }
+    
+    private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
+        return DbQuery.createFrom(query.getParameters()
+                          .extendWith("geometryTypes", "Point"));
     }
 
 }
