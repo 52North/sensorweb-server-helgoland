@@ -772,7 +772,7 @@
         <repository>
             <id>n52-releases</id>
             <name>52n Releases</name>
-            <url>https://52north.org/maven/repo/releases/</url>
+            <url>http://52north.org/maven/repo/releases/</url>
         </repository>
         <repository>
             <id>geotools</id>
