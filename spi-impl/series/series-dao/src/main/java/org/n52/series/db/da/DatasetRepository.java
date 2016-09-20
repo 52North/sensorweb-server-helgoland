@@ -199,6 +199,7 @@ public class DatasetRepository<T extends Data>
         DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
         output.setLabel(createSeriesLabel(series, query.getLocale()));
         output.setId(series.getPkid().toString());
+        output.setDomainId(series.getDomainId());
         output.setHrefBase(urHelper.getDatasetsHrefBaseUrl(query.getHrefBase()));
         return output;
     }
