@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
@@ -43,7 +42,6 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.DbQueryTest;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.StationSearchResult;
