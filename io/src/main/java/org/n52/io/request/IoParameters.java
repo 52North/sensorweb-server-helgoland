@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.xmlbeans.impl.tool.Extension.Param;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.IntervalWithTimeZone;
@@ -875,12 +876,13 @@ public class IoParameters implements Parameters {
     public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
         return isBackwardsCompatibilityRequest(parameters)
                 ? parameters
-                : parameters
                     .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement");
+                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement")
+                    .removeAllOf(Parameters.HREF_BASE)
+                : parameters;
     }
 
-    public static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
+    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
     }

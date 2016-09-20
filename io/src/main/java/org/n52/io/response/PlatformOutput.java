@@ -48,7 +48,7 @@ public class PlatformOutput extends AbstractOutput {
 
     private final PlatformType platformType;
 
-    private Collection<DatasetOutput> series;
+    private Collection<DatasetOutput> datasets;
 
     private Geometry geometry;
 
@@ -82,12 +82,12 @@ public class PlatformOutput extends AbstractOutput {
         super.setId(getType().createId(id));
     }
 
-    public Collection<DatasetOutput> getSeries() {
-        return series;
+    public Collection<DatasetOutput> getDatasets() {
+        return datasets;
     }
 
-    public void setSeries(List<DatasetOutput> series) {
-        this.series = series;
+    public void setDatasets(List<DatasetOutput> series) {
+        this.datasets = series;
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)

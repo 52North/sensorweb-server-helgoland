@@ -31,6 +31,7 @@ package org.n52.series.dwd.srv;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ProcedureOutput;
@@ -54,8 +55,11 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     @Override
     public OutputCollection<ProcedureOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<ProcedureOutput> outputCollection = createOutputCollection();
-        for (String alertType : getProcedures(query)) {
-            outputCollection.addItem(createExpanded(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : getProcedures(query)) {
+                outputCollection.addItem(createExpanded(alertType, query));
+            }
         }
         return outputCollection;
     }
@@ -63,8 +67,11 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     @Override
     public OutputCollection<ProcedureOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<ProcedureOutput> outputCollection = createOutputCollection();
-        for (String alertType : getProcedures(query)) {
-            outputCollection.addItem(createCondensed(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : getProcedures(query)) {
+                outputCollection.addItem(createCondensed(alertType, query));
+            }
         }
         return outputCollection;
     }
@@ -80,11 +87,14 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     @Override
     public OutputCollection<ProcedureOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<ProcedureOutput> outputCollection = createOutputCollection();
-        for (String alertType : items) {
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(alertType, query));
-            } else {
-                outputCollection.addItem(createCondensed(alertType, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String alertType : items) {
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(alertType, query));
+                } else {
+                    outputCollection.addItem(createCondensed(alertType, query));
+                }
             }
         }
         return outputCollection;
