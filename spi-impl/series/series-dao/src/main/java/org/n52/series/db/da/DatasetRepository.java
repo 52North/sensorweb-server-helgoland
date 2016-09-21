@@ -73,13 +73,20 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             String dbId = DatasetType.extractId(id);
-            final String datasetType = DatasetType.extractType(id);
+            String datasetType = DatasetType.extractType(id);
             if ( !factory.isKnown(datasetType)) {
-                return false;
-            }
+                DatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
+                DatasetEntity<?> instance = dao.getInstance(id, parameters);
+                datasetType = instance != null 
+                        ? instance.getDatasetType()
+                        : null;
+                if ( !factory.isKnown(datasetType)) {
+                    return false; // still unknown
+                }
+            } 
             DataRepository dataRepository = factory.create(datasetType);
             DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-            return dao.hasInstance(parseId(dbId), dataRepository.getEntityType());
+            return dao.hasInstance(dbId, parameters, dataRepository.getEntityType());
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
         } finally {
