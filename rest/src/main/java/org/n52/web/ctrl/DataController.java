@@ -103,6 +103,14 @@ public class DataController extends BaseController {
     private PreRenderingJob preRenderingTask;
 
     private String requestIntervalRestriction;
+    
+    @RequestMapping(value = "/data", produces = {"application/json"}, method = GET)
+    public ModelAndView getSeriesData(HttpServletResponse response,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        IoParameters parameters = createFromQuery(query);
+        LOGGER.debug("get data with query: {}", parameters);
+        return getSeriesCollectionData(response, parameters.toSimpleParameterSet());
+    }
 
     @RequestMapping(value = "/data", produces = {"application/json"}, method = POST)
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
