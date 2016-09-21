@@ -106,7 +106,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         criteria = query.addLimitAndOffsetFilter(criteria);
         String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
                             ? "pkid"
-                            : seriesProperty + "pkid";
+                            : seriesProperty + ".pkid";
         return query.addSpatialFilterTo(criteria)
                 .add(propertyIn(filterProperty, filter));
     }
