@@ -88,7 +88,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     @Override
-    public String[] getSeriesIds() {
+    public String[] getDatasets() {
         return styleOptions.keySet().toArray(new String[0]);
     }
 

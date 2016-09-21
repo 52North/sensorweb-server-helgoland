@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -761,8 +762,14 @@ public class IoParameters implements Parameters {
     private RequestParameterSet addValuesToParameterSet(RequestParameterSet parameterSet) {
         // TODO check value object
         // TODO keep multi value map
-        for (Entry<String, JsonNode> entry : query.toSingleValueMap().entrySet()) {
-            parameterSet.addParameter(entry.getKey().toLowerCase(), entry.getValue());
+        for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
+            List<JsonNode> values = entry.getValue();
+            String lowercasedKey = entry.getKey().toLowerCase();
+            if (values.size() == 1) {
+                parameterSet.addParameter(lowercasedKey, values.get(0));
+            } else {
+                parameterSet.addParameter(lowercasedKey, getJsonNodeFrom(values));
+            }
         }
         return parameterSet;
     }

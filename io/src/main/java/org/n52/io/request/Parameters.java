@@ -272,7 +272,10 @@ public interface Parameters {
 
     public static final String PLATFORMS = "platforms";
 
+    @Deprecated
     public static final String SERIES = "series";
+    
+    public static final String DATASETS = "datasets";
 
     /**
      * Determines the category filter
@@ -304,7 +307,7 @@ public interface Parameters {
      * Determines if filter shall match domain ids instead of global ids
      */
     public static final String MATCH_DOMAIN_IDS = "matchDomainIds";
-
+    
     /**
      * Default filter match property.
      */
