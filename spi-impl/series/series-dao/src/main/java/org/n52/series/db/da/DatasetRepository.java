@@ -74,6 +74,9 @@ public class DatasetRepository<T extends Data>
         try {
             String dbId = DatasetType.extractId(id);
             final String datasetType = DatasetType.extractType(id);
+            if ( !factory.isKnown(datasetType)) {
+                return false;
+            }
             DataRepository dataRepository = factory.create(datasetType);
             DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
             return dao.hasInstance(parseId(dbId), dataRepository.getEntityType());
