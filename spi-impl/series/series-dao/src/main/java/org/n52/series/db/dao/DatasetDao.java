@@ -93,8 +93,8 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
         return series;
     }
-    
-    
+
+
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
@@ -107,7 +107,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     @Override
     protected String getSeriesProperty() {
-        return COLUMN_PKID;
+        return "";//COLUMN_PKID;
     }
 
     @SuppressWarnings("unchecked")
@@ -128,12 +128,12 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-    
+
     @Override
     protected Class<T> getEntityClass() {
         return entityType;
     }
-    
+
     @Override
     protected Criteria getDefaultCriteria() {
         return getDefaultCriteria("series");
@@ -147,7 +147,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }
-    
+
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
         alias = prepareForConcatenation(alias);
         criteria.add(Restrictions.and(

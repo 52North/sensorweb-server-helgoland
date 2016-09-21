@@ -110,7 +110,7 @@ public class RequestParameterSetTest {
             .toSimpleParameterSet();
         assertThat(Arrays.asList(parameters.getAs(String[].class, "datasets")), contains("foo", "bar"));
     }
-    
+
     @Test
     public void when_addingSingleValueStringArray_then_accessibleViaParameterName() {
         RequestParameterSet parameters = IoParameters.createDefaults()
@@ -118,7 +118,7 @@ public class RequestParameterSetTest {
                 .toSimpleParameterSet();
         assertThat(Arrays.asList(parameters.getDatasets()), contains("foo"));
     }
-    
+
     @Test
     public void when_addingStringArray_then_accessibleViaParameterName() {
         RequestParameterSet parameterset = createDummyParameterSet();
@@ -153,7 +153,7 @@ public class RequestParameterSetTest {
     }
 
     private static class GeneralizerConfig {
-        
+
         // json serializing object
 
         private String defaultGeneralizer;

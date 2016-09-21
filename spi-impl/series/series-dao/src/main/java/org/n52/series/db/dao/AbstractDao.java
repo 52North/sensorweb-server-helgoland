@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDao<T> implements GenericDao<T, Long> {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
 
     protected Session session;
@@ -61,7 +61,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     protected abstract Class<T> getEntityClass();
 
     protected abstract String getSeriesProperty();
-    
+
     public boolean hasInstance(String id, DbQuery query, Class<? extends T> clazz) throws DataAccessException {
         return getInstance(id, query) != null;
     }
@@ -70,12 +70,12 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     public boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) {
         return session.get(clazz, id) != null;
     }
-    
+
     public T getInstance(String key, DbQuery parameters) throws DataAccessException {
         if ( !parameters.getParameters().isMatchDomainIds()) {
             return getInstance(Long.parseLong(key), parameters);
         }
-        
+
         LOGGER.debug("get dataset type for '{}'. {}", key, parameters);
         Criteria criteria = getDefaultCriteria();
         return getEntityClass().cast(criteria
@@ -99,13 +99,16 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     }
 
     protected Criteria addFilters(Criteria criteria, DbQuery query) {
-        String filterProperty = getSeriesProperty();
-        DetachedCriteria filter = query.createDetachedFilterCriteria(filterProperty);
-        criteria = query.addPlatformTypeFilter(filterProperty, criteria);
-        criteria = query.addDatasetTypeFilter(filterProperty, criteria);
+        String seriesProperty = getSeriesProperty();
+        DetachedCriteria filter = query.createDetachedFilterCriteria(seriesProperty);
+        criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
+        criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
         criteria = query.addLimitAndOffsetFilter(criteria);
+        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
+                            ? "pkid"
+                            : seriesProperty + "pkid";
         return query.addSpatialFilterTo(criteria)
-                .add(propertyIn(filterProperty + ".pkid", filter));
+                .add(propertyIn(filterProperty, filter));
     }
 
     protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {

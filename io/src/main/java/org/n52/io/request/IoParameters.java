@@ -454,6 +454,10 @@ public class IoParameters implements Parameters {
         return getValuesOf(SERIES);
     }
 
+    public Set<String> getDatasets() {
+        return getValuesOf(DATASETS);
+    }
+
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
     }

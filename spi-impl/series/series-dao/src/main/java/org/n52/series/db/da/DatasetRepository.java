@@ -77,8 +77,8 @@ public class DatasetRepository<T extends Data>
             String handleAsFallback = parameters.getHandleAsDatasetTypeFallback();
             String datasetType = DatasetType.extractType(id, handleAsFallback);
             if ( !factory.isKnown(datasetType)) {
-                return false; 
-            } 
+                return false;
+            }
             DataRepository dataRepository = factory.create(datasetType);
             DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
             return parameters.getParameters().isMatchDomainIds()
@@ -97,6 +97,12 @@ public class DatasetRepository<T extends Data>
         try {
             List<DatasetOutput> results = new ArrayList<>();
             FilterResolver filterResolver = query.getFilterResolver();
+            if (query.getParameters().isMatchDomainIds()) {
+                String datasetType = query.getHandleAsDatasetTypeFallback();
+                addCondensedResults(getSeriesDao(datasetType, session), query, results);
+                return results;
+            }
+            
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             } else {
@@ -138,6 +144,12 @@ public class DatasetRepository<T extends Data>
         try {
             List<DatasetOutput> results = new ArrayList<>();
             FilterResolver filterResolver = query.getFilterResolver();
+            if (query.getParameters().isMatchDomainIds()) {
+                String datasetType = query.getHandleAsDatasetTypeFallback();
+                addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
+                return results;
+            }
+            
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             } else {

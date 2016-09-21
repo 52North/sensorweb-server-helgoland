@@ -62,12 +62,12 @@ public class DatasetTypeTest {
     public void when_datasetIdWithoutTypePrefix_then_extractDefaultFallback() {
         Assert.assertThat(DatasetType.extractType("text234"), Matchers.is("measurement"));
     }
-    
+
     @Test
     public void when_datasetIdAndFallback_then_extractDatasetType() {
         Assert.assertThat(DatasetType.extractType("text_234", "count"), Matchers.is("text"));
     }
-    
+
     @Test
     public void when_datasetIdWithoutTypePrefixAndFallback_then_extractFallback() {
         Assert.assertThat(DatasetType.extractType("http://foobar/234", "count"), Matchers.is("count"));
@@ -82,7 +82,7 @@ public class DatasetTypeTest {
     public void when_datasetId_then_extractId() {
         Assert.assertThat(DatasetType.extractId("text_234"), Matchers.is("234"));
     }
-    
+
     @Test
     public void when_createIdDatasetId_then_typeAndIdGetsConcatenated() {
         Assert.assertThat(DatasetType.createId("mytype", "123"), Matchers.is("mytype_123"));

@@ -274,9 +274,9 @@ public interface Parameters {
 
     @Deprecated
     public static final String SERIES = "series";
-    
+
     public static final String DATASETS = "datasets";
-    
+
     public static final String HANDLE_AS_DATASET_TYPE = "handleAs";
 
     /**
@@ -309,7 +309,7 @@ public interface Parameters {
      * Determines if filter shall match domain ids instead of global ids
      */
     public static final String MATCH_DOMAIN_IDS = "matchDomainIds";
-    
+
     /**
      * Default filter match property.
      */

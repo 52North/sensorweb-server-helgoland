@@ -31,11 +31,11 @@ package org.n52.io.response.dataset;
 public class DatasetType {
 
     private static final String SEPERATOR = "_";
-    
+
     public static String extractType(String id) {
         return extractType(id, null);
     }
-    
+
     public static String extractType(String id, String fallback) {
         fallback = fallback == null || fallback.isEmpty()
                 ? "measurement" // last fallback

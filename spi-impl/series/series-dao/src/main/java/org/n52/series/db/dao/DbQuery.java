@@ -38,6 +38,7 @@ import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
 import static org.hibernate.criterion.Subqueries.propertyIn;
+import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
 import static org.n52.series.db.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
@@ -74,7 +75,7 @@ public class DbQuery {
     private static final Logger LOGGER = LoggerFactory.getLogger(DbQuery.class);
 
     private static final String COLUMN_KEY = "pkid";
-    
+
     private static final String COLUMN_LOCALE = "locale";
 
     private static final String COLUMN_DOMAIN_ID = "domainId";
@@ -130,9 +131,11 @@ public class DbQuery {
     public boolean isSetDatasetTypeFilter() {
         return !parameters.getDatasetTypes().isEmpty();
     }
-    
+
     public String getHandleAsDatasetTypeFallback() {
-        return parameters.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        return parameters.containsParameter(HANDLE_AS_DATASET_TYPE)
+                ? parameters.getAsString(HANDLE_AS_DATASET_TYPE)
+                : "measurement";
     }
 
     public boolean checkTranslationForLocale(Criteria criteria) {
@@ -171,7 +174,7 @@ public class DbQuery {
     Criteria addPlatformTypeFilter(String parameter, Criteria criteria) {
         FilterResolver filterResolver = getFilterResolver();
         if ( !filterResolver.shallIncludeAllPlatformTypes()) {
-            if ("pkid".equalsIgnoreCase(parameter)) {
+            if (parameter == null || parameter.isEmpty()) {
                 // series table itself
                 criteria.createCriteria("platform")
                         .add(createMobileExpression(filterResolver))
@@ -194,7 +197,7 @@ public class DbQuery {
         if ( !datasetTypes.isEmpty()) {
             FilterResolver filterResolver = getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible() || !filterResolver.shallIncludeAllDatasetTypes()) {
-                if ("pkid".equalsIgnoreCase(parameter)) {
+                if (parameter == null || parameter.isEmpty()) {
                     // series table itself
                     criteria.add(Restrictions.in("datasetType", datasetTypes));
                 } else {
@@ -301,8 +304,9 @@ public class DbQuery {
         addFilterRestriction(parameters.getOfferings(), "procedure", filter); // here procedure == offering
         addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
+        addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
-        
+
         if (hasValues(parameters.getPlatforms())) {
             Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
             Set<String> mobileIds = getMobileIds(parameters.getPlatforms());
@@ -313,12 +317,16 @@ public class DbQuery {
                 addFilterRestriction(mobileIds, "platform", filter);
             }
         }
-
+        
+        propertyName = propertyName != null
+                && !propertyName.isEmpty()
+                    ? propertyName
+                    : "pkid";
         return filter.setProjection(projectionList().add(property(propertyName)));
     }
-    
+
     private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
-        return addFilterRestriction(parameters.getSeries(), null, filter);
+        return addFilterRestriction(values, null, filter);
     }
 
     private DetachedCriteria addFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {

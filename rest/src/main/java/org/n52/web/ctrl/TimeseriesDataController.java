@@ -342,7 +342,7 @@ public class TimeseriesDataController extends BaseController {
                     + requestIntervalRestriction + "'");
         }
     }
-    
+
     private void checkIfUnknownTimeseries(RequestParameterSet parameters, String... timeseriesIds) {
         checkIfUnknownTimeseries(IoParameters.createFromQuery(parameters), timeseriesIds);
     }

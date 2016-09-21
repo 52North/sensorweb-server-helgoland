@@ -205,7 +205,7 @@ public abstract class RequestParameterSet {
     public final void addParameter(String parameterName, JsonNode value) {
         this.parameters.put(parameterName.toLowerCase(), value);
     }
-    
+
     public final <T> T getAs(Class<T> clazz, String parameterName, T defaultValue) {
         try {
             if ( !parameters.containsKey(parameterName.toLowerCase())) {
@@ -216,7 +216,7 @@ public abstract class RequestParameterSet {
         } catch (IOException e) {
             LOGGER.error("No appropriate config for parameter '{}'.", parameterName, e);
             return null;
-        } 
+        }
     }
 
     public final <T> T getAs(Class<T> clazz, String parameterName) {
@@ -226,11 +226,11 @@ public abstract class RequestParameterSet {
     public final JsonNode getParameterValue(String parameterName) {
         return this.parameters.get(parameterName.toLowerCase());
     }
-    
+
     public final String[] getAsStringArray(String parameterName) {
         return getAsStringArray(parameterName, null);
     }
-    
+
     public final String[] getAsStringArray(String parameterName, String[] defaultValue) {
         if ( !parameters.containsKey(parameterName.toLowerCase())) {
             return defaultValue;
@@ -240,7 +240,7 @@ public abstract class RequestParameterSet {
                 ? getAs(String[].class, parameterName, defaultValue)
                 : new String[] { getAsString(parameterName) };
     }
-    
+
     public final String getAsString(String parameterName) {
         return getAsString(parameterName, null);
     }

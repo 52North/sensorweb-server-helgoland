@@ -103,7 +103,7 @@ public class DataController extends BaseController {
     private PreRenderingJob preRenderingTask;
 
     private String requestIntervalRestriction;
-    
+
     @RequestMapping(value = "/data", produces = {"application/json"}, method = GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
@@ -337,7 +337,7 @@ public class DataController extends BaseController {
                     + requestIntervalRestriction + "'");
         }
     }
-    
+
     private void checkForUnknownSeriesIds(RequestParameterSet parameters, String... seriesIds) {
         checkForUnknownSeriesIds(IoParameters.createFromQuery(parameters), seriesIds);
     }
