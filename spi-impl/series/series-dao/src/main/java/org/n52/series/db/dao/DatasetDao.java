@@ -93,17 +93,8 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
         return series;
     }
-
-    @Override
-    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
-        Criteria criteria = getDefaultCriteria("series");
-        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        return entityType.cast(criteria
-                .add(eq("pkid", key))
-                .uniqueResult());
-    }
-
+    
+    
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {

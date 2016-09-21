@@ -29,8 +29,10 @@
 package org.n52.series.db.dao;
 
 import static org.hibernate.criterion.Projections.rowCount;
+import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -38,8 +40,12 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDao<T> implements GenericDao<T, Long> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
 
     protected Session session;
 
@@ -55,10 +61,22 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     protected abstract Class<T> getEntityClass();
 
     protected abstract String getSeriesProperty();
+    
+    public boolean hasInstance(String id, DbQuery query, Class<? extends T> clazz) throws DataAccessException {
+        return getInstance(id, query) != null;
+    }
 
     @Override
     public boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) {
         return session.get(clazz, id) != null;
+    }
+    @Override
+    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
+        Criteria criteria = getDefaultCriteria();
+        return getEntityClass().cast(criteria
+                .add(eq("pkid", key))
+                .uniqueResult());
     }
 
     @Override
