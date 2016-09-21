@@ -276,6 +276,8 @@ public interface Parameters {
     public static final String SERIES = "series";
     
     public static final String DATASETS = "datasets";
+    
+    public static final String HANDLE_AS_DATASET_TYPE = "handleAs";
 
     /**
      * Determines the category filter

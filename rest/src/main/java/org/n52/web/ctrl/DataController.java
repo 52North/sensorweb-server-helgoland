@@ -60,6 +60,7 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -112,7 +113,7 @@ public class DataController extends BaseController {
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
@@ -134,7 +135,8 @@ public class DataController extends BaseController {
         checkForUnknownSeriesIds(map, seriesId);
 
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
-        String datasetType = DatasetType.extractType(seriesId);
+        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
@@ -191,7 +193,7 @@ public class DataController extends BaseController {
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(createFromDesignedParameters(parameters))
                 .withStyledRequest(parameters)
@@ -212,7 +214,7 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownSeriesIds(map, seriesId);
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler("application/pdf")
@@ -234,7 +236,7 @@ public class DataController extends BaseController {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(APPLICATION_ZIP.toString());
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler(APPLICATION_ZIP.toString())
@@ -261,7 +263,7 @@ public class DataController extends BaseController {
             response.setContentType(TEXT_CSV.toString());
         }
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler(TEXT_CSV.toString())
@@ -277,7 +279,7 @@ public class DataController extends BaseController {
 
         LOGGER.debug("get data collection chart with query: {}", map);
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withStyledRequest(parameters)
                 .createHandler("image/png")
@@ -294,7 +296,8 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(map.getTimespan().toString());
         checkForUnknownSeriesIds(map, seriesId);
 
-        String observationType = DatasetType.extractType(seriesId);
+        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String observationType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
         createIoFactory(observationType)
                 .withSimpleRequest(parameters)
@@ -342,6 +345,9 @@ public class DataController extends BaseController {
     }
 
     private IoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> createIoFactory(final String datasetType) throws DatasetFactoryException {
+        if ( !ioFactoryCreator.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
         return ioFactoryCreator
                 .create(datasetType)
 //                .withBasePath(getRootResource())

@@ -130,6 +130,10 @@ public class DbQuery {
     public boolean isSetDatasetTypeFilter() {
         return !parameters.getDatasetTypes().isEmpty();
     }
+    
+    public String getHandleAsDatasetTypeFallback() {
+        return parameters.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+    }
 
     public boolean checkTranslationForLocale(Criteria criteria) {
         return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();

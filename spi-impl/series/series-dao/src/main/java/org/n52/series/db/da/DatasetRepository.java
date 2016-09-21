@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
@@ -73,20 +74,16 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             String dbId = DatasetType.extractId(id);
-            String datasetType = DatasetType.extractType(id);
+            String handleAsFallback = parameters.getHandleAsDatasetTypeFallback();
+            String datasetType = DatasetType.extractType(id, handleAsFallback);
             if ( !factory.isKnown(datasetType)) {
-                DatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
-                DatasetEntity<?> instance = dao.getInstance(id, parameters);
-                datasetType = instance != null 
-                        ? instance.getDatasetType()
-                        : null;
-                if ( !factory.isKnown(datasetType)) {
-                    return false; // still unknown
-                }
+                return false; 
             } 
             DataRepository dataRepository = factory.create(datasetType);
             DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-            return dao.hasInstance(dbId, parameters, dataRepository.getEntityType());
+            return parameters.getParameters().isMatchDomainIds()
+                    ? dao.hasInstance(dbId, parameters, dataRepository.getEntityType())
+                    : dao.hasInstance(parseId(dbId), parameters, dataRepository.getEntityType());
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
         } finally {
@@ -173,7 +170,8 @@ public class DatasetRepository<T extends Data>
 
     DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
         String seriesId = DatasetType.extractId(id);
-        final String datasetType = DatasetType.extractType(id);
+        String handleAsFallback = query.getHandleAsDatasetTypeFallback();
+        final String datasetType = DatasetType.extractType(id, handleAsFallback);
         DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
         return dao.getInstance(Long.parseLong(seriesId), query);
     }

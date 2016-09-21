@@ -278,10 +278,11 @@ public abstract class RequestParameterSet {
         return getDatasets();
     }
 
-    public String getDatasetTypeFromFirst() {
+    public String getDatasetType() {
+        String handleAs = getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
         String[] datasetIds = getDatasets();
         return datasetIds.length > 0
-                ? DatasetType.extractType(datasetIds[0])
+                ? DatasetType.extractType(datasetIds[0], handleAs)
                 : "measurement"; // default
     }
 
