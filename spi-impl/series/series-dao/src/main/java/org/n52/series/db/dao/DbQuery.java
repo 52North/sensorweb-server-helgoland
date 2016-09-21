@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
@@ -72,9 +73,11 @@ public class DbQuery {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DbQuery.class);
 
-    protected static final String COLUMN_KEY = "pkid";
-
+    private static final String COLUMN_KEY = "pkid";
+    
     private static final String COLUMN_LOCALE = "locale";
+
+    private static final String COLUMN_DOMAIN_ID = "domainId";
 
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
@@ -240,11 +243,8 @@ public class DbQuery {
      * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
      *         long.
      */
-    public Long parseToId(String id) {
+    private Long parseToId(String id) {
         try {
-            if (id.contains("/")) {
-                return Long.parseLong(id.substring(id.lastIndexOf("/")+1));
-            }
             return Long.parseLong(id);
         }
         catch (NumberFormatException e) {
@@ -292,42 +292,51 @@ public class DbQuery {
 
         filterWithSingularParmameters(filter); // stay backwards compatible
 
-        if (hasValues(getParameters().getPhenomena())) {
-            filter.createCriteria("phenomenon")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getPhenomena())));
-        }
-        if (hasValues(getParameters().getProcedures())) {
-            filter.createCriteria("procedure")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getProcedures())));
-        }
-        if (hasValues(getParameters().getOfferings())) {
-            // here procedure == offering
-            filter.createCriteria("procedure")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getOfferings())));
-        }
-        if (hasValues(getParameters().getFeatures())) {
-            filter.createCriteria("feature")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getFeatures())));
-        }
-        if (hasValues(getParameters().getCategories())) {
-            filter.createCriteria("category")
-                    .add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getCategories())));
-        }
-        if (hasValues(getParameters().getPlatforms())) {
-            Set<String> stationaryIds = getStationaryIds(getParameters().getPlatforms());
-            Set<String> mobileIds = getMobileIds(getParameters().getPlatforms());
-            if (!stationaryIds.isEmpty()) {
-                filter.createCriteria("feature").add(Restrictions.in(COLUMN_KEY, parseToIds(stationaryIds)));
+        addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
+        addFilterRestriction(parameters.getProcedures(), "procedure", filter);
+        addFilterRestriction(parameters.getOfferings(), "procedure", filter); // here procedure == offering
+        addFilterRestriction(parameters.getFeatures(), "feature", filter);
+        addFilterRestriction(parameters.getCategories(), "category", filter);
+        addFilterRestriction(parameters.getSeries(), filter);
+        
+        if (hasValues(parameters.getPlatforms())) {
+            Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
+            Set<String> mobileIds = getMobileIds(parameters.getPlatforms());
+            if ( !stationaryIds.isEmpty()) {
+                addFilterRestriction(stationaryIds, "feature", filter);
             }
-            if (!mobileIds.isEmpty()) {
-                filter.createCriteria("platform").add(Restrictions.in(COLUMN_KEY, parseToIds(mobileIds)));
+            if ( !mobileIds.isEmpty()) {
+                addFilterRestriction(mobileIds, "platform", filter);
             }
-        }
-        if (hasValues(getParameters().getSeries())) {
-            filter.add(Restrictions.in(COLUMN_KEY, parseToIds(getParameters().getSeries())));
         }
 
         return filter.setProjection(projectionList().add(property(propertyName)));
+    }
+    
+    private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
+        return addFilterRestriction(parameters.getSeries(), null, filter);
+    }
+
+    private DetachedCriteria addFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
+        if (hasValues(values)) {
+            Criterion restriction = parameters.isMatchDomainIds()
+                    ? createDomainIdFilter(values)
+                    : createIdFilter(values);
+            if (entity == null || entity.isEmpty()) {
+                filter.add(restriction);
+            } else {
+                filter.createCriteria(entity).add(restriction);
+            }
+        }
+        return filter;
+    }
+
+    private Criterion createDomainIdFilter(Set<String> filterValues) {
+        return Restrictions.in(COLUMN_DOMAIN_ID, filterValues);
+    }
+
+    private Criterion createIdFilter(Set<String> filterValues) {
+        return Restrictions.in(COLUMN_KEY, parseToIds(filterValues));
     }
 
     private boolean hasValues(Set<String> values) {
