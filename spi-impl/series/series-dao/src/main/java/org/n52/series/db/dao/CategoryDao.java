@@ -61,12 +61,6 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     }
 
     @Override
-    public CategoryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
-        return (CategoryEntity) session.get(CategoryEntity.class, key);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);

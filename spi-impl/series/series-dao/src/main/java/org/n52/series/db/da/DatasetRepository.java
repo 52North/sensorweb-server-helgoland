@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
@@ -69,14 +70,20 @@ public class DatasetRepository<T extends Data>
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             String dbId = DatasetType.extractId(id);
-            final String datasetType = DatasetType.extractType(id);
+            String handleAsFallback = parameters.getHandleAsDatasetTypeFallback();
+            String datasetType = DatasetType.extractType(id, handleAsFallback);
+            if ( !factory.isKnown(datasetType)) {
+                return false;
+            }
             DataRepository dataRepository = factory.create(datasetType);
             DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-            return dao.hasInstance(parseId(dbId), dataRepository.getEntityType());
+            return parameters.getParameters().isMatchDomainIds()
+                    ? dao.hasInstance(dbId, parameters, dataRepository.getEntityType())
+                    : dao.hasInstance(parseId(dbId), parameters, dataRepository.getEntityType());
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
         } finally {
@@ -90,6 +97,12 @@ public class DatasetRepository<T extends Data>
         try {
             List<DatasetOutput> results = new ArrayList<>();
             FilterResolver filterResolver = query.getFilterResolver();
+            if (query.getParameters().isMatchDomainIds()) {
+                String datasetType = query.getHandleAsDatasetTypeFallback();
+                addCondensedResults(getSeriesDao(datasetType, session), query, results);
+                return results;
+            }
+            
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             } else {
@@ -131,6 +144,12 @@ public class DatasetRepository<T extends Data>
         try {
             List<DatasetOutput> results = new ArrayList<>();
             FilterResolver filterResolver = query.getFilterResolver();
+            if (query.getParameters().isMatchDomainIds()) {
+                String datasetType = query.getHandleAsDatasetTypeFallback();
+                addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
+                return results;
+            }
+            
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             } else {
@@ -163,7 +182,8 @@ public class DatasetRepository<T extends Data>
 
     DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
         String seriesId = DatasetType.extractId(id);
-        final String datasetType = DatasetType.extractType(id);
+        String handleAsFallback = query.getHandleAsDatasetTypeFallback();
+        final String datasetType = DatasetType.extractType(id, handleAsFallback);
         DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
         return dao.getInstance(Long.parseLong(seriesId), query);
     }
@@ -199,6 +219,7 @@ public class DatasetRepository<T extends Data>
         DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
         output.setLabel(createSeriesLabel(series, query.getLocale()));
         output.setId(series.getPkid().toString());
+        output.setDomainId(series.getDomainId());
         output.setHrefBase(urHelper.getDatasetsHrefBaseUrl(query.getHrefBase()));
         return output;
     }

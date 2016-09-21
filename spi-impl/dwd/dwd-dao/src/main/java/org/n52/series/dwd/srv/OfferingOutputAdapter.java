@@ -136,7 +136,7 @@ public class OfferingOutputAdapter extends AbstractOuputAdapter<OfferingOutput> 
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getOfferings(IoParameters.createDefaults()).contains(id);
     }
 

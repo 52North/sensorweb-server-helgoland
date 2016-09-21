@@ -56,7 +56,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         try {
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
-            DSE series = seriesDao.getInstance(parseId(id), dbQuery);
+            DSE series = seriesDao.getInstance(id, dbQuery);
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);

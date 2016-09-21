@@ -71,8 +71,8 @@ public class TransformingPlatformOutputService extends ParameterService<Platform
     }
 
     @Override
-    public boolean exists(String id) {
-        return composedService.exists(id);
+    public boolean exists(String id, IoParameters parameters) {
+        return composedService.exists(id, parameters);
     }
 
     private OutputCollection<PlatformOutput> transform(IoParameters query, OutputCollection<PlatformOutput> platforms) {

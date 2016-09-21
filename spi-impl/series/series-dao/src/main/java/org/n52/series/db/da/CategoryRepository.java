@@ -52,11 +52,11 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             CategoryDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), CategoryEntity.class);
+            return dao.hasInstance(parseId(id), parameters, CategoryEntity.class);
         } finally {
             returnSession(session);
         }

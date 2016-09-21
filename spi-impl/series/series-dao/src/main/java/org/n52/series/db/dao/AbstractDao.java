@@ -29,8 +29,10 @@
 package org.n52.series.db.dao;
 
 import static org.hibernate.criterion.Projections.rowCount;
+import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -38,8 +40,12 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDao<T> implements GenericDao<T, Long> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
 
     protected Session session;
 
@@ -56,6 +62,35 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     protected abstract String getSeriesProperty();
 
+    public boolean hasInstance(String id, DbQuery query, Class<? extends T> clazz) throws DataAccessException {
+        return getInstance(id, query) != null;
+    }
+
+    @Override
+    public boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) {
+        return session.get(clazz, id) != null;
+    }
+
+    public T getInstance(String key, DbQuery parameters) throws DataAccessException {
+        if ( !parameters.getParameters().isMatchDomainIds()) {
+            return getInstance(Long.parseLong(key), parameters);
+        }
+
+        LOGGER.debug("get dataset type for '{}'. {}", key, parameters);
+        Criteria criteria = getDefaultCriteria();
+        return getEntityClass().cast(criteria
+               .add(eq("domainId", key))
+               .uniqueResult());
+    }
+
+    @Override
+    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
+        LOGGER.debug("get instance '{}': {}", key, parameters);
+        Criteria criteria = getDefaultCriteria();
+        return getEntityClass().cast(criteria
+                .add(eq("pkid", key))
+                .uniqueResult());
+    }
 
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
@@ -64,13 +99,16 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     }
 
     protected Criteria addFilters(Criteria criteria, DbQuery query) {
-        String filterProperty = getSeriesProperty();
-        DetachedCriteria filter = query.createDetachedFilterCriteria(filterProperty);
-        criteria = query.addPlatformTypeFilter(filterProperty, criteria);
-        criteria = query.addDatasetTypeFilter(filterProperty, criteria);
+        String seriesProperty = getSeriesProperty();
+        DetachedCriteria filter = query.createDetachedFilterCriteria(seriesProperty);
+        criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
+        criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
         criteria = query.addLimitAndOffsetFilter(criteria);
+        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
+                            ? "pkid"
+                            : seriesProperty + ".pkid";
         return query.addSpatialFilterTo(criteria)
-                .add(propertyIn(filterProperty + ".pkid", filter));
+                .add(propertyIn(filterProperty, filter));
     }
 
     protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {
@@ -94,8 +132,4 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
             : session.createCriteria(getEntityClass(), alias);
     }
 
-    @Override
-    public boolean hasInstance(Long id, Class<? extends T> clazz) {
-        return session.get(clazz, id) != null;
-    }
 }

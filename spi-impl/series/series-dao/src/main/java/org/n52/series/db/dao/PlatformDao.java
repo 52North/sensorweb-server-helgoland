@@ -63,12 +63,6 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     }
 
     @Override
-    public PlatformEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria().add(eq(PlatformEntity.COLUMN_PKID, key));
-        return (PlatformEntity) criteria.uniqueResult();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
