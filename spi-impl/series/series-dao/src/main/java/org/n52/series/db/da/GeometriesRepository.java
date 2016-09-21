@@ -71,7 +71,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
             if (GeometryType.isPlatformGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
-                return new FeatureDao(session).hasInstance(id, parameters, FeatureEntity.class);
+                return new FeatureDao(session).hasInstance(parseId(id), parameters, FeatureEntity.class);
             }
             else if (GeometryType.isObservedGeometryId(id)) {
                 id = GeometryType.extractId(id);

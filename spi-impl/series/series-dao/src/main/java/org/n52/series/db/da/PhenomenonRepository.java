@@ -52,7 +52,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             PhenomenonDao dao = createDao(session);
-            return dao.hasInstance(id, parameters, PhenomenonEntity.class);
+            return dao.hasInstance(parseId(id), parameters, PhenomenonEntity.class);
         } finally {
             returnSession(session);
         }

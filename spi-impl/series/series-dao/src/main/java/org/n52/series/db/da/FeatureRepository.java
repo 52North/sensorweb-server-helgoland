@@ -52,7 +52,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao dao = createDao(session);
-            return dao.hasInstance(id, parameters, FeatureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }

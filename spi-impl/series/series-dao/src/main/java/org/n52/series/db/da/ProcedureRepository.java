@@ -52,7 +52,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         Session session = getSession();
         try {
             ProcedureDao dao = createDao(session);
-            return dao.hasInstance(id, parameters, ProcedureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, ProcedureEntity.class);
         } finally {
             returnSession(session);
         }

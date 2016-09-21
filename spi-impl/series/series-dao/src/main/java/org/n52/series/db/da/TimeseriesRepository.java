@@ -79,7 +79,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
-            return dao.hasInstance(id, parameters, MeasurementDatasetEntity.class);
+            return dao.hasInstance(parseId(id), parameters, MeasurementDatasetEntity.class);
         } finally {
             returnSession(session);
         }
