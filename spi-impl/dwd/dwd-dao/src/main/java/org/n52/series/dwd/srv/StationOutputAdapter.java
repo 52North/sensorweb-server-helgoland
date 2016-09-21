@@ -57,7 +57,7 @@ public class StationOutputAdapter <T extends ParameterOutput> extends ParameterS
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return false;
     }
 

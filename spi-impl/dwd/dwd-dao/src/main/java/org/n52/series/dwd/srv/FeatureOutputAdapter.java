@@ -126,7 +126,7 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getWarnCell(id, store) != null ? true : false;
     }
 

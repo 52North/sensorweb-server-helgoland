@@ -69,7 +69,7 @@ public class DatasetRepository<T extends Data>
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             String dbId = DatasetType.extractId(id);

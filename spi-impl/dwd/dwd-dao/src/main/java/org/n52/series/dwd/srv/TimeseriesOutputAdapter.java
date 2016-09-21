@@ -62,7 +62,7 @@ public class TimeseriesOutputAdapter <T extends ParameterOutput> extends Paramet
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return false;
     }
 

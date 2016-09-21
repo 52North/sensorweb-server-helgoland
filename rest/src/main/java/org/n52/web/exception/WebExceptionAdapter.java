@@ -79,19 +79,19 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
 
     @Override
     public T getParameter(String item, IoParameters query) {
-        assertItemExists(item);
+        assertItemExists(item, query);
         return composedService.getParameter(item, query);
     }
 
-    private void assertItemExists(String item) {
-        if ( !exists(item)) {
+    private void assertItemExists(String item, IoParameters parameters) {
+        if ( !exists(item, parameters)) {
             throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
         }
     }
 
     @Override
-    public boolean exists(String id) {
-        return composedService.exists(id);
+    public boolean exists(String id, IoParameters parameters) {
+        return composedService.exists(id, parameters);
     }
 
     @Override

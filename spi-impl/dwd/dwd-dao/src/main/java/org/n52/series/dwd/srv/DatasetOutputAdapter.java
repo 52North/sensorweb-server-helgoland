@@ -98,7 +98,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getAlert(id) != null ? true : false;
     }
 

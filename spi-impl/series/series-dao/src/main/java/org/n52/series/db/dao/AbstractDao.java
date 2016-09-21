@@ -56,6 +56,10 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     protected abstract String getSeriesProperty();
 
+    @Override
+    public boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) {
+        return session.get(clazz, id) != null;
+    }
 
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
@@ -94,8 +98,4 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
             : session.createCriteria(getEntityClass(), alias);
     }
 
-    @Override
-    public boolean hasInstance(Long id, Class<? extends T> clazz) {
-        return session.get(clazz, id) != null;
-    }
 }

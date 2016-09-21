@@ -71,8 +71,8 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
     }
 
     @Override
-    public boolean exists(String id) {
-        return composedService.exists(id);
+    public boolean exists(String id, IoParameters parameters) {
+        return composedService.exists(id, parameters);
     }
 
     private OutputCollection<GeometryInfo> transform(IoParameters query, OutputCollection<GeometryInfo> infos) {
