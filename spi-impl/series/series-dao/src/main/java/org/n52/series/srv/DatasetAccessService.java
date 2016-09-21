@@ -64,7 +64,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
     public DataCollection<Data<?>> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<Data<?>> dataCollection = new TvpDataCollection<>();
-            for (String seriesId : parameters.getSeriesIds()) {
+            for (String seriesId : parameters.getDatasets()) {
                 Data<?> data = getDataFor(seriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(seriesId, data);
