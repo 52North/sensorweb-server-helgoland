@@ -70,6 +70,19 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     public boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) {
         return session.get(clazz, id) != null;
     }
+    
+    public T getInstance(String key, DbQuery parameters) throws DataAccessException {
+        if ( !parameters.getParameters().isMatchDomainIds()) {
+            return getInstance(Long.parseLong(key), parameters);
+        }
+        
+        LOGGER.debug("get dataset type for '{}'. {}", key, parameters);
+        Criteria criteria = getDefaultCriteria();
+        return getEntityClass().cast(criteria
+               .add(eq("domainId", key))
+               .uniqueResult());
+    }
+
     @Override
     public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get instance '{}': {}", key, parameters);
