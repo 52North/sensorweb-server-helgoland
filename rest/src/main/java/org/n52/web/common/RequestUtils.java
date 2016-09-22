@@ -32,9 +32,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -43,6 +46,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
      * Get the full request {@link URL} including the query parameter
@@ -83,7 +88,18 @@ public class RequestUtils {
     public static String resolveQueryLessRequestUrl() throws IOException, URISyntaxException {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
-
+        if (LOGGER.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
+            Enumeration<?> headerNames = request.getHeaderNames();
+            while(headerNames.hasMoreElements()) {
+              String headerName = (String)headerNames.nextElement();
+              sb.append(headerName + ": " + request.getHeader(headerName));
+              sb.append("\n");
+            }
+            sb.append("----- END of HTTP Header -----");
+            LOGGER.debug(sb.toString());
+        }
+        
         URL url = new URL(request.getRequestURL().toString());
 
         String scheme = url.getProtocol();
