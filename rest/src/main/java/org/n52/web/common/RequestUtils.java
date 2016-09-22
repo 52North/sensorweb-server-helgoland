@@ -29,6 +29,7 @@
 package org.n52.web.common;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -46,7 +47,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
@@ -85,7 +86,7 @@ public class RequestUtils {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public static String resolveQueryLessRequestUrl() throws IOException, URISyntaxException {
+    public static String resolveQueryLessRequestUrl(String externalUrl) throws IOException, URISyntaxException {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
         if (LOGGER.isDebugEnabled()) {
@@ -99,8 +100,14 @@ public class RequestUtils {
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
-        
-        URL url = new URL(request.getRequestURL().toString());
+
+        URL url = null;
+        try {
+            // e.g. in proxy envs
+            url = new URL(externalUrl);
+        } catch (MalformedURLException e) {
+            url = new URL(request.getRequestURL().toString());
+        }
 
         String scheme = url.getProtocol();
         String userInfo = url.getUserInfo();

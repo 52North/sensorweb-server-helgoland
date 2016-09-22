@@ -80,6 +80,20 @@ public abstract class BaseController implements ServletConfigAware {
 
     private ServletConfig servletConfig;
 
+    private String externalUrl;
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+
+    public boolean isSetExternalUrl() {
+        return !(externalUrl == null || externalUrl.isEmpty());
+    }
+
     @Override
     public void setServletConfig(ServletConfig servletConfig) {
         this.servletConfig = servletConfig;
