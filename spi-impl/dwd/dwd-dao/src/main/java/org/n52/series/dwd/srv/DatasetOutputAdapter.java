@@ -127,7 +127,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
         return super.getWarnCell(parseId.get(0), store);
     }
 
-    private DwdAlertDatasetOutput createCondensed(Alert alert, WarnCell warnCell, IoParameters query) {
+    protected DwdAlertDatasetOutput createCondensed(Alert alert, WarnCell warnCell, IoParameters query) {
         DwdAlertDatasetOutput result = new DwdAlertDatasetOutput();
         result.setLabel(createSeriesLabel(alert));
         result.setId(createId(warnCell.getId(), alert.getEvent()));
@@ -196,7 +196,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     protected List<String> parseId(String id) {
-        String[] split = id.split("-");
+        String[] split = id.split("-", 2);
         split[1] = parsePhenomenonId(split[1]);
         return Arrays.asList(split);
     }
