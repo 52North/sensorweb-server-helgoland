@@ -49,6 +49,9 @@
     </scm>
 
     <properties>
+        <!-- optional properties file -->
+        <local.configFile>${user.home}/${project.build.finalName}</local.configFile>
+    
         <sensorwebclient.version>3.2.0</sensorwebclient.version>
         <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
         <logback.version>1.1.3</logback.version>
@@ -706,7 +709,7 @@
             <properties>
                 <env>dev</env>
                 <!-- externalize build parameters for productive environment -->
-                <local.configfile>${user.home}/series-rest-api-${env}.properties</local.configfile>
+                <local.configfile>${custom.properties.directory}/${project.build.finalName}-${env}.properties</local.configfile>
             </properties>
             <build>
                 <filters>

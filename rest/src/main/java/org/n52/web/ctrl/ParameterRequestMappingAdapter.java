@@ -85,7 +85,8 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
         try {
-            String hrefBase = RequestUtils.resolveQueryLessRequestUrl();
+            String externalUrl = getExternalUrl();
+            String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
             query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
         } catch (IOException | URISyntaxException e) {
             LOGGER.error("could not resolve href base URL.", e);
