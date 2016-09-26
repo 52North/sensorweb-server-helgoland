@@ -706,7 +706,7 @@
             <properties>
                 <env>dev</env>
                 <!-- externalize build parameters for productive environment -->
-                <local.configfile>${user.home}/series-rest-api-${env}.properties</local.configfile>
+                <local.configfile>${custom.properties.directory}/${project.build.finalName}-${env}.properties</local.configfile>
             </properties>
             <build>
                 <filters>

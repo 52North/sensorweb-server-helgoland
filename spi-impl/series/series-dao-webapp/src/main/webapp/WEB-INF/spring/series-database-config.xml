@@ -41,11 +41,7 @@
                 <prop key="hibernate.format_sql">${series.hibernate.sql.debug}</prop>
             </props>
         </property>
-        <property name="mappingLocations">
-            <list>
-                <value>classpath*:/hbm/sos/v44/*.hbm.xml</value>
-            </list>
-        </property>
+        <property name="mappingLocations" value="#{'${series.database.mappings}'.split(',')}" />
     </bean>
 
     <tx:annotation-driven />

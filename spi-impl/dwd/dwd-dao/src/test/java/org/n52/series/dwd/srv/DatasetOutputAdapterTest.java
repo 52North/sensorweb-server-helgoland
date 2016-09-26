@@ -42,7 +42,7 @@ import org.n52.series.dwd.rest.Alert;
 import org.n52.series.dwd.rest.VorabInformationAlert;
 
 public class DatasetOutputAdapterTest {
-    
+
     @Test
     public void when_warnCellAndAlert_then_createOutput() {
         WarnCell warnCell = new WarnCell("109771000");
@@ -53,7 +53,7 @@ public class DatasetOutputAdapterTest {
         DwdAlertDatasetOutput output = adapter.createCondensed(alert, warnCell, IoParameters.createDefaults());
         assertThat(DatasetType.extractId(output.getId()), is("109771000-VORABINFORMATION HEFTIGER - ERGIEBIGER REGEN"));
     }
-    
+
     @Test
     public void when_incomingVorabinformationIdWithSpacesAndSlash_then_parseId() {
         DatasetOutputAdapter adapter = new DatasetOutputAdapter(null, null);
@@ -61,5 +61,5 @@ public class DatasetOutputAdapterTest {
         assertThat(parts.get(0), is("109771000"));
         assertThat(parts.get(1), is("VORABINFORMATION HEFTIGER / ERGIEBIGER REGEN"));
     }
-    
+
 }

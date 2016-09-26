@@ -317,7 +317,7 @@ public class DbQuery {
                 addFilterRestriction(mobileIds, "platform", filter);
             }
         }
-        
+
         propertyName = propertyName != null
                 && !propertyName.isEmpty()
                     ? propertyName
