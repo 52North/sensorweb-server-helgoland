@@ -78,7 +78,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetEntity> dao = createDao(session);  
+            DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, MeasurementDatasetEntity.class);
         } finally {
             returnSession(session);

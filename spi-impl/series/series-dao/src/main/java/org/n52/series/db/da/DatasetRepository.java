@@ -102,7 +102,7 @@ public class DatasetRepository<T extends Data>
                 addCondensedResults(getSeriesDao(datasetType, session), query, results);
                 return results;
             }
-            
+
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
             } else {
@@ -149,7 +149,7 @@ public class DatasetRepository<T extends Data>
                 addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
                 return results;
             }
-            
+
             if (filterResolver.shallIncludeAllDatasetTypes()) {
                 addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
             } else {

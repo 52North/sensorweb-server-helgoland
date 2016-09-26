@@ -46,7 +46,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
@@ -99,7 +99,7 @@ public class RequestUtils {
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
-        
+
         URL url = new URL(request.getRequestURL().toString());
 
         String scheme = url.getProtocol();
