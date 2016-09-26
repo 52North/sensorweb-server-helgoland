@@ -37,7 +37,10 @@
 
     <logger name="com.sun.xml" level="ERROR" />
     <logger name="org.geotools" level="WARN" />
-    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="INFO" />
+
+<!--     <logger name="org.springframework.web.servlet.mvc.method.annotation" level="INFO" /> -->
+<!--     <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="DEBUG" /> -->
+
     <logger name="org.jboss.logging" level="WARN" />
      <logger name="org.hibernate.type" level="TRACE" />
 
