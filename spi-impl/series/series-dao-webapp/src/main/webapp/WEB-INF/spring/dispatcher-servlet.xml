@@ -14,7 +14,7 @@
 
     <mvc:annotation-driven />
     <ctx:annotation-config />
-    
+
     <import resource="property-placeholder-config.xml" />
 
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
