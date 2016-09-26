@@ -49,6 +49,9 @@
     </scm>
 
     <properties>
+        <!-- dev | ci | prod -->
+        <env>dev</env>
+        
         <!-- optional properties file -->
         <local.configFile>${user.home}/${project.build.finalName}</local.configFile>
     
