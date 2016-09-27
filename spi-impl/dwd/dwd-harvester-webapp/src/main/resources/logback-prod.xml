@@ -1,4 +1,4 @@
-<configuration scan="true">
+<included>
 
     <!-- refer to http://logback.qos.ch/manual/appenders.html -->
 
@@ -39,4 +39,4 @@
     <root level="INFO">
         <appender-ref ref="FILE" />
     </root>
-</configuration>
+</included>
