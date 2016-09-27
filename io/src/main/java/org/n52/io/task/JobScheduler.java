@@ -97,7 +97,7 @@ public class JobScheduler {
      */
     public void shutdown() {
         try {
-            scheduler.shutdown(false);
+            scheduler.shutdown(true);
         } catch (SchedulerException e) {
             LOGGER.error("Could not scheduler.", e);
         }

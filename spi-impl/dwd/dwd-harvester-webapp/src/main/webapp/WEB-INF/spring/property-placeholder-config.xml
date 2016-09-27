@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:ctx="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
@@ -9,14 +8,13 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
-    <import resource="property-placeholder-config.xml" />
-    
-    <import resource="spi-impl-dwd_common.xml"/>
+    <ctx:property-placeholder location="classpath:/custom-application.properties"
+        ignore-resource-not-found="true" ignore-unresolvable="true" order="0" />
 
-    <!-- timeseries api web controller bindings -->
-    <import resource="spi-impl-dwd_v1_beans.xml"/>
-    <import resource="spi-impl-dwd_v1_beans_legacy.xml"/>
+    <ctx:property-placeholder location="${custom.properties.file}"
+        ignore-resource-not-found="true" ignore-unresolvable="true" order="1" />
 
-    <import resource="spi-impl-dwd_tasks.xml" />
+    <ctx:property-placeholder location="classpath:/application.properties"
+        ignore-resource-not-found="false" ignore-unresolvable="false" order="2" />
 
 </beans>
