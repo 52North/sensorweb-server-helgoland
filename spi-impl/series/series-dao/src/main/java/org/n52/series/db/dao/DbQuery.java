@@ -48,6 +48,7 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
@@ -344,7 +345,11 @@ public class DbQuery {
     }
 
     private Criterion createDomainIdFilter(Set<String> filterValues) {
-        return Restrictions.in(COLUMN_DOMAIN_ID, filterValues);
+        Disjunction disjunction = Restrictions.disjunction();
+        for (String filter : filterValues) {
+            disjunction.add(Restrictions.ilike(COLUMN_DOMAIN_ID, filter));
+        }
+        return disjunction;
     }
 
     private Criterion createIdFilter(Set<String> filterValues) {
