@@ -60,6 +60,8 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
@@ -102,16 +104,24 @@ public class DataController extends BaseController {
 
     private String requestIntervalRestriction;
 
+    @RequestMapping(value = "/data", produces = {"application/json"}, method = GET)
+    public ModelAndView getSeriesData(HttpServletResponse response,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        IoParameters parameters = createFromQuery(query);
+        LOGGER.debug("get data with query: {}", parameters);
+        return getSeriesCollectionData(response, parameters.toSimpleParameterSet());
+    }
+
     @RequestMapping(value = "/data", produces = {"application/json"}, method = POST)
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
                                                 @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
         LOGGER.debug("get data collection with parameter set: {}", parameters);
 
-        checkForUnknownSeriesIds(parameters.getSeriesIds());
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
@@ -130,10 +140,11 @@ public class DataController extends BaseController {
 
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        checkForUnknownSeriesIds(seriesId);
+        checkForUnknownSeriesIds(map, seriesId);
 
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
-        String datasetType = DatasetType.extractType(seriesId);
+        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
@@ -148,7 +159,7 @@ public class DataController extends BaseController {
     @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkForUnknownSeriesIds(parameters.getSeriesIds());
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
 
         LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
@@ -158,8 +169,8 @@ public class DataController extends BaseController {
     public void getRawSeriesData(HttpServletResponse response,
                                  @PathVariable String seriesId,
                                  @RequestParam MultiValueMap<String, String> query) {
-        checkForUnknownSeriesIds(seriesId);
         IoParameters map = createFromQuery(query);
+        checkForUnknownSeriesIds(map, seriesId);
         LOGGER.debug("getSeriesCollection() with query: {}", map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
         writeRawData(parameters, response);
@@ -182,20 +193,18 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/data", produces = {"application/pdf"}, method = POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
-                                          @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                          @RequestBody RequestStyledParameterSet parameters) throws Exception {
 
-        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = createFromQuery(parameters);
         LOGGER.debug("get data collection report with query: {}", map);
-//        parameters.setGeneralize(map.isGeneralize());
-//        parameters.setExpanded(map.isExpanded());
 
-        checkForUnknownSeriesIds(requestParameters.getSeriesIds());
-        checkAgainstTimespanRestriction(requestParameters.getTimespan());
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+        checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = requestParameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
-                .withSimpleRequest(createFromDesignedParameters(requestParameters))
-                .withStyledRequest(requestParameters)
+                .withSimpleRequest(createFromDesignedParameters(parameters))
+                .withStyledRequest(parameters)
                 .createHandler("application/pdf")
                 .writeBinary(response.getOutputStream());
 
@@ -211,12 +220,9 @@ public class DataController extends BaseController {
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(seriesId);
+        checkForUnknownSeriesIds(map, seriesId);
 
-//        parameters.setGeneralize(map.isGeneralize());
-//        parameters.setExpanded(map.isExpanded());
-
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler("application/pdf")
@@ -228,24 +234,17 @@ public class DataController extends BaseController {
                                      @PathVariable String seriesId,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
                                              throws Exception {
-//        IoParameters map = createFromQuery(query);
-//        LOGGER.debug("get data collection report with query: {}", map);
-//        getSeriesAsCsv(response, seriesId, query);
-
         IoParameters map = createFromQuery(query);
         LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(seriesId);
-
-//        parameters.setGeneralize(map.isGeneralize());
-//        parameters.setExpanded(map.isExpanded());
+        checkForUnknownSeriesIds(map, seriesId);
 
         response.setCharacterEncoding("UTF-8");
         response.setContentType(APPLICATION_ZIP.toString());
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler(APPLICATION_ZIP.toString())
@@ -262,10 +261,7 @@ public class DataController extends BaseController {
         RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(seriesId);
-
-//        parameters.setGeneralize(map.isGeneralize());
-//        parameters.setExpanded(map.isExpanded());
+        checkForUnknownSeriesIds(map, seriesId);
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -275,7 +271,7 @@ public class DataController extends BaseController {
             response.setContentType(TEXT_CSV.toString());
         }
 
-        final String datasetType = parameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createHandler(TEXT_CSV.toString())
@@ -284,20 +280,16 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/data", produces = {"image/png"}, method = POST)
     public void getSeriesCollectionChart(HttpServletResponse response,
-                                         @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                         @RequestBody RequestStyledParameterSet parameters) throws Exception {
 
-        checkForUnknownSeriesIds(requestParameters.getSeriesIds());
+        IoParameters map = createFromQuery(parameters);
+        checkForUnknownSeriesIds(map, parameters.getDatasets());
 
-        IoParameters map = createFromQuery(requestParameters);
         LOGGER.debug("get data collection chart with query: {}", map);
-//        checkAgainstTimespanRestriction(requestParameters.getTimespan());
-//        requestParameters.setGeneralize(map.isGeneralize());
-//        requestParameters.setExpanded(map.isExpanded());
-//        requestParameters.setBase64(map.isBase64());
 
-        final String datasetType = requestParameters.getDatasetTypeFromFirst();
+        final String datasetType = parameters.getDatasetType();
         createIoFactory(datasetType)
-                .withStyledRequest(requestParameters)
+                .withStyledRequest(parameters)
                 .createHandler("image/png")
                 .writeBinary(response.getOutputStream());
     }
@@ -310,9 +302,10 @@ public class DataController extends BaseController {
         IoParameters map = createFromQuery(query);
         LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan().toString());
-        checkForUnknownSeriesIds(seriesId);
+        checkForUnknownSeriesIds(map, seriesId);
 
-        String observationType = DatasetType.extractType(seriesId);
+        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String observationType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
         createIoFactory(observationType)
                 .withSimpleRequest(parameters)
@@ -345,15 +338,24 @@ public class DataController extends BaseController {
         }
     }
 
-    private void checkForUnknownSeriesIds(String... seriesIds) {
-        for (String id : seriesIds) {
-            if ( !datasetService.exists(id)) {
-                throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
+    private void checkForUnknownSeriesIds(RequestParameterSet parameters, String... seriesIds) {
+        checkForUnknownSeriesIds(IoParameters.createFromQuery(parameters), seriesIds);
+    }
+
+    private void checkForUnknownSeriesIds(IoParameters parameters, String... seriesIds) {
+        if (seriesIds != null) {
+            for (String id : seriesIds) {
+                if ( !datasetService.exists(id, parameters)) {
+                    throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
+                }
             }
         }
     }
 
     private IoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> createIoFactory(final String datasetType) throws DatasetFactoryException {
+        if ( !ioFactoryCreator.isKnown(datasetType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        }
         return ioFactoryCreator
                 .create(datasetType)
 //                .withBasePath(getRootResource())

@@ -150,6 +150,8 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }

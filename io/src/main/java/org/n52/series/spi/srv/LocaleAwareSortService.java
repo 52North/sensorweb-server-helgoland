@@ -71,8 +71,8 @@ public class LocaleAwareSortService<T extends ParameterOutput> extends Parameter
     }
 
     @Override
-    public boolean exists(String id) {
-        return composedService.exists(id);
+    public boolean exists(String id, IoParameters parameters) {
+        return composedService.exists(id, parameters);
     }
 
     @Override

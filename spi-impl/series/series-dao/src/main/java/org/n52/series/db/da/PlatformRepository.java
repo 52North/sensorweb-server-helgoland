@@ -76,15 +76,16 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
+            Long parsedId = parseId(PlatformType.extractId(id));
             if (PlatformType.isStationaryId(id)) {
                 FeatureDao featureDao = new FeatureDao(session);
-                return featureDao.hasInstance(parseId(PlatformType.extractId(id)), FeatureEntity.class);
+                return featureDao.hasInstance(parsedId, parameters, FeatureEntity.class);
             } else {
                 PlatformDao dao = new PlatformDao(session);
-                return dao.hasInstance(parseId(PlatformType.extractId(id)), PlatformEntity.class);
+                return dao.hasInstance(parsedId, parameters, PlatformEntity.class);
             }
         } finally {
             returnSession(session);

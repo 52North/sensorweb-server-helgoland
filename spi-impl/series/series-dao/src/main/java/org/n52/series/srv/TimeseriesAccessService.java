@@ -61,7 +61,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     public DataCollection<MeasurementData> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<MeasurementData> dataCollection = new TvpDataCollection<>();
-            for (String timeseriesId : parameters.getSeriesIds()) {
+            for (String timeseriesId : parameters.getDatasets()) {
                 MeasurementData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(timeseriesId, data);

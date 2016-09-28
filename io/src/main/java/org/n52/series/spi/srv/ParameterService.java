@@ -120,10 +120,12 @@ public abstract class ParameterService<T extends ParameterOutput> implements Raw
      *
      * @param id
      *        the id of the resource.
+     * @param parameters
+     *        the query passed along.
      * @return <code>true</code> if the resource exists, <code>false</code> otherwise.
      * @since 2.0.0
      */
-    public abstract boolean exists(String id);
+    public abstract boolean exists(String id, IoParameters parameters);
 
     /**
      * Check if raw data output is supported

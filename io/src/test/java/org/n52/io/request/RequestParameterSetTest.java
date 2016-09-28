@@ -30,10 +30,16 @@ package org.n52.io.request;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.nullValue;
 
+import java.util.Arrays;
+
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 public class RequestParameterSetTest {
@@ -43,7 +49,7 @@ public class RequestParameterSetTest {
     private RequestParameterSet createDummyParameterSet() {
         return new RequestParameterSet() {
             @Override
-            public String[] getSeriesIds() {
+            public String[] getDatasets() {
                 return null;
             }
         };
@@ -95,6 +101,82 @@ public class RequestParameterSetTest {
         RequestParameterSet parameterset = createDummyParameterSet();
         parameterset.addParameter("myParameter", jsonFactory.textNode("value"));
         assertThat(parameterset.containsParameter("myparameter"), is(true));
+    }
+
+    @Test
+    public void when_datasetsAvailable_then_accessibleViaParameterName() {
+        RequestSimpleParameterSet parameters = IoParameters.createDefaults()
+            .extendWith(Parameters.DATASETS, "foo", "bar")
+            .toSimpleParameterSet();
+        assertThat(Arrays.asList(parameters.getAs(String[].class, "datasets")), contains("foo", "bar"));
+    }
+
+    @Test
+    public void when_addingSingleValueStringArray_then_accessibleViaParameterName() {
+        RequestParameterSet parameters = IoParameters.createDefaults()
+                .extendWith(Parameters.DATASETS, "foo")
+                .toSimpleParameterSet();
+        assertThat(Arrays.asList(parameters.getDatasets()), contains("foo"));
+    }
+
+    @Test
+    public void when_addingStringArray_then_accessibleViaParameterName() {
+        RequestParameterSet parameterset = createDummyParameterSet();
+        JsonNode array = jsonFactory.arrayNode().add("foo").add("bar");
+        parameterset.addParameter("myParameter", array);
+        assertThat(Arrays.asList(parameterset.getAsStringArray("myparameter")), contains("foo", "bar"));
+    }
+
+    @Test
+    public void when_datasetsAvailable_then_accessibleViaGetter() {
+        RequestSimpleParameterSet parameters = IoParameters.createDefaults()
+            .extendWith(Parameters.DATASETS, "foo", "bar")
+            .toSimpleParameterSet();
+        assertThat(Arrays.asList(parameters.getDatasets()), contains("foo", "bar"));
+    }
+
+    @Test
+    public void testJsonObjectInGeneralConfig() {
+        IoParameters parameters = IoParameters.createDefaults();
+        RequestSimpleParameterSet set = parameters.toSimpleParameterSet();
+        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "generalizer");
+        Assert.assertNotNull(config);
+        Assert.assertThat(config.getDefaultGeneralizer(), Matchers.is("lttb"));
+    }
+
+    @Test
+    public void testNotAvailableJsonObjectInGeneralConfig() {
+        IoParameters parameters = IoParameters.createDefaults();
+        RequestSimpleParameterSet set = parameters.toSimpleParameterSet();
+        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "doesnotexist");
+        Assert.assertNull(config);
+    }
+
+    private static class GeneralizerConfig {
+
+        // json serializing object
+
+        private String defaultGeneralizer;
+        private String noDataGapThreshold;
+
+        public String getDefaultGeneralizer() {
+            return defaultGeneralizer;
+        }
+
+        @SuppressWarnings("unused")
+        public void setDefaultGeneralizer(String defaultGeneralizer) {
+            this.defaultGeneralizer = defaultGeneralizer;
+        }
+
+        @SuppressWarnings("unused")
+        public String getNoDataGapThreshold() {
+            return noDataGapThreshold;
+        }
+
+        @SuppressWarnings("unused")
+        public void setNoDataGapThreshold(String noDataGapThreshold) {
+            this.noDataGapThreshold = noDataGapThreshold;
+        }
     }
 
 
