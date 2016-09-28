@@ -28,6 +28,7 @@
         <property name="metadataService" ref="metadataService" />
     </bean> -->
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="externalUrl" value="${external.url}" />
         <property name="metadataExtensions">
             <list>
                 <!-- <bean class="org.n52.io.response.extension.LicenseExtension" /> -->

@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
-    <ctx:property-placeholder location="file:/${local.configFile}"
+    <ctx:property-placeholder location="${local.configFile}"
         ignore-resource-not-found="true" ignore-unresolvable="true" order="0" />
 
     <ctx:property-placeholder location="classpath:/application.properties"
