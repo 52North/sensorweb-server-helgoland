@@ -7,11 +7,6 @@
 	<display-name>${project.parent.name}, SVN: ${buildNumber} @ ${timestamp}</display-name>
 	<description>This is an OGC SOS.</description>
 
-	<!-- Spring startup listener -->
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
 	<filter>
 		<filter-name>CORS</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
