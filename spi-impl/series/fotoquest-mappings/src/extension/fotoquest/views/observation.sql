@@ -6,4 +6,3 @@
   --c.mediaitem_url AS value
   --c.mediaitem_direction AS direction
 from validation.common c
-  where c.series_id=309510107

@@ -100,7 +100,6 @@ SELECT distinct
   --c.mediaitem_url AS value
   --c.mediaitem_direction AS direction
 from validation.common c
-  where c.series_id=309510107
 WITH DATA;
     ALTER TABLE validation.observation 
     OWNER TO postgres;
