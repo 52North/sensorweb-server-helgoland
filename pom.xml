@@ -442,6 +442,7 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>2.11</version>
+                <inherited>false</inherited>
                 <configuration>
                     <header>misc/52N_license-header.txt</header>
                     <properties>
