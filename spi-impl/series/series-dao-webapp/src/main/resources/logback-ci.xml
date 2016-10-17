@@ -34,7 +34,7 @@
     <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="DEBUG" />
 
     <logger name="org.jboss.logging" level="WARN" />
-     <logger name="org.hibernate.type" level="TRACE" />
+     <logger name="org.hibernate.type" level="INFO" />
 
     <root level="INFO">
         <appender-ref ref="FILE" />
