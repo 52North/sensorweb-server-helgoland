@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.n52.series.api.v1.db.da.CategoryRepository;
 import org.n52.series.api.v1.db.da.FeatureRepository;
+import org.n52.series.api.v1.db.da.OfferingRepository;
 import org.n52.series.api.v1.db.da.PhenomenonRepository;
 import org.n52.series.api.v1.db.da.ProcedureRepository;
 import org.n52.series.api.v1.db.da.StationRepository;
@@ -63,9 +64,8 @@ public class Search extends ServiceInfoAccess implements SearchService {
         return new ProcedureRepository(getServiceInfo());
     }
 
-    private ProcedureRepository getOfferingRepository() {
-        // offering equals procedure within series concept
-        return new ProcedureRepository(getServiceInfo());
+    private OfferingRepository getOfferingRepository() {
+        return new OfferingRepository(getServiceInfo());
     }
 
     private StationRepository getStationRepository() {
