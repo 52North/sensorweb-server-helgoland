@@ -50,6 +50,8 @@ public class SeriesEntity {
 
     private boolean published;
 
+    private Set<OfferingEntity> offerings = new HashSet<OfferingEntity>();
+    
     private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
 
     private Set<SeriesEntity> referenceValues = new HashSet<SeriesEntity>();
@@ -96,6 +98,14 @@ public class SeriesEntity {
 
     public void setFeature(FeatureEntity feature) {
         this.feature = feature;
+    }
+    
+    public Set<OfferingEntity> getOfferings() {
+        return offerings;
+    }
+
+    public void setOfferings(Set<OfferingEntity> offerings) {
+        this.offerings = offerings;
     }
 
     public List<ObservationEntity> getObservations() {
