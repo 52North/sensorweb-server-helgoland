@@ -32,12 +32,10 @@ import java.util.List;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.OfferingOutput;
-import org.n52.io.v1.data.ParameterOutput;
-import org.n52.io.v1.data.ProcedureOutput;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
-import org.n52.series.api.v1.db.da.ProcedureRepository;
+import org.n52.series.api.v1.db.da.OfferingRepository;
 import org.n52.web.InternalServerException;
 
 public class OfferingsAccessService extends ServiceInfoAccess implements ParameterService<OfferingOutput> {
@@ -46,8 +44,8 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OfferingOutput[] getExpandedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
-            List<ProcedureOutput> results = repository.getAllExpanded(dbQuery);
+            OfferingRepository repository = createOfferingRepository();
+            List<OfferingOutput> results = repository.getAllExpanded(dbQuery);
             return results.toArray(new OfferingOutput[results.size()]);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get offering data.");
@@ -58,10 +56,10 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OfferingOutput[] getCondensedParameters(IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
+            OfferingRepository repository = createOfferingRepository();
             List<OfferingOutput> results = new ArrayList<OfferingOutput>();
-            List<ProcedureOutput> procedures = repository.getAllCondensed(dbQuery);
-            for (ProcedureOutput procedureOutput : procedures) {
+            List<OfferingOutput> procedures = repository.getAllCondensed(dbQuery);
+            for (OfferingOutput procedureOutput : procedures) {
                 results.add(createOfferingFrom(procedureOutput));
             }
             return results.toArray(new OfferingOutput[0]);
@@ -79,10 +77,10 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OfferingOutput[] getParameters(String[] offeringIds, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
+            OfferingRepository repository = createOfferingRepository();
             List<OfferingOutput> results = new ArrayList<OfferingOutput>();
             for (String offeringId : offeringIds) {
-                ProcedureOutput procedure = repository.getInstance(offeringId, dbQuery);
+                OfferingOutput procedure = repository.getInstance(offeringId, dbQuery);
                 results.add(createOfferingFrom(procedure));
             }
             return results.toArray(new OfferingOutput[0]);
@@ -100,14 +98,14 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
     public OfferingOutput getParameter(String offeringId, IoParameters query) {
         try {
             DbQuery dbQuery = DbQuery.createFrom(query);
-            ProcedureRepository repository = createProcedureRepository();
+            OfferingRepository repository = createOfferingRepository();
             return createOfferingFrom(repository.getInstance(offeringId, dbQuery));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get offering data");
         }
     }
 
-    private OfferingOutput createOfferingFrom(ProcedureOutput procedure) {
+    private OfferingOutput createOfferingFrom(OfferingOutput procedure) {
         OfferingOutput offering = new OfferingOutput();
         offering.setId(procedure.getId());
         offering.setLabel(procedure.getLabel());
@@ -115,9 +113,9 @@ public class OfferingsAccessService extends ServiceInfoAccess implements Paramet
         return offering;
     }
 
-    private ProcedureRepository createProcedureRepository() {
+    private OfferingRepository createOfferingRepository() {
         // offerings equals procedures in our case
-        return new ProcedureRepository(getServiceInfo());
+        return new OfferingRepository(getServiceInfo());
     }
 
 
