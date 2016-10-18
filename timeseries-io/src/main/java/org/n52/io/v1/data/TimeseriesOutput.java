@@ -27,11 +27,13 @@
  */
 package org.n52.io.v1.data;
 
+import java.util.List;
+
 public class TimeseriesOutput {
     
     private ServiceOutput service;
     
-    private OfferingOutput offering;
+    private List<OfferingOutput> offerings;
     
     private FeatureOutput feature;
     
@@ -49,12 +51,12 @@ public class TimeseriesOutput {
         this.service = service;
     }
 
-    public OfferingOutput getOffering() {
-        return offering;
+    public List<OfferingOutput> getOffering() {
+        return offerings;
     }
 
-    public void setOffering(OfferingOutput offering) {
-        this.offering = offering;
+    public void setOffering(List<OfferingOutput> offerings) {
+        this.offerings = offerings;
     }
 
     public FeatureOutput getFeature() {
