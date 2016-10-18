@@ -16,6 +16,11 @@
 
         <!-- TODO remove formula when SOS adds published_flag to data model -->
         <property name="published" column="published_flag" formula="1" type="org.hibernate.type.NumericBooleanType" />
+        
+        <set name="offerings" table="series" inverse="true">
+            <key column="seriesid" update="false" />
+            <many-to-many class="OfferingEntity" column="procedureid" />
+        </set>
 
         <component name="firstValue" class="org.n52.series.api.v1.db.da.beans.ObservationEntity">
             <property name="timestamp" column="firsttimestamp" type="timestamp" />
