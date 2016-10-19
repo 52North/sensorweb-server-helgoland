@@ -23,4 +23,17 @@
     <!--<bean class="org.n52.series.db.da.sos.SOSHibernateSessionHolder" destroy-method="shutdown" />-->
     <import resource="series-database-config.xml" />
 
+    <bean id="configurationProvider" class="org.n52.config.Configuration"/>
+
+    <bean id="dataSourceScheduler" class="org.n52.config.DataSourceScheduler" init-method="init" destroy-method="shutdown">
+        <property name="scheduler">
+            <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+                <property name="jobFactory">
+                    <bean class="org.n52.io.task.AutowiringSpringBeanJobFactory" />
+                </property>
+            </bean>
+        </property>
+        <property name="configurationProvider" ref="configurationProvider"/>
+    </bean>
+
 </beans>
