@@ -48,6 +48,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 public class RequestUtils {
 
+    private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
@@ -100,28 +101,43 @@ public class RequestUtils {
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
-
-        URL url = null;
-        try {
-            // e.g. in proxy envs
-            url = new URL(externalUrl);
-        } catch (MalformedURLException e) {
-            url = new URL(request.getRequestURL().toString());
-        }
-
-        String scheme = url.getProtocol();
-        String userInfo = url.getUserInfo();
-        String host  = url.getHost();
-
-        int port = url.getPort();
-
-        String path = request.getRequestURI();
-        if (path != null && path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-
-        URI uri = new URI(scheme, userInfo, host, port, path, null, null);
-        return uri.toString();
+        
+        return externalUrl == null || externalUrl.isEmpty()
+            ? createRequestUrl(request)
+            : createRequestUrl(externalUrl);
     }
 
+    private static String createRequestUrl(String externalUrl) {
+        try {
+            // e.g. in proxy envs
+            return new URL(externalUrl).toString();
+        } catch (MalformedURLException e) {
+            LOGGER.error("Invalid external url: {}", externalUrl);
+            return REQUEST_URL_FALLBACK;
+        }
+    }
+
+    private static String createRequestUrl(HttpServletRequest request) {
+        try {
+            URL url = new URL(request.getRequestURL().toString());
+            String scheme = url.getProtocol();
+            String userInfo = url.getUserInfo();
+            String host  = url.getHost();
+
+            int port = url.getPort();
+
+            String path = request.getRequestURI();
+            if (path != null && path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+            return uri.toString();
+        } catch (MalformedURLException | URISyntaxException e) {
+            LOGGER.error("Could not determine href from request.");
+            return REQUEST_URL_FALLBACK;
+        }
+
+    }
+    
 }

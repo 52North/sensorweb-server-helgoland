@@ -70,15 +70,12 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     private String externalUrl;
 
-//  public boolean isSetExternalUrl() {
-//      return !(externalUrl == null || externalUrl.isEmpty());
-//  }
-
     public String getExternalUrl() {
         return externalUrl;
     }
 
     public void setExternalUrl(String externalUrl) {
+        LOGGER.debug("CONFIG: external.url={}", externalUrl);
         this.externalUrl = externalUrl;
     }
 
