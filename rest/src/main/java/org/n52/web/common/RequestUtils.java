@@ -101,7 +101,7 @@ public class RequestUtils {
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
-        
+
         return externalUrl == null || externalUrl.isEmpty()
             ? createRequestUrl(request)
             : createRequestUrl(externalUrl);
@@ -139,5 +139,5 @@ public class RequestUtils {
         }
 
     }
-    
+
 }
