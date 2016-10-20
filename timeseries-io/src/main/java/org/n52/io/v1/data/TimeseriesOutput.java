@@ -33,7 +33,7 @@ public class TimeseriesOutput {
     
     private ServiceOutput service;
     
-    private List<OfferingOutput> offerings;
+    private OfferingOutput offering;
     
     private FeatureOutput feature;
     
@@ -51,12 +51,12 @@ public class TimeseriesOutput {
         this.service = service;
     }
 
-    public List<OfferingOutput> getOffering() {
-        return offerings;
+    public OfferingOutput getOffering() {
+        return offering;
     }
 
-    public void setOffering(List<OfferingOutput> offerings) {
-        this.offerings = offerings;
+    public void setOffering(OfferingOutput offering) {
+        this.offering = offering;
     }
 
     public FeatureOutput getFeature() {

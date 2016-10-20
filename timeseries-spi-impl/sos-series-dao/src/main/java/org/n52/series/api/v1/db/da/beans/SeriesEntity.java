@@ -50,7 +50,7 @@ public class SeriesEntity {
 
     private boolean published;
 
-    private Set<OfferingEntity> offerings = new HashSet<OfferingEntity>();
+    private OfferingEntity offering;
     
     private List<ObservationEntity> observations = new ArrayList<ObservationEntity>();
 
@@ -100,12 +100,12 @@ public class SeriesEntity {
         this.feature = feature;
     }
     
-    public Set<OfferingEntity> getOfferings() {
-        return offerings;
+    public OfferingEntity getOffering() {
+        return offering;
     }
 
-    public void setOfferings(Set<OfferingEntity> offerings) {
-        this.offerings = offerings;
+    public void setOffering(OfferingEntity offering) {
+        this.offering = offering;
     }
 
     public List<ObservationEntity> getObservations() {

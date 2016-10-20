@@ -140,7 +140,7 @@ public class DbQuery {
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getProcedure())));
         }
         if (parameters.getOffering() != null) {
-            filter.createCriteria("offerings")
+            filter.createCriteria("offering")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getOffering())));
         }
         if (parameters.getFeature() != null) {

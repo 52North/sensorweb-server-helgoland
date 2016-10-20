@@ -87,7 +87,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
         // reset criteria
         criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
-        Criteria offeringCriteria = criteria.createCriteria("offerings", LEFT_OUTER_JOIN);
+        Criteria offeringCriteria = criteria.createCriteria("offering", LEFT_OUTER_JOIN);
         if (hasTranslation(query, I18nOfferingEntity.class)) {
             offeringCriteria = query.addLocaleTo(offeringCriteria, I18nOfferingEntity.class);
         }

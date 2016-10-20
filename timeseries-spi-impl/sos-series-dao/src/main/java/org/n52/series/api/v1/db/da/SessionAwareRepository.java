@@ -165,7 +165,7 @@ public abstract class SessionAwareRepository {
     protected TimeseriesOutput createTimeseriesOutput(SeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
         TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
         timeseriesOutput.setService(getCondensedService());
-        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getOfferings(), parameters));
+        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getOffering(), parameters));
         timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
         timeseriesOutput.setPhenomenon(getCondensedPhenomenon(timeseries.getPhenomenon(), parameters));
         timeseriesOutput.setFeature(getCondensedFeature(timeseries.getFeature(), parameters));

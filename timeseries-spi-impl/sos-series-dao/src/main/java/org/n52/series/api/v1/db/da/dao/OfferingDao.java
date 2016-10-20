@@ -81,7 +81,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
             parameters.addLocaleTo(criteria, I18nOfferingEntity.class);
         }
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("offerings");
+        DetachedCriteria filter = parameters.createDetachedFilterCriteria("offering");
         criteria.add(Subqueries.propertyIn("off.pkid", filter));
 
         parameters.addPagingTo(criteria);
