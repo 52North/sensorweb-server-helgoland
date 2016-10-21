@@ -4,7 +4,9 @@
     <class name="DataEntity" table="observation">
         <id name="pkid" type="long">
             <column name="observationid"/>
-            <generator class="assigned"/>
+            <generator class="native">
+                <param name="sequence">observationId_seq</param>
+            </generator>
         </id>
         <property column="seriesid" name="seriesPkid" type="long"/>
         <property column="phenomenonTimeStart" name="timestamp" type="timestamp"/>
@@ -19,10 +21,10 @@
             <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
         <!-- Or add only to specific joined-subclasses -->
-        <set inverse="true" name="parameters" table="parameters">
+        <!--<set inverse="true" name="parameters" table="parameters">
             <key column="observationid" not-null="true"/>
             <one-to-many class="DataParameter"/>
-        </set>
+        </set>-->
 
         <joined-subclass extends="DataEntity" name="MeasurementDataEntity" table="numericValue">
             <key column="observationid"/>

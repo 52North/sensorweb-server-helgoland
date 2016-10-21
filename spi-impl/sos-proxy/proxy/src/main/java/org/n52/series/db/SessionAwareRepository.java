@@ -69,17 +69,17 @@ public abstract class SessionAwareRepository {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-    @Autowired
-    private ServiceRepository serviceRepository;
-
+//    @Autowired
+//    private ServiceRepository serviceRepository;
     @Autowired
     private ServiceInfo serviceInfo;
 
     protected UrlHelper urHelper = new UrlHelper();
 
     protected ServiceOutput getServiceOutput() throws DataAccessException {
-        List<ServiceOutput> all = serviceRepository.getAllCondensed(null);
-        return all.get(0); // only this service available
+//        List<ServiceOutput> all = serviceRepository.getAllCondensed(null);
+//        return all.get(0); // only this service available
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected DbQuery getDbQuery(IoParameters parameters) {
@@ -94,14 +94,13 @@ public abstract class SessionAwareRepository {
         this.sessionStore = sessionStore;
     }
 
-    public ServiceRepository getServiceRepository() {
-        return serviceRepository;
-    }
-
-    public void setServiceRepository(ServiceRepository serviceRepository) {
-        this.serviceRepository = serviceRepository;
-    }
-
+//    public ServiceRepository getServiceRepository() {
+//        return serviceRepository;
+//    }
+//
+//    public void setServiceRepository(ServiceRepository serviceRepository) {
+//        this.serviceRepository = serviceRepository;
+//    }
     public void setServiceInfo(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
@@ -177,23 +176,25 @@ public abstract class SessionAwareRepository {
         return seriesParameter;
     }
 
-    protected ServiceOutput getCondensedService(DbQuery parameters ) throws DataAccessException {
-        String serviceId = serviceRepository.getServiceId();
-        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-        ServiceOutput serviceOutput = new ServiceOutput();
-        serviceOutput.setLabel(instance.getLabel());
-        serviceOutput.setId(instance.getId());
-        return serviceOutput;
+    protected ServiceOutput getCondensedService(DbQuery parameters) throws DataAccessException {
+//        String serviceId = serviceRepository.getServiceId();
+//        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
+//        ServiceOutput serviceOutput = new ServiceOutput();
+//        serviceOutput.setLabel(instance.getLabel());
+//        serviceOutput.setId(instance.getId());
+//        return serviceOutput;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private ServiceOutput getCondensedExtendedService(DbQuery parameters) {
-        String serviceId = serviceRepository.getServiceId();
-        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-        ServiceOutput serviceOutput = new ServiceOutput();
-        serviceOutput.setLabel(instance.getLabel());
-        serviceOutput.setId(instance.getId());
-        serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + instance.getId());
-        return serviceOutput;
+    private ServiceOutput getCondensedExtendedService(DbQuery parameters) throws DataAccessException {
+//        String serviceId = serviceRepository.getServiceId();
+//        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
+//        ServiceOutput serviceOutput = new ServiceOutput();
+//        serviceOutput.setLabel(instance.getLabel());
+//        serviceOutput.setId(instance.getId());
+//        serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + instance.getId());
+//        return serviceOutput;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     protected ParameterOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
@@ -251,6 +252,5 @@ public abstract class SessionAwareRepository {
     protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
         return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
     }
-
 
 }
