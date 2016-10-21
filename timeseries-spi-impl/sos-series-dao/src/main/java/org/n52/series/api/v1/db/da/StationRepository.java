@@ -180,7 +180,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {
         try {
-            if (featureEntity.isSetGeom()) {
+            if (featureEntity.isSetGeom() && "point".equalsIgnoreCase(featureEntity.getGeom().getGeometryType())) {
                 Geometry geometry = featureEntity.getGeom();
                 String fromCrs = "EPSG:" +geometry.getSRID();
                 Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
