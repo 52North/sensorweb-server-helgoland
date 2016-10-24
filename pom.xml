@@ -63,8 +63,8 @@
         <slf4j.version>1.7.12</slf4j.version>
         <hamcrest.version>1.3</hamcrest.version>
 
-        <java.compiler.source>1.7</java.compiler.source>
-        <java.compiler.target>1.7</java.compiler.target>
+        <java.compiler.source>1.8</java.compiler.source>
+        <java.compiler.target>1.8</java.compiler.target>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <currentYearDynamic>${maven.build.timestamp}</currentYearDynamic>
@@ -690,6 +690,7 @@
                                 <allowedRepositories>
                                     <id>geotools</id>
                                     <id>n52-releases</id>
+                                    <id>n52-snapshots</id>
                                 </allowedRepositories>
                             </requireNoRepositories>
                         </rules>
@@ -786,6 +787,11 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
             <!--<url>https://boundless.artifactoryonline.com/boundless/main</url> -->
             <!--<url>http://repo.boundlessgeo.com/main/</url> -->
+        </repository>
+        <repository>
+            <id>n52-snapshots</id>
+            <name>n52-snapshots</name>
+            <url>http://52north.org/maven/repo/snapshots/</url>
         </repository>
     </repositories>
 

@@ -48,8 +48,8 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.ServiceInfo;
-import org.n52.series.db.da.ServiceRepository;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -69,17 +69,25 @@ public abstract class SessionAwareRepository {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-//    @Autowired
-//    private ServiceRepository serviceRepository;
     @Autowired
     private ServiceInfo serviceInfo;
 
     protected UrlHelper urHelper = new UrlHelper();
 
-    protected ServiceOutput getServiceOutput() throws DataAccessException {
-//        List<ServiceOutput> all = serviceRepository.getAllCondensed(null);
-//        return all.get(0); // only this service available
-        throw new UnsupportedOperationException("Not supported yet.");
+    protected ServiceOutput createCondensedService(ServiceEntity entity) {
+        ServiceOutput result = new ServiceOutput();
+        result.setId(Long.toString(entity.getPkid()));
+        result.setLabel(entity.getName());
+        return result;
+    }
+
+    protected ServiceOutput createExpandedService(ServiceEntity serviceEntity, DbQuery parameters) {
+        ServiceOutput result = createCondensedService(serviceEntity);
+        result.setType(serviceEntity.getType());
+        result.setVersion(serviceEntity.getVersion());
+        result.setSupportsFirstLatest(true);
+        // TODO add quantities
+        return result;
     }
 
     protected DbQuery getDbQuery(IoParameters parameters) {
@@ -94,13 +102,6 @@ public abstract class SessionAwareRepository {
         this.sessionStore = sessionStore;
     }
 
-//    public ServiceRepository getServiceRepository() {
-//        return serviceRepository;
-//    }
-//
-//    public void setServiceRepository(ServiceRepository serviceRepository) {
-//        this.serviceRepository = serviceRepository;
-//    }
     public void setServiceInfo(ServiceInfo serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
@@ -155,7 +156,7 @@ public abstract class SessionAwareRepository {
 
     protected SeriesParameters createTimeseriesOutput(MeasurementDatasetEntity timeseries, DbQuery parameters) throws DataAccessException {
         SeriesParameters timeseriesOutput = new SeriesParameters();
-        timeseriesOutput.setService(getCondensedService(parameters));
+        timeseriesOutput.setService(createCondensedService(timeseries.getService()));
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
         timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
         timeseriesOutput.setPhenomenon(getCondensedPhenomenon(timeseries.getPhenomenon(), parameters));
@@ -166,7 +167,7 @@ public abstract class SessionAwareRepository {
 
     protected SeriesParameters createSeriesParameters(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
-        seriesParameter.setService(getCondensedExtendedService(parameters));
+        seriesParameter.setService(createCondensedExtendedService(series.getService(), parameters));
         seriesParameter.setOffering(getCondensedExtendedOffering(series.getProcedure(), parameters));
         seriesParameter.setProcedure(getCondensedExtendedProcedure(series.getProcedure(), parameters));
         seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
@@ -176,25 +177,10 @@ public abstract class SessionAwareRepository {
         return seriesParameter;
     }
 
-    protected ServiceOutput getCondensedService(DbQuery parameters) throws DataAccessException {
-//        String serviceId = serviceRepository.getServiceId();
-//        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-//        ServiceOutput serviceOutput = new ServiceOutput();
-//        serviceOutput.setLabel(instance.getLabel());
-//        serviceOutput.setId(instance.getId());
-//        return serviceOutput;
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    private ServiceOutput getCondensedExtendedService(DbQuery parameters) throws DataAccessException {
-//        String serviceId = serviceRepository.getServiceId();
-//        ServiceOutput instance = serviceRepository.getCondensedInstance(serviceId, parameters);
-//        ServiceOutput serviceOutput = new ServiceOutput();
-//        serviceOutput.setLabel(instance.getLabel());
-//        serviceOutput.setId(instance.getId());
-//        serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + instance.getId());
-//        return serviceOutput;
-        throw new UnsupportedOperationException("Not supported yet.");
+    private ServiceOutput createCondensedExtendedService(ServiceEntity entity, DbQuery parameters) throws DataAccessException {
+        ServiceOutput serviceOutput = createCondensedService(entity);
+        serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + serviceOutput.getId());
+        return serviceOutput;
     }
 
     protected ParameterOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {

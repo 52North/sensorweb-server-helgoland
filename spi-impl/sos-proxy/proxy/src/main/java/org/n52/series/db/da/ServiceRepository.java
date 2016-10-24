@@ -30,11 +30,11 @@ package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.hibernate.Session;
 
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
@@ -47,47 +47,62 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
-import org.n52.series.spi.search.ServiceSearchResult;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.InternalServerException;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ServiceRepository implements OutputAssembler<ServiceOutput> {
+public class ServiceRepository extends SessionAwareRepository implements OutputAssembler<ServiceOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
-
-    @Autowired
-    private ServiceInfo serviceInfo;
 
     @Autowired
     private EntityCounter counter;
 
     @Autowired
-    private DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> ioFactoryCreator;
+    private DefaultIoFactory<Data<AbstractValue< ?>>, DatasetOutput<AbstractValue< ?>, ?>, AbstractValue< ?>> ioFactoryCreator;
 
     public String getServiceId() {
-        return serviceInfo.getServiceId();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
-        return getServiceId().equals(id);
+        Session session = getSession();
+        try {
+            ServiceDao dao = createDao(session);
+            return dao.hasInstance(parseId(id), parameters, ServiceEntity.class);
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
-        final ServiceSearchResult result = new ServiceSearchResult(serviceInfo.getServiceId(), serviceInfo.getServiceDescription());
-        String queryString = DbQuery.createFrom(parameters).getSearchTerm();
-        return serviceInfo.getServiceDescription().contains(queryString)
-                ? Collections.<SearchResult>singletonList(result)
-                : Collections.<SearchResult>emptyList();
+//        final ServiceSearchResult result = new ServiceSearchResult(serviceInfo.getServiceId(), serviceInfo.getServiceDescription());
+//        String queryString = DbQuery.createFrom(parameters).getSearchTerm();
+//        return serviceInfo.getServiceDescription().contains(queryString)
+//                ? Collections.<SearchResult>singletonList(result)
+//                : Collections.<SearchResult>emptyList();
+//        Session session = getSession();
+//        try {
+//            ServiceDao serviceDao = createDao(session);
+//            DbQuery query = getDbQuery(parameters);
+//            List<ServiceEntity> found = serviceDao.find(query);
+//            return convertToSearchResults(found, query);
+//        } finally {
+//            returnSession(session);
+//        }
+        throw new UnsupportedOperationException("not supported");
     }
 
     @Override
@@ -105,62 +120,110 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     @Override
     public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
-        List<ServiceOutput> results = new ArrayList<>();
-        results.add(getCondensedService(parameters));
-        return results;
+        Session session = getSession();
+        try {
+            List<ServiceOutput> results = new ArrayList<>();
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+                results.add(createCondensedService(serviceEntity));
+            }
+            return results;
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
     public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
-        List<ServiceOutput> results = new ArrayList<>();
-        results.add(getExpandedService(parameters));
-        return results;
+        Session session = getSession();
+        try {
+            List<ServiceOutput> results = new ArrayList<>();
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+                results.add(createExpandedService(serviceEntity, parameters));
+            }
+            return results;
+        } finally {
+            returnSession(session);
+        }
     }
 
     @Override
     public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
-        return getExpandedService(parameters);
+        Session session = getSession();
+        try {
+            ServiceEntity result = getInstance(parseId(id), parameters, session);
+            return createExpandedService(result, parameters);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    protected ServiceEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+        ServiceDao serviceDAO = createDao(session);
+        ServiceEntity result = serviceDAO.getInstance(id, parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return result;
+    }
+
+    protected List<ServiceEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+        return createDao(session).getAllInstances(parameters);
+    }
+
+    private ServiceDao createDao(Session session) {
+        return new ServiceDao(session);
     }
 
     /**
-     * Gets a condensed view of the requested service, i.e. it avoids getting a
-     * full version of the requested service. Getting a full version (like
-     * {@link #getInstance(String, DbQuery)}) would redundantly count all
-     * parameter values available for the requested requested service.
+     * Gets a condensed view of the requested service, i.e. it avoids getting a full version of the requested service.
+     * Getting a full version (like {@link #getInstance(String, DbQuery)}) would redundantly count all parameter values
+     * available for the requested requested service.
      *
      * @param id the service id
      * @param parameters query parameters
      * @return a condensed view of the requested service.
      */
-    public ServiceOutput getCondensedInstance(String id, DbQuery parameters) {
-        return getCondensedService(parameters);
-    }
-
-    private ServiceOutput getExpandedService(DbQuery parameters) {
-        ServiceOutput service = getCondensedService(parameters);
-        service.setQuantities(countParameters(service, parameters));
-        service.setSupportsFirstLatest(true);
-
-        FilterResolver filterResolver = parameters.getFilterResolver();
-        if (filterResolver.shallBehaveBackwardsCompatible()) {
-            // ensure backwards compatibility
-            service.setVersion("1.0.0");
-            service.setType("Thin DB access layer service.");
-        } else {
-            service.setType(serviceInfo.getType() == null
-                    ? "Thin DB access layer service."
-                    : serviceInfo.getType());
-            service.setVersion(serviceInfo.getVersion() != null
-                    ? serviceInfo.getVersion()
-                    : "2.0");
-            addSupportedDatasetsTo(service);
-
-            // TODO add features
-            // TODO different counts
-
+    public ServiceOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            ServiceEntity result = getInstance(parseId(id), parameters, session);
+            return createCondensedService(result);
+        } finally {
+            returnSession(session);
         }
-        return service;
     }
+
+//    private ServiceOutput createCondensed(ServiceEntity entity, DbQuery parameters) {
+//        ServiceOutput result = new ServiceOutput();
+//        result.setId(Long.toString(entity.getPkid()));
+//        result.setLabel(entity.getName());
+//        return result;
+//    }
+
+//    private ServiceOutput getExpandedService(DbQuery parameters) throws DataAccessException {
+//        ServiceOutput service = getCondensedService(parameters);
+//        service.setQuantities(countParameters(service, parameters));
+//        service.setSupportsFirstLatest(true);
+//
+//        FilterResolver filterResolver = parameters.getFilterResolver();
+//        if (filterResolver.shallBehaveBackwardsCompatible()) {
+//            // ensure backwards compatibility
+//            service.setVersion("1.0.0");
+//            service.setType("Thin DB access layer service.");
+//        } else {
+////            service.setType(serviceInfo.getType() == null
+////                    ? "Thin DB access layer service."
+////                    : serviceInfo.getType());
+////            service.setVersion(serviceInfo.getVersion() != null
+////                    ? serviceInfo.getVersion()
+////                    : "2.0");
+//            addSupportedDatasetsTo(service);
+//
+//            // TODO add features
+//            // TODO different counts
+//        }
+//        return service;
+//    }
 
     private void addSupportedDatasetsTo(ServiceOutput service) {
         Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
@@ -175,14 +238,13 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         service.addSupportedDatasets(mimeTypesByDatasetTypes);
     }
 
-    private ServiceOutput getCondensedService(DbQuery parameters) {
-        ServiceOutput service = new ServiceOutput();
-        service.setLabel(serviceInfo.getServiceDescription());
-        service.setId(serviceInfo.getServiceId());
-        checkForHref(service, parameters);
-        return service;
-    }
-
+//    private ServiceOutput getCondensedService(DbQuery parameters) {
+//        ServiceOutput service = new ServiceOutput();
+//        service.setLabel(serviceInfo.getServiceDescription());
+//        service.setId(serviceInfo.getServiceId());
+//        checkForHref(service, parameters);
+//        return service;
+//    }
     private void checkForHref(ServiceOutput result, DbQuery parameters) {
         if (parameters != null && parameters.getHrefBase() != null) {
             result.setHrefBase(new UrlHelper().getServicesHrefBaseUrl(parameters.getHrefBase()));

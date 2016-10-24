@@ -12,5 +12,6 @@
         <property column="name" name="name" type="string"/>
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

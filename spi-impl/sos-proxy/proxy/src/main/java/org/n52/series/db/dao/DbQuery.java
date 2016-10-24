@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.dao;
 
 import static java.lang.String.format;
@@ -143,7 +142,7 @@ public class DbQuery {
         return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
     }
 
-    public Criteria addLocaleTo(Criteria criteria, Class< ? > clazz) {
+    public Criteria addLocaleTo(Criteria criteria, Class< ?> clazz) {
         if (getLocale() != null && isEntitySupported(clazz, criteria)) {
             Criteria translations = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN);
             criteria = translations.add(or(like(COLUMN_LOCALE, getCountryCode()), isNull(COLUMN_LOCALE)));
@@ -174,7 +173,7 @@ public class DbQuery {
      */
     Criteria addPlatformTypeFilter(String parameter, Criteria criteria) {
         FilterResolver filterResolver = getFilterResolver();
-        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
+        if (!filterResolver.shallIncludeAllPlatformTypes()) {
             if (parameter == null || parameter.isEmpty()) {
                 // series table itself
                 criteria.createCriteria("platform")
@@ -189,6 +188,16 @@ public class DbQuery {
                         .setProjection(onPkidProjection(parameter));
                 criteria.add(propertyIn(format("%s.pkid", parameter), c));
             }
+        }
+        return criteria;
+    }
+
+    Criteria addServiceFilter(String parameter, Criteria criteria) {
+        if (parameters.getService() != null) {
+            criteria.add(Restrictions.eq("service.pkid", parseToId(parameters.getService())));
+        }
+        if (parameters.getServices() != null && !parameters.getServices().isEmpty()) {
+            criteria.add(Restrictions.in("service.pkid", parseToIds(parameters.getServices())));
         }
         return criteria;
     }
@@ -227,17 +236,16 @@ public class DbQuery {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
         return Restrictions.or(
-                 Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
-                 Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
+                Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+                Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
     }
-
 
     private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
         boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
         boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
         return Restrictions.or(
-                 Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
-                 Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
+                Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+                Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
     }
 
     private ProjectionList onPkidProjection(String parameter) {
@@ -246,16 +254,13 @@ public class DbQuery {
     }
 
     /**
-     * @param id
-     *        the id string to parse.
-     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
-     *         long.
+     * @param id the id string to parse.
+     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type long.
      */
     private Long parseToId(String id) {
         try {
             return Long.parseLong(id);
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return Long.MIN_VALUE;
         }
     }
@@ -280,15 +285,11 @@ public class DbQuery {
                 criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
-
                 // XXX do sampling filter only on generated line strings stored in FOI table,
                 // otherwise we would have to check each observation row
-
-            }
-            catch (FactoryException e) {
+            } catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
-            }
-            catch (TransformException e) {
+            } catch (TransformException e) {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
@@ -311,18 +312,18 @@ public class DbQuery {
         if (hasValues(parameters.getPlatforms())) {
             Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
             Set<String> mobileIds = getMobileIds(parameters.getPlatforms());
-            if ( !stationaryIds.isEmpty()) {
+            if (!stationaryIds.isEmpty()) {
                 addFilterRestriction(stationaryIds, "feature", filter);
             }
-            if ( !mobileIds.isEmpty()) {
+            if (!mobileIds.isEmpty()) {
                 addFilterRestriction(mobileIds, "platform", filter);
             }
         }
 
         propertyName = propertyName != null
                 && !propertyName.isEmpty()
-                    ? propertyName
-                    : "pkid";
+                        ? propertyName
+                        : "pkid";
         return filter.setProjection(projectionList().add(property(propertyName)));
     }
 
@@ -423,6 +424,5 @@ public class DbQuery {
     public String toString() {
         return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
     }
-
 
 }

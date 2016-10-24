@@ -11,5 +11,6 @@
         <property column="identifier" name="domainId" type="string"/>
         <property column="name" name="name" type="string"/>
         <property column="name" insert="false" name="description" type="string" update="false"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

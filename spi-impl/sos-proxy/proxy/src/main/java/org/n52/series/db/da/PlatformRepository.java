@@ -346,7 +346,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setName(entity.getName());
         result.setTranslations(entity.getTranslations());
         result.setDescription(entity.getDescription());
-        result.setGeometry(entity.getGeometry());
+        result.setGeometry(entity.getGeometry().getGeometry());
         return result;
     }
 

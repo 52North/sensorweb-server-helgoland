@@ -102,6 +102,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         String seriesProperty = getSeriesProperty();
         DetachedCriteria filter = query.createDetachedFilterCriteria(seriesProperty);
         criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
+        criteria = query.addServiceFilter(seriesProperty, criteria);
         criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
         criteria = query.addLimitAndOffsetFilter(criteria);
         String filterProperty = seriesProperty == null || seriesProperty.isEmpty()

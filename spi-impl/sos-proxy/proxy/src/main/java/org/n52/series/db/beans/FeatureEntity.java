@@ -38,8 +38,12 @@ public class FeatureEntity extends DescribableEntity {
      */
     private GeometryEntity geometry;
 
-    public Geometry getGeometry() {
-        return getGeometry(null);
+//    public Geometry getGeometry() {
+//        return getGeometry(null);
+//    }
+
+    public GeometryEntity getGeometry() {
+        return this.geometry;
     }
 
     public Geometry getGeometry(String srid) {

@@ -9,7 +9,7 @@
             </generator>
         </id>
         <discriminator column="seriesType" force="true" type="string"/>
-        <!--<many-to-one class="CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>-->
+        <many-to-one class="CategoryEntity" column="categoryid" name="category" />
         <many-to-one class="ProcedureEntity" column="procedureid" name="procedure"/>
         <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon"/>
         <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature"/>
@@ -20,6 +20,7 @@
         <property column="identifier" name="domainId" type="string"/>
         <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
         <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
+        <many-to-one class="ServiceEntity" column="service" name="service"/>
 
         <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
             <property formula="3" name="numberOfDecimals" type="int"/>

@@ -140,13 +140,13 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
             return null;
         }
 
-        String observationValue = !getServiceInfo().isNoDataValue(observation)
-                ? observation.getValue()
-                : null;
+//        String observationValue = !getServiceInfo().isNoDataValue(observation)
+//                ? observation.getValue()
+//                : null;
 
         TextValue value = new TextValue();
         value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observationValue);
+//        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
