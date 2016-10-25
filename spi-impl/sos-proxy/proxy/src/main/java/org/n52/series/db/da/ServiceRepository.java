@@ -173,7 +173,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     private ServiceDao createDao(Session session) {
         return new ServiceDao(session);
     }
-
+    
     /**
      * Gets a condensed view of the requested service, i.e. it avoids getting a full version of the requested service.
      * Getting a full version (like {@link #getInstance(String, DbQuery)}) would redundantly count all parameter values
@@ -192,68 +192,20 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
             returnSession(session);
         }
     }
-
-//    private ServiceOutput createCondensed(ServiceEntity entity, DbQuery parameters) {
-//        ServiceOutput result = new ServiceOutput();
-//        result.setId(Long.toString(entity.getPkid()));
-//        result.setLabel(entity.getName());
-//        return result;
-//    }
-
-//    private ServiceOutput getExpandedService(DbQuery parameters) throws DataAccessException {
-//        ServiceOutput service = getCondensedService(parameters);
-//        service.setQuantities(countParameters(service, parameters));
-//        service.setSupportsFirstLatest(true);
-//
-//        FilterResolver filterResolver = parameters.getFilterResolver();
-//        if (filterResolver.shallBehaveBackwardsCompatible()) {
-//            // ensure backwards compatibility
-//            service.setVersion("1.0.0");
-//            service.setType("Thin DB access layer service.");
-//        } else {
-////            service.setType(serviceInfo.getType() == null
-////                    ? "Thin DB access layer service."
-////                    : serviceInfo.getType());
-////            service.setVersion(serviceInfo.getVersion() != null
-////                    ? serviceInfo.getVersion()
-////                    : "2.0");
-//            addSupportedDatasetsTo(service);
-//
-//            // TODO add features
-//            // TODO different counts
-//        }
-//        return service;
-//    }
-
-    private void addSupportedDatasetsTo(ServiceOutput service) {
-        Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
-        for (String datasetType : ioFactoryCreator.getKnownTypes()) {
-            try {
-                IoFactory factory = ioFactoryCreator.create(datasetType);
-                mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
-            } catch (DatasetFactoryException e) {
-                LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);
-            }
-        }
-        service.addSupportedDatasets(mimeTypesByDatasetTypes);
-    }
-
-//    private ServiceOutput getCondensedService(DbQuery parameters) {
-//        ServiceOutput service = new ServiceOutput();
-//        service.setLabel(serviceInfo.getServiceDescription());
-//        service.setId(serviceInfo.getServiceId());
-//        checkForHref(service, parameters);
-//        return service;
-//    }
-    private void checkForHref(ServiceOutput result, DbQuery parameters) {
-        if (parameters != null && parameters.getHrefBase() != null) {
-            result.setHrefBase(new UrlHelper().getServicesHrefBaseUrl(parameters.getHrefBase()));
-        }
+    
+    private ServiceOutput createExpandedService(ServiceTEntity serviceEntity, DbQuery parameters) {
+        ServiceOutput result = createCondensedService(serviceEntity);
+        result.setType(serviceEntity.getType());
+        result.setVersion(serviceEntity.getVersion());
+        result.setSupportsFirstLatest(true);
+        result.setQuantities(countParameters(result, parameters));
+        return result;
     }
 
     private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
+            query.setServiceId(service.getId());
             // #procedures == #offerings
             quantities.setOfferingsSize(counter.countProcedures(query));
             quantities.setProceduresSize(counter.countProcedures(query));

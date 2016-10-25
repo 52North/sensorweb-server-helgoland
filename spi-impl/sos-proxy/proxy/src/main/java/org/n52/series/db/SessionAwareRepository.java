@@ -81,15 +81,6 @@ public abstract class SessionAwareRepository {
         return result;
     }
 
-    protected ServiceOutput createExpandedService(ServiceTEntity serviceEntity, DbQuery parameters) {
-        ServiceOutput result = createCondensedService(serviceEntity);
-        result.setType(serviceEntity.getType());
-        result.setVersion(serviceEntity.getVersion());
-        result.setSupportsFirstLatest(true);
-        // TODO add quantities
-        return result;
-    }
-
     protected DbQuery getDbQuery(IoParameters parameters) {
         return DbQuery.createFrom(parameters);
     }

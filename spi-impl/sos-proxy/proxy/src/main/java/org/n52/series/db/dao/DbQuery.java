@@ -86,6 +86,8 @@ public class DbQuery {
 
     private String sridAuthorityCode = "EPSG:4326"; // default
 
+    private String serviceId;
+
     protected DbQuery(IoParameters parameters) {
         if (parameters != null) {
             this.parameters = parameters;
@@ -94,6 +96,14 @@ public class DbQuery {
 
     public static DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     public void setDatabaseAuthorityCode(String code) {
@@ -193,10 +203,11 @@ public class DbQuery {
     }
 
     Criteria addServiceFilter(String parameter, Criteria criteria) {
-        if (parameters.getService() != null) {
+        if (serviceId != null && !serviceId.isEmpty()) {
+            criteria.add(Restrictions.eq("service.pkid", parseToId(serviceId)));
+        } else if (parameters.getService() != null) {
             criteria.add(Restrictions.eq("service.pkid", parseToId(parameters.getService())));
-        }
-        if (parameters.getServices() != null && !parameters.getServices().isEmpty()) {
+        } else if (parameters.getServices() != null && !parameters.getServices().isEmpty()) {
             criteria.add(Restrictions.in("service.pkid", parseToIds(parameters.getServices())));
         }
         return criteria;
