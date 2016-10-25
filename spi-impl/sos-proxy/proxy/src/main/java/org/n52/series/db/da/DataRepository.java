@@ -33,11 +33,11 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.DatasetTEntity;
 import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.dao.DbQuery;
 
-public interface DataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> {
+public interface DataRepository<DSE extends DatasetTEntity<?>, V extends AbstractValue<?>> {
 
     Data<? extends AbstractValue<?>> getData(String id, DbQuery dbQuery) throws DataAccessException;
 

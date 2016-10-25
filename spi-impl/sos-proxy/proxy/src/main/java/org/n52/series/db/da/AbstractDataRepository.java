@@ -41,13 +41,13 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DataParameter;
-import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.DatasetTEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 
-public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
+public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetTEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
 
     @Override

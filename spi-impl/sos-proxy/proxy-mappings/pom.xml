@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>proxy-mappings</artifactId>
     <packaging>jar</packaging>
-    <name>Series REST API - SOS Proxy Mappings module</name>
+    <name>Series REST API - SOS Proxy Mappings Module</name>
     <description>REST SPI Mappings for SOS Proxy Cache.</description>
     <url>http://52north.org/communities/sensorweb/</url>
 

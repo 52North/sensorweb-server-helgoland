@@ -34,6 +34,6 @@ package org.n52.series.db.beans;
  * @deprecated use {@link MeasurementDataEntity} instead.
  */
 @Deprecated
-public final class TimeseriesEntity extends MeasurementDatasetEntity {
+public final class TimeseriesEntity extends MeasurementDatasetTEntity {
 
 }

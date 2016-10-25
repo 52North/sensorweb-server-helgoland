@@ -37,9 +37,9 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.DescribableTEntity;
+import org.n52.series.db.beans.FeatureTEntity;
+import org.n52.series.db.beans.MeasurementDatasetTEntity;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
@@ -63,7 +63,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, FeatureTEntity.class);
         } finally {
             returnSession(session);
         }
@@ -79,7 +79,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             FeatureDao stationDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
-            List<FeatureEntity> found = stationDao.find(query);
+            List<FeatureTEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -87,11 +87,11 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableTEntity> found,
             DbQuery query) {
         String locale = query.getLocale();
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableEntity searchResult : found) {
+        for (DescribableTEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new StationSearchResult(pkid, label));
@@ -104,10 +104,10 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
+            List<FeatureTEntity> allFeatures = getAllInstances(parameters, session);
 
             List<StationOutput> results = new ArrayList<>();
-            for (FeatureEntity featureEntity : allFeatures) {
+            for (FeatureTEntity featureEntity : allFeatures) {
                 results.add(createCondensed(featureEntity, parameters));
             }
 
@@ -122,10 +122,10 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
+            List<FeatureTEntity> allFeatures = getAllInstances(parameters, session);
 
             List<StationOutput> results = new ArrayList<>();
-            for (FeatureEntity featureEntity : allFeatures) {
+            for (FeatureTEntity featureEntity : allFeatures) {
                 results.add(createExpanded(featureEntity, parameters, session));
             }
             return results;
@@ -134,7 +134,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    private List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    private List<FeatureTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = createDao(session);
         return featureDao.getAllInstances(parameters);
     }
@@ -143,7 +143,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public StationOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureEntity result = getInstance(id, parameters, session);
+            FeatureTEntity result = getInstance(id, parameters, session);
             if (result == null) {
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
             }
@@ -153,7 +153,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    FeatureEntity getInstance(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
+    FeatureTEntity getInstance(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
         FeatureDao featureDao = createDao(session);
         return featureDao.getInstance(parseId(id), parameters);
@@ -164,22 +164,22 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
             FeatureDao featureDao = createDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
+            FeatureTEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         } finally {
             returnSession(session);
         }
     }
 
-    private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        DatasetDao<MeasurementDatasetEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetEntity.class);
-        List<MeasurementDatasetEntity> series = seriesDao.getInstancesWith(feature);
+    private StationOutput createExpanded(FeatureTEntity feature, DbQuery parameters, Session session) throws DataAccessException {
+        DatasetDao<MeasurementDatasetTEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetTEntity.class);
+        List<MeasurementDatasetTEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;
     }
 
-    private StationOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
+    private StationOutput createCondensed(FeatureTEntity entity, DbQuery parameters) {
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
         stationOutput.setId(Long.toString(entity.getPkid()));
@@ -187,7 +187,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         return stationOutput;
     }
 
-    private Geometry createPoint(FeatureEntity featureEntity) {
+    private Geometry createPoint(FeatureTEntity featureEntity) {
         return featureEntity.isSetGeometry()
                 ? featureEntity.getGeometry(getDatabaseSrid())
                 : null;

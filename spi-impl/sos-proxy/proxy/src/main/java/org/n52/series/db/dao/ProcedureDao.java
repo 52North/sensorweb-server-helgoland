@@ -37,11 +37,11 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nProcedureEntity;
-import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.beans.ProcedureTEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ProcedureDao extends AbstractDao<ProcedureEntity> {
+public class ProcedureDao extends AbstractDao<ProcedureTEntity> {
 
     private static final String SERIES_PROPERTY = "procedure";
 
@@ -53,7 +53,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> find(DbQuery query) {
+    public List<ProcedureTEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
@@ -61,9 +61,9 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<ProcedureTEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);
-        return (List<ProcedureEntity>) addFilters(criteria, query).list();
+        return (List<ProcedureTEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -78,8 +78,8 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     }
 
     @Override
-    protected Class<ProcedureEntity> getEntityClass() {
-        return ProcedureEntity.class;
+    protected Class<ProcedureTEntity> getEntityClass() {
+        return ProcedureTEntity.class;
     }
 
 }

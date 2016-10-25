@@ -37,8 +37,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.beans.DescribableTEntity;
+import org.n52.series.db.beans.ProcedureTEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ProcedureDao;
 import org.n52.series.spi.search.ProcedureSearchResult;
@@ -52,7 +52,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         Session session = getSession();
         try {
             ProcedureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, ProcedureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, ProcedureTEntity.class);
         } finally {
             returnSession(session);
         }
@@ -68,7 +68,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         try {
             ProcedureDao procedureDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
-            List<ProcedureEntity> found = procedureDao.find(query);
+            List<ProcedureTEntity> found = procedureDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -76,12 +76,12 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableTEntity> found,
                                                      DbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
         String hrefBase = urHelper.getProceduresHrefBaseUrl(query.getHrefBase());
-        for (DescribableEntity searchResult : found) {
+        for (DescribableTEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new ProcedureSearchResult(pkid, label, hrefBase));
@@ -94,7 +94,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         Session session = getSession();
         try {
             List<ProcedureOutput> results = new ArrayList<>();
-            for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            for (ProcedureTEntity procedureEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(procedureEntity, parameters));
             }
             return results;
@@ -108,7 +108,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         Session session = getSession();
         try {
             List<ProcedureOutput> results = new ArrayList<>();
-            for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            for (ProcedureTEntity procedureEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(procedureEntity, parameters));
             }
             return results;
@@ -121,33 +121,33 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     public ProcedureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ProcedureEntity result = getInstance(parseId(id), parameters, session);
+            ProcedureTEntity result = getInstance(parseId(id), parameters, session);
             return createExpanded(result, parameters);
         } finally {
             returnSession(session);
         }
     }
 
-    protected List<ProcedureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<ProcedureTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected ProcedureEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected ProcedureTEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         ProcedureDao procedureDAO = createDao(session);
-        ProcedureEntity result = procedureDAO.getInstance(id, parameters);
+        ProcedureTEntity result = procedureDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
         return result;
     }
 
-    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
+    private ProcedureOutput createExpanded(ProcedureTEntity entity, DbQuery parameters) throws DataAccessException {
         ProcedureOutput result = createCondensed(entity, parameters);
         result.setService(createCondensedService(entity.getService()));
         return result;
     }
 
-    private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
+    private ProcedureOutput createCondensed(ProcedureTEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));

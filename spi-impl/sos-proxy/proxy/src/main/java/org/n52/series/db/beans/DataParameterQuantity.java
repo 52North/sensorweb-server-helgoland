@@ -30,13 +30,13 @@ package org.n52.series.db.beans;
 
 public class DataParameterQuantity extends DataParameter<Double> {
 
-    private UnitEntity unit;
+    private UnitTEntity unit;
 
-    public UnitEntity getUnit() {
+    public UnitTEntity getUnit() {
         return unit;
     }
 
-    public void setUnit(final UnitEntity unit) {
+    public void setUnit(final UnitTEntity unit) {
         this.unit = unit;
     }
 

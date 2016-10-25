@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-    <class name="DatasetEntity" table="series">
+    <class name="DatasetTEntity" table="series">
         <id name="pkid" type="long">
             <column name="seriesid"/>
             <generator class="native">
@@ -9,20 +9,20 @@
             </generator>
         </id>
         <discriminator column="seriesType" force="true" type="string"/>
-        <many-to-one class="CategoryEntity" column="categoryid" name="category" />
-        <many-to-one class="ProcedureEntity" column="procedureid" name="procedure"/>
-        <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon"/>
-        <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature"/>
-        <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
+        <many-to-one class="CategoryTEntity" column="categoryid" name="category" />
+        <many-to-one class="ProcedureTEntity" column="procedureid" name="procedure"/>
+        <many-to-one class="PhenomenonTEntity" column="observablepropertyid" name="phenomenon"/>
+        <many-to-one class="FeatureTEntity" column="featureofinterestid" name="feature"/>
+        <many-to-one class="PlatformTEntity" column="procedureid" insert="false" name="platform" update="false"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
         <property column="seriesType" name="datasetType" type="string" insert="false" update="false"/>
 
         <property column="identifier" name="domainId" type="string"/>
         <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
         <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
-        <many-to-one class="ServiceEntity" column="service" name="service"/>
+        <many-to-one class="ServiceTEntity" column="service" name="service"/>
 
-        <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
+        <subclass discriminator-value="measurement" name="MeasurementDatasetTEntity">
             <property formula="3" name="numberOfDecimals" type="int"/>
             <component class="org.n52.series.db.beans.ObservationEntity" name="firstValue">
                 <property column="firsttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
@@ -32,7 +32,7 @@
                 <property column="lasttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
                 <property column="lastnumericvalue" name="value" type="double"/>
             </component>
-            <many-to-one class="UnitEntity" column="unitid" name="unit"/>
+            <many-to-one class="UnitTEntity" column="unitid" name="unit"/>
             <!--<list fetch="select" inverse="true" name="observations" table="observation">
                 <key column="observationid"/>
                 <index column="seriesid"/>
@@ -40,7 +40,7 @@
             </list>-->
         </subclass>
 
-        <subclass discriminator-value="text" name="TextDatasetEntity">
+        <subclass discriminator-value="text" name="TextDatasetTEntity">
             <!--<list fetch="select" inverse="true" name="observations" table="observation">
                 <key column="observationid"/>
                 <index column="seriesid"/>
@@ -48,7 +48,7 @@
             </list>-->
         </subclass>
 
-        <subclass discriminator-value="count" name="CountDatasetEntity">
+        <subclass discriminator-value="count" name="CountDatasetTEntity">
             <!--<list fetch="select" inverse="false" name="observations" table="observation">
                 <key column="observationid"/>
                 <index column="seriesid"/>

@@ -36,7 +36,7 @@ import java.util.List;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 
-public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
+public class DatasetTEntity<T extends DataEntity<?>> extends DescribableTEntity {
 
     public static final String PROCEDURE = "procedure";
     public static final String CATEGORY = "category";
@@ -45,15 +45,15 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     public static final String PLATFORM = "platform";
     public static final String OBSERVATION_TYPE = "observationType";
 
-    private CategoryEntity category;
+    private CategoryTEntity category;
 
-    private PhenomenonEntity phenomenon;
+    private PhenomenonTEntity phenomenon;
 
-    private ProcedureEntity procedure;
+    private ProcedureTEntity procedure;
 
-    private FeatureEntity feature;
+    private FeatureTEntity feature;
 
-    private PlatformEntity platform;
+    private PlatformTEntity platform;
 
     private Boolean published;
 
@@ -71,49 +71,49 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private Date lastValueAt;
 
-    private UnitEntity unit;
+    private UnitTEntity unit;
 
-    public DatasetEntity() {
+    public DatasetTEntity() {
         this.observations = new ArrayList<>();
     }
 
-    public CategoryEntity getCategory() {
+    public CategoryTEntity getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryEntity category) {
+    public void setCategory(CategoryTEntity category) {
         this.category = category;
     }
 
-    public PhenomenonEntity getPhenomenon() {
+    public PhenomenonTEntity getPhenomenon() {
         return phenomenon;
     }
 
-    public void setPhenomenon(PhenomenonEntity phenomenon) {
+    public void setPhenomenon(PhenomenonTEntity phenomenon) {
         this.phenomenon = phenomenon;
     }
 
-    public ProcedureEntity getProcedure() {
+    public ProcedureTEntity getProcedure() {
         return procedure;
     }
 
-    public void setProcedure(ProcedureEntity procedure) {
+    public void setProcedure(ProcedureTEntity procedure) {
         this.procedure = procedure;
     }
 
-    public FeatureEntity getFeature() {
+    public FeatureTEntity getFeature() {
         return feature;
     }
 
-    public void setFeature(FeatureEntity feature) {
+    public void setFeature(FeatureTEntity feature) {
         this.feature = feature;
     }
 
-    public PlatformEntity getPlatform() {
+    public PlatformTEntity getPlatform() {
         return platform;
     }
 
-    public void setPlatform(PlatformEntity platform) {
+    public void setPlatform(PlatformTEntity platform) {
         this.platform = platform;
     }
 
@@ -195,11 +195,11 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.datasetType = datasetType;
     }
 
-    public UnitEntity getUnit() {
+    public UnitTEntity getUnit() {
         return unit;
     }
 
-    public void setUnit(UnitEntity unit) {
+    public void setUnit(UnitTEntity unit) {
         this.unit = unit;
     }
 
@@ -224,6 +224,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         sb.append(" , phenomenon: ").append(phenomenon);
         sb.append(" , procedure: ").append(procedure);
         sb.append(" , feature: ").append(feature);
+        sb.append(" , service: ").append(getService());
         sb.append(" , #observations: ").append(observations.size());
         return sb.append(" ]").toString();
     }

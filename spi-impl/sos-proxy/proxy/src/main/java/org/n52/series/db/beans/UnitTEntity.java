@@ -28,58 +28,8 @@
  */
 package org.n52.series.db.beans;
 
-public class ServiceEntity {
+public class UnitTEntity extends DescribableTEntity {
 
-    private Long pkid;
-
-    private String name;
-
-    private String description;
-
-    private String type;
-
-    // TODO: private List<String> noDataValues;
-
-    private String version;
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
+    // re-uses existing i18n logic
+    // maps attribute 'unit' to internationalizable attribute 'name'
 }

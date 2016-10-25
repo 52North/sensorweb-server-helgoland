@@ -28,14 +28,19 @@
  */
 package org.n52.series.db.beans;
 
-public class CategoryEntity extends DescribableEntity {
+import java.util.HashSet;
+import java.util.Set;
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+public class TextDatasetTEntity extends DatasetTEntity<TextDataEntity> {
+
+    private Set<TextDatasetTEntity> referenceValues = new HashSet<>();
+
+    public Set<TextDatasetTEntity> getReferenceValues() {
+        return referenceValues;
+    }
+
+    public void setReferenceValues(Set<TextDatasetTEntity> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

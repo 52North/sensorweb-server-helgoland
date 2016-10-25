@@ -28,56 +28,19 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntity> {
+public class CountDatasetTEntity extends DatasetTEntity<CountDataEntity> {
 
-    private int numberOfDecimals;
+    private Set<CountDatasetTEntity> referenceValues = new HashSet<>();
 
-    private Set<MeasurementDatasetEntity> referenceValues = new HashSet<>();
-
-    public Set<MeasurementDatasetEntity> getReferenceValues() {
+    public Set<CountDatasetTEntity> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Set<MeasurementDatasetEntity> referenceValues) {
+    public void setReferenceValues(Set<CountDatasetTEntity> referenceValues) {
         this.referenceValues = referenceValues;
-    }
-
-    public int getNumberOfDecimals() {
-        return numberOfDecimals;
-    }
-
-    public void setNumberOfDecimals(int numberOfDecimals) {
-        this.numberOfDecimals = numberOfDecimals;
-    }
-
-    @Override
-    public MeasurementDataEntity getFirstValue() {
-        final MeasurementDataEntity firstValue = super.getFirstValue();
-        if (firstValue != null) {
-            Date when = firstValue.getTimestamp();
-            Double value = firstValue.getValue();
-            if (when == null || value == null) {
-                return null; // empty component
-            }
-        }
-        return firstValue;
-    }
-
-    @Override
-    public MeasurementDataEntity getLastValue() {
-        final MeasurementDataEntity lastValue = super.getLastValue();
-        if (lastValue != null) {
-            Date when = lastValue.getTimestamp();
-            Double value = lastValue.getValue();
-            if (when == null || value == null) {
-                return null; // empty component
-            }
-        }
-        return lastValue;
     }
 
 }

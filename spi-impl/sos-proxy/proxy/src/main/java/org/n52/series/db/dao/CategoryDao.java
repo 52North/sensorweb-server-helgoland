@@ -34,14 +34,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.CategoryTEntity;
 import org.n52.series.db.beans.I18nCategoryEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class CategoryDao extends AbstractDao<CategoryEntity> {
+public class CategoryDao extends AbstractDao<CategoryTEntity> {
 
     private static final String SERIES_PROPERTY = "category";
 
@@ -53,7 +53,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryEntity> find(DbQuery query) {
+    public List<CategoryTEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
@@ -62,7 +62,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<CategoryTEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query);
         return addFilters(criteria, query).list();
@@ -74,8 +74,8 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     }
 
     @Override
-    protected Class<CategoryEntity> getEntityClass() {
-        return CategoryEntity.class;
+    protected Class<CategoryTEntity> getEntityClass() {
+        return CategoryTEntity.class;
     }
 
 }

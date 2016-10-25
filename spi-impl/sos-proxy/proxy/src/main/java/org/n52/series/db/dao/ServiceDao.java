@@ -32,11 +32,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.beans.ServiceTEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ServiceDao extends AbstractDao<ServiceEntity> {
+public class ServiceDao extends AbstractDao<ServiceTEntity> {
 
     private static final String SERIES_PROPERTY = "service";
 
@@ -45,13 +45,13 @@ public class ServiceDao extends AbstractDao<ServiceEntity> {
     }
 
     @Override
-    public List<ServiceEntity> find(DbQuery query) {
+    public List<ServiceTEntity> find(DbQuery query) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    protected Class<ServiceEntity> getEntityClass() {
-        return ServiceEntity.class;
+    protected Class<ServiceTEntity> getEntityClass() {
+        return ServiceTEntity.class;
     }
 
     @Override
@@ -60,9 +60,12 @@ public class ServiceDao extends AbstractDao<ServiceEntity> {
     }
 
     @Override
-    public List<ServiceEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+    public List<ServiceTEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
         Criteria criteria = getDefaultCriteria();
         return criteria.list();
     }
 
+    public void insertInstance(ServiceTEntity service) {
+        this.session.save(service);
+    }
 }

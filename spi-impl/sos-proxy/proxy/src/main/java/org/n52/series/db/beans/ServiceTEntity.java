@@ -28,19 +28,68 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.HashSet;
-import java.util.Set;
+public class ServiceTEntity {
 
-public class TextDatasetEntity extends DatasetEntity<TextDataEntity> {
+    private Long pkid;
 
-    private Set<TextDatasetEntity> referenceValues = new HashSet<>();
+    private String name;
 
-    public Set<TextDatasetEntity> getReferenceValues() {
-        return referenceValues;
+    private String description;
+
+    private String type;
+
+    // TODO: private List<String> noDataValues;
+
+    private String version;
+
+    public Long getPkid() {
+        return pkid;
     }
 
-    public void setReferenceValues(Set<TextDatasetEntity> referenceValues) {
-        this.referenceValues = referenceValues;
+    public void setPkid(Long pkid) {
+        this.pkid = pkid;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" id: ").append(getPkid());
+        sb.append(", name: ").append(getName());
+        sb.append(", type: ").append(getType());
+        sb.append(", version: ").append(getVersion());
+        return sb.append(" ]").toString();
+    }
 }

@@ -48,8 +48,8 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.beans.DescribableTEntity;
+import org.n52.series.db.beans.ServiceTEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
@@ -80,7 +80,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             ServiceDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, ServiceEntity.class);
+            return dao.hasInstance(parseId(id), parameters, ServiceTEntity.class);
         } finally {
             returnSession(session);
         }
@@ -106,10 +106,10 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableTEntity> found, DbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
-        for (DescribableEntity searchResult : found) {
+        for (DescribableTEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             String hrefBase = new UrlHelper().getFeaturesHrefBaseUrl(query.getHrefBase());
@@ -123,7 +123,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+            for (ServiceTEntity serviceEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensedService(serviceEntity));
             }
             return results;
@@ -137,7 +137,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+            for (ServiceTEntity serviceEntity : getAllInstances(parameters, session)) {
                 results.add(createExpandedService(serviceEntity, parameters));
             }
             return results;
@@ -150,23 +150,23 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceEntity result = getInstance(parseId(id), parameters, session);
+            ServiceTEntity result = getInstance(parseId(id), parameters, session);
             return createExpandedService(result, parameters);
         } finally {
             returnSession(session);
         }
     }
 
-    protected ServiceEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected ServiceTEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         ServiceDao serviceDAO = createDao(session);
-        ServiceEntity result = serviceDAO.getInstance(id, parameters);
+        ServiceTEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
         return result;
     }
 
-    protected List<ServiceEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<ServiceTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
@@ -186,7 +186,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     public ServiceOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceEntity result = getInstance(parseId(id), parameters, session);
+            ServiceTEntity result = getInstance(parseId(id), parameters, session);
             return createCondensedService(result);
         } finally {
             returnSession(session);

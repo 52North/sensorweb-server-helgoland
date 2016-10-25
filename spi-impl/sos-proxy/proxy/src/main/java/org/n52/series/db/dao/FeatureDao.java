@@ -34,14 +34,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FeatureDao extends AbstractDao<FeatureEntity> {
+public class FeatureDao extends AbstractDao<FeatureTEntity> {
 
     private static final String SERIES_FILTER_PROPERTY = "feature";
 
@@ -53,7 +53,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> find(DbQuery query) {
+    public List<FeatureTEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
@@ -62,10 +62,10 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<FeatureTEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
-        return (List<FeatureEntity>) addFilters(criteria, query).list();
+        return (List<FeatureTEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -74,8 +74,8 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     }
 
     @Override
-    protected Class<FeatureEntity> getEntityClass() {
-        return FeatureEntity.class;
+    protected Class<FeatureTEntity> getEntityClass() {
+        return FeatureTEntity.class;
     }
 
 }

@@ -54,16 +54,6 @@ public class DescribableEntity {
 
     private Set<I18nEntity> translations;
 
-    private ServiceEntity service;
-
-    public ServiceEntity getService() {
-        return service;
-    }
-
-    public void setService(ServiceEntity service) {
-        this.service = service;
-    }
-
     public Long getPkid() {
         return pkid;
     }

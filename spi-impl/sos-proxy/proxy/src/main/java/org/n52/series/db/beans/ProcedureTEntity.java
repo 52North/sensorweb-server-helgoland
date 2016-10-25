@@ -26,36 +26,39 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.beans;
 
+public class ProcedureTEntity extends DescribableTEntity {
 
-import com.vividsolutions.jts.geom.Geometry;
+    private boolean reference;
 
-public class FeatureEntity extends DescribableEntity {
+    private boolean mobile;
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
+    private boolean insitu;
 
-//    public Geometry getGeometry() {
-//        return getGeometry(null);
-//    }
-
-    public GeometryEntity getGeometry() {
-        return this.geometry;
+    public boolean isReference() {
+        return reference;
     }
 
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
+    public void setReference(boolean reference) {
+        this.reference = reference;
     }
 
-    public void setGeometry(GeometryEntity geometry) {
-        this.geometry = geometry;
+    public boolean isMobile() {
+        return mobile;
     }
 
-    public boolean isSetGeometry() {
-        return geometry != null;
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
+    }
+
+    public boolean isInsitu() {
+        return insitu;
+    }
+
+    public void setInsitu(boolean insitu) {
+        this.insitu = insitu;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class FeatureEntity extends DescribableEntity {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
         return sb.append(" ]").toString();
     }
-
 }

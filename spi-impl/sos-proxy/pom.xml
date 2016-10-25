@@ -7,7 +7,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>spi-impl-proxy</artifactId>
-    <name>Series REST API - SPI SOS Proxy Impl</name>
+    <name>Series REST API - SOS Proxy</name>
     <packaging>pom</packaging>
 
     <modules>
@@ -22,6 +22,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--<dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>series-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>-->
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>proxy</artifactId>

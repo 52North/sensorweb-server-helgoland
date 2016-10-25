@@ -46,10 +46,11 @@ import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DataEntity;
-import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.DatasetTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
 
 /**
  * TODO: JavaDoc
@@ -118,7 +119,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws org.n52.series.db.DataAccessException if accessing database
      * fails.
      */
-    public List<T> getAllInstancesFor(DatasetEntity series) throws DataAccessException {
+    public List<T> getAllInstancesFor(DatasetTEntity series) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}'", series.getPkid());
         return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
     }
@@ -134,7 +135,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
      * @throws DataAccessException if accessing database fails.
      */
     @SuppressWarnings("unchecked") // cast from hibernate
-    public List<T> getAllInstancesFor(DatasetEntity series, DbQuery parameters) throws DataAccessException {
+    public List<T> getAllInstancesFor(DatasetTEntity series, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
         Criteria criteria = getDefaultCriteria()
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
@@ -160,13 +161,13 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T getDataValueAt(Date timestamp, DatasetEntity series) {
+    public T getDataValueAt(Date timestamp, DatasetTEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
 
-        DetachedCriteria filter = forClass(DatasetEntity.class)
+        DetachedCriteria filter = forClass(DatasetTEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
         return (T) criteria.uniqueResult();

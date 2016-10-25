@@ -38,18 +38,18 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.DatasetTEntity;
+import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
-import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.beans.PlatformTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
+public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
@@ -65,7 +65,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public DatasetDao(Session session) {
         super(session);
-        this.entityType = (Class<T>) DatasetEntity.class;
+        this.entityType = (Class<T>) DatasetTEntity.class;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getInstancesWith(FeatureEntity feature) {
+    public List<T> getInstancesWith(FeatureTEntity feature) {
         LOGGER.debug("get instance for feature '{}'", feature);
         Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
@@ -120,7 +120,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getInstancesWith(PlatformEntity platform) {
+    public List<T> getInstancesWith(PlatformTEntity platform) {
         LOGGER.debug("get instance for platform '{}'", platform);
         Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
@@ -143,7 +143,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     protected Criteria getDefaultCriteria(String alias) {
        Criteria criteria = entityType != null
             ? super.getDefaultCriteria(alias)
-            : session.createCriteria(DatasetEntity.class, alias);
+            : session.createCriteria(DatasetTEntity.class, alias);
         addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }

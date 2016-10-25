@@ -28,14 +28,10 @@
  */
 package org.n52.series.db.dao;
 
-import static java.lang.String.format;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
 import static org.n52.series.db.DataModelUtil.isEntitySupported;
@@ -60,8 +56,8 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
-import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.beans.DatasetTEntity;
+import org.n52.series.db.beans.PlatformTEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -69,6 +65,10 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
 
 public class DbQuery {
 
@@ -181,7 +181,7 @@ public class DbQuery {
                         .add(createInsituExpression(filterResolver));
             } else {
                 // join parameter table via series table
-                DetachedCriteria c = forClass(DatasetEntity.class, "series")
+                DetachedCriteria c = forClass(DatasetTEntity.class, "series")
                         .createCriteria("procedure")
                         .add(createMobileExpression(filterResolver))
                         .add(createInsituExpression(filterResolver))
@@ -204,7 +204,7 @@ public class DbQuery {
 
     Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
         Set<String> datasetTypes = getParameters().getDatasetTypes();
-        if ( !datasetTypes.isEmpty()) {
+        if (!datasetTypes.isEmpty()) {
             FilterResolver filterResolver = getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible() || !filterResolver.shallIncludeAllDatasetTypes()) {
                 if (parameter == null || parameter.isEmpty()) {
@@ -212,7 +212,7 @@ public class DbQuery {
                     criteria.add(Restrictions.in("datasetType", datasetTypes));
                 } else {
                     // join parameter table with series table
-                    DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
+                    DetachedCriteria filteredPkids = forClass(DatasetTEntity.class, "series")
                             .add(Restrictions.in("datasetType", datasetTypes))
                             .setProjection(onPkidProjection(parameter));
                     criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
@@ -235,17 +235,15 @@ public class DbQuery {
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
-        return Restrictions.or(
-                Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
-                Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
+        return Restrictions.or(Restrictions.eq(PlatformTEntity.MOBILE, !includeStationary), // inverse to match filter
+                Restrictions.eq(PlatformTEntity.MOBILE, includeMobile));
     }
 
     private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
         boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
         boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
-        return Restrictions.or(
-                Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
-                Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
+        return Restrictions.or(Restrictions.eq(PlatformTEntity.INSITU, includeInsitu),
+                Restrictions.eq(PlatformTEntity.INSITU, !includeRemote)); // inverse to match filter
     }
 
     private ProjectionList onPkidProjection(String parameter) {
@@ -297,7 +295,7 @@ public class DbQuery {
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class);
+        DetachedCriteria filter = DetachedCriteria.forClass(DatasetTEntity.class);
 
         filterWithSingularParmameters(filter); // stay backwards compatible
 

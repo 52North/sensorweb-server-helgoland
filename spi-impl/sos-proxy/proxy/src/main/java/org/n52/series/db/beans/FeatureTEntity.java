@@ -28,54 +28,43 @@
  */
 package org.n52.series.db.beans;
 
-import org.n52.io.response.PlatformType;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- * @since 2.0.0
- */
-public class PlatformEntity extends DescribableEntity {
+public class FeatureTEntity extends DescribableTEntity {
 
-    public static final String COLUMN_PKID = "pkid";
-    public static final String INSITU = "insitu";
-    public static final String MOBILE = "mobile";
+    /**
+     * @since 2.0.0
+     */
+    private GeometryEntity geometry;
 
-    private boolean mobile = false;
+//    public Geometry getGeometry() {
+//        return getGeometry(null);
+//    }
 
-    private boolean insitu = true;
-
-    private Geometry geometry;
-
-    public PlatformType getPlatformType() {
-        return PlatformType.toInstance(mobile, insitu);
+    public GeometryEntity getGeometry() {
+        return this.geometry;
     }
 
-    public boolean isMobile() {
-        return mobile;
+    public Geometry getGeometry(String srid) {
+        return geometry != null ? geometry.getGeometry(srid) : null;
     }
 
-    public void setMobile(boolean mobile) {
-        this.mobile = mobile;
-    }
-
-    public boolean isInsitu() {
-        return insitu;
-    }
-
-    public void setInsitu(boolean insitu) {
-        this.insitu = insitu;
-    }
-
-    public Geometry getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(GeometryEntity geometry) {
         this.geometry = geometry;
+    }
+
+    public boolean isSetGeometry() {
+        return geometry != null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
+        return sb.append(" ]").toString();
     }
 
 }

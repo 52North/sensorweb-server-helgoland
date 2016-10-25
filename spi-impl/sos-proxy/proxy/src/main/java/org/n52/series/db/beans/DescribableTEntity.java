@@ -28,13 +28,16 @@
  */
 package org.n52.series.db.beans;
 
-public class PhenomenonEntity extends DescribableEntity {
+public class DescribableTEntity extends DescribableEntity {
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    private ServiceTEntity service;
+
+    public ServiceTEntity getService() {
+        return service;
     }
+
+    public void setService(ServiceTEntity service) {
+        this.service = service;
+    }
+
 }

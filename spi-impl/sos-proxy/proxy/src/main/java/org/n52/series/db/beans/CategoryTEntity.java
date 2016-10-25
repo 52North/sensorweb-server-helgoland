@@ -28,8 +28,15 @@
  */
 package org.n52.series.db.beans;
 
-public class UnitEntity extends DescribableEntity {
+public class CategoryTEntity extends DescribableTEntity {
 
-    // re-uses existing i18n logic
-    // maps attribute 'unit' to internationalizable attribute 'name'
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
+        return sb.append(" ]").toString();
+    }
+
 }

@@ -28,19 +28,14 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.HashSet;
-import java.util.Set;
+public class PhenomenonTEntity extends DescribableTEntity {
 
-public class CountDatasetEntity extends DatasetEntity<CountDataEntity> {
-
-    private Set<CountDatasetEntity> referenceValues = new HashSet<>();
-
-    public Set<CountDatasetEntity> getReferenceValues() {
-        return referenceValues;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
+        return sb.append(" ]").toString();
     }
-
-    public void setReferenceValues(Set<CountDatasetEntity> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
 }
