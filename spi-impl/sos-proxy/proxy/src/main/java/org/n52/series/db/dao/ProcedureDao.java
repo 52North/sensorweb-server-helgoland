@@ -82,4 +82,9 @@ public class ProcedureDao extends AbstractDao<ProcedureTEntity> {
         return ProcedureTEntity.class;
     }
 
+    @Override
+    public void insertInstance(ProcedureTEntity procedure) {
+        session.save(procedure);
+    }
+
 }

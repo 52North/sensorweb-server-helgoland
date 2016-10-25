@@ -72,4 +72,9 @@ public class PhenomenonDao extends AbstractDao<PhenomenonTEntity> {
         return PhenomenonTEntity.class;
     }
 
+    @Override
+    public void insertInstance(PhenomenonTEntity phenomenon) {
+        session.save(phenomenon);
+    }
+
 }

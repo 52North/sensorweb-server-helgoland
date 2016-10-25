@@ -65,6 +65,7 @@ public class ServiceDao extends AbstractDao<ServiceTEntity> {
         return criteria.list();
     }
 
+    @Override
     public void insertInstance(ServiceTEntity service) {
         this.session.save(service);
     }

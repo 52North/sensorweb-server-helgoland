@@ -78,4 +78,9 @@ public class CategoryDao extends AbstractDao<CategoryTEntity> {
         return CategoryTEntity.class;
     }
 
+    @Override
+    public void insertInstance(CategoryTEntity category) {
+        session.save(category);
+    }
+
 }

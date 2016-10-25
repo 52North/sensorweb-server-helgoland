@@ -162,4 +162,12 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
         return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
 
+    @Override
+    public void insertInstance(T dataset) {
+        session.save(dataset.getUnit());
+        session.save(dataset);
+        session.flush();
+        session.refresh(dataset);
+    }
+
 }

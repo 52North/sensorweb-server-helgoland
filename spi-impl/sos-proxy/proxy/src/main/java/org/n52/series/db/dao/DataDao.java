@@ -173,4 +173,9 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         return (T) criteria.uniqueResult();
     }
 
+    @Override
+    public void insertInstance(T object) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

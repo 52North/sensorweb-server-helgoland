@@ -80,4 +80,9 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
         return PlatformTEntity.class;
     }
 
+    @Override
+    public void insertInstance(PlatformTEntity platform) {
+        session.save(platform);
+    }
+
 }

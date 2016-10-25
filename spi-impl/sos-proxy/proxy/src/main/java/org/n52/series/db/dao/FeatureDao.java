@@ -78,4 +78,9 @@ public class FeatureDao extends AbstractDao<FeatureTEntity> {
         return FeatureTEntity.class;
     }
 
+    @Override
+    public void insertInstance(FeatureTEntity feature) {
+        session.save(feature);
+    }
+
 }
