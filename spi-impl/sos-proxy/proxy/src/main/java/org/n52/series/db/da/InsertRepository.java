@@ -35,18 +35,14 @@ import org.n52.series.db.beans.CategoryTEntity;
 import org.n52.series.db.beans.DatasetTEntity;
 import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.PhenomenonTEntity;
-import org.n52.series.db.beans.PlatformTEntity;
 import org.n52.series.db.beans.ProcedureTEntity;
 import org.n52.series.db.beans.ServiceTEntity;
-import org.n52.series.db.beans.UnitTEntity;
 import org.n52.series.db.dao.CategoryDao;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PhenomenonDao;
-import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProcedureDao;
 import org.n52.series.db.dao.ServiceDao;
-import org.n52.series.db.dao.UnitDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,9 +72,8 @@ public class InsertRepository extends SessionAwareRepository {
             CategoryTEntity category = insertCategory(dataset.getCategory(), service, session);
             FeatureTEntity feature = insertFeature(dataset.getFeature(), service, session);
             PhenomenonTEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), service, session);
-            UnitTEntity unit = insertUnit(dataset.getUnit(), service, session);
 
-            insertDataset(dataset, category, procedure, feature, phenomenon, unit, service, session);
+            insertDataset(dataset, category, procedure, feature, phenomenon, service, session);
 
             session.flush();
             transaction.commit();
@@ -115,23 +110,15 @@ public class InsertRepository extends SessionAwareRepository {
         return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private PlatformTEntity insertPlatform(PlatformTEntity platform, ServiceTEntity service, Session session) {
-        platform.setService(service);
-        return new PlatformDao(session).getOrInsertInstance(platform);
-    }
-
-    private UnitTEntity insertUnit(UnitTEntity unit, ServiceTEntity service, Session session) {
-        unit.setService(service);
-        return new UnitDao(session).getOrInsertInstance(unit);
-    }
-
-    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryTEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceTEntity service, Session session) {
+    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryTEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
         dataset.setFeature(feature);
         dataset.setPhenomenon(phenomenon);
-        dataset.setUnit(unit);
         dataset.setService(service);
+        if (dataset.getUnit() != null) {
+            dataset.getUnit().setService(service);
+        }
         return new DatasetDao(session).getOrInsertInstance(dataset);
     }
 

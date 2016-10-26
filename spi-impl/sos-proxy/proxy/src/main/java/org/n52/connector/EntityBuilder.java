@@ -31,12 +31,15 @@ package org.n52.connector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.n52.series.db.beans.CategoryTEntity;
+import org.n52.series.db.beans.CountDatasetTEntity;
+import org.n52.series.db.beans.DatasetTEntity;
 import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.MeasurementDatasetTEntity;
 import org.n52.series.db.beans.PhenomenonTEntity;
 import org.n52.series.db.beans.ProcedureTEntity;
 import org.n52.series.db.beans.ServiceTEntity;
+import org.n52.series.db.beans.TextDatasetTEntity;
 import org.n52.series.db.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.util.JTSHelper;
@@ -99,24 +102,39 @@ public class EntityBuilder {
 
     public static UnitTEntity createUnit(String unit, ServiceTEntity service) {
         UnitTEntity entity = new UnitTEntity();
-        entity.setName("unit" + unit);
+        entity.setName(unit);
         entity.setService(service);
         return entity;
     }
 
-    public static MeasurementDatasetTEntity createMeasurementDataset(String measurement, ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceTEntity service) {
+    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceTEntity service) {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
-        measurementDataset.setName(measurement);
-        measurementDataset.setProcedure(procedure);
-        measurementDataset.setCategory(category);
-        measurementDataset.setFeature(feature);
-        measurementDataset.setPhenomenon(phenomenon);
+        updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);
         //measurementDataset.setFirstValueAt(new GregorianCalendar(2016, 9, 15, 1, 0, 0).getTime());
         //measurementDataset.setLastValueAt(new GregorianCalendar(2016, 9, 15, 2, 0, 0).getTime());
-        measurementDataset.setPublished(Boolean.TRUE);
-        measurementDataset.setService(service);
         return measurementDataset;
+    }
+
+    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+        TextDatasetTEntity textDataset = new TextDatasetTEntity();
+        updateDataset(textDataset, procedure, category, feature, phenomenon, service);
+        return textDataset;
+    }
+
+    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+        CountDatasetTEntity countDataset = new CountDatasetTEntity();
+        updateDataset(countDataset, procedure, category, feature, phenomenon, service);
+        return countDataset;
+    }
+
+    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+        dataset.setProcedure(procedure);
+        dataset.setCategory(category);
+        dataset.setFeature(feature);
+        dataset.setPhenomenon(phenomenon);
+        dataset.setPublished(Boolean.TRUE);
+        dataset.setService(service);
     }
 
 }

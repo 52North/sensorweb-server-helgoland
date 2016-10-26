@@ -35,6 +35,7 @@ import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryTEntity;
+import org.n52.series.db.beans.CountDatasetTEntity;
 import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.MeasurementDatasetTEntity;
 import org.n52.series.db.beans.PhenomenonTEntity;
@@ -111,15 +112,17 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
             String version = jobDataMap.getString("version");
 
             ServiceTEntity service = EntityBuilder.createService(name, "description of " + name, version);
-            ProcedureTEntity procedure = EntityBuilder.createProcedure("procedure" + new Date().getMinutes(), true, false, service);
+            ProcedureTEntity procedure = EntityBuilder.createProcedure("procedure", true, false, service);
             FeatureTEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
-            CategoryTEntity category = EntityBuilder.createCategory("category", service);
+            CategoryTEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
             PhenomenonTEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
             UnitTEntity unit = EntityBuilder.createUnit("unit", service);
 
-            MeasurementDatasetTEntity measurement = EntityBuilder.createMeasurementDataset(version, procedure, category, feature, phenomenon, unit, service);
+            MeasurementDatasetTEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, phenomenon, unit, service);
+            CountDatasetTEntity countDataset = EntityBuilder.createCountDataset(procedure, category, feature, phenomenon, service);
 
             insertRepository.insertDataset(measurement);
+            insertRepository.insertDataset(countDataset);
 
             LOGGER.info(url);
         } catch (OwsExceptionReport ex) {

@@ -30,10 +30,15 @@ package org.n52.series.db.beans;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.n52.io.response.dataset.count.CountDatasetOutput;
 
 public class CountDatasetTEntity extends DatasetTEntity<CountDataEntity> {
 
     private Set<CountDatasetTEntity> referenceValues = new HashSet<>();
+
+    public CountDatasetTEntity() {
+        setDatasetType(CountDatasetOutput.DATASET_TYPE);
+    }
 
     public Set<CountDatasetTEntity> getReferenceValues() {
         return referenceValues;

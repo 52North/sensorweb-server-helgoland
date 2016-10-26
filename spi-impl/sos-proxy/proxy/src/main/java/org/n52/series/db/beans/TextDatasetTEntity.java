@@ -30,10 +30,15 @@ package org.n52.series.db.beans;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.n52.io.response.dataset.text.TextDatasetOutput;
 
 public class TextDatasetTEntity extends DatasetTEntity<TextDataEntity> {
 
     private Set<TextDatasetTEntity> referenceValues = new HashSet<>();
+
+    public TextDatasetTEntity() {
+        setDatasetType(TextDatasetOutput.DATASET_TYPE);
+    }
 
     public Set<TextDatasetTEntity> getReferenceValues() {
         return referenceValues;

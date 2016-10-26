@@ -43,6 +43,7 @@ import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.PlatformTEntity;
+import org.n52.series.db.beans.UnitTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,6 +170,9 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
     public T getOrInsertInstance(T dataset) {
         T instance = getInstance(dataset);
         if (instance == null) {
+            if (dataset.getUnit() != null) {
+                dataset.setUnit(getOrInsertUnit(dataset.getUnit()));
+            }
             session.save(dataset);
             session.flush();
             session.refresh(dataset);
@@ -176,14 +180,33 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
         return dataset;
     }
 
+    public UnitTEntity getOrInsertUnit(UnitTEntity unit) {
+        UnitTEntity instance = getUnit(unit);
+        if (instance == null) {
+            this.session.save(unit);
+            instance = unit;
+        }
+        return instance;
+    }
+
+    private UnitTEntity getUnit(UnitTEntity unit) {
+        Criteria criteria = session.createCriteria(UnitTEntity.class)
+                .add(Restrictions.eq("name", unit.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, unit.getService().getPkid()));
+        return (UnitTEntity) criteria.uniqueResult();
+    }
+
     private T getInstance(T dataset) {
         Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq("datasetType", dataset.getDatasetType()))
                 .add(Restrictions.eq(COLUMN_CATEGORY_PKID, dataset.getCategory().getPkid()))
                 .add(Restrictions.eq(COLUMN_FEATURE_PKID, dataset.getFeature().getPkid()))
                 .add(Restrictions.eq(COLUMN_PROCEDURE_PKID, dataset.getProcedure().getPkid()))
                 .add(Restrictions.eq(COLUMN_PHENOMENON_PKID, dataset.getPhenomenon().getPkid()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, dataset.getService().getPkid()))
-                .add(Restrictions.eq(COLUMN_UNIT_PKID, dataset.getUnit().getPkid()));
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, dataset.getService().getPkid()));
+        if (dataset.getUnit() != null) {
+            criteria.add(Restrictions.eq(COLUMN_UNIT_PKID, dataset.getUnit().getPkid()));
+        }
         return (T) criteria.uniqueResult();
     }
 
