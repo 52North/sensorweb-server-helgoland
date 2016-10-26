@@ -30,15 +30,9 @@ package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.hibernate.Session;
-
-import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
-import org.n52.io.IoFactory;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
@@ -173,7 +167,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     private ServiceDao createDao(Session session) {
         return new ServiceDao(session);
     }
-    
+
     /**
      * Gets a condensed view of the requested service, i.e. it avoids getting a full version of the requested service.
      * Getting a full version (like {@link #getInstance(String, DbQuery)}) would redundantly count all parameter values
@@ -192,7 +186,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
             returnSession(session);
         }
     }
-    
+
     private ServiceOutput createExpandedService(ServiceTEntity serviceEntity, DbQuery parameters) {
         ServiceOutput result = createCondensedService(serviceEntity);
         result.setType(serviceEntity.getType());

@@ -81,7 +81,7 @@ public class ServiceTEntity {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -32,7 +32,6 @@ import static org.hibernate.criterion.Projections.rowCount;
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -43,7 +42,7 @@ import org.n52.series.db.beans.I18nEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractDao<T> implements GenericDao<T, Long> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long>, InsertDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
 

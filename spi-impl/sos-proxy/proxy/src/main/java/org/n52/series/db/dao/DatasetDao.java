@@ -54,6 +54,12 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
     private static final String COLUMN_PKID = "pkid";
+    private static final String COLUMN_SERVICE_PKID = "service.pkid";
+    private static final String COLUMN_CATEGORY_PKID = "category.pkid";
+    private static final String COLUMN_FEATURE_PKID = "feature.pkid";
+    private static final String COLUMN_PROCEDURE_PKID = "procedure.pkid";
+    private static final String COLUMN_PHENOMENON_PKID = "phenomenon.pkid";
+    private static final String COLUMN_UNIT_PKID = "unit.pkid";
 
     private final Class<T> entityType;
 
@@ -81,19 +87,17 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
          * and phenomenon. Therefore we have to join both tables and search
          * for given pattern on any of the stored labels.
          */
-
         Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)
-                      .add(Restrictions.ilike("name", searchTerm)).list());
+                .add(Restrictions.ilike("name", searchTerm)).list());
 
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
         series.addAll(translate(I18nProcedureEntity.class, procedureCriteria, query)
-                      .add(Restrictions.ilike("name", searchTerm)).list());
+                .add(Restrictions.ilike("name", searchTerm)).list());
 
         return series;
     }
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -128,7 +132,6 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-
     @Override
     protected Class<T> getEntityClass() {
         return entityType;
@@ -141,9 +144,9 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
 
     @Override
     protected Criteria getDefaultCriteria(String alias) {
-       Criteria criteria = entityType != null
-            ? super.getDefaultCriteria(alias)
-            : session.createCriteria(DatasetTEntity.class, alias);
+        Criteria criteria = entityType != null
+                ? super.getDefaultCriteria(alias)
+                : session.createCriteria(DatasetTEntity.class, alias);
         addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }
@@ -163,11 +166,25 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
     }
 
     @Override
-    public void insertInstance(T dataset) {
-        session.save(dataset.getUnit());
-        session.save(dataset);
-        session.flush();
-        session.refresh(dataset);
+    public T getOrInsertInstance(T dataset) {
+        T instance = getInstance(dataset);
+        if (instance == null) {
+            session.save(dataset);
+            session.flush();
+            session.refresh(dataset);
+        }
+        return dataset;
+    }
+
+    private T getInstance(T dataset) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_CATEGORY_PKID, dataset.getCategory().getPkid()))
+                .add(Restrictions.eq(COLUMN_FEATURE_PKID, dataset.getFeature().getPkid()))
+                .add(Restrictions.eq(COLUMN_PROCEDURE_PKID, dataset.getProcedure().getPkid()))
+                .add(Restrictions.eq(COLUMN_PHENOMENON_PKID, dataset.getPhenomenon().getPkid()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, dataset.getService().getPkid()))
+                .add(Restrictions.eq(COLUMN_UNIT_PKID, dataset.getUnit().getPkid()));
+        return (T) criteria.uniqueResult();
     }
 
 }

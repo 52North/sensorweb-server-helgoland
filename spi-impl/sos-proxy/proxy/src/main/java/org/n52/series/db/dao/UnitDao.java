@@ -29,40 +29,31 @@
 package org.n52.series.db.dao;
 
 import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.I18nPhenomenonEntity;
-import org.n52.series.db.beans.PhenomenonTEntity;
-import org.springframework.transaction.annotation.Transactional;
+import org.n52.series.db.beans.UnitTEntity;
 
-@Transactional
-public class PhenomenonDao extends AbstractDao<PhenomenonTEntity> {
+public class UnitDao extends AbstractDao<UnitTEntity> {
 
-    private static final String SERIES_PROPERTY = "phenomenon";
+    private static final String SERIES_PROPERTY = "unit";
 
-    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_UNIT = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
-    public PhenomenonDao(Session session) {
+    public UnitDao(Session session) {
         super(session);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<PhenomenonTEntity> find(DbQuery query) {
-        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
-                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+    public List<UnitTEntity> find(DbQuery query) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<PhenomenonTEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
-        return (List<PhenomenonTEntity>) addFilters(criteria, query).list();
+    protected Class<UnitTEntity> getEntityClass() {
+        return UnitTEntity.class;
     }
 
     @Override
@@ -71,25 +62,25 @@ public class PhenomenonDao extends AbstractDao<PhenomenonTEntity> {
     }
 
     @Override
-    protected Class<PhenomenonTEntity> getEntityClass() {
-        return PhenomenonTEntity.class;
+    public List<UnitTEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public PhenomenonTEntity getOrInsertInstance(PhenomenonTEntity phenomenon) {
-        PhenomenonTEntity instance = getInstance(phenomenon);
+    public UnitTEntity getOrInsertInstance(UnitTEntity unit) {
+        UnitTEntity instance = getInstance(unit);
         if (instance == null) {
-            this.session.save(phenomenon);
-            instance = phenomenon;
+            this.session.save(unit);
+            instance = unit;
         }
         return instance;
     }
 
-    private PhenomenonTEntity getInstance(PhenomenonTEntity phenomenon) {
+    private UnitTEntity getInstance(UnitTEntity unit) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, phenomenon.getName()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, phenomenon.getService().getPkid()));
-        return (PhenomenonTEntity) criteria.uniqueResult();
+                .add(Restrictions.eq(COLUMN_UNIT, unit.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, unit.getService().getPkid()));
+        return (UnitTEntity) criteria.uniqueResult();
     }
 
 }

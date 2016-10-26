@@ -28,8 +28,6 @@
  */
 package org.n52.series.db.dao;
 
-import static org.hibernate.criterion.Restrictions.eq;
-
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -48,6 +46,8 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformDao.class);
 
     private static final String SERIES_PROPERTY = "platform";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public PlatformDao(Session session) {
         super(session);
@@ -81,8 +81,20 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
     }
 
     @Override
-    public void insertInstance(PlatformTEntity platform) {
-        session.save(platform);
+    public PlatformTEntity getOrInsertInstance(PlatformTEntity platform) {
+        PlatformTEntity instance = getInstance(platform);
+        if (instance == null) {
+            this.session.save(platform);
+            instance = platform;
+        }
+        return instance;
+    }
+
+    private PlatformTEntity getInstance(PlatformTEntity platform) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, platform.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, platform.getService().getPkid()));
+        return (PlatformTEntity) criteria.uniqueResult();
     }
 
 }

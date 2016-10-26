@@ -45,6 +45,9 @@ public class CategoryDao extends AbstractDao<CategoryTEntity> {
 
     private static final String SERIES_PROPERTY = "category";
 
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_SERVICE_PKID = "service.pkid";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryDao.class);
 
     public CategoryDao(Session session) {
@@ -79,8 +82,20 @@ public class CategoryDao extends AbstractDao<CategoryTEntity> {
     }
 
     @Override
-    public void insertInstance(CategoryTEntity category) {
-        session.save(category);
+    public CategoryTEntity getOrInsertInstance(CategoryTEntity category) {
+        CategoryTEntity instance = getInstance(category);
+        if (instance == null) {
+            this.session.save(category);
+            instance = category;
+        }
+        return instance;
+    }
+
+    private CategoryTEntity getInstance(CategoryTEntity category) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, category.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, category.getService().getPkid()));
+        return (CategoryTEntity) criteria.uniqueResult();
     }
 
 }

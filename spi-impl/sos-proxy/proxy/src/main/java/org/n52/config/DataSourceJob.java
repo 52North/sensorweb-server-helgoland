@@ -28,8 +28,20 @@
  */
 package org.n52.config;
 
+import java.util.Date;
+import java.util.logging.Level;
 import org.n52.config.DataSourcesConfig.DataSourceConfig;
+import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
+import org.n52.series.db.da.InsertRepository;
+import org.n52.series.db.beans.CategoryTEntity;
+import org.n52.series.db.beans.FeatureTEntity;
+import org.n52.series.db.beans.MeasurementDatasetTEntity;
+import org.n52.series.db.beans.PhenomenonTEntity;
+import org.n52.series.db.beans.ProcedureTEntity;
+import org.n52.series.db.beans.ServiceTEntity;
+import org.n52.series.db.beans.UnitTEntity;
+import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -39,6 +51,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataSourceJob extends ScheduledJob implements InterruptableJob {
 
@@ -47,6 +60,17 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
     private boolean interrupted;
 
     private DataSourceConfig config;
+
+    @Autowired
+    private InsertRepository insertRepository;
+
+    public InsertRepository getInsertRepository() {
+        return insertRepository;
+    }
+
+    public void setInsertRepository(InsertRepository insertRepository) {
+        this.insertRepository = insertRepository;
+    }
 
     public DataSourceConfig getConfig() {
         return config;
@@ -61,6 +85,8 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
         return JobBuilder.newJob(DataSourceJob.class)
                 .withIdentity(getJobName())
                 .usingJobData("url", config.getUrl())
+                .usingJobData("name", config.getItemName())
+                .usingJobData("version", config.getVersion())
                 .build();
     }
 
@@ -72,16 +98,33 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (interrupted) {
-            return;
+        try {
+            if (interrupted) {
+                return;
+            }
+            LOGGER.info(context.getJobDetail().getKey() + " is executed.");
+
+            JobDetail jobDetail = context.getJobDetail();
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            String url = jobDataMap.getString("url");
+            String name = jobDataMap.getString("name");
+            String version = jobDataMap.getString("version");
+
+            ServiceTEntity service = EntityBuilder.createService(name, "description of " + name, version);
+            ProcedureTEntity procedure = EntityBuilder.createProcedure("procedure" + new Date().getMinutes(), true, false, service);
+            FeatureTEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
+            CategoryTEntity category = EntityBuilder.createCategory("category", service);
+            PhenomenonTEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
+            UnitTEntity unit = EntityBuilder.createUnit("unit", service);
+
+            MeasurementDatasetTEntity measurement = EntityBuilder.createMeasurementDataset(version, procedure, category, feature, phenomenon, unit, service);
+
+            insertRepository.insertDataset(measurement);
+
+            LOGGER.info(url);
+        } catch (OwsExceptionReport ex) {
+            java.util.logging.Logger.getLogger(DataSourceJob.class.getName()).log(Level.SEVERE, null, ex);
         }
-        LOGGER.info(context.getJobDetail().getKey() + " is executed.");
-
-        JobDetail jobDetail = context.getJobDetail();
-        JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        String url = jobDataMap.getString("url");
-
-        LOGGER.info(url);
     }
 
     public void init(DataSourceConfig config) {

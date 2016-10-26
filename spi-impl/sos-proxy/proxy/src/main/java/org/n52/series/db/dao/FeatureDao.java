@@ -45,6 +45,9 @@ public class FeatureDao extends AbstractDao<FeatureTEntity> {
 
     private static final String SERIES_FILTER_PROPERTY = "feature";
 
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_SERVICE_PKID = "service.pkid";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
 
     public FeatureDao(Session session) {
@@ -79,8 +82,20 @@ public class FeatureDao extends AbstractDao<FeatureTEntity> {
     }
 
     @Override
-    public void insertInstance(FeatureTEntity feature) {
-        session.save(feature);
+    public FeatureTEntity getOrInsertInstance(FeatureTEntity feature) {
+        FeatureTEntity instance = getInstance(feature);
+        if (instance == null) {
+            this.session.save(feature);
+            instance = feature;
+        }
+        return instance;
+    }
+
+    private FeatureTEntity getInstance(FeatureTEntity feature) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, feature.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, feature.getService().getPkid()));
+        return (FeatureTEntity) criteria.uniqueResult();
     }
 
 }

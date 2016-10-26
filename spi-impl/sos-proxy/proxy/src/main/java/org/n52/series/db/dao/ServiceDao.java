@@ -31,6 +31,7 @@ package org.n52.series.db.dao;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.ServiceTEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServiceDao extends AbstractDao<ServiceTEntity> {
 
     private static final String SERIES_PROPERTY = "service";
+
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_TYPE = "type";
 
     public ServiceDao(Session session) {
         super(session);
@@ -66,7 +70,20 @@ public class ServiceDao extends AbstractDao<ServiceTEntity> {
     }
 
     @Override
-    public void insertInstance(ServiceTEntity service) {
-        this.session.save(service);
+    public ServiceTEntity getOrInsertInstance(ServiceTEntity service) {
+        ServiceTEntity instance = getInstance(service);
+        if (instance == null) {
+            this.session.save(service);
+            instance = service;
+        }
+        return instance;
     }
+
+    private ServiceTEntity getInstance(ServiceTEntity service) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, service.getName()))
+                .add(Restrictions.eq(COLUMN_TYPE, service.getType()));
+        return (ServiceTEntity) criteria.uniqueResult();
+    }
+
 }

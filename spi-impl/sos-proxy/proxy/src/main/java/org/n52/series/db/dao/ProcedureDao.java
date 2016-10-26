@@ -47,6 +47,9 @@ public class ProcedureDao extends AbstractDao<ProcedureTEntity> {
 
     private static final String COLUMN_REFERENCE = "reference";
 
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_SERVICE_PKID = "service.pkid";
+
     public ProcedureDao(Session session) {
         super(session);
     }
@@ -83,8 +86,20 @@ public class ProcedureDao extends AbstractDao<ProcedureTEntity> {
     }
 
     @Override
-    public void insertInstance(ProcedureTEntity procedure) {
-        session.save(procedure);
+    public ProcedureTEntity getOrInsertInstance(ProcedureTEntity procedure) {
+        ProcedureTEntity instance = getInstance(procedure);
+        if (instance == null) {
+            this.session.save(procedure);
+            instance = procedure;
+        }
+        return instance;
+    }
+
+    private ProcedureTEntity getInstance(ProcedureTEntity procedure) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, procedure.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, procedure.getService().getPkid()));
+        return (ProcedureTEntity) criteria.uniqueResult();
     }
 
 }

@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.dao;
 
-import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.eq;
@@ -174,7 +173,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @Override
-    public void insertInstance(T object) {
+    public T getOrInsertInstance(T object) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

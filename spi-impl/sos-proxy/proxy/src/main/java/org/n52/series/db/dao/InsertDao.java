@@ -28,23 +28,8 @@
  */
 package org.n52.series.db.dao;
 
-import java.io.Serializable;
-import java.util.List;
+public interface InsertDao<T> {
 
-import org.n52.series.db.DataAccessException;
-
-/**
- * @param <T> entity type
- * @param <PK> primary key
- */
-public interface GenericDao<T, PK extends Serializable> {
-
-    T getInstance(PK key, DbQuery parameters) throws DataAccessException;
-
-    List<T> getAllInstances(DbQuery parameters) throws DataAccessException;
-
-    Integer getCount(DbQuery query) throws DataAccessException;
-
-    boolean hasInstance(Long id, DbQuery query, Class<? extends T> clazz) throws DataAccessException;
+    T getOrInsertInstance(T object);
 
 }

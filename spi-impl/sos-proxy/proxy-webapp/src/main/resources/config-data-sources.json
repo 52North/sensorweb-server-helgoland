@@ -7,7 +7,7 @@
       "job": {
           "cronExpression": "0 0/1 * * * ?",
           "enabled": true,
-          "triggerAtStartup": false
+          "triggerAtStartup": true
       }
     },
     {
