@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class CategoryDao extends AbstractDao<CategoryTEntity> {
+public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
 
     private static final String SERIES_PROPERTY = "category";
 

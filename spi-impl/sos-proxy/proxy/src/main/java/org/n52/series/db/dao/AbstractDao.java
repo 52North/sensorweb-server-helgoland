@@ -42,7 +42,7 @@ import org.n52.series.db.beans.I18nEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractDao<T> implements GenericDao<T, Long>, InsertDao<T> {
+public abstract class AbstractDao<T> implements GenericDao<T, Long> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
 

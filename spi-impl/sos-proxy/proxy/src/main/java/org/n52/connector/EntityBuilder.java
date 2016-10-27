@@ -134,6 +134,7 @@ public class EntityBuilder {
         dataset.setFeature(feature);
         dataset.setPhenomenon(phenomenon);
         dataset.setPublished(Boolean.TRUE);
+        dataset.setDeleted(Boolean.FALSE);
         dataset.setService(service);
     }
 

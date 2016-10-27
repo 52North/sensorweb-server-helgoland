@@ -43,6 +43,7 @@ import org.n52.series.db.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.PlatformTEntity;
+import org.n52.series.db.beans.ServiceTEntity;
 import org.n52.series.db.beans.UnitTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
+public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> implements InsertDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
@@ -104,9 +105,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria("series");
-        Criteria procedureCreateria = criteria.createCriteria("procedure");
-        procedureCreateria.add(eq("reference", false));
+        Criteria criteria = session.createCriteria(getEntityClass());
         return (List<T>) addFilters(criteria, parameters).list();
     }
 
@@ -167,15 +166,20 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
     }
 
     @Override
-    public T getOrInsertInstance(T dataset) {
-        T instance = getInstance(dataset);
+    public DatasetTEntity getOrInsertInstance(DatasetTEntity dataset) {
+        if (dataset.getUnit() != null) {
+            dataset.setUnit(getOrInsertUnit(dataset.getUnit()));
+        }
+        DatasetTEntity instance = getInstance(dataset);
         if (instance == null) {
-            if (dataset.getUnit() != null) {
-                dataset.setUnit(getOrInsertUnit(dataset.getUnit()));
-            }
             session.save(dataset);
+            LOGGER.info("Save dataset: " + dataset);
             session.flush();
             session.refresh(dataset);
+        } else {
+            instance.setDeleted(Boolean.FALSE);
+            session.update(instance);
+            LOGGER.info("Mark dataset as undeleted: " + instance);
         }
         return dataset;
     }
@@ -189,6 +193,26 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
         return instance;
     }
 
+    public void markAsDeletedForService(ServiceTEntity service) {
+        List<T> datasets = getDatasetsForService(service);
+        datasets.stream().map((dataset) -> {
+            dataset.setDeleted(Boolean.TRUE);
+            return dataset;
+        }).forEach((dataset) -> {
+            session.saveOrUpdate(dataset);
+            LOGGER.info("Mark dataset as deleted: " + dataset);
+        });
+    }
+
+    public void removeDeletedForService(ServiceTEntity service) {
+        List<T> datasets = getDeletedMarkDatasets(service);
+        datasets.forEach((dataset) -> {
+            session.delete(dataset);
+            LOGGER.info("Delete dataset: " + dataset);
+        });
+        session.flush();
+    }
+
     private UnitTEntity getUnit(UnitTEntity unit) {
         Criteria criteria = session.createCriteria(UnitTEntity.class)
                 .add(Restrictions.eq("name", unit.getName()))
@@ -196,7 +220,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
         return (UnitTEntity) criteria.uniqueResult();
     }
 
-    private T getInstance(T dataset) {
+    private DatasetTEntity getInstance(DatasetTEntity dataset) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq("datasetType", dataset.getDatasetType()))
                 .add(Restrictions.eq(COLUMN_CATEGORY_PKID, dataset.getCategory().getPkid()))
@@ -208,6 +232,19 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> {
             criteria.add(Restrictions.eq(COLUMN_UNIT_PKID, dataset.getUnit().getPkid()));
         }
         return (T) criteria.uniqueResult();
+    }
+
+    private List<T> getDatasetsForService(ServiceTEntity service) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()));
+        return criteria.list();
+    }
+
+    private List<T> getDeletedMarkDatasets(ServiceTEntity service) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()))
+                .add(Restrictions.eq("deleted", Boolean.TRUE));
+        return criteria.list();
     }
 
 }

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FeatureDao extends AbstractDao<FeatureTEntity> {
+public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
 
     private static final String SERIES_FILTER_PROPERTY = "feature";
 

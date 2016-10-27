@@ -15,6 +15,7 @@
         <many-to-one class="FeatureTEntity" column="featureofinterestid" name="feature"/>
         <many-to-one class="PlatformTEntity" column="procedureid" insert="false" name="platform" update="false"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
+        <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <property column="seriesType" name="datasetType" type="string" insert="false" update="false"/>
 
         <property column="identifier" name="domainId" type="string"/>

@@ -41,7 +41,7 @@ import org.n52.series.db.beans.ProcedureTEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ProcedureDao extends AbstractDao<ProcedureTEntity> {
+public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
 
     private static final String SERIES_PROPERTY = "procedure";
 

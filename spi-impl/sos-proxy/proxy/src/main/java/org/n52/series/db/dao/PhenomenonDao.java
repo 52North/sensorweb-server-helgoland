@@ -39,7 +39,7 @@ import org.n52.series.db.beans.PhenomenonTEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class PhenomenonDao extends AbstractDao<PhenomenonTEntity> {
+public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
 
     private static final String SERIES_PROPERTY = "phenomenon";
 

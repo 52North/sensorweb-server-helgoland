@@ -28,6 +28,7 @@
  */
 package org.n52.series.db.da;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
@@ -62,62 +63,97 @@ public class InsertRepository extends SessionAwareRepository {
         this.serviceRepository = serviceRepository;
     }
 
+    public synchronized void prepareInserting(ServiceTEntity service) {
+        Session session = getSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            new DatasetDao(session).markAsDeletedForService(service);
+            session.flush();
+            transaction.commit();
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    public void cleanUp(ServiceTEntity service) {
+        Session session = getSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+
+            new DatasetDao(session).removeDeletedForService(service);
+            new CategoryDao(session).clearUnusedForService(service);
+            new ProcedureDao(session).clearUnusedForService(service);
+            new FeatureDao(session).clearUnusedForService(service);
+            new PhenomenonDao(session).clearUnusedForService(service);
+
+            session.flush();
+            transaction.commit();
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    public ServiceTEntity insertService(ServiceTEntity service) {
+        Session session = getSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            ServiceTEntity insertedService = insertService(service, session);
+            session.flush();
+            transaction.commit();
+            return insertedService;
+        } finally {
+            returnSession(session);
+        }
+    }
+
     public synchronized void insertDataset(DatasetTEntity dataset) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
 
-            ServiceTEntity service = insertService(dataset.getService(), session);
-            ProcedureTEntity procedure = insertProcedure(dataset.getProcedure(), service, session);
-            CategoryTEntity category = insertCategory(dataset.getCategory(), service, session);
-            FeatureTEntity feature = insertFeature(dataset.getFeature(), service, session);
-            PhenomenonTEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), service, session);
+            ProcedureTEntity procedure = insertProcedure(dataset.getProcedure(), session);
+            CategoryTEntity category = insertCategory(dataset.getCategory(), session);
+            FeatureTEntity feature = insertFeature(dataset.getFeature(), session);
+            PhenomenonTEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
 
-            insertDataset(dataset, category, procedure, feature, phenomenon, service, session);
+            insertDataset(dataset, category, procedure, feature, phenomenon, session);
 
             session.flush();
             transaction.commit();
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             LOGGER.error("Error occured while saving dataset: ", e);
         } finally {
             returnSession(session);
         }
     }
 
-    ;
-
     private ServiceTEntity insertService(ServiceTEntity service, Session session) {
         return new ServiceDao(session).getOrInsertInstance(service);
     }
 
-    private ProcedureTEntity insertProcedure(ProcedureTEntity procedure, ServiceTEntity service, Session session) {
-        procedure.setService(service);
+    private ProcedureTEntity insertProcedure(ProcedureTEntity procedure, Session session) {
         return new ProcedureDao(session).getOrInsertInstance(procedure);
     }
 
-    private CategoryTEntity insertCategory(CategoryTEntity category, ServiceTEntity service, Session session) {
-        category.setService(service);
+    private CategoryTEntity insertCategory(CategoryTEntity category, Session session) {
         return new CategoryDao(session).getOrInsertInstance(category);
     }
 
-    private FeatureTEntity insertFeature(FeatureTEntity feature, ServiceTEntity service, Session session) {
-        feature.setService(service);
+    private FeatureTEntity insertFeature(FeatureTEntity feature, Session session) {
         return new FeatureDao(session).getOrInsertInstance(feature);
     }
 
-    private PhenomenonTEntity insertPhenomenon(PhenomenonTEntity phenomenon, ServiceTEntity service, Session session) {
-        phenomenon.setService(service);
+    private PhenomenonTEntity insertPhenomenon(PhenomenonTEntity phenomenon, Session session) {
         return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryTEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service, Session session) {
+    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryTEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonTEntity phenomenon, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
         dataset.setFeature(feature);
         dataset.setPhenomenon(phenomenon);
-        dataset.setService(service);
         if (dataset.getUnit() != null) {
-            dataset.getUnit().setService(service);
+            dataset.getUnit().setService(dataset.getService());
         }
         return new DatasetDao(session).getOrInsertInstance(dataset);
     }

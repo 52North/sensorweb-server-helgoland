@@ -34,10 +34,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.ServiceTEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ServiceDao extends AbstractDao<ServiceTEntity> {
+public class ServiceDao extends AbstractDao<ServiceTEntity> implements InsertDao<ServiceTEntity> {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceDao.class);
 
     private static final String SERIES_PROPERTY = "service";
 
@@ -74,6 +78,7 @@ public class ServiceDao extends AbstractDao<ServiceTEntity> {
         ServiceTEntity instance = getInstance(service);
         if (instance == null) {
             this.session.save(service);
+            LOGGER.info("Save service: " + service);
             instance = service;
         }
         return instance;

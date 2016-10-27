@@ -43,18 +43,17 @@ import org.n52.series.db.beans.ProcedureTEntity;
 import org.n52.series.db.beans.ServiceTEntity;
 import org.n52.series.db.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.UnableToInterruptJobException;
+import org.quartz.StatefulJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DataSourceJob extends ScheduledJob implements InterruptableJob {
+public class DataSourceJob extends ScheduledJob implements StatefulJob {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceJob.class);
 
@@ -92,18 +91,12 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
     }
 
     @Override
-    public void interrupt() throws UnableToInterruptJobException {
-        interrupted = true;
-        LOGGER.info(getJobName() + " is interrupted.");
-    }
-
-    @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
             if (interrupted) {
                 return;
             }
-            LOGGER.info(context.getJobDetail().getKey() + " is executed.");
+            LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
             JobDetail jobDetail = context.getJobDetail();
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
@@ -111,20 +104,26 @@ public class DataSourceJob extends ScheduledJob implements InterruptableJob {
             String name = jobDataMap.getString("name");
             String version = jobDataMap.getString("version");
 
-            ServiceTEntity service = EntityBuilder.createService(name, "description of " + name, version);
+            ServiceTEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, version));
+
+            insertRepository.prepareInserting(service);
+
             ProcedureTEntity procedure = EntityBuilder.createProcedure("procedure", true, false, service);
             FeatureTEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
             CategoryTEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
+            CategoryTEntity category1 = EntityBuilder.createCategory("category", service);
             PhenomenonTEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
             UnitTEntity unit = EntityBuilder.createUnit("unit", service);
 
             MeasurementDatasetTEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, phenomenon, unit, service);
-            CountDatasetTEntity countDataset = EntityBuilder.createCountDataset(procedure, category, feature, phenomenon, service);
+            CountDatasetTEntity countDataset = EntityBuilder.createCountDataset(procedure, category1, feature, phenomenon, service);
 
             insertRepository.insertDataset(measurement);
             insertRepository.insertDataset(countDataset);
 
-            LOGGER.info(url);
+            insertRepository.cleanUp(service);
+
+            LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
         } catch (OwsExceptionReport ex) {
             java.util.logging.Logger.getLogger(DataSourceJob.class.getName()).log(Level.SEVERE, null, ex);
         }

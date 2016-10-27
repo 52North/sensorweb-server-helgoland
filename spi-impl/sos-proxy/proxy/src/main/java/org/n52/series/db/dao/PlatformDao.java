@@ -74,27 +74,9 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
         return SERIES_PROPERTY;
     }
 
-
     @Override
     protected Class<PlatformTEntity> getEntityClass() {
         return PlatformTEntity.class;
-    }
-
-    @Override
-    public PlatformTEntity getOrInsertInstance(PlatformTEntity platform) {
-        PlatformTEntity instance = getInstance(platform);
-        if (instance == null) {
-            this.session.save(platform);
-            instance = platform;
-        }
-        return instance;
-    }
-
-    private PlatformTEntity getInstance(PlatformTEntity platform) {
-        Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, platform.getName()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, platform.getService().getPkid()));
-        return (PlatformTEntity) criteria.uniqueResult();
     }
 
 }

@@ -12,7 +12,7 @@
         <property column="identifier" name="domainId" type="string"/>
         <property column="name" name="name" type="string"/>
         <!--<property column="name" name="description" type="string"/>-->
-        <property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>
+        <!--<property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>-->
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
         <many-to-one class="ServiceTEntity" column="serviceid" name="service"/>
