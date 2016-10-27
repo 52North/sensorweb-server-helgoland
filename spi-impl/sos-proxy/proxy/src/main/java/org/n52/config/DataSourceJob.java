@@ -57,8 +57,6 @@ public class DataSourceJob extends ScheduledJob implements StatefulJob {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceJob.class);
 
-    private boolean interrupted;
-
     private DataSourceConfig config;
 
     @Autowired
@@ -93,9 +91,6 @@ public class DataSourceJob extends ScheduledJob implements StatefulJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            if (interrupted) {
-                return;
-            }
             LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
             JobDetail jobDetail = context.getJobDetail();

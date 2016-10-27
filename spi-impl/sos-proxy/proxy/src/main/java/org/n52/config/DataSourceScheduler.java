@@ -82,7 +82,7 @@ public class DataSourceScheduler {
             if (taskToSchedule.isTriggerAtStartup()) {
                 LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
                 Trigger onceAtStartup = newTrigger()
-                        .withIdentity("onceAtStartup")
+                        .withIdentity(details.getKey() + "_onceAtStartup")
                         .forJob(details.getKey()).build();
                 scheduler.scheduleJob(onceAtStartup);
             }
