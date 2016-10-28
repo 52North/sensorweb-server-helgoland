@@ -46,12 +46,13 @@ import org.n52.sos.util.JTSHelper;
 
 public class EntityBuilder {
 
-    public static ServiceTEntity createService(String name, String description, String version) {
+    public static ServiceTEntity createService(String name, String description, String url, String version) {
         ServiceTEntity service = new ServiceTEntity();
         service.setDescription(description);
         service.setName(name);
         service.setVersion(version);
         service.setType("SOS");
+        service.setUrl(url);
         return service;
     }
 

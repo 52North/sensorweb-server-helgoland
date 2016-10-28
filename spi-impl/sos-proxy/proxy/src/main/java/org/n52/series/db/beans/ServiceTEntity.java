@@ -38,8 +38,9 @@ public class ServiceTEntity {
 
     private String type;
 
-    // TODO: private List<String> noDataValues;
+    private String url;
 
+    // TODO: private List<String> noDataValues;
     private String version;
 
     public Long getPkid() {
@@ -82,12 +83,21 @@ public class ServiceTEntity {
         this.version = version;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" id: ").append(getPkid());
         sb.append(", name: ").append(getName());
+        sb.append(", url: ").append(getUrl());
         sb.append(", type: ").append(getType());
         sb.append(", version: ").append(getVersion());
         return sb.append(" ]").toString();

@@ -100,7 +100,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
             String name = jobDataMap.getString("name");
             String version = jobDataMap.getString("version");
 
-            ServiceTEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, version));
+            ServiceTEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, url, version));
 
             insertRepository.prepareInserting(service);
 

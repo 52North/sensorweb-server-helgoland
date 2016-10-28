@@ -11,6 +11,7 @@
         </id>
         <property column="name" name="name" type="string"/>
         <property column="description" name="description" type="string"/>
+        <property column="url" name="url" type="string"/>
         <property column="type" name="type" type="string"/>
         <property column="version" name="version" type="string"/>
     </class>
