@@ -147,7 +147,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         Criteria criteria = entityType != null
                 ? super.getDefaultCriteria(alias)
                 : session.createCriteria(DatasetTEntity.class, alias);
-        addIgnoreNonPublishedSeriesTo(criteria, alias);
+        // addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }
 
@@ -221,7 +221,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     }
 
     private DatasetTEntity getInstance(DatasetTEntity dataset) {
-        Criteria criteria = session.createCriteria(getEntityClass())
+        Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq("datasetType", dataset.getDatasetType()))
                 .add(Restrictions.eq(COLUMN_CATEGORY_PKID, dataset.getCategory().getPkid()))
                 .add(Restrictions.eq(COLUMN_FEATURE_PKID, dataset.getFeature().getPkid()))
@@ -235,13 +235,13 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     }
 
     private List<T> getDatasetsForService(ServiceTEntity service) {
-        Criteria criteria = session.createCriteria(getEntityClass())
+        Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()));
         return criteria.list();
     }
 
     private List<T> getDeletedMarkDatasets(ServiceTEntity service) {
-        Criteria criteria = session.createCriteria(getEntityClass())
+        Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()))
                 .add(Restrictions.eq("deleted", Boolean.TRUE));
         return criteria.list();
