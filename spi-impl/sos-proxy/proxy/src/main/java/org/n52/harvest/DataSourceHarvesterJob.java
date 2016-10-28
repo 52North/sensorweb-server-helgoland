@@ -26,10 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.config;
+package org.n52.harvest;
 
 import java.util.Date;
 import java.util.logging.Level;
+import org.n52.config.DataSourcesConfig;
 import org.n52.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
@@ -53,9 +54,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DataSourceJob extends ScheduledJob implements StatefulJob {
+public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceJob.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterJob.class);
 
     private DataSourceConfig config;
 
@@ -80,7 +81,7 @@ public class DataSourceJob extends ScheduledJob implements StatefulJob {
 
     @Override
     public JobDetail createJobDetails() {
-        return JobBuilder.newJob(DataSourceJob.class)
+        return JobBuilder.newJob(DataSourceHarvesterJob.class)
                 .withIdentity(getJobName())
                 .usingJobData("url", config.getUrl())
                 .usingJobData("name", config.getItemName())
@@ -120,7 +121,7 @@ public class DataSourceJob extends ScheduledJob implements StatefulJob {
 
             LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
         } catch (OwsExceptionReport ex) {
-            java.util.logging.Logger.getLogger(DataSourceJob.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -25,7 +25,7 @@
 
     <bean id="configurationProvider" class="org.n52.config.Configuration"/>
 
-    <bean id="dataSourceScheduler" class="org.n52.config.DataSourceScheduler" init-method="init" destroy-method="shutdown">
+    <bean id="dataSourceScheduler" class="org.n52.harvest.DataSourceHarvesterScheduler" init-method="init" destroy-method="shutdown">
         <property name="scheduler">
             <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
                 <property name="jobFactory">

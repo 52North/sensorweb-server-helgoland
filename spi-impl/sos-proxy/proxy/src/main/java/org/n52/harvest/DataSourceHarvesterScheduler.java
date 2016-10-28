@@ -26,11 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.config;
+package org.n52.harvest;
 
 import static org.quartz.TriggerBuilder.newTrigger;
 import java.util.ArrayList;
 import java.util.List;
+import org.n52.config.Configuration;
+import org.n52.config.DataSourcesConfig;
 import org.n52.io.task.ScheduledJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -39,9 +41,9 @@ import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataSourceScheduler {
+public class DataSourceHarvesterScheduler {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceScheduler.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterScheduler.class);
 
     private Configuration configurationProvider;
 
@@ -61,7 +63,7 @@ public class DataSourceScheduler {
 
         for (DataSourcesConfig.DataSourceConfig dataSourceConfig : configurationProvider.getDataSource()) {
             LOGGER.info(dataSourceConfig.getItemName() + " " + dataSourceConfig.getUrl());
-            DataSourceJob dataSourceJob = new DataSourceJob();
+            DataSourceHarvesterJob dataSourceJob = new DataSourceHarvesterJob();
             dataSourceJob.init(dataSourceConfig);
             scheduleJob(dataSourceJob);
         }
