@@ -102,7 +102,7 @@ public class DataController extends BaseController {
 
     private PreRenderingJob preRenderingTask;
 
-    private String requestIntervalRestriction;
+    private String requestIntervalRestriction; // optional
 
     @RequestMapping(value = "/data", produces = {"application/json"}, method = GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
@@ -331,10 +331,12 @@ public class DataController extends BaseController {
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
-        Duration duration = Period.parse(requestIntervalRestriction).toDurationFrom(new DateTime());
-        if (duration.getMillis() < Interval.parse(timespan).toDurationMillis()) {
-            throw new BadRequestException("Requested timespan is to long, please use a period shorter than '"
-                    + requestIntervalRestriction + "'");
+        if (requestIntervalRestriction != null) {
+            Duration duration = Period.parse(requestIntervalRestriction).toDurationFrom(new DateTime());
+            if (duration.getMillis() < Interval.parse(timespan).toDurationMillis()) {
+                throw new BadRequestException("Requested timespan is to long, please use a period shorter than '"
+                        + requestIntervalRestriction + "'");
+            }
         }
     }
 
@@ -384,6 +386,7 @@ public class DataController extends BaseController {
     public void setRequestIntervalRestriction(String requestIntervalRestriction) {
         // validate requestIntervalRestriction, if it's no period an exception occured
         Period.parse(requestIntervalRestriction);
+        LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
         this.requestIntervalRestriction = requestIntervalRestriction;
     }
 
