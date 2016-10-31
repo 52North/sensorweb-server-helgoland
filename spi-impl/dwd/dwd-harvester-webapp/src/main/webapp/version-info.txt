@@ -1,13 +1,11 @@
 General Infos:
 ==============
 project = ${artifactId}
-version = ${git.describe}
-
-builtAt=${git.build.time}
+version = ${version}
 
 Details:
 ========
-git.branch=${git.branch}
-git.commit=${git.commit.id}
-git.remote=${git.remote.origin.url}
-git.dirtyWorkdir=${git.dirty}
+branch=${git.branch}
+git.remote.origin.url=${git.remote.origin.url}
+commit=${git.commit.id}
+builtAt=${git.build.time}
