@@ -81,9 +81,11 @@ public class RequestUtils {
     private static String createRequestUrl(String externalUrl) {
         try {
             // e.g. in proxy envs
-            return new URL(externalUrl).toString();
+            String url = new URL(externalUrl).toString();
+            LOGGER.debug("Resolve configured external url '{}'.", url);
+            return url;
         } catch (MalformedURLException e) {
-            LOGGER.error("Invalid external url: {}", externalUrl);
+            LOGGER.error("Invalid external url setting. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
         }
     }
@@ -103,9 +105,12 @@ public class RequestUtils {
             }
 
             URI uri = new URI(scheme, userInfo, host, port, path, null, null);
-            return uri.toString();
+            String requestUrl = uri.toString();
+
+            LOGGER.debug("Resolved external url '{}'.", requestUrl);
+            return requestUrl;
         } catch (MalformedURLException | URISyntaxException e) {
-            LOGGER.error("Could not determine href from request.");
+            LOGGER.error("Could not resolve external url. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
         }
 
