@@ -121,7 +121,7 @@ public class ProcedureOutputAdapter extends AbstractOuputAdapter<ProcedureOutput
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return store.hasAlertsforType(AlertTypes.valueOf(id));
     }
 

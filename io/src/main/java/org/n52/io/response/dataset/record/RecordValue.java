@@ -26,39 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.io.response.dataset.record;
 
-public abstract class DatasetServiceBundle {
+import java.util.Map;
 
-//    private ParameterService metadataService;
-//
-//    private DataService dataService;
-//
-//    public ParameterService getMetadataService() {
-//        return metadataService;
-//    }
-//
-//    public void setMetadataService(ParameterService seriesMetadataService) {
-//        this.metadataService = new WebExceptionAdapter(seriesMetadataService);
-//    }
-//
-//    public DataService getDataService() {
-//        return dataService;
-//    }
-//
-//    public void setDataService(DataService seriesDataService) {
-//        this.dataService = seriesDataService;
-//    }
-//
-//    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
-//
-//    public abstract IoHandler getIoHandler(RequestParameterSet parameters, IoParameters map, MimeType mimeType, URI uri);
-//
-//    public abstract IoHandler getIoHandler(RequestStyledParameterSet parameters, IoParameters map);
-//
-//    public abstract IoHandler getIoHandler(RequestSimpleParameterSet parameters, IoParameters map);
-//
-//    public abstract DataCollection<?> format(DataCollection seriesData, String format);
-//
-//    public abstract DataCollection getSeriesData(RequestSimpleParameterSet parameters);
+import org.n52.io.response.dataset.AbstractValue;
+
+public class RecordValue extends AbstractValue<Map<String, Object>> {
+
+    private static final long serialVersionUID = -7292181682632614697L;
+
+    public RecordValue() {
+        // for serialization
+    }
+
+    public RecordValue(long timestamp, Map<String, Object> value) {
+        super(timestamp, value);
+    }
+
 }

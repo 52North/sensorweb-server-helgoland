@@ -49,8 +49,28 @@ public class DatasetTypeTest {
     }
 
     @Test
-    public void when_extractingTypeWithoutUnderscore_then_extractIdentity() {
-        assertThat(DatasetType.extractType("1"), is("1"));
+    public void when_nullDatasetId_then_extractDefaultFallback() {
+        Assert.assertThat(DatasetType.extractType(null), Matchers.is("measurement"));
+    }
+
+    @Test
+    public void when_emptyDatasetIdAndEmptyFallback_then_extractDefaultFallback() {
+        Assert.assertThat(DatasetType.extractType("", ""), Matchers.is("measurement"));
+    }
+
+    @Test
+    public void when_datasetIdWithoutTypePrefix_then_extractDefaultFallback() {
+        Assert.assertThat(DatasetType.extractType("text234"), Matchers.is("measurement"));
+    }
+
+    @Test
+    public void when_datasetIdAndFallback_then_extractDatasetType() {
+        Assert.assertThat(DatasetType.extractType("text_234", "count"), Matchers.is("text"));
+    }
+
+    @Test
+    public void when_datasetIdWithoutTypePrefixAndFallback_then_extractFallback() {
+        Assert.assertThat(DatasetType.extractType("http://foobar/234", "count"), Matchers.is("count"));
     }
 
     @Test

@@ -69,8 +69,8 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     }
 
     @Override
-    public boolean exists(String id) {
-        return service.exists(id);
+    public boolean exists(String id, IoParameters parameters) {
+        return service.exists(id, parameters);
     }
 
     @Override

@@ -121,7 +121,7 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         WarnCell warnCell = getWarnCell(id);
         if (warnCell != null) {
             return true;

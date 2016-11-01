@@ -48,11 +48,11 @@ import org.n52.web.exception.ResourceNotFoundException;
 public class PhenomenonRepository extends SessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             PhenomenonDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), PhenomenonEntity.class);
+            return dao.hasInstance(parseId(id), parameters, PhenomenonEntity.class);
         } finally {
             returnSession(session);
         }

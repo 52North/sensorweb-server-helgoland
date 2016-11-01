@@ -65,13 +65,13 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     private PlatformRepository platformRepository;
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             if (GeometryType.isPlatformGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
-                return new FeatureDao(session).hasInstance(parseId(id), FeatureEntity.class);
+                return new FeatureDao(session).hasInstance(parseId(id), parameters, FeatureEntity.class);
             }
             else if (GeometryType.isObservedGeometryId(id)) {
                 id = GeometryType.extractId(id);

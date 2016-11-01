@@ -56,11 +56,6 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     }
 
     @Override
-    public PhenomenonEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (PhenomenonEntity) session.get(PhenomenonEntity.class, key);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);

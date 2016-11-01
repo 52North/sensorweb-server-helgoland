@@ -136,7 +136,7 @@ public class PhenomenonOutputAdapter extends AbstractOuputAdapter<PhenomenonOutp
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getPhenonmenon(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
     }
 

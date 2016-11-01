@@ -98,7 +98,7 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> {
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return serviceInfo.getServiceId().equals(id);
     }
 

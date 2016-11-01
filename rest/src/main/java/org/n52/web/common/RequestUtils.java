@@ -29,12 +29,16 @@
 package org.n52.web.common;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -43,6 +47,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
+
+    private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
      * Get the full request {@link URL} including the query parameter
@@ -80,25 +87,57 @@ public class RequestUtils {
      * @throws IOException
      * @throws URISyntaxException
      */
-    public static String resolveQueryLessRequestUrl() throws IOException, URISyntaxException {
+    public static String resolveQueryLessRequestUrl(String externalUrl) throws IOException, URISyntaxException {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
-
-        URL url = new URL(request.getRequestURL().toString());
-
-        String scheme = url.getProtocol();
-        String userInfo = url.getUserInfo();
-        String host  = url.getHost();
-
-        int port = url.getPort();
-
-        String path = request.getRequestURI();
-        if (path != null && path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
+        if (LOGGER.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
+            Enumeration<?> headerNames = request.getHeaderNames();
+            while(headerNames.hasMoreElements()) {
+              String headerName = (String)headerNames.nextElement();
+              sb.append(headerName + ": " + request.getHeader(headerName));
+              sb.append("\n");
+            }
+            sb.append("----- END of HTTP Header -----");
+            LOGGER.debug(sb.toString());
         }
 
-        URI uri = new URI(scheme, userInfo, host, port, path, null, null);
-        return uri.toString();
+        return externalUrl == null || externalUrl.isEmpty()
+            ? createRequestUrl(request)
+            : createRequestUrl(externalUrl);
+    }
+
+    private static String createRequestUrl(String externalUrl) {
+        try {
+            // e.g. in proxy envs
+            return new URL(externalUrl).toString();
+        } catch (MalformedURLException e) {
+            LOGGER.error("Invalid external url: {}", externalUrl);
+            return REQUEST_URL_FALLBACK;
+        }
+    }
+
+    private static String createRequestUrl(HttpServletRequest request) {
+        try {
+            URL url = new URL(request.getRequestURL().toString());
+            String scheme = url.getProtocol();
+            String userInfo = url.getUserInfo();
+            String host  = url.getHost();
+
+            int port = url.getPort();
+
+            String path = request.getRequestURI();
+            if (path != null && path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+
+            URI uri = new URI(scheme, userInfo, host, port, path, null, null);
+            return uri.toString();
+        } catch (MalformedURLException | URISyntaxException e) {
+            LOGGER.error("Could not determine href from request.");
+            return REQUEST_URL_FALLBACK;
+        }
+
     }
 
 }

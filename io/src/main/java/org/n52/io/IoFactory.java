@@ -112,7 +112,7 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         if (datasetService == null || styledRequest == null) {
             return IoStyleContext.createEmpty();
         }
-        OutputCollection<? extends DatasetOutput<V, ?>> metadatas = getMetadatas(styledRequest.getSeriesIds());
+        OutputCollection<? extends DatasetOutput<V, ?>> metadatas = getMetadatas(styledRequest.getDatasets());
         return IoStyleContext.createContextWith(styledRequest, metadatas.getItems());
     }
 

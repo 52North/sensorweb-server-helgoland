@@ -77,7 +77,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     }
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         return getServiceId().equals(id);
     }
 

@@ -15,6 +15,8 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+    <import resource="property-placeholder-config.xml" />
+
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
         <!-- TODO @Autowire object mapper -->
         <property name="serializationInclusion" value="NON_NULL" />
@@ -26,6 +28,7 @@
         <property name="metadataService" ref="metadataService" />
     </bean> -->
     <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+        <property name="externalUrl" value="${external.url}" />
         <property name="metadataExtensions">
             <list>
                 <!-- <bean class="org.n52.io.response.extension.LicenseExtension" /> -->

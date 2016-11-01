@@ -1,0 +1,31 @@
+<included>
+
+    <!-- refer to http://logback.qos.ch/manual/appenders.html -->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.n52" level="DEBUG" />
+
+    <logger name="org.geotools" level="WARN" />
+    <logger name="org.apache" level="WARN" />
+
+    <logger name="com.sun.xml" level="ERROR" />
+    <logger name="org.geotools" level="WARN" />
+
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="INFO" />
+    <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="DEBUG" />
+
+    <logger name="org.jboss.logging" level="WARN" />
+    <logger name="org.hibernate.type" level="TRACE" />
+    <logger name="org.hibernate.SQL" level="DEBUG" />
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</included>
