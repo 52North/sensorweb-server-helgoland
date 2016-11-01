@@ -299,14 +299,22 @@ public class DbQuery {
         if ( !geometryTypes.isEmpty()) {
             for (String geometryType : geometryTypes) {
                 if ( !geometryType.isEmpty()) {
-                    String end = geometryType.toLowerCase().substring(1);
-                    String start = ("" + geometryType.charAt(0)).toUpperCase();
-                    Type type = GeometryType.Type.valueOf(start + end);
-                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                    Type type = getGeometryType(geometryType);
+                    if (type != null) {
+                        criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                    }
                 }
             }
         }
         return criteria;
+    }
+
+    private Type getGeometryType(String geometryType) {
+        try {
+            return GeometryType.Type.valueOf(geometryType.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
