@@ -59,11 +59,11 @@ import com.vividsolutions.jts.geom.Geometry;
 public class StationRepository extends SessionAwareRepository implements OutputAssembler<StationOutput> {
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             FeatureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), FeatureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }

@@ -142,6 +142,8 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }

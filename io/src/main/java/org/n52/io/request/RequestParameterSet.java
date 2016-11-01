@@ -206,11 +206,10 @@ public abstract class RequestParameterSet {
         this.parameters.put(parameterName.toLowerCase(), value);
     }
 
-    public final <T> T getAs(Class<T> clazz, String parameterName) {
+    public final <T> T getAs(Class<T> clazz, String parameterName, T defaultValue) {
         try {
-            if (!parameters.containsKey(parameterName.toLowerCase())) {
-                LOGGER.debug("parameter '{}' is not available.", parameterName);
-                return null;
+            if ( !parameters.containsKey(parameterName.toLowerCase())) {
+                return defaultValue;
             }
             ObjectMapper om = new ObjectMapper();
             return om.treeToValue(getParameterValue(parameterName), clazz);
@@ -220,8 +219,26 @@ public abstract class RequestParameterSet {
         }
     }
 
+    public final <T> T getAs(Class<T> clazz, String parameterName) {
+        return getAs(clazz, parameterName, null);
+    }
+
     public final JsonNode getParameterValue(String parameterName) {
         return this.parameters.get(parameterName.toLowerCase());
+    }
+
+    public final String[] getAsStringArray(String parameterName) {
+        return getAsStringArray(parameterName, null);
+    }
+
+    public final String[] getAsStringArray(String parameterName, String[] defaultValue) {
+        if ( !parameters.containsKey(parameterName.toLowerCase())) {
+            return defaultValue;
+        }
+        JsonNode parameterValue = getParameterValue(parameterName);
+        return parameterValue.isArray()
+                ? getAs(String[].class, parameterName, defaultValue)
+                : new String[] { getAsString(parameterName) };
     }
 
     public final String getAsString(String parameterName) {
@@ -254,17 +271,18 @@ public abstract class RequestParameterSet {
                 : defaultValue;
     }
 
-    public abstract String[] getSeriesIds();
+    public abstract String[] getDatasets();
 
     @Deprecated
     public String[] getTimeseriesIds() {
-        return getSeriesIds();
+        return getDatasets();
     }
 
-    public String getDatasetTypeFromFirst() {
-        String[] seriesIds = getSeriesIds();
-        return seriesIds.length > 0
-                ? DatasetType.extractType(seriesIds[0])
+    public String getDatasetType() {
+        String handleAs = getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String[] datasetIds = getDatasets();
+        return datasetIds.length > 0
+                ? DatasetType.extractType(datasetIds[0], handleAs)
                 : "measurement"; // default
     }
 

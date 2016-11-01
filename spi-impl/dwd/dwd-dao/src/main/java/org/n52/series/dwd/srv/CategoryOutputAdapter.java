@@ -136,8 +136,8 @@ public class CategoryOutputAdapter extends AbstractOuputAdapter<CategoryOutput> 
     }
 
     @Override
-    public boolean exists(String id) {
-        return getCategories(IoParameters.createDefaults()).contains(parsePhenomenonId(id));
+    public boolean exists(String id, IoParameters parameters) {
+        return getCategories(parameters).contains(parsePhenomenonId(id));
     }
 
     private void checkForHref(CategoryOutput result, IoParameters parameters) {

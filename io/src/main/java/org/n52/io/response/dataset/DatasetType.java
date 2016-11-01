@@ -33,13 +33,20 @@ public class DatasetType {
     private static final String SEPERATOR = "_";
 
     public static String extractType(String id) {
+        return extractType(id, null);
+    }
+
+    public static String extractType(String id, String fallback) {
+        fallback = fallback == null || fallback.isEmpty()
+                ? "measurement" // last fallback
+                : fallback;
         if (id == null || id.isEmpty()) {
-            return id;
+            return fallback;
         }
         int separatorIndex = id.indexOf(SEPERATOR);
         return separatorIndex >= 0
                 ? id.substring(0, separatorIndex)
-                : id;
+                : fallback;
     }
 
     public static String extractId(String id) {

@@ -94,21 +94,12 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         return series;
     }
 
-    @Override
-    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
-        Criteria criteria = getDefaultCriteria("series");
-        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        return entityType.cast(criteria
-                .add(eq("pkid", key))
-                .uniqueResult());
-    }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria();
+        Criteria criteria = getDefaultCriteria("series");
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
         return (List<T>) addFilters(criteria, parameters).list();
@@ -116,20 +107,13 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     @Override
     protected String getSeriesProperty() {
-        return COLUMN_PKID;
-    }
-
-    @Override
-    protected Criteria addFilters(Criteria criteria, DbQuery parameters) {
-        criteria = super.addFilters(criteria, parameters);
-        return addIgnoreNonPublishedSeriesTo(criteria, "");
+        return "";//COLUMN_PKID;
     }
 
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(FeatureEntity feature) {
         LOGGER.debug("get instance for feature '{}'", feature);
-        Criteria criteria = getDefaultCriteria("s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
         return (List<T>) criteria.list();
@@ -138,11 +122,30 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(PlatformEntity platform) {
         LOGGER.debug("get instance for platform '{}'", platform);
-        Criteria criteria = getDefaultCriteria("s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, platform.getPkid()));
         return (List<T>) criteria.list();
+    }
+
+
+    @Override
+    protected Class<T> getEntityClass() {
+        return entityType;
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria() {
+        return getDefaultCriteria("series");
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria(String alias) {
+       Criteria criteria = entityType != null
+            ? super.getDefaultCriteria(alias)
+            : session.createCriteria(DatasetEntity.class, alias);
+        addIgnoreNonPublishedSeriesTo(criteria, alias);
+        return criteria;
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
@@ -157,19 +160,6 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     private String prepareForConcatenation(String alias) {
         return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
-    }
-
-
-    @Override
-    protected Class<T> getEntityClass() {
-        return entityType;
-    }
-
-    @Override
-    protected Criteria getDefaultCriteria(String alias) {
-        return entityType != null
-            ? super.getDefaultCriteria(alias)
-            : session.createCriteria(DatasetEntity.class, alias);
     }
 
 }

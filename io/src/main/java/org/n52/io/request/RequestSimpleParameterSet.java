@@ -29,14 +29,9 @@
 package org.n52.io.request;
 
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.Utils;
 import org.n52.io.v1.data.RawFormats;
 
 public class RequestSimpleParameterSet extends RequestParameterSet {
-
-    private String[] seriesIds;
-
-    private String format;
 
     private String rawFormat;
 
@@ -44,36 +39,34 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      * @return the series ids
      */
     @Override
-    public String[] getSeriesIds() {
-        return seriesIds != null
-                ? Utils.copy(seriesIds)
-                : new String[0];
+    public String[] getDatasets() {
+        return getAsStringArray("datasets", new String[0]);
     }
 
     /**
-     * @param seriesIds The series ids of interest.
+     * @param datasets The series ids of interest.
      */
-    void setSeriesIds(String[] seriesIds) {
-        this.seriesIds = Utils.copy(seriesIds);
+    void setDatasets(String[] datasets) {
+        addParameter("datasets", IoParameters.getJsonNodeFrom(datasets));
     }
 
     @Deprecated
     void setTimeseriesIds(String[] timeseriesIds) {
-        setSeriesIds(timeseriesIds);
+        setDatasets(timeseriesIds);
     }
 
     /**
      * @return the output format the raw data shall have.
      */
     public String getFormat() {
-        return format;
+        return getAsString("format");
     }
 
     /**
      * @param format Which output format the raw data shall have.
      */
     public void setFormat(String format) {
-        this.format = format;
+        addParameter("format", IoParameters.getJsonNodeFrom(format));
     }
 
     /**
@@ -103,7 +96,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     public static RequestSimpleParameterSet createForSingleSeries(String seriesId, IoParameters parameters) {
         RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
-        parameterSet.setSeriesIds(new String[]{seriesId});
+        parameterSet.setDatasets(new String[]{seriesId});
         IntervalWithTimeZone timespan = parameters.getTimespan();
         parameterSet.setTimespan(timespan.toString());
         return parameterSet;
@@ -111,7 +104,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
 
     public static RequestSimpleParameterSet createFromDesignedParameters(RequestStyledParameterSet designedSet) {
         RequestSimpleParameterSet parameters = new RequestSimpleParameterSet();
-        parameters.setSeriesIds(designedSet.getSeriesIds());
+        parameters.setDatasets(designedSet.getDatasets());
         parameters.setTimespan(designedSet.getTimespan());
         return parameters;
     }

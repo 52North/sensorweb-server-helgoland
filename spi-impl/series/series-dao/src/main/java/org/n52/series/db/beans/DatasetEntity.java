@@ -29,7 +29,6 @@
 
 package org.n52.series.db.beans;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,9 +67,9 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     @Deprecated
     private T lastValue;
 
-    private Timestamp firstValueAt;
+    private Date firstValueAt;
 
-    private Timestamp lastValueAt;
+    private Date lastValueAt;
 
     private UnitEntity unit;
 
@@ -145,7 +144,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     /**
      * @param firstValue
-     * @deprecated since 2.0.0, use {@link #setFirstValueAt(Timestamp)}
+     * @deprecated since 2.0.0, use {@link #setFirstValueAt(Date)}
      */
     @Deprecated
     public void setFirstValue(T firstValue) {
@@ -163,7 +162,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     /**
      * @param lastValue
-     * @deprecated since 2.0.0, use {@link #setLastValueAt(Timestamp)}
+     * @deprecated since 2.0.0, use {@link #setLastValueAt(Date)}
      */
     @Deprecated
     public void setLastValue(T lastValue) {
@@ -174,7 +173,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return firstValueAt;
     }
 
-    public void setFirstValueAt(Timestamp firstValueAt) {
+    public void setFirstValueAt(Date firstValueAt) {
         this.firstValueAt = firstValueAt;
     }
 
@@ -182,7 +181,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return lastValueAt;
     }
 
-    public void setLastValueAt(Timestamp lastValueAt) {
+    public void setLastValueAt(Date lastValueAt) {
         this.lastValueAt = lastValueAt;
     }
 

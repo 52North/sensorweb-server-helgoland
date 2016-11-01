@@ -139,7 +139,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         value.setTimestamp(observation.getTimestamp().getTime());
 
         Double observationValue = !getServiceInfo().isNoDataValue(observation)
-                ? formatDecimal(observation.getValue(), series)
+                ? format(observation, series)
                 : null;
 
         value.setValue(observationValue);
@@ -147,13 +147,18 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
             addGeometry(observation, value);
             addValidTime(observation, value);
             addParameter(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }
 
-    private Double formatDecimal(Double value, MeasurementDatasetEntity series) {
+    private Double format(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
+        if (observation.getValue() == null) {
+            return observation.getValue();
+        }
         int scale = series.getNumberOfDecimals();
-        return new BigDecimal(value)
+        return new BigDecimal(observation.getValue())
                 .setScale(scale, HALF_UP)
                 .doubleValue();
     }

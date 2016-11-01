@@ -49,6 +49,6 @@ public interface OutputAssembler<T> {
 
     List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query);
 
-    boolean exists(String id) throws DataAccessException;
+    boolean exists(String id, DbQuery query) throws DataAccessException;
 
 }

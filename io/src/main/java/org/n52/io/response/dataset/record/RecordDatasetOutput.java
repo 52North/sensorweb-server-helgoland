@@ -26,39 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.io.response.dataset.record;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import org.n52.io.response.dataset.DatasetOutput;
 
-import javax.servlet.ServletConfig;
+public class RecordDatasetOutput extends DatasetOutput<RecordValue, RecordObservationReferenceValueOutput> {
 
-import org.n52.web.common.RequestUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.ServletConfigAware;
+    public static final String DATASET_TYPE = "record";
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
-@RestController
-public class RootController implements ServletConfigAware {
-
-    // TODO
-
-    private ServletConfig servletConfig;
-
-    @RequestMapping(value = "/")
-    public String getFallbackPage() throws IOException, URISyntaxException {
-        final String requestUrl = RequestUtils.resolveFullRequestUrl();
-        return "index.jsp";
-    }
-
-    @Override
-    public void setServletConfig(ServletConfig servletConfig) {
-        this.servletConfig = servletConfig;
+    public RecordDatasetOutput() {
+        super(DATASET_TYPE);
     }
 
 }

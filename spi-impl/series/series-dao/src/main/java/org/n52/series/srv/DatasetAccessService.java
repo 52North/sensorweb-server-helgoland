@@ -30,6 +30,7 @@ package org.n52.series.srv;
 
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -64,7 +65,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
     public DataCollection<Data<?>> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<Data<?>> dataCollection = new TvpDataCollection<>();
-            for (String seriesId : parameters.getSeriesIds()) {
+            for (String seriesId : parameters.getDatasets()) {
                 Data<?> data = getDataFor(seriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(seriesId, data);
@@ -80,7 +81,8 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
     private Data<?> getDataFor(String seriesId, RequestParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
-        String datasetType = DatasetType.extractType(seriesId);
+        String handleAsDatasetFallback = parameters.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+        String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         DataRepository dataRepository = createRepository(datasetType);
         return dataRepository.getData(seriesId, dbQuery);
     }

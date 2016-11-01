@@ -48,11 +48,11 @@ import org.n52.web.exception.ResourceNotFoundException;
 public class ProcedureRepository extends SessionAwareRepository implements OutputAssembler<ProcedureOutput> {
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ProcedureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), ProcedureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, ProcedureEntity.class);
         } finally {
             returnSession(session);
         }

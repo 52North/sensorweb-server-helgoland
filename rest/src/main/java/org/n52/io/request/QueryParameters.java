@@ -28,15 +28,12 @@
  */
 package org.n52.io.request;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.measurement.img.ChartDimension;
-import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
@@ -65,14 +62,7 @@ public final class QueryParameters extends IoParameters {
      */
     public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
         QueryParameters queryParameters = new QueryParameters(query);
-        IoParameters parameters = IoParameters.createFromMultiValueMap(query);
-        try {
-            String hrefBase = RequestUtils.resolveQueryLessRequestUrl();
-            return parameters.extendWith(HREF_BASE, hrefBase);
-        } catch (IOException | URISyntaxException e) {
-            LOGGER.error("could not resolve href base URL.", e);
-        }
-        return queryParameters;
+        return IoParameters.createFromMultiValueMap(query);
     }
 
     private QueryParameters(MultiValueMap<String, String> query) {

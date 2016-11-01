@@ -95,9 +95,9 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         try {
-            return repository.exists(id);
+            return repository.exists(id, DbQuery.createFrom(parameters));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
         }

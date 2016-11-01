@@ -48,11 +48,11 @@ import org.n52.web.exception.ResourceNotFoundException;
 public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
 
     @Override
-    public boolean exists(String id) throws DataAccessException {
+    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             FeatureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), FeatureEntity.class);
+            return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }

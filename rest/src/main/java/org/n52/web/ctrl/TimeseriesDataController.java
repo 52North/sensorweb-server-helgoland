@@ -62,6 +62,7 @@ import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DataCollection;
@@ -105,7 +106,7 @@ public class TimeseriesDataController extends BaseController {
     public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
             @RequestBody RequestSimpleParameterSet parameters) throws Exception {
 
-        checkIfUnknownTimeseries(parameters.getSeriesIds());
+        checkIfUnknownTimeseries(parameters, parameters.getDatasets());
         if (parameters.isSetRawFormat()) {
             getRawTimeseriesCollectionData(response, parameters);
             return null;
@@ -121,9 +122,9 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) {
 
-        checkIfUnknownTimeseries(timeseriesId);
-
         IoParameters map = createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
+
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
@@ -146,7 +147,7 @@ public class TimeseriesDataController extends BaseController {
 
     @RequestMapping(value = "/getData", method = POST, params = {RawFormats.RAW_FORMAT})
     public void getRawTimeseriesCollectionData(HttpServletResponse response, @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkIfUnknownTimeseries(parameters.getSeriesIds());
+        checkIfUnknownTimeseries(parameters, parameters.getDatasets());
         if (!timeseriesDataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
         }
@@ -165,8 +166,8 @@ public class TimeseriesDataController extends BaseController {
     public void getRawTimeseriesData(HttpServletResponse response,
             @PathVariable String timeseriesId,
             @RequestParam MultiValueMap<String, String> query) {
-        checkIfUnknownTimeseries(timeseriesId);
         IoParameters map = createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         if (!timeseriesDataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
@@ -191,9 +192,9 @@ public class TimeseriesDataController extends BaseController {
     public void getTimeseriesCollectionReport(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
-
         IoParameters map = createFromQuery(requestParameters);
+        checkIfUnknownTimeseries(map, requestParameters.getDatasets());
+
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -225,9 +226,9 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(timeseriesId);
-
         IoParameters map = createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
+
         MeasurementDatasetOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -255,9 +256,9 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(timeseriesId);
-
         IoParameters map = createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
+
         MeasurementDatasetOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -281,9 +282,9 @@ public class TimeseriesDataController extends BaseController {
     public void getTimeseriesCollectionChart(HttpServletResponse response,
             @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
 
-        checkIfUnknownTimeseries(requestParameters.getSeriesIds());
-
         IoParameters map = createFromQuery(requestParameters);
+        checkIfUnknownTimeseries(map, requestParameters.getDatasets());
+
         RequestSimpleParameterSet parameters = createFromDesignedParameters(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -302,10 +303,9 @@ public class TimeseriesDataController extends BaseController {
             @PathVariable String timeseriesId,
             @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
 
-        checkIfUnknownTimeseries(timeseriesId);
-
-
         IoParameters map = createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
+
         RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, map);
         RequestStyledParameterSet styledParameters = map.toRequestStyledParameterSet();
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -343,9 +343,13 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private void checkIfUnknownTimeseries(String... timeseriesIds) {
+    private void checkIfUnknownTimeseries(RequestParameterSet parameters, String... timeseriesIds) {
+        checkIfUnknownTimeseries(IoParameters.createFromQuery(parameters), timeseriesIds);
+    }
+
+    private void checkIfUnknownTimeseries(IoParameters parameters, String... timeseriesIds) {
         for (String timeseriesId : timeseriesIds) {
-            if (!timeseriesMetadataService.exists(timeseriesId)) {
+            if (!timeseriesMetadataService.exists(timeseriesId, parameters)) {
                 throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId + "' was not found.");
             }
         }

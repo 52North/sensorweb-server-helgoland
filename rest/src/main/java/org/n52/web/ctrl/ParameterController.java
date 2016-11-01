@@ -68,6 +68,17 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
 
     private ParameterService<T> parameterService;
 
+    private String externalUrl;
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        LOGGER.debug("CONFIG: external.url={}", externalUrl);
+        this.externalUrl = externalUrl;
+    }
+
     @Override
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
