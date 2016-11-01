@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.criterion.Property;
 
 public class DbQuery {
 
@@ -141,8 +140,7 @@ public class DbQuery {
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getProcedure())));
         }
         if (parameters.getOffering() != null) {
-            // here procedure == offering
-            filter.createCriteria("procedure")
+            filter.createCriteria("offering")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getOffering())));
         }
         if (parameters.getFeature() != null) {

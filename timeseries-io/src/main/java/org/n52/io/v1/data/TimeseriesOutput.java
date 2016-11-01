@@ -27,6 +27,8 @@
  */
 package org.n52.io.v1.data;
 
+import java.util.List;
+
 public class TimeseriesOutput {
     
     private ServiceOutput service;

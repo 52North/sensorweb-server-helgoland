@@ -44,6 +44,7 @@ import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
+import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
@@ -68,20 +69,30 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         List<SeriesEntity> series = new ArrayList<SeriesEntity>();
         Criteria criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
-        Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
 
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
         }
         featureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
         series.addAll(featureCriteria.list());
-
+        
+        // reset criteria
+        criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
         }
         procedureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
         series.addAll(procedureCriteria.list());
 
+        // reset criteria
+        criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        Criteria offeringCriteria = criteria.createCriteria("offering", LEFT_OUTER_JOIN);
+        if (hasTranslation(query, I18nOfferingEntity.class)) {
+            offeringCriteria = query.addLocaleTo(offeringCriteria, I18nOfferingEntity.class);
+        }
+        offeringCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
+        series.addAll(offeringCriteria.list());
         return series;
     }
 

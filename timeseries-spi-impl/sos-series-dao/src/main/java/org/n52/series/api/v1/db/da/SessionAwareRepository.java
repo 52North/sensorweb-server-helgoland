@@ -28,11 +28,14 @@
 package org.n52.series.api.v1.db.da;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
 import org.hibernate.Session;
 import org.n52.io.IoParameters;
 import static org.n52.io.IoParameters.createFromQuery;
@@ -48,8 +51,10 @@ import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.I18nCategoryEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
+import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nPhenomenonEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
+import org.n52.series.api.v1.db.da.beans.OfferingEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.sos.ds.hibernate.HibernateSessionHolder;
@@ -160,7 +165,7 @@ public abstract class SessionAwareRepository {
     protected TimeseriesOutput createTimeseriesOutput(SeriesEntity timeseries, DbQuery parameters) throws DataAccessException {
         TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
         timeseriesOutput.setService(getCondensedService());
-        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
+        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getOffering(), parameters));
         timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
         timeseriesOutput.setPhenomenon(getCondensedPhenomenon(timeseries.getPhenomenon(), parameters));
         timeseriesOutput.setFeature(getCondensedFeature(timeseries.getFeature(), parameters));
@@ -203,7 +208,15 @@ public abstract class SessionAwareRepository {
         return outputvalue;
     }
 
-    private OfferingOutput getCondensedOffering(DescribableEntity<I18nProcedureEntity> entity, DbQuery parameters) {
+    private List<OfferingOutput> getCondensedOffering(Set<OfferingEntity> offerings, DbQuery parameters) {
+        List<OfferingOutput> list = new ArrayList<>(offerings.size());
+        for (OfferingEntity entity : offerings) {
+            list.add(getCondensedOffering(entity, parameters));
+        }
+        return list;
+    }
+
+    private OfferingOutput getCondensedOffering(DescribableEntity<I18nOfferingEntity> entity, DbQuery parameters) {
         OfferingOutput outputvalue = new OfferingOutput();
         outputvalue.setLabel(getLabelFrom(entity, parameters.getLocale()));
         outputvalue.setId(entity.getPkid().toString());
