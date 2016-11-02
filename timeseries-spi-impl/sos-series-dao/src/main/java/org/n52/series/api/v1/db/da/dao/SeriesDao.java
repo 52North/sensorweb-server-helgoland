@@ -145,7 +145,8 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 Restrictions.and(
                         Restrictions.isNotNull(alias + "firstValue"),
                         Restrictions.isNotNull(alias + "lastValue")),
-                Restrictions.eq(alias + "published", true)));
+                        Restrictions.eq(alias + "published", true),
+                        Restrictions.eqOrIsNull(alias + "deleted", false)));
         return criteria;
     }
 
