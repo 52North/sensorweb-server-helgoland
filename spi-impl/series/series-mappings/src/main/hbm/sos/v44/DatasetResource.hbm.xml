@@ -9,6 +9,7 @@
     <discriminator column="seriesType" force="true" type="string"/>
     <many-to-one class="CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
     <many-to-one class="ProcedureEntity" column="procedureid" insert="false" name="procedure" update="false"/>
+    <many-to-one class="OfferingEntity" column="offeringid" insert="false" name="offering" update="false"/>
     <many-to-one class="PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
     <many-to-one class="FeatureEntity" column="featureofinterestid" insert="false" name="feature" update="false"/>
     <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
