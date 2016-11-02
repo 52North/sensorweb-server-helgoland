@@ -72,7 +72,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
         this.timestamp = timestamp;
     }
 
-    @JsonInclude(content = Include.ALWAYS)
+    @JsonIgnore
     public boolean isNoDataValue() {
         return value == null;
     }
