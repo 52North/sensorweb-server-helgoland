@@ -36,6 +36,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
@@ -82,7 +84,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
          * for given pattern on any of the stored labels.
          */
 
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
+        Criteria criteria = addIgnoreUnpublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)
                       .add(Restrictions.ilike("name", searchTerm)).list());
@@ -148,18 +150,28 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
        Criteria criteria = entityType != null
             ? super.getDefaultCriteria(alias)
             : session.createCriteria(DatasetEntity.class, alias);
-        addIgnoreNonPublishedSeriesTo(criteria, alias);
+        addIgnoreUnpublishedSeriesTo(criteria, alias);
         return criteria;
     }
 
-    private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
+    private Criteria addIgnoreUnpublishedSeriesTo(Criteria criteria, String alias) {
         alias = prepareForConcatenation(alias);
         criteria.add(Restrictions.and(
-                Restrictions.and(
-                        Restrictions.isNotNull(alias.concat("firstValueAt")),
-                        Restrictions.isNotNull(alias.concat("lastValueAt"))),
-                Restrictions.eq(alias.concat("published"), true)));
+                createNotNullFirstLastValueRestriction(alias),
+                createPublishedAndNotDeletedRestriction(alias)));
         return criteria;
+    }
+
+    private Criterion createPublishedAndNotDeletedRestriction(String alias) {
+        return Restrictions.and(
+                Restrictions.eq(alias.concat("published"), true),
+                Restrictions.eqOrIsNull(alias.concat("deleted"), false));
+    }
+
+    private LogicalExpression createNotNullFirstLastValueRestriction(String alias) {
+        return Restrictions.and(
+                Restrictions.isNotNull(alias.concat("firstValueAt")),
+                Restrictions.isNotNull(alias.concat("lastValueAt")));
     }
 
     private String prepareForConcatenation(String alias) {
