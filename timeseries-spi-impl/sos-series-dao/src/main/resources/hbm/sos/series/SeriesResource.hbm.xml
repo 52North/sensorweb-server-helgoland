@@ -13,6 +13,7 @@
         <many-to-one name="unit" class="org.n52.series.api.v1.db.da.beans.UnitEntity" column="unitid" />
         <property name="numberOfDecimals" formula="3" type="int" />
         <property name="published" column="published" type="org.hibernate.type.TrueFalseType" />
+        <property name="deleted" column="deleted" type="org.hibernate.type.TrueFalseType" />
 
         <component name="firstValue" class="org.n52.series.api.v1.db.da.beans.ObservationEntity">
             <property name="timestamp" column="firsttimestamp" type="timestamp" />
