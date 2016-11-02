@@ -91,6 +91,10 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         series.addAll(translate(I18nProcedureEntity.class, procedureCriteria, query)
                       .add(Restrictions.ilike("name", searchTerm)).list());
 
+        Criteria phenomenonCriteria = criteria.createCriteria("phenomenon", LEFT_OUTER_JOIN);
+        series.addAll(translate(I18nProcedureEntity.class, phenomenonCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
+
         return series;
     }
 
