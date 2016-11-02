@@ -48,7 +48,9 @@ public class SeriesEntity {
 
     private UnitEntity unit;
 
-    private boolean published;
+    private Boolean published;
+    
+    private Boolean deleted;
 
     private OfferingEntity offering;
     
@@ -146,6 +148,14 @@ public class SeriesEntity {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public ObservationEntity getFirstValue() {
