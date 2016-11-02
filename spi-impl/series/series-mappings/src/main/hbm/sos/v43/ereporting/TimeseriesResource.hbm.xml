@@ -14,6 +14,7 @@
     <many-to-one class="UnitEntity" column="unitid" name="unit"/>
     <property formula="3" name="numberOfDecimals" type="int"/>
     <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
+      <property column="deleted" formula="'F'" name="deleted" type="org.hibernate.type.TrueFalseType"/>
     <component class="ObservationEntity" name="firstValue">
       <property column="firsttimestamp" name="timestamp" type="timestamp"/>
       <property column="firstnumericvalue" name="value" type="double"/>

@@ -59,6 +59,8 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private PlatformEntity platform;
 
     private Boolean published;
+    
+    private Boolean deleted;
 
     private List<T> observations;
 
@@ -142,6 +144,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     /**
