@@ -58,9 +58,9 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private PlatformEntity platform;
 
-    private Boolean published;
+    private Boolean published = Boolean.TRUE;
     
-    private Boolean deleted;
+    private Boolean deleted = Boolean.FALSE;
 
     private List<T> observations;
 
