@@ -46,7 +46,16 @@ public class FeatureEntity extends DescribableEntity {
         return geometry != null ? geometry.getGeometry(srid) : null;
     }
 
-    public void setGeometry(GeometryEntity geometry) {
+    public void setGeometry(Geometry geometry) {
+        this.geometry = new GeometryEntity();
+        this.geometry.setGeometry(geometry);
+    }
+
+    public GeometryEntity getGeometryEntity() {
+        return geometry;
+    }
+
+    public void setGeometryEntity(GeometryEntity geometry) {
         this.geometry = geometry;
     }
 

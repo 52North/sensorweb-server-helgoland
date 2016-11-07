@@ -10,7 +10,7 @@
     <property column="identifier" insert="false" name="domainId" type="string" update="true"/>
     <property column="name" name="name" type="string"/>
     <property column="name" insert="false" name="description" type="string" update="false"/>
-    <component class="GeometryEntity" name="geometry">
+    <component class="GeometryEntity" name="geometryEntity">
       <!--
             <property column="lat" name="lat" type="double" />
             <property column="lon" name="lon" type="double" />
