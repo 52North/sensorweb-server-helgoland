@@ -12,9 +12,14 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
+
     <bean id="insertRepository" class="org.n52.series.db.da.InsertRepository"/>
     <bean name="serviceRepository" class="org.n52.series.db.da.ServiceRepository" />
-    <bean name="categoryRepository" class="org.n52.series.db.da.CategoryRepository" />
+    <bean name="categoryRepository" class="org.n52.series.db.da.ProxyCategoryRepository">
+        <constructor-arg index="0">
+            <bean class="org.n52.series.db.da.CategoryRepository" />
+        </constructor-arg>
+    </bean>
     <bean name="featureRepository" class="org.n52.series.db.da.FeatureRepository" />
     <bean name="phenomenonRepository" class="org.n52.series.db.da.PhenomenonRepository" />
     <bean name="procedureRepository" class="org.n52.series.db.da.ProcedureRepository" />

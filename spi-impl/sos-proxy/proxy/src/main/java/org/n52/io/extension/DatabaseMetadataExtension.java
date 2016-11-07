@@ -38,7 +38,7 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db_custom.SessionAwareRepository;
 
 public class DatabaseMetadataExtension extends MetadataExtension<ParameterOutput> {
 

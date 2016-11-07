@@ -5,7 +5,7 @@
             "url": "http://localhost:8081/52n-sos-webapp-bundle/service",
             "version": "2.0.0",
             "job": {
-                "cronExpression": "0 0/1 * * * ?",
+                "cronExpression": "0 0 0/1 * * ?",
                 "enabled": true,
                 "triggerAtStartup": true
             }
@@ -15,7 +15,7 @@
             "url": "http://sensorweb.demo.52north.org/sensorwebtestbed/service",
             "version": "2.0.0",
             "job": {
-                "cronExpression": "0 0/5 * * * ?",
+                "cronExpression": "0 0 0/1 * * ?",
                 "enabled": true,
                 "triggerAtStartup": true
             }

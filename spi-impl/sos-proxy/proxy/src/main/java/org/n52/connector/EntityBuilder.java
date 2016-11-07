@@ -30,17 +30,17 @@ package org.n52.connector;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.n52.series.db.beans.CategoryTEntity;
-import org.n52.series.db.beans.CountDatasetTEntity;
-import org.n52.series.db.beans.DatasetTEntity;
-import org.n52.series.db.beans.FeatureTEntity;
+import org.n52.series.db_custom.beans.CategoryTEntity;
+import org.n52.series.db_custom.beans.CountDatasetTEntity;
+import org.n52.series.db_custom.beans.DatasetTEntity;
+import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.GeometryEntity;
-import org.n52.series.db.beans.MeasurementDatasetTEntity;
-import org.n52.series.db.beans.PhenomenonTEntity;
-import org.n52.series.db.beans.ProcedureTEntity;
-import org.n52.series.db.beans.ServiceTEntity;
-import org.n52.series.db.beans.TextDatasetTEntity;
-import org.n52.series.db.beans.UnitTEntity;
+import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
+import org.n52.series.db_custom.beans.PhenomenonTEntity;
+import org.n52.series.db_custom.beans.ProcedureTEntity;
+import org.n52.series.db_custom.beans.ServiceTEntity;
+import org.n52.series.db_custom.beans.TextDatasetTEntity;
+import org.n52.series.db_custom.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.util.JTSHelper;
 

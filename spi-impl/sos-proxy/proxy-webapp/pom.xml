@@ -35,10 +35,42 @@
             <artifactId>proxy-mappings</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>series-dao</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.n52.sensorweb.sos</groupId>
+          <artifactId>api</artifactId>
+          <version>4.4.0-SNAPSHOT</version>
+          <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.reflections</groupId>
+                    <artifactId>reflections</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -67,6 +99,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
             <version>${org.springframework.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -119,26 +166,32 @@
             <scope>runtime</scope>
         </dependency>
         
-        <!--<dependency>
-          <groupId>org.n52.iceland</groupId>
-          <artifactId>iceland</artifactId>
-          <version>1.2.1</version>
-          <exclusions>
-            <exclusion>
-              <groupId>commons-logging</groupId>
-              <artifactId>commons-logging</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.elasticsearch</groupId>
-              <artifactId>elasticsearch</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>com.google.guava</groupId>
-              <artifactId>guava</artifactId>
-            </exclusion>
-          </exclusions>
-          <scope>runtime</scope>
-        </dependency>-->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.n52.iceland</groupId>
+            <artifactId>iceland</artifactId>
+            <version>1.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.elasticsearch</groupId>
+                    <artifactId>elasticsearch</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>runtime</scope>
+        </dependency>
         
     </dependencies>
 
@@ -186,13 +239,13 @@
                                 <outputDirectory>${webappDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>
-<!--                             <artifactItem> -->
-<!--                                 <groupId>${project.groupId}</groupId> -->
-<!--                                 <artifactId>series-mappings</artifactId> -->
-<!--                                 <includes>hbm/**</includes> -->
-<!--                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
-<!--                                 <overWrite>true</overWrite> -->
-<!--                             </artifactItem> -->
+                            <!--                             <artifactItem> -->
+                            <!--                                 <groupId>${project.groupId}</groupId> -->
+                            <!--                                 <artifactId>series-mappings</artifactId> -->
+                            <!--                                 <includes>hbm/**</includes> -->
+                            <!--                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
+                            <!--                                 <overWrite>true</overWrite> -->
+                            <!--                             </artifactItem> -->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
@@ -225,11 +278,12 @@
                         <webAppConfig>
                             <contextPath>/</contextPath>
                             <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
-                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../series-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};../sos-proxy/target/classes;../series-dao/target/classes;../../io/target/classes;../../rest/target/classes;</extraClasspath>
                         </webAppConfig>
                         <scanTargets>
                             <scanTarget>/target/classes/</scanTarget>
                             <scanTarget>../series-dao/target/classes</scanTarget>
+                            <scanTarget>../sos-proxy/target/classes</scanTarget>
                             <scanTarget>../../../io/target/classes</scanTarget>
                             <scanTarget>../../../rest/target/classes</scanTarget>
                         </scanTargets>

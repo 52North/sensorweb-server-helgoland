@@ -16,7 +16,7 @@
     <ctx:annotation-config />
 
     <import resource="property-placeholder-config.xml" />
-    
+
     <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
         <!-- TODO @Autowire object mapper -->
         <property name="serializationInclusion" value="NON_NULL" />

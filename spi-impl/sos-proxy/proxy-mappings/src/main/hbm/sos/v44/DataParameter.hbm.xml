@@ -18,7 +18,7 @@
         <joined-subclass extends="DataParameter" name="DataParameterCategory" table="categoryParameterValue">
             <key column="parameterid"/>
             <property column="value" name="value" type="string"/>
-            <many-to-one class="UnitTEntity" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db_custom.beans.UnitTEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="DataParameter" name="DataParameterCount" table="countParameterValue">
@@ -29,7 +29,7 @@
         <joined-subclass extends="DataParameter" name="DataParameterQuantity" table="numericParameterValue">
             <key column="parameterid"/>
             <property column="value" name="value" type="double"/>
-            <many-to-one class="UnitTEntity" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db_custom.beans.UnitTEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="DataParameter" name="DataParameterText" table="textParameterValue">

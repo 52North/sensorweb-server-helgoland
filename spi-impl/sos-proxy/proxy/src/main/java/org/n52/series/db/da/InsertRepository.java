@@ -32,36 +32,35 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.CategoryTEntity;
-import org.n52.series.db.beans.DatasetTEntity;
-import org.n52.series.db.beans.FeatureTEntity;
-import org.n52.series.db.beans.PhenomenonTEntity;
-import org.n52.series.db.beans.ProcedureTEntity;
-import org.n52.series.db.beans.ServiceTEntity;
-import org.n52.series.db.dao.CategoryDao;
-import org.n52.series.db.dao.DatasetDao;
-import org.n52.series.db.dao.FeatureDao;
-import org.n52.series.db.dao.PhenomenonDao;
-import org.n52.series.db.dao.ProcedureDao;
-import org.n52.series.db.dao.ServiceDao;
+import org.n52.series.db_custom.beans.CategoryTEntity;
+import org.n52.series.db_custom.beans.DatasetTEntity;
+import org.n52.series.db_custom.beans.FeatureTEntity;
+import org.n52.series.db_custom.beans.PhenomenonTEntity;
+import org.n52.series.db_custom.beans.ProcedureTEntity;
+import org.n52.series.db_custom.beans.ServiceTEntity;
+import org.n52.series.db_custom.dao.CategoryDao;
+import org.n52.series.db_custom.dao.DatasetDao;
+import org.n52.series.db_custom.dao.FeatureDao;
+import org.n52.series.db_custom.dao.PhenomenonDao;
+import org.n52.series.db_custom.dao.ProcedureDao;
+import org.n52.series.db_custom.dao.ServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class InsertRepository extends SessionAwareRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(InsertRepository.class);
 
-    @Autowired
-    private ServiceRepository serviceRepository;
-
-    public ServiceRepository getServiceRepository() {
-        return serviceRepository;
-    }
-
-    public void setServiceRepository(ServiceRepository serviceRepository) {
-        this.serviceRepository = serviceRepository;
-    }
+//    @Autowired
+//    private ServiceRepository proxyServiceRepository;
+//
+//    public ServiceRepository getProxyServiceRepository() {
+//        return proxyServiceRepository;
+//    }
+//
+//    public void setProxyServiceRepository(ServiceRepository proxyServiceRepository) {
+//        this.proxyServiceRepository = proxyServiceRepository;
+//    }
 
     public synchronized void prepareInserting(ServiceTEntity service) {
         Session session = getSession();

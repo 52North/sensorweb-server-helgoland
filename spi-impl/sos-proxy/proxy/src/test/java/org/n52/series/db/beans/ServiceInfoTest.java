@@ -28,6 +28,9 @@
  */
 package org.n52.series.db.beans;
 
+import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.TextDataEntity;
 import static org.hamcrest.CoreMatchers.is;
 
 import org.hamcrest.MatcherAssert;
