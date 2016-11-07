@@ -31,7 +31,7 @@ package org.n52.connector;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.n52.series.db_custom.beans.CategoryTEntity;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db_custom.beans.CountDatasetTEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
@@ -67,8 +67,8 @@ public class EntityBuilder {
         return procedure;
     }
 
-    public static CategoryTEntity createCategory(String name, ServiceEntity service) {
-        CategoryTEntity category = new CategoryTEntity();
+    public static CategoryEntity createCategory(String name, ServiceEntity service) {
+        CategoryEntity category = new CategoryEntity();
         category.setName(name);
         category.setDomainId(name);
         category.setService(service);
@@ -109,7 +109,7 @@ public class EntityBuilder {
         return entity;
     }
 
-    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
+    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
         updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);
@@ -118,19 +118,19 @@ public class EntityBuilder {
         return measurementDataset;
     }
 
-    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
+    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         TextDatasetTEntity textDataset = new TextDatasetTEntity();
         updateDataset(textDataset, procedure, category, feature, phenomenon, service);
         return textDataset;
     }
 
-    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
+    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         CountDatasetTEntity countDataset = new CountDatasetTEntity();
         updateDataset(countDataset, procedure, category, feature, phenomenon, service);
         return countDataset;
     }
 
-    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
+    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         dataset.setProcedure(procedure);
         dataset.setCategory(category);
         dataset.setFeature(feature);

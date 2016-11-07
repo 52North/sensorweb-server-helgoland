@@ -28,7 +28,9 @@
  */
 package org.n52.series.db_custom.beans;
 
-public class UnitTEntity extends DescribableTEntity {
+import org.n52.series.db.beans.DescribableEntity;
+
+public class UnitTEntity extends DescribableEntity {
 
     // re-uses existing i18n logic
     // maps attribute 'unit' to internationalizable attribute 'name'

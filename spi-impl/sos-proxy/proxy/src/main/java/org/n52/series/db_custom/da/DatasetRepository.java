@@ -41,9 +41,9 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.spi.search.DatasetSearchResult;
@@ -201,11 +201,11 @@ public class DatasetRepository<T extends Data>
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableTEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
         String locale = query.getLocale();
         String hrefBase = urHelper.getDatasetsHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableTEntity searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new DatasetSearchResult(pkid, label, hrefBase));

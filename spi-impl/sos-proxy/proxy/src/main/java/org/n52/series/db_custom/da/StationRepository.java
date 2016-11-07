@@ -37,7 +37,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.dao.DatasetDao;
@@ -49,6 +48,7 @@ import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.beans.DescribableEntity;
 
 /**
  *
@@ -87,11 +87,11 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableTEntity> found,
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found,
             DbQuery query) {
         String locale = query.getLocale();
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableTEntity searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new StationSearchResult(pkid, label));

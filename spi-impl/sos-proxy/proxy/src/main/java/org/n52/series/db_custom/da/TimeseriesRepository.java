@@ -41,8 +41,8 @@ import org.n52.io.response.StationOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
@@ -103,7 +103,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableTEntity> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             DbQuery query) {
         // not needed, use #convertToResults() instead
 

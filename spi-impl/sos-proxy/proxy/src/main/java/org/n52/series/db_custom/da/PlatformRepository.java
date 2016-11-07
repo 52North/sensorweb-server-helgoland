@@ -45,7 +45,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
@@ -59,6 +58,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.beans.DescribableEntity;
 
 /**
  * TODO: JavaDoc
@@ -231,10 +231,10 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableTEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
-        for (DescribableTEntity searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             String hrefBase = urHelper.getPlatformsHrefBaseUrl(query.getHrefBase());

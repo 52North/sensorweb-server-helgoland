@@ -34,9 +34,9 @@ import org.n52.config.DataSourcesConfig;
 import org.n52.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.da.InsertRepository;
-import org.n52.series.db_custom.beans.CategoryTEntity;
 import org.n52.series.db_custom.beans.CountDatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
@@ -106,8 +106,8 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
 
             ProcedureTEntity procedure = EntityBuilder.createProcedure("procedure", true, false, service);
             FeatureTEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
-            CategoryTEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
-            CategoryTEntity category1 = EntityBuilder.createCategory("category", service);
+            CategoryEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
+            CategoryEntity category1 = EntityBuilder.createCategory("category", service);
             PhenomenonTEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
             UnitTEntity unit = EntityBuilder.createUnit("unit", service);
 

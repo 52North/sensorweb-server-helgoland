@@ -30,9 +30,10 @@ package org.n52.series.db_custom.beans;
 
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.GeometryEntity;
 
-public class FeatureTEntity extends DescribableTEntity {
+public class FeatureTEntity extends DescribableEntity {
 
     /**
      * @since 2.0.0

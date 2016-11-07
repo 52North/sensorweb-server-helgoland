@@ -31,6 +31,7 @@ package org.n52.series.db_custom.beans;
 import org.n52.io.response.PlatformType;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.beans.DescribableEntity;
 
 /**
  * TODO: JavaDoc
@@ -38,7 +39,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  * @since 2.0.0
  */
-public class PlatformTEntity extends DescribableTEntity {
+public class PlatformTEntity extends DescribableEntity {
 
     public static final String COLUMN_PKID = "pkid";
     public static final String INSITU = "insitu";

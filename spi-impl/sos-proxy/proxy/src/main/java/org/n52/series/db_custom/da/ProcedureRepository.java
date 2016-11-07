@@ -36,8 +36,8 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.ProcedureTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.ProcedureDao;
@@ -76,12 +76,12 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableTEntity> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
                                                      DbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
         String hrefBase = urHelper.getProceduresHrefBaseUrl(query.getHrefBase());
-        for (DescribableTEntity searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new ProcedureSearchResult(pkid, label, hrefBase));

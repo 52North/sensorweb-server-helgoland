@@ -28,7 +28,9 @@
  */
 package org.n52.series.db_custom.beans;
 
-public class PhenomenonTEntity extends DescribableTEntity {
+import org.n52.series.db.beans.DescribableEntity;
+
+public class PhenomenonTEntity extends DescribableEntity {
 
     @Override
     public String toString() {

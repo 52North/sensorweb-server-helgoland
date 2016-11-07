@@ -36,9 +36,9 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.CategoryTEntity;
-import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.spi.search.CategorySearchResult;
@@ -56,7 +56,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             CategoryDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, CategoryTEntity.class);
+            return dao.hasInstance(parseId(id), parameters, CategoryEntity.class);
         } finally {
             returnSession(session);
         }
@@ -68,7 +68,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         try {
             CategoryDao categoryDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
-            List<CategoryTEntity> found = categoryDao.find(query);
+            List<CategoryEntity> found = categoryDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -76,12 +76,12 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List< ? extends DescribableTEntity> found,
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
             DbQuery query) {
         String locale = query.getLocale();
         String hrefBase = urHelper.getProceduresHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
-        for (DescribableTEntity searchResult : found) {
+        for (DescribableEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = searchResult.getLabelFrom(locale);
             results.add(new CategorySearchResult(pkid, label, hrefBase));
@@ -94,7 +94,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             List<CategoryOutput> results = new ArrayList<>();
-            for (CategoryTEntity categoryEntity : getAllInstances(parameters, session)) {
+            for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(categoryEntity, parameters));
             }
             return results;
@@ -108,7 +108,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             List<CategoryOutput> results = new ArrayList<>();
-            for (CategoryTEntity categoryEntity : getAllInstances(parameters, session)) {
+            for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(categoryEntity, parameters));
             }
             return results;
@@ -121,7 +121,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     public CategoryOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryTEntity entity = getInstance(parseId(id), parameters, session);
+            CategoryEntity entity = getInstance(parseId(id), parameters, session);
             if (entity != null) {
                 return createExpanded(entity, parameters);
             }
@@ -131,26 +131,26 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         }
     }
 
-    protected List<CategoryTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<CategoryEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected CategoryTEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected CategoryEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         CategoryDao categoryDao = createDao(session);
-        CategoryTEntity result = categoryDao.getInstance(id, parameters);
+        CategoryEntity result = categoryDao.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
         return result;
     }
 
-    private CategoryOutput createExpanded(CategoryTEntity entity, DbQuery parameters) throws DataAccessException {
+    private CategoryOutput createExpanded(CategoryEntity entity, DbQuery parameters) throws DataAccessException {
         CategoryOutput result = createCondensed(entity, parameters);
         result.setService(createCondensedService(entity.getService()));
         return result;
     }
 
-    private CategoryOutput createCondensed(CategoryTEntity entity, DbQuery parameters) {
+    private CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {
         CategoryOutput result = new CategoryOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));

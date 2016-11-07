@@ -12,9 +12,9 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db_custom.beans.CategoryTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.spi.search.SearchResult;
 
@@ -77,7 +77,7 @@ public class ProxyCategoryRepository extends SessionAwareRepository implements O
         return new CategoryDao(session);
     }
 
-    private CategoryOutput createCondensed(CategoryTEntity entity, DbQuery parameters) {
+    private CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {
         CategoryOutput result = new CategoryOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));

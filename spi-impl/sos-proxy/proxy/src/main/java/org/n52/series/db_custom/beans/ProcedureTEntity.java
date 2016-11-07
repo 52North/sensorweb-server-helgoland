@@ -29,7 +29,9 @@
 
 package org.n52.series.db_custom.beans;
 
-public class ProcedureTEntity extends DescribableTEntity {
+import org.n52.series.db.beans.DescribableEntity;
+
+public class ProcedureTEntity extends DescribableEntity {
 
     private boolean reference;
 

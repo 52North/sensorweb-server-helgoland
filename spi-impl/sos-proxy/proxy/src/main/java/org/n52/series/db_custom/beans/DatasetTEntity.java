@@ -34,10 +34,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DescribableEntity;
 
 
-public class DatasetTEntity<T extends DataEntity<?>> extends DescribableTEntity {
+public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     public static final String PROCEDURE = "procedure";
     public static final String CATEGORY = "category";
@@ -46,7 +48,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableTEntity 
     public static final String PLATFORM = "platform";
     public static final String OBSERVATION_TYPE = "observationType";
 
-    private CategoryTEntity category;
+    private CategoryEntity category;
 
     private PhenomenonTEntity phenomenon;
 
@@ -80,11 +82,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableTEntity 
         this.observations = new ArrayList<>();
     }
 
-    public CategoryTEntity getCategory() {
+    public CategoryEntity getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryTEntity category) {
+    public void setCategory(CategoryEntity category) {
         this.category = category;
     }
 

@@ -34,14 +34,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.beans.CategoryTEntity;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.I18nCategoryEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
+public class CategoryDao extends AbstractInsertDao<CategoryEntity> {
 
     private static final String SERIES_PROPERTY = "category";
 
@@ -56,7 +56,7 @@ public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryTEntity> find(DbQuery query) {
+    public List<CategoryEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
@@ -65,7 +65,7 @@ public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<CategoryTEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<CategoryEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query);
         return addFilters(criteria, query).list();
@@ -77,13 +77,13 @@ public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
     }
 
     @Override
-    protected Class<CategoryTEntity> getEntityClass() {
-        return CategoryTEntity.class;
+    protected Class<CategoryEntity> getEntityClass() {
+        return CategoryEntity.class;
     }
 
     @Override
-    public CategoryTEntity getOrInsertInstance(CategoryTEntity category) {
-        CategoryTEntity instance = getInstance(category);
+    public CategoryEntity getOrInsertInstance(CategoryEntity category) {
+        CategoryEntity instance = getInstance(category);
         if (instance == null) {
             this.session.save(category);
             instance = category;
@@ -91,11 +91,11 @@ public class CategoryDao extends AbstractInsertDao<CategoryTEntity> {
         return instance;
     }
 
-    private CategoryTEntity getInstance(CategoryTEntity category) {
+    private CategoryEntity getInstance(CategoryEntity category) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq(COLUMN_NAME, category.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, category.getService().getPkid()));
-        return (CategoryTEntity) criteria.uniqueResult();
+        return (CategoryEntity) criteria.uniqueResult();
     }
 
 }
