@@ -26,49 +26,48 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.record;
 
+import java.util.Map;
+import java.util.Map.Entry;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.response.dataset.Data;
 
-public class FeatureEntity extends DescribableEntity {
+public class RecordData extends Data<RecordValue> {
+
+    private static final long serialVersionUID = 4717558247670336015L;
+
+    private RecordDatasetMetadata metadata;
 
     /**
-     * @since 2.0.0
+     * @param values the timestamp &lt;-&gt; value map.
+     * @return a measurement data object.
      */
-    private GeometryEntity geometry;
-
-    public Geometry getGeometry() {
-        return getGeometry(null);
+    public static RecordData newTextObservationData(Map<Long, Map<String, Object>> values) {
+        RecordData timeseries = new RecordData();
+        for (Entry<Long, Map<String, Object>> data : values.entrySet()) {
+            timeseries.addNewValue(data.getKey(), data.getValue());
+        }
+        return timeseries;
     }
 
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
+    public static RecordData newTextObservationData(RecordValue... values) {
+        RecordData timeseries = new RecordData();
+        timeseries.addValues(values);
+        return timeseries;
     }
 
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
+    private void addNewValue(Long timestamp, Map<String, Object> value) {
+        addNewValue(new RecordValue(timestamp, value));
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public RecordDatasetMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(RecordDatasetMetadata metadata) {
+        this.metadata = metadata;
     }
 
 }

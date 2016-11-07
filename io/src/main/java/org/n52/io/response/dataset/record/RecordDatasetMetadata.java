@@ -26,49 +26,28 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.record;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.response.dataset.DatasetMetadata;
 
-public class FeatureEntity extends DescribableEntity {
+public class RecordDatasetMetadata implements DatasetMetadata<Map<String, RecordData>>, Serializable {
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
+    private static final long serialVersionUID = -5666064665815076013L;
 
-    public Geometry getGeometry() {
-        return getGeometry(null);
-    }
+    private Map<String, RecordData> referenceValues = new HashMap<>();
 
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
+    @Override
+    public Map<String, RecordData> getReferenceValues() {
+        return referenceValues;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public void setReferenceValues(Map<String, RecordData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
 
 }

@@ -53,7 +53,7 @@
         <env>dev</env>
         
         <!-- optional properties file -->
-        <local.configFile>${user.home}/${project.build.finalName}</local.configFile>
+        <local.configFile>${user.home}/${project.build.finalName}.properties</local.configFile>
     
         <sensorwebclient.version>3.2.0</sensorwebclient.version>
         <org.springframework.version>4.2.5.RELEASE</org.springframework.version>

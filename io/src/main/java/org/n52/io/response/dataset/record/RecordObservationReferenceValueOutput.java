@@ -26,49 +26,45 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.record;
 
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-import com.vividsolutions.jts.geom.Geometry;
+public class RecordObservationReferenceValueOutput implements ReferenceValueOutput<RecordValue> {
 
-public class FeatureEntity extends DescribableEntity {
+    private String referenceValueId;
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
+    private String label;
 
-    public Geometry getGeometry() {
-        return getGeometry(null);
-    }
+    private RecordValue lastValue;
 
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
+    @Override
+    public String getReferenceValueId() {
+        return referenceValueId;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
     }
 
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public RecordValue getLastValue() {
+        return lastValue;
+    }
+
+    @Override
+    public void setLastValue(RecordValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }

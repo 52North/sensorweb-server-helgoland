@@ -28,40 +28,7 @@
  */
 package org.n52.series.db.beans;
 
-
-import com.vividsolutions.jts.geom.Geometry;
-
-public class FeatureEntity extends DescribableEntity {
-
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
-
-    public Geometry getGeometry() {
-        return getGeometry(null);
-    }
-
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
-    }
+public class OfferingEntity extends DescribableEntity {
 
     @Override
     public String toString() {

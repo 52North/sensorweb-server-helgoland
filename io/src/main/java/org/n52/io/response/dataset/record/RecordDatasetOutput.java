@@ -26,49 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.record;
 
+import org.n52.io.response.dataset.DatasetOutput;
 
-import com.vividsolutions.jts.geom.Geometry;
+public class RecordDatasetOutput extends DatasetOutput<RecordValue, RecordObservationReferenceValueOutput> {
 
-public class FeatureEntity extends DescribableEntity {
+    public static final String DATASET_TYPE = "record";
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
-
-    public Geometry getGeometry() {
-        return getGeometry(null);
-    }
-
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public RecordDatasetOutput() {
+        super(DATASET_TYPE);
     }
 
 }

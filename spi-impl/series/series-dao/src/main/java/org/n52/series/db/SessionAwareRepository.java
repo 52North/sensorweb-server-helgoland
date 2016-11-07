@@ -157,7 +157,7 @@ public abstract class SessionAwareRepository {
     protected SeriesParameters createTimeseriesOutput(MeasurementDatasetEntity timeseries, DbQuery parameters) throws DataAccessException {
         SeriesParameters timeseriesOutput = new SeriesParameters();
         timeseriesOutput.setService(getCondensedService(parameters));
-        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
+        timeseriesOutput.setOffering(getCondensedOffering(timeseries.getOffering(), parameters));
         timeseriesOutput.setProcedure(getCondensedProcedure(timeseries.getProcedure(), parameters));
         timeseriesOutput.setPhenomenon(getCondensedPhenomenon(timeseries.getPhenomenon(), parameters));
         timeseriesOutput.setFeature(getCondensedFeature(timeseries.getFeature(), parameters));
@@ -168,7 +168,7 @@ public abstract class SessionAwareRepository {
     protected SeriesParameters createSeriesParameters(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(getCondensedExtendedService(parameters));
-        seriesParameter.setOffering(getCondensedExtendedOffering(series.getProcedure(), parameters));
+        seriesParameter.setOffering(getCondensedExtendedOffering(series.getOffering(), parameters));
         seriesParameter.setProcedure(getCondensedExtendedProcedure(series.getProcedure(), parameters));
         seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
         seriesParameter.setFeature(getCondensedExtendedFeature(series.getFeature(), parameters));

@@ -26,49 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.response.dataset.record;
 
+import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.n52.io.response.dataset.AbstractValue;
 
-public class FeatureEntity extends DescribableEntity {
+public class RecordValue extends AbstractValue<Map<String, Object>> {
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
+    private static final long serialVersionUID = -7292181682632614697L;
 
-    public Geometry getGeometry() {
-        return getGeometry(null);
+    public RecordValue() {
+        // for serialization
     }
 
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public RecordValue(long timestamp, Map<String, Object> value) {
+        super(timestamp, value);
     }
 
 }

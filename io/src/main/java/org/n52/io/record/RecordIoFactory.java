@@ -26,49 +26,36 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.record;
 
 
-import com.vividsolutions.jts.geom.Geometry;
+import java.util.HashSet;
+import java.util.Set;
 
-public class FeatureEntity extends DescribableEntity {
+import org.n52.io.IoFactory;
+import org.n52.io.IoHandler;
+import org.n52.io.MimeType;
+import org.n52.io.response.dataset.record.RecordData;
+import org.n52.io.response.dataset.record.RecordDatasetOutput;
+import org.n52.io.response.dataset.record.RecordValue;
 
-    /**
-     * @since 2.0.0
-     */
-    private GeometryEntity geometry;
+public class RecordIoFactory extends IoFactory<RecordData, RecordDatasetOutput, RecordValue> {
 
-    public Geometry getGeometry() {
-        return getGeometry(null);
-    }
-
-    public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
-    }
-
-    public GeometryEntity getGeometryEntity() {
-        return geometry;
-    }
-
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
-    }
-
-    public boolean isSetGeometry() {
-        return geometry != null;
+    @Override
+    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
+        return MimeType.isKnownMimeType(outputMimeType);
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        return sb.append(" ]").toString();
+    public Set<String> getSupportedMimeTypes() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public IoHandler<RecordData> createHandler(String outputMimeType) {
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
+        IllegalArgumentException exception = new IllegalArgumentException(msg);
+        throw exception;
     }
 
 }
