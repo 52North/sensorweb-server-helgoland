@@ -28,6 +28,7 @@
  */
 package org.n52.connector;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.n52.series.db_custom.beans.CategoryTEntity;
@@ -112,8 +113,8 @@ public class EntityBuilder {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
         updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);
-        //measurementDataset.setFirstValueAt(new GregorianCalendar(2016, 9, 15, 1, 0, 0).getTime());
-        //measurementDataset.setLastValueAt(new GregorianCalendar(2016, 9, 15, 2, 0, 0).getTime());
+        measurementDataset.setFirstValueAt(new Date());
+        measurementDataset.setLastValueAt(new Date());
         return measurementDataset;
     }
 
