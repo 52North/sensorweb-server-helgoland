@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class ServiceInfo {
+public class ServiceEntity {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInfo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEntity.class);
 
     private String serviceId;
 
@@ -51,7 +51,7 @@ public class ServiceInfo {
 
     private String version;
 
-    public ServiceInfo() {
+    public ServiceEntity() {
         noDataValues = Collections.emptyList();
     }
 

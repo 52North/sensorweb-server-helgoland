@@ -34,7 +34,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.ParameterService;
@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ServiceAccessService extends ParameterService<ServiceOutput> {
 
     @Autowired
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     private final OutputAssembler<ServiceOutput> serviceRepository;
 

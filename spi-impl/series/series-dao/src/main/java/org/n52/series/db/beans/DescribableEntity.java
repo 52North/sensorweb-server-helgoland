@@ -52,6 +52,8 @@ public class DescribableEntity {
      */
     private String description;
 
+    private ServiceEntity service;
+
     private Set<I18nEntity> translations;
 
     public Long getPkid() {

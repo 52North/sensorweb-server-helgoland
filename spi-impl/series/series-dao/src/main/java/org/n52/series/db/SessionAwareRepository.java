@@ -48,7 +48,7 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.da.ServiceRepository;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
@@ -73,7 +73,7 @@ public abstract class SessionAwareRepository {
     private ServiceRepository serviceRepository;
 
     @Autowired
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     protected UrlHelper urHelper = new UrlHelper();
 
@@ -102,11 +102,11 @@ public abstract class SessionAwareRepository {
         this.serviceRepository = serviceRepository;
     }
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
+    public void setServiceInfo(ServiceEntity serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
 
-    public ServiceInfo getServiceInfo() {
+    public ServiceEntity getServiceInfo() {
         return serviceInfo;
     }
 
