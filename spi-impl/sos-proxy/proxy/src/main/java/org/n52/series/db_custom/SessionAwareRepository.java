@@ -46,12 +46,12 @@ import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.n52.series.db_custom.beans.ServiceTEntity;
-import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -72,7 +72,7 @@ public abstract class SessionAwareRepository {
     private HibernateSessionStore sessionStore;
 
     @Autowired
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     protected UrlHelper urHelper = new UrlHelper();
 
@@ -95,11 +95,11 @@ public abstract class SessionAwareRepository {
         this.sessionStore = sessionStore;
     }
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
+    public void setServiceInfo(ServiceEntity serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
 
-    public ServiceInfo getServiceInfo() {
+    public ServiceEntity getServiceInfo() {
         return serviceInfo;
     }
 

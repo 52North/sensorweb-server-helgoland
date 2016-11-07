@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.beans;
 
-import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.TextDataEntity;
 import static org.hamcrest.CoreMatchers.is;
@@ -40,11 +39,11 @@ import org.junit.Test;
 
 public class ServiceInfoTest {
 
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     @Before
     public void setUp() {
-        serviceInfo = new ServiceInfo();
+        serviceInfo = new ServiceEntity();
     }
 
     public void shouldNotFailWhenSettingInvalidNoDataValues() {

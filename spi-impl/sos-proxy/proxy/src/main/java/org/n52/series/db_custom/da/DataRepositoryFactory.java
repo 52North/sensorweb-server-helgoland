@@ -33,7 +33,7 @@ import java.io.File;
 
 import org.n52.io.ConfigTypedFactory;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -47,7 +47,7 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
     private HibernateSessionStore sessionStore;
 
     @Autowired
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     public DataRepositoryFactory() {
         super(DEFAULT_CONFIG_FILE);
@@ -82,11 +82,11 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
         this.sessionStore = sessionStore;
     }
 
-    public ServiceInfo getServiceInfo() {
+    public ServiceEntity getServiceInfo() {
         return serviceInfo;
     }
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
+    public void setServiceInfo(ServiceEntity serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
 
