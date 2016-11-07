@@ -9,6 +9,6 @@
             </generator>
         </id>
         <property column="unit" name="name" type="string"/>
-        <many-to-one class="ServiceTEntity" column="serviceid" name="service"/>
+        <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

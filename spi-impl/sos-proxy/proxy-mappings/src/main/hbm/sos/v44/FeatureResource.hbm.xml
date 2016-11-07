@@ -19,6 +19,6 @@
             -->
             <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
-        <many-to-one class="ServiceTEntity" column="serviceid" name="service"/>
+        <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

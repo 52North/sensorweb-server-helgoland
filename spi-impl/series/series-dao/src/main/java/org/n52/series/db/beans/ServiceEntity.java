@@ -41,15 +41,27 @@ public class ServiceEntity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEntity.class);
 
+    private Long pkid;
+
     private String serviceId;
 
     private String serviceDescription;
+
+    private String url;
 
     private String type = "Thin DB access layer service.";
 
     private List<String> noDataValues;
 
     private String version;
+
+    public Long getPkid() {
+        return pkid;
+    }
+
+    public void setPkid(Long pkid) {
+        this.pkid = pkid;
+    }
 
     public ServiceEntity() {
         noDataValues = Collections.emptyList();
@@ -69,6 +81,14 @@ public class ServiceEntity {
 
     public void setServiceDescription(String serviceDescription) {
         this.serviceDescription = serviceDescription;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getType() {

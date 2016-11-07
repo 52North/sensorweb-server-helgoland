@@ -41,9 +41,9 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.DescribableTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
@@ -74,7 +74,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             ServiceDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, ServiceTEntity.class);
+            return dao.hasInstance(parseId(id), parameters, ServiceEntity.class);
         } finally {
             returnSession(session);
         }
@@ -117,7 +117,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceTEntity serviceEntity : getAllInstances(parameters, session)) {
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensedService(serviceEntity));
             }
             return results;
@@ -131,7 +131,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceTEntity serviceEntity : getAllInstances(parameters, session)) {
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
                 results.add(createExpandedService(serviceEntity, parameters));
             }
             return results;
@@ -144,23 +144,23 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceTEntity result = getInstance(parseId(id), parameters, session);
+            ServiceEntity result = getInstance(parseId(id), parameters, session);
             return createExpandedService(result, parameters);
         } finally {
             returnSession(session);
         }
     }
 
-    protected ServiceTEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected ServiceEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         ServiceDao serviceDAO = createDao(session);
-        ServiceTEntity result = serviceDAO.getInstance(id, parameters);
+        ServiceEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
         return result;
     }
 
-    protected List<ServiceTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<ServiceEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
@@ -180,14 +180,14 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     public ServiceOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceTEntity result = getInstance(parseId(id), parameters, session);
+            ServiceEntity result = getInstance(parseId(id), parameters, session);
             return createCondensedService(result);
         } finally {
             returnSession(session);
         }
     }
 
-    private ServiceOutput createExpandedService(ServiceTEntity serviceEntity, DbQuery parameters) {
+    private ServiceOutput createExpandedService(ServiceEntity serviceEntity, DbQuery parameters) {
         ServiceOutput result = createCondensedService(serviceEntity);
         result.setType(serviceEntity.getType());
         result.setVersion(serviceEntity.getVersion());

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db_custom.beans">
-    <class name="ServiceTEntity" table="service">
+    <class name="org.n52.series.db.beans.ServiceEntity" table="service">
         <id name="pkid" type="long">
-            <column name="serviceid"/>
+            <column name="id"/>
             <!--<generator class="assigned"/>-->
             <generator class="native">
                 <param name="sequence">serviceId_seq</param>
             </generator>
         </id>
-        <property column="name" name="name" type="string"/>
-        <property column="description" name="description" type="string"/>
+        <property column="serviceId" name="serviceId" type="string"/>
+        <property column="serviceDescription" name="serviceDescription" type="string"/>
         <property column="url" name="url" type="string"/>
         <property column="type" name="type" type="string"/>
         <property column="version" name="version" type="string"/>

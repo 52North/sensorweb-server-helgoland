@@ -34,6 +34,7 @@ import org.n52.config.DataSourcesConfig;
 import org.n52.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.da.InsertRepository;
 import org.n52.series.db_custom.beans.CategoryTEntity;
 import org.n52.series.db_custom.beans.CountDatasetTEntity;
@@ -41,7 +42,6 @@ import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.beans.PhenomenonTEntity;
 import org.n52.series.db_custom.beans.ProcedureTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.quartz.JobBuilder;
@@ -100,7 +100,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
             String name = jobDataMap.getString("name");
             String version = jobDataMap.getString("version");
 
-            ServiceTEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, url, version));
+            ServiceEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, url, version));
 
             insertRepository.prepareInserting(service);
 

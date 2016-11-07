@@ -6,7 +6,7 @@
 package org.n52.series.db;
 
 import org.n52.io.response.ServiceOutput;
-import org.n52.series.db_custom.beans.ServiceTEntity;
+import org.n52.series.db.beans.ServiceEntity;
 
 /**
  *
@@ -14,10 +14,10 @@ import org.n52.series.db_custom.beans.ServiceTEntity;
  */
 public class ProxySessionAwareRepository {
 
-    protected ServiceOutput createCondensedService(ServiceTEntity entity) {
+    protected ServiceOutput createCondensedService(ServiceEntity entity) {
         ServiceOutput result = new ServiceOutput();
         result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(entity.getName());
+        result.setLabel(entity.getServiceId());
         return result;
     }
 

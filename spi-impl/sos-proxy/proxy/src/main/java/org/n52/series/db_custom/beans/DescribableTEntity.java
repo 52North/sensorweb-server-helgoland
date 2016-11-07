@@ -32,14 +32,4 @@ import org.n52.series.db.beans.DescribableEntity;
 
 public class DescribableTEntity extends DescribableEntity {
 
-    private ServiceTEntity service;
-
-    public ServiceTEntity getService() {
-        return service;
-    }
-
-    public void setService(ServiceTEntity service) {
-        this.service = service;
-    }
-
 }

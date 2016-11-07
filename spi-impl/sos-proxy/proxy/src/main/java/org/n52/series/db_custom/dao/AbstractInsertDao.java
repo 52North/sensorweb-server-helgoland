@@ -34,8 +34,8 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 
 public abstract class AbstractInsertDao<T> extends AbstractDao<T> implements InsertDao<T> {
 
@@ -43,7 +43,7 @@ public abstract class AbstractInsertDao<T> extends AbstractDao<T> implements Ins
         super(session);
     }
 
-    public void clearUnusedForService(ServiceTEntity service) {
+    public void clearUnusedForService(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq("service.pkid", service.getPkid()))
                 .add(Subqueries.propertyNotIn("pkid", createDetachedDatasetFilter()));

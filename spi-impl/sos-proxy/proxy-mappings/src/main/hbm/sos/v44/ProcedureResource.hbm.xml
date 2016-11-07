@@ -15,6 +15,6 @@
         <!--<property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>-->
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
-        <many-to-one class="ServiceTEntity" column="serviceid" name="service"/>
+        <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

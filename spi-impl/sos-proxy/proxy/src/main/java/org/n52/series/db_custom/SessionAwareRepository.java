@@ -51,7 +51,6 @@ import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.DescribableTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -76,10 +75,10 @@ public abstract class SessionAwareRepository {
 
     protected UrlHelper urHelper = new UrlHelper();
 
-    protected ServiceOutput createCondensedService(ServiceTEntity entity) {
+    protected ServiceOutput createCondensedService(ServiceEntity entity) {
         ServiceOutput result = new ServiceOutput();
         result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(entity.getName());
+        result.setLabel(entity.getServiceId());
         return result;
     }
 
@@ -170,7 +169,7 @@ public abstract class SessionAwareRepository {
         return seriesParameter;
     }
 
-    private ServiceOutput createCondensedExtendedService(ServiceTEntity entity, DbQuery parameters) throws DataAccessException {
+    private ServiceOutput createCondensedExtendedService(ServiceEntity entity, DbQuery parameters) throws DataAccessException {
         ServiceOutput serviceOutput = createCondensedService(entity);
         serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + serviceOutput.getId());
         return serviceOutput;

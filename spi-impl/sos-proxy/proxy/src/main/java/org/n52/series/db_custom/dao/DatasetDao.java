@@ -42,8 +42,8 @@ import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.beans.UnitTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,7 +193,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         return instance;
     }
 
-    public void markAsDeletedForService(ServiceTEntity service) {
+    public void markAsDeletedForService(ServiceEntity service) {
         List<T> datasets = getDatasetsForService(service);
         datasets.stream().map((dataset) -> {
             dataset.setDeleted(Boolean.TRUE);
@@ -204,7 +204,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         });
     }
 
-    public void removeDeletedForService(ServiceTEntity service) {
+    public void removeDeletedForService(ServiceEntity service) {
         List<T> datasets = getDeletedMarkDatasets(service);
         datasets.forEach((dataset) -> {
             session.delete(dataset);
@@ -234,13 +234,13 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         return (T) criteria.uniqueResult();
     }
 
-    private List<T> getDatasetsForService(ServiceTEntity service) {
+    private List<T> getDatasetsForService(ServiceEntity service) {
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()));
         return criteria.list();
     }
 
-    private List<T> getDeletedMarkDatasets(ServiceTEntity service) {
+    private List<T> getDeletedMarkDatasets(ServiceEntity service) {
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, service.getPkid()))
                 .add(Restrictions.eq("deleted", Boolean.TRUE));

@@ -36,10 +36,10 @@ import org.n52.series.db_custom.beans.CountDatasetTEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.GeometryEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.beans.PhenomenonTEntity;
 import org.n52.series.db_custom.beans.ProcedureTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.beans.TextDatasetTEntity;
 import org.n52.series.db_custom.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
@@ -47,17 +47,17 @@ import org.n52.sos.util.JTSHelper;
 
 public class EntityBuilder {
 
-    public static ServiceTEntity createService(String name, String description, String url, String version) {
-        ServiceTEntity service = new ServiceTEntity();
-        service.setDescription(description);
-        service.setName(name);
+    public static ServiceEntity createService(String name, String description, String url, String version) {
+        ServiceEntity service = new ServiceEntity();
+        service.setServiceId(name);
+        service.setServiceDescription(description);
         service.setVersion(version);
         service.setType("SOS");
         service.setUrl(url);
         return service;
     }
 
-    public static ProcedureTEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceTEntity service) {
+    public static ProcedureTEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceEntity service) {
         ProcedureTEntity procedure = new ProcedureTEntity();
         procedure.setName(name);
         procedure.setDomainId(name);
@@ -67,7 +67,7 @@ public class EntityBuilder {
         return procedure;
     }
 
-    public static CategoryTEntity createCategory(String name, ServiceTEntity service) {
+    public static CategoryTEntity createCategory(String name, ServiceEntity service) {
         CategoryTEntity category = new CategoryTEntity();
         category.setName(name);
         category.setDomainId(name);
@@ -75,7 +75,7 @@ public class EntityBuilder {
         return category;
     }
 
-    public static FeatureTEntity createFeature(String name, GeometryEntity geometry, ServiceTEntity service) throws OwsExceptionReport {
+    public static FeatureTEntity createFeature(String name, GeometryEntity geometry, ServiceEntity service) throws OwsExceptionReport {
         FeatureTEntity feature = new FeatureTEntity();
         feature.setName(name);
         feature.setDomainId(name);
@@ -94,7 +94,7 @@ public class EntityBuilder {
         return geometry;
     }
 
-    public static PhenomenonTEntity createPhenomenon(String name, ServiceTEntity service) {
+    public static PhenomenonTEntity createPhenomenon(String name, ServiceEntity service) {
         PhenomenonTEntity phenomenon = new PhenomenonTEntity();
         phenomenon.setName(name);
         phenomenon.setDomainId(name);
@@ -102,14 +102,14 @@ public class EntityBuilder {
         return phenomenon;
     }
 
-    public static UnitTEntity createUnit(String unit, ServiceTEntity service) {
+    public static UnitTEntity createUnit(String unit, ServiceEntity service) {
         UnitTEntity entity = new UnitTEntity();
         entity.setName(unit);
         entity.setService(service);
         return entity;
     }
 
-    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceTEntity service) {
+    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
         updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);
@@ -118,19 +118,19 @@ public class EntityBuilder {
         return measurementDataset;
     }
 
-    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         TextDatasetTEntity textDataset = new TextDatasetTEntity();
         updateDataset(textDataset, procedure, category, feature, phenomenon, service);
         return textDataset;
     }
 
-    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         CountDatasetTEntity countDataset = new CountDatasetTEntity();
         updateDataset(countDataset, procedure, category, feature, phenomenon, service);
         return countDataset;
     }
 
-    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceTEntity service) {
+    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryTEntity category, FeatureTEntity feature, PhenomenonTEntity phenomenon, ServiceEntity service) {
         dataset.setProcedure(procedure);
         dataset.setCategory(category);
         dataset.setFeature(feature);

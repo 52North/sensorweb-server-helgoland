@@ -32,12 +32,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.CategoryTEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.PhenomenonTEntity;
 import org.n52.series.db_custom.beans.ProcedureTEntity;
-import org.n52.series.db_custom.beans.ServiceTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -62,7 +62,7 @@ public class InsertRepository extends SessionAwareRepository {
 //        this.proxyServiceRepository = proxyServiceRepository;
 //    }
 
-    public synchronized void prepareInserting(ServiceTEntity service) {
+    public synchronized void prepareInserting(ServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
@@ -74,7 +74,7 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public void cleanUp(ServiceTEntity service) {
+    public void cleanUp(ServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
@@ -92,11 +92,11 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public ServiceTEntity insertService(ServiceTEntity service) {
+    public ServiceEntity insertService(ServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            ServiceTEntity insertedService = insertService(service, session);
+            ServiceEntity insertedService = insertService(service, session);
             session.flush();
             transaction.commit();
             return insertedService;
@@ -126,7 +126,7 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    private ServiceTEntity insertService(ServiceTEntity service, Session session) {
+    private ServiceEntity insertService(ServiceEntity service, Session session) {
         return new ServiceDao(session).getOrInsertInstance(service);
     }
 

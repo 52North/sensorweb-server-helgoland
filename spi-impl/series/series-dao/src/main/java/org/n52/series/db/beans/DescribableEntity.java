@@ -100,6 +100,14 @@ public class DescribableEntity {
         this.translations = translations;
     }
 
+    public ServiceEntity getService() {
+        return service;
+    }
+
+    public void setService(ServiceEntity service) {
+        this.service = service;
+    }
+
     public String getNameI18n(String locale) {
         if (noTranslationAvailable(locale)) {
             return name;
