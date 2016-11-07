@@ -28,17 +28,17 @@
  */
 package org.n52.series.srv;
 
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 
 public abstract class ServiceInfoAccess {
 
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
-    public ServiceInfo getServiceInfo() {
+    public ServiceEntity getServiceInfo() {
         return serviceInfo;
     }
 
-    public void setServiceInfo(ServiceInfo serviceInfo) {
+    public void setServiceInfo(ServiceEntity serviceInfo) {
         this.serviceInfo = serviceInfo;
     }
 

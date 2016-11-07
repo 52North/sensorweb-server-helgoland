@@ -34,7 +34,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DbQuery;
 
 public interface DataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> {
@@ -47,9 +47,9 @@ public interface DataRepository<DSE extends DatasetEntity<?>, V extends Abstract
 
     void setSessionStore(HibernateSessionStore sessionStore);
 
-    void setServiceInfo(ServiceInfo serviceInfo);
+    void setServiceInfo(ServiceEntity serviceInfo);
 
-    ServiceInfo getServiceInfo();
+    ServiceEntity getServiceInfo();
 
     Class<DSE> getEntityType();
 }

@@ -42,7 +42,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.DatasetFactoryException;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 
 public class DataRepositoryFactoryTest {
 
@@ -89,7 +89,7 @@ public class DataRepositoryFactoryTest {
 
     @Test
     public void when_serviceInfoAvailable_then_instanceHasServiceInfo() throws DatasetFactoryException {
-        factory.setServiceInfo(new ServiceInfo());
+        factory.setServiceInfo(new ServiceEntity());
         DataRepository instance = factory.create("measurement");
         Assert.assertNotNull(instance.getServiceInfo());
     }

@@ -48,7 +48,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -64,7 +64,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 
     @Autowired
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     @Autowired
     private EntityCounter counter;

@@ -37,11 +37,11 @@ import org.junit.Test;
 
 public class ServiceInfoTest {
 
-    private ServiceInfo serviceInfo;
+    private ServiceEntity serviceInfo;
 
     @Before
     public void setUp() {
-        serviceInfo = new ServiceInfo();
+        serviceInfo = new ServiceEntity();
     }
 
     public void shouldNotFailWhenSettingInvalidNoDataValues() {
