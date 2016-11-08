@@ -43,8 +43,8 @@ import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
-import org.n52.series.db_custom.beans.UnitTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -184,8 +184,8 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         return dataset;
     }
 
-    public UnitTEntity getOrInsertUnit(UnitTEntity unit) {
-        UnitTEntity instance = getUnit(unit);
+    public UnitEntity getOrInsertUnit(UnitEntity unit) {
+        UnitEntity instance = getUnit(unit);
         if (instance == null) {
             this.session.save(unit);
             instance = unit;
@@ -213,11 +213,11 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         session.flush();
     }
 
-    private UnitTEntity getUnit(UnitTEntity unit) {
-        Criteria criteria = session.createCriteria(UnitTEntity.class)
+    private UnitEntity getUnit(UnitEntity unit) {
+        Criteria criteria = session.createCriteria(UnitEntity.class)
                 .add(Restrictions.eq("name", unit.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, unit.getService().getPkid()));
-        return (UnitTEntity) criteria.uniqueResult();
+        return (UnitEntity) criteria.uniqueResult();
     }
 
     private DatasetTEntity getInstance(DatasetTEntity dataset) {

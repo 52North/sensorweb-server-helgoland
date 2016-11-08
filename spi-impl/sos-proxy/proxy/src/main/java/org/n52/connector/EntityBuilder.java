@@ -39,9 +39,9 @@ import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.beans.TextDatasetTEntity;
-import org.n52.series.db_custom.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.util.JTSHelper;
 
@@ -102,14 +102,14 @@ public class EntityBuilder {
         return phenomenon;
     }
 
-    public static UnitTEntity createUnit(String unit, ServiceEntity service) {
-        UnitTEntity entity = new UnitTEntity();
+    public static UnitEntity createUnit(String unit, ServiceEntity service) {
+        UnitEntity entity = new UnitEntity();
         entity.setName(unit);
         entity.setService(service);
         return entity;
     }
 
-    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
+    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, UnitEntity unit, ServiceEntity service) {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
         updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);

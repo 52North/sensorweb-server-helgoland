@@ -39,6 +39,7 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.beans.UnitEntity;
 
 
 public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
@@ -78,7 +79,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private Date lastValueAt;
 
-    private UnitTEntity unit;
+    private UnitEntity unit;
 
     public DatasetTEntity() {
         this.observations = new ArrayList<>();
@@ -210,11 +211,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.datasetType = datasetType;
     }
 
-    public UnitTEntity getUnit() {
+    public UnitEntity getUnit() {
         return unit;
     }
 
-    public void setUnit(UnitTEntity unit) {
+    public void setUnit(UnitEntity unit) {
         this.unit = unit;
     }
 

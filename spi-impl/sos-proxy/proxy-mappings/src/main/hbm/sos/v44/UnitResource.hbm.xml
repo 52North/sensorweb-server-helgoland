@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.n52.series.db_custom.beans">
-    <class name="UnitTEntity" table="unit">
+<hibernate-mapping package="org.n52.series.db.beans">
+    <class name="UnitEntity" table="unit">
         <id name="pkid" type="long">
             <column name="unitid"/>
             <generator class="native">
@@ -9,6 +9,6 @@
             </generator>
         </id>
         <property column="unit" name="name" type="string"/>
-        <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

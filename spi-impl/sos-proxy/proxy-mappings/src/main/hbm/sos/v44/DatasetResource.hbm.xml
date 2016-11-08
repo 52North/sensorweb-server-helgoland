@@ -33,7 +33,7 @@
                 <property column="lasttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
                 <property column="lastnumericvalue" name="value" type="double"/>
             </component>
-            <many-to-one class="UnitTEntity" column="unitid" name="unit"/>
+            <many-to-one class="org.n52.series.db.beans.UnitEntity" column="unitid" name="unit"/>
             <!--<list fetch="select" inverse="true" name="observations" table="observation">
                 <key column="observationid"/>
                 <index column="seriesid"/>
