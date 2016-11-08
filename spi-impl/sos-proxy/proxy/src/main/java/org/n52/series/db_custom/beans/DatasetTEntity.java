@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.UnitEntity;
@@ -57,7 +58,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private ProcedureEntity procedure;
 
-    private FeatureTEntity feature;
+    private FeatureEntity feature;
 
     private PlatformTEntity platform;
 
@@ -109,11 +110,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.procedure = procedure;
     }
 
-    public FeatureTEntity getFeature() {
+    public FeatureEntity getFeature() {
         return feature;
     }
 
-    public void setFeature(FeatureTEntity feature) {
+    public void setFeature(FeatureEntity feature) {
         this.feature = feature;
     }
 

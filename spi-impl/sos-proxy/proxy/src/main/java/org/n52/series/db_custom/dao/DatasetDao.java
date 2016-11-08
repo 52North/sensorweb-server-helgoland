@@ -38,8 +38,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
@@ -115,7 +115,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getInstancesWith(FeatureTEntity feature) {
+    public List<T> getInstancesWith(FeatureEntity feature) {
         LOGGER.debug("get instance for feature '{}'", feature);
         Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)

@@ -37,8 +37,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
@@ -52,7 +52,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, FeatureTEntity.class);
+            return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }
@@ -68,7 +68,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         try {
             FeatureDao featureDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
-            List<FeatureTEntity> found = featureDao.find(query);
+            List<FeatureEntity> found = featureDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -94,7 +94,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         try {
             FeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
-            for (FeatureTEntity featureEntity : featureDao.getAllInstances(parameters)) {
+            for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createCondensed(featureEntity, parameters));
             }
             return results;
@@ -109,7 +109,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         try {
             FeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
-            for (FeatureTEntity featureEntity : featureDao.getAllInstances(parameters)) {
+            for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createExpanded(featureEntity, parameters));
             }
             return results;
@@ -123,7 +123,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao featureDao = createDao(session);
-            FeatureTEntity result = featureDao.getInstance(parseId(id), parameters);
+            FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
             if (result == null) {
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
             }
@@ -133,13 +133,13 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    private FeatureOutput createExpanded(FeatureTEntity entity, DbQuery parameters) throws DataAccessException {
+    private FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         FeatureOutput result = createCondensed(entity, parameters);
         result.setService(createCondensedService(entity.getService()));
         return result;
     }
 
-    private FeatureOutput createCondensed(FeatureTEntity entity, DbQuery parameters) {
+    private FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));

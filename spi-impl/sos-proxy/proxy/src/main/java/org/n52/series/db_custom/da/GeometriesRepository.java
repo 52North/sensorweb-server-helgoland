@@ -46,7 +46,6 @@ import org.n52.io.response.GeometryType;
 import org.n52.io.response.PlatformOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -58,6 +57,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.FeatureEntity;
 
 public class GeometriesRepository extends SessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
@@ -71,7 +71,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
             if (GeometryType.isPlatformGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
-                return new FeatureDao(session).hasInstance(parseId(id), parameters, FeatureTEntity.class);
+                return new FeatureDao(session).hasInstance(parseId(id), parameters, FeatureEntity.class);
             }
             else if (GeometryType.isObservedGeometryId(id)) {
                 id = GeometryType.extractId(id);
@@ -156,7 +156,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
 
     private GeometryInfo getPlatformLocationGeometry(String id, DbQuery parameters, Session session) throws DataAccessException {
         String geometryId = GeometryType.extractId(id);
-        FeatureTEntity featureEntity = getFeatureEntity(geometryId, parameters, session);
+        FeatureEntity featureEntity = getFeatureEntity(geometryId, parameters, session);
         if (featureEntity != null) {
             if (GeometryType.isSiteId(id)) {
                 return createSite(featureEntity, parameters, true);
@@ -167,7 +167,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
         return null;
     }
 
-    private FeatureTEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException {
+    private FeatureEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao dao = new FeatureDao(session);
         long geometryId = Long.parseLong(GeometryType.extractId(id));
         return dao.getInstance(geometryId, parameters);
@@ -181,7 +181,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary")
         );
-        for (FeatureTEntity featureEntity : dao.getAllInstances(siteQuery)) {
+        for (FeatureEntity featureEntity : dao.getAllInstances(siteQuery)) {
             if (featureEntity.isSetGeometry()) {
                 GeometryInfo geometryInfo = createSite(featureEntity, parameters, expanded);
                 if (geometryInfo != null) {
@@ -192,7 +192,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
         return geometryInfoList;
     }
 
-    private GeometryInfo createSite(FeatureTEntity featureEntity, DbQuery parameters, boolean expanded)
+    private GeometryInfo createSite(FeatureEntity featureEntity, DbQuery parameters, boolean expanded)
             throws DataAccessException {
         Geometry geometry = featureEntity.getGeometry(getDatabaseSrid());
         if (geometry != null) {
@@ -213,13 +213,13 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")
         );
-        for (FeatureTEntity featureEntity : featureDao.getAllInstances(trackQuery)) {
+        for (FeatureEntity featureEntity : featureDao.getAllInstances(trackQuery)) {
             geometryInfoList.add(createTrack(featureEntity, parameters, expanded, session));
         }
         return geometryInfoList;
     }
 
-    private GeometryInfo createTrack(FeatureTEntity featureEntity, DbQuery parameters, boolean expanded, Session session) throws DataAccessException {
+    private GeometryInfo createTrack(FeatureEntity featureEntity, DbQuery parameters, boolean expanded, Session session) throws DataAccessException {
         final GeometryInfo geomInfo = new GeometryInfo(PLATFORM_TRACK);
         GeometryInfo geometryInfo = addCondensedValues(geomInfo, featureEntity, parameters);
         if (expanded) {
@@ -256,12 +256,12 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
         return null;
     }
 
-    private Collection<? extends GeometryEntity> convertAllMobileInsitu(List<FeatureTEntity> allMobileInsitu) {
+    private Collection<? extends GeometryEntity> convertAllMobileInsitu(List<FeatureEntity> allMobileInsitu) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    private GeometryInfo addCondensedValues(GeometryInfo geometryInfo, FeatureTEntity featureEntity,
+    private GeometryInfo addCondensedValues(GeometryInfo geometryInfo, FeatureEntity featureEntity,
             DbQuery parameters) throws DataAccessException {
         geometryInfo.setId(Long.toString(featureEntity.getPkid()));
         geometryInfo.setHrefBase(urHelper.getGeometriesHrefBaseUrl(parameters.getHrefBase()));
@@ -269,7 +269,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
         return geometryInfo;
     }
 
-    private PlatformOutput getPlatfom(FeatureTEntity entity, DbQuery parameters) throws DataAccessException {
+    private PlatformOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         DbQuery platformQuery = DbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all")

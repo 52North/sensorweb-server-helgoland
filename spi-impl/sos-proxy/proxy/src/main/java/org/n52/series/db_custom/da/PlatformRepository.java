@@ -45,7 +45,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -59,6 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.FeatureEntity;
 
 /**
  * TODO: JavaDoc
@@ -82,7 +82,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             Long parsedId = parseId(PlatformType.extractId(id));
             if (PlatformType.isStationaryId(id)) {
                 FeatureDao featureDao = new FeatureDao(session);
-                return featureDao.hasInstance(parsedId, parameters, FeatureTEntity.class);
+                return featureDao.hasInstance(parsedId, parameters, FeatureEntity.class);
             } else {
                 PlatformDao dao = new PlatformDao(session);
                 return dao.hasInstance(parsedId, parameters, PlatformTEntity.class);
@@ -198,7 +198,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private PlatformTEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
         String featureId = PlatformType.extractId(id);
         FeatureDao featureDao = new FeatureDao(session);
-        FeatureTEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
+        FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
         if (feature == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
@@ -311,42 +311,42 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return dao.getAllInstances(query);
     }
 
-    private List<PlatformTEntity> convertAllInsitu(List<FeatureTEntity> entities) {
+    private List<PlatformTEntity> convertAllInsitu(List<FeatureEntity> entities) {
         List<PlatformTEntity> converted = new ArrayList<>();
-        for (FeatureTEntity entity : entities) {
+        for (FeatureEntity entity : entities) {
             converted.add(convertInsitu(entity));
         }
         return converted;
     }
 
-    private List<PlatformTEntity> convertAllRemote(List<FeatureTEntity> entities) {
+    private List<PlatformTEntity> convertAllRemote(List<FeatureEntity> entities) {
         List<PlatformTEntity> converted = new ArrayList<>();
-        for (FeatureTEntity entity : entities) {
+        for (FeatureEntity entity : entities) {
             converted.add(convertRemote(entity));
         }
         return converted;
     }
 
-    private PlatformTEntity convertInsitu(FeatureTEntity entity) {
+    private PlatformTEntity convertInsitu(FeatureEntity entity) {
         PlatformTEntity platform = convertToPlatform(entity);
         platform.setInsitu(true);
         return platform;
     }
 
-    private PlatformTEntity convertRemote(FeatureTEntity entity) {
+    private PlatformTEntity convertRemote(FeatureEntity entity) {
         PlatformTEntity platform = convertToPlatform(entity);
         platform.setInsitu(false);
         return platform;
     }
 
-    private PlatformTEntity convertToPlatform(FeatureTEntity entity) {
+    private PlatformTEntity convertToPlatform(FeatureEntity entity) {
         PlatformTEntity result = new PlatformTEntity();
         result.setDomainId(entity.getDomainId());
         result.setPkid(entity.getPkid());
         result.setName(entity.getName());
         result.setTranslations(entity.getTranslations());
         result.setDescription(entity.getDescription());
-        result.setGeometry(entity.getGeometry().getGeometry());
+        result.setGeometry(entity.getGeometry());
         return result;
     }
 

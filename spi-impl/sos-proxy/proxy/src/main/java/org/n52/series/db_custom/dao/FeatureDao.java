@@ -34,14 +34,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.beans.FeatureTEntity;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
+public class FeatureDao extends AbstractInsertDao<FeatureEntity> {
 
     private static final String SERIES_FILTER_PROPERTY = "feature";
 
@@ -56,7 +56,7 @@ public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureTEntity> find(DbQuery query) {
+    public List<FeatureEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
@@ -65,10 +65,10 @@ public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<FeatureTEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
-        return (List<FeatureTEntity>) addFilters(criteria, query).list();
+        return (List<FeatureEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -77,13 +77,13 @@ public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
     }
 
     @Override
-    protected Class<FeatureTEntity> getEntityClass() {
-        return FeatureTEntity.class;
+    protected Class<FeatureEntity> getEntityClass() {
+        return FeatureEntity.class;
     }
 
     @Override
-    public FeatureTEntity getOrInsertInstance(FeatureTEntity feature) {
-        FeatureTEntity instance = getInstance(feature);
+    public FeatureEntity getOrInsertInstance(FeatureEntity feature) {
+        FeatureEntity instance = getInstance(feature);
         if (instance == null) {
             this.session.save(feature);
             instance = feature;
@@ -91,11 +91,11 @@ public class FeatureDao extends AbstractInsertDao<FeatureTEntity> {
         return instance;
     }
 
-    private FeatureTEntity getInstance(FeatureTEntity feature) {
+    private FeatureEntity getInstance(FeatureEntity feature) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq(COLUMN_NAME, feature.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, feature.getService().getPkid()));
-        return (FeatureTEntity) criteria.uniqueResult();
+        return (FeatureEntity) criteria.uniqueResult();
     }
 
 }

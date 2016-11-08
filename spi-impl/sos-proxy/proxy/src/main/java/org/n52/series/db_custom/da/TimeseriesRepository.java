@@ -42,8 +42,8 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
@@ -239,7 +239,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     private StationOutput createCondensedStation(MeasurementDatasetTEntity entity, DbQuery query) throws DataAccessException {
-        FeatureTEntity feature = entity.getFeature();
+        FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 
         // XXX explicit cast here
