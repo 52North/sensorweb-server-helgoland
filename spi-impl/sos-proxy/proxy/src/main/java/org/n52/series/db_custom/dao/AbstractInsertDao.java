@@ -34,8 +34,8 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.beans.DatasetTEntity;
 
 public abstract class AbstractInsertDao<T> extends AbstractDao<T> implements InsertDao<T> {
 
@@ -53,7 +53,7 @@ public abstract class AbstractInsertDao<T> extends AbstractDao<T> implements Ins
     }
 
     private DetachedCriteria createDetachedDatasetFilter() {
-        DetachedCriteria filter = DetachedCriteria.forClass(DatasetTEntity.class)
+        DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class)
                 .setProjection(Projections.distinct(Projections.property(getSeriesProperty())));
         return filter;
     }

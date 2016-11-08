@@ -26,12 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db_custom.dao;
 
+import static java.lang.String.format;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
 import static org.n52.series.db.DataModelUtil.isEntitySupported;
@@ -56,7 +61,8 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
-import org.n52.series.db_custom.beans.DatasetTEntity;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -64,11 +70,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
-import static java.lang.String.format;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
-import org.n52.series.db.beans.PlatformEntity;
 
 public class DbQuery {
 
@@ -152,7 +153,7 @@ public class DbQuery {
         return !criteria.add(Restrictions.like(COLUMN_LOCALE, getCountryCode())).list().isEmpty();
     }
 
-    public Criteria addLocaleTo(Criteria criteria, Class< ?> clazz) {
+    public Criteria addLocaleTo(Criteria criteria, Class< ? > clazz) {
         if (getLocale() != null && isEntitySupported(clazz, criteria)) {
             Criteria translations = criteria.createCriteria("translations", JoinType.LEFT_OUTER_JOIN);
             criteria = translations.add(or(like(COLUMN_LOCALE, getCountryCode()), isNull(COLUMN_LOCALE)));
@@ -183,7 +184,7 @@ public class DbQuery {
      */
     Criteria addPlatformTypeFilter(String parameter, Criteria criteria) {
         FilterResolver filterResolver = getFilterResolver();
-        if (!filterResolver.shallIncludeAllPlatformTypes()) {
+        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
             if (parameter == null || parameter.isEmpty()) {
                 // series table itself
                 criteria.createCriteria("platform")
@@ -191,7 +192,7 @@ public class DbQuery {
                         .add(createInsituExpression(filterResolver));
             } else {
                 // join parameter table via series table
-                DetachedCriteria c = forClass(DatasetTEntity.class, "series")
+                DetachedCriteria c = forClass(DatasetEntity.class, "series")
                         .createCriteria("procedure")
                         .add(createMobileExpression(filterResolver))
                         .add(createInsituExpression(filterResolver))
@@ -215,7 +216,7 @@ public class DbQuery {
 
     Criteria addDatasetTypeFilter(String parameter, Criteria criteria) {
         Set<String> datasetTypes = getParameters().getDatasetTypes();
-        if (!datasetTypes.isEmpty()) {
+        if ( !datasetTypes.isEmpty()) {
             FilterResolver filterResolver = getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible() || !filterResolver.shallIncludeAllDatasetTypes()) {
                 if (parameter == null || parameter.isEmpty()) {
@@ -223,7 +224,7 @@ public class DbQuery {
                     criteria.add(Restrictions.in("datasetType", datasetTypes));
                 } else {
                     // join parameter table with series table
-                    DetachedCriteria filteredPkids = forClass(DatasetTEntity.class, "series")
+                    DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
                             .add(Restrictions.in("datasetType", datasetTypes))
                             .setProjection(onPkidProjection(parameter));
                     criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
@@ -246,14 +247,17 @@ public class DbQuery {
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
-        return Restrictions.or(Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
                 Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
     }
+
 
     private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
         boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
         boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
-        return Restrictions.or(Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+        return Restrictions.or(
+                 Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
                 Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
     }
 
@@ -263,13 +267,16 @@ public class DbQuery {
     }
 
     /**
-     * @param id the id string to parse.
-     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type long.
+     * @param id
+     *        the id string to parse.
+     * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
+     *         long.
      */
     private Long parseToId(String id) {
         try {
             return Long.parseLong(id);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return Long.MIN_VALUE;
         }
     }
@@ -294,11 +301,15 @@ public class DbQuery {
                 criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
+
                 // XXX do sampling filter only on generated line strings stored in FOI table,
                 // otherwise we would have to check each observation row
-            } catch (FactoryException e) {
+
+            }
+            catch (FactoryException e) {
                 LOGGER.error("Could not create transformation facilities.", e);
-            } catch (TransformException e) {
+            }
+            catch (TransformException e) {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
@@ -306,7 +317,7 @@ public class DbQuery {
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(DatasetTEntity.class);
+        DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class);
 
         filterWithSingularParmameters(filter); // stay backwards compatible
 
@@ -321,10 +332,10 @@ public class DbQuery {
         if (hasValues(parameters.getPlatforms())) {
             Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
             Set<String> mobileIds = getMobileIds(parameters.getPlatforms());
-            if (!stationaryIds.isEmpty()) {
+            if ( !stationaryIds.isEmpty()) {
                 addFilterRestriction(stationaryIds, "feature", filter);
             }
-            if (!mobileIds.isEmpty()) {
+            if ( !mobileIds.isEmpty()) {
                 addFilterRestriction(mobileIds, "platform", filter);
             }
         }
@@ -433,5 +444,6 @@ public class DbQuery {
     public String toString() {
         return "DbQuery{ parameters=" + getParameters().toString() + "'}'";
     }
+
 
 }

@@ -45,8 +45,8 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
@@ -78,24 +78,24 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetTEntity> dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, MeasurementDatasetTEntity.class);
+            DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
+            return dao.hasInstance(parseId(id), parameters, MeasurementDatasetEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private DatasetDao<MeasurementDatasetTEntity> createDao(Session session) {
-        return new DatasetDao<>(session, MeasurementDatasetTEntity.class);
+    private DatasetDao<MeasurementDatasetEntity> createDao(Session session) {
+        return new DatasetDao<>(session, MeasurementDatasetEntity.class);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetTEntity> seriesDao = createDao(session);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             DbQuery query = DbQuery.createFrom(parameters);
-            List<MeasurementDatasetTEntity> found = seriesDao.find(query);
+            List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
         } finally {
             returnSession(session);
@@ -112,9 +112,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return Collections.emptyList();
     }
 
-    private List<SearchResult> convertToResults(List<MeasurementDatasetTEntity> found, String locale) {
+    private List<SearchResult> convertToResults(List<MeasurementDatasetEntity> found, String locale) {
         List<SearchResult> results = new ArrayList<>();
-        for (MeasurementDatasetTEntity searchResult : found) {
+        for (MeasurementDatasetEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String phenomenonLabel = searchResult.getPhenomenon().getLabelFrom(locale);
             String procedureLabel = searchResult.getProcedure().getLabelFrom(locale);
@@ -130,8 +130,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetTEntity> seriesDao = createDao(session);
-            for (MeasurementDatasetTEntity timeseries : seriesDao.getAllInstances(query)) {
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createCondensed(timeseries, query));
                 }
@@ -148,8 +148,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetTEntity> seriesDao = createDao(session);
-            for (MeasurementDatasetTEntity timeseries : seriesDao.getAllInstances(query)) {
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createExpanded(session, timeseries, query));
                 } else {
@@ -166,8 +166,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetTEntity> seriesDao = createDao(session);
-            MeasurementDatasetTEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             if (result == null || !result.hasUnit()) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
                 throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
@@ -178,7 +178,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetTEntity series, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
@@ -199,11 +199,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             throw new DataAccessException(e.getMessage());
         }
     }
-    private MeasurementReferenceValueOutput[] createReferenceValueOutputs(MeasurementDatasetTEntity series,
+    private MeasurementReferenceValueOutput[] createReferenceValueOutputs(MeasurementDatasetEntity series,
             DbQuery query, MeasurementDataRepository repository) throws DataAccessException {
         List<MeasurementReferenceValueOutput> outputs = new ArrayList<>();
-        Set<MeasurementDatasetTEntity> referenceValues = series.getReferenceValues();
-        for (MeasurementDatasetTEntity referenceSeriesEntity : referenceValues) {
+        Set<MeasurementDatasetEntity> referenceValues = series.getReferenceValues();
+        for (MeasurementDatasetEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 MeasurementReferenceValueOutput refenceValueOutput = new MeasurementReferenceValueOutput();
                 ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
@@ -218,7 +218,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return outputs.toArray(new MeasurementReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetTEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
         String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
@@ -238,7 +238,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return sb.append(station).toString();
     }
 
-    private StationOutput createCondensedStation(MeasurementDatasetTEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 

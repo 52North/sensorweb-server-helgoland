@@ -31,12 +31,17 @@ package org.n52.series.db.beans;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntity> {
 
     private int numberOfDecimals;
 
     private Set<MeasurementDatasetEntity> referenceValues = new HashSet<>();
+
+    public MeasurementDatasetEntity() {
+        super(MeasurementDatasetOutput.DATASET_TYPE);
+    }
 
     public Set<MeasurementDatasetEntity> getReferenceValues() {
         return referenceValues;

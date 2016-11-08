@@ -46,11 +46,11 @@ import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -135,9 +135,9 @@ public abstract class SessionAwareRepository {
         this.databaseSrid = databaseSrid;
     }
 
-    protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementDatasetTEntity> series, DbQuery parameters) throws DataAccessException {
+    protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementDatasetEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
-        for (MeasurementDatasetTEntity timeseries : series) {
+        for (MeasurementDatasetEntity timeseries : series) {
             if (!timeseries.getProcedure().isReference()) {
                 String timeseriesId = timeseries.getPkid().toString();
                 timeseriesOutputs.put(timeseriesId, createTimeseriesOutput(timeseries, parameters));
@@ -146,7 +146,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutputs;
     }
 
-    protected SeriesParameters createTimeseriesOutput(MeasurementDatasetTEntity timeseries, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createTimeseriesOutput(MeasurementDatasetEntity timeseries, DbQuery parameters) throws DataAccessException {
         SeriesParameters timeseriesOutput = new SeriesParameters();
         timeseriesOutput.setService(createCondensedService(timeseries.getService()));
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
@@ -157,7 +157,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutput;
     }
 
-    protected SeriesParameters createSeriesParameters(DatasetTEntity series, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createSeriesParameters(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(createCondensedExtendedService(series.getService(), parameters));
         seriesParameter.setOffering(getCondensedExtendedOffering(series.getProcedure(), parameters));

@@ -37,7 +37,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -49,6 +48,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
 
 /**
  *
@@ -172,8 +172,8 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        DatasetDao<MeasurementDatasetTEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetTEntity.class);
-        List<MeasurementDatasetTEntity> series = seriesDao.getInstancesWith(feature);
+        DatasetDao<MeasurementDatasetEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetEntity.class);
+        List<MeasurementDatasetEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;

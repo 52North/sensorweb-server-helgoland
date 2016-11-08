@@ -33,11 +33,11 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -105,7 +105,7 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public synchronized void insertDataset(DatasetTEntity dataset) {
+    public synchronized void insertDataset(DatasetEntity dataset) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
@@ -146,7 +146,7 @@ public class InsertRepository extends SessionAwareRepository {
         return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryEntity category, ProcedureEntity procedure, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {
+    private DatasetEntity insertDataset(DatasetEntity dataset, CategoryEntity category, ProcedureEntity procedure, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
         dataset.setFeature(feature);

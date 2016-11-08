@@ -82,6 +82,11 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.observations = new ArrayList<>();
     }
 
+    public DatasetEntity(String type) {
+        this.observations = new ArrayList<>();
+        this.datasetType = type;
+    }
+
     public CategoryEntity getCategory() {
         return category;
     }
@@ -246,6 +251,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         sb.append(" , procedure: ").append(procedure);
         sb.append(" , offering: ").append(offering);
         sb.append(" , feature: ").append(feature);
+        sb.append(" , service: ").append(getService());
         sb.append(" , #observations: ").append(observations.size());
         return sb.append(" ]").toString();
     }

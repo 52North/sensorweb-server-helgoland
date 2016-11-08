@@ -44,7 +44,6 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.db_custom.dao.PlatformDao;
@@ -56,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
@@ -170,7 +170,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             try {
                 String id = dataset.getId();
                 DataRepository dataRepository = factory.create(dataset.getDatasetType());
-                DatasetTEntity entity = seriesRepository.getInstanceEntity(id, query, session);
+                DatasetEntity entity = seriesRepository.getInstanceEntity(id, query, session);
                 AbstractValue<?> valueToCheck = dataRepository.getLastValue(entity, session, query);
                 currentLastValue = getLaterValue(currentLastValue, valueToCheck);
             } catch (DatasetFactoryException e) {

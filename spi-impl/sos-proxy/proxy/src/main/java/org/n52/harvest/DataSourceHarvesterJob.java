@@ -35,14 +35,14 @@ import org.n52.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.connector.EntityBuilder;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.da.InsertRepository;
-import org.n52.series.db_custom.beans.CountDatasetTEntity;
-import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -111,8 +111,8 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
             PhenomenonEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
             UnitEntity unit = EntityBuilder.createUnit("unit", service);
 
-            MeasurementDatasetTEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, phenomenon, unit, service);
-            CountDatasetTEntity countDataset = EntityBuilder.createCountDataset(procedure, category1, feature, phenomenon, service);
+            MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, phenomenon, unit, service);
+            CountDatasetEntity countDataset = EntityBuilder.createCountDataset(procedure, category1, feature, phenomenon, service);
 
             insertRepository.insertDataset(measurement);
             insertRepository.insertDataset(countDataset);

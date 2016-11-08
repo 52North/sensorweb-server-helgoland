@@ -38,8 +38,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.PlatformEntity;
@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
-public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> implements InsertDao<T> {
+public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> implements InsertDao<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetDao.class);
 
@@ -73,7 +73,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     @SuppressWarnings("unchecked")
     public DatasetDao(Session session) {
         super(session);
-        this.entityType = (Class<T>) DatasetTEntity.class;
+        this.entityType = (Class<T>) DatasetEntity.class;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     protected Criteria getDefaultCriteria(String alias) {
         Criteria criteria = entityType != null
                 ? super.getDefaultCriteria(alias)
-                : session.createCriteria(DatasetTEntity.class, alias);
+                : session.createCriteria(DatasetEntity.class, alias);
         // addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }
@@ -166,11 +166,11 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     }
 
     @Override
-    public DatasetTEntity getOrInsertInstance(DatasetTEntity dataset) {
+    public DatasetEntity getOrInsertInstance(DatasetEntity dataset) {
         if (dataset.getUnit() != null) {
             dataset.setUnit(getOrInsertUnit(dataset.getUnit()));
         }
-        DatasetTEntity instance = getInstance(dataset);
+        DatasetEntity instance = getInstance(dataset);
         if (instance == null) {
             session.save(dataset);
             LOGGER.info("Save dataset: " + dataset);
@@ -220,7 +220,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
         return (UnitEntity) criteria.uniqueResult();
     }
 
-    private DatasetTEntity getInstance(DatasetTEntity dataset) {
+    private DatasetEntity getInstance(DatasetEntity dataset) {
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq("datasetType", dataset.getDatasetType()))
                 .add(Restrictions.eq(COLUMN_CATEGORY_PKID, dataset.getCategory().getPkid()))
