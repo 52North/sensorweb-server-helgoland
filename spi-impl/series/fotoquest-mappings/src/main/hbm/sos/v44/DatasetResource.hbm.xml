@@ -17,6 +17,7 @@
 
     <property column="published" insert="false" name="published" type="org.hibernate.type.TrueFalseType" update="false"/>
     <property insert="false" name="datasetType" type="string" formula="'record'" update="false"/>
+    <property column="deleted" insert="false" name="deleted" type="org.hibernate.type.TrueFalseType" update="false"/>
 
     <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
     <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
