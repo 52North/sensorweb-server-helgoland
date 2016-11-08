@@ -39,6 +39,7 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.UnitEntity;
 
@@ -60,7 +61,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private FeatureEntity feature;
 
-    private PlatformTEntity platform;
+    private PlatformEntity platform;
 
     private Boolean published;
 
@@ -118,11 +119,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.feature = feature;
     }
 
-    public PlatformTEntity getPlatform() {
+    public PlatformEntity getPlatform() {
         return platform;
     }
 
-    public void setPlatform(PlatformTEntity platform) {
+    public void setPlatform(PlatformEntity platform) {
         this.platform = platform;
     }
 

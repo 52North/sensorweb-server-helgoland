@@ -45,7 +45,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.db_custom.dao.PlatformDao;
@@ -59,6 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vividsolutions.jts.geom.Geometry;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.PlatformEntity;
 
 /**
  * TODO: JavaDoc
@@ -85,7 +85,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 return featureDao.hasInstance(parsedId, parameters, FeatureEntity.class);
             } else {
                 PlatformDao dao = new PlatformDao(session);
-                return dao.hasInstance(parsedId, parameters, PlatformTEntity.class);
+                return dao.hasInstance(parsedId, parameters, PlatformEntity.class);
             }
         } finally {
             returnSession(session);
@@ -97,7 +97,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             List<PlatformOutput> results = new ArrayList<>();
-            for (PlatformTEntity entity : getAllInstances(parameters, session)) {
+            for (PlatformEntity entity : getAllInstances(parameters, session)) {
                 final PlatformOutput result = createCondensed(entity, parameters);
                 results.add(result);
             }
@@ -107,7 +107,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         }
     }
 
-    private PlatformOutput createCondensed(PlatformTEntity entity, DbQuery parameters) {
+    private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
         PlatformOutput result = new PlatformOutput(entity.getPlatformType());
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
@@ -121,10 +121,10 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             if (PlatformType.isStationaryId(id)) {
-                PlatformTEntity platform = getStation(id, parameters, session);
+                PlatformEntity platform = getStation(id, parameters, session);
                 return createExpanded(platform, parameters, session);
             } else {
-                PlatformTEntity platform = getPlatform(id, parameters, session);
+                PlatformEntity platform = getPlatform(id, parameters, session);
                 return createExpanded(platform, parameters, session);
             }
         } finally {
@@ -137,7 +137,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             List<PlatformOutput> results = new ArrayList<>();
-            for (PlatformTEntity entity : getAllInstances(parameters, session)) {
+            for (PlatformEntity entity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(entity, parameters, session));
             }
             return results;
@@ -146,7 +146,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         }
     }
 
-    private PlatformOutput createExpanded(PlatformTEntity entity, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.PLATFORMS, result.getId())
@@ -195,7 +195,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 : valueToCheck;
     }
 
-    private PlatformTEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
         String featureId = PlatformType.extractId(id);
         FeatureDao featureDao = new FeatureDao(session);
         FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
@@ -207,10 +207,10 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 : convertRemote(feature);
     }
 
-    private PlatformTEntity getPlatform(String id, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformEntity getPlatform(String id, DbQuery parameters, Session session) throws DataAccessException {
         PlatformDao dao = new PlatformDao(session);
         String platformId = PlatformType.extractId(id);
-        PlatformTEntity result = dao.getInstance(Long.parseLong(platformId), parameters);
+        PlatformEntity result = dao.getInstance(Long.parseLong(platformId), parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
@@ -223,7 +223,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         try {
             PlatformDao dao = new PlatformDao(session);
             DbQuery query = getDbQuery(parameters);
-            List<PlatformTEntity> found = dao.find(query);
+            List<PlatformEntity> found = dao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -243,8 +243,8 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return results;
     }
 
-    private List<PlatformTEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
-        List<PlatformTEntity> platforms = new ArrayList<>();
+    private List<PlatformEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
+        List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeStationaryPlatformTypes()) {
             platforms.addAll(getAllStationary(query, session));
@@ -255,8 +255,8 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformTEntity> getAllStationary(DbQuery query, Session session) throws DataAccessException {
-        List<PlatformTEntity> platforms = new ArrayList<>();
+    private List<PlatformEntity> getAllStationary(DbQuery query, Session session) throws DataAccessException {
+        List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllStationaryInsitu(query, session));
@@ -267,7 +267,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformTEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
@@ -275,7 +275,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return convertAllInsitu(featureDao.getAllInstances(query));
     }
 
-    private List<PlatformTEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
@@ -283,8 +283,8 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return convertAllRemote(featureDao.getAllInstances(query));
     }
 
-    private List<PlatformTEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
-        List<PlatformTEntity> platforms = new ArrayList<>();
+    private List<PlatformEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
+        List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeInsituPlatformTypes()) {
             platforms.addAll(getAllMobileInsitu(query, session));
@@ -295,7 +295,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformTEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu"));
@@ -303,7 +303,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return dao.getAllInstances(query);
     }
 
-    private List<PlatformTEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
         DbQuery query = DbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote"));
@@ -311,36 +311,36 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return dao.getAllInstances(query);
     }
 
-    private List<PlatformTEntity> convertAllInsitu(List<FeatureEntity> entities) {
-        List<PlatformTEntity> converted = new ArrayList<>();
+    private List<PlatformEntity> convertAllInsitu(List<FeatureEntity> entities) {
+        List<PlatformEntity> converted = new ArrayList<>();
         for (FeatureEntity entity : entities) {
             converted.add(convertInsitu(entity));
         }
         return converted;
     }
 
-    private List<PlatformTEntity> convertAllRemote(List<FeatureEntity> entities) {
-        List<PlatformTEntity> converted = new ArrayList<>();
+    private List<PlatformEntity> convertAllRemote(List<FeatureEntity> entities) {
+        List<PlatformEntity> converted = new ArrayList<>();
         for (FeatureEntity entity : entities) {
             converted.add(convertRemote(entity));
         }
         return converted;
     }
 
-    private PlatformTEntity convertInsitu(FeatureEntity entity) {
-        PlatformTEntity platform = convertToPlatform(entity);
+    private PlatformEntity convertInsitu(FeatureEntity entity) {
+        PlatformEntity platform = convertToPlatform(entity);
         platform.setInsitu(true);
         return platform;
     }
 
-    private PlatformTEntity convertRemote(FeatureEntity entity) {
-        PlatformTEntity platform = convertToPlatform(entity);
+    private PlatformEntity convertRemote(FeatureEntity entity) {
+        PlatformEntity platform = convertToPlatform(entity);
         platform.setInsitu(false);
         return platform;
     }
 
-    private PlatformTEntity convertToPlatform(FeatureEntity entity) {
-        PlatformTEntity result = new PlatformTEntity();
+    private PlatformEntity convertToPlatform(FeatureEntity entity) {
+        PlatformEntity result = new PlatformEntity();
         result.setDomainId(entity.getDomainId());
         result.setPkid(entity.getPkid());
         result.setName(entity.getName());

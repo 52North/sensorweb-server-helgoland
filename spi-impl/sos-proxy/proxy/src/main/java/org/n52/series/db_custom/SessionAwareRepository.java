@@ -47,10 +47,10 @@ import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
-import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
@@ -227,7 +227,7 @@ public abstract class SessionAwareRepository {
         return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected ParameterOutput getCondensedPlatform(PlatformTEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
         return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
     }
 

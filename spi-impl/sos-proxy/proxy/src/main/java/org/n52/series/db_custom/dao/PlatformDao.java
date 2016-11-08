@@ -35,13 +35,13 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nPlatformEntity;
-import org.n52.series.db_custom.beans.PlatformTEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class PlatformDao extends AbstractDao<PlatformTEntity> {
+public class PlatformDao extends AbstractDao<PlatformEntity> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformDao.class);
 
@@ -55,7 +55,7 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PlatformTEntity> find(DbQuery query) {
+    public List<PlatformEntity> find(DbQuery query) {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(), query);
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
@@ -64,9 +64,9 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PlatformTEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
-        return (List<PlatformTEntity>) addFilters(criteria, query).list();
+        return (List<PlatformEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -75,8 +75,8 @@ public class PlatformDao extends AbstractDao<PlatformTEntity> {
     }
 
     @Override
-    protected Class<PlatformTEntity> getEntityClass() {
-        return PlatformTEntity.class;
+    protected Class<PlatformEntity> getEntityClass() {
+        return PlatformEntity.class;
     }
 
 }

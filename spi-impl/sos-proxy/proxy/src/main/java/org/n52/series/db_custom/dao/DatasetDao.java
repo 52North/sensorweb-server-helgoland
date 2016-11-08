@@ -42,9 +42,9 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
 import org.n52.series.db.beans.I18nProcedureEntity;
+import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,7 +124,7 @@ public class DatasetDao<T extends DatasetTEntity> extends AbstractDao<T> impleme
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getInstancesWith(PlatformTEntity platform) {
+    public List<T> getInstancesWith(PlatformEntity platform) {
         LOGGER.debug("get instance for platform '{}'", platform);
         Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)

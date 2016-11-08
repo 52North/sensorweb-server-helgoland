@@ -57,7 +57,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
 import org.n52.series.db_custom.beans.DatasetTEntity;
-import org.n52.series.db_custom.beans.PlatformTEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -69,6 +68,7 @@ import static java.lang.String.format;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
+import org.n52.series.db.beans.PlatformEntity;
 
 public class DbQuery {
 
@@ -246,15 +246,15 @@ public class DbQuery {
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
-        return Restrictions.or(Restrictions.eq(PlatformTEntity.MOBILE, !includeStationary), // inverse to match filter
-                Restrictions.eq(PlatformTEntity.MOBILE, includeMobile));
+        return Restrictions.or(Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
+                Restrictions.eq(PlatformEntity.MOBILE, includeMobile));
     }
 
     private LogicalExpression createInsituExpression(FilterResolver filterResolver) {
         boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
         boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
-        return Restrictions.or(Restrictions.eq(PlatformTEntity.INSITU, includeInsitu),
-                Restrictions.eq(PlatformTEntity.INSITU, !includeRemote)); // inverse to match filter
+        return Restrictions.or(Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
+                Restrictions.eq(PlatformEntity.INSITU, !includeRemote)); // inverse to match filter
     }
 
     private ProjectionList onPkidProjection(String parameter) {
