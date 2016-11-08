@@ -35,15 +35,15 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 
 public interface DataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> {
 
-    Data<? extends AbstractValue<?>> getData(String id, DbQuery dbQuery) throws DataAccessException;
+    Data<? extends AbstractValue<?>> getData(String id, ProxyDbQuery dbQuery) throws DataAccessException;
 
-    V getFirstValue(DSE entity, Session session, DbQuery query);
+    V getFirstValue(DSE entity, Session session, ProxyDbQuery query);
 
-    V getLastValue(DSE entity, Session session, DbQuery query);
+    V getLastValue(DSE entity, Session session, ProxyDbQuery query);
 
     void setSessionStore(HibernateSessionStore sessionStore);
 

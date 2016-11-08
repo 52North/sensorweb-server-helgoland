@@ -28,7 +28,6 @@
  */
 package org.n52.series.db.dao;
 
-import org.n52.series.db_custom.dao.DbQuery;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,7 +35,7 @@ public class DbQueryTest {
 
     @Test
     public void when_createWithNull_then_defaults() {
-        Assert.assertNotNull(DbQuery.createFrom(null));
+        Assert.assertNotNull(ProxyDbQuery.createFrom(null));
     }
 
 

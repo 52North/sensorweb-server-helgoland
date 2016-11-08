@@ -59,14 +59,14 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(), query);
         criteria.add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
-        return (List<PlatformEntity>) addFilters(criteria, query).list();
+        return (List<PlatformEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

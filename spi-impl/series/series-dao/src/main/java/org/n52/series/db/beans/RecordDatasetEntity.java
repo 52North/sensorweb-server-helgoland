@@ -39,7 +39,7 @@ public class RecordDatasetEntity extends DatasetEntity<RecordDataEntity> {
     public RecordDatasetEntity() {
         super(RecordDatasetOutput.DATASET_TYPE);
     }
-    
+
     public Set<RecordDatasetEntity> getReferenceValues() {
         return referenceValues;
     }

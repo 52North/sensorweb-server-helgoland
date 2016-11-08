@@ -28,6 +28,7 @@
  */
 package org.n52.series.db_custom.dao;
 
+import org.n52.series.db.dao.ProxyDbQuery;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -50,7 +51,7 @@ public class SamplingGeometryDao {
     }
 
     @SuppressWarnings("unchecked") // Hibernate
-    public List<GeometryEntity> getGeometriesOrderedByTimestamp(DbQuery parameters) {
+    public List<GeometryEntity> getGeometriesOrderedByTimestamp(ProxyDbQuery parameters) {
         Criteria criteria = session.createCriteria(SamplingGeometryEntity.class);
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));

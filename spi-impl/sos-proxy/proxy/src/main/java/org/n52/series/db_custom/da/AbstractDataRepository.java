@@ -44,13 +44,13 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db_custom.dao.DataDao;
 import org.n52.series.db_custom.dao.DatasetDao;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
 
     @Override
-    public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
+    public Data<?> getData(String seriesId, ProxyDbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
@@ -66,16 +66,16 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     }
 
     @Override
-    public V getFirstValue(DSE entity, Session session, DbQuery query) {
+    public V getFirstValue(DSE entity, Session session, ProxyDbQuery query) {
         return getValueAt(entity.getFirstValueAt(), entity, session, query);
     }
 
     @Override
-    public V getLastValue(DSE entity, Session session, DbQuery query) {
+    public V getLastValue(DSE entity, Session session, ProxyDbQuery query) {
         return getValueAt(entity.getLastValueAt(), entity, session, query);
     }
 
-    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
+    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, ProxyDbQuery query) {
         DataDao<DE> dao = createDataDao(session);
         DE valueEntity = dao.getDataValueAt(valueAt, datasetEntity);
         return createSeriesValueFor(valueEntity, datasetEntity, query);
@@ -89,11 +89,11 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         return new DataDao<>(session);
     }
 
-    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity, DbQuery query);
+    protected abstract V createSeriesValueFor(DE valueEntity, DSE datasetEntity, ProxyDbQuery query);
 
-    protected abstract D assembleData(DSE datasetEntity, DbQuery query, Session session) throws DataAccessException;
+    protected abstract D assembleData(DSE datasetEntity, ProxyDbQuery query, Session session) throws DataAccessException;
 
-    protected abstract D assembleDataWithReferenceValues(DSE datasetEntity, DbQuery dbQuery, Session session) throws DataAccessException;
+    protected abstract D assembleDataWithReferenceValues(DSE datasetEntity, ProxyDbQuery dbQuery, Session session) throws DataAccessException;
 
     protected boolean hasValidEntriesWithinRequestedTimespan(List<?> observations) {
         return observations.size() > 0;

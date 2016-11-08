@@ -44,7 +44,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.db_custom.dao.PlatformDao;
 import org.n52.series.spi.search.PlatformSearchResult;
@@ -76,7 +76,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             Long parsedId = parseId(PlatformType.extractId(id));
@@ -93,7 +93,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public List<PlatformOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
+    public List<PlatformOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<PlatformOutput> results = new ArrayList<>();
@@ -107,7 +107,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         }
     }
 
-    private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
+    private PlatformOutput createCondensed(PlatformEntity entity, ProxyDbQuery parameters) {
         PlatformOutput result = new PlatformOutput(entity.getPlatformType());
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
@@ -117,7 +117,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public PlatformOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
+    public PlatformOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             if (PlatformType.isStationaryId(id)) {
@@ -133,7 +133,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public List<PlatformOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+    public List<PlatformOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<PlatformOutput> results = new ArrayList<>();
@@ -146,9 +146,9 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         }
     }
 
-    private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformOutput createExpanded(PlatformEntity entity, ProxyDbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+        ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .extendWith(Parameters.PLATFORMS, result.getId())
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
 
@@ -162,7 +162,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return result;
     }
 
-    private Geometry getLastSamplingGeometry(List<DatasetOutput> datasets, DbQuery query, Session session) throws DataAccessException {
+    private Geometry getLastSamplingGeometry(List<DatasetOutput> datasets, ProxyDbQuery query, Session session) throws DataAccessException {
         AbstractValue<?> currentLastValue = null;
         for (DatasetOutput dataset : datasets) {
             // XXX fix generics and inheritance of Data, AbstractValue, etc.
@@ -195,7 +195,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 : valueToCheck;
     }
 
-    private PlatformEntity getStation(String id, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformEntity getStation(String id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         String featureId = PlatformType.extractId(id);
         FeatureDao featureDao = new FeatureDao(session);
         FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
@@ -207,7 +207,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
                 : convertRemote(feature);
     }
 
-    private PlatformEntity getPlatform(String id, DbQuery parameters, Session session) throws DataAccessException {
+    private PlatformEntity getPlatform(String id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         PlatformDao dao = new PlatformDao(session);
         String platformId = PlatformType.extractId(id);
         PlatformEntity result = dao.getInstance(Long.parseLong(platformId), parameters);
@@ -222,7 +222,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         Session session = getSession();
         try {
             PlatformDao dao = new PlatformDao(session);
-            DbQuery query = getDbQuery(parameters);
+            ProxyDbQuery query = getDbQuery(parameters);
             List<PlatformEntity> found = dao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -231,7 +231,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
         for (DescribableEntity searchResult : found) {
@@ -243,7 +243,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return results;
     }
 
-    private List<PlatformEntity> getAllInstances(DbQuery query, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllInstances(ProxyDbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeStationaryPlatformTypes()) {
@@ -255,7 +255,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformEntity> getAllStationary(DbQuery query, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationary(ProxyDbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeInsituPlatformTypes()) {
@@ -267,23 +267,23 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationaryInsitu(ProxyDbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+        ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu"));
         return convertAllInsitu(featureDao.getAllInstances(query));
     }
 
-    private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllStationaryRemote(ProxyDbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+        ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote"));
         return convertAllRemote(featureDao.getAllInstances(query));
     }
 
-    private List<PlatformEntity> getAllMobile(DbQuery query, Session session) throws DataAccessException {
+    private List<PlatformEntity> getAllMobile(ProxyDbQuery query, Session session) throws DataAccessException {
         List<PlatformEntity> platforms = new ArrayList<>();
         FilterResolver filterResolver = query.getFilterResolver();
         if (filterResolver.shallIncludeInsituPlatformTypes()) {
@@ -295,16 +295,16 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         return platforms;
     }
 
-    private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+    private List<PlatformEntity> getAllMobileInsitu(ProxyDbQuery parameters, Session session) throws DataAccessException {
+        ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu"));
         PlatformDao dao = new PlatformDao(session);
         return dao.getAllInstances(query);
     }
 
-    private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
-        DbQuery query = DbQuery.createFrom(parameters.getParameters()
+    private List<PlatformEntity> getAllMobileRemote(ProxyDbQuery parameters, Session session) throws DataAccessException {
+        ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote"));
         PlatformDao dao = new PlatformDao(session);

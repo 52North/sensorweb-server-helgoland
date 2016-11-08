@@ -45,7 +45,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db_custom.dao.DataDao;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 
 public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity, MeasurementDataEntity, MeasurementValue> {
 
@@ -56,7 +56,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
 
     @Override
     protected MeasurementData assembleDataWithReferenceValues(MeasurementDatasetEntity timeseries,
-                                                            DbQuery dbQuery,
+                                                            ProxyDbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         MeasurementData result = assembleData(timeseries, dbQuery, session);
         Set<MeasurementDatasetEntity> referenceValues = timeseries.getReferenceValues();
@@ -69,7 +69,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     }
 
     private Map<String, MeasurementData> assembleReferenceSeries(Set<MeasurementDatasetEntity> referenceValues,
-                                                                 DbQuery query,
+                                                                 ProxyDbQuery query,
                                                                  Session session) throws DataAccessException {
         Map<String, MeasurementData> referenceSeries = new HashMap<>();
         for (MeasurementDatasetEntity referenceSeriesEntity : referenceValues) {
@@ -88,7 +88,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return referenceSeriesData.getValues().size() <= 1;
     }
 
-    private MeasurementData expandReferenceDataIfNecessary(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private MeasurementData expandReferenceDataIfNecessary(MeasurementDatasetEntity seriesEntity, ProxyDbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
         DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
@@ -105,7 +105,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     }
 
     @Override
-    protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, ProxyDbQuery query, Session session) throws DataAccessException {
         MeasurementData result = new MeasurementData();
         DataDao<MeasurementDataEntity> dao = createDataDao(session);
         List<MeasurementDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
@@ -117,7 +117,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         return result;
     }
 
-    private MeasurementValue[] expandToInterval(Double value, MeasurementDatasetEntity series, DbQuery query) {
+    private MeasurementValue[] expandToInterval(Double value, MeasurementDatasetEntity series, ProxyDbQuery query) {
         MeasurementDataEntity referenceStart = new MeasurementDataEntity();
         MeasurementDataEntity referenceEnd = new MeasurementDataEntity();
         referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
@@ -130,7 +130,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
     }
 
     @Override
-    public MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series, DbQuery query) {
+    public MeasurementValue createSeriesValueFor(MeasurementDataEntity observation, MeasurementDatasetEntity series, ProxyDbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

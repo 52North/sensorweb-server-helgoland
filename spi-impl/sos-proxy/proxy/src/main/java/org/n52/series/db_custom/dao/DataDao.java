@@ -50,6 +50,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import org.n52.series.db.dao.DbQuery;
 
 /**
  * TODO: JavaDoc

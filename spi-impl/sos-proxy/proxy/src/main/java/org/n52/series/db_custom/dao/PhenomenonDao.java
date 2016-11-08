@@ -36,6 +36,7 @@ import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nPhenomenonEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -55,14 +56,14 @@ public class PhenomenonDao extends AbstractInsertDao<PhenomenonEntity> {
     public List<PhenomenonEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
-        return (List<PhenomenonEntity>) addFilters(criteria, query).list();
+        return (List<PhenomenonEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

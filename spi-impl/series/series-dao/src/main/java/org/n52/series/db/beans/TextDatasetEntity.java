@@ -39,7 +39,7 @@ public class TextDatasetEntity extends DatasetEntity<TextDataEntity> {
     public TextDatasetEntity() {
         super(TextDatasetOutput.DATASET_TYPE);
     }
-    
+
     public Set<TextDatasetEntity> getReferenceValues() {
         return referenceValues;
     }

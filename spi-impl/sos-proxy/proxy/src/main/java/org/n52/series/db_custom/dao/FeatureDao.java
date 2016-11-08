@@ -36,6 +36,7 @@ import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.I18nFeatureEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class FeatureDao extends AbstractInsertDao<FeatureEntity> {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class FeatureDao extends AbstractInsertDao<FeatureEntity> {
     public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
-        return (List<FeatureEntity>) addFilters(criteria, query).list();
+        return (List<FeatureEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

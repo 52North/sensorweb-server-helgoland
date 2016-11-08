@@ -38,6 +38,7 @@ import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -59,14 +60,14 @@ public class ProcedureDao extends AbstractInsertDao<ProcedureEntity> {
     public List<ProcedureEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);
-        return (List<ProcedureEntity>) addFilters(criteria, query).list();
+        return (List<ProcedureEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

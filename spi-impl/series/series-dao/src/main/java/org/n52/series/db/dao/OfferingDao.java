@@ -52,14 +52,14 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
     public List<OfferingEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nOfferingEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<OfferingEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nOfferingEntity.class, getDefaultCriteria(), query);
-        return (List<OfferingEntity>) addFilters(criteria, query).list();
+        return (List<OfferingEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

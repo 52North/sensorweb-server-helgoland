@@ -108,7 +108,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         Criteria criteria = getDefaultCriteria("series");
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
-        return (List<T>) addFilters(criteria, parameters).list();
+        return (List<T>) parameters.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

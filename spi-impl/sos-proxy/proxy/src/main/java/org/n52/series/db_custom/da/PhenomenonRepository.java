@@ -39,7 +39,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db_custom.dao.PhenomenonDao;
 import org.n52.series.spi.search.PhenomenonSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -48,7 +48,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 public class PhenomenonRepository extends SessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             PhenomenonDao dao = createDao(session);
@@ -67,7 +67,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             PhenomenonDao phenomenonDao = createDao(session);
-            DbQuery query = getDbQuery(parameters);
+            ProxyDbQuery query = getDbQuery(parameters);
             List<PhenomenonEntity> found = phenomenonDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -76,7 +76,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query) {
         String locale = query.getLocale();
         String hrefBase = urHelper.getPhenomenaHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
@@ -89,7 +89,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
+    public List<PhenomenonOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<PhenomenonOutput> results = new ArrayList<>();
@@ -103,7 +103,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+    public List<PhenomenonOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<PhenomenonOutput> results = new ArrayList<>();
@@ -117,7 +117,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
+    public PhenomenonOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             PhenomenonEntity result = getInstance(parseId(id), parameters, session);
@@ -127,11 +127,11 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         }
     }
 
-    protected List<PhenomenonEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<PhenomenonEntity> getAllInstances(ProxyDbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected PhenomenonEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected PhenomenonEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         PhenomenonDao phenomenonDao = createDao(session);
         PhenomenonEntity result = phenomenonDao.getInstance(id, parameters);
         if (result == null) {
@@ -140,13 +140,13 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         return result;
     }
 
-    private PhenomenonOutput createExpanded(PhenomenonEntity entity, DbQuery parameters) throws DataAccessException {
+    private PhenomenonOutput createExpanded(PhenomenonEntity entity, ProxyDbQuery parameters) throws DataAccessException {
         PhenomenonOutput result = createCondensed(entity, parameters);
         result.setService(createCondensedService(entity.getService()));
         return result;
     }
 
-    private PhenomenonOutput createCondensed(PhenomenonEntity entity, DbQuery parameters) {
+    private PhenomenonOutput createCondensed(PhenomenonEntity entity, ProxyDbQuery parameters) {
         PhenomenonOutput result = new PhenomenonOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
@@ -155,7 +155,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         return result;
     }
 
-    private void checkForHref(PhenomenonOutput result, DbQuery parameters) {
+    private void checkForHref(PhenomenonOutput result, ProxyDbQuery parameters) {
         if (parameters.getHrefBase() != null) {
             result.setHrefBase(urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
         }

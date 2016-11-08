@@ -47,7 +47,7 @@ import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.TimeseriesSearchResult;
@@ -75,7 +75,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
@@ -94,7 +94,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            ProxyDbQuery query = ProxyDbQuery.createFrom(parameters);
             List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
         } finally {
@@ -104,7 +104,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     @Override
     public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found,
-            DbQuery query) {
+            ProxyDbQuery query) {
         // not needed, use #convertToResults() instead
 
         // TODO fix interface here
@@ -126,7 +126,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
+    public List<TimeseriesMetadataOutput> getAllCondensed(ProxyDbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
@@ -144,7 +144,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
+    public List<TimeseriesMetadataOutput> getAllExpanded(ProxyDbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
@@ -163,7 +163,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
-    public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
+    public TimeseriesMetadataOutput getInstance(String timeseriesId, ProxyDbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
@@ -178,7 +178,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, ProxyDbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
@@ -200,7 +200,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
     }
     private MeasurementReferenceValueOutput[] createReferenceValueOutputs(MeasurementDatasetEntity series,
-            DbQuery query, MeasurementDataRepository repository) throws DataAccessException {
+            ProxyDbQuery query, MeasurementDataRepository repository) throws DataAccessException {
         List<MeasurementReferenceValueOutput> outputs = new ArrayList<>();
         Set<MeasurementDatasetEntity> referenceValues = series.getReferenceValues();
         for (MeasurementDatasetEntity referenceSeriesEntity : referenceValues) {
@@ -218,7 +218,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return outputs.toArray(new MeasurementReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, ProxyDbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
         String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
@@ -238,7 +238,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return sb.append(station).toString();
     }
 
-    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, ProxyDbQuery query) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 

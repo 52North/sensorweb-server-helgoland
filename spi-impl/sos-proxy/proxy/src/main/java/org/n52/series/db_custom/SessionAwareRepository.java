@@ -51,7 +51,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -82,8 +82,8 @@ public abstract class SessionAwareRepository {
         return result;
     }
 
-    protected DbQuery getDbQuery(IoParameters parameters) {
-        return DbQuery.createFrom(parameters);
+    protected ProxyDbQuery getDbQuery(IoParameters parameters) {
+        return ProxyDbQuery.createFrom(parameters);
     }
 
     public HibernateSessionStore getSessionStore() {
@@ -135,7 +135,7 @@ public abstract class SessionAwareRepository {
         this.databaseSrid = databaseSrid;
     }
 
-    protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementDatasetEntity> series, DbQuery parameters) throws DataAccessException {
+    protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementDatasetEntity> series, ProxyDbQuery parameters) throws DataAccessException {
         Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementDatasetEntity timeseries : series) {
             if (!timeseries.getProcedure().isReference()) {
@@ -146,7 +146,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutputs;
     }
 
-    protected SeriesParameters createTimeseriesOutput(MeasurementDatasetEntity timeseries, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createTimeseriesOutput(MeasurementDatasetEntity timeseries, ProxyDbQuery parameters) throws DataAccessException {
         SeriesParameters timeseriesOutput = new SeriesParameters();
         timeseriesOutput.setService(createCondensedService(timeseries.getService()));
         timeseriesOutput.setOffering(getCondensedOffering(timeseries.getProcedure(), parameters));
@@ -157,7 +157,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutput;
     }
 
-    protected SeriesParameters createSeriesParameters(DatasetEntity series, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createSeriesParameters(DatasetEntity series, ProxyDbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(createCondensedExtendedService(series.getService(), parameters));
         seriesParameter.setOffering(getCondensedExtendedOffering(series.getProcedure(), parameters));
@@ -169,65 +169,65 @@ public abstract class SessionAwareRepository {
         return seriesParameter;
     }
 
-    private ServiceOutput createCondensedExtendedService(ServiceEntity entity, DbQuery parameters) throws DataAccessException {
+    private ServiceOutput createCondensedExtendedService(ServiceEntity entity, ProxyDbQuery parameters) throws DataAccessException {
         ServiceOutput serviceOutput = createCondensedService(entity);
         serviceOutput.setHref(urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()) + "/" + serviceOutput.getId());
         return serviceOutput;
     }
 
-    protected ParameterOutput getCondensedPhenomenon(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedPhenomenon(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new PhenomenonOutput(), entity, parameters);
     }
 
-    protected ParameterOutput getCondensedExtendedPhenomenon(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedExtendedPhenomenon(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new PhenomenonOutput(), entity, parameters, urHelper.getPhenomenaHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected ParameterOutput getCondensedOffering(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedOffering(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new OfferingOutput(), entity, parameters);
     }
 
-    protected ParameterOutput getCondensedExtendedOffering(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedExtendedOffering(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters) {
+    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, ProxyDbQuery parameters) {
         outputvalue.setLabel(entity.getLabelFrom(parameters.getLocale()));
         outputvalue.setId(Long.toString(entity.getPkid()));
         return outputvalue;
     }
 
-    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, DbQuery parameters, String hrefBase) {
+    private ParameterOutput createCondensed(ParameterOutput outputvalue, DescribableEntity entity, ProxyDbQuery parameters, String hrefBase) {
         createCondensed(outputvalue, entity, parameters);
         outputvalue.setHref(hrefBase + "/" + outputvalue.getId());
         return outputvalue;
     }
 
-    protected ParameterOutput getCondensedProcedure(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedProcedure(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new ProcedureOutput(), entity, parameters);
     }
 
-    protected ParameterOutput getCondensedExtendedProcedure(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedExtendedProcedure(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new ProcedureOutput(), entity, parameters, urHelper.getProceduresHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected ParameterOutput getCondensedFeature(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedFeature(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new FeatureOutput(), entity, parameters);
     }
 
-    protected ParameterOutput getCondensedExtendedFeature(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedExtendedFeature(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new FeatureOutput(), entity, parameters, urHelper.getFeaturesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected ParameterOutput getCondensedCategory(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedCategory(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new CategoryOutput(), entity, parameters);
     }
 
-    protected ParameterOutput getCondensedExtendedCategory(DescribableEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedExtendedCategory(DescribableEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected ParameterOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
+    protected ParameterOutput getCondensedPlatform(PlatformEntity entity, ProxyDbQuery parameters) {
         return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
     }
 

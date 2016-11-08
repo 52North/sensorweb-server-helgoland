@@ -44,7 +44,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db_custom.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -70,7 +70,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ServiceDao dao = createDao(session);
@@ -100,7 +100,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
         for (DescribableEntity searchResult : found) {
@@ -113,7 +113,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
+    public List<ServiceOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
@@ -127,7 +127,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+    public List<ServiceOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
@@ -141,7 +141,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
+    public ServiceOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ServiceEntity result = getInstance(parseId(id), parameters, session);
@@ -151,7 +151,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    protected ServiceEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected ServiceEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         ServiceDao serviceDAO = createDao(session);
         ServiceEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
@@ -160,7 +160,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         return result;
     }
 
-    protected List<ServiceEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<ServiceEntity> getAllInstances(ProxyDbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
@@ -168,16 +168,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         return new ServiceDao(session);
     }
 
-    /**
-     * Gets a condensed view of the requested service, i.e. it avoids getting a full version of the requested service.
-     * Getting a full version (like {@link #getInstance(String, DbQuery)}) would redundantly count all parameter values
-     * available for the requested requested service.
-     *
-     * @param id the service id
-     * @param parameters query parameters
-     * @return a condensed view of the requested service.
-     */
-    public ServiceOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
+    public ServiceOutput getCondensedInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ServiceEntity result = getInstance(parseId(id), parameters, session);
@@ -187,7 +178,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    private ServiceOutput createExpandedService(ServiceEntity serviceEntity, DbQuery parameters) {
+    private ServiceOutput createExpandedService(ServiceEntity serviceEntity, ProxyDbQuery parameters) {
         ServiceOutput result = createCondensedService(serviceEntity);
         result.setType(serviceEntity.getType());
         result.setVersion(serviceEntity.getVersion());
@@ -196,7 +187,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         return result;
     }
 
-    private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
+    private ParameterCount countParameters(ServiceOutput service, ProxyDbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
             query.setServiceId(service.getId());

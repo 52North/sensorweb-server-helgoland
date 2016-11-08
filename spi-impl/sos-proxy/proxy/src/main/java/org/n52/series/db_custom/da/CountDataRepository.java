@@ -41,7 +41,7 @@ import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db_custom.dao.DataDao;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 
 public class CountDataRepository extends AbstractDataRepository<CountData, CountDatasetEntity, CountDataEntity, CountValue> {
 
@@ -52,7 +52,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
 
     @Override
     protected CountData assembleDataWithReferenceValues(CountDatasetEntity timeseries,
-                                                            DbQuery dbQuery,
+                                                            ProxyDbQuery dbQuery,
                                                             Session session) throws DataAccessException {
         CountData result = assembleData(timeseries, dbQuery, session);
         Set<CountDatasetEntity> referenceValues = timeseries.getReferenceValues();
@@ -65,7 +65,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
     }
 
     private Map<String, CountData> assembleReferenceSeries(Set<CountDatasetEntity> referenceValues,
-                                                                 DbQuery query,
+                                                                 ProxyDbQuery query,
                                                                  Session session) throws DataAccessException {
         Map<String, CountData> referenceSeries = new HashMap<>();
         for (CountDatasetEntity referenceSeriesEntity : referenceValues) {
@@ -84,7 +84,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
         return referenceSeriesData.getValues().size() <= 1;
     }
 
-    private CountData expandReferenceDataIfNecessary(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private CountData expandReferenceDataIfNecessary(CountDatasetEntity seriesEntity, ProxyDbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
         DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
@@ -101,7 +101,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
     }
 
     @Override
-    protected CountData assembleData(CountDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    protected CountData assembleData(CountDatasetEntity seriesEntity, ProxyDbQuery query, Session session) throws DataAccessException {
         CountData result = new CountData();
         DataDao<CountDataEntity> dao = createDataDao(session);
         List<CountDataEntity> observations = dao.getAllInstancesFor(seriesEntity, query);
@@ -113,7 +113,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
         return result;
     }
 
-    private CountValue[] expandToInterval(Integer value, CountDatasetEntity series, DbQuery query) {
+    private CountValue[] expandToInterval(Integer value, CountDatasetEntity series, ProxyDbQuery query) {
         CountDataEntity referenceStart = new CountDataEntity();
         CountDataEntity referenceEnd = new CountDataEntity();
         referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
@@ -126,7 +126,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
     }
 
     @Override
-    public CountValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series, DbQuery query) {
+    public CountValue createSeriesValueFor(CountDataEntity observation, CountDatasetEntity series, ProxyDbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

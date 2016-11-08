@@ -34,21 +34,21 @@ import java.util.List;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
 
 public interface OutputAssembler<T> {
 
-    List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;
+    List<T> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException;
 
-    List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
+    List<T> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException;
 
-    T getInstance(String id, DbQuery parameters) throws DataAccessException;
+    T getInstance(String id, ProxyDbQuery parameters) throws DataAccessException;
 
     Collection<SearchResult> searchFor(IoParameters parameters);
 
-    List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query);
+    List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query);
 
-    boolean exists(String id, DbQuery query) throws DataAccessException;
+    boolean exists(String id, ProxyDbQuery query) throws DataAccessException;
 
 }

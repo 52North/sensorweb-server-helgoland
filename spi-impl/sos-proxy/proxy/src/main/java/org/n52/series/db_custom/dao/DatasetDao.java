@@ -45,6 +45,7 @@ import org.n52.series.db.beans.I18nProcedureEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
+import org.n52.series.db.dao.DbQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +107,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> implemen
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
         Criteria criteria = session.createCriteria(getEntityClass());
-        return (List<T>) addFilters(criteria, parameters).list();
+        return (List<T>) parameters.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

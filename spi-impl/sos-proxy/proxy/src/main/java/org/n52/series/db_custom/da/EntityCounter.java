@@ -35,7 +35,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.db_custom.dao.PhenomenonDao;
 import org.n52.series.db_custom.dao.PlatformDao;
@@ -50,7 +50,7 @@ public class EntityCounter {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-    public Integer countFeatures(DbQuery query) throws DataAccessException {
+    public Integer countFeatures(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new FeatureDao(session).getCount(query);
@@ -59,12 +59,12 @@ public class EntityCounter {
         }
     }
 
-    public Integer countOfferings(DbQuery query) throws DataAccessException {
+    public Integer countOfferings(ProxyDbQuery query) throws DataAccessException {
         // offerings equals procedures in our case
         return countProcedures(query);
     }
 
-    public Integer countProcedures(DbQuery query) throws DataAccessException {
+    public Integer countProcedures(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new ProcedureDao(session).getCount(query);
@@ -73,7 +73,7 @@ public class EntityCounter {
         }
     }
 
-    public Integer countPhenomena(DbQuery query) throws DataAccessException {
+    public Integer countPhenomena(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new PhenomenonDao(session).getCount(query);
@@ -82,7 +82,7 @@ public class EntityCounter {
         }
     }
 
-    public Integer countCategories(DbQuery query) throws DataAccessException {
+    public Integer countCategories(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new CategoryDao(session).getCount(query);
@@ -91,7 +91,7 @@ public class EntityCounter {
         }
     }
 
-    public Integer countPlatforms(DbQuery query) throws DataAccessException {
+    public Integer countPlatforms(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new PlatformDao(session).getCount(query);
@@ -100,7 +100,7 @@ public class EntityCounter {
         }
     }
 
-    public Integer countDatasets(DbQuery query) throws DataAccessException {
+    public Integer countDatasets(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
             return new DatasetDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
@@ -112,7 +112,7 @@ public class EntityCounter {
     public Integer countStations() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            DbQuery query = createBackwardsCompatibleQuery();
+            ProxyDbQuery query = createBackwardsCompatibleQuery();
             return countFeatures(query);
         } finally {
             sessionStore.returnSession(session);
@@ -122,15 +122,15 @@ public class EntityCounter {
     public Integer countTimeseries() throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            DbQuery query = createBackwardsCompatibleQuery();
+            ProxyDbQuery query = createBackwardsCompatibleQuery();
             return countDatasets(query);
         } finally {
             sessionStore.returnSession(session);
         }
     }
 
-    private DbQuery createBackwardsCompatibleQuery() {
-        return DbQuery.createFrom(IoParameters.createDefaults()
+    private ProxyDbQuery createBackwardsCompatibleQuery() {
+        return ProxyDbQuery.createFrom(IoParameters.createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
                 .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement"));
     }

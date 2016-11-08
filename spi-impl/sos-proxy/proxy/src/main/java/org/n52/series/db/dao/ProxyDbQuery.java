@@ -26,56 +26,56 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.db.dao;
 
-import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db.beans.I18nFeatureEntity;
+import org.n52.io.request.IoParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class FeatureDao extends AbstractDao<FeatureEntity> {
+import org.n52.series.db.dao.DbQuery;
 
-    private static final String SERIES_FILTER_PROPERTY = "feature";
+public class ProxyDbQuery extends DbQuery {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyDbQuery.class);
 
-    public FeatureDao(Session session) {
-        super(session);
+    private static final String COLUMN_KEY = "pkid";
+
+    private String serviceId;
+
+    public ProxyDbQuery(IoParameters parameters) {
+        super(parameters);
+    }
+
+    public static ProxyDbQuery createFrom(IoParameters parameters) {
+        return new ProxyDbQuery(parameters);
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<FeatureEntity> find(DbQuery query) {
-        LOGGER.debug("find instance: {}", query);
-        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
-                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return query.addFilters(criteria, getSeriesProperty()).list();
+    public Criteria addFilters(Criteria criteria, String seriesProperty) {
+        super.addFilters(criteria, seriesProperty);
+        return addServiceFilter(seriesProperty, criteria);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        LOGGER.debug("get all instances: {}", query);
-        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
-        return (List<FeatureEntity>) query.addFilters(criteria, getSeriesProperty()).list();
+    public Criteria addServiceFilter(String parameter, Criteria criteria) {
+        if (serviceId != null && !serviceId.isEmpty()) {
+            criteria.add(Restrictions.eq("service.pkid", parseToId(serviceId)));
+        } else if (getParameters().getService() != null) {
+            criteria.add(Restrictions.eq("service.pkid", parseToId(getParameters().getService())));
+        } else if (getParameters().getServices() != null && !getParameters().getServices().isEmpty()) {
+            criteria.add(Restrictions.in("service.pkid", parseToIds(getParameters().getServices())));
+        }
+        return criteria;
     }
-
-    @Override
-    protected String getSeriesProperty() {
-        return SERIES_FILTER_PROPERTY;
-    }
-
-    @Override
-    protected Class<FeatureEntity> getEntityClass() {
-        return FeatureEntity.class;
-    }
-
 }

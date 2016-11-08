@@ -95,20 +95,7 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
     @Override
     public Integer getCount(DbQuery query) throws DataAccessException {
         Criteria criteria = getDefaultCriteria().setProjection(rowCount());
-        return ((Long) addFilters(criteria, query).uniqueResult()).intValue();
-    }
-
-    protected Criteria addFilters(Criteria criteria, DbQuery query) {
-        String seriesProperty = getSeriesProperty();
-        DetachedCriteria filter = query.createDetachedFilterCriteria(seriesProperty);
-        criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
-        criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
-        criteria = query.addLimitAndOffsetFilter(criteria);
-        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
-                            ? "pkid"
-                            : seriesProperty + ".pkid";
-        return query.addSpatialFilterTo(criteria)
-                .add(propertyIn(filterProperty, filter));
+        return ((Long) query.addFilters(criteria, getSeriesProperty()).uniqueResult()).intValue();
     }
 
     protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {

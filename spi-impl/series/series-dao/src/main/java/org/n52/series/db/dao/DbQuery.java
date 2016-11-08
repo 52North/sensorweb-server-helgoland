@@ -87,7 +87,7 @@ public class DbQuery {
 
     private String sridAuthorityCode = "EPSG:4326"; // default
 
-    protected DbQuery(IoParameters parameters) {
+    public DbQuery(IoParameters parameters) {
         if (parameters != null) {
             this.parameters = parameters;
         }
@@ -223,6 +223,18 @@ public class DbQuery {
         return criteria;
     }
 
+    public Criteria addFilters(Criteria criteria, String seriesProperty) {
+        DetachedCriteria filter = createDetachedFilterCriteria(seriesProperty);
+        criteria = addPlatformTypeFilter(seriesProperty, criteria);
+        criteria = addDatasetTypeFilter(seriesProperty, criteria);
+        criteria = addLimitAndOffsetFilter(criteria);
+        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
+                            ? "pkid"
+                            : seriesProperty + ".pkid";
+        return addSpatialFilterTo(criteria)
+                .add(propertyIn(filterProperty, filter));
+    }
+
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
@@ -251,7 +263,7 @@ public class DbQuery {
      * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
      *         long.
      */
-    private Long parseToId(String id) {
+    protected Long parseToId(String id) {
         try {
             return Long.parseLong(id);
         }

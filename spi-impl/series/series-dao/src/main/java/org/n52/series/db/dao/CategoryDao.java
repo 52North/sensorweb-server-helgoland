@@ -57,7 +57,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
         LOGGER.debug("find instance: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     public List<CategoryEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
         Criteria criteria = translate(I18nCategoryEntity.class, getDefaultCriteria(), query);
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

@@ -45,7 +45,7 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.dao.DatasetDao;
-import org.n52.series.db_custom.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.DatasetSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -69,7 +69,7 @@ public class DatasetRepository<T extends Data>
     private DataRepositoryFactory factory;
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             String dbId = DatasetType.extractId(id);
@@ -91,7 +91,7 @@ public class DatasetRepository<T extends Data>
     }
 
     @Override
-    public List<DatasetOutput> getAllCondensed(DbQuery query) throws DataAccessException {
+    public List<DatasetOutput> getAllCondensed(ProxyDbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
@@ -115,7 +115,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addCondensedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
+    private void addCondensedResults(DatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createCondensed(series, query));
         }
@@ -138,7 +138,7 @@ public class DatasetRepository<T extends Data>
     }
 
     @Override
-    public List<DatasetOutput> getAllExpanded(DbQuery query) throws DataAccessException {
+    public List<DatasetOutput> getAllExpanded(ProxyDbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
             List<DatasetOutput> results = new ArrayList<>();
@@ -162,14 +162,14 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addExpandedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
+    private void addExpandedResults(DatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createExpanded(series, query, session));
         }
     }
 
     @Override
-    public DatasetOutput getInstance(String id, DbQuery query) throws DataAccessException {
+    public DatasetOutput getInstance(String id, ProxyDbQuery query) throws DataAccessException {
             Session session = getSession();
         try {
             DatasetEntity< ? > instanceEntity = getInstanceEntity(id, query, session);
@@ -179,7 +179,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
+    DatasetEntity<?> getInstanceEntity(String id, ProxyDbQuery query, Session session) throws DataAccessException {
         String seriesId = DatasetType.extractId(id);
         String handleAsFallback = query.getHandleAsDatasetTypeFallback();
         final String datasetType = DatasetType.extractType(id, handleAsFallback);
@@ -192,7 +192,7 @@ public class DatasetRepository<T extends Data>
         Session session = getSession();
         try {
             DatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
-            DbQuery query = getDbQuery(paramters);
+            ProxyDbQuery query = getDbQuery(paramters);
             List< ? extends DatasetEntity> found = dao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -201,7 +201,7 @@ public class DatasetRepository<T extends Data>
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query) {
         String locale = query.getLocale();
         String hrefBase = urHelper.getDatasetsHrefBaseUrl(query.getHrefBase());
         List<SearchResult> results = new ArrayList<>();
@@ -214,7 +214,7 @@ public class DatasetRepository<T extends Data>
     }
 
     // XXX refactor generics
-    private DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
+    private DatasetOutput createCondensed(DatasetEntity<?> series, ProxyDbQuery query) throws DataAccessException {
         DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
         output.setLabel(createSeriesLabel(series, query.getLocale()));
         output.setId(series.getPkid().toString());
@@ -224,7 +224,7 @@ public class DatasetRepository<T extends Data>
     }
 
     // XXX refactor generics
-    private DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+    private DatasetOutput createExpanded(DatasetEntity<?> series, ProxyDbQuery query, Session session) throws DataAccessException {
         try {
             DatasetOutput result = createCondensed(series, query);
             result.setSeriesParameters(getParameters(series, query));
@@ -238,7 +238,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
+    private SeriesParameters getParameters(DatasetEntity<?> series, ProxyDbQuery query) throws DataAccessException {
         return createSeriesParameters(series, query);
     }
 
