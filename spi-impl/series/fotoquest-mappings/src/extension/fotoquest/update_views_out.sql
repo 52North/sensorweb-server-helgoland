@@ -91,20 +91,6 @@ WITH DATA;
     OWNER TO postgres;
     
     
-CREATE MATERIALIZED VIEW validation.observation AS
-SELECT distinct
-  c.fotoquest_item_id AS observationid,
-  c.series_id AS seriesid,
-  c.fotoquest_item_timestamp AS resulttime
-  --st_astext(c.fotoquest_item_geom) AS geom
-  --c.mediaitem_url AS value
-  --c.mediaitem_direction AS direction
-from validation.common c
-WITH DATA;
-    ALTER TABLE validation.observation 
-    OWNER TO postgres;
-    
-    
 CREATE MATERIALIZED VIEW validation.observation_set AS
 select
   c.mediaitem_id AS mediaitemid,
@@ -117,6 +103,20 @@ from validation.common c
   LEFT JOIN marker.mediaitem mi ON c.mediaitem_id = mi.id
 WITH DATA;
     ALTER TABLE validation.observation_set 
+    OWNER TO postgres;
+    
+    
+CREATE MATERIALIZED VIEW validation.observation AS
+SELECT distinct
+  c.fotoquest_item_id AS observationid,
+  c.series_id AS seriesid,
+  c.fotoquest_item_timestamp AS resulttime
+  --st_astext(c.fotoquest_item_geom) AS geom
+  --c.mediaitem_url AS value
+  --c.mediaitem_direction AS direction
+from validation.common c
+WITH DATA;
+    ALTER TABLE validation.observation 
     OWNER TO postgres;
     
     
