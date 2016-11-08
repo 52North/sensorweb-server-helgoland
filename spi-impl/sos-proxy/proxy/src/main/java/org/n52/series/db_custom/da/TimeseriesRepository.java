@@ -45,8 +45,8 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
-import org.n52.series.db_custom.beans.ProcedureTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
@@ -206,7 +206,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         for (MeasurementDatasetTEntity referenceSeriesEntity : referenceValues) {
             if (referenceSeriesEntity.isPublished()) {
                 MeasurementReferenceValueOutput refenceValueOutput = new MeasurementReferenceValueOutput();
-                ProcedureTEntity procedure = referenceSeriesEntity.getProcedure();
+                ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
                 refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
                 refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 

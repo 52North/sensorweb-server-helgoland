@@ -66,6 +66,7 @@ public class ProcedureEntity extends DescribableEntity {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
         return sb.append(" ]").toString();
     }
 }

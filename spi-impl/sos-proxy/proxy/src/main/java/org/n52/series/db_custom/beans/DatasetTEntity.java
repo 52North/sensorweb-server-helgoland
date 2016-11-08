@@ -38,6 +38,7 @@ import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.ProcedureEntity;
 
 
 public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
@@ -53,7 +54,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private PhenomenonEntity phenomenon;
 
-    private ProcedureTEntity procedure;
+    private ProcedureEntity procedure;
 
     private FeatureTEntity feature;
 
@@ -99,11 +100,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.phenomenon = phenomenon;
     }
 
-    public ProcedureTEntity getProcedure() {
+    public ProcedureEntity getProcedure() {
         return procedure;
     }
 
-    public void setProcedure(ProcedureTEntity procedure) {
+    public void setProcedure(ProcedureEntity procedure) {
         this.procedure = procedure;
     }
 

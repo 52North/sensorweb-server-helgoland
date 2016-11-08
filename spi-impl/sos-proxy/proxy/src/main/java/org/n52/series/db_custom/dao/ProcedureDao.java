@@ -37,11 +37,11 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nProcedureEntity;
-import org.n52.series.db_custom.beans.ProcedureTEntity;
+import org.n52.series.db.beans.ProcedureEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
+public class ProcedureDao extends AbstractInsertDao<ProcedureEntity> {
 
     private static final String SERIES_PROPERTY = "procedure";
 
@@ -56,7 +56,7 @@ public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureTEntity> find(DbQuery query) {
+    public List<ProcedureEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
@@ -64,9 +64,9 @@ public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ProcedureTEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);
-        return (List<ProcedureTEntity>) addFilters(criteria, query).list();
+        return (List<ProcedureEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -81,13 +81,13 @@ public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
     }
 
     @Override
-    protected Class<ProcedureTEntity> getEntityClass() {
-        return ProcedureTEntity.class;
+    protected Class<ProcedureEntity> getEntityClass() {
+        return ProcedureEntity.class;
     }
 
     @Override
-    public ProcedureTEntity getOrInsertInstance(ProcedureTEntity procedure) {
-        ProcedureTEntity instance = getInstance(procedure);
+    public ProcedureEntity getOrInsertInstance(ProcedureEntity procedure) {
+        ProcedureEntity instance = getInstance(procedure);
         if (instance == null) {
             this.session.save(procedure);
             instance = procedure;
@@ -95,11 +95,11 @@ public class ProcedureDao extends AbstractInsertDao<ProcedureTEntity> {
         return instance;
     }
 
-    private ProcedureTEntity getInstance(ProcedureTEntity procedure) {
+    private ProcedureEntity getInstance(ProcedureEntity procedure) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq(COLUMN_NAME, procedure.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, procedure.getService().getPkid()));
-        return (ProcedureTEntity) criteria.uniqueResult();
+        return (ProcedureEntity) criteria.uniqueResult();
     }
 
 }

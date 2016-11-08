@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.n52.series.db_custom.beans">
-    <class name="ProcedureTEntity" table="`procedure`">
+<hibernate-mapping package="org.n52.series.db.beans">
+    <class name="ProcedureEntity" table="`procedure`">
         <id name="pkid" type="long">
             <column name="procedureid"/>
             <!--<generator class="assigned"/>-->
@@ -15,6 +15,6 @@
         <!--<property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>-->
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
-        <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
     </class>
 </hibernate-mapping>

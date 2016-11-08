@@ -37,9 +37,9 @@ import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.MeasurementDatasetTEntity;
-import org.n52.series.db_custom.beans.ProcedureTEntity;
 import org.n52.series.db_custom.beans.TextDatasetTEntity;
 import org.n52.series.db_custom.beans.UnitTEntity;
 import org.n52.sos.ogc.ows.OwsExceptionReport;
@@ -57,8 +57,8 @@ public class EntityBuilder {
         return service;
     }
 
-    public static ProcedureTEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceEntity service) {
-        ProcedureTEntity procedure = new ProcedureTEntity();
+    public static ProcedureEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceEntity service) {
+        ProcedureEntity procedure = new ProcedureEntity();
         procedure.setName(name);
         procedure.setDomainId(name);
         procedure.setInsitu(insitu);
@@ -109,7 +109,7 @@ public class EntityBuilder {
         return entity;
     }
 
-    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
+    public static MeasurementDatasetTEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, UnitTEntity unit, ServiceEntity service) {
         MeasurementDatasetTEntity measurementDataset = new MeasurementDatasetTEntity();
         updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
         measurementDataset.setUnit(unit);
@@ -118,19 +118,19 @@ public class EntityBuilder {
         return measurementDataset;
     }
 
-    public static TextDatasetTEntity createTextDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static TextDatasetTEntity createTextDataset(ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
         TextDatasetTEntity textDataset = new TextDatasetTEntity();
         updateDataset(textDataset, procedure, category, feature, phenomenon, service);
         return textDataset;
     }
 
-    public static CountDatasetTEntity createCountDataset(ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static CountDatasetTEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
         CountDatasetTEntity countDataset = new CountDatasetTEntity();
         updateDataset(countDataset, procedure, category, feature, phenomenon, service);
         return countDataset;
     }
 
-    private static void updateDataset(DatasetTEntity dataset, ProcedureTEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    private static void updateDataset(DatasetTEntity dataset, ProcedureEntity procedure, CategoryEntity category, FeatureTEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
         dataset.setProcedure(procedure);
         dataset.setCategory(category);
         dataset.setFeature(feature);

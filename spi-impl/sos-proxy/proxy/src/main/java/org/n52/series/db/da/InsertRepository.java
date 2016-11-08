@@ -34,10 +34,10 @@ import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
-import org.n52.series.db_custom.beans.ProcedureTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db_custom.dao.FeatureDao;
@@ -110,7 +110,7 @@ public class InsertRepository extends SessionAwareRepository {
         try {
             Transaction transaction = session.beginTransaction();
 
-            ProcedureTEntity procedure = insertProcedure(dataset.getProcedure(), session);
+            ProcedureEntity procedure = insertProcedure(dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
             FeatureTEntity feature = insertFeature(dataset.getFeature(), session);
             PhenomenonEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
@@ -130,7 +130,7 @@ public class InsertRepository extends SessionAwareRepository {
         return new ServiceDao(session).getOrInsertInstance(service);
     }
 
-    private ProcedureTEntity insertProcedure(ProcedureTEntity procedure, Session session) {
+    private ProcedureEntity insertProcedure(ProcedureEntity procedure, Session session) {
         return new ProcedureDao(session).getOrInsertInstance(procedure);
     }
 
@@ -146,7 +146,7 @@ public class InsertRepository extends SessionAwareRepository {
         return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonEntity phenomenon, Session session) {
+    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryEntity category, ProcedureEntity procedure, FeatureTEntity feature, PhenomenonEntity phenomenon, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
         dataset.setFeature(feature);
