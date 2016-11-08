@@ -25,8 +25,8 @@ insertView () {
 
 insertView "common" "common.sql"
 
-views=($(ls views/*.sql))
-for CURRENT_FILE in ${views[@]}
+views=$(ls views/*.sql)
+for CURRENT_FILE in $views
 do
     VIEW_NAME=`echo $CURRENT_FILE | sed 's/views\/\(.*\).sql$/\1/'`
     insertView $VIEW_NAME $CURRENT_FILE
