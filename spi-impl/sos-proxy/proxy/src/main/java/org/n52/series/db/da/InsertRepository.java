@@ -33,10 +33,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.beans.DatasetTEntity;
 import org.n52.series.db_custom.beans.FeatureTEntity;
-import org.n52.series.db_custom.beans.PhenomenonTEntity;
 import org.n52.series.db_custom.beans.ProcedureTEntity;
 import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db_custom.dao.DatasetDao;
@@ -113,7 +113,7 @@ public class InsertRepository extends SessionAwareRepository {
             ProcedureTEntity procedure = insertProcedure(dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
             FeatureTEntity feature = insertFeature(dataset.getFeature(), session);
-            PhenomenonTEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
+            PhenomenonEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
 
             insertDataset(dataset, category, procedure, feature, phenomenon, session);
 
@@ -142,11 +142,11 @@ public class InsertRepository extends SessionAwareRepository {
         return new FeatureDao(session).getOrInsertInstance(feature);
     }
 
-    private PhenomenonTEntity insertPhenomenon(PhenomenonTEntity phenomenon, Session session) {
+    private PhenomenonEntity insertPhenomenon(PhenomenonEntity phenomenon, Session session) {
         return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonTEntity phenomenon, Session session) {
+    private DatasetTEntity insertDataset(DatasetTEntity dataset, CategoryEntity category, ProcedureTEntity procedure, FeatureTEntity feature, PhenomenonEntity phenomenon, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
         dataset.setFeature(feature);

@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.PhenomenonEntity;
 
 
 public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
@@ -50,7 +51,7 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private CategoryEntity category;
 
-    private PhenomenonTEntity phenomenon;
+    private PhenomenonEntity phenomenon;
 
     private ProcedureTEntity procedure;
 
@@ -90,11 +91,11 @@ public class DatasetTEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.category = category;
     }
 
-    public PhenomenonTEntity getPhenomenon() {
+    public PhenomenonEntity getPhenomenon() {
         return phenomenon;
     }
 
-    public void setPhenomenon(PhenomenonTEntity phenomenon) {
+    public void setPhenomenon(PhenomenonEntity phenomenon) {
         this.phenomenon = phenomenon;
     }
 

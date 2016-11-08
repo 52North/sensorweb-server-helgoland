@@ -35,11 +35,11 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nPhenomenonEntity;
-import org.n52.series.db_custom.beans.PhenomenonTEntity;
+import org.n52.series.db.beans.PhenomenonEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
+public class PhenomenonDao extends AbstractInsertDao<PhenomenonEntity> {
 
     private static final String SERIES_PROPERTY = "phenomenon";
 
@@ -52,7 +52,7 @@ public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonTEntity> find(DbQuery query) {
+    public List<PhenomenonEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
         return addFilters(criteria, query).list();
@@ -60,9 +60,9 @@ public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<PhenomenonTEntity> getAllInstances(DbQuery query) throws DataAccessException {
+    public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
-        return (List<PhenomenonTEntity>) addFilters(criteria, query).list();
+        return (List<PhenomenonEntity>) addFilters(criteria, query).list();
     }
 
     @Override
@@ -71,13 +71,13 @@ public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
     }
 
     @Override
-    protected Class<PhenomenonTEntity> getEntityClass() {
-        return PhenomenonTEntity.class;
+    protected Class<PhenomenonEntity> getEntityClass() {
+        return PhenomenonEntity.class;
     }
 
     @Override
-    public PhenomenonTEntity getOrInsertInstance(PhenomenonTEntity phenomenon) {
-        PhenomenonTEntity instance = getInstance(phenomenon);
+    public PhenomenonEntity getOrInsertInstance(PhenomenonEntity phenomenon) {
+        PhenomenonEntity instance = getInstance(phenomenon);
         if (instance == null) {
             this.session.save(phenomenon);
             instance = phenomenon;
@@ -85,11 +85,11 @@ public class PhenomenonDao extends AbstractInsertDao<PhenomenonTEntity> {
         return instance;
     }
 
-    private PhenomenonTEntity getInstance(PhenomenonTEntity phenomenon) {
+    private PhenomenonEntity getInstance(PhenomenonEntity phenomenon) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq(COLUMN_NAME, phenomenon.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, phenomenon.getService().getPkid()));
-        return (PhenomenonTEntity) criteria.uniqueResult();
+        return (PhenomenonEntity) criteria.uniqueResult();
     }
 
 }

@@ -37,8 +37,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.beans.PhenomenonTEntity;
 import org.n52.series.db_custom.dao.DbQuery;
 import org.n52.series.db_custom.dao.PhenomenonDao;
 import org.n52.series.spi.search.PhenomenonSearchResult;
@@ -52,7 +52,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             PhenomenonDao dao = createDao(session);
-            return dao.hasInstance(parseId(id), parameters, PhenomenonTEntity.class);
+            return dao.hasInstance(parseId(id), parameters, PhenomenonEntity.class);
         } finally {
             returnSession(session);
         }
@@ -68,7 +68,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         try {
             PhenomenonDao phenomenonDao = createDao(session);
             DbQuery query = getDbQuery(parameters);
-            List<PhenomenonTEntity> found = phenomenonDao.find(query);
+            List<PhenomenonEntity> found = phenomenonDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
             returnSession(session);
@@ -93,7 +93,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<PhenomenonOutput> results = new ArrayList<>();
-            for (PhenomenonTEntity phenomenonEntity : getAllInstances(parameters, session)) {
+            for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
                 results.add(createCondensed(phenomenonEntity, parameters));
             }
             return results;
@@ -107,7 +107,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<PhenomenonOutput> results = new ArrayList<>();
-            for (PhenomenonTEntity phenomenonEntity : getAllInstances(parameters, session)) {
+            for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
                 results.add(createExpanded(phenomenonEntity, parameters));
             }
             return results;
@@ -120,33 +120,33 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonTEntity result = getInstance(parseId(id), parameters, session);
+            PhenomenonEntity result = getInstance(parseId(id), parameters, session);
             return createExpanded(result, parameters);
         } finally {
             returnSession(session);
         }
     }
 
-    protected List<PhenomenonTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<PhenomenonEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected PhenomenonTEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected PhenomenonEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         PhenomenonDao phenomenonDao = createDao(session);
-        PhenomenonTEntity result = phenomenonDao.getInstance(id, parameters);
+        PhenomenonEntity result = phenomenonDao.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
         return result;
     }
 
-    private PhenomenonOutput createExpanded(PhenomenonTEntity entity, DbQuery parameters) throws DataAccessException {
+    private PhenomenonOutput createExpanded(PhenomenonEntity entity, DbQuery parameters) throws DataAccessException {
         PhenomenonOutput result = createCondensed(entity, parameters);
         result.setService(createCondensedService(entity.getService()));
         return result;
     }
 
-    private PhenomenonOutput createCondensed(PhenomenonTEntity entity, DbQuery parameters) {
+    private PhenomenonOutput createCondensed(PhenomenonEntity entity, DbQuery parameters) {
         PhenomenonOutput result = new PhenomenonOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
