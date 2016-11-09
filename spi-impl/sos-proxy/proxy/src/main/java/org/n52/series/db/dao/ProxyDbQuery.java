@@ -36,8 +36,6 @@ import org.n52.io.request.IoParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.n52.series.db.dao.DbQuery;
-
 public class ProxyDbQuery extends DbQuery {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxyDbQuery.class);

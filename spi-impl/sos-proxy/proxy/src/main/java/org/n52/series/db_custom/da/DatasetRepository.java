@@ -43,8 +43,8 @@ import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.DatasetSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -79,7 +79,7 @@ public class DatasetRepository<T extends Data>
                 return false;
             }
             DataRepository dataRepository = factory.create(datasetType);
-            DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+            ProxyDatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
             return parameters.getParameters().isMatchDomainIds()
                     ? dao.hasInstance(dbId, parameters, dataRepository.getEntityType())
                     : dao.hasInstance(parseId(dbId), parameters, dataRepository.getEntityType());
@@ -115,13 +115,13 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addCondensedResults(DatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results) throws DataAccessException {
+    private void addCondensedResults(ProxyDatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createCondensed(series, query));
         }
     }
 
-    private DatasetDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) throws DataAccessException {
+    private ProxyDatasetDao<? extends DatasetEntity> getSeriesDao(String datasetType, Session session) throws DataAccessException {
         if ( !("all".equalsIgnoreCase(datasetType) || factory.isKnown(datasetType))) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
@@ -133,8 +133,8 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private DatasetDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
-        return new DatasetDao<>(session, clazz);
+    private ProxyDatasetDao<? extends DatasetEntity> getSeriesDao(Class<? extends DatasetEntity> clazz, Session session) {
+        return new ProxyDatasetDao<>(session, clazz);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private void addExpandedResults(DatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
+    private void addExpandedResults(ProxyDatasetDao<? extends DatasetEntity> dao, ProxyDbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
         for (DatasetEntity series : dao.getAllInstances(query)) {
             results.add(createExpanded(series, query, session));
         }
@@ -183,7 +183,7 @@ public class DatasetRepository<T extends Data>
         String seriesId = DatasetType.extractId(id);
         String handleAsFallback = query.getHandleAsDatasetTypeFallback();
         final String datasetType = DatasetType.extractType(id, handleAsFallback);
-        DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
+        ProxyDatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
         return dao.getInstance(Long.parseLong(seriesId), query);
     }
 
@@ -191,7 +191,7 @@ public class DatasetRepository<T extends Data>
     public Collection<SearchResult> searchFor(IoParameters paramters) {
         Session session = getSession();
         try {
-            DatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
+            ProxyDatasetDao< ? extends DatasetEntity> dao = getSeriesDao(DatasetEntity.class, session);
             ProxyDbQuery query = getDbQuery(paramters);
             List< ? extends DatasetEntity> found = dao.find(query);
             return convertToSearchResults(found, query);

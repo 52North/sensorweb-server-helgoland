@@ -40,7 +40,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.ProcedureDao;
+import org.n52.series.db.dao.ProxyProcedureDao;
 import org.n52.series.spi.search.ProcedureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -51,22 +51,22 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ProcedureDao dao = createDao(session);
+            ProxyProcedureDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, ProcedureEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private ProcedureDao createDao(Session session) {
-        return new ProcedureDao(session);
+    private ProxyProcedureDao createDao(Session session) {
+        return new ProxyProcedureDao(session);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            ProcedureDao procedureDao = createDao(session);
+            ProxyProcedureDao procedureDao = createDao(session);
             ProxyDbQuery query = getDbQuery(parameters);
             List<ProcedureEntity> found = procedureDao.find(query);
             return convertToSearchResults(found, query);
@@ -133,7 +133,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     }
 
     protected ProcedureEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        ProcedureDao procedureDAO = createDao(session);
+        ProxyProcedureDao procedureDAO = createDao(session);
         ProcedureEntity result = procedureDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");

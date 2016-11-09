@@ -40,7 +40,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.PhenomenonDao;
+import org.n52.series.db.dao.ProxyPhenomenonDao;
 import org.n52.series.spi.search.PhenomenonSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -51,22 +51,22 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonDao dao = createDao(session);
+            ProxyPhenomenonDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, PhenomenonEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private PhenomenonDao createDao(Session session) {
-        return new PhenomenonDao(session);
+    private ProxyPhenomenonDao createDao(Session session) {
+        return new ProxyPhenomenonDao(session);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            PhenomenonDao phenomenonDao = createDao(session);
+            ProxyPhenomenonDao phenomenonDao = createDao(session);
             ProxyDbQuery query = getDbQuery(parameters);
             List<PhenomenonEntity> found = phenomenonDao.find(query);
             return convertToSearchResults(found, query);
@@ -132,7 +132,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     }
 
     protected PhenomenonEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        PhenomenonDao phenomenonDao = createDao(session);
+        ProxyPhenomenonDao phenomenonDao = createDao(session);
         PhenomenonEntity result = phenomenonDao.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");

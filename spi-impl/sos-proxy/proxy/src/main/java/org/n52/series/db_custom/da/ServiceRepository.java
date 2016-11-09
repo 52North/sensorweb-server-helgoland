@@ -45,7 +45,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.ServiceDao;
+import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.ctrl.UrlHelper;

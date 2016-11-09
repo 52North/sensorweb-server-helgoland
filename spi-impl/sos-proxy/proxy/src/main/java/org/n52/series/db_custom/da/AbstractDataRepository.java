@@ -42,8 +42,8 @@ import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
-import org.n52.series.db_custom.dao.DataDao;
-import org.n52.series.db_custom.dao.DatasetDao;
+import org.n52.series.db.dao.DataDao;
+import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
@@ -53,7 +53,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     public Data<?> getData(String seriesId, ProxyDbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<DSE> seriesDao = getSeriesDao(session);
+            ProxyDatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(id, dbQuery);
             return dbQuery.isExpanded()
@@ -81,8 +81,8 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         return createSeriesValueFor(valueEntity, datasetEntity, query);
     }
 
-    protected DatasetDao<DSE> getSeriesDao(Session session) {
-        return new DatasetDao<>(session);
+    protected ProxyDatasetDao<DSE> getSeriesDao(Session session) {
+        return new ProxyDatasetDao<>(session);
     }
 
     protected DataDao<DE> createDataDao(Session session) {

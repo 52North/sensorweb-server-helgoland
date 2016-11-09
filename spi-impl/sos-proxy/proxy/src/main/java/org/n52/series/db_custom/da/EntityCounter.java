@@ -34,13 +34,13 @@ import org.n52.io.request.Parameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db_custom.dao.CategoryDao;
+import org.n52.series.db.dao.PlatformDao;
+import org.n52.series.db.dao.ProxyCategoryDao;
+import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.FeatureDao;
-import org.n52.series.db_custom.dao.PhenomenonDao;
-import org.n52.series.db_custom.dao.PlatformDao;
-import org.n52.series.db_custom.dao.ProcedureDao;
-import org.n52.series.db_custom.dao.DatasetDao;
+import org.n52.series.db.dao.ProxyFeatureDao;
+import org.n52.series.db.dao.ProxyPhenomenonDao;
+import org.n52.series.db.dao.ProxyProcedureDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +53,7 @@ public class EntityCounter {
     public Integer countFeatures(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new FeatureDao(session).getCount(query);
+            return new ProxyFeatureDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
@@ -67,7 +67,7 @@ public class EntityCounter {
     public Integer countProcedures(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new ProcedureDao(session).getCount(query);
+            return new ProxyProcedureDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
@@ -76,7 +76,7 @@ public class EntityCounter {
     public Integer countPhenomena(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new PhenomenonDao(session).getCount(query);
+            return new ProxyPhenomenonDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
@@ -85,7 +85,7 @@ public class EntityCounter {
     public Integer countCategories(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new CategoryDao(session).getCount(query);
+            return new ProxyCategoryDao(session).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }
@@ -103,7 +103,7 @@ public class EntityCounter {
     public Integer countDatasets(ProxyDbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {
-            return new DatasetDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
+            return new ProxyDatasetDao<DatasetEntity>(session, DatasetEntity.class).getCount(query);
         } finally {
             sessionStore.returnSession(session);
         }

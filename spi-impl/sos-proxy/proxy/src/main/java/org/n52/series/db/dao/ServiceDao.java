@@ -26,77 +26,71 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db_custom.dao;
+package org.n52.series.db.dao;
 
 import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db.beans.I18nFeatureEntity;
-import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.beans.ServiceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class FeatureDao extends AbstractInsertDao<FeatureEntity> {
+public class ServiceDao extends AbstractDao<ServiceEntity> implements InsertDao<ServiceEntity> {
 
-    private static final String SERIES_FILTER_PROPERTY = "feature";
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceDao.class);
 
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_SERVICE_PKID = "service.pkid";
+    private static final String SERIES_PROPERTY = "service";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureDao.class);
+    private static final String COLUMN_SERVICEID = "serviceId";
+    private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_URL = "url";
 
-    public FeatureDao(Session session) {
+    public ServiceDao(Session session) {
         super(session);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<FeatureEntity> find(DbQuery query) {
-        LOGGER.debug("find instance: {}", query);
-        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query)
-                .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return query.addFilters(criteria, getSeriesProperty()).list();
+    public List<ServiceEntity> find(DbQuery query) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        LOGGER.debug("get all instances: {}", query);
-        Criteria criteria = translate(I18nFeatureEntity.class, getDefaultCriteria(), query);
-        return (List<FeatureEntity>) query.addFilters(criteria, getSeriesProperty()).list();
+    protected Class<ServiceEntity> getEntityClass() {
+        return ServiceEntity.class;
     }
 
     @Override
     protected String getSeriesProperty() {
-        return SERIES_FILTER_PROPERTY;
+        return SERIES_PROPERTY;
     }
 
     @Override
-    protected Class<FeatureEntity> getEntityClass() {
-        return FeatureEntity.class;
+    public List<ServiceEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria();
+        return criteria.list();
     }
 
     @Override
-    public FeatureEntity getOrInsertInstance(FeatureEntity feature) {
-        FeatureEntity instance = getInstance(feature);
+    public ServiceEntity getOrInsertInstance(ServiceEntity service) {
+        ServiceEntity instance = getInstance(service);
         if (instance == null) {
-            this.session.save(feature);
-            instance = feature;
+            this.session.save(service);
+            LOGGER.info("Save service: " + service);
+            instance = service;
         }
         return instance;
     }
 
-    private FeatureEntity getInstance(FeatureEntity feature) {
+    private ServiceEntity getInstance(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, feature.getName()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, feature.getService().getPkid()));
-        return (FeatureEntity) criteria.uniqueResult();
+                .add(Restrictions.eq(COLUMN_SERVICEID, service.getServiceId()))
+                .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
+                .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
+        return (ServiceEntity) criteria.uniqueResult();
     }
 
 }

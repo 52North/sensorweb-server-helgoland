@@ -45,8 +45,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.FeatureDao;
-import org.n52.series.db_custom.dao.PlatformDao;
 import org.n52.series.spi.search.PlatformSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -59,6 +57,8 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.dao.PlatformDao;
+import org.n52.series.db.dao.ProxyFeatureDao;
 
 /**
  * TODO: JavaDoc
@@ -81,7 +81,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         try {
             Long parsedId = parseId(PlatformType.extractId(id));
             if (PlatformType.isStationaryId(id)) {
-                FeatureDao featureDao = new FeatureDao(session);
+                ProxyFeatureDao featureDao = new ProxyFeatureDao(session);
                 return featureDao.hasInstance(parsedId, parameters, FeatureEntity.class);
             } else {
                 PlatformDao dao = new PlatformDao(session);
@@ -197,7 +197,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private PlatformEntity getStation(String id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         String featureId = PlatformType.extractId(id);
-        FeatureDao featureDao = new FeatureDao(session);
+        ProxyFeatureDao featureDao = new ProxyFeatureDao(session);
         FeatureEntity feature = featureDao.getInstance(Long.parseLong(featureId), parameters);
         if (feature == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
@@ -268,7 +268,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     private List<PlatformEntity> getAllStationaryInsitu(ProxyDbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = new FeatureDao(session);
+        ProxyFeatureDao featureDao = new ProxyFeatureDao(session);
         ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu"));
@@ -276,7 +276,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     private List<PlatformEntity> getAllStationaryRemote(ProxyDbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = new FeatureDao(session);
+        ProxyFeatureDao featureDao = new ProxyFeatureDao(session);
         ProxyDbQuery query = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote"));

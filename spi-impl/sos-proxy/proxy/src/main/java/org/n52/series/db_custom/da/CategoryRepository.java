@@ -38,8 +38,8 @@ import org.n52.io.response.CategoryOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.dao.ProxyCategoryDao;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.CategoryDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.CategorySearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -47,15 +47,15 @@ import org.n52.web.exception.ResourceNotFoundException;
 
 public class CategoryRepository extends SessionAwareRepository implements OutputAssembler<CategoryOutput> {
 
-    private CategoryDao createDao(Session session) {
-        return new CategoryDao(session);
+    private ProxyCategoryDao createDao(Session session) {
+        return new ProxyCategoryDao(session);
     }
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryDao dao = createDao(session);
+            ProxyCategoryDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, CategoryEntity.class);
         } finally {
             returnSession(session);
@@ -66,7 +66,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            CategoryDao categoryDao = createDao(session);
+            ProxyCategoryDao categoryDao = createDao(session);
             ProxyDbQuery query = getDbQuery(parameters);
             List<CategoryEntity> found = categoryDao.find(query);
             return convertToSearchResults(found, query);
@@ -136,7 +136,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     }
 
     protected CategoryEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        CategoryDao categoryDao = createDao(session);
+        ProxyCategoryDao categoryDao = createDao(session);
         CategoryEntity result = categoryDao.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");

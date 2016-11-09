@@ -41,7 +41,7 @@ import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
-import org.n52.series.db_custom.dao.DataDao;
+import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 
 public class TextDataRepository extends AbstractDataRepository<TextData, TextDatasetEntity, TextDataEntity, TextValue> {

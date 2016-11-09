@@ -47,8 +47,8 @@ import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.TimeseriesSearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -78,22 +78,22 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetEntity> dao = createDao(session);
+            ProxyDatasetDao<MeasurementDatasetEntity> dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, MeasurementDatasetEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private DatasetDao<MeasurementDatasetEntity> createDao(Session session) {
-        return new DatasetDao<>(session, MeasurementDatasetEntity.class);
+    private ProxyDatasetDao<MeasurementDatasetEntity> createDao(Session session) {
+        return new ProxyDatasetDao<>(session, MeasurementDatasetEntity.class);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            ProxyDatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             ProxyDbQuery query = ProxyDbQuery.createFrom(parameters);
             List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
@@ -130,7 +130,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            ProxyDatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createCondensed(timeseries, query));
@@ -148,7 +148,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            ProxyDatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
                 if (timeseries.hasUnit()) {
                     results.add(createExpanded(session, timeseries, query));
@@ -166,7 +166,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public TimeseriesMetadataOutput getInstance(String timeseriesId, ProxyDbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+            ProxyDatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
             MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             if (result == null || !result.hasUnit()) {
                 LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);

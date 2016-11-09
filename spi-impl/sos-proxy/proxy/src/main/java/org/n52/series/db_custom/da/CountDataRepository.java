@@ -40,7 +40,7 @@ import org.n52.io.response.dataset.count.CountValue;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDatasetEntity;
-import org.n52.series.db_custom.dao.DataDao;
+import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 
 public class CountDataRepository extends AbstractDataRepository<CountData, CountDatasetEntity, CountDataEntity, CountValue> {

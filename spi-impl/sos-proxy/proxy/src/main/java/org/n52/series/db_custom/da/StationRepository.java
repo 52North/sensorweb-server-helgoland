@@ -37,9 +37,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
-import org.n52.series.db_custom.dao.DatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.FeatureDao;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.StationSearchResult;
 import org.n52.web.exception.BadRequestException;
@@ -49,6 +47,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.dao.ProxyDatasetDao;
+import org.n52.series.db.dao.ProxyFeatureDao;
 
 /**
  *
@@ -62,22 +62,22 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao dao = createDao(session);
+            ProxyFeatureDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private FeatureDao createDao(Session session) {
-        return new FeatureDao(session);
+    private ProxyFeatureDao createDao(Session session) {
+        return new ProxyFeatureDao(session);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            FeatureDao stationDao = createDao(session);
+            ProxyFeatureDao stationDao = createDao(session);
             ProxyDbQuery query = ProxyDbQuery.createFrom(parameters);
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
@@ -135,7 +135,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private List<FeatureEntity> getAllInstances(ProxyDbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = createDao(session);
+        ProxyFeatureDao featureDao = createDao(session);
         return featureDao.getAllInstances(parameters);
     }
 
@@ -155,7 +155,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     FeatureEntity getInstance(String id, ProxyDbQuery parameters, Session session) throws DataAccessException, BadRequestException {
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-        FeatureDao featureDao = createDao(session);
+        ProxyFeatureDao featureDao = createDao(session);
         return featureDao.getInstance(parseId(id), parameters);
     }
 
@@ -163,7 +163,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            FeatureDao featureDao = createDao(session);
+            ProxyFeatureDao featureDao = createDao(session);
             FeatureEntity result = featureDao.getInstance(parseId(id), ProxyDbQuery.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         } finally {
@@ -172,7 +172,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private StationOutput createExpanded(FeatureEntity feature, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        DatasetDao<MeasurementDatasetEntity> seriesDao = new DatasetDao<>(session, MeasurementDatasetEntity.class);
+        ProxyDatasetDao<MeasurementDatasetEntity> seriesDao = new ProxyDatasetDao<>(session, MeasurementDatasetEntity.class);
         List<MeasurementDatasetEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.setTimeseries(createTimeseriesList(series, parameters));

@@ -26,39 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db_custom.dao;
+package org.n52.series.db.dao;
 
-import org.n52.series.db.dao.ProxyDbQuery;
-import java.util.List;
+public interface InsertDao<T> {
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Subqueries;
-import org.n52.series.db.beans.GeometryEntity;
-import org.n52.series.db.beans.SamplingGeometryEntity;
-
-public class SamplingGeometryDao {
-
-    private static final String COLUMN_SERIES_PKID = "seriesPkid";
-    private static final String COLUMN_TIMESTAMP = "timestamp";
-
-    private final Session session;
-
-    public SamplingGeometryDao(Session session) {
-        this.session = session;
-    }
-
-    @SuppressWarnings("unchecked") // Hibernate
-    public List<GeometryEntity> getGeometriesOrderedByTimestamp(ProxyDbQuery parameters) {
-        Criteria criteria = session.createCriteria(SamplingGeometryEntity.class);
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        criteria.addOrder(Order.asc(COLUMN_TIMESTAMP));
-        parameters.addSpatialFilterTo(criteria);
-        return (List<GeometryEntity>) criteria.list();
-    }
+    T getOrInsertInstance(T object);
 
 }

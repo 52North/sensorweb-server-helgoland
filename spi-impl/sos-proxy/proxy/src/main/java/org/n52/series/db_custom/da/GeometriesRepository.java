@@ -48,8 +48,6 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.FeatureDao;
-import org.n52.series.db_custom.dao.SamplingGeometryDao;
 import org.n52.series.spi.search.SearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,6 +56,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.dao.ProxyFeatureDao;
+import org.n52.series.db.dao.SamplingGeometryDao;
 
 public class GeometriesRepository extends SessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
@@ -71,7 +71,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
             if (GeometryType.isPlatformGeometryId(id)) {
                 id = GeometryType.extractId(id);
                 // XXX must be FALSE if 'site/2' matches an id of a feature from a mobile platform
-                return new FeatureDao(session).hasInstance(parseId(id), parameters, FeatureEntity.class);
+                return new ProxyFeatureDao(session).hasInstance(parseId(id), parameters, FeatureEntity.class);
             }
             else if (GeometryType.isObservedGeometryId(id)) {
                 id = GeometryType.extractId(id);
@@ -168,7 +168,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     }
 
     private FeatureEntity getFeatureEntity(String id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao dao = new FeatureDao(session);
+        ProxyFeatureDao dao = new ProxyFeatureDao(session);
         long geometryId = Long.parseLong(GeometryType.extractId(id));
         return dao.getInstance(geometryId, parameters);
     }
@@ -176,7 +176,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
 
     private List<GeometryInfo> getAllSites(ProxyDbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
-        FeatureDao dao = new FeatureDao(session);
+        ProxyFeatureDao dao = new ProxyFeatureDao(session);
         ProxyDbQuery siteQuery = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary")
@@ -208,7 +208,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
 
     private Collection<GeometryInfo> getAllTracks(ProxyDbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
-        FeatureDao featureDao = new FeatureDao(session);
+        ProxyFeatureDao featureDao = new ProxyFeatureDao(session);
         ProxyDbQuery trackQuery = ProxyDbQuery.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")

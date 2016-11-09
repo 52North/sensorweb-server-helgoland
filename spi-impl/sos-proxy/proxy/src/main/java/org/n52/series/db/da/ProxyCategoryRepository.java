@@ -15,7 +15,7 @@ import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db_custom.dao.CategoryDao;
+import org.n52.series.db.dao.ProxyCategoryDao;
 import org.n52.series.spi.search.SearchResult;
 
 /**
@@ -31,16 +31,6 @@ public class ProxyCategoryRepository extends SessionAwareRepository implements O
 
     @Override
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
-//        Session session = getSession();
-//        try {
-//            List<CategoryOutput> results = new ArrayList<>();
-//            for (CategoryTEntity categoryEntity : getAllInstances(parameters, session)) {
-//                results.add(createCondensed(categoryEntity, parameters));
-//            }
-//            return results;
-//        } finally {
-//            returnSession(session);
-//        }
         return repository.getAllCondensed(parameters);
     }
 
@@ -73,8 +63,8 @@ public class ProxyCategoryRepository extends SessionAwareRepository implements O
 //        return createDao(session).getAllInstances(parameters);
 //    }
 
-    private CategoryDao createDao(Session session) {
-        return new CategoryDao(session);
+    private ProxyCategoryDao createDao(Session session) {
+        return new ProxyCategoryDao(session);
     }
 
     private CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {

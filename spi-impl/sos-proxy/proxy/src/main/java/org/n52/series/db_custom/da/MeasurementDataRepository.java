@@ -44,7 +44,7 @@ import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
-import org.n52.series.db_custom.dao.DataDao;
+import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 
 public class MeasurementDataRepository extends AbstractDataRepository<MeasurementData, MeasurementDatasetEntity, MeasurementDataEntity, MeasurementValue> {

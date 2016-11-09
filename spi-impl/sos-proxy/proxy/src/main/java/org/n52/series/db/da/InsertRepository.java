@@ -38,12 +38,12 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.dao.CategoryDao;
-import org.n52.series.db_custom.dao.DatasetDao;
-import org.n52.series.db_custom.dao.FeatureDao;
-import org.n52.series.db_custom.dao.PhenomenonDao;
-import org.n52.series.db_custom.dao.ProcedureDao;
-import org.n52.series.db_custom.dao.ServiceDao;
+import org.n52.series.db.dao.ProxyCategoryDao;
+import org.n52.series.db.dao.ProxyDatasetDao;
+import org.n52.series.db.dao.ProxyFeatureDao;
+import org.n52.series.db.dao.ProxyPhenomenonDao;
+import org.n52.series.db.dao.ProxyProcedureDao;
+import org.n52.series.db.dao.ServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class InsertRepository extends SessionAwareRepository {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            new DatasetDao(session).markAsDeletedForService(service);
+            new ProxyDatasetDao(session).markAsDeletedForService(service);
             session.flush();
             transaction.commit();
         } finally {
@@ -79,11 +79,11 @@ public class InsertRepository extends SessionAwareRepository {
         try {
             Transaction transaction = session.beginTransaction();
 
-            new DatasetDao(session).removeDeletedForService(service);
-            new CategoryDao(session).clearUnusedForService(service);
-            new ProcedureDao(session).clearUnusedForService(service);
-            new FeatureDao(session).clearUnusedForService(service);
-            new PhenomenonDao(session).clearUnusedForService(service);
+            new ProxyDatasetDao(session).removeDeletedForService(service);
+            new ProxyCategoryDao(session).clearUnusedForService(service);
+            new ProxyProcedureDao(session).clearUnusedForService(service);
+            new ProxyFeatureDao(session).clearUnusedForService(service);
+            new ProxyPhenomenonDao(session).clearUnusedForService(service);
 
             session.flush();
             transaction.commit();
@@ -131,19 +131,19 @@ public class InsertRepository extends SessionAwareRepository {
     }
 
     private ProcedureEntity insertProcedure(ProcedureEntity procedure, Session session) {
-        return new ProcedureDao(session).getOrInsertInstance(procedure);
+        return new ProxyProcedureDao(session).getOrInsertInstance(procedure);
     }
 
     private CategoryEntity insertCategory(CategoryEntity category, Session session) {
-        return new CategoryDao(session).getOrInsertInstance(category);
+        return new ProxyCategoryDao(session).getOrInsertInstance(category);
     }
 
     private FeatureEntity insertFeature(FeatureEntity feature, Session session) {
-        return new FeatureDao(session).getOrInsertInstance(feature);
+        return new ProxyFeatureDao(session).getOrInsertInstance(feature);
     }
 
     private PhenomenonEntity insertPhenomenon(PhenomenonEntity phenomenon, Session session) {
-        return new PhenomenonDao(session).getOrInsertInstance(phenomenon);
+        return new ProxyPhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
     private DatasetEntity insertDataset(DatasetEntity dataset, CategoryEntity category, ProcedureEntity procedure, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {
@@ -154,7 +154,7 @@ public class InsertRepository extends SessionAwareRepository {
         if (dataset.getUnit() != null) {
             dataset.getUnit().setService(dataset.getService());
         }
-        return new DatasetDao(session).getOrInsertInstance(dataset);
+        return new ProxyDatasetDao(session).getOrInsertInstance(dataset);
     }
 
 }

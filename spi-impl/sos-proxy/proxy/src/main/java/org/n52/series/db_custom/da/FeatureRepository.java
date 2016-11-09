@@ -40,7 +40,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.dao.FeatureDao;
+import org.n52.series.db.dao.ProxyFeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -51,22 +51,22 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao dao = createDao(session);
+            ProxyFeatureDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, FeatureEntity.class);
         } finally {
             returnSession(session);
         }
     }
 
-    private FeatureDao createDao(Session session) {
-        return new FeatureDao(session);
+    private ProxyFeatureDao createDao(Session session) {
+        return new ProxyFeatureDao(session);
     }
 
     @Override
     public Collection<SearchResult> searchFor(IoParameters parameters) {
         Session session = getSession();
         try {
-            FeatureDao featureDao = createDao(session);
+            ProxyFeatureDao featureDao = createDao(session);
             ProxyDbQuery query = ProxyDbQuery.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
             return convertToSearchResults(found, query);
@@ -92,7 +92,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     public List<FeatureOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = createDao(session);
+            ProxyFeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createCondensed(featureEntity, parameters));
@@ -107,7 +107,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     public List<FeatureOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = createDao(session);
+            ProxyFeatureDao featureDao = createDao(session);
             List<FeatureOutput> results = new ArrayList<>();
             for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
                 results.add(createExpanded(featureEntity, parameters));
@@ -122,7 +122,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     public FeatureOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureDao featureDao = createDao(session);
+            ProxyFeatureDao featureDao = createDao(session);
             FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
             if (result == null) {
                 throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
