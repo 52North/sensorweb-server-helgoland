@@ -54,8 +54,9 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
-public class ServiceRepository extends ProxySessionAwareRepository implements OutputAssembler<ServiceOutput> {
+public class ServiceRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<ServiceOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 

@@ -35,17 +35,16 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.da.OutputAssembler;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.exception.InternalServerException;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
 public class ProxyAccessService<T extends ParameterOutput> extends ParameterService<T> {
 
-    protected final OutputAssembler<T> repository;
+    protected final ProxyOutputAssembler<T> repository;
 
-    public ProxyAccessService(OutputAssembler<T> repository) {
+    public ProxyAccessService(ProxyOutputAssembler<T> repository) {
         this.repository = repository;
     }
 

@@ -49,6 +49,7 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyFeatureDao;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
 /**
  *
@@ -56,7 +57,7 @@ import org.n52.series.db.dao.ProxyFeatureDao;
  * @deprecated since 2.0.0.
  */
 @Deprecated
-public class StationRepository extends ProxySessionAwareRepository implements OutputAssembler<StationOutput> {
+public class StationRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<StationOutput> {
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {

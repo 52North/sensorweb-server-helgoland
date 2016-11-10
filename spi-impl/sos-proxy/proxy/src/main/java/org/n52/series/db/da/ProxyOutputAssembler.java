@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db_custom.da;
+package org.n52.series.db.da;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +37,7 @@ import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
 
-public interface OutputAssembler<T> {
+public interface ProxyOutputAssembler<T> {
 
     List<T> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException;
 

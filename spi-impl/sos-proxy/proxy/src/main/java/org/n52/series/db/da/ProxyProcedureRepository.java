@@ -16,14 +16,13 @@ import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db_custom.da.OutputAssembler;
 import org.n52.series.spi.search.SearchResult;
 
 /**
  *
  * @author jansch
  */
-public class ProxyProcedureRepository extends ProxySessionAwareRepository implements OutputAssembler<ProcedureOutput> {
+public class ProxyProcedureRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<ProcedureOutput> {
 
     private final ProcedureRepository repository;
 

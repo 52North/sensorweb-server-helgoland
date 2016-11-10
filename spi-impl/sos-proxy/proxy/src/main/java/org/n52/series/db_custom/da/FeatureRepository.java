@@ -44,8 +44,9 @@ import org.n52.series.db.dao.ProxyFeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
-public class FeatureRepository extends ProxySessionAwareRepository implements OutputAssembler<FeatureOutput> {
+public class FeatureRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<FeatureOutput> {
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {

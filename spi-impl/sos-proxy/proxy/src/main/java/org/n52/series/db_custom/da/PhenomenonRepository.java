@@ -44,8 +44,9 @@ import org.n52.series.db.dao.ProxyPhenomenonDao;
 import org.n52.series.spi.search.PhenomenonSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
-public class PhenomenonRepository extends ProxySessionAwareRepository implements OutputAssembler<PhenomenonOutput> {
+public class PhenomenonRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<PhenomenonOutput> {
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {

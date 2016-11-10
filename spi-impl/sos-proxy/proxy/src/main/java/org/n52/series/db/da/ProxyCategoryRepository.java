@@ -17,13 +17,12 @@ import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
-import org.n52.series.db_custom.da.OutputAssembler;
 
 /**
  *
  * @author jansch
  */
-public class ProxyCategoryRepository extends ProxySessionAwareRepository implements OutputAssembler<CategoryOutput> {
+public class ProxyCategoryRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<CategoryOutput> {
 
     private final CategoryRepository repository;
 
