@@ -42,7 +42,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DataDao;
-import org.n52.series.db.dao.ProxyDbQuery;
+import org.n52.series.db.dao.DbQuery;
 
 public class TextDataRepository extends AbstractDataRepository<TextData, TextDatasetEntity, TextDataEntity, TextValue> {
 
@@ -53,7 +53,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
 
     @Override
     protected TextData assembleDataWithReferenceValues(TextDatasetEntity timeseries,
-                                                       ProxyDbQuery dbQuery,
+                                                       DbQuery dbQuery,
                                                        Session session)
             throws DataAccessException {
         TextData result = assembleData(timeseries, dbQuery, session);
@@ -67,7 +67,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     }
 
     private Map<String, TextData> assembleReferenceSeries(Set<TextDatasetEntity> referenceValues,
-                                                          ProxyDbQuery query,
+                                                          DbQuery query,
                                                           Session session)
             throws DataAccessException {
         Map<String, TextData> referenceSeries = new HashMap<>();
@@ -87,7 +87,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
         return referenceSeriesData.getValues().size() <= 1;
     }
 
-    private TextData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, ProxyDbQuery query, Session session)
+    private TextData expandReferenceDataIfNecessary(TextDatasetEntity seriesEntity, DbQuery query, Session session)
             throws DataAccessException {
         TextData result = new TextData();
         DataDao<TextDataEntity> dao = new DataDao<>(session);
@@ -105,7 +105,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     }
 
     @Override
-    protected TextData assembleData(TextDatasetEntity seriesEntity, ProxyDbQuery query, Session session)
+    protected TextData assembleData(TextDatasetEntity seriesEntity, DbQuery query, Session session)
             throws DataAccessException {
         TextData result = new TextData();
         DataDao<TextDataEntity> dao = new DataDao<>(session);
@@ -119,7 +119,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     }
 
     // XXX
-    private TextValue[] expandToInterval(String value, TextDatasetEntity series, ProxyDbQuery query) {
+    private TextValue[] expandToInterval(String value, TextDatasetEntity series, DbQuery query) {
         TextDataEntity referenceStart = new TextDataEntity();
         TextDataEntity referenceEnd = new TextDataEntity();
         referenceStart.setTimestamp(query.getTimespan().getStart().toDate());
@@ -134,7 +134,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
     }
 
     @Override
-    public TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series, ProxyDbQuery query) {
+    public TextValue createSeriesValueFor(TextDataEntity observation, TextDatasetEntity series, DbQuery query) {
         if (observation == null) {
             // do not fail on empty observations
             return null;

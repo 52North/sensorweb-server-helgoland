@@ -57,6 +57,8 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.da.DataRepository;
+import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProxyFeatureDao;
 

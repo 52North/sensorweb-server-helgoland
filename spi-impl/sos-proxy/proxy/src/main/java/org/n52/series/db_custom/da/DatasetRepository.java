@@ -43,6 +43,8 @@ import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
+import org.n52.series.db.da.DataRepository;
+import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;

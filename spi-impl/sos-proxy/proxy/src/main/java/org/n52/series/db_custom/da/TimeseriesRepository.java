@@ -47,6 +47,7 @@ import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;

@@ -5,43 +5,40 @@
  */
 package org.n52.series.db.da;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ProxyCategoryDao;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
+import org.n52.series.db_custom.da.OutputAssembler;
 
 /**
  *
  * @author jansch
  */
-public class ProxyCategoryRepository extends SessionAwareRepository implements OutputAssembler<CategoryOutput>{
+public class ProxyCategoryRepository extends ProxySessionAwareRepository implements OutputAssembler<CategoryOutput> {
+
     private final CategoryRepository repository;
+
+    private ProxyCategoryDao createDao(Session session) {
+        return new ProxyCategoryDao(session);
+    }
 
     public ProxyCategoryRepository(CategoryRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
-        return repository.getAllCondensed(parameters);
-    }
-
-    @Override
-    public List<CategoryOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
-        return repository.getAllExpanded(parameters);
-    }
-
-    @Override
-    public CategoryOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
-        return  repository.getInstance(id, parameters);
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
+        return repository.exists(id, parameters);
     }
 
     @Override
@@ -50,36 +47,46 @@ public class ProxyCategoryRepository extends SessionAwareRepository implements O
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity> found, ProxyDbQuery query) {
         return repository.convertToSearchResults(found, query);
     }
 
     @Override
-    public boolean exists(String id, DbQuery query) throws DataAccessException {
-        return repository.exists(id, query);
+    public List<CategoryOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
+        return repository.getAllCondensed(parameters);
     }
 
-//    protected List<CategoryTEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
-//        return createDao(session).getAllInstances(parameters);
-//    }
-
-    private ProxyCategoryDao createDao(Session session) {
-        return new ProxyCategoryDao(session);
-    }
-
-    private CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {
-        CategoryOutput result = new CategoryOutput();
-        result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(entity.getLabelFrom(parameters.getLocale()));
-        result.setDomainId(entity.getDomainId());
-        checkForHref(result, parameters);
-        return result;
-    }
-
-    private void checkForHref(CategoryOutput result, DbQuery parameters) {
-        if (parameters.getHrefBase() != null) {
-            result.setHrefBase(urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
+    @Override
+    public List<CategoryOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            List<CategoryOutput> results = new ArrayList<>();
+            for (CategoryEntity categoryEntity : repository.getAllInstances(parameters, session)) {
+                results.add(createExpanded(categoryEntity, parameters));
+            }
+            return results;
+        } finally {
+            returnSession(session);
         }
     }
 
+    @Override
+    public CategoryOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            CategoryEntity entity = repository.getInstance(parseId(id), parameters, session);
+            if (entity != null) {
+                return createExpanded(entity, parameters);
+            }
+            return null;
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private CategoryOutput createExpanded(CategoryEntity entity, ProxyDbQuery parameters) throws DataAccessException {
+        CategoryOutput result = repository.createCondensed(entity, parameters);
+        result.setService(createCondensedService(entity.getService()));
+        return result;
+    }
 }

@@ -44,7 +44,7 @@
     <bean id="offeringParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
-    <bean id="categoryParameterService" class="org.n52.series.srv.AccessService">
+    <bean id="categoryParameterService" class="org.n52.series.srv.ProxyAccessService">
         <constructor-arg index="0" ref="categoryRepository" />
     </bean>
     <bean id="featureParameterService" class="org.n52.series.srv.AccessService">
