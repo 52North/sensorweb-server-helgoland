@@ -139,7 +139,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         return result;
     }
 
-    private FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
+    protected FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
