@@ -36,16 +36,16 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db.dao.ProxyFeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
+public class FeatureRepository extends ProxySessionAwareRepository implements OutputAssembler<FeatureOutput> {
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {

@@ -41,9 +41,9 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
@@ -55,7 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ServiceRepository extends SessionAwareRepository implements OutputAssembler<ServiceOutput> {
+public class ServiceRepository extends ProxySessionAwareRepository implements OutputAssembler<ServiceOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 

@@ -41,9 +41,9 @@ import org.n52.io.response.StationOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.measurement.MeasurementReferenceValueOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
@@ -64,7 +64,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @deprecated since 2.0.0
  */
 @Deprecated
-public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
+public class TimeseriesRepository extends ProxySessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
 

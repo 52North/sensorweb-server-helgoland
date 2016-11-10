@@ -147,7 +147,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return result;
     }
 
-    private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
+    protected ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));

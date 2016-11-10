@@ -45,7 +45,6 @@ import org.n52.io.response.GeometryInfo;
 import org.n52.io.response.GeometryType;
 import org.n52.io.response.PlatformOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
@@ -54,12 +53,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.dao.ProxyFeatureDao;
 import org.n52.series.db.dao.SamplingGeometryDao;
 
-public class GeometriesRepository extends SessionAwareRepository implements OutputAssembler<GeometryInfo> {
+public class GeometriesRepository extends ProxySessionAwareRepository implements OutputAssembler<GeometryInfo> {
 
     @Autowired
     private PlatformRepository platformRepository;

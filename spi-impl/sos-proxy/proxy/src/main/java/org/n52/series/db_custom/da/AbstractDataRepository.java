@@ -38,7 +38,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.SessionAwareRepository;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
@@ -48,7 +48,7 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ProxyDatasetDao;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
-        extends SessionAwareRepository implements DataRepository<DSE, V> {
+        extends ProxySessionAwareRepository implements DataRepository<DSE, V> {
 
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {

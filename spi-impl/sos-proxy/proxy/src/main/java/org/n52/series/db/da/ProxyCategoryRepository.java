@@ -15,7 +15,6 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.dao.ProxyCategoryDao;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.db_custom.da.OutputAssembler;
@@ -27,10 +26,6 @@ import org.n52.series.db_custom.da.OutputAssembler;
 public class ProxyCategoryRepository extends ProxySessionAwareRepository implements OutputAssembler<CategoryOutput> {
 
     private final CategoryRepository repository;
-
-    private ProxyCategoryDao createDao(Session session) {
-        return new ProxyCategoryDao(session);
-    }
 
     public ProxyCategoryRepository(CategoryRepository repository) {
         this.repository = repository;

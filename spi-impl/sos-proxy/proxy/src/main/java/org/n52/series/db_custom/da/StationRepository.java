@@ -36,7 +36,6 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StationOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.StationSearchResult;
@@ -44,6 +43,7 @@ import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ResourceNotFoundException;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
@@ -56,7 +56,7 @@ import org.n52.series.db.dao.ProxyFeatureDao;
  * @deprecated since 2.0.0.
  */
 @Deprecated
-public class StationRepository extends SessionAwareRepository implements OutputAssembler<StationOutput> {
+public class StationRepository extends ProxySessionAwareRepository implements OutputAssembler<StationOutput> {
 
     @Override
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {

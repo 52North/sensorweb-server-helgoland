@@ -41,12 +41,12 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.da.DataRepository;
 import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.dao.ProxyDatasetDao;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.DatasetSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -62,7 +62,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <T> the dataset's type this repository is responsible for.
  */
 public class DatasetRepository<T extends Data>
-        extends SessionAwareRepository
+        extends ProxySessionAwareRepository
         implements OutputAssembler<DatasetOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetRepository.class);

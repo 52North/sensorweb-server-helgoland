@@ -43,7 +43,6 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db_custom.SessionAwareRepository;
 import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.spi.search.PlatformSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -53,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vividsolutions.jts.geom.Geometry;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
@@ -67,7 +67,7 @@ import org.n52.series.db.dao.ProxyFeatureDao;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class PlatformRepository extends SessionAwareRepository implements OutputAssembler<PlatformOutput> {
+public class PlatformRepository extends ProxySessionAwareRepository implements OutputAssembler<PlatformOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlatformRepository.class);
 
