@@ -146,7 +146,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         return result;
     }
 
-    private PhenomenonOutput createCondensed(PhenomenonEntity entity, DbQuery parameters) {
+    protected PhenomenonOutput createCondensed(PhenomenonEntity entity, DbQuery parameters) {
         PhenomenonOutput result = new PhenomenonOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));

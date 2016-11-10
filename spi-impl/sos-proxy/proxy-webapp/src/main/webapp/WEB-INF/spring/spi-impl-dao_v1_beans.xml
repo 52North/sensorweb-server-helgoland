@@ -25,7 +25,11 @@
             <bean class="org.n52.series.db.da.FeatureRepository" />
         </constructor-arg>
     </bean>
-    <bean name="phenomenonRepository" class="org.n52.series.db.da.PhenomenonRepository" />
+    <bean name="phenomenonRepository" class="org.n52.series.db.da.ProxyPhenomenonRepository" >
+        <constructor-arg index="0">
+            <bean class="org.n52.series.db.da.PhenomenonRepository" />
+        </constructor-arg>
+    </bean>
     <bean name="procedureRepository" class="org.n52.series.db.da.ProxyProcedureRepository">
         <constructor-arg index="0">
             <bean class="org.n52.series.db.da.ProcedureRepository" />
@@ -61,7 +65,7 @@
     <bean id="procedureParameterService" class="org.n52.series.srv.ProxyAccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
-    <bean id="phenomenonParameterService" class="org.n52.series.srv.AccessService">
+    <bean id="phenomenonParameterService" class="org.n52.series.srv.ProxyAccessService">
         <constructor-arg index="0" ref="phenomenonRepository" />
     </bean>
 </beans>
