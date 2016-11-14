@@ -42,11 +42,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.DatasetFactoryException;
-import org.n52.series.db.beans.ServiceEntity;
 
 public class DataRepositoryFactoryTest {
 
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -54,12 +53,12 @@ public class DataRepositoryFactoryTest {
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-factory.properties");
-        factory = new DataRepositoryFactory(config);
+        factory = new DefaultDataRepositoryFactory(config);
     }
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        DataRepositoryFactory m = new DataRepositoryFactory();
+        IDataRepositoryFactory m = new DefaultDataRepositoryFactory();
         assertFalse(m.isKnown("text"));
         assertFalse(m.isKnown("count"));
         assertTrue(m.create("measurement").getClass() == MeasurementDataRepository.class);

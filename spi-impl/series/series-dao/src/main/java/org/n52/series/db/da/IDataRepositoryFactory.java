@@ -26,56 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.da;
 
-import java.io.File;
+import org.n52.io.DatasetFactoryException;
 
-import org.n52.io.ConfigTypedFactory;
-import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.ServiceEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+public interface IDataRepositoryFactory {
 
+    public boolean isKnown(String datasetType);
 
-public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
+    public DataRepository create(String datasetType) throws DatasetFactoryException;
 
-    private static final String DEFAULT_CONFIG_FILE = "dataset-repository-factory.properties";
-
-    // TODO autowiring
-
-    @Autowired
-    private HibernateSessionStore sessionStore;
-
-    public DataRepositoryFactory() {
-        super(DEFAULT_CONFIG_FILE);
-    }
-
-    public DataRepositoryFactory(File configFile) {
-        super(configFile);
-    }
-
-    @Override
-    protected DataRepository initInstance(DataRepository instance) {
-        instance.setSessionStore(sessionStore);
-        return instance;
-    }
-
-    @Override
-    protected String getFallbackConfigResource() {
-        return DEFAULT_CONFIG_FILE;
-    }
-
-    @Override
-    protected Class<DataRepository> getTargetType() {
-        return DataRepository.class;
-    }
-
-    public HibernateSessionStore getSessionStore() {
-        return sessionStore;
-    }
-
-    public void setSessionStore(HibernateSessionStore sessionStore) {
-        this.sessionStore = sessionStore;
-    }
+    public boolean hasCacheEntry(String measurement);
 
 }

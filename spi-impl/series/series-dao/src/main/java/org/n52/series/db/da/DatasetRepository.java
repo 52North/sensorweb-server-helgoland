@@ -66,7 +66,7 @@ public class DatasetRepository<T extends Data>
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetRepository.class);
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -214,7 +214,7 @@ public class DatasetRepository<T extends Data>
     }
 
     // XXX refactor generics
-    private DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
+    protected DatasetOutput createCondensed(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
         DatasetOutput output = new DatasetOutput(series.getDatasetType()) {};
         output.setLabel(createSeriesLabel(series, query.getLocale()));
         output.setId(series.getPkid().toString());
@@ -224,7 +224,7 @@ public class DatasetRepository<T extends Data>
     }
 
     // XXX refactor generics
-    private DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+    protected DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         try {
             DatasetOutput result = createCondensed(series, query);
             result.setSeriesParameters(getParameters(series, query));
@@ -238,7 +238,7 @@ public class DatasetRepository<T extends Data>
         }
     }
 
-    private SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
+    protected SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
         return createSeriesParameters(series, query);
     }
 
@@ -252,11 +252,11 @@ public class DatasetRepository<T extends Data>
         return sb.append(station).toString();
     }
 
-    public DataRepositoryFactory getDataRepositoryFactory() {
+    public IDataRepositoryFactory getDataRepositoryFactory() {
         return factory;
     }
 
-    public void setDataRepositoryFactory(DataRepositoryFactory factory) {
+    public void setDataRepositoryFactory(IDataRepositoryFactory factory) {
         this.factory = factory;
     }
 

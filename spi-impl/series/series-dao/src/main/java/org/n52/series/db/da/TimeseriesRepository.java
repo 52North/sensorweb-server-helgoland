@@ -72,7 +72,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private OutputAssembler<StationOutput> stationRepository;
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

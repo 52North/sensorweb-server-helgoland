@@ -73,7 +73,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     private DatasetRepository<Data> seriesRepository;
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

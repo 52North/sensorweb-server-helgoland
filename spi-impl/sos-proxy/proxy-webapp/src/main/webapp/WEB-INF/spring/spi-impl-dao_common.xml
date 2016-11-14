@@ -19,6 +19,6 @@
 
     <bean class="org.n52.proxy.db.dao.ProxyDbQueryFactory"/>
 
-    <bean class="org.n52.series.db.da.DataRepositoryFactory" />
+    <bean class="org.n52.proxy.db.da.DataRepositoryFactory" />
     <bean class="org.n52.io.DefaultIoFactory" />
 </beans>

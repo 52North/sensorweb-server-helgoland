@@ -39,8 +39,8 @@ import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.DataRepository;
-import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.da.DatasetRepository;
+import org.n52.series.db.da.IDataRepositoryFactory;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.DataService;
 import org.n52.web.exception.InternalServerException;
@@ -55,7 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DatasetAccessService extends AccessService<DatasetOutput> implements DataService<Data<?>> {
 
     @Autowired
-    private DataRepositoryFactory dataFactory;
+    private IDataRepositoryFactory dataFactory;
 
     public DatasetAccessService(DatasetRepository<Data<?>> repository) {
         super(repository);
