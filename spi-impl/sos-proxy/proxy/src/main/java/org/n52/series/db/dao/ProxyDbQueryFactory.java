@@ -11,7 +11,11 @@ import org.n52.io.request.IoParameters;
  *
  * @author jansch
  */
-public interface DbQueryFactory {
+public class ProxyDbQueryFactory implements DbQueryFactory {
 
-    DbQuery createFrom(IoParameters parameters);
+    @Override
+    public DbQuery createFrom(IoParameters parameters) {
+        return ProxyDbQuery.createFrom(parameters);
+    }
+
 }

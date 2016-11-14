@@ -94,7 +94,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
         } finally {

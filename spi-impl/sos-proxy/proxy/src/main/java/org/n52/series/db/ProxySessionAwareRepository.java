@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author jansch
  */
-public class ProxySessionAwareRepository extends SessionAwareRepository {
+public class ProxySessionAwareRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProxySessionAwareRepository.class);
 
@@ -56,7 +56,7 @@ public class ProxySessionAwareRepository extends SessionAwareRepository {
     protected ServiceOutput createCondensedService(ServiceEntity entity) {
         ServiceOutput result = new ServiceOutput();
         result.setId(Long.toString(entity.getPkid()));
-        result.setLabel(entity.getServiceId());
+//        result.setLabel(entity.getServiceId());
         return result;
     }
 

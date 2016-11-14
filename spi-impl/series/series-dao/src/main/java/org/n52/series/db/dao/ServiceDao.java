@@ -22,7 +22,7 @@ public class ServiceDao extends AbstractDao<ServiceEntity>{
     public ServiceDao(Session session) {
         super(session);
     }
-    
+
     @Override
     public List<ServiceEntity> find(DbQuery query) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -43,5 +43,5 @@ public class ServiceDao extends AbstractDao<ServiceEntity>{
         Criteria criteria = getDefaultCriteria();
         return criteria.list();
     }
-    
+
 }

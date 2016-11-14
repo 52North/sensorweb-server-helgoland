@@ -49,8 +49,8 @@ public class EntityBuilder {
 
     public static ServiceEntity createService(String name, String description, String url, String version) {
         ServiceEntity service = new ServiceEntity();
-        service.setServiceId(name);
-        service.setServiceDescription(description);
+        service.setName(name);
+        service.setDescription(description);
         service.setVersion(version);
         service.setType("SOS");
         service.setUrl(url);
@@ -127,6 +127,8 @@ public class EntityBuilder {
     public static CountDatasetEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
         CountDatasetEntity countDataset = new CountDatasetEntity();
         updateDataset(countDataset, procedure, category, feature, phenomenon, service);
+        countDataset.setFirstValueAt(new Date());
+        countDataset.setLastValueAt(new Date());
         return countDataset;
     }
 

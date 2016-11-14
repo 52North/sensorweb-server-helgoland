@@ -12,7 +12,7 @@ import org.n52.io.request.IoParameters;
  * @author jansch
  */
 public class DefaultDbQueryFactory implements DbQueryFactory {
-    
+
     @Override
     public DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);

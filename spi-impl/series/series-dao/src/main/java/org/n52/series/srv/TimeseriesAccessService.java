@@ -76,7 +76,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
 
     private MeasurementData getDataFor(String timeseriesId, RequestParameterSet parameters)
             throws DataAccessException {
-        DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        DbQuery dbQuery = dbQueryFactory.createFrom(IoParameters.createFromQuery(parameters));
         DataRepository dataRepository = createRepository("measurement");
         return (MeasurementData) dataRepository.getData(timeseriesId, dbQuery);
     }

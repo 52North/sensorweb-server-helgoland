@@ -132,7 +132,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
             // do not fail on empty observations
             return null;
         }
-        
+
         ServiceEntity service = series.getService();
         Integer observationValue = !service.isNoDataValue(observation)
                 ? observation.getValue()

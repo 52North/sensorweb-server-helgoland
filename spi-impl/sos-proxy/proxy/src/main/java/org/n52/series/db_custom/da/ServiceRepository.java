@@ -45,7 +45,7 @@ import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db.dao.ServiceDao;
+import org.n52.series.db.dao.ProxyServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.ctrl.UrlHelper;
@@ -74,7 +74,7 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceDao dao = createDao(session);
+            ProxyServiceDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, ServiceEntity.class);
         } finally {
             returnSession(session);
@@ -153,7 +153,7 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
     }
 
     protected ServiceEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        ServiceDao serviceDAO = createDao(session);
+        ProxyServiceDao serviceDAO = createDao(session);
         ServiceEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
@@ -165,8 +165,8 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
         return createDao(session).getAllInstances(parameters);
     }
 
-    private ServiceDao createDao(Session session) {
-        return new ServiceDao(session);
+    private ProxyServiceDao createDao(Session session) {
+        return new ProxyServiceDao(session);
     }
 
     public ServiceOutput getCondensedInstance(String id, ProxyDbQuery parameters) throws DataAccessException {

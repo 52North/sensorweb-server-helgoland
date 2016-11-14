@@ -33,11 +33,12 @@ import org.junit.Test;
 
 public class DbQueryTest {
 
+    private final DbQueryFactory dbQueryFactory = new DefaultDbQueryFactory();
+
     @Test
     public void when_createWithNull_then_defaults() {
-        Assert.assertNotNull(DbQuery.createFrom(null));
+        Assert.assertNotNull(dbQueryFactory.createFrom(null));
     }
-
 
 
 }

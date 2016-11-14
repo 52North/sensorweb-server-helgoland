@@ -46,7 +46,7 @@ import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
-    
+
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
@@ -67,7 +67,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao featureDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
             return convertToSearchResults(found, query);
         } finally {

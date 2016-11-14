@@ -78,7 +78,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao stationDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -164,7 +164,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         try {
             parameters.setDatabaseAuthorityCode(getDatabaseSrid());
             FeatureDao featureDao = createDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
+            FeatureEntity result = featureDao.getInstance(parseId(id), dbQueryFactory.createFrom(IoParameters.createDefaults()));
             return createCondensed(result, parameters);
         } finally {
             returnSession(session);

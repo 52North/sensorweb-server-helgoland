@@ -64,9 +64,6 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     private EntityCounter counter;
 
     @Autowired
-    private ServiceEntity serviceEntity;
-
-    @Autowired
     private DefaultIoFactory<Data<AbstractValue< ?>>, DatasetOutput<AbstractValue< ?>, ?>, AbstractValue< ?>> ioFactoryCreator;
 
     public String getServiceId() {
@@ -79,7 +76,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
             String serviceId = String.valueOf(serviceEntity);
             return serviceId.equalsIgnoreCase(id);
         }
-        
+
         Session session = getSession();
         try {
             ServiceDao dao = createDao(session);
@@ -126,7 +123,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         if (serviceEntity != null) {
             return Collections.singletonList(getCondensedService(serviceEntity, parameters));
         }
-        
+
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
@@ -144,7 +141,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         if (serviceEntity != null) {
             return Collections.singletonList(createExpandedService(serviceEntity, parameters));
         }
-        
+
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
@@ -162,7 +159,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         if (serviceEntity != null) {
             return createExpandedService(serviceEntity, parameters);
         }
-        
+
         Session session = getSession();
         try {
             ServiceEntity result = getInstance(parseId(id), parameters, session);
@@ -202,7 +199,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
-            DbQuery serviceQuery = DbQuery.createFrom(query.getParameters().extendWith(IoParameters.SERVICES, service.getId()));
+            DbQuery serviceQuery = dbQueryFactory.createFrom(query.getParameters().extendWith(IoParameters.SERVICES, service.getId()));
             quantities.setOfferingsSize(counter.countOfferings(serviceQuery));
             quantities.setProceduresSize(counter.countProcedures(serviceQuery));
             quantities.setCategoriesSize(counter.countCategories(serviceQuery));

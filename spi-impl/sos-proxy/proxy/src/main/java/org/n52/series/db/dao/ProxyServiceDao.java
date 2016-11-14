@@ -39,39 +39,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ServiceDao extends AbstractDao<ServiceEntity> implements InsertDao<ServiceEntity> {
+public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEntity> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceDao.class);
-
-    private static final String SERIES_PROPERTY = "service";
+    private final static Logger LOGGER = LoggerFactory.getLogger(ProxyServiceDao.class);
 
     private static final String COLUMN_SERVICEID = "serviceId";
     private static final String COLUMN_TYPE = "type";
     private static final String COLUMN_URL = "url";
 
-    public ServiceDao(Session session) {
+    public ProxyServiceDao(Session session) {
         super(session);
-    }
-
-    @Override
-    public List<ServiceEntity> find(DbQuery query) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    protected Class<ServiceEntity> getEntityClass() {
-        return ServiceEntity.class;
-    }
-
-    @Override
-    protected String getSeriesProperty() {
-        return SERIES_PROPERTY;
-    }
-
-    @Override
-    public List<ServiceEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria();
-        return criteria.list();
     }
 
     @Override
@@ -87,7 +64,7 @@ public class ServiceDao extends AbstractDao<ServiceEntity> implements InsertDao<
 
     private ServiceEntity getInstance(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_SERVICEID, service.getServiceId()))
+//                .add(Restrictions.eq(COLUMN_SERVICEID, service.getServiceId()))
                 .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
                 .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
         return (ServiceEntity) criteria.uniqueResult();

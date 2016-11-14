@@ -12,29 +12,12 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-
     <bean id="insertRepository" class="org.n52.series.db.da.InsertRepository"/>
     <bean name="serviceRepository" class="org.n52.series.db.da.ServiceRepository" />
-    <bean name="categoryRepository" class="org.n52.series.db.da.ProxyCategoryRepository">
-        <constructor-arg index="0">
-            <bean class="org.n52.series.db.da.CategoryRepository" />
-        </constructor-arg>
-    </bean>
-    <bean name="featureRepository" class="org.n52.series.db.da.ProxyFeatureRepository" >
-        <constructor-arg index="0">
-            <bean class="org.n52.series.db.da.FeatureRepository" />
-        </constructor-arg>
-    </bean>
-    <bean name="phenomenonRepository" class="org.n52.series.db.da.ProxyPhenomenonRepository" >
-        <constructor-arg index="0">
-            <bean class="org.n52.series.db.da.PhenomenonRepository" />
-        </constructor-arg>
-    </bean>
-    <bean name="procedureRepository" class="org.n52.series.db.da.ProxyProcedureRepository">
-        <constructor-arg index="0">
-            <bean class="org.n52.series.db.da.ProcedureRepository" />
-        </constructor-arg>
-    </bean>
+    <bean name="categoryRepository" class="org.n52.series.db.da.CategoryRepository" />
+    <bean name="featureRepository" class="org.n52.series.db.da.FeatureRepository" />
+    <bean name="phenomenonRepository" class="org.n52.series.db.da.PhenomenonRepository" />
+    <bean name="procedureRepository" class="org.n52.series.db.da.ProcedureRepository" />
     <bean name="platformRepository" class="org.n52.series.db.da.PlatformRepository" />
     <bean name="datasetRepository" class="org.n52.series.db.da.DatasetRepository" />
     <bean name="geometriesRepository" class="org.n52.series.db.da.GeometriesRepository">
@@ -53,19 +36,19 @@
     <bean id="geometriesService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="geometriesRepository" />
     </bean>
-    <bean id="offeringParameterService" class="org.n52.series.srv.ProxyAccessService">
+    <bean id="offeringParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
-    <bean id="categoryParameterService" class="org.n52.series.srv.ProxyAccessService">
+    <bean id="categoryParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="categoryRepository" />
     </bean>
-    <bean id="featureParameterService" class="org.n52.series.srv.ProxyAccessService">
+    <bean id="featureParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="featureRepository" />
     </bean>
-    <bean id="procedureParameterService" class="org.n52.series.srv.ProxyAccessService">
+    <bean id="procedureParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="procedureRepository" />
     </bean>
-    <bean id="phenomenonParameterService" class="org.n52.series.srv.ProxyAccessService">
+    <bean id="phenomenonParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="phenomenonRepository" />
     </bean>
 </beans>

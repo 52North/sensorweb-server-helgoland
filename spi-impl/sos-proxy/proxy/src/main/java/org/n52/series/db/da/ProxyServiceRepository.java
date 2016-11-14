@@ -26,45 +26,45 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db_custom.da;
+package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.hibernate.Session;
-import org.n52.io.DefaultIoFactory;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.ServiceOutput.ParameterCount;
-import org.n52.io.response.dataset.AbstractValue;
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.ProxyDbQuery;
-import org.n52.series.db.dao.ServiceDao;
+import org.n52.series.db.dao.ProxyServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.ctrl.UrlHelper;
+import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.n52.series.db.da.ProxyOutputAssembler;
 
-public class ServiceRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<ServiceOutput> {
+public class ProxyServiceRepository implements ProxyOutputAssembler<ServiceOutput> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyServiceRepository.class);
 
     @Autowired
     private EntityCounter counter;
 
     @Autowired
-    private DefaultIoFactory<Data<AbstractValue< ?>>, DatasetOutput<AbstractValue< ?>, ?>, AbstractValue< ?>> ioFactoryCreator;
+    private HibernateSessionStore sessionStore;
+
+//    @Autowired
+//    private DefaultIoFactory<Data<AbstractValue< ?>>, DatasetOutput<AbstractValue< ?>, ?>, AbstractValue< ?>> ioFactoryCreator;
 
     public String getServiceId() {
         throw new UnsupportedOperationException();
@@ -74,7 +74,7 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
     public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ServiceDao dao = createDao(session);
+            ProxyServiceDao dao = createDao(session);
             return dao.hasInstance(parseId(id), parameters, ServiceEntity.class);
         } finally {
             returnSession(session);
@@ -153,7 +153,7 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
     }
 
     protected ServiceEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
-        ServiceDao serviceDAO = createDao(session);
+        ProxyServiceDao serviceDAO = createDao(session);
         ServiceEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
@@ -165,8 +165,8 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
         return createDao(session).getAllInstances(parameters);
     }
 
-    private ServiceDao createDao(Session session) {
-        return new ServiceDao(session);
+    private ProxyServiceDao createDao(Session session) {
+        return new ProxyServiceDao(session);
     }
 
     public ServiceOutput getCondensedInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
@@ -210,6 +210,43 @@ public class ServiceRepository extends ProxySessionAwareRepository implements Pr
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count parameter entities.", e);
         }
+    }
+
+
+    public HibernateSessionStore getSessionStore() {
+        return sessionStore;
+    }
+
+    public void setSessionStore(HibernateSessionStore sessionStore) {
+        this.sessionStore = sessionStore;
+    }
+
+    private Session getSession() {
+        try {
+            return sessionStore.getSession();
+        } catch (Throwable e) {
+            throw new IllegalStateException("Could not get hibernate session.", e);
+        }
+    }
+
+    private void returnSession(Session session) {
+        sessionStore.returnSession(session);
+    }
+
+    protected Long parseId(String id) throws BadRequestException {
+        try {
+            return Long.parseLong(id);
+        } catch (NumberFormatException e) {
+            LOGGER.debug("Unable to parse {} to Long.", e);
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+    }
+
+    protected ServiceOutput createCondensedService(ServiceEntity entity) {
+        ServiceOutput result = new ServiceOutput();
+        result.setId(Long.toString(entity.getPkid()));
+//        result.setLabel(entity.getServiceId());
+        return result;
     }
 
 }
