@@ -37,6 +37,7 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
@@ -65,6 +66,13 @@ public class EntityBuilder {
         procedure.setMobile(mobile);
         procedure.setService(service);
         return procedure;
+    }
+
+    public static OfferingEntity createOffering(String name, ServiceEntity service) {
+        OfferingEntity offering = new OfferingEntity();
+        offering.setName(name);
+        offering.setService(service);
+        return offering;
     }
 
     public static CategoryEntity createCategory(String name, ServiceEntity service) {
@@ -109,34 +117,35 @@ public class EntityBuilder {
         return entity;
     }
 
-    public static MeasurementDatasetEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, PhenomenonEntity phenomenon, UnitEntity unit, ServiceEntity service) {
+    public static MeasurementDatasetEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, UnitEntity unit, ServiceEntity service) {
         MeasurementDatasetEntity measurementDataset = new MeasurementDatasetEntity();
-        updateDataset(measurementDataset, procedure, category, feature, phenomenon, service);
+        updateDataset(measurementDataset, procedure, category, feature, offering, phenomenon, service);
         measurementDataset.setUnit(unit);
         measurementDataset.setFirstValueAt(new Date());
         measurementDataset.setLastValueAt(new Date());
         return measurementDataset;
     }
 
-    public static TextDatasetEntity createTextDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static TextDatasetEntity createTextDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
         TextDatasetEntity textDataset = new TextDatasetEntity();
-        updateDataset(textDataset, procedure, category, feature, phenomenon, service);
+        updateDataset(textDataset, procedure, category, feature, offering, phenomenon, service);
         return textDataset;
     }
 
-    public static CountDatasetEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static CountDatasetEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
         CountDatasetEntity countDataset = new CountDatasetEntity();
-        updateDataset(countDataset, procedure, category, feature, phenomenon, service);
+        updateDataset(countDataset, procedure, category, feature, offering, phenomenon, service);
         countDataset.setFirstValueAt(new Date());
         countDataset.setLastValueAt(new Date());
         return countDataset;
     }
 
-    private static void updateDataset(DatasetEntity dataset, ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, PhenomenonEntity phenomenon, ServiceEntity service) {
+    private static void updateDataset(DatasetEntity dataset, ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
         dataset.setProcedure(procedure);
         dataset.setCategory(category);
         dataset.setFeature(feature);
         dataset.setPhenomenon(phenomenon);
+        dataset.setOffering(offering);
         dataset.setPublished(Boolean.TRUE);
         dataset.setDeleted(Boolean.FALSE);
         dataset.setService(service);

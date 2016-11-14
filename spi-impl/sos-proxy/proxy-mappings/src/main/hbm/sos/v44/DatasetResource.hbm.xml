@@ -11,6 +11,7 @@
         <discriminator column="seriesType" force="true" type="string"/>
         <many-to-one class="CategoryEntity" column="categoryid" name="category" />
         <many-to-one class="ProcedureEntity" column="procedureid" name="procedure"/>
+        <many-to-one class="OfferingEntity" column="offeringid" name="offering"/>
         <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon"/>
         <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature"/>
         <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>

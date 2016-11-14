@@ -41,9 +41,11 @@ import org.n52.series.db.beans.ServiceEntity;
 import org.n52.proxy.db.dao.ProxyCategoryDao;
 import org.n52.proxy.db.dao.ProxyDatasetDao;
 import org.n52.proxy.db.dao.ProxyFeatureDao;
+import org.n52.proxy.db.dao.ProxyOfferingDao;
 import org.n52.proxy.db.dao.ProxyPhenomenonDao;
 import org.n52.proxy.db.dao.ProxyProcedureDao;
 import org.n52.proxy.db.dao.ProxyServiceDao;
+import org.n52.series.db.beans.OfferingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +72,7 @@ public class InsertRepository extends SessionAwareRepository {
 
             new ProxyDatasetDao(session).removeDeletedForService(service);
             new ProxyCategoryDao(session).clearUnusedForService(service);
+            new ProxyOfferingDao(session).clearUnusedForService(service);
             new ProxyProcedureDao(session).clearUnusedForService(service);
             new ProxyFeatureDao(session).clearUnusedForService(service);
             new ProxyPhenomenonDao(session).clearUnusedForService(service);
@@ -101,10 +104,11 @@ public class InsertRepository extends SessionAwareRepository {
 
             ProcedureEntity procedure = insertProcedure(dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
+            OfferingEntity offering = insertOffering(dataset.getOffering(), session);
             FeatureEntity feature = insertFeature(dataset.getFeature(), session);
             PhenomenonEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
 
-            insertDataset(dataset, category, procedure, feature, phenomenon, session);
+            insertDataset(dataset, category, procedure, offering, feature, phenomenon, session);
 
             session.flush();
             transaction.commit();
@@ -135,9 +139,14 @@ public class InsertRepository extends SessionAwareRepository {
         return new ProxyPhenomenonDao(session).getOrInsertInstance(phenomenon);
     }
 
-    private DatasetEntity insertDataset(DatasetEntity dataset, CategoryEntity category, ProcedureEntity procedure, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {
+    private OfferingEntity insertOffering(OfferingEntity offering, Session session) {
+        return new ProxyOfferingDao(session).getOrInsertInstance(offering);
+    }
+
+    private DatasetEntity insertDataset(DatasetEntity dataset, CategoryEntity category, ProcedureEntity procedure, OfferingEntity offering, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {
         dataset.setCategory(category);
         dataset.setProcedure(procedure);
+        dataset.setOffering(offering);
         dataset.setFeature(feature);
         dataset.setPhenomenon(phenomenon);
         if (dataset.getUnit() != null) {
