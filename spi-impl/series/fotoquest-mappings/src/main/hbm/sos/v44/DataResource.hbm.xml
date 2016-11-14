@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.beans">
+    <class name="RecordDataEntity" table="observation">
+        <id name="pkid" type="long">
+            <column name="observationid" />
+            <generator class="assigned" />
+        </id>
+
+        <property column="seriesid" name="seriesPkid" type="long" />
+        <property formula="'F'" name="deleted"
+            type="org.hibernate.type.TrueFalseType" />
+        <property column="resulttime" name="timestamp" type="timestamp" />
+
+        <map lazy="false" name="value" table="observation_set">
+            <key column="observationid" />
+            <index column="direction" type="string" />
+            <one-to-many class="FotoquestMediaItem" />
+        </map>
+
+    </class>
+
+    <class name="FotoquestMediaItem" table="observation_set">
+        <id name="id" type="long">
+            <column name="mediaitemid" />
+            <generator class="assigned" />
+        </id>
+        <property name="url" column="value" type="string"/>
+        <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType" />
+    </class>
+
+</hibernate-mapping>

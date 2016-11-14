@@ -1,0 +1,35 @@
+Modellierungsansatz
+* Eine Datenreihe ist die Menge aller aufgenommenen MediaItems/Markern zu einem Sample
+  -> Phenomenon --> fix: 'imagery'
+  -> Datasets --> MediaItems zu einem Sample (inkl. Koordinate u. Richtung)
+  -> Platform (= foi = series) -> Sample (als Aggregat aller Orte an denen Ground_Truth fotografiert wurde)
+  
+            ^                       
+            |
+         <- M -> 183
+            | 
+            v
+                .---.
+                | S | 6611
+                `---´       ^
+                            |
+                         <- M -> 187
+                            | 
+                            v
+  
+  
+  -> procedure --> userid
+  -> offering --> aktion/challenge (marker.group)
+
+
+FOI
+id --> sampleid
+identifier --> <fix_url>/sampleid
+name --> groupid_sampleid
+
+procedure
+id --> 
+
+
+* performance, db queries (zusammenstecken von entities in collections)
+* fotoquest observations ~ profile observations
