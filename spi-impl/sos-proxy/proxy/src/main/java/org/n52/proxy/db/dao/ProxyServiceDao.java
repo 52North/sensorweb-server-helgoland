@@ -26,53 +26,45 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
-package org.n52.series.db.dao;
+package org.n52.proxy.db.dao;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.n52.io.request.IoParameters;
+import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.dao.ServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
-public class ProxyDbQuery extends DbQuery {
+@Transactional
+public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEntity> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyDbQuery.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ProxyServiceDao.class);
 
-    private static final String COLUMN_KEY = "pkid";
+    private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_URL = "url";
 
-    private String serviceId;
-
-    public ProxyDbQuery(IoParameters parameters) {
-        super(parameters);
-    }
-
-    public static ProxyDbQuery createFrom(IoParameters parameters) {
-        return new ProxyDbQuery(parameters);
-    }
-
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public ProxyServiceDao(Session session) {
+        super(session);
     }
 
     @Override
-    public Criteria addFilters(Criteria criteria, String seriesProperty) {
-        super.addFilters(criteria, seriesProperty);
-        return addServiceFilter(seriesProperty, criteria);
+    public ServiceEntity getOrInsertInstance(ServiceEntity service) {
+        ServiceEntity instance = getInstance(service);
+        if (instance == null) {
+            this.session.save(service);
+            LOGGER.info("Save service: " + service);
+            instance = service;
+        }
+        return instance;
     }
 
-    public Criteria addServiceFilter(String parameter, Criteria criteria) {
-        if (serviceId != null && !serviceId.isEmpty()) {
-            criteria.add(Restrictions.eq("service.pkid", parseToId(serviceId)));
-        } else if (getParameters().getService() != null) {
-            criteria.add(Restrictions.eq("service.pkid", parseToId(getParameters().getService())));
-        } else if (getParameters().getServices() != null && !getParameters().getServices().isEmpty()) {
-            criteria.add(Restrictions.in("service.pkid", parseToIds(getParameters().getServices())));
-        }
-        return criteria;
+    private ServiceEntity getInstance(ServiceEntity service) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
+                .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
+        return (ServiceEntity) criteria.uniqueResult();
     }
+
 }

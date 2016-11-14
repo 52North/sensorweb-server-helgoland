@@ -26,15 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.dao;
+package org.n52.proxy.db.dao;
 
-import org.n52.io.request.IoParameters;
+import org.n52.series.db.beans.ServiceEntity;
 
-public class ProxyDbQueryFactory implements DbQueryFactory {
+public interface ClearDao<T> {
 
-    @Override
-    public DbQuery createFrom(IoParameters parameters) {
-        return ProxyDbQuery.createFrom(parameters);
-    }
+    void clearUnusedForService(ServiceEntity service);
 
 }

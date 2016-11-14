@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.dao;
+package org.n52.proxy.db.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -35,24 +35,25 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.dao.FeatureDao;
 
-public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<PhenomenonEntity>, ClearDao<PhenomenonEntity> {
+public class ProxyFeatureDao extends FeatureDao implements InsertDao<FeatureEntity>, ClearDao<FeatureEntity> {
 
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
-    public ProxyPhenomenonDao(Session session) {
+    public ProxyFeatureDao(Session session) {
         super(session);
     }
 
     @Override
-    public PhenomenonEntity getOrInsertInstance(PhenomenonEntity phenomenon) {
-        PhenomenonEntity instance = getInstance(phenomenon);
+    public FeatureEntity getOrInsertInstance(FeatureEntity feature) {
+        FeatureEntity instance = getInstance(feature);
         if (instance == null) {
-            this.session.save(phenomenon);
-            instance = phenomenon;
+            this.session.save(feature);
+            instance = feature;
         }
         return instance;
     }
@@ -67,11 +68,11 @@ public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<Pheno
         });
     }
 
-    private PhenomenonEntity getInstance(PhenomenonEntity phenomenon) {
+    private FeatureEntity getInstance(FeatureEntity feature) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, phenomenon.getName()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, phenomenon.getService().getPkid()));
-        return (PhenomenonEntity) criteria.uniqueResult();
+                .add(Restrictions.eq(COLUMN_NAME, feature.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, feature.getService().getPkid()));
+        return (FeatureEntity) criteria.uniqueResult();
     }
 
     private DetachedCriteria createDetachedDatasetFilter() {
@@ -79,4 +80,5 @@ public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<Pheno
                 .setProjection(Projections.distinct(Projections.property(getSeriesProperty())));
         return filter;
     }
+
 }

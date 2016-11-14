@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web;
+package org.n52.proxy.web;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -26,13 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.harvest;
+package org.n52.proxy.harvest;
 
 import static org.quartz.TriggerBuilder.newTrigger;
 import java.util.ArrayList;
 import java.util.List;
-import org.n52.config.Configuration;
-import org.n52.config.DataSourcesConfig;
+import org.n52.proxy.config.Configuration;
+import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.io.task.ScheduledJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;

@@ -26,34 +26,25 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.config;
+package org.n52.proxy.connector;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.http.HttpResponse;
+import org.n52.proxy.web.HttpClient;
+import org.n52.proxy.web.SimpleHttpClient;
 
-public class Configuration {
+public class AbstractSOSConnector {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+  private HttpClient httpClient;
 
-    private static final String CONFIG_FILE = "/config-data-sources.json";
+  private String serviceURI;
 
-    private final DataSourcesConfig intervalConfig = readConfig();
+  public AbstractSOSConnector(String serviceURI) {
+    httpClient = new SimpleHttpClient();
+    this.serviceURI = serviceURI;
+  }
 
-    private DataSourcesConfig readConfig() {
-        try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
-            ObjectMapper om = new ObjectMapper();
-            return om.readValue(config, DataSourcesConfig.class);
-        } catch (Exception e) {
-            LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
-            return new DataSourcesConfig();
-        }
-    }
-
-    public List<DataSourcesConfig.DataSourceConfig> getDataSource() {
-        return intervalConfig.getDataSources();
-    }
-
+  protected HttpResponse sendRequest(String request) {
+    HttpResponse response = httpClient.executePost(serviceURI, request);
+    return response;
+  }
 }

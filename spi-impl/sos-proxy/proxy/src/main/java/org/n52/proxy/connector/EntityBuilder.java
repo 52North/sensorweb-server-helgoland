@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.connector;
+package org.n52.proxy.connector;
 
 import java.util.Date;
 import java.util.logging.Level;

@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.config;
+package org.n52.proxy.config;
 
 import java.util.ArrayList;
 import java.util.List;

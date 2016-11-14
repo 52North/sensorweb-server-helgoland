@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da;
+package org.n52.proxy.db.da;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -38,29 +38,18 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db.dao.ProxyCategoryDao;
-import org.n52.series.db.dao.ProxyDatasetDao;
-import org.n52.series.db.dao.ProxyFeatureDao;
-import org.n52.series.db.dao.ProxyPhenomenonDao;
-import org.n52.series.db.dao.ProxyProcedureDao;
-import org.n52.series.db.dao.ProxyServiceDao;
+import org.n52.proxy.db.dao.ProxyCategoryDao;
+import org.n52.proxy.db.dao.ProxyDatasetDao;
+import org.n52.proxy.db.dao.ProxyFeatureDao;
+import org.n52.proxy.db.dao.ProxyPhenomenonDao;
+import org.n52.proxy.db.dao.ProxyProcedureDao;
+import org.n52.proxy.db.dao.ProxyServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InsertRepository extends SessionAwareRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(InsertRepository.class);
-
-//    @Autowired
-//    private ServiceRepository proxyServiceRepository;
-//
-//    public ServiceRepository getProxyServiceRepository() {
-//        return proxyServiceRepository;
-//    }
-//
-//    public void setProxyServiceRepository(ServiceRepository proxyServiceRepository) {
-//        this.proxyServiceRepository = proxyServiceRepository;
-//    }
 
     public synchronized void prepareInserting(ServiceEntity service) {
         Session session = getSession();

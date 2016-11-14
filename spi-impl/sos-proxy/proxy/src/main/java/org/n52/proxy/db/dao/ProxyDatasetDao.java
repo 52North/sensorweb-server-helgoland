@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.dao;
+package org.n52.proxy.db.dao;
 
 import java.util.List;
 import org.hibernate.Criteria;
@@ -35,6 +35,7 @@ import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
+import org.n52.series.db.dao.DatasetDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

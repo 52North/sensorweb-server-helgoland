@@ -26,44 +26,34 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.dao;
+package org.n52.proxy.config;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-import org.n52.series.db.beans.ServiceEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEntity> {
+public class Configuration {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ProxyServiceDao.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-    private static final String COLUMN_TYPE = "type";
-    private static final String COLUMN_URL = "url";
+    private static final String CONFIG_FILE = "/config-data-sources.json";
 
-    public ProxyServiceDao(Session session) {
-        super(session);
-    }
+    private final DataSourcesConfig intervalConfig = readConfig();
 
-    @Override
-    public ServiceEntity getOrInsertInstance(ServiceEntity service) {
-        ServiceEntity instance = getInstance(service);
-        if (instance == null) {
-            this.session.save(service);
-            LOGGER.info("Save service: " + service);
-            instance = service;
+    private DataSourcesConfig readConfig() {
+        try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
+            ObjectMapper om = new ObjectMapper();
+            return om.readValue(config, DataSourcesConfig.class);
+        } catch (Exception e) {
+            LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
+            return new DataSourcesConfig();
         }
-        return instance;
     }
 
-    private ServiceEntity getInstance(ServiceEntity service) {
-        Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
-                .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
-        return (ServiceEntity) criteria.uniqueResult();
+    public List<DataSourcesConfig.DataSourceConfig> getDataSource() {
+        return intervalConfig.getDataSources();
     }
 
 }

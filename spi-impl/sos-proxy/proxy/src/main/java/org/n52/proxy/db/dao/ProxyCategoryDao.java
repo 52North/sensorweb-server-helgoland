@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.dao;
+package org.n52.proxy.db.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -34,27 +34,35 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
+import org.n52.series.db.dao.CategoryDao;
 
-public class ProxyProcedureDao extends ProcedureDao implements InsertDao<ProcedureEntity>, ClearDao<ProcedureEntity> {
+public class ProxyCategoryDao extends CategoryDao implements InsertDao<CategoryEntity>, ClearDao<CategoryEntity> {
 
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
-    public ProxyProcedureDao(Session session) {
+    public ProxyCategoryDao(Session session) {
         super(session);
     }
 
     @Override
-    public ProcedureEntity getOrInsertInstance(ProcedureEntity procedure) {
-        ProcedureEntity instance = getInstance(procedure);
+    public CategoryEntity getOrInsertInstance(CategoryEntity category) {
+        CategoryEntity instance = getInstance(category);
         if (instance == null) {
-            this.session.save(procedure);
-            instance = procedure;
+            this.session.save(category);
+            instance = category;
         }
         return instance;
+    }
+
+    private CategoryEntity getInstance(CategoryEntity category) {
+        Criteria criteria = session.createCriteria(getEntityClass())
+                .add(Restrictions.eq(COLUMN_NAME, category.getName()))
+                .add(Restrictions.eq(COLUMN_SERVICE_PKID, category.getService().getPkid()));
+        return (CategoryEntity) criteria.uniqueResult();
     }
 
     @Override
@@ -65,13 +73,6 @@ public class ProxyProcedureDao extends ProcedureDao implements InsertDao<Procedu
         criteria.list().forEach(entry -> {
             session.delete(entry);
         });
-    }
-
-    private ProcedureEntity getInstance(ProcedureEntity procedure) {
-        Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, procedure.getName()))
-                .add(Restrictions.eq(COLUMN_SERVICE_PKID, procedure.getService().getPkid()));
-        return (ProcedureEntity) criteria.uniqueResult();
     }
 
     private DetachedCriteria createDetachedDatasetFilter() {
