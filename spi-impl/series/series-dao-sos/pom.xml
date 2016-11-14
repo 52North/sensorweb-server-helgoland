@@ -13,7 +13,7 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-        <sos.version>4.3.4</sos.version>
+        <sos.version>4.4.0-SNAPSHOT</sos.version>
     </properties>
     
     <dependencies>

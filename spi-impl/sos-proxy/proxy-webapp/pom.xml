@@ -152,12 +152,6 @@
         </dependency>
         
         <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        
-        <dependency>
             <groupId>org.n52.iceland</groupId>
             <artifactId>iceland</artifactId>
             <version>1.2.1</version>

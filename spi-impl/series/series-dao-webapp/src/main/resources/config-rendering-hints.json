@@ -1,3 +1,4 @@
+
 {
     "phenomenonStyles": {
         "6": {
@@ -9,21 +10,6 @@
                     "color": "#0000ff"
                 }
             }
-        },
-        {
-            "id" : "4",
-            "interval": [
-                "lastWeek",
-                "lastMonth"
-            ],
-            "style": {
-                "chartType": "bar",
-                "properties": {
-                    "interval": "byDay",
-                    "color": "#ff0000",
-                    "width": 0.8
-                }
-            }
         }
     },
     "timeseriesStyles": {
@@ -33,19 +19,9 @@
                 "properties": {
                     "interval": "byDay",
                     "width": 0.8,
-                    "color": "#0000ff",
-                    "referenceValueStyleProperties" : {
-                        "305" : {
-                            "chartType": "line",
-                            "properties": {
-                                "color": "#ff0000",
-                                "lineType": "solid",
-                                "width": 2
-                            }
-                        }
-                    }
+                    "color": "#0000ff"
                 }
             }
         }
-    ]
+    }
 }

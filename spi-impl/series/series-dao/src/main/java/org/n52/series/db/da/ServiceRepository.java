@@ -73,8 +73,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         if (serviceEntity != null) {
-            String serviceId = String.valueOf(serviceEntity);
-            return serviceId.equalsIgnoreCase(id);
+            return String.valueOf(serviceEntity.getPkid()).equalsIgnoreCase(id);
         }
 
         Session session = getSession();
