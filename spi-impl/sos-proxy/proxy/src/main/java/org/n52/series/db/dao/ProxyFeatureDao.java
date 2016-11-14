@@ -15,10 +15,6 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 
-/**
- *
- * @author jansch
- */
 public class ProxyFeatureDao extends FeatureDao implements InsertDao<FeatureEntity>, ClearDao<FeatureEntity> {
 
     private static final String COLUMN_NAME = "name";

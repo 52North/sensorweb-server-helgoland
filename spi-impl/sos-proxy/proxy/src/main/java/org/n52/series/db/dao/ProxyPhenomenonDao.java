@@ -15,10 +15,6 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ServiceEntity;
 
-/**
- *
- * @author jansch
- */
 public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<PhenomenonEntity>, ClearDao<PhenomenonEntity> {
 
     private static final String COLUMN_NAME = "name";

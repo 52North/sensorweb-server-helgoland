@@ -15,19 +15,13 @@ import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ServiceEntity;
 
-/**
- *
- * @author jansch
- */
 public class ProxyCategoryDao extends CategoryDao implements InsertDao<CategoryEntity>, ClearDao<CategoryEntity> {
 
-//    private CategoryDao categoryDao;
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyCategoryDao(Session session) {
         super(session);
-//        categoryDao = new CategoryDao(session);
     }
 
     @Override

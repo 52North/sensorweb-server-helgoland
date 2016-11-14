@@ -28,11 +28,9 @@
  */
 package org.n52.series.db.dao;
 
-import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.ServiceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,6 @@ public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEnti
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProxyServiceDao.class);
 
-    private static final String COLUMN_SERVICEID = "serviceId";
     private static final String COLUMN_TYPE = "type";
     private static final String COLUMN_URL = "url";
 
@@ -64,7 +61,6 @@ public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEnti
 
     private ServiceEntity getInstance(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
-//                .add(Restrictions.eq(COLUMN_SERVICEID, service.getServiceId()))
                 .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
                 .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
         return (ServiceEntity) criteria.uniqueResult();

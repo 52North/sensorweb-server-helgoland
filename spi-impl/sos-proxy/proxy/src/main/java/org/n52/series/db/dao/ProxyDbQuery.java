@@ -29,7 +29,6 @@
 
 package org.n52.series.db.dao;
 
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.request.IoParameters;

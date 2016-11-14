@@ -7,10 +7,6 @@ package org.n52.series.db.dao;
 
 import org.n52.io.request.IoParameters;
 
-/**
- *
- * @author jansch
- */
 public class ProxyDbQueryFactory implements DbQueryFactory {
 
     @Override
