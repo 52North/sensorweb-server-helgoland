@@ -44,6 +44,7 @@ import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
 
@@ -138,7 +139,8 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         MeasurementValue value = new MeasurementValue();
         value.setTimestamp(observation.getTimestamp().getTime());
 
-        Double observationValue = !getServiceInfo().isNoDataValue(observation)
+        ServiceEntity service = series.getService();
+        Double observationValue = !service.isNoDataValue(observation)
                 ? format(observation, series)
                 : null;
 

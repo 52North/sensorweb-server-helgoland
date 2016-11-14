@@ -26,20 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.srv;
+package org.n52.series.db.beans;
 
-import org.n52.series.db.beans.ServiceEntity;
+public class I18nServiceEntity extends I18nEntity {
 
-public abstract class ServiceInfoAccess {
-
-    private ServiceEntity serviceInfo;
-
-    public ServiceEntity getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(ServiceEntity serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-
+    // serves for clear distinction
 }

@@ -143,7 +143,11 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
         ProcedureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         return result;
     }
 

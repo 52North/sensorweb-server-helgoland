@@ -46,7 +46,7 @@ import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
 public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
-
+    
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
@@ -135,7 +135,11 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 
     private FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         FeatureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         return result;
     }
 

@@ -39,6 +39,7 @@ import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextDatasetMetadata;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DataDao;
@@ -140,7 +141,8 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
             return null;
         }
 
-        String observationValue = !getServiceInfo().isNoDataValue(observation)
+        ServiceEntity service = series.getService();
+        String observationValue = !service.isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
 

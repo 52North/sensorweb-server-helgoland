@@ -87,13 +87,6 @@ public class DataRepositoryFactoryTest {
         Assert.assertTrue(instance == factory.create("measurement"));
     }
 
-    @Test
-    public void when_serviceInfoAvailable_then_instanceHasServiceInfo() throws DatasetFactoryException {
-        factory.setServiceInfo(new ServiceEntity());
-        DataRepository instance = factory.create("measurement");
-        Assert.assertNotNull(instance.getServiceInfo());
-    }
-
     private File getConfigFile(String name) throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/files").toURI());
         return root.resolve(name).toFile();

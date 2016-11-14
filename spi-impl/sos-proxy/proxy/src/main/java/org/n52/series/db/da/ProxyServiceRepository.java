@@ -26,11 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.da;
+package org.n52.series.db_custom.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.hibernate.Session;
 import org.n52.io.DefaultIoFactory;
@@ -42,10 +41,10 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.ProxySessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ServiceEntity;
-import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.ProxyDbQuery;
 import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
@@ -55,16 +54,14 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.n52.series.db.da.ProxyOutputAssembler;
 
-public class ServiceRepository extends SessionAwareRepository implements OutputAssembler<ServiceOutput> {
+public class ServiceRepository extends ProxySessionAwareRepository implements ProxyOutputAssembler<ServiceOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceRepository.class);
 
     @Autowired
     private EntityCounter counter;
-
-    @Autowired
-    private ServiceEntity serviceEntity;
 
     @Autowired
     private DefaultIoFactory<Data<AbstractValue< ?>>, DatasetOutput<AbstractValue< ?>, ?>, AbstractValue< ?>> ioFactoryCreator;
@@ -74,12 +71,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public boolean exists(String id, DbQuery parameters) throws DataAccessException {
-        if (serviceEntity != null) {
-            String serviceId = String.valueOf(serviceEntity);
-            return serviceId.equalsIgnoreCase(id);
-        }
-        
+    public boolean exists(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ServiceDao dao = createDao(session);
@@ -109,7 +101,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, DbQuery query) {
+    public List<SearchResult> convertToSearchResults(List<? extends DescribableEntity> found, ProxyDbQuery query) {
         List<SearchResult> results = new ArrayList<>();
         String locale = query.getLocale();
         for (DescribableEntity searchResult : found) {
@@ -122,16 +114,12 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
-        if (serviceEntity != null) {
-            return Collections.singletonList(getCondensedService(serviceEntity, parameters));
-        }
-        
+    public List<ServiceOutput> getAllCondensed(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceEntity entity : getAllInstances(parameters, session)) {
-                results.add(getCondensedService(entity, parameters));
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+                results.add(createCondensedService(serviceEntity));
             }
             return results;
         } finally {
@@ -140,16 +128,12 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
-        if (serviceEntity != null) {
-            return Collections.singletonList(createExpandedService(serviceEntity, parameters));
-        }
-        
+    public List<ServiceOutput> getAllExpanded(ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             List<ServiceOutput> results = new ArrayList<>();
-            for (ServiceEntity entity : getAllInstances(parameters, session)) {
-                results.add(createExpandedService(entity, parameters));
+            for (ServiceEntity serviceEntity : getAllInstances(parameters, session)) {
+                results.add(createExpandedService(serviceEntity, parameters));
             }
             return results;
         } finally {
@@ -158,11 +142,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     @Override
-    public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
-        if (serviceEntity != null) {
-            return createExpandedService(serviceEntity, parameters);
-        }
-        
+    public ServiceOutput getInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
             ServiceEntity result = getInstance(parseId(id), parameters, session);
@@ -172,7 +152,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         }
     }
 
-    private ServiceEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    protected ServiceEntity getInstance(Long id, ProxyDbQuery parameters, Session session) throws DataAccessException {
         ServiceDao serviceDAO = createDao(session);
         ServiceEntity result = serviceDAO.getInstance(id, parameters);
         if (result == null) {
@@ -181,7 +161,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         return result;
     }
 
-    private List<ServiceEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    protected List<ServiceEntity> getAllInstances(ProxyDbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
@@ -189,29 +169,39 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         return new ServiceDao(session);
     }
 
-    private ServiceOutput createExpandedService(ServiceEntity serviceEntity, DbQuery parameters) {
-        ServiceOutput result = getCondensedService(serviceEntity, parameters);
+    public ServiceOutput getCondensedInstance(String id, ProxyDbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            ServiceEntity result = getInstance(parseId(id), parameters, session);
+            return createCondensedService(result);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    private ServiceOutput createExpandedService(ServiceEntity serviceEntity, ProxyDbQuery parameters) {
+        ServiceOutput result = createCondensedService(serviceEntity);
         result.setType(serviceEntity.getType());
-        result.setServiceUrl(serviceEntity.getUrl());
         result.setVersion(serviceEntity.getVersion());
         result.setSupportsFirstLatest(true);
         result.setQuantities(countParameters(result, parameters));
         return result;
     }
 
-    private ParameterCount countParameters(ServiceOutput service, DbQuery query) {
+    private ParameterCount countParameters(ServiceOutput service, ProxyDbQuery query) {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
-            DbQuery serviceQuery = DbQuery.createFrom(query.getParameters().extendWith(IoParameters.SERVICES, service.getId()));
-            quantities.setOfferingsSize(counter.countOfferings(serviceQuery));
-            quantities.setProceduresSize(counter.countProcedures(serviceQuery));
-            quantities.setCategoriesSize(counter.countCategories(serviceQuery));
-            quantities.setPhenomenaSize(counter.countPhenomena(serviceQuery));
-            quantities.setFeaturesSize(counter.countFeatures(serviceQuery));
-            quantities.setPlatformsSize(counter.countPlatforms(serviceQuery));
-            quantities.setDatasetsSize(counter.countDatasets(serviceQuery));
+            query.setServiceId(service.getId());
+            // #procedures == #offerings
+            quantities.setOfferingsSize(counter.countProcedures(query));
+            quantities.setProceduresSize(counter.countProcedures(query));
+            quantities.setCategoriesSize(counter.countCategories(query));
+            quantities.setPhenomenaSize(counter.countPhenomena(query));
+            quantities.setFeaturesSize(counter.countFeatures(query));
+            quantities.setPlatformsSize(counter.countPlatforms(query));
+            quantities.setDatasetsSize(counter.countDatasets(query));
 
-            FilterResolver filterResolver = serviceQuery.getFilterResolver();
+            FilterResolver filterResolver = query.getFilterResolver();
             if (filterResolver.shallBehaveBackwardsCompatible()) {
                 quantities.setTimeseriesSize(counter.countTimeseries());
                 quantities.setStationsSize(counter.countStations());

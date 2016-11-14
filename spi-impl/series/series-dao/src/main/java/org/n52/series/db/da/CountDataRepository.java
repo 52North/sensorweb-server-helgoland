@@ -40,6 +40,7 @@ import org.n52.io.response.dataset.count.CountValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
 
@@ -131,8 +132,9 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
             // do not fail on empty observations
             return null;
         }
-
-        Integer observationValue = !getServiceInfo().isNoDataValue(observation)
+        
+        ServiceEntity service = series.getService();
+        Integer observationValue = !service.isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
 

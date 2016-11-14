@@ -46,9 +46,6 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-    @Autowired
-    private ServiceEntity serviceInfo;
-
     public DataRepositoryFactory() {
         super(DEFAULT_CONFIG_FILE);
     }
@@ -59,7 +56,6 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
 
     @Override
     protected DataRepository initInstance(DataRepository instance) {
-        instance.setServiceInfo(serviceInfo);
         instance.setSessionStore(sessionStore);
         return instance;
     }
@@ -80,14 +76,6 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
 
     public void setSessionStore(HibernateSessionStore sessionStore) {
         this.sessionStore = sessionStore;
-    }
-
-    public ServiceEntity getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(ServiceEntity serviceInfo) {
-        this.serviceInfo = serviceInfo;
     }
 
 }

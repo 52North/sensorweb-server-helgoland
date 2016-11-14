@@ -49,7 +49,7 @@ public class EntityCounter {
 
     @Autowired
     private HibernateSessionStore sessionStore;
-
+    
     public Integer countFeatures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
         try {

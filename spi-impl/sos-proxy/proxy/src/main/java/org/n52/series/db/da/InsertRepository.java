@@ -43,7 +43,7 @@ import org.n52.series.db.dao.ProxyDatasetDao;
 import org.n52.series.db.dao.ProxyFeatureDao;
 import org.n52.series.db.dao.ProxyPhenomenonDao;
 import org.n52.series.db.dao.ProxyProcedureDao;
-import org.n52.series.db.dao.ServiceDao;
+import org.n52.series.db.dao.ProxyServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +127,7 @@ public class InsertRepository extends SessionAwareRepository {
     }
 
     private ServiceEntity insertService(ServiceEntity service, Session session) {
-        return new ServiceDao(session).getOrInsertInstance(service);
+        return new ProxyServiceDao(session).getOrInsertInstance(service);
     }
 
     private ProcedureEntity insertProcedure(ProcedureEntity procedure, Session session) {

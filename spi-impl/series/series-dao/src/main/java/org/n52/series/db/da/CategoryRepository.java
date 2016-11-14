@@ -146,7 +146,11 @@ public class CategoryRepository extends SessionAwareRepository implements Output
 
     protected CategoryOutput createExpanded(CategoryEntity entity, DbQuery parameters) throws DataAccessException {
         CategoryOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         return result;
     }
 

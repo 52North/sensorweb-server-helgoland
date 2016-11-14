@@ -37,15 +37,9 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class ServiceEntity {
+public class ServiceEntity extends DescribableEntity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEntity.class);
-
-    private Long pkid;
-
-    private String serviceId;
-
-    private String serviceDescription;
 
     private String url;
 
@@ -55,32 +49,8 @@ public class ServiceEntity {
 
     private String version;
 
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
     public ServiceEntity() {
         noDataValues = Collections.emptyList();
-    }
-
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceDescription() {
-        return serviceDescription;
-    }
-
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
     }
 
     public String getUrl() {
@@ -105,7 +75,7 @@ public class ServiceEntity {
     }
 
     public String getNoDataValues() {
-        final String csv = Arrays.toString(noDataValues.toArray(new Double[0]));
+        final String csv = Arrays.toString(noDataValues.toArray(new Double[0])); //XXX
         return csv.substring(1).substring(0, csv.length() - 2);
     }
 
