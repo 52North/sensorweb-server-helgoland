@@ -22,7 +22,7 @@
     <bean name="platformRepository" class="org.n52.series.db.da.PlatformRepository" />
     <bean name="datasetRepository" class="org.n52.proxy.db.da.DatasetRepository" />
     <bean name="geometriesRepository" class="org.n52.series.db.da.GeometriesRepository">
-        <property name="databaseSrid" value="EPSG:4326" />
+        <property name="databaseSrid" value="${database.srid}" />
     </bean>
 
     <bean id="serviceParameterService" class="org.n52.series.srv.AccessService">
