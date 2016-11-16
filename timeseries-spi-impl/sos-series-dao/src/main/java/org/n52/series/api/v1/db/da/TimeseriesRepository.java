@@ -96,7 +96,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
             String procedureLabel = getLabelFrom(searchResult.getProcedure(), locale);
             String stationLabel = getLabelFrom(searchResult.getFeature(), locale);
-            String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
+            String offeringLabel = getLabelFrom(searchResult.getOffering(), locale);
+            String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
         return results;
@@ -236,18 +237,20 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
         String procedureLabel = getLabelFrom(entity.getProcedure(), locale);
         String phenomenonLabel = getLabelFrom(entity.getPhenomenon(), locale);
-        output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
+        String offeringLabel = getLabelFrom(entity.getOffering(), locale);
+        output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
         output.setStation(createCondensedStation(entity, query));
         return output;
     }
 
-    private String createTimeseriesLabel(String phenomenon, String procedure, String station) {
+    private String createTimeseriesLabel(String phenomenon, String procedure, String station, String offering) {
         StringBuilder sb = new StringBuilder();
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");
-        return sb.append(station).toString();
+        sb.append(station).append(", ");
+        return sb.append(offering).toString();
     }
 
     private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query) throws DataAccessException {
