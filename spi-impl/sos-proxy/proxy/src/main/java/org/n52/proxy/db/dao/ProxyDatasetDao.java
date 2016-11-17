@@ -29,6 +29,7 @@
 package org.n52.proxy.db.dao;
 
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -59,7 +60,7 @@ public class ProxyDatasetDao<T extends DatasetEntity> extends DatasetDao<T> impl
     }
 
     @Override
-    public DatasetEntity getOrInsertInstance(DatasetEntity dataset) {
+    public T getOrInsertInstance(T dataset) {
         if (dataset.getUnit() != null) {
             dataset.setUnit(getOrInsertUnit(dataset.getUnit()));
         }
