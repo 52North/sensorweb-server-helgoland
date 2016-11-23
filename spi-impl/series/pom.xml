@@ -15,6 +15,8 @@
         <module>series-dao-sos</module>
         <module>series-mappings</module>
         <module>series-dao-webapp</module>
+        <module>fotoquest-mappings</module>
+        <module>fotoquest-webapp</module>
     </modules>
 
     <properties>
@@ -36,6 +38,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>series-mappings</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>fotoquest-mappings</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

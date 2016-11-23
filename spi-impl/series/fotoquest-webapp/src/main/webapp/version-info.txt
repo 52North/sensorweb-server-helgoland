@@ -1,0 +1,11 @@
+General Infos:
+==============
+project = ${artifactId}
+version = ${version}
+
+Details:
+========
+branch=${git.branch}
+git.remote.origin.url=${git.remote.origin.url}
+commit=${git.commit.id}
+builtAt=${git.build.time}

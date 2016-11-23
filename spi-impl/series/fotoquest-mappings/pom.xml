@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.n52.series-api</groupId>
+        <artifactId>spi-impl-series</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>fotoquest-mappings</artifactId>
+    <packaging>jar</packaging>
+    <name>Series REST API - Fotoquest Mappings module</name>
+    <description>REST SPI Mappings for SOS Fotoquest Database.</description>
+    <url>http://52north.org/communities/sensorweb/</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.n52.series-api</groupId>
+            <artifactId>io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/hbm</directory>
+                <targetPath>hbm</targetPath>
+            </resource>
+        </resources>
+    </build>
+</project>
+

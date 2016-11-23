@@ -52,35 +52,6 @@ public class RequestUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     /**
-     * Get the full request {@link URL} including the query parameter
-     *
-     * @return Request {@link URL} with query parameter
-     * @throws IOException
-     * @throws URISyntaxException
-     */
-    public static String resolveFullRequestUrl() throws IOException, URISyntaxException {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder.currentRequestAttributes()).getRequest();
-
-        URL url = new URL(request.getRequestURL().toString());
-
-        String scheme = url.getProtocol();
-        String userInfo = url.getUserInfo();
-        String host  = url.getHost();
-
-        int port = url.getPort();
-
-        String path = request.getRequestURI();
-        if (path != null && path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-        String query = request.getQueryString();
-
-        URI uri = new URI(scheme, userInfo, host, port, path, query, null);
-        return uri.toString();
-    }
-
-    /**
      * Get the request {@link URL} without the query parameter
      *
      * @return Request {@link URL} without query parameter
@@ -110,9 +81,11 @@ public class RequestUtils {
     private static String createRequestUrl(String externalUrl) {
         try {
             // e.g. in proxy envs
-            return new URL(externalUrl).toString();
+            String url = new URL(externalUrl).toString();
+            LOGGER.debug("Resolve configured external url '{}'.", url);
+            return url;
         } catch (MalformedURLException e) {
-            LOGGER.error("Invalid external url: {}", externalUrl);
+            LOGGER.error("Invalid external url setting. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
         }
     }
@@ -132,9 +105,12 @@ public class RequestUtils {
             }
 
             URI uri = new URI(scheme, userInfo, host, port, path, null, null);
-            return uri.toString();
+            String requestUrl = uri.toString();
+
+            LOGGER.debug("Resolved external url '{}'.", requestUrl);
+            return requestUrl;
         } catch (MalformedURLException | URISyntaxException e) {
-            LOGGER.error("Could not determine href from request.");
+            LOGGER.error("Could not resolve external url. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
         }
 

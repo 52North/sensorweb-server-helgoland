@@ -324,7 +324,7 @@ public class DbQuery {
 
         addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
         addFilterRestriction(parameters.getProcedures(), "procedure", filter);
-        addFilterRestriction(parameters.getOfferings(), "procedure", filter); // here procedure == offering
+        addFilterRestriction(parameters.getOfferings(), "offering", filter);
         addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
         addFilterRestriction(parameters.getDatasets(), filter);
@@ -414,8 +414,7 @@ public class DbQuery {
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getProcedure())));
         }
         if (getParameters().getOffering() != null) {
-            // here procedure == offering
-            filter.createCriteria("procedure")
+            filter.createCriteria("offering")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(getParameters().getOffering())));
         }
         if (getParameters().getFeature() != null) {
