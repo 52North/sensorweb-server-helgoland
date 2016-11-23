@@ -72,6 +72,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import java.util.Locale;
 
 public class DbQuery {
 
@@ -296,13 +297,11 @@ public class DbQuery {
         }
 
         Set<String> geometryTypes = parameters.getGeometryTypes();
-        if ( !geometryTypes.isEmpty()) {
-            for (String geometryType : geometryTypes) {
-                if ( !geometryType.isEmpty()) {
-                    Type type = getGeometryType(geometryType);
-                    if (type != null) {
-                        criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
-                    }
+        for (String geometryType : geometryTypes) {
+            if ( !geometryType.isEmpty()) {
+                Type type = getGeometryType(geometryType);
+                if (type != null) {
+                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
                 }
             }
         }
@@ -310,11 +309,12 @@ public class DbQuery {
     }
 
     private Type getGeometryType(String geometryType) {
-        try {
-            return GeometryType.Type.valueOf(geometryType.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
+        for (GeometryType.Type type : GeometryType.Type.values()) {
+            if (type.name().equalsIgnoreCase(geometryType)) {
+                return type;
+            }
         }
+        return null;
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
