@@ -28,11 +28,8 @@
  */
 package org.n52.series.db.da;
 
-import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Session;
-import org.joda.time.DateTime;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.AbstractValue.ValidTime;
 import org.n52.io.response.dataset.Data;
@@ -43,9 +40,9 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DataParameter;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DatasetDao;
+import org.n52.series.db.dao.DbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
@@ -56,7 +53,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         try {
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
-            DSE series = seriesDao.getInstance(parseId(id), dbQuery);
+            DSE series = seriesDao.getInstance(id, dbQuery);
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);
@@ -68,19 +65,16 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
 
     @Override
     public V getFirstValue(DSE entity, Session session, DbQuery query) {
-        return getValueAt(entity.getFirstValueAt(), entity, session, query);
+        DataDao<DE> dao = createDataDao(session);
+        DE valueEntity = dao.getDataValueViaTimestart(entity);
+        return createSeriesValueFor(valueEntity, entity, query);
     }
 
     @Override
     public V getLastValue(DSE entity, Session session, DbQuery query) {
-        return getValueAt(entity.getLastValueAt(), entity, session, query);
-    }
-
-    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
-        DateTime timestamp = new DateTime(valueAt);
         DataDao<DE> dao = createDataDao(session);
-        DE valueEntity = dao.getDataValueAt(timestamp, datasetEntity);
-        return createSeriesValueFor(valueEntity, datasetEntity, query);
+        DE valueEntity = dao.getDataValueViaTimeend(entity);
+        return createSeriesValueFor(valueEntity, entity, query);
     }
 
     protected DatasetDao<DSE> getSeriesDao(Session session) {

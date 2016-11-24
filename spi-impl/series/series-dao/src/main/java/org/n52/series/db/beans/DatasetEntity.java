@@ -42,6 +42,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     public static final String CATEGORY = "category";
     public static final String PHENOMENON = "phenomenon";
     public static final String FEATURE = "feature";
+    public static final String OFFERING = "offering";
     public static final String PLATFORM = "platform";
     public static final String OBSERVATION_TYPE = "observationType";
 
@@ -51,11 +52,15 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private ProcedureEntity procedure;
 
+    private OfferingEntity offering;
+
     private FeatureEntity feature;
 
     private PlatformEntity platform;
 
-    private Boolean published;
+    private Boolean published = Boolean.TRUE;
+
+    private Boolean deleted = Boolean.FALSE;
 
     private List<T> observations;
 
@@ -101,6 +106,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.procedure = procedure;
     }
 
+    public OfferingEntity getOffering() {
+        return offering;
+    }
+
+    public void setOffering(OfferingEntity offering) {
+        this.offering = offering;
+    }
+
     public FeatureEntity getFeature() {
         return feature;
     }
@@ -131,6 +144,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     public void setPublished(Boolean published) {
         this.published = published;
+    }
+
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     /**
@@ -223,6 +244,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         sb.append(" , category: ").append(category);
         sb.append(" , phenomenon: ").append(phenomenon);
         sb.append(" , procedure: ").append(procedure);
+        sb.append(" , offering: ").append(offering);
         sb.append(" , feature: ").append(feature);
         sb.append(" , #observations: ").append(observations.size());
         return sb.append(" ]").toString();

@@ -31,7 +31,7 @@ package org.n52.series.srv;
 
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
@@ -58,10 +58,10 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
     }
 
     @Override
-    public DataCollection<MeasurementData> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<MeasurementData> getData(RequestParameterSet parameters) {
         try {
             TvpDataCollection<MeasurementData> dataCollection = new TvpDataCollection<>();
-            for (String timeseriesId : parameters.getSeriesIds()) {
+            for (String timeseriesId : parameters.getDatasets()) {
                 MeasurementData data = getDataFor(timeseriesId, parameters);
                 if (data != null) {
                     dataCollection.addNewSeries(timeseriesId, data);
@@ -74,7 +74,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
         }
     }
 
-    private MeasurementData getDataFor(String timeseriesId, RequestSimpleParameterSet parameters)
+    private MeasurementData getDataFor(String timeseriesId, RequestParameterSet parameters)
             throws DataAccessException {
         DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
         DataRepository dataRepository = createRepository("measurement");

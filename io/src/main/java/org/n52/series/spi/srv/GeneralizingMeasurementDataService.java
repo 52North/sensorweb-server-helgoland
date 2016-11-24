@@ -33,7 +33,7 @@ import static org.n52.io.request.IoParameters.createFromQuery;
 
 import org.n52.io.measurement.generalize.Generalizer;
 import org.n52.io.measurement.generalize.GeneralizerException;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class GeneralizingMeasurementDataService implements DataService<Measureme
     }
 
     @Override
-    public DataCollection<MeasurementData> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<MeasurementData> getData(RequestParameterSet parameters) {
 
         DataCollection<MeasurementData> data = composedService.getData(parameters);
         DataCollection<MeasurementData> ungeneralizedData = data;

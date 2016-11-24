@@ -28,10 +28,8 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
@@ -42,15 +40,6 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
 public class TimeseriesOutputAdapter <T extends ParameterOutput> extends ParameterService<TimeseriesMetadataOutput> implements DataService<Data<? extends AbstractValue<?>>> {
-
-    private OutputCollection<TimeseriesMetadataOutput> createOutputCollection() {
-        return new OutputCollection<TimeseriesMetadataOutput>() {
-            @Override
-            protected Comparator<TimeseriesMetadataOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
 
     @Override
     public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
@@ -73,12 +62,12 @@ public class TimeseriesOutputAdapter <T extends ParameterOutput> extends Paramet
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return false;
     }
 
     @Override
-    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestParameterSet parameters) {
         return null;
     }
 

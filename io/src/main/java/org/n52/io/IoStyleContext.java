@@ -75,7 +75,7 @@ public final class IoStyleContext {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
-        String[] seriesIds = styles.getSeriesIds();
+        String[] seriesIds = styles.getDatasets();
         if (seriesIds.length != metadatas.size()) {
             int amountTimeseries = seriesIds.length;
             int amountMetadatas = metadatas.size();

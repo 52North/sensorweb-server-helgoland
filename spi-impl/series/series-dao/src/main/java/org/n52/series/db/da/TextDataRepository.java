@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextDatasetMetadata;
@@ -140,16 +139,20 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
             return null;
         }
 
+        long timeend = observation.getTimeend().getTime();
+        long timestart = observation.getTimestart().getTime();
         String observationValue = !getServiceInfo().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
+        TextValue value = query.getParameters().isShowTimeIntervals()
+                ? new TextValue(timestart, timeend, observationValue)
+                : new TextValue(timeend, observationValue);
 
-        TextValue value = new TextValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }

@@ -29,6 +29,9 @@
 
 package org.n52.series.spi.srv;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
@@ -44,6 +47,33 @@ import org.n52.io.response.ParameterOutput;
 public abstract class ParameterService<T extends ParameterOutput> implements RawDataInfo {
 
     private RawDataService rawDataService;
+
+    protected OutputCollection<T> createOutputCollection(List<T> results) {
+        return new OutputCollection<T>(results) {
+            @Override
+            protected Comparator<T> getComparator() {
+                return ParameterOutput.defaultComparator();
+            }
+        };
+    }
+
+    protected OutputCollection<T> createOutputCollection(T result) {
+        return new OutputCollection<T>(result) {
+            @Override
+            protected Comparator<T> getComparator() {
+                return ParameterOutput.defaultComparator();
+            }
+        };
+    }
+
+    protected OutputCollection<T> createOutputCollection() {
+        return new OutputCollection<T>() {
+            @Override
+            protected Comparator<T> getComparator() {
+                return ParameterOutput.defaultComparator();
+            }
+        };
+    }
 
     /**
      * @param query
@@ -90,10 +120,12 @@ public abstract class ParameterService<T extends ParameterOutput> implements Raw
      *
      * @param id
      *        the id of the resource.
+     * @param parameters
+     *        the query passed along.
      * @return <code>true</code> if the resource exists, <code>false</code> otherwise.
      * @since 2.0.0
      */
-    public abstract boolean exists(String id);
+    public abstract boolean exists(String id, IoParameters parameters);
 
     /**
      * Check if raw data output is supported

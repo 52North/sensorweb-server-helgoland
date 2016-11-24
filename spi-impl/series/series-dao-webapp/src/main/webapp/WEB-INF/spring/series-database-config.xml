@@ -37,15 +37,10 @@
                 <prop key="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</prop>
                 <prop key="hibernate.default_schema">${series.database.schema.default}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${series.hibernate.hbm2ddl.auto}</prop>
-                <prop key="hibernate.show_sql">${series.hibernate.sql.debug}</prop>
-                <prop key="hibernate.format_sql">${series.hibernate.sql.debug}</prop>
+                <prop key="hibernate.format_sql">true</prop>
             </props>
         </property>
-        <property name="mappingLocations">
-            <list>
-                <value>classpath*:/hbm/sos/v44/*.hbm.xml</value>
-            </list>
-        </property>
+        <property name="mappingLocations" value="#{'${series.database.mappings}'.split(',')}" />
     </bean>
 
     <tx:annotation-driven />

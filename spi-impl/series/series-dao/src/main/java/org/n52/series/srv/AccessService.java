@@ -29,7 +29,6 @@
 package org.n52.series.srv;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
@@ -47,15 +46,6 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
 
     public AccessService(OutputAssembler<T> repository) {
         this.repository = repository;
-    }
-
-    private OutputCollection<T> createOutputCollection(List<T> results) {
-        return new OutputCollection<T>(results) {
-            @Override
-            protected Comparator<T> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override
@@ -105,9 +95,9 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         try {
-            return repository.exists(id);
+            return repository.exists(id, DbQuery.createFrom(parameters));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
         }

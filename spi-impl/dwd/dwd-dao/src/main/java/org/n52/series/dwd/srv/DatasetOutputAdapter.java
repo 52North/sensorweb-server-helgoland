@@ -29,13 +29,11 @@
 package org.n52.series.dwd.srv;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -64,15 +62,6 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     public DatasetOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<DatasetOutput> createOutputCollection() {
-        return new OutputCollection<DatasetOutput>() {
-            @Override
-            protected Comparator<DatasetOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override
@@ -109,7 +98,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getAlert(id) != null ? true : false;
     }
 
@@ -138,7 +127,7 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
         return super.getWarnCell(parseId.get(0), store);
     }
 
-    private DwdAlertDatasetOutput createCondensed(Alert alert, WarnCell warnCell, IoParameters query) {
+    protected DwdAlertDatasetOutput createCondensed(Alert alert, WarnCell warnCell, IoParameters query) {
         DwdAlertDatasetOutput result = new DwdAlertDatasetOutput();
         result.setLabel(createSeriesLabel(alert));
         result.setId(createId(warnCell.getId(), alert.getEvent()));
@@ -207,13 +196,13 @@ public class DatasetOutputAdapter extends AbstractOuputAdapter<DatasetOutput> im
     }
 
     protected List<String> parseId(String id) {
-        String[] split = id.split("-");
+        String[] split = id.split("-", 2);
         split[1] = parsePhenomenonId(split[1]);
         return Arrays.asList(split);
     }
 
     @Override
-    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestSimpleParameterSet parameters) {
+    public DataCollection<Data<? extends AbstractValue<?>>> getData(RequestParameterSet parameters) {
         return null;
     }
 

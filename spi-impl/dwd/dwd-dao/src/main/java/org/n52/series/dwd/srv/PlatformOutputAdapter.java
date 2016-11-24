@@ -28,13 +28,10 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.PlatformType;
 import org.n52.series.dwd.beans.ServiceInfo;
@@ -53,15 +50,6 @@ public class PlatformOutputAdapter extends AbstractOuputAdapter<PlatformOutput> 
     public PlatformOutputAdapter(AlertStore store, ServiceInfo serviceInfo) {
         super(serviceInfo);
         this.store = store;
-    }
-
-    private OutputCollection<PlatformOutput> createOutputCollection() {
-        return new OutputCollection<PlatformOutput>() {
-            @Override
-            protected Comparator<PlatformOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override
@@ -136,12 +124,12 @@ public class PlatformOutputAdapter extends AbstractOuputAdapter<PlatformOutput> 
         result.setService(getServiceOutput());
         RequestSimpleParameterSet simpleParameterSet = query.toSimpleParameterSet();
         simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(item.getId()));
-        result.setSeries(seriesOutputAdapter.getCondensedParameters(IoParameters.createFromQuery(simpleParameterSet)).getItems());
+        result.setDatasets(seriesOutputAdapter.getCondensedParameters(IoParameters.createFromQuery(simpleParameterSet)).getItems());
         return result;
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         WarnCell warnCell = getWarnCell(id);
         if (warnCell != null) {
             return true;

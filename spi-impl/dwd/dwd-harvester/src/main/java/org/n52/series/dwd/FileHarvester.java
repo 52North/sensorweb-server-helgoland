@@ -39,7 +39,7 @@ import org.n52.series.dwd.store.AlertStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class FileHarvester implements DwdHarvester {
+public class FileHarvester implements DwdHarvester {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileHarvester.class);
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.n52.series.db.da.beans.v1">
+<hibernate-mapping package="org.n52.series.db.beans">
     <class name="ProcedureEntity" table="`procedure`">
         <id name="pkid" type="long">
             <column name="procedureid"/>

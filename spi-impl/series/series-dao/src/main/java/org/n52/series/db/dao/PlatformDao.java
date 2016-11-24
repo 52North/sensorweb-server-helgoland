@@ -34,10 +34,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
-import org.n52.io.request.FilterResolver;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nPlatformEntity;
 import org.n52.series.db.beans.PlatformEntity;
@@ -66,35 +63,10 @@ public class PlatformDao extends AbstractDao<PlatformEntity> {
     }
 
     @Override
-    public PlatformEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria().add(eq(PlatformEntity.COLUMN_PKID, key));
-        return (PlatformEntity) criteria.uniqueResult();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<PlatformEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPlatformEntity.class, getDefaultCriteria(SERIES_PROPERTY), query);
-
-        DetachedCriteria filter = query.createDetachedFilterCriteria(SERIES_PROPERTY);
-        criteria.add(Subqueries.propertyIn("platform.pkid", filter));
-
-        FilterResolver filterResolver = query.getFilterResolver();
-        if ( !filterResolver.shallIncludeAllPlatformTypes()) {
-            boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
-            boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
-            criteria.add(Restrictions.or(
-                     Restrictions.eq(PlatformEntity.MOBILE, !includeStationary), // inverse to match filter
-                     Restrictions.eq(PlatformEntity.MOBILE, includeMobile)));
-
-            boolean includeInsitu = filterResolver.shallIncludeInsituPlatformTypes();
-            boolean includeRemote = filterResolver.shallIncludeRemotePlatformTypes();
-            criteria.add(Restrictions.or(
-                     Restrictions.eq(PlatformEntity.INSITU, includeInsitu),
-                     Restrictions.eq(PlatformEntity.INSITU, !includeRemote))); // inverse to match filter
-        }
-        query.addLimitAndOffsetFilter(criteria);
-        return (List<PlatformEntity>) criteria.list();
+        return (List<PlatformEntity>) addFilters(criteria, query).list();
     }
 
     @Override

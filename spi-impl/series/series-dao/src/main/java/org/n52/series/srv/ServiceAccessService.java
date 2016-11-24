@@ -28,12 +28,10 @@
  */
 package org.n52.series.srv;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.ServiceInfo;
@@ -52,24 +50,6 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> {
 
     public ServiceAccessService(OutputAssembler<ServiceOutput> serviceRepository) {
         this.serviceRepository = serviceRepository;
-    }
-
-    private OutputCollection<ServiceOutput> createOutputCollection(ServiceOutput result) {
-        return new OutputCollection<ServiceOutput>(result) {
-            @Override
-            protected Comparator<ServiceOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
-
-    private OutputCollection<ServiceOutput> createOutputCollection(List<ServiceOutput> results) {
-        return new OutputCollection<ServiceOutput>(results) {
-            @Override
-            protected Comparator<ServiceOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
     }
 
     @Override
@@ -118,7 +98,7 @@ public class ServiceAccessService extends ParameterService<ServiceOutput> {
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return serviceInfo.getServiceId().equals(id);
     }
 

@@ -29,20 +29,17 @@
 
 package org.n52.io.measurement;
 
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
+import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.IMAGE_PNG;
+import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
 import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.measurement.img.ChartIoHandler;
@@ -54,6 +51,7 @@ import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.spi.srv.DataService;
+import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
 
@@ -73,7 +71,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
                 DataService<MeasurementData> dataService = generalize
                     ? composeDataService(getDataService())
                     : getDataService();
-                return dataService.getData(getSimpleRequest());
+                return dataService.getData(getRequestParameters());
             }
 
             @Override
@@ -113,7 +111,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
         else if (mimeType == APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                                                                        getSimpleRequest(),
+                                                                        getRequestParameters(),
                                                                         createProcessChain(),
                                                                         imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
@@ -121,9 +119,9 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
         }
         else if (mimeType == TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
-                                                                          getSimpleRequest(),
+                                                                          getRequestParameters(),
                                                                           createProcessChain(),
-                                                                          createContext());
+                                                                          getMetadatas());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
@@ -140,7 +138,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
 
     private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                                                                          getSimpleRequest(),
+                                                                          getRequestParameters(),
                                                                           createProcessChain(),
                                                                           createContext());
 

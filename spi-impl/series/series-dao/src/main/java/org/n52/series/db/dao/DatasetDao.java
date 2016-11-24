@@ -36,6 +36,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
@@ -82,7 +84,7 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
          * for given pattern on any of the stored labels.
          */
 
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(getDefaultCriteria("s"), "s");
+        Criteria criteria = addIgnoreUnpublishedSeriesTo(getDefaultCriteria("s"), "s");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
         series.addAll(translate(I18nFeatureEntity.class, featureCriteria, query)
                       .add(Restrictions.ilike("name", searchTerm)).list());
@@ -91,24 +93,19 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         series.addAll(translate(I18nProcedureEntity.class, procedureCriteria, query)
                       .add(Restrictions.ilike("name", searchTerm)).list());
 
+        Criteria phenomenonCriteria = criteria.createCriteria("phenomenon", LEFT_OUTER_JOIN);
+        series.addAll(translate(I18nProcedureEntity.class, phenomenonCriteria, query)
+                      .add(Restrictions.ilike("name", searchTerm)).list());
+
         return series;
     }
 
-    @Override
-    public T getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, parameters);
-        Criteria criteria = getDefaultCriteria("series");
-        criteria = addIgnoreNonPublishedSeriesTo(criteria, "series");
-        return entityType.cast(criteria
-                .add(eq("pkid", key))
-                .uniqueResult());
-    }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria();
+        Criteria criteria = getDefaultCriteria("series");
         Criteria procedureCreateria = criteria.createCriteria("procedure");
         procedureCreateria.add(eq("reference", false));
         return (List<T>) addFilters(criteria, parameters).list();
@@ -116,20 +113,13 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
 
     @Override
     protected String getSeriesProperty() {
-        return COLUMN_PKID;
-    }
-
-    @Override
-    protected Criteria addFilters(Criteria criteria, DbQuery parameters) {
-        criteria = super.addFilters(criteria, parameters);
-        return addIgnoreNonPublishedSeriesTo(criteria, "");
+        return "";//COLUMN_PKID;
     }
 
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(FeatureEntity feature) {
         LOGGER.debug("get instance for feature '{}'", feature);
-        Criteria criteria = getDefaultCriteria("s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("feature", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, feature.getPkid()));
         return (List<T>) criteria.list();
@@ -138,25 +128,10 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked")
     public List<T> getInstancesWith(PlatformEntity platform) {
         LOGGER.debug("get instance for platform '{}'", platform);
-        Criteria criteria = getDefaultCriteria("s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = getDefaultCriteria("series");
         criteria.createCriteria("procedure", LEFT_OUTER_JOIN)
                 .add(eq(COLUMN_PKID, platform.getPkid()));
         return (List<T>) criteria.list();
-    }
-
-    private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
-        alias = prepareForConcatenation(alias);
-        criteria.add(Restrictions.and(
-                Restrictions.and(
-                        Restrictions.isNotNull(alias.concat("firstValueAt")),
-                        Restrictions.isNotNull(alias.concat("lastValueAt"))),
-                Restrictions.eq(alias.concat("published"), true)));
-        return criteria;
-    }
-
-    private String prepareForConcatenation(String alias) {
-        return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
 
 
@@ -166,10 +141,41 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
     }
 
     @Override
+    protected Criteria getDefaultCriteria() {
+        return getDefaultCriteria("series");
+    }
+
+    @Override
     protected Criteria getDefaultCriteria(String alias) {
-        return entityType != null
+       Criteria criteria = entityType != null
             ? super.getDefaultCriteria(alias)
             : session.createCriteria(DatasetEntity.class, alias);
+        addIgnoreUnpublishedSeriesTo(criteria, alias);
+        return criteria;
+    }
+
+    private Criteria addIgnoreUnpublishedSeriesTo(Criteria criteria, String alias) {
+        alias = prepareForConcatenation(alias);
+        criteria.add(Restrictions.and(
+                createNotNullFirstLastValueRestriction(alias),
+                createPublishedAndNotDeletedRestriction(alias)));
+        return criteria;
+    }
+
+    private Criterion createPublishedAndNotDeletedRestriction(String alias) {
+        return Restrictions.and(
+                Restrictions.eq(alias.concat("published"), true),
+                Restrictions.eqOrIsNull(alias.concat("deleted"), false));
+    }
+
+    private LogicalExpression createNotNullFirstLastValueRestriction(String alias) {
+        return Restrictions.and(
+                Restrictions.isNotNull(alias.concat("firstValueAt")),
+                Restrictions.isNotNull(alias.concat("lastValueAt")));
+    }
+
+    private String prepareForConcatenation(String alias) {
+        return (alias == null || alias.isEmpty()) ? "" : alias.concat(".");
     }
 
 }

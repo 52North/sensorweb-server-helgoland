@@ -60,11 +60,6 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     }
 
     @Override
-    public ProcedureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (ProcedureEntity) session.get(ProcedureEntity.class, key);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);

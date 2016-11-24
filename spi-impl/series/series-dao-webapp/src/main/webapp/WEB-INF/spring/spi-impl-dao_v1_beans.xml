@@ -17,10 +17,11 @@
     <bean name="featureRepository" class="org.n52.series.db.da.FeatureRepository" />
     <bean name="phenomenonRepository" class="org.n52.series.db.da.PhenomenonRepository" />
     <bean name="procedureRepository" class="org.n52.series.db.da.ProcedureRepository" />
+    <bean name="offeringRepository" class="org.n52.series.db.da.OfferingRepository" />
     <bean name="platformRepository" class="org.n52.series.db.da.PlatformRepository" />
     <bean name="datasetRepository" class="org.n52.series.db.da.DatasetRepository" />
     <bean name="geometriesRepository" class="org.n52.series.db.da.GeometriesRepository">
-        <property name="databaseSrid" value="EPSG:4326" />
+        <property name="databaseSrid" value="${database.srid}" />
     </bean>
 
     <bean id="serviceParameterService" class="org.n52.series.srv.ServiceAccessService">
@@ -36,7 +37,7 @@
         <constructor-arg index="0" ref="geometriesRepository" />
     </bean>
     <bean id="offeringParameterService" class="org.n52.series.srv.AccessService">
-        <constructor-arg index="0" ref="procedureRepository" />
+        <constructor-arg index="0" ref="offeringRepository" />
     </bean>
     <bean id="categoryParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="categoryRepository" />

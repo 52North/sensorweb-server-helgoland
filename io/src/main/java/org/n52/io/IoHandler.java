@@ -37,7 +37,7 @@ import java.io.OutputStream;
 
 import org.apache.commons.codec.binary.Base64;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -50,9 +50,9 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
 
     private final IoProcessChain<T> processChain;
 
-    private final RequestSimpleParameterSet request;
+    private final RequestParameterSet request;
 
-    public IoHandler(RequestSimpleParameterSet request, IoProcessChain<T> processChain) {
+    public IoHandler(RequestParameterSet request, IoProcessChain<T> processChain) {
         this.processChain = processChain;
         this.request = request;
         i18n = request.containsParameter(Parameters.LOCALE)

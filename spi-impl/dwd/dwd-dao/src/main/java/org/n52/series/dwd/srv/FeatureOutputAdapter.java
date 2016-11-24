@@ -28,12 +28,10 @@
  */
 package org.n52.series.dwd.srv;
 
-import java.util.Comparator;
-
+import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.series.dwd.beans.ServiceInfo;
 import org.n52.series.dwd.beans.WarnCell;
 import org.n52.series.dwd.rest.AlertCollection;
@@ -51,20 +49,14 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
         this.store = store;
     }
 
-    private OutputCollection<FeatureOutput> createOutputCollection() {
-        return new OutputCollection<FeatureOutput>() {
-            @Override
-            protected Comparator<FeatureOutput> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
-
     @Override
     public OutputCollection<FeatureOutput> getExpandedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
-            outputCollection.addItem(createExpanded(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
+                outputCollection.addItem(createExpanded(warnCell, query));
+            }
         }
         return outputCollection;
     }
@@ -72,8 +64,11 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getCondensedParameters(IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
-            outputCollection.addItem(createCondensed(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (WarnCell warnCell : getFilteredWarnCells(query, store)) {
+                outputCollection.addItem(createCondensed(warnCell, query));
+            }
         }
         return outputCollection;
     }
@@ -81,12 +76,15 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     @Override
     public OutputCollection<FeatureOutput> getParameters(String[] items, IoParameters query) {
         OutputCollection<FeatureOutput> outputCollection = createOutputCollection();
-        for (String id : items) {
-            WarnCell warnCell = getWarnCell(id, store);
-            if (query.isExpanded()) {
-                outputCollection.addItem(createExpanded(warnCell, query));
-            } else {
-                outputCollection.addItem(createCondensed(warnCell, query));
+        FilterResolver filterResolver = query.getFilterResolver();
+        if ( !filterResolver.shallBehaveBackwardsCompatible()) {
+            for (String id : items) {
+                WarnCell warnCell = getWarnCell(id, store);
+                if (query.isExpanded()) {
+                    outputCollection.addItem(createExpanded(warnCell, query));
+                } else {
+                    outputCollection.addItem(createCondensed(warnCell, query));
+                }
             }
         }
         return outputCollection;
@@ -128,7 +126,7 @@ public class FeatureOutputAdapter extends AbstractOuputAdapter<FeatureOutput> {
     }
 
     @Override
-    public boolean exists(String id) {
+    public boolean exists(String id, IoParameters parameters) {
         return getWarnCell(id, store) != null ? true : false;
     }
 

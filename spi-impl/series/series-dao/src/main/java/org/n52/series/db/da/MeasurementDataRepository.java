@@ -29,14 +29,12 @@
 
 package org.n52.series.db.da;
 
-import static java.math.RoundingMode.HALF_UP;
-
 import java.math.BigDecimal;
+import static java.math.RoundingMode.HALF_UP;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
@@ -135,25 +133,32 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
             // do not fail on empty observations
             return null;
         }
-        MeasurementValue value = new MeasurementValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
 
+        long timeend = observation.getTimeend().getTime();
+        long timestart = observation.getTimestart().getTime();
         Double observationValue = !getServiceInfo().isNoDataValue(observation)
-                ? formatDecimal(observation.getValue(), series)
+                ? format(observation, series)
                 : null;
+        MeasurementValue value = query.getParameters().isShowTimeIntervals()
+                ? new MeasurementValue(timestart, timeend, observationValue)
+                : new MeasurementValue(timeend, observationValue);
 
-        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
             addParameter(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }
 
-    private Double formatDecimal(Double value, MeasurementDatasetEntity series) {
+    private Double format(MeasurementDataEntity observation, MeasurementDatasetEntity series) {
+        if (observation.getValue() == null) {
+            return observation.getValue();
+        }
         int scale = series.getNumberOfDecimals();
-        return new BigDecimal(value)
+        return new BigDecimal(observation.getValue())
                 .setScale(scale, HALF_UP)
                 .doubleValue();
     }

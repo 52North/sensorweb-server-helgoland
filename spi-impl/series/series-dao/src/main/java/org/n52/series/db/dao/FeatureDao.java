@@ -61,12 +61,6 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     }
 
     @Override
-    public FeatureEntity getInstance(Long key, DbQuery query) throws DataAccessException {
-        LOGGER.debug("get instance '{}': {}", key, query);
-        return (FeatureEntity) session.get(FeatureEntity.class, key);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         LOGGER.debug("get all instances: {}", query);
