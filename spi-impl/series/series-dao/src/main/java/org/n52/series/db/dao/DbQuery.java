@@ -53,6 +53,8 @@ import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.GeometryType.Type;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
@@ -70,6 +72,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Point;
+import java.util.Locale;
 
 public class DbQuery {
 
@@ -268,7 +271,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria) {
+    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -292,7 +295,26 @@ public class DbQuery {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
+
+        Set<String> geometryTypes = parameters.getGeometryTypes();
+        for (String geometryType : geometryTypes) {
+            if ( !geometryType.isEmpty()) {
+                Type type = getGeometryType(geometryType);
+                if (type != null) {
+                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                }
+            }
+        }
         return criteria;
+    }
+
+    private Type getGeometryType(String geometryType) {
+        for (GeometryType.Type type : GeometryType.Type.values()) {
+            if (type.name().equalsIgnoreCase(geometryType)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {

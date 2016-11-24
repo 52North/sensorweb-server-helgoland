@@ -94,7 +94,9 @@ public class SOSHibernateSessionHolder implements HibernateSessionStore {
     @Override
     public void shutdown() {
         LOGGER.info("shutdown '{}'", getClass().getSimpleName());
-        provider.cleanup();
+        if (provider != null) {
+            provider.cleanup();
+        }
     }
 
 }

@@ -32,6 +32,7 @@ import static org.hibernate.criterion.Projections.rowCount;
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Subqueries.propertyIn;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -103,11 +104,16 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
         criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
         criteria = query.addLimitAndOffsetFilter(criteria);
+<<<<<<< HEAD
+        return query.addSpatialFilterTo(criteria, query)
+                .add(propertyIn(filterProperty + ".pkid", filter));
+=======
         String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
                             ? "pkid"
                             : seriesProperty + ".pkid";
-        return query.addSpatialFilterTo(criteria, query)
+        return query.addSpatialFilterTo(criteria)
                 .add(propertyIn(filterProperty, filter));
+>>>>>>> develop
     }
 
     protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {

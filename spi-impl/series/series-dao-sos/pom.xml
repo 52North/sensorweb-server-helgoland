@@ -13,7 +13,8 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-        <sos.version>4.3.4</sos.version>
+        <sos.version>4.3.7</sos.version>
+        <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
     </properties>
     
     <dependencies>
@@ -26,6 +27,20 @@
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>hibernate-session-factory</artifactId>
             <version>${sos.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- need a newer version -->
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-spatial</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>${hibernate.spatial.version}</version>
+            <!-- satisfy enforcer rule via 'runtime' scope -->
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>

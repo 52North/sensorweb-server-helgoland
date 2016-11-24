@@ -338,6 +338,11 @@ public interface Parameters {
 
     public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
 
+    /**
+     * SimpleFeature types e.g. POINT, LINESTRING, ...
+     */
+    public static final String GEOMETRY_TYPES = "geometryTypes";
+
     public static final String HREF_BASE = "internal.href.base";
 
 //    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";

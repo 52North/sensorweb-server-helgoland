@@ -78,7 +78,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao stationDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = addPointLocationOnlyRestriction(parameters);
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -136,7 +136,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = createDao(session);
-        return featureDao.getAllInstances(parameters);
+        return featureDao.getAllInstances(addPointLocationOnlyRestriction(parameters));
     }
 
     @Override
@@ -191,6 +191,15 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         return featureEntity.isSetGeometry()
                 ? featureEntity.getGeometry(getDatabaseSrid())
                 : null;
+    }
+
+    private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
+        return addPointLocationOnlyRestriction(DbQuery.createFrom(parameters));
+    }
+
+    private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
+        return DbQuery.createFrom(query.getParameters()
+                          .extendWith("geometryTypes", "Point"));
     }
 
 }
