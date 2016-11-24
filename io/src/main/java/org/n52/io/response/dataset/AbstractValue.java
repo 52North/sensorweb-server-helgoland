@@ -157,6 +157,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
 
     @Override
     public int compareTo(AbstractValue<?> o) {
+        // TODO check odering when `showtimeintervals=true`
         return getTimestamp().compareTo(o.getTimestamp());
     }
 
