@@ -28,15 +28,9 @@
  */
 package org.n52.io.request;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.n52.io.request.IoParameters.createDefaults;
-import static org.n52.io.request.IoParameters.createFromMultiValueMap;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.IoParameters.createFromSingleValueMap;
-import static org.n52.io.request.IoParameters.getJsonNodeFrom;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -44,18 +38,20 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.is;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.n52.io.crs.BoundingBox;
+import static org.n52.io.request.IoParameters.createDefaults;
+import static org.n52.io.request.IoParameters.createFromMultiValueMap;
+import static org.n52.io.request.IoParameters.createFromQuery;
+import static org.n52.io.request.IoParameters.createFromSingleValueMap;
+import static org.n52.io.request.IoParameters.getJsonNodeFrom;
+import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 public class IoParametersTest {
 

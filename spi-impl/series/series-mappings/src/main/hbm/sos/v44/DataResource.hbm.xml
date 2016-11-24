@@ -7,7 +7,8 @@
             <generator class="assigned"/>
         </id>
         <property column="seriesid" name="seriesPkid" type="long"/>
-        <property column="phenomenonTimeStart" name="timestamp" type="timestamp"/>
+        <property column="phenomenonTimeStart" name="timestart" type="timestamp"/>
+        <property column="phenomenonTimeEnd" name="timeend" type="timestamp"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <property column="validTimeStart" name="validTimeStart" not-null="false" type="timestamp"/>
         <property column="validTimeEnd" name="validTimeEnd" not-null="false" type="timestamp"/>

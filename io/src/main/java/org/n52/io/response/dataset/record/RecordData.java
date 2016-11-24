@@ -29,7 +29,6 @@
 package org.n52.io.response.dataset.record;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
@@ -38,18 +37,6 @@ public class RecordData extends Data<RecordValue> {
     private static final long serialVersionUID = 4717558247670336015L;
 
     private RecordDatasetMetadata metadata;
-
-    /**
-     * @param values the timestamp &lt;-&gt; value map.
-     * @return a measurement data object.
-     */
-    public static RecordData newTextObservationData(Map<Long, Map<String, Object>> values) {
-        RecordData timeseries = new RecordData();
-        for (Entry<Long, Map<String, Object>> data : values.entrySet()) {
-            timeseries.addNewValue(data.getKey(), data.getValue());
-        }
-        return timeseries;
-    }
 
     public static RecordData newTextObservationData(RecordValue... values) {
         RecordData timeseries = new RecordData();

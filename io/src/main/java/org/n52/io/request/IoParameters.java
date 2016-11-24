@@ -28,10 +28,12 @@
  */
 package org.n52.io.request;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,7 +41,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,14 +49,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.xmlbeans.impl.tool.Extension.Param;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.response.BBox;
@@ -67,13 +69,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
 
 public class IoParameters implements Parameters {
 
@@ -149,10 +144,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parameter could not be parsed.
      */
     public int getOffset() {
-        if (!containsParameter(OFFSET)) {
-            return DEFAULT_OFFSET;
-        }
-        return getAsInteger(OFFSET);
+        return getAsInteger(OFFSET, DEFAULT_OFFSET);
     }
 
     /**
@@ -161,10 +153,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parameter could not be parsed.
      */
     public int getLimit() {
-        if (!containsParameter(LIMIT)) {
-            return DEFAULT_LIMIT;
-        }
-        return getAsInteger(LIMIT);
+        return getAsInteger(LIMIT, DEFAULT_LIMIT);
     }
 
     /**
@@ -184,10 +173,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     private int getWidth() {
-        if (!containsParameter(WIDTH)) {
-            return DEFAULT_WIDTH;
-        }
-        return getAsInteger(WIDTH);
+        return getAsInteger(WIDTH, DEFAULT_WIDTH);
     }
 
     /**
@@ -198,10 +184,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     private int getHeight() {
-        if (!containsParameter(HEIGHT)) {
-            return DEFAULT_HEIGHT;
-        }
-        return getAsInteger(HEIGHT);
+        return getAsInteger(HEIGHT, DEFAULT_HEIGHT);
     }
 
     /**
@@ -212,10 +195,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isBase64() {
-        if (!containsParameter(BASE_64)) {
-            return DEFAULT_BASE_64;
-        }
-        return getAsBoolean(BASE_64);
+        return getAsBoolean(BASE_64, DEFAULT_BASE_64);
     }
 
     /**
@@ -224,10 +204,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isGrid() {
-        if (!containsParameter(GRID)) {
-            return DEFAULT_GRID;
-        }
-        return getAsBoolean(GRID);
+        return getAsBoolean(GRID, DEFAULT_GRID);
     }
 
     /**
@@ -235,10 +212,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isGeneralize() throws IoParseException {
-        if (!containsParameter(GENERALIZE)) {
-            return DEFAULT_GENERALIZE;
-        }
-        return getAsBoolean(GENERALIZE);
+        return getAsBoolean(GENERALIZE, DEFAULT_GENERALIZE);
     }
 
     /**
@@ -247,10 +221,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isLegend() {
-        if (!containsParameter(LEGEND)) {
-            return DEFAULT_LEGEND;
-        }
-        return getAsBoolean(LEGEND);
+        return getAsBoolean(LEGEND, DEFAULT_LEGEND);
     }
 
     /**
@@ -258,10 +229,7 @@ public class IoParameters implements Parameters {
      * default {@value #DEFAULT_LOCALE} is returned.
      */
     public String getLocale() {
-        if (!containsParameter(LOCALE)) {
-            return DEFAULT_LOCALE;
-        }
-        return getAsString(LOCALE);
+        return getAsString(LOCALE, DEFAULT_LOCALE);
     }
 
     /**
@@ -270,10 +238,9 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
-        if (!containsParameter(STYLE)) {
-            return StyleProperties.createDefaults();
-        }
-        return parseStyleProperties(getAsString(STYLE));
+        return containsParameter(STYLE)
+                ? parseStyleProperties(getAsString(STYLE))
+                : StyleProperties.createDefaults();
     }
 
     /**
@@ -301,10 +268,7 @@ public class IoParameters implements Parameters {
     }
 
     public String getFormat() {
-        if (!containsParameter(FORMAT)) {
-            return DEFAULT_FORMAT;
-        }
-        return getAsString(FORMAT);
+        return getAsString(FORMAT, DEFAULT_FORMAT);
     }
 
     public boolean isSetRawFormat() {
@@ -327,10 +291,9 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
-        if (!containsParameter(TIMESPAN)) {
-            return createDefaultTimespan();
-        }
-        return validateTimespan(getAsString(TIMESPAN));
+        return containsParameter(TIMESPAN)
+                ? validateTimespan(getAsString(TIMESPAN))
+                : createDefaultTimespan();
     }
 
     private IntervalWithTimeZone createDefaultTimespan() {
@@ -646,24 +609,15 @@ public class IoParameters implements Parameters {
      * ordered axes).
      */
     public String getCrs() {
-        if (!containsParameter(CRS)) {
-            return DEFAULT_CRS;
-        }
-        return getAsString(CRS);
+        return getAsString(CRS, DEFAULT_CRS);
     }
 
     public boolean isForceXY() {
-        if (!containsParameter(FORCE_XY)) {
-            return DEFAULT_FORCE_XY;
-        }
-        return getAsBoolean(FORCE_XY);
+        return getAsBoolean(FORCE_XY, DEFAULT_FORCE_XY);
     }
 
     public boolean isMatchDomainIds() {
-        if (!containsParameter(MATCH_DOMAIN_IDS)) {
-            return DEFAULT_MATCH_DOMAIN_IDS;
-        }
-        return getAsBoolean(MATCH_DOMAIN_IDS);
+        return getAsBoolean(MATCH_DOMAIN_IDS, DEFAULT_MATCH_DOMAIN_IDS);
     }
 
     /**
@@ -671,31 +625,27 @@ public class IoParameters implements Parameters {
      * @throws IoParseException if parameter could not be parsed.
      */
     public boolean isExpanded() {
-        if (!containsParameter(EXPANDED)) {
-            return DEFAULT_EXPANDED;
-        }
-        return getAsBoolean(EXPANDED);
+        return getAsBoolean(EXPANDED, DEFAULT_EXPANDED);
     }
 
     public boolean isForceLatestValueRequests() {
-        if (!containsParameter(FORCE_LATEST_VALUE)) {
-            return DEFAULT_FORCE_LATEST_VALUE;
-        }
-        return getAsBoolean(FORCE_LATEST_VALUE);
+        return getAsBoolean(FORCE_LATEST_VALUE, DEFAULT_FORCE_LATEST_VALUE);
     }
 
     public boolean isStatusIntervalsRequests() {
-        if (!containsParameter(STATUS_INTERVALS)) {
-            return DEFAULT_STATUS_INTERVALS;
-        }
-        return getAsBoolean(STATUS_INTERVALS);
+        return getAsBoolean(STATUS_INTERVALS, DEFAULT_STATUS_INTERVALS);
     }
 
     public boolean isRenderingHintsRequests() {
-        if (!containsParameter(RENDERING_HINTS)) {
-            return DEFAULT_RENDERING_HINTS;
-        }
-        return getAsBoolean(RENDERING_HINTS);
+        return getAsBoolean(RENDERING_HINTS, DEFAULT_RENDERING_HINTS);
+    }
+
+    public String getHrefBase() {
+        return getAsString(Parameters.HREF_BASE);
+    }
+
+    public boolean isShowTimeIntervals() {
+        return getAsBoolean(SHOW_TIME_INTERVALS, DEFAULT_SHOW_TIME_INTERVALS);
     }
 
     public boolean containsParameter(String parameter) {
@@ -704,6 +654,12 @@ public class IoParameters implements Parameters {
 
     public String getOther(String parameter) {
         return getAsString(parameter);
+    }
+
+    public String getAsString(String parameter, String defaultValue) {
+        return containsParameter(parameter)
+                ? getAsString(parameter)
+                : defaultValue;
     }
 
     public String getAsString(String parameter) {
@@ -723,6 +679,12 @@ public class IoParameters implements Parameters {
         return sb.toString();
     }
 
+    public int getAsInteger(String parameter, int defaultValue) {
+        return containsParameter(parameter)
+                ? getAsInteger(parameter)
+                : defaultValue;
+    }
+
     /**
      * @param parameter
      *        the parameter to parse to an <code>int</code> value.
@@ -738,6 +700,12 @@ public class IoParameters implements Parameters {
         } catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
         }
+    }
+
+    public boolean getAsBoolean(String parameter, boolean defaultValue) {
+        return containsParameter(parameter)
+                ? getAsBoolean(parameter)
+                : defaultValue;
     }
 
     /**
@@ -833,10 +801,6 @@ public class IoParameters implements Parameters {
     @Override
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
-    }
-
-    public String getHrefBase() {
-        return getAsString(Parameters.HREF_BASE);
     }
 
     /* ****************************************************************
