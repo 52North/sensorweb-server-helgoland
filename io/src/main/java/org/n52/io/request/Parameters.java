@@ -352,7 +352,7 @@ public interface Parameters {
     /**
      * If observation time shall be shown within intervals.
      */
-    public static final String SHOW_TIME_INTERVALS = "allowTimeIntervals";
+    public static final String SHOW_TIME_INTERVALS = "showTimeIntervals";
 
     /**
      * Default for {@link #SHOW_TIME_INTERVALS}
