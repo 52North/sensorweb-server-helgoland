@@ -644,6 +644,10 @@ public class IoParameters implements Parameters {
         return getAsString(Parameters.HREF_BASE);
     }
 
+    public boolean getShowTimeIntervals() {
+        return getAsBoolean(SHOW_TIME_INTERVALS, DEFAULT_SHOW_TIME_INTERVALS);
+    }
+
     public boolean containsParameter(String parameter) {
         return query.containsKey(parameter.toLowerCase());
     }
@@ -680,6 +684,7 @@ public class IoParameters implements Parameters {
                 ? getAsInteger(parameter)
                 : defaultValue;
     }
+
     /**
      * @param parameter
      *        the parameter to parse to an <code>int</code> value.
