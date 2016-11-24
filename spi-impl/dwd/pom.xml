@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52.series-api</groupId>
         <artifactId>spi-impl</artifactId>
-        <version>2.0.0-alpha.2</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>spi-impl-dwd</artifactId>
     <name>Series REST API - SPI DWD Impl</name>
