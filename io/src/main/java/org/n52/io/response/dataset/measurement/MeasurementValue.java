@@ -38,7 +38,11 @@ public class MeasurementValue extends AbstractValue<Double> {
         // for serialization
     }
 
-    public MeasurementValue(long timestamp, Double value) {
+    public MeasurementValue(Long timestart, Long timeend, Double value) {
+        super(timestart, timeend, value);
+    }
+
+    public MeasurementValue(Long timestamp, Double value) {
         super(timestamp, value);
     }
 
