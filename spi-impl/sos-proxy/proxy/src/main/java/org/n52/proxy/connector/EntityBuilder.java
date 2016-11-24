@@ -31,6 +31,7 @@ package org.n52.proxy.connector;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.DatasetEntity;

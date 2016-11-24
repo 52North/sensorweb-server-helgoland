@@ -28,6 +28,9 @@
  */
 package org.n52.proxy.db.da;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -35,17 +38,21 @@ import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
+import org.n52.proxy.db.beans.RelatedFeatureEntity;
+import org.n52.proxy.db.beans.RelatedFeatureRoleEntity;
 import org.n52.proxy.db.dao.ProxyCategoryDao;
 import org.n52.proxy.db.dao.ProxyDatasetDao;
 import org.n52.proxy.db.dao.ProxyFeatureDao;
 import org.n52.proxy.db.dao.ProxyOfferingDao;
 import org.n52.proxy.db.dao.ProxyPhenomenonDao;
 import org.n52.proxy.db.dao.ProxyProcedureDao;
+import org.n52.proxy.db.dao.ProxyRelatedFeatureDao;
+import org.n52.proxy.db.dao.ProxyRelatedFeatureRoleDao;
 import org.n52.proxy.db.dao.ProxyServiceDao;
-import org.n52.series.db.beans.OfferingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +83,7 @@ public class InsertRepository extends SessionAwareRepository {
             new ProxyProcedureDao(session).clearUnusedForService(service);
             new ProxyFeatureDao(session).clearUnusedForService(service);
             new ProxyPhenomenonDao(session).clearUnusedForService(service);
+            new ProxyRelatedFeatureDao(session).clearUnusedForService(service);
 
             session.flush();
             transaction.commit();
@@ -102,10 +110,10 @@ public class InsertRepository extends SessionAwareRepository {
         try {
             Transaction transaction = session.beginTransaction();
 
-            ProcedureEntity procedure = insertProcedure(dataset.getProcedure(), session);
+            ProcedureEntity procedure = insertProcedure((ProcedureEntity)dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
             OfferingEntity offering = insertOffering(dataset.getOffering(), session);
-            FeatureEntity feature = insertFeature(dataset.getFeature(), session);
+            FeatureEntity feature = insertFeature((FeatureEntity)dataset.getFeature(), session);
             PhenomenonEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
 
             insertDataset(dataset, category, procedure, offering, feature, phenomenon, session);
@@ -141,6 +149,27 @@ public class InsertRepository extends SessionAwareRepository {
 
     private OfferingEntity insertOffering(OfferingEntity offering, Session session) {
         return new ProxyOfferingDao(session).getOrInsertInstance(offering);
+    }
+    
+    private RelatedFeatureEntity insertRelatedFeature(RelatedFeatureEntity relatedFeature, Session session) {
+        // insert related feature roles
+        Set<RelatedFeatureRoleEntity> roles =
+                new HashSet<RelatedFeatureRoleEntity>(relatedFeature.getRelatedFeatureRoles().size());
+        for (RelatedFeatureRoleEntity relatedFeatureRole : relatedFeature.getRelatedFeatureRoles()) {
+            roles.add(insertRelatedFeatureRole(relatedFeatureRole, session));
+        }
+        relatedFeature.setRelatedFeatureRoles(roles);
+        // insert offerings
+        Set<OfferingEntity> offerings = new HashSet<OfferingEntity>(relatedFeature.getOfferings().size());
+        for (OfferingEntity offering : relatedFeature.getOfferings()) {
+            offerings.add(insertOffering(offering, session));            
+        }
+        relatedFeature.setOfferings(offerings);
+        return new ProxyRelatedFeatureDao(session).getOrInsertInstance(relatedFeature);
+    }
+
+    private RelatedFeatureRoleEntity insertRelatedFeatureRole(RelatedFeatureRoleEntity relatedFeatureRole, Session session) {
+        return new ProxyRelatedFeatureRoleDao(session).getOrInsertInstance(relatedFeatureRole);
     }
 
     private DatasetEntity insertDataset(DatasetEntity dataset, CategoryEntity category, ProcedureEntity procedure, OfferingEntity offering, FeatureEntity feature, PhenomenonEntity phenomenon, Session session) {

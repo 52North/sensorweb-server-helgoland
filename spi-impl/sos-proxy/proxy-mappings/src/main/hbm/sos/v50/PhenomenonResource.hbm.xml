@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.beans">
+    <class name="PhenomenonEntity" table="observableproperty">
+        <id name="pkid" type="long">
+            <column name="observablepropertyid"/>
+            <generator class="native">
+                <param name="sequence">observablepropertyId_seq</param>
+            </generator>
+        </id>
+        <property column="identifier" name="domainId" type="string" not-null="true"/>
+        <property column="name" name="name" type="string"/>
+        <property column="description"  name="description" type="string"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
+        <set name="childs" table="phenomenonhierarchy" inverse="false" fetch="select">
+            <key column="parentPhenomenonId" not-null="true"/>
+            <many-to-many entity-name="PhenomenonEntity" column="childPhenomenonId" not-null="true" foreign-key="phenomenonChildFk"/>
+        </set>
+        <set name="parents" table="phenomenonhierarchy" inverse="false" fetch="select">
+            <key column="childPhenomenonId" not-null="true"/>
+            <many-to-many entity-name="PhenomenonEntity" column="parentPhenomenonId" not-null="true" foreign-key="phenomenonParentFk"/>
+        </set>
+    </class>
+</hibernate-mapping>

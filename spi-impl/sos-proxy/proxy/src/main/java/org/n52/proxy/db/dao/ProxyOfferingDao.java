@@ -28,6 +28,9 @@
  */
 package org.n52.proxy.db.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -41,7 +44,6 @@ import org.n52.series.db.dao.OfferingDao;
 
 public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingEntity>, ClearDao<OfferingEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyOfferingDao(Session session) {
@@ -59,6 +61,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void clearUnusedForService(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq("service.pkid", service.getPkid()))
@@ -70,7 +73,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
 
     private OfferingEntity getInstance(OfferingEntity offering) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, offering.getName()))
+                .add(Restrictions.eq(OfferingEntity.NAME, offering.getName()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, offering.getService().getPkid()));
         return (OfferingEntity) criteria.uniqueResult();
     }
@@ -80,5 +83,11 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
                 .setProjection(Projections.distinct(Projections.property(getSeriesProperty())));
         return filter;
     }
-
+    
+    @SuppressWarnings("unchecked")
+    public List<OfferingEntity> getInstancesFor(Collection<String> domainIds) {
+        Criteria c = getDefaultCriteria()
+                .add(Restrictions.in(OfferingEntity.DOMAIN_ID, domainIds));
+        return c.list();
+    }
 }

@@ -77,6 +77,8 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private Date lastValueAt;
 
     private UnitEntity unit;
+    
+    private long observationCount = -1;
 
     public DatasetEntity() {
         this.observations = new ArrayList<>();
@@ -241,6 +243,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return name;
     }
 
+    public void setObservationCount(long count) {
+        this.observationCount = count;
+    }
+    
+    public long getObservationCount() {
+        return observationCount;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -252,7 +262,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         sb.append(" , offering: ").append(offering);
         sb.append(" , feature: ").append(feature);
         sb.append(" , service: ").append(getService());
-        sb.append(" , #observations: ").append(observations.size());
+        sb.append(" , #observations: ").append(getObservationCount() >= 0 ? getObservationCount() : observations.size());
         return sb.append(" ]").toString();
     }
 

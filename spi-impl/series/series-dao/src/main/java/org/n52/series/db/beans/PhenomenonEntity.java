@@ -28,7 +28,30 @@
  */
 package org.n52.series.db.beans;
 
-public class PhenomenonEntity extends DescribableEntity {
+import java.util.Set;
+
+public class PhenomenonEntity extends DescribableEntity implements Childs<PhenomenonEntity>, Parents<PhenomenonEntity> {
+    
+    private Set<PhenomenonEntity> childFeatures;
+    private Set<PhenomenonEntity> parentFeatures;
+    
+    public void setChilds(Set<PhenomenonEntity> childs) {
+        this.childFeatures = childs;
+    }
+
+    public Set<PhenomenonEntity> getChilds() {
+        return childFeatures;
+    }
+
+    @Override
+    public void setParents(Set<PhenomenonEntity> parents) {
+        this.parentFeatures = parents;
+    }
+
+    @Override
+    public Set<PhenomenonEntity> getParents() {
+        return parentFeatures;
+    }
 
     @Override
     public String toString() {
