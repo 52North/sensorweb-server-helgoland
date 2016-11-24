@@ -73,7 +73,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
      * @return the timestamp/timeend when {@link #value} has been observed.
      */
     public Long getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
     /**

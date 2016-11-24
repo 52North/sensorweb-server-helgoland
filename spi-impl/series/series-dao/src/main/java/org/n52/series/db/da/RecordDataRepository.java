@@ -147,7 +147,7 @@ public class RecordDataRepository extends AbstractDataRepository<RecordData, Rec
         RecordValue value = query.getParameters().isShowTimeIntervals()
                 ? new RecordValue(timestart, timeend, observationValue)
                 : new RecordValue(timeend, observationValue);
-        
+
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);

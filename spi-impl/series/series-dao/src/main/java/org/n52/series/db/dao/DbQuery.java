@@ -79,7 +79,9 @@ public class DbQuery {
 
     private static final String COLUMN_DOMAIN_ID = "domainId";
 
-    private static final String COLUMN_TIMESTAMP = "timestamp";
+    private static final String COLUMN_TIMESTART = "timestart";
+
+    private static final String COLUMN_TIMEEND = "timeend";
 
     private IoParameters parameters = IoParameters.createDefaults();
 
@@ -158,7 +160,10 @@ public class DbQuery {
             Interval interval = parameters.getTimespan().toInterval();
             Date start = interval.getStart().toDate();
             Date end = interval.getEnd().toDate();
-            criteria.add(between(COLUMN_TIMESTAMP, start, end));
+            criteria.add(Restrictions.or( // check overlap
+                    between(COLUMN_TIMESTART, start, end),
+                    between(COLUMN_TIMEEND, start, end)
+            ));
         }
         return criteria;
     }
