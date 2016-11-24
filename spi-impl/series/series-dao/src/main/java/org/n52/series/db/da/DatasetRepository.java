@@ -31,12 +31,10 @@ package org.n52.series.db.da;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
@@ -247,10 +245,12 @@ public class DatasetRepository<T extends Data>
         String station = series.getFeature().getLabelFrom(locale);
         String procedure = series.getProcedure().getLabelFrom(locale);
         String phenomenon = series.getPhenomenon().getLabelFrom(locale);
+        String offering = series.getOffering().getLabelFrom(locale);
         StringBuilder sb = new StringBuilder();
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");
-        return sb.append(station).toString();
+        sb.append(station).append(", ");
+        return sb.append(offering).toString();
     }
 
     public DataRepositoryFactory getDataRepositoryFactory() {
