@@ -45,12 +45,8 @@ import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
-import org.n52.io.response.dataset.count.CountData;
-import org.n52.io.response.dataset.count.CountValue;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-import org.n52.io.response.dataset.text.TextData;
-import org.n52.io.response.dataset.text.TextValue;
 
 // TODO extract non measurement specifics to csvhandler
 
@@ -158,40 +154,6 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
                     : null;
             values[4] = new DateTime(timeend).toString();
             values[5] = numberformat.format(timeseriesValue.getValue());
-            writeCsvLine(csvEncode(values), stream);
-        }
-    }
-
-    private void writeData(DatasetOutput metadata, TextData series, OutputStream stream) throws IOException {
-        String station = metadata.getSeriesParameters().getPlatform().getLabel();
-        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
-        String uom = metadata.getUom();
-        for (TextValue value : series.getValues()) {
-            String[] values = new String[getHeader().length];
-            values[0] = station;
-            values[1] = phenomenon;
-            values[2] = uom;
-
-            long timestamp = value.getTimestamp();
-            values[3] = new DateTime(timestamp).toString();
-            values[4] = value.getValue();
-            writeCsvLine(csvEncode(values), stream);
-        }
-    }
-
-    private void writeData(DatasetOutput metadata, CountData series, OutputStream stream) throws IOException {
-        String station = metadata.getSeriesParameters().getPlatform().getLabel();
-        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
-        String uom = metadata.getUom();
-        for (CountValue value : series.getValues()) {
-            String[] values = new String[getHeader().length];
-            values[0] = station;
-            values[1] = phenomenon;
-            values[2] = uom;
-
-            long timestamp = value.getTimestamp();
-            values[3] = new DateTime(timestamp).toString();
-            values[4] = Integer.toString(value.getValue());
             writeCsvLine(csvEncode(values), stream);
         }
     }
