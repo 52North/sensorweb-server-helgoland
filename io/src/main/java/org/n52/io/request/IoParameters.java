@@ -644,7 +644,7 @@ public class IoParameters implements Parameters {
         return getAsString(Parameters.HREF_BASE);
     }
 
-    public boolean getShowTimeIntervals() {
+    public boolean isShowTimeIntervals() {
         return getAsBoolean(SHOW_TIME_INTERVALS, DEFAULT_SHOW_TIME_INTERVALS);
     }
 
