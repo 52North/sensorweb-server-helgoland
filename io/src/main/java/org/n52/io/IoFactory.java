@@ -29,13 +29,12 @@
 package org.n52.io;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -112,12 +111,14 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         if (datasetService == null || styledRequest == null) {
             return IoStyleContext.createEmpty();
         }
-        OutputCollection<? extends DatasetOutput<V, ?>> metadatas = getMetadatas(styledRequest.getDatasets());
-        return IoStyleContext.createContextWith(styledRequest, metadatas.getItems());
+        return IoStyleContext.createContextWith(styledRequest, getMetadatas());
     }
 
-    private OutputCollection<? extends DatasetOutput<V, ?>> getMetadatas(String[] seriesIds) {
-        return datasetService.getParameters(seriesIds, getParameters());
+    protected List<DS> getMetadatas() {
+        String[] seriesIds = simpleRequest != null
+                ? simpleRequest.getDatasets()
+                : styledRequest.getDatasets();
+        return datasetService.getParameters(seriesIds, getParameters()).getItems();
     }
 
     protected IoParameters getParameters() {

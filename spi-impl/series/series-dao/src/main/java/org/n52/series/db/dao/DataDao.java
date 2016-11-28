@@ -28,20 +28,18 @@
  */
 package org.n52.series.db.dao;
 
-import static org.hibernate.criterion.DetachedCriteria.forClass;
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
-import static org.hibernate.criterion.Restrictions.eq;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
+import static org.hibernate.criterion.DetachedCriteria.forClass;
 import org.hibernate.criterion.Order;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
 import org.hibernate.criterion.Restrictions;
+import static org.hibernate.criterion.Restrictions.eq;
 import org.hibernate.criterion.Subqueries;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
@@ -71,7 +69,9 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
 
     private static final String COLUMN_DELETED = "deleted";
 
-    private static final String COLUMN_TIMESTAMP = "timestamp";
+    private static final String COLUMN_TIMESTART = "timestart";
+
+    private static final String COLUMN_TIMEEND = "timeend";
 
     private final Class<T> entityType;
 
@@ -154,7 +154,8 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     @Override
     protected Criteria getDefaultCriteria() {
         return session.createCriteria(entityType)
-                .addOrder(Order.asc(COLUMN_TIMESTAMP))
+                // TODO check odering when `showtimeintervals=true`
+                .addOrder(Order.asc(COLUMN_TIMEEND))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
     }
 
@@ -164,11 +165,22 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T getDataValueAt(Date timestamp, DatasetEntity series) {
+    public T getDataValueViaTimeend(DatasetEntity series) {
+        Date timeend = series.getLastValueAt();
+        return getDataValueAt(timeend, COLUMN_TIMEEND, series);
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getDataValueViaTimestart(DatasetEntity series) {
+        Date timestart = series.getFirstValueAt();
+        return getDataValueAt(timestart, COLUMN_TIMESTART, series);
+    }
+
+    private T getDataValueAt(Date timestamp, String column, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
-                .add(Restrictions.eq(COLUMN_TIMESTAMP, timestamp));
+                .add(Restrictions.eq(column, timestamp));
 
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));

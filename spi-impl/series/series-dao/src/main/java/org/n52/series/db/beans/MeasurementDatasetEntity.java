@@ -63,7 +63,7 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
     public MeasurementDataEntity getFirstValue() {
         final MeasurementDataEntity firstValue = super.getFirstValue();
         if (firstValue != null) {
-            Date when = firstValue.getTimestamp();
+            Date when = firstValue.getTimeend();
             Double value = firstValue.getValue();
             if (when == null || value == null) {
                 return null; // empty component
@@ -76,7 +76,7 @@ public class MeasurementDatasetEntity extends DatasetEntity<MeasurementDataEntit
     public MeasurementDataEntity getLastValue() {
         final MeasurementDataEntity lastValue = super.getLastValue();
         if (lastValue != null) {
-            Date when = lastValue.getTimestamp();
+            Date when = lastValue.getTimeend();
             Double value = lastValue.getValue();
             if (when == null || value == null) {
                 return null; // empty component
