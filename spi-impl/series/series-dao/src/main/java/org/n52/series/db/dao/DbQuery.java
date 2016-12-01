@@ -29,29 +29,28 @@
 
 package org.n52.series.db.dao;
 
-import static java.lang.String.format;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.ProjectionList;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
+import org.hibernate.criterion.Restrictions;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
 import static org.hibernate.criterion.Subqueries.propertyIn;
-import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
-import static org.n52.series.db.DataModelUtil.isEntitySupported;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.GeometryType.Type;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
 import org.joda.time.Interval;
@@ -60,16 +59,15 @@ import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
 import org.n52.io.response.PlatformType;
+import static org.n52.series.db.DataModelUtil.isEntitySupported;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
 
 public class DbQuery {
 
@@ -81,7 +79,9 @@ public class DbQuery {
 
     private static final String COLUMN_DOMAIN_ID = "domainId";
 
-    private static final String COLUMN_TIMESTAMP = "timestamp";
+    private static final String COLUMN_TIMESTART = "timestart";
+
+    private static final String COLUMN_TIMEEND = "timeend";
 
     private IoParameters parameters = IoParameters.createDefaults();
 
@@ -160,7 +160,10 @@ public class DbQuery {
             Interval interval = parameters.getTimespan().toInterval();
             Date start = interval.getStart().toDate();
             Date end = interval.getEnd().toDate();
-            criteria.add(between(COLUMN_TIMESTAMP, start, end));
+            criteria.add(Restrictions.or( // check overlap
+                    between(COLUMN_TIMESTART, start, end),
+                    between(COLUMN_TIMEEND, start, end)
+            ));
         }
         return criteria;
     }
@@ -187,7 +190,7 @@ public class DbQuery {
                         .add(createMobileExpression(filterResolver))
                         .add(createInsituExpression(filterResolver))
                         .setProjection(onPkidProjection(parameter));
-                criteria.add(propertyIn(format("%s.pkid", parameter), c));
+                criteria.add(propertyIn(String.format("%s.pkid", parameter), c));
             }
         }
         return criteria;
@@ -206,7 +209,7 @@ public class DbQuery {
                     DetachedCriteria filteredPkids = forClass(DatasetEntity.class, "series")
                             .add(Restrictions.in("datasetType", datasetTypes))
                             .setProjection(onPkidProjection(parameter));
-                    criteria.add(propertyIn(format("%s.pkid", parameter), filteredPkids));
+                    criteria.add(propertyIn(String.format("%s.pkid", parameter), filteredPkids));
                 }
             }
         }
@@ -231,7 +234,7 @@ public class DbQuery {
         String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
                             ? "pkid"
                             : seriesProperty + ".pkid";
-        return addSpatialFilterTo(criteria)
+        return addSpatialFilterTo(criteria, this)
                 .add(propertyIn(filterProperty, filter));
     }
 
@@ -253,7 +256,7 @@ public class DbQuery {
     }
 
     private ProjectionList onPkidProjection(String parameter) {
-        final String filterProperty = format("series.%s.pkid", parameter);
+        final String filterProperty = String.format("series.%s.pkid", parameter);
         return projectionList().add(property(filterProperty));
     }
 
@@ -280,7 +283,7 @@ public class DbQuery {
         return parsedIds;
     }
 
-    public Criteria addSpatialFilterTo(Criteria criteria) {
+    public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
         BoundingBox spatialFilter = parameters.getSpatialFilter();
         if (spatialFilter != null) {
             try {
@@ -304,7 +307,26 @@ public class DbQuery {
                 LOGGER.error("Could not perform transformation.", e);
             }
         }
+
+        Set<String> geometryTypes = parameters.getGeometryTypes();
+        for (String geometryType : geometryTypes) {
+            if ( !geometryType.isEmpty()) {
+                Type type = getGeometryType(geometryType);
+                if (type != null) {
+                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                }
+            }
+        }
         return criteria;
+    }
+
+    private Type getGeometryType(String geometryType) {
+        for (GeometryType.Type type : GeometryType.Type.values()) {
+            if (type.name().equalsIgnoreCase(geometryType)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     public DetachedCriteria createDetachedFilterCriteria(String propertyName) {

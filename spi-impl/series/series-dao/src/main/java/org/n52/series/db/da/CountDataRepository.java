@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.count.CountData;
 import org.n52.io.response.dataset.count.CountDatasetMetadata;
@@ -133,14 +132,15 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
             return null;
         }
 
-        ServiceEntity service = series.getService();
-        Integer observationValue = !service.isNoDataValue(observation)
+        long timestart = observation.getTimestart().getTime();
+        long timeend = observation.getTimeend().getTime();
+        Integer observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
+        CountValue value = query.getParameters().isShowTimeIntervals()
+                ? new CountValue(timestart, timeend, observationValue)
+                : new CountValue(timeend, observationValue);
 
-        CountValue value = new CountValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);

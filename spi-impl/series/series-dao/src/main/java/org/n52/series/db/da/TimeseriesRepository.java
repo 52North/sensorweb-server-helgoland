@@ -33,7 +33,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.IoParameters;
@@ -47,8 +46,8 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.DatasetDao;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.TimeseriesSearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -119,7 +118,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             String phenomenonLabel = searchResult.getPhenomenon().getLabelFrom(locale);
             String procedureLabel = searchResult.getProcedure().getLabelFrom(locale);
             String stationLabel = searchResult.getFeature().getLabelFrom(locale);
-            String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel);
+            String offeringLabel = searchResult.getOffering().getLabelFrom(locale);
+            String label = createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel);
             results.add(new TimeseriesSearchResult(pkid, label));
         }
         return results;
@@ -224,18 +224,20 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
         String procedureLabel = entity.getProcedure().getLabelFrom(locale);
         String stationLabel = entity.getFeature().getLabelFrom(locale);
-        output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
+        String offeringLabel = entity.getOffering().getLabelFrom(locale);
+        output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnitI18nName(locale));
         output.setStation(createCondensedStation(entity, query));
         return output;
     }
 
-    private String createTimeseriesLabel(String phenomenon, String procedure, String station) {
+    private String createTimeseriesLabel(String phenomenon, String procedure, String station, String offering) {
         StringBuilder sb = new StringBuilder();
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");
-        return sb.append(station).toString();
+        sb.append(station).append(", ");
+        return sb.append(offering).toString();
     }
 
     private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
