@@ -132,10 +132,9 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
             return null;
         }
 
-        ServiceEntity service = series.getService();
         long timestart = observation.getTimestart().getTime();
         long timeend = observation.getTimeend().getTime();
-        Integer observationValue = !getServiceInfo().isNoDataValue(observation)
+        Integer observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         CountValue value = query.getParameters().isShowTimeIntervals()

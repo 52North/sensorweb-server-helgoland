@@ -194,11 +194,11 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
-        return addPointLocationOnlyRestriction(DbQuery.createFrom(parameters));
+        return addPointLocationOnlyRestriction(dbQueryFactory.createFrom(parameters));
     }
 
     private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
-        return DbQuery.createFrom(query.getParameters()
+        return dbQueryFactory.createFrom(query.getParameters()
                           .extendWith("geometryTypes", "Point"));
     }
 

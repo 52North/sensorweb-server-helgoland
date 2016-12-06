@@ -140,10 +140,9 @@ public class RecordDataRepository extends AbstractDataRepository<RecordData, Rec
             return null;
         }
 
-        ServiceEntity service = series.getService();
         long timeend = observation.getTimeend().getTime();
         long timestart = observation.getTimestart().getTime();
-        Map<String, Object> observationValue = !getServiceInfo().isNoDataValue(observation)
+        Map<String, Object> observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         RecordValue value = query.getParameters().isShowTimeIntervals()

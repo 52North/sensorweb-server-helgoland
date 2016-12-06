@@ -135,10 +135,9 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
             return null;
         }
 
-        ServiceEntity service = series.getService();
         long timeend = observation.getTimeend().getTime();
         long timestart = observation.getTimestart().getTime();
-        Double observationValue = !getServiceInfo().isNoDataValue(observation)
+        Double observationValue = !series.getService().isNoDataValue(observation)
                 ? format(observation, series)
                 : null;
         MeasurementValue value = query.getParameters().isShowTimeIntervals()

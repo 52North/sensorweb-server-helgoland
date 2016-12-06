@@ -140,10 +140,9 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
             return null;
         }
 
-        ServiceEntity service = series.getService();
         long timeend = observation.getTimeend().getTime();
         long timestart = observation.getTimestart().getTime();
-        String observationValue = !getServiceInfo().isNoDataValue(observation)
+        String observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         TextValue value = query.getParameters().isShowTimeIntervals()

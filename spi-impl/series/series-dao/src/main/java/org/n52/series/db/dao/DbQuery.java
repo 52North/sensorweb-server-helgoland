@@ -234,7 +234,7 @@ public class DbQuery {
         String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
                             ? "pkid"
                             : seriesProperty + ".pkid";
-        return addSpatialFilterTo(criteria)
+        return addSpatialFilterTo(criteria, this)
                 .add(propertyIn(filterProperty, filter));
     }
 
