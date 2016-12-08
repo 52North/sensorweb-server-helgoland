@@ -16,6 +16,7 @@
         <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
         <postgresql.version>9.4.1208.jre7</postgresql.version>
         <postgis.version>2.2.0</postgis.version>
+        <sos.version>5.0.0-SNAPSHOT</sos.version>
         <!--<hibernate.version>5.1.0.Final</hibernate.version>-->
     </properties>
     
@@ -32,7 +33,7 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>coding-sos-v20</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
+            <version>${sos.version}</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -45,7 +46,7 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>api</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
+            <version>${sos.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.reflections</groupId>
@@ -61,7 +62,7 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>sqlite-config</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
+            <version>${sos.version}</version>
             <scope>runtime</scope>
         </dependency>
         
@@ -69,6 +70,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>commons-codec</groupId>
+            		<artifactId>commons-codec</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>

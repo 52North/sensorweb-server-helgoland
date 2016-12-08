@@ -31,7 +31,7 @@ package org.n52.series.db.beans;
 import java.util.Set;
 
 public class DescribableEntity {
-    
+
     public final static String PKID = "pkid";
     public final static String DOMAIN_ID = "domainId";
     public final static String NAME = "name";
@@ -99,7 +99,7 @@ public class DescribableEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public boolean isSetDescription() {
         return getDescription() != null && !getDescription().isEmpty();
     }

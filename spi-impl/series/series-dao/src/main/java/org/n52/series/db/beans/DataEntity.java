@@ -35,7 +35,7 @@ import java.util.Set;
 
 
 public abstract class DataEntity<T> {
-    
+
     public static final String SERIES_PKID = "seriesPkid";
 
     private Long pkid;

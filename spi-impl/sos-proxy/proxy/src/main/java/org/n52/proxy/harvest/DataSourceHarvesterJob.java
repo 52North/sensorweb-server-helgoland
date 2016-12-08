@@ -29,7 +29,6 @@
 package org.n52.proxy.harvest;
 
 import java.util.Date;
-import java.util.logging.Level;
 
 import org.n52.io.task.ScheduledJob;
 import org.n52.proxy.config.DataSourcesConfig;
@@ -45,7 +44,6 @@ import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -97,7 +95,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        try {
+//        try {
             LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
             JobDetail jobDetail = context.getJobDetail();
@@ -127,9 +125,9 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
             insertRepository.cleanUp(service);
 
             LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
-        } catch (OwsExceptionReport ex) {
-            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (OwsExceptionReport ex) {
+//            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void init(DataSourceConfig config) {

@@ -5,8 +5,11 @@ Licensed under GNU General Public License, Version 2.0
 This project includes: 
   52North Sensor Web Client PDF report structure under GNU GENERAL PUBLIC LICENSE Version 2, June 1991
   52°North Iceland under The Apache Software License, Version 2.0
+  52°North Jan Mayen under The Apache Software License, Version 2.0
+  52°North Shetland under The Apache Software License, Version 2.0
   52°North SOS - 2.0 XML Request Coding under GPLv2
   52°North SOS - Hibernate Session Factory under GPLv2
+  52°North SOS - OWS 1.1.0 XML Request Coding under GPLv2
   52°North SOS - SOS API Module under GPLv2
   52°North SOS - SQLite Configuration under GPLv2
   52°North Third Party - NCName resolver under BSD 2-clause "Simplified" or "FreeBSD"
@@ -39,8 +42,10 @@ This project includes:
   Batik SVG transcoder classes under The Apache Software License, Version 2.0
   Batik utility library under The Apache Software License, Version 2.0
   Batik XML utility library under The Apache Software License, Version 2.0
+  c3p0 under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   c3p0:JDBC DataSources/Resource Pools under GNU LESSER GENERAL PUBLIC LICENSE
   ClassLoader leak prevention under Apache 2
+  ClassLoader Leak Prevention library under Apache 2
   Commons IO under The Apache Software License, Version 2.0
   Commons Lang under The Apache Software License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
@@ -51,6 +56,7 @@ This project includes:
   Ehcache Core under The Apache Software License, Version 2.0
   EJML under The Apache Software License, Version 2.0
   EPSG Authority Service using HSQL database under GNU Lesser General Public License (LGPL) version 2.1
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   Hamcrest All under New BSD License
   Hamcrest Core under New BSD License
@@ -85,6 +91,7 @@ This project includes:
   Logback Classic Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Logback Core Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Main module under GNU Lesser General Public License (LGPL) version 2.1
+  mchange-commons-java library under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   Metadata under GNU Lesser General Public License (LGPL) version 2.1
   OASIS WS-N specification schemas - including WS-BrokeredNotification (v1.3) under The Apache Software License, Version 2.0
   OASIS WS-Resources specification schemas v1.2 under The Apache Software License, Version 2.0
@@ -145,4 +152,5 @@ This project includes:
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0
   XML Commons External Components XML APIs Extensions under The Apache Software License, Version 2.0
   XmlBeans under The Apache Software License, Version 2.0
+  XMLUnit for Java under BSD License
 

@@ -39,7 +39,7 @@ public class ProcedureEntity extends DescribableEntity implements Childs<Procedu
     private String procedureDescriptionFormat;
     private Set<ProcedureEntity> childProcedures;
     private Set<ProcedureEntity> parentProcedures;
-    
+
     public boolean isReference() {
         return reference;
     }

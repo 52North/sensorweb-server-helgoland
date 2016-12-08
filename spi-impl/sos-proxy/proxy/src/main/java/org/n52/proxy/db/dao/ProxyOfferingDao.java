@@ -83,7 +83,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
                 .setProjection(Projections.distinct(Projections.property(getSeriesProperty())));
         return filter;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<OfferingEntity> getInstancesFor(Collection<String> domainIds) {
         Criteria c = getDefaultCriteria()

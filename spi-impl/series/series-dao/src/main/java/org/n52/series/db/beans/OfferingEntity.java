@@ -44,7 +44,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     private Date phenomenonTimeEnd;
     private Date resultTimeStart;
     private Date resultTimeEnd;
-    
+
     @Override
     public void setChilds(Set<OfferingEntity> childs) {
         this.childOfferings = childs;
@@ -69,7 +69,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public Set<OfferingEntity> getParents() {
         return parentOfferings;
     }
-    
+
     /**
      * @return the envelope
      */
@@ -105,7 +105,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public boolean hasObservationTypes() {
         return getObservationTypes() != null && !getObservationTypes().isEmpty();
     }
-    
+
     /**
      * @return the featureTypes
      */
@@ -141,7 +141,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public boolean hasPhenomenonTimeStart() {
         return getPhenomenonTimeStart() != null;
     }
-    
+
     /**
      * @return the phenomenonTimeEnd
      */
@@ -155,7 +155,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public void setPhenomenonTimeEnd(Date phenomenonTimeEnd) {
         this.phenomenonTimeEnd = phenomenonTimeEnd;
     }
-    
+
     public boolean hasPhenomenonTimeEnd() {
         return getPhenomenonTimeEnd() != null;
     }
@@ -173,7 +173,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public void setResultTimeStart(Date resultTimeStart) {
         this.resultTimeStart = resultTimeStart;
     }
-    
+
     public boolean hasResultTimeStart() {
         return getResultTimeStart() != null;
     }
@@ -191,7 +191,7 @@ public class OfferingEntity extends DescribableEntity implements Childs<Offering
     public void setResultTimeEnd(Date resultTimeEnd) {
         this.resultTimeEnd = resultTimeEnd;
     }
-    
+
     public boolean hasResultTimeEnd() {
         return getResultTimeEnd() != null;
     }

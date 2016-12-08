@@ -33,11 +33,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.n52.series.db.da.ProcedureRepository;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.ogc.sos.Sos2Constants;
-import org.n52.sos.ogc.sos.SosConstants;
-import org.n52.sos.request.GetCapabilitiesRequest;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
+import org.n52.shetland.ogc.sos.Sos2Constants;
+import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.sos.util.CodingHelper;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.encode.exception.EncodingException;
 
 public class SOS2Connector extends AbstractSOSConnector {
 
@@ -55,12 +56,10 @@ public class SOS2Connector extends AbstractSOSConnector {
         System.out.println(response);
         Object temp = CodingHelper.decodeXmlObject(response);
         System.out.println(temp);
-      } catch (IOException ex) {
-        Logger.getLogger(SOS2Connector.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (UnsupportedOperationException ex) {
+      } catch (IOException | UnsupportedOperationException | DecodingException ex) {
         Logger.getLogger(SOS2Connector.class.getName()).log(Level.SEVERE, null, ex);
       }
-    } catch (OwsExceptionReport ex) {
+    } catch (EncodingException ex) {
       Logger.getLogger(ProcedureRepository.class.getName()).log(Level.SEVERE, null, ex);
     }
   }

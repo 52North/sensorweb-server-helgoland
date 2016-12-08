@@ -77,7 +77,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private Date lastValueAt;
 
     private UnitEntity unit;
-    
+
     private long observationCount = -1;
 
     public DatasetEntity() {
@@ -246,7 +246,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     public void setObservationCount(long count) {
         this.observationCount = count;
     }
-    
+
     public long getObservationCount() {
         return observationCount;
     }

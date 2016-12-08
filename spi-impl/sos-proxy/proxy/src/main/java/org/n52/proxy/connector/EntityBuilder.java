@@ -44,8 +44,8 @@ import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
 import org.n52.sos.util.JTSHelper;
+import org.n52.svalbard.decode.exception.DecodingException;
 
 public class EntityBuilder {
 
@@ -84,7 +84,7 @@ public class EntityBuilder {
         return category;
     }
 
-    public static FeatureEntity createFeature(String name, GeometryEntity geometry, ServiceEntity service) throws OwsExceptionReport {
+    public static FeatureEntity createFeature(String name, GeometryEntity geometry, ServiceEntity service) {
         FeatureEntity feature = new FeatureEntity();
         feature.setName(name);
         feature.setDomainId(name);
@@ -97,7 +97,7 @@ public class EntityBuilder {
         GeometryEntity geometry = new GeometryEntity();
         try {
             geometry.setGeometry(JTSHelper.createGeometryFromWKT("POINT (" + longitude + " " + latitude + ")", 4326));
-        } catch (OwsExceptionReport ex) {
+        } catch (DecodingException ex) {
             Logger.getLogger(EntityBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
         return geometry;

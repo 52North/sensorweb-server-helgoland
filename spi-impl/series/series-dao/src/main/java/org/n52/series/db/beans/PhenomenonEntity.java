@@ -31,10 +31,10 @@ package org.n52.series.db.beans;
 import java.util.Set;
 
 public class PhenomenonEntity extends DescribableEntity implements Childs<PhenomenonEntity>, Parents<PhenomenonEntity> {
-    
+
     private Set<PhenomenonEntity> childFeatures;
     private Set<PhenomenonEntity> parentFeatures;
-    
+
     public void setChilds(Set<PhenomenonEntity> childs) {
         this.childFeatures = childs;
     }

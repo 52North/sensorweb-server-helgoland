@@ -28,6 +28,7 @@
  */
 package org.n52.proxy.db.da;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -127,6 +128,22 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
+    public synchronized void insertRelatedFeature(Collection<RelatedFeatureEntity> relatedFeatures) {
+        Session session = getSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            for (RelatedFeatureEntity relatedFeature : relatedFeatures) {
+                insertRelatedFeature(relatedFeature, session);
+            }
+            session.flush();
+            transaction.commit();
+        } catch (HibernateException e) {
+            LOGGER.error("Error occured while saving dataset: ", e);
+        } finally {
+            returnSession(session);
+        }
+    }
+
     private ServiceEntity insertService(ServiceEntity service, Session session) {
         return new ProxyServiceDao(session).getOrInsertInstance(service);
     }
@@ -150,7 +167,7 @@ public class InsertRepository extends SessionAwareRepository {
     private OfferingEntity insertOffering(OfferingEntity offering, Session session) {
         return new ProxyOfferingDao(session).getOrInsertInstance(offering);
     }
-    
+
     private RelatedFeatureEntity insertRelatedFeature(RelatedFeatureEntity relatedFeature, Session session) {
         // insert related feature roles
         Set<RelatedFeatureRoleEntity> roles =
@@ -162,7 +179,7 @@ public class InsertRepository extends SessionAwareRepository {
         // insert offerings
         Set<OfferingEntity> offerings = new HashSet<OfferingEntity>(relatedFeature.getOfferings().size());
         for (OfferingEntity offering : relatedFeature.getOfferings()) {
-            offerings.add(insertOffering(offering, session));            
+            offerings.add(insertOffering(offering, session));
         }
         relatedFeature.setOfferings(offerings);
         return new ProxyRelatedFeatureDao(session).getOrInsertInstance(relatedFeature);
