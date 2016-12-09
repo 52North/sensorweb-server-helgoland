@@ -16,7 +16,6 @@
         <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
         <postgresql.version>9.4.1208.jre7</postgresql.version>
         <postgis.version>2.2.0</postgis.version>
-        <sos.version>5.0.0-SNAPSHOT</sos.version>
         <!--<hibernate.version>5.1.0.Final</hibernate.version>-->
     </properties>
     
@@ -33,7 +32,6 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>coding-sos-v20</artifactId>
-            <version>${sos.version}</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -46,7 +44,6 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>api</artifactId>
-            <version>${sos.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.reflections</groupId>
@@ -62,8 +59,17 @@
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>sqlite-config</artifactId>
-            <version>${sos.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.n52.svalbard</groupId>
+            <artifactId>svalbard</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.n52.shetland</groupId>
+            <artifactId>shetland</artifactId>
         </dependency>
         
         <dependency>

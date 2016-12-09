@@ -18,6 +18,11 @@
 
     <properties>
         <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
+        <sos.version>5.0.0-SNAPSHOT</sos.version>
+        <svalbard.version>1-SNAPSHOT</svalbard.version>
+        <shetland.version>1-SNAPSHOT</shetland.version>
+        <iceland.version>2-SNAPSHOT</iceland.version>
     </properties>
 
     <dependencyManagement>
@@ -37,6 +42,85 @@
                 <artifactId>proxy-mappings</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+	          <groupId>org.n52.sensorweb.sos</groupId>
+	          <artifactId>api</artifactId>
+	          <version>${sos.version}</version>
+	          <scope>runtime</scope>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>org.reflections</groupId>
+	                    <artifactId>reflections</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>org.javassist</groupId>
+	                    <artifactId>javassist</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+            <dependency>
+	            <groupId>org.n52.sensorweb.sos</groupId>
+	            <artifactId>coding-sos-v20</artifactId>
+	            <version>${sos.version}</version>
+	            <scope>runtime</scope>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>org.javassist</groupId>
+	                    <artifactId>javassist</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.n52.sensorweb.sos</groupId>
+	            <artifactId>api</artifactId>
+	            <version>${sos.version}</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>org.reflections</groupId>
+	                    <artifactId>reflections</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>org.javassist</groupId>
+	                    <artifactId>javassist</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.n52.sensorweb.sos</groupId>
+	            <artifactId>sqlite-config</artifactId>
+	            <version>${sos.version}</version>
+	            <scope>runtime</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.n52.svalbard</groupId>
+	            <artifactId>svalbard</artifactId>
+	            <version>${svalbard.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.n52.shetland</groupId>
+	            <artifactId>shetland</artifactId>
+	            <version>${shetland.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.n52.iceland</groupId>
+	            <artifactId>iceland</artifactId>
+	            <version>${iceland.version}</version>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>commons-logging</groupId>
+	                    <artifactId>commons-logging</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>org.elasticsearch</groupId>
+	                    <artifactId>elasticsearch</artifactId>
+	                </exclusion>
+	                <exclusion>
+	                    <groupId>com.google.guava</groupId>
+	                    <artifactId>guava</artifactId>
+	                </exclusion>
+	            </exclusions>
+	            <scope>runtime</scope>
+	        </dependency>
         </dependencies>
     </dependencyManagement>
 

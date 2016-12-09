@@ -13,7 +13,7 @@
     <modules>
         <module>series</module>
         <module>dwd</module>
-	<module>sos-proxy</module>
+		<module>sos-proxy</module>
     </modules>
 
     <build>
