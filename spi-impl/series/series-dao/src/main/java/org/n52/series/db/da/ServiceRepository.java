@@ -193,7 +193,7 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
         try {
             ParameterCount quantities = new ServiceOutput.ParameterCount();
             // #procedures == #offerings
-            quantities.setOfferingsSize(counter.countProcedures(query));
+            quantities.setOfferingsSize(counter.countOfferings(query));
             quantities.setProceduresSize(counter.countProcedures(query));
             quantities.setCategoriesSize(counter.countCategories(query));
             quantities.setPhenomenaSize(counter.countPhenomena(query));
