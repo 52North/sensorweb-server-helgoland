@@ -14,11 +14,11 @@
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
         <set name="childs" table="offeringhierarchy" inverse="false" fetch="select" >
             <key column="parentOfferingId" not-null="true" />
-            <many-to-many entity-name="ProxyOfferingEntity" column="childOfferingId" not-null="true" foreign-key="offeringChildFk"/>
+            <many-to-many entity-name="ProxyOfferingEntity" column="childOfferingId" foreign-key="offeringChildFk"/>
         </set>
         <set name="parents" table="offeringhierarchy" inverse="false" fetch="select">
             <key column="childOfferingId" not-null="true" />
-            <many-to-many entity-name="ProxyOfferingEntity" column="parentOfferingId" not-null="true" foreign-key="offeringParentFk"/>
+            <many-to-many entity-name="ProxyOfferingEntity" column="parentOfferingId" foreign-key="offeringParentFk"/>
         </set>
         <set name="observationTypes" table="offeringobservationtypes" inverse="false" fetch="select">
             <key column="offeringId" not-null="true"/>

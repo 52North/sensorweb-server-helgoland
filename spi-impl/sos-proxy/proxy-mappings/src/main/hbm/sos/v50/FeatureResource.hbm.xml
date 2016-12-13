@@ -22,11 +22,11 @@
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
         <set name="childs" table="featurehierarchy" inverse="false" fetch="select">
             <key column="parentFeatureId" not-null="true"/>
-            <many-to-many entity-name="FeatureEntity" column="childFeatureId" not-null="true" foreign-key="featureOfInterestChildFk"/>
+            <many-to-many entity-name="FeatureEntity" column="childFeatureId" foreign-key="featureOfInterestChildFk"/>
         </set>
         <set name="parents" table="featurehierarchy" inverse="false" fetch="select">
             <key column="childFeatureId" not-null="true"/>
-            <many-to-many entity-name="FeatureEntity" column="parentFeatureId" not-null="true" foreign-key="featureOfInterestParentFk"/>
+            <many-to-many entity-name="FeatureEntity" column="parentFeatureId" foreign-key="featureOfInterestParentFk"/>
         </set>
     </class>
 </hibernate-mapping>
