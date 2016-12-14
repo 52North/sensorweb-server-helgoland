@@ -19,11 +19,11 @@
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
         <set name="childs" table="procedurehierarchy" inverse="false" fetch="select">
             <key column="parentProcedureId" not-null="true"/>
-            <many-to-many entity-name="ProcedureEntity" column="childProcedureId" foreign-key="procedureChildFk"/>
+            <many-to-many entity-name="org.n52.series.db.beans.ProcedureEntity" column="childProcedureId" foreign-key="procedureChildFk"/>
         </set>
         <set name="parents" table="procedurehierarchy" inverse="false" fetch="select">
             <key column="childProcedureId" not-null="true"/>
-            <many-to-many entity-name="ProcedureEntity" column="parentProcedureId" foreign-key="procedureParentFk"/>
+            <many-to-many entity-name="org.n52.series.db.beans.ProcedureEntity" column="parentProcedureId" foreign-key="procedureParentFk"/>
         </set>
         <property column="proceduredescriptionformat" name="procedureDescriptionFormat" type="string"/>
     </class>

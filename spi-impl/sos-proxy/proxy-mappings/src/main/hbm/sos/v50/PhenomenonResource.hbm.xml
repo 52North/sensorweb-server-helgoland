@@ -14,11 +14,11 @@
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
         <set name="childs" table="phenomenonhierarchy" inverse="false" fetch="select">
             <key column="parentPhenomenonId" not-null="true"/>
-            <many-to-many entity-name="PhenomenonEntity" column="childPhenomenonId" foreign-key="phenomenonChildFk"/>
+            <many-to-many entity-name="org.n52.series.db.beans.PhenomenonEntity" column="childPhenomenonId" foreign-key="phenomenonChildFk"/>
         </set>
         <set name="parents" table="phenomenonhierarchy" inverse="false" fetch="select">
             <key column="childPhenomenonId" not-null="true"/>
-            <many-to-many entity-name="PhenomenonEntity" column="parentPhenomenonId" foreign-key="phenomenonParentFk"/>
+            <many-to-many entity-name="org.n52.series.db.beans.PhenomenonEntity" column="parentPhenomenonId" foreign-key="phenomenonParentFk"/>
         </set>
     </class>
 </hibernate-mapping>

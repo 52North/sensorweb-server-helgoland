@@ -10,11 +10,11 @@
         </id>
         <discriminator column="seriesType" force="true" type="string"/>
         <many-to-one class="CategoryEntity" column="categoryid" name="category" />
-        <many-to-one class="ProxyProcedureEntity" column="procedureid" name="procedure"/>
-        <many-to-one class="ProxyOfferingEntity" column="offeringid" name="offering"/>
+        <many-to-one class="ProcedureEntity" column="procedureid" name="procedure"/>
+        <many-to-one class="OfferingEntity" column="offeringid" name="offering"/>
         <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon"/>
-        <many-to-one class="ProxyFeatureEntity" column="featureofinterestid" name="feature"/>
-        <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
+        <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature"/>
+        <many-to-one class="PlatformEntity" column="platformId" insert="false" name="platform" update="false" foreign-key="platformFk"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
         <property column="seriesType" name="datasetType" type="string" insert="false" update="false"/>
