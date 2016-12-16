@@ -110,7 +110,7 @@ public class InsertRepository extends SessionAwareRepository {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            insertOffering(offferingEntity, session);
+            OfferingEntity insertedOffering = insertOffering(offferingEntity, session);
             session.flush();
             transaction.commit();
         } finally {
