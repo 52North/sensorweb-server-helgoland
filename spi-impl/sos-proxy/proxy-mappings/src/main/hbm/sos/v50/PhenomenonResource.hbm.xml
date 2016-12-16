@@ -12,11 +12,11 @@
         <property column="name" name="name" type="string"/>
         <property column="description"  name="description" type="string"/>
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
-        <set name="childs" table="phenomenonhierarchy" inverse="false" fetch="select">
+        <set name="childs" table="phenomenonhierarchy" inverse="false" fetch="select" cascade="all">
             <key column="parentPhenomenonId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.PhenomenonEntity" column="childPhenomenonId" foreign-key="phenomenonChildFk"/>
         </set>
-        <set name="parents" table="phenomenonhierarchy" inverse="false" fetch="select">
+        <set name="parents" table="phenomenonhierarchy" inverse="false" fetch="select" cascade="all">
             <key column="childPhenomenonId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.PhenomenonEntity" column="parentPhenomenonId" foreign-key="phenomenonParentFk"/>
         </set>

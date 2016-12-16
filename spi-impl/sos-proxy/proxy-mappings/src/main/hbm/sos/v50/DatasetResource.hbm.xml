@@ -9,11 +9,11 @@
             </generator>
         </id>
         <discriminator column="seriesType" force="true" type="string"/>
-        <many-to-one class="CategoryEntity" column="categoryid" name="category" />
-        <many-to-one class="ProcedureEntity" column="procedureid" name="procedure"/>
-        <many-to-one class="OfferingEntity" column="offeringid" name="offering"/>
-        <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon"/>
-        <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature"/>
+        <many-to-one class="CategoryEntity" column="categoryid" name="category" cascade="all" unique-key="datasetIdentifier"/>
+        <many-to-one class="ProcedureEntity" column="procedureid" name="procedure" cascade="all" unique-key="datasetIdentifier"/>
+        <many-to-one class="OfferingEntity" column="offeringid" name="offering" cascade="all" unique-key="datasetIdentifier"/>
+        <many-to-one class="PhenomenonEntity" column="observablepropertyid" name="phenomenon" cascade="all" unique-key="datasetIdentifier"/>
+        <many-to-one class="FeatureEntity" column="featureofinterestid" name="feature" cascade="all" unique-key="datasetIdentifier"/>
         <many-to-one class="PlatformEntity" column="platformId" insert="false" name="platform" update="false" foreign-key="platformFk"/>
         <property column="published" name="published" type="org.hibernate.type.TrueFalseType"/>
         <property column="deleted" name="deleted" type="org.hibernate.type.TrueFalseType"/>
@@ -22,7 +22,7 @@
         <property column="identifier" name="domainId" type="string"/>
         <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
         <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
-        <many-to-one class="ServiceEntity" column="service" name="service"/>
+        <many-to-one class="ServiceEntity" column="service" name="service" unique-key="datasetIdentifier"/>
         <!-- only for proxy -->
         <property column="observationcount" name="observationCount" type="long"/>
 

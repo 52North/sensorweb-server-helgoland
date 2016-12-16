@@ -106,6 +106,19 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
+    public void insertOffering(OfferingEntity offferingEntity) {
+        Session session = getSession();
+        try {
+            Transaction transaction = session.beginTransaction();
+            insertOffering(offferingEntity, session);
+            session.flush();
+            transaction.commit();
+        } finally {
+            returnSession(session);
+        }
+        
+    }
+
     public synchronized void insertDataset(DatasetEntity dataset) {
         Session session = getSession();
         try {

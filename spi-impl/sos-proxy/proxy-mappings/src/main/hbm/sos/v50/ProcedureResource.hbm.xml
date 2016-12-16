@@ -9,19 +9,19 @@
                 <param name="sequence">procedureId_seq</param>
             </generator>
         </id>
-        <property column="identifier" name="domainId" type="string" not-null="true"/>
+        <property column="identifier" name="domainId" type="string" not-null="true" unique-key="procIdentifier"/>
         <property column="name" name="name" type="string"/>
         <property column="description"  name="description" type="string"/>
         <!--<property column="name" name="description" type="string"/>-->
         <property column="reference" name="reference" type="org.hibernate.type.TrueFalseType"/>
         <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
         <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
-        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
-        <set name="childs" table="procedurehierarchy" inverse="false" fetch="select">
+        <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="procIdentifier"/>
+        <set name="childs" table="procedurehierarchy" inverse="false" fetch="select" cascade="all">
             <key column="parentProcedureId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.ProcedureEntity" column="childProcedureId" foreign-key="procedureChildFk"/>
         </set>
-        <set name="parents" table="procedurehierarchy" inverse="false" fetch="select">
+        <set name="parents" table="procedurehierarchy" inverse="false" fetch="select" cascade="all">
             <key column="childProcedureId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.ProcedureEntity" column="parentProcedureId" foreign-key="procedureParentFk"/>
         </set>

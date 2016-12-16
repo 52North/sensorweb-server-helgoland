@@ -9,7 +9,7 @@
                 <param name="sequence">serviceId_seq</param>
             </generator>
         </id>
-        <property column="name" name="name" type="string"/>
+        <property column="name" name="name" type="string" unique="true"/>
         <property column="description" name="description" type="string"/>
         <property column="url" name="url" type="string"/>
         <property column="type" name="type" type="string"/>

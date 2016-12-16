@@ -8,23 +8,23 @@
                 <param name="sequence">offeringId_seq</param>
             </generator>
         </id>
-        <property column="identifier" name="domainId" type="string" not-null="true"/>
+        <property column="identifier" name="domainId" type="string" not-null="true" unique-key="offIdentifier"/>
         <property column="name" name="name" type="string"/>
         <property column="description" name="description" type="string"/>
-        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
-        <set name="childs" table="offeringhierarchy" inverse="false" fetch="select" >
+        <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="offIdentifier"/>
+        <set name="childs" table="offeringhierarchy" inverse="false" fetch="select" cascade="all">
             <key column="parentOfferingId" not-null="true" />
             <many-to-many entity-name="org.n52.series.db.beans.OfferingEntity" column="childOfferingId" foreign-key="offeringChildFk"/>
         </set>
-        <set name="parents" table="offeringhierarchy" inverse="false" fetch="select">
+        <set name="parents" table="offeringhierarchy" inverse="false" fetch="select" cascade="all">
             <key column="childOfferingId" not-null="true" />
             <many-to-many entity-name="org.n52.series.db.beans.OfferingEntity" column="parentOfferingId" foreign-key="offeringParentFk"/>
         </set>
-        <set name="observationTypes" table="offeringobservationtypes" inverse="false" fetch="select">
+        <set name="observationTypes" table="offeringobservationtypes" inverse="false" fetch="select" cascade="all">
             <key column="offeringId" not-null="true"/>
             <element column="observationType" not-null="true" type="string"/>
         </set>
-        <set name="featureTypes" table="offeringfeaturetypes" inverse="false" fetch="select">
+        <set name="featureTypes" table="offeringfeaturetypes" inverse="false" fetch="select" cascade="all">
             <key column="offeringId" not-null="true"/>
             <element column="featureType" not-null="true" type="string"/>
         </set>

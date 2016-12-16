@@ -9,7 +9,7 @@
             </generator>
         </id>
 
-        <property column="identifier" name="domainId" type="string" not-null="true"/>
+        <property column="identifier" name="domainId" type="string" not-null="true" unique-key="featIdentifier"/>
         <property column="name" name="name" type="string"/>
         <property column="description" name="description" type="string"/>
         <component class="GeometryEntity" name="geometryEntity">
@@ -19,12 +19,12 @@
             -->
             <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
-        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
-        <set name="childs" table="featurehierarchy" inverse="false" fetch="select">
+        <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="featIdentifier"/>
+        <set name="childs" table="featurehierarchy" inverse="false" fetch="select" cascade="">
             <key column="parentFeatureId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.FeatureEntity" column="childFeatureId" foreign-key="featureOfInterestChildFk"/>
         </set>
-        <set name="parents" table="featurehierarchy" inverse="false" fetch="select">
+        <set name="parents" table="featurehierarchy" inverse="false" fetch="select" cascade="all">
             <key column="childFeatureId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.FeatureEntity" column="parentFeatureId" foreign-key="featureOfInterestParentFk"/>
         </set>

@@ -13,13 +13,13 @@
             </generator>
         </id>
 
-        <many-to-one name="feature" class="org.n52.series.db.beans.FeatureEntity" fetch="select" lazy="no-proxy" foreign-key="relatedFeatureFeatureFk">
+        <many-to-one name="feature" class="org.n52.series.db.beans.FeatureEntity" fetch="select" lazy="no-proxy" foreign-key="relatedFeatureFeatureFk" cascade="all">
             <column name="featureId" not-null="true">
             	<comment>Foreign Key (FK) to the related featureOfInterest. Contains "featureOfInterest".featureOfInterestid</comment>
             </column>
         </many-to-one>
         <many-to-one class="org.n52.series.db.beans.ServiceEntity" column="serviceid" name="service"/>
-        <set name="relatedFeatureRoles" table="relatedFeatureHasRole" inverse="false" fetch="select" lazy="false">
+        <set name="relatedFeatureRoles" table="relatedFeatureHasRole" inverse="false" fetch="select" lazy="false" cascade="all">
         	<comment>Relation table to store relatedFeatures and their associated relatedFeatureRoles. Mapping file: mapping/transactionl/RelatedFeature.hbm.xml</comment>
             <key>
                 <column name="relatedFeatureId" not-null="true">
