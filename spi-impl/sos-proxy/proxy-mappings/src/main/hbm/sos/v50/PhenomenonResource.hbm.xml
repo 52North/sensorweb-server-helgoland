@@ -8,10 +8,10 @@
                 <param name="sequence">observablepropertyId_seq</param>
             </generator>
         </id>
-        <property column="identifier" name="domainId" type="string" not-null="true"/>
+        <property column="identifier" name="domainId" type="string" not-null="true" unique-key="phenIdentifier"/>
         <property column="name" name="name" type="string"/>
         <property column="description"  name="description" type="string"/>
-        <many-to-one class="ServiceEntity" column="serviceid" name="service"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="phenIdentifier"/>
         <set name="childs" table="phenomenonhierarchy" inverse="false" fetch="select" cascade="all">
             <key column="parentPhenomenonId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.PhenomenonEntity" column="childPhenomenonId" foreign-key="phenomenonChildFk"/>
