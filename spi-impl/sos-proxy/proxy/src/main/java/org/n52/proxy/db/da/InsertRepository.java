@@ -116,7 +116,7 @@ public class InsertRepository extends SessionAwareRepository {
         } finally {
             returnSession(session);
         }
-        
+
     }
 
     public synchronized void insertDataset(DatasetEntity dataset) {

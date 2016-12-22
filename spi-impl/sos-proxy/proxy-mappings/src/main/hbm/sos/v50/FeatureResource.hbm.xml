@@ -20,7 +20,7 @@
             <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
         <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="featIdentifier"/>
-        <set name="childs" table="featurehierarchy" inverse="false" fetch="select" cascade="">
+        <set name="childs" table="featurehierarchy" inverse="false" fetch="select" cascade="all">
             <key column="parentFeatureId" not-null="true"/>
             <many-to-many entity-name="org.n52.series.db.beans.FeatureEntity" column="childFeatureId" foreign-key="featureOfInterestChildFk"/>
         </set>
