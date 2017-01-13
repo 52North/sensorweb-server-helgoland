@@ -1,8 +1,8 @@
 # 52n Series REST API
 
-### Thin Web binding API to access timeseries data. 
-
 ## Description
+
+### Thin Web binding API to access timeseries data. 
 
 The Series REST API provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
   * prerendering of series data, 
