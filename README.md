@@ -4,7 +4,7 @@
 
 **Thin Web binding API to access timeseries data.**
 
-_The Series REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to serve series data via the_
+_The Series REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to make series data available via the API_
 
 The Series REST API provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
   * prerendering of series data, 
@@ -16,22 +16,25 @@ Output formats for *stationary*, *mobile*, *insitu* and *remote* sensors are ava
 
 Next to the Web API, a Service Provider Interface (SPI) defines the underlying interface for data providing backends. With this, the API is flexible enough to be put ontop of arbitrary data stores. Its modular design enables a seamless integration into existing Web applications.
 
-Existing SPI implementations:
-
-- SOS Proxy: Allows to aggregate multiple OGC SOS instances under one API
-- Direct database access: Allows to define Hibernate mappings to serve data directly from a database
-
 The following main frameworks are used to provide this API:
 
 - [Spring MVC](https://spring.org/) 
 - [JFreeChart](http://www.jfree.org/jfreechart/) 
 
+
+### Existing SPI implementations:
+
+- SOS Proxy: Allows to aggregate multiple OGC SOS instances under one API
+- Direct database access: Allows to define Hibernate mappings to serve data directly from a database
+
 ## License
 
 The client is published under the [GNU General Public License v2 (GPLv2)](http://www.gnu.org/licenses/gpl-2.0.html).
 
-## Demo
+## Changelog
+TBD, for now refer to https://github.com/52North/series-rest-api/pulls?q=is%3Apr+is%3Aclosed
 
+## Demo
 * The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
 * The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
 
@@ -44,21 +47,24 @@ making use of GitFlow. Altlassian provides [a good overview]
 (https://www.atlassian.com/de/git/workflows#!workflow-gitflow). of the 
 most common workflows.
 
-# Getting started and configuration
+## Contact
+Henning Bredel (h.bredel@52north.org)
 
-## Client development
+## Quick Start
+
+### Client development
 The [Web API documentation](http://52north.github.io/series-rest-api) gives a detailed overview on how to access the data provided by the API. Available I/O functions are described there, too, like generelization, chart rendering/overlay, etc.
 
 ~~The API documentation is in the 52°North wiki:
 https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
 
-## API Configuration
+### API Configuration
 How to provide a custom SPI implementation is beyond this section. See (...TBD...) to get detailed 
 information on this.
 
-### Logging
+#### Logging
 
-### Generalizer
+#### Generalizer
 In file `WEB-INF/spring/config-general.json` add 
 
 ```
@@ -70,7 +76,7 @@ In file `WEB-INF/spring/config-general.json` add
 
 The parameters are described on the official [Web API documentation](http://52north.github.io/series-rest-api).
 
-### Prerendering
+#### Prerendering
 Prerendering is supported for measurement data.
 
 Prerendering configuration is a task which can be run regularly by a scheduler. Configuration is done as a 
@@ -83,12 +89,10 @@ overrides a phenomenon style of a specific series) Each section can override par
 
 Only those series are prerendered having a match either in `phenomenonStyles` or `seriesStyles`. 
 
-### Date formatting
+#### Date formatting
 In file `WEB-INF/spring/config-general.json` you can set `timeformat` Parameter. Please checkout the 
 [Java SimpleDateFormat rules](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) how the 
 format has to look like.
-
-### Extra information
 
 #### Rendering Hints
 TBD
@@ -97,4 +101,6 @@ TBD
 TBD
 
 #### Metadata from a Database
+TBD
+
 
