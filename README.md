@@ -27,16 +27,17 @@ The following main frameworks are used to provide this API:
 - SOS Proxy: Allows to aggregate multiple OGC SOS instances under one API
 - Direct database access: Allows to define Hibernate mappings to serve data directly from a database
 
+## References
+* The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
+* The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
+* The [52°North Helgoland Web Client](https://githum.com/52North/helgoland) consumes one or multiple instances of the REST API. A demo can be found under the http://sensorweb.demo.52north.org/client/#/
+
 ## License
 
 The client is published under the [GNU General Public License v2 (GPLv2)](http://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Changelog
 TBD, for now refer to https://github.com/52North/series-rest-api/pulls?q=is%3Apr+is%3Aclosed
-
-## Demo
-* The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
-* The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
 
 ## Contributing
 We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 
