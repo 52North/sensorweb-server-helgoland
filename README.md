@@ -21,8 +21,8 @@ Existing SPI implementations:
 
 The following main frameworks are used to provide this API:
 
-- [Spring MVC](https://angularjs.org/) 
-- [JFreeChart](http://leafletjs.com/) 
+- [Spring MVC](https://spring.org/) 
+- [JFreeChart](http://www.jfree.org/jfreechart/) 
 
 ## License
 
