@@ -27,6 +27,10 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
+import static org.hibernate.criterion.Restrictions.eqOrIsNull;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -40,6 +44,7 @@ import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
+import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
@@ -50,12 +55,22 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(FeatureEntity.class);
+        Criteria criteria = getDefaultCriteria("f");
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
+    }
+
+    private Criteria getDefaultCriteria(String alias) {
+        alias = alias != null ? alias : "feature";
+        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
+                .add(eqOrIsNull("published", Boolean.TRUE));
+        DetachedCriteria projection = filter.setProjection(projectionList().add(property(alias)));
+        Criteria criteria = session.createCriteria(FeatureEntity.class, alias)
+                .add(Subqueries.propertyIn(alias + ".pkid", projection));
+        return criteria;
     }
     
     @Override
@@ -65,7 +80,10 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (FeatureEntity) session.get(FeatureEntity.class, key);
+        return (FeatureEntity) getDefaultCriteria("feature")
+                .add(Restrictions.eq("feature.pkid", key))
+                .uniqueResult();
+//        return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
     
     @Override
@@ -76,13 +94,13 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(FeatureEntity.class, "f");
+        Criteria criteria = getDefaultCriteria("feature");
         if (hasTranslation(parameters, I18nFeatureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
         
         DetachedCriteria filter = parameters.createDetachedFilterCriteria("feature");
-        criteria.add(Subqueries.propertyIn("f.pkid", filter));
+        criteria.add(Subqueries.propertyIn("feature.pkid", filter));
                 
         parameters.addSpatialFilterTo(criteria, parameters);
         parameters.addPagingTo(criteria);
@@ -91,8 +109,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(FeatureEntity.class)
+        Criteria criteria = getDefaultCriteria("f")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
