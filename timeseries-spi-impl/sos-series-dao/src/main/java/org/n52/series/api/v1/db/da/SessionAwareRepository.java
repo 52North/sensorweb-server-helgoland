@@ -183,23 +183,23 @@ public abstract class SessionAwareRepository {
         return serviceOutput;
     }
     
-	protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
-		if (isi18nNameAvailable(entity, locale)) {
-			return entity.getNameI18n(locale);
-		} else if (isNameAvailable(entity)) {
-			return entity.getName();
-		} else {
-			return entity.getDomainId();
-		}
-	}
+    protected String getLabelFrom(DescribableEntity<?> entity, String locale) {
+        if (isi18nNameAvailable(entity, locale)) {
+            return entity.getNameI18n(locale);
+        } else if (isNameAvailable(entity)) {
+            return entity.getName();
+        } else {
+            return entity.getDomainId();
+        }
+    }
 
-	private boolean isNameAvailable(DescribableEntity<?> entity) {
-		return entity.getName() != null && !entity.getName().isEmpty();
-	}
+    private boolean isNameAvailable(DescribableEntity<?> entity) {
+        return entity.getName() != null && !entity.getName().isEmpty();
+    }
 
-	private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
-		return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
-	}
+    private boolean isi18nNameAvailable(DescribableEntity<?> entity, String locale) {
+        return entity.getNameI18n(locale) != null && !entity.getNameI18n(locale).isEmpty();
+    }
 
     private PhenomenonOutput getCondensedPhenomenon(DescribableEntity<I18nPhenomenonEntity> entity, DbQuery parameters) {
         PhenomenonOutput outputvalue = new PhenomenonOutput();
