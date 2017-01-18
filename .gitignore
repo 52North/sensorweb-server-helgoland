@@ -5,3 +5,4 @@ target
 .classpath
 gh-pages
 /scratchpad.txt
+/timeseries-webapp/nbactions.xml
