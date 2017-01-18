@@ -43,21 +43,6 @@
         
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
-            <artifactId>api</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.reflections</groupId>
-                    <artifactId>reflections</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>sqlite-config</artifactId>
             <scope>runtime</scope>
         </dependency>

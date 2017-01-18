@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,15 +32,22 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.series.db.da.ProcedureRepository;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosConstants;
-import org.n52.sos.util.CodingHelper;
+import org.n52.svalbard.decode.DecoderRepository;
 import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.encode.EncoderRepository;
 import org.n52.svalbard.encode.exception.EncodingException;
+import org.n52.svalbard.util.CodingHelper;
+import org.n52.svalbard.util.XmlHelper;
 
 public class SOS2Connector extends AbstractSOSConnector {
+
+  private EncoderRepository encoderRepository;
+  private DecoderRepository decoderRepository;
 
   public SOS2Connector(String serviceURI) {
     super(serviceURI);
@@ -50,11 +57,12 @@ public class SOS2Connector extends AbstractSOSConnector {
     GetCapabilitiesRequest req = new GetCapabilitiesRequest();
     req.setService(SosConstants.SOS);
     try {
-      String request = CodingHelper.encodeObjectToXmlText(Sos2Constants.NS_SOS_20, req);
+      String request = ((XmlObject)encoderRepository.getEncoder(CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, req)).encode(req)).xmlText();
       try {
         String response = IOUtils.toString(this.sendRequest(request).getEntity().getContent());
         System.out.println(response);
-        Object temp = CodingHelper.decodeXmlObject(response);
+        XmlObject parseXmlString = XmlHelper.parseXmlString(response);
+        Object temp = decoderRepository.getDecoder(CodingHelper.getDecoderKey(parseXmlString)).decode(parseXmlString);
         System.out.println(temp);
       } catch (IOException | UnsupportedOperationException | DecodingException ex) {
         Logger.getLogger(SOS2Connector.class.getName()).log(Level.SEVERE, null, ex);
