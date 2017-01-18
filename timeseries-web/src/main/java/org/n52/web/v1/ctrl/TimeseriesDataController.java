@@ -234,6 +234,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
+        response.setContentType("application/pdf");
         handleBinaryResponse(response, parameters, renderer);
 
     }
@@ -255,6 +256,7 @@ public class TimeseriesDataController extends BaseController {
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
+        response.setContentType("application/pdf");
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -310,6 +312,7 @@ public class TimeseriesDataController extends BaseController {
         RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
+        response.setContentType("image/png");
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -333,6 +336,8 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
+
+        response.setContentType("image/png");
         handleBinaryResponse(response, parameters, renderer);
     }
 
@@ -347,6 +352,8 @@ public class TimeseriesDataController extends BaseController {
         if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
+
+        response.setContentType("image/png");
         preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
     }
 
