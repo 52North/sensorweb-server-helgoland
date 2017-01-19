@@ -31,6 +31,9 @@ package org.n52.proxy.connector;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.series.db.da.ProcedureRepository;
@@ -51,6 +54,16 @@ public class SOS2Connector extends AbstractSOSConnector {
 
   public SOS2Connector(String serviceURI) {
     super(serviceURI);
+  }
+  
+  @Inject
+  public void setDecoderRepository(DecoderRepository decoderRepository) {
+      this.decoderRepository = decoderRepository;
+  }
+  
+  @Inject
+  public void setEncoderRepository(EncoderRepository encoderRepository) {
+      this.encoderRepository = encoderRepository;
   }
 
   public void fetchCapabilities() {
