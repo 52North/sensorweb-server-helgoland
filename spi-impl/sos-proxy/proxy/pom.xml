@@ -28,7 +28,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>series-dao</artifactId>
         </dependency>
-        
+        <!-- 
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>coding-sos-v20</artifactId>
@@ -46,7 +46,7 @@
             <artifactId>sqlite-config</artifactId>
             <scope>runtime</scope>
         </dependency>
-        
+         -->
         <dependency>
             <groupId>org.n52.svalbard</groupId>
             <artifactId>svalbard</artifactId>
@@ -55,6 +55,11 @@
         <dependency>
             <groupId>org.n52.shetland</groupId>
             <artifactId>shetland</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
         </dependency>
         
         <dependency>

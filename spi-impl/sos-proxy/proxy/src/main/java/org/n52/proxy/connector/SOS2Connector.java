@@ -55,12 +55,12 @@ public class SOS2Connector extends AbstractSOSConnector {
   public SOS2Connector(String serviceURI) {
     super(serviceURI);
   }
-  
+
   @Inject
   public void setDecoderRepository(DecoderRepository decoderRepository) {
       this.decoderRepository = decoderRepository;
   }
-  
+
   @Inject
   public void setEncoderRepository(EncoderRepository encoderRepository) {
       this.encoderRepository = encoderRepository;
