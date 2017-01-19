@@ -13,12 +13,8 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-<!--<<<<<<< HEAD-->
         <sos.version>4.4.0-SNAPSHOT</sos.version>
-<!--=======-->
-        <!--<sos.version>4.3.7</sos.version>-->
         <hibernate.spatial.version>4.3.1-52N</hibernate.spatial.version>
-<!-->>>>>>> origin/develop-->
     </properties>
     
     <dependencies>
@@ -43,6 +39,20 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
             <version>${hibernate.spatial.version}</version>
+             <exclusions>
+                <exclusion>
+                    <groupId>org.postgis</groupId>
+                    <artifactId>postgis-jdbc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                </exclusion>
+            </exclusions>
             <!-- satisfy enforcer rule via 'runtime' scope -->
             <scope>runtime</scope>
         </dependency>

@@ -26,39 +26,31 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.proxy.db.dao;
 
-import java.util.Set;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.dao.DataDao;
 
-public class PhenomenonEntity extends DescribableEntity implements Childs<PhenomenonEntity>, Parents<PhenomenonEntity> {
+public class ProxyDataDao<T extends DataEntity> extends DataDao<T> {
 
-    private Set<PhenomenonEntity> childFeatures;
-    private Set<PhenomenonEntity> parentFeatures;
-
-    public void setChilds(Set<PhenomenonEntity> childs) {
-        this.childFeatures = childs;
+    public ProxyDataDao(Session session) {
+        super(session);
     }
 
-    public Set<PhenomenonEntity> getChilds() {
-        return childFeatures;
+    public ProxyDataDao(Session session, Class<T> clazz) {
+        super(session, clazz);
     }
 
-    @Override
-    public void setParents(Set<PhenomenonEntity> parents) {
-        this.parentFeatures = parents;
+    public Long getObservationCount(DatasetEntity<?> entity) {
+        return (Long) getDefaultCriteria()
+                .add(Restrictions.eq(DataEntity.SERIES_PKID, entity.getPkid()))
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
     }
 
-    @Override
-    public Set<PhenomenonEntity> getParents() {
-        return parentFeatures;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName()).append(" [");
-        sb.append(" Domain id: ").append(getDomainId());
-        sb.append(", service: ").append(getService());
-        return sb.append(" ]").toString();
-    }
 }

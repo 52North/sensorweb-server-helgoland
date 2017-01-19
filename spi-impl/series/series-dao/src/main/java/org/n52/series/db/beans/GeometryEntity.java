@@ -73,8 +73,9 @@ public class GeometryEntity {
         return getGeometry(null);
     }
 
-    public void setGeometry(Geometry geometry) {
+    public GeometryEntity setGeometry(Geometry geometry) {
         this.geometry = geometry;
+        return this;
     }
 
     /**

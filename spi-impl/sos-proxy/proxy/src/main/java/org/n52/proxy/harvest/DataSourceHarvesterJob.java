@@ -29,33 +29,36 @@
 package org.n52.proxy.harvest;
 
 import java.util.Date;
-import java.util.logging.Level;
+
+import org.n52.io.task.ScheduledJob;
 import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.proxy.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.proxy.connector.EntityBuilder;
-import org.n52.io.task.ScheduledJob;
+import org.n52.proxy.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.proxy.db.da.InsertRepository;
-import org.n52.series.db.beans.OfferingEntity;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
+import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob {
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
+public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterJob.class);
 
@@ -92,7 +95,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        try {
+//        try {
             LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
             JobDetail jobDetail = context.getJobDetail();
@@ -122,9 +125,9 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
             insertRepository.cleanUp(service);
 
             LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
-        } catch (OwsExceptionReport ex) {
-            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        } catch (OwsExceptionReport ex) {
+//            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public void init(DataSourceConfig config) {

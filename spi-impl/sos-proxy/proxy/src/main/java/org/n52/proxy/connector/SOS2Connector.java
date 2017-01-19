@@ -31,36 +31,56 @@ package org.n52.proxy.connector;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.inject.Inject;
+
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.series.db.da.ProcedureRepository;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.ogc.sos.Sos2Constants;
-import org.n52.sos.ogc.sos.SosConstants;
-import org.n52.sos.request.GetCapabilitiesRequest;
-import org.n52.sos.util.CodingHelper;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
+import org.n52.shetland.ogc.sos.Sos2Constants;
+import org.n52.shetland.ogc.sos.SosConstants;
+import org.n52.svalbard.decode.DecoderRepository;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.encode.EncoderRepository;
+import org.n52.svalbard.encode.exception.EncodingException;
+import org.n52.svalbard.util.CodingHelper;
+import org.n52.svalbard.util.XmlHelper;
 
 public class SOS2Connector extends AbstractSOSConnector {
 
+  private EncoderRepository encoderRepository;
+  private DecoderRepository decoderRepository;
+
   public SOS2Connector(String serviceURI) {
     super(serviceURI);
+  }
+
+  @Inject
+  public void setDecoderRepository(DecoderRepository decoderRepository) {
+      this.decoderRepository = decoderRepository;
+  }
+
+  @Inject
+  public void setEncoderRepository(EncoderRepository encoderRepository) {
+      this.encoderRepository = encoderRepository;
   }
 
   public void fetchCapabilities() {
     GetCapabilitiesRequest req = new GetCapabilitiesRequest();
     req.setService(SosConstants.SOS);
     try {
-      String request = CodingHelper.encodeObjectToXmlText(Sos2Constants.NS_SOS_20, req);
+      String request = ((XmlObject)encoderRepository.getEncoder(CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, req)).encode(req)).xmlText();
       try {
         String response = IOUtils.toString(this.sendRequest(request).getEntity().getContent());
         System.out.println(response);
-        Object temp = CodingHelper.decodeXmlObject(response);
+        XmlObject parseXmlString = XmlHelper.parseXmlString(response);
+        Object temp = decoderRepository.getDecoder(CodingHelper.getDecoderKey(parseXmlString)).decode(parseXmlString);
         System.out.println(temp);
-      } catch (IOException ex) {
-        Logger.getLogger(SOS2Connector.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (UnsupportedOperationException ex) {
+      } catch (IOException | UnsupportedOperationException | DecodingException ex) {
         Logger.getLogger(SOS2Connector.class.getName()).log(Level.SEVERE, null, ex);
       }
-    } catch (OwsExceptionReport ex) {
+    } catch (EncodingException ex) {
       Logger.getLogger(ProcedureRepository.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
