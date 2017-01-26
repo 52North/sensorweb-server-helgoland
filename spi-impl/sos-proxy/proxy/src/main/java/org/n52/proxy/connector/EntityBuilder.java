@@ -93,10 +93,10 @@ public class EntityBuilder {
         return feature;
     }
 
-    public static GeometryEntity createGeometry(double latitude, double longitude) {
+    public static GeometryEntity createGeometry(double latitude, double longitude, int srid) {
         GeometryEntity geometry = new GeometryEntity();
         try {
-            geometry.setGeometry(JTSHelper.createGeometryFromWKT("POINT (" + longitude + " " + latitude + ")", 4326));
+            geometry.setGeometry(JTSHelper.createGeometryFromWKT("POINT (" + longitude + " " + latitude + ")", srid));
         } catch (DecodingException ex) {
             Logger.getLogger(EntityBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }

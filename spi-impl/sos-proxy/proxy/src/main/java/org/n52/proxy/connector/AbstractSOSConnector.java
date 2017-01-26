@@ -29,22 +29,26 @@
 package org.n52.proxy.connector;
 
 import org.apache.http.HttpResponse;
-import org.n52.proxy.web.HttpClient;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.web.SimpleHttpClient;
 
-public class AbstractSOSConnector {
+public abstract class AbstractSOSConnector {
 
-  private HttpClient httpClient;
+    private final SimpleHttpClient httpClient;
 
-  private String serviceURI;
+    protected final String serviceURI;
+    protected final String serviceName;
+    protected final String serviceDescription;
 
-  public AbstractSOSConnector(String serviceURI) {
-    httpClient = new SimpleHttpClient();
-    this.serviceURI = serviceURI;
-  }
+    public AbstractSOSConnector(String serviceURI, String name, String description) {
+        httpClient = new SimpleHttpClient();
+        this.serviceURI = serviceURI;
+        this.serviceName = name;
+        this.serviceDescription = description;
+    }
 
-  protected HttpResponse sendRequest(String request) {
-    HttpResponse response = httpClient.executePost(serviceURI, request);
-    return response;
-  }
+    protected HttpResponse sendRequest(XmlObject request) {
+        HttpResponse response = httpClient.executePost(serviceURI, request);
+        return response;
+    }
 }

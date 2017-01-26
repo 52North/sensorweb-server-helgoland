@@ -41,12 +41,12 @@
             </exclusions>
         </dependency>
         
-        <dependency>
-            <groupId>org.n52.sensorweb.sos</groupId>
-            <artifactId>sqlite-config</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-         -->
+       <dependency>
+           <groupId>org.n52.sensorweb.sos</groupId>
+           <artifactId>sqlite-config</artifactId>
+           <scope>runtime</scope>
+       </dependency>
+        -->
         <dependency>
             <groupId>org.n52.svalbard</groupId>
             <artifactId>svalbard</artifactId>
@@ -58,8 +58,19 @@
         </dependency>
         
         <dependency>
+            <groupId>org.n52.iceland</groupId>
+            <artifactId>iceland</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
         
         <dependency>
@@ -67,10 +78,10 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>commons-codec</groupId>
-            		<artifactId>commons-codec</artifactId>
-            	</exclusion>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         
@@ -87,11 +98,6 @@
         </dependency>
         
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
@@ -99,6 +105,19 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>4.2.3.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
@@ -170,6 +189,6 @@
             <artifactId>hamcrest-all</artifactId>
         </dependency>
     </dependencies>
-
+    
 </project>
 
