@@ -97,5 +97,15 @@ public class ServiceEntity extends DescribableEntity {
         this.version = version;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" url: ").append(getUrl());
+        sb.append(", type: ").append(getType());
+        sb.append(", version: ").append(getVersion());
+        sb.append(", noDataValues: ").append(getNoDataValues());
+        return sb.append(" ]").toString();
+    }
 
 }

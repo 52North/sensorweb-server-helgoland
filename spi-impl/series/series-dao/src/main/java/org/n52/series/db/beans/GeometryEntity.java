@@ -131,5 +131,14 @@ public class GeometryEntity {
     public boolean isEmpty() {
         return !isSetGeometry() && !isSetLonLat();
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" latitude: ").append(getLat());
+        sb.append(", longitude: ").append(getLon());
+        return sb.append(" ]").toString();
+    }
 
 }
