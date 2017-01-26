@@ -153,6 +153,7 @@ This project includes:
   Spring JDBC under The Apache Software License, Version 2.0
   Spring Object/Relational Mapping under The Apache Software License, Version 2.0
   Spring Object/XML Marshalling under The Apache Software License, Version 2.0
+  Spring TestContext Framework under The Apache Software License, Version 2.0
   Spring Transaction under The Apache Software License, Version 2.0
   Spring Web under The Apache Software License, Version 2.0
   Spring Web MVC under The Apache Software License, Version 2.0
