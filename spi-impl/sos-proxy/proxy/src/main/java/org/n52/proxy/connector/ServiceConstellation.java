@@ -93,8 +93,8 @@ public class ServiceConstellation {
         return phenomenons.put(name, EntityBuilder.createPhenomenon(name, service));
     }
 
-    public ProcedureEntity putProcedure(String name) {
-        return procedures.put(name, EntityBuilder.createProcedure(name, true, true, service));
+    public ProcedureEntity putProcedure(String name, boolean insitu, boolean mobile) {
+        return procedures.put(name, EntityBuilder.createProcedure(name, insitu, mobile, service));
     }
 
     public boolean add(DatasetConstellation e) {

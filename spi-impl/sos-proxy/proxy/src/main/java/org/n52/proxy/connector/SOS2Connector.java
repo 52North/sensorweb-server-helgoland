@@ -103,7 +103,7 @@ public class SOS2Connector extends AbstractSOSConnector {
                     offering.getProcedures().forEach((procedure) -> {
                         try {
                             // procedure
-                            serviceConstellation.putProcedure(procedure);
+                            serviceConstellation.putProcedure(procedure, true, false);
                             HttpResponse response = this.sendRequest(createFOIRequest(procedure));
                             GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
 
@@ -113,7 +113,7 @@ public class SOS2Connector extends AbstractSOSConnector {
                             double lng = abstractFeature.getGeometry().getCoordinate().x;
                             int srid = abstractFeature.getGeometry().getSRID();
                             // feature
-                           serviceConstellation.putFeature(featureName, lat, lng, srid);
+                            serviceConstellation.putFeature(featureName, lat, lng, srid);
 
                             GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedure)).getEntity().getContent());
                             gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
