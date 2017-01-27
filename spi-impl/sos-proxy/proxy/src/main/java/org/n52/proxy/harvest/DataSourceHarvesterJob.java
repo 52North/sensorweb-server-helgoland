@@ -34,6 +34,8 @@ import org.n52.io.task.ScheduledJob;
 import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.proxy.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.proxy.connector.EntityBuilder;
+import org.n52.proxy.connector.SOS2Connector;
+import org.n52.proxy.connector.ServiceConstellation;
 import org.n52.proxy.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
@@ -44,6 +46,8 @@ import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
+import org.n52.svalbard.decode.DecoderRepository;
+import org.n52.svalbard.encode.EncoderRepository;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -67,13 +71,11 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
     @Autowired
     private InsertRepository insertRepository;
 
-    public InsertRepository getInsertRepository() {
-        return insertRepository;
-    }
+    @Autowired
+    private DecoderRepository decoderRepository;
 
-    public void setInsertRepository(InsertRepository insertRepository) {
-        this.insertRepository = insertRepository;
-    }
+    @Autowired
+    private EncoderRepository encoderRepository;
 
     public DataSourceConfig getConfig() {
         return config;
@@ -95,39 +97,20 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-//        try {
-            LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
+        LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
-            JobDetail jobDetail = context.getJobDetail();
-            JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            String url = jobDataMap.getString("url");
-            String name = jobDataMap.getString("name");
-            String version = jobDataMap.getString("version");
+        JobDetail jobDetail = context.getJobDetail();
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        String url = jobDataMap.getString("url");
+        String name = jobDataMap.getString("name");
+        String version = jobDataMap.getString("version");
 
-            ServiceEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, url, version));
+        SOS2Connector connector = new SOS2Connector(url, name, "Here can we display your service description", decoderRepository, encoderRepository);
+        ServiceConstellation constellation = connector.getConstellation();
 
-            insertRepository.prepareInserting(service);
+        saveConstellation(constellation);
 
-            ProcedureEntity procedure = EntityBuilder.createProcedure("procedure", true, false, service);
-            FeatureEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
-            OfferingEntity offering = EntityBuilder.createOffering("offering", service);
-            CategoryEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
-            CategoryEntity category1 = EntityBuilder.createCategory("category", service);
-            PhenomenonEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
-            UnitEntity unit = EntityBuilder.createUnit("unit", service);
-
-            MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, offering, phenomenon, unit, service);
-            CountDatasetEntity countDataset = EntityBuilder.createCountDataset(procedure, category1, feature, offering, phenomenon, service);
-
-            insertRepository.insertDataset(measurement);
-            insertRepository.insertDataset(countDataset);
-
-            insertRepository.cleanUp(service);
-
-            LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
-//        } catch (OwsExceptionReport ex) {
-//            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }
 
     public void init(DataSourceConfig config) {
@@ -139,6 +122,34 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
             setCronExpression(job.getCronExpression());
             setTriggerAtStartup(job.isTriggerAtStartup());
         }
+    }
+
+    private void saveConstellation(ServiceConstellation constellation) {
+        // serviceEntity
+        ServiceEntity service = insertRepository.insertService(constellation.getService());
+        insertRepository.prepareInserting(service);
+
+        // save all constellations
+        constellation.getDatasets().forEach((dataset) -> {
+            final ProcedureEntity procedure = constellation.getProcedures().get(dataset.getProcedure());
+            final CategoryEntity category = constellation.getCategories().get(dataset.getCategory());
+            final FeatureEntity feature = constellation.getFeatures().get(dataset.getFeature());
+            final OfferingEntity offering = constellation.getOfferings().get(dataset.getOffering());
+            final PhenomenonEntity phenomenon = constellation.getPhenomenons().get(dataset.getPhenomenon());
+            final UnitEntity unit = EntityBuilder.createUnit("TODO", service); // TODO ...
+
+            if (procedure != null && category != null && feature != null && offering != null && phenomenon != null && unit != null) {
+                MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(
+                        procedure, category, feature, offering, phenomenon, unit, service
+                );
+                insertRepository.insertDataset(measurement);
+                LOGGER.info("Add dataset constellation: " + dataset);
+            } else {
+                LOGGER.warn("Can't add dataset: " + dataset);
+            }
+        });
+
+        insertRepository.cleanUp(service);
     }
 
 }
