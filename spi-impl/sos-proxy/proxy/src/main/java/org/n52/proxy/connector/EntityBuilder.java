@@ -59,35 +59,36 @@ public class EntityBuilder {
         return service;
     }
 
-    public static ProcedureEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceEntity service) {
+    public static ProcedureEntity createProcedure(String domainId, String name, boolean insitu, boolean mobile, ServiceEntity service) {
         ProcedureEntity procedure = new ProcedureEntity();
         procedure.setName(name);
-        procedure.setDomainId(name);
+        procedure.setDomainId(domainId);
         procedure.setInsitu(insitu);
         procedure.setMobile(mobile);
         procedure.setService(service);
         return procedure;
     }
 
-    public static OfferingEntity createOffering(String name, ServiceEntity service) {
+    public static OfferingEntity createOffering(String domainId, String name, ServiceEntity service) {
         OfferingEntity offering = new OfferingEntity();
+        offering.setDomainId(domainId);
         offering.setName(name);
         offering.setService(service);
         return offering;
     }
 
-    public static CategoryEntity createCategory(String name, ServiceEntity service) {
+    public static CategoryEntity createCategory(String domainId, String name, ServiceEntity service) {
         CategoryEntity category = new CategoryEntity();
         category.setName(name);
-        category.setDomainId(name);
+        category.setDomainId(domainId);
         category.setService(service);
         return category;
     }
 
-    public static FeatureEntity createFeature(String name, GeometryEntity geometry, ServiceEntity service) {
+    public static FeatureEntity createFeature(String domainId, String name, GeometryEntity geometry, ServiceEntity service) {
         FeatureEntity feature = new FeatureEntity();
         feature.setName(name);
-        feature.setDomainId(name);
+        feature.setDomainId(domainId);
         feature.setGeometryEntity(geometry);
         feature.setService(service);
         return feature;
@@ -103,10 +104,10 @@ public class EntityBuilder {
         return geometry;
     }
 
-    public static PhenomenonEntity createPhenomenon(String name, ServiceEntity service) {
+    public static PhenomenonEntity createPhenomenon(String domainId, String name, ServiceEntity service) {
         PhenomenonEntity phenomenon = new PhenomenonEntity();
         phenomenon.setName(name);
-        phenomenon.setDomainId(name);
+        phenomenon.setDomainId(domainId);
         phenomenon.setService(service);
         return phenomenon;
     }

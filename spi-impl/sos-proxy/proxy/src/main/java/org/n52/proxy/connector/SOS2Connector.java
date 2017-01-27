@@ -37,6 +37,7 @@ import java.util.SortedSet;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
+import org.n52.shetland.ogc.gml.CodeType;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
@@ -96,36 +97,23 @@ public class SOS2Connector extends AbstractSOSConnector {
             Optional<SortedSet<SosObservationOffering>> contents = capabilities.getContents().map((offerings) -> {
                 offerings.forEach((offering) -> {
 
-                    String offeringId = offering.getIdentifier();
-                    // offering
-                    serviceConstellation.putOffering(offeringId);
+                    String offeringId = addOffering(offering, serviceConstellation);
 
-                    offering.getProcedures().forEach((procedure) -> {
+                    offering.getProcedures().forEach((procedureId) -> {
                         try {
-                            // procedure
-                            serviceConstellation.putProcedure(procedure, true, false);
-                            HttpResponse response = this.sendRequest(createFOIRequest(procedure));
+                            addProcedure(procedureId, serviceConstellation);
+
+                            HttpResponse response = this.sendRequest(createFOIRequest(procedureId));
                             GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
 
-                            SamplingFeature abstractFeature = (SamplingFeature) foiResponse.getAbstractFeature();
-                            String featureName = abstractFeature.getIdentifier();
-                            double lat = abstractFeature.getGeometry().getCoordinate().y;
-                            double lng = abstractFeature.getGeometry().getCoordinate().x;
-                            int srid = abstractFeature.getGeometry().getSRID();
-                            // feature
-                            serviceConstellation.putFeature(featureName, lat, lng, srid);
+                            addFeature(foiResponse, serviceConstellation);
 
-                            GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedure)).getEntity().getContent());
+                            GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId)).getEntity().getContent());
                             gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
-                                String phenomenon = dataAval.getObservedProperty().getTitle();
-                                // phenomenon
-                                serviceConstellation.putPhenomenon(phenomenon);
-                                String category = dataAval.getObservedProperty().getTitle();
-                                // category
-                                serviceConstellation.putCategory(category);
-                                String feature = dataAval.getFeatureOfInterest().getTitle();
-
-                                serviceConstellation.add(new DatasetConstellation(procedure, offeringId, category, phenomenon, feature));
+                                String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
+                                String categoryId = addCategory(dataAval, serviceConstellation);
+                                String featureId = dataAval.getFeatureOfInterest().getHref();
+                                serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
                             });
 
                             LOGGER.info(foiResponse.toString());
@@ -138,6 +126,47 @@ public class SOS2Connector extends AbstractSOSConnector {
             });
             return null;
         });
+    }
+
+    private String addCategory(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
+        String categoryId = dataAval.getObservedProperty().getHref();
+        String categoryName = dataAval.getObservedProperty().getTitle();
+        serviceConstellation.putCategory(categoryId, categoryName);
+        return categoryId;
+    }
+
+    private String addPhenomenon(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
+        String phenomenonId = dataAval.getObservedProperty().getHref();
+        String phenomenonName = dataAval.getObservedProperty().getTitle();
+        serviceConstellation.putPhenomenon(phenomenonId, phenomenonName);
+        return phenomenonId;
+    }
+
+    private String addProcedure(String procedureId, ServiceConstellation serviceConstellation) {
+        serviceConstellation.putProcedure(procedureId, procedureId, true, false);
+        return procedureId;
+    }
+
+    private String addOffering(SosObservationOffering offering, ServiceConstellation serviceConstellation) {
+        String offeringId = offering.getIdentifier();
+        serviceConstellation.putOffering(offeringId, offeringId);
+        return offeringId;
+    }
+
+    private String addFeature(GetFeatureOfInterestResponse foiResponse, ServiceConstellation serviceConstellation) {
+        SamplingFeature abstractFeature = (SamplingFeature) foiResponse.getAbstractFeature();
+        String featureId = abstractFeature.getIdentifier();
+        String featureName;
+        if (abstractFeature.getName().size() == 1 && abstractFeature.getName().get(0).getValue() != null) {
+            featureName = abstractFeature.getName().get(0).getValue();
+        } else {
+            featureName = featureId;
+        }
+        double lat = abstractFeature.getGeometry().getCoordinate().y;
+        double lng = abstractFeature.getGeometry().getCoordinate().x;
+        int srid = abstractFeature.getGeometry().getSRID();
+        serviceConstellation.putFeature(featureId, featureName, lat, lng, srid);
+        return featureId;
     }
 
     private XmlObject createGetCapabilitiesDocument() throws EncodingException {

@@ -71,13 +71,14 @@ public class ServiceConstellation {
         return datasets;
     }
 
-    public CategoryEntity putCategory(String name) {
-        return categories.put(name, EntityBuilder.createCategory(name, service));
+    public CategoryEntity putCategory(String id, String name) {
+        return categories.put(id, EntityBuilder.createCategory(id, name, service));
     }
 
-    public FeatureEntity putFeature(String name, double latitude, double longitude, int srid) {
-        return features.put(name,
+    public FeatureEntity putFeature(String id, String name, double latitude, double longitude, int srid) {
+        return features.put(id,
                 EntityBuilder.createFeature(
+                        id,
                         name,
                         EntityBuilder.createGeometry(latitude, longitude, srid),
                         service
@@ -85,16 +86,16 @@ public class ServiceConstellation {
         );
     }
 
-    public OfferingEntity putOffering(String name) {
-        return offerings.put(name, EntityBuilder.createOffering(name, service));
+    public OfferingEntity putOffering(String id, String name) {
+        return offerings.put(id, EntityBuilder.createOffering(id, name, service));
     }
 
-    public PhenomenonEntity putPhenomenon(String name) {
-        return phenomenons.put(name, EntityBuilder.createPhenomenon(name, service));
+    public PhenomenonEntity putPhenomenon(String id, String name) {
+        return phenomenons.put(id, EntityBuilder.createPhenomenon(id, name, service));
     }
 
-    public ProcedureEntity putProcedure(String name, boolean insitu, boolean mobile) {
-        return procedures.put(name, EntityBuilder.createProcedure(name, insitu, mobile, service));
+    public ProcedureEntity putProcedure(String id, String name, boolean insitu, boolean mobile) {
+        return procedures.put(id, EntityBuilder.createProcedure(id, name, insitu, mobile, service));
     }
 
     public boolean add(DatasetConstellation e) {
