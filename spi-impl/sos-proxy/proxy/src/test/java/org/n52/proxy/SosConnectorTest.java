@@ -28,16 +28,16 @@ package org.n52.proxy;
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-import javax.inject.Inject;
-import org.junit.Ignore;
+import java.util.Iterator;
+import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.n52.proxy.connector.SOS2Connector;
+import org.n52.proxy.config.DataSourcesConfig;
+import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.connector.ServiceConstellation;
-import org.n52.svalbard.decode.DecoderRepository;
-import org.n52.svalbard.encode.EncoderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -47,19 +47,30 @@ public class SosConnectorTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SosConnectorTest.class);
 
-    private final String uri = "http://sensorweb.demo.52north.org/sensorwebtestbed/service";
+//    private final String uri = "http://sensorweb.demo.52north.org/sensorwebtestbed/service";
+    private final String uri = "http://localhost:8081/52n-sos-webapp/service";
 //    private final String uri = "http://sensorweb.demo.52north.org/52n-sos-webapp/service";
 
-    @Inject
-    private EncoderRepository encoderRepository;
-
-    @Inject
-    private DecoderRepository decoderRepository;
+    @Autowired
+    private Set<AbstractSosConnector> connectors;
 
     @Test
     public void collectEntities() {
-        SOS2Connector connector = new SOS2Connector(uri, "serviceName", "serviceDescription", decoderRepository, encoderRepository);
-        ServiceConstellation constellation = connector.getConstellation();
+
+        DataSourcesConfig.DataSourceConfig config = new DataSourcesConfig.DataSourceConfig();
+        config.setItemName("serviceName");
+        config.setUrl(uri);
+
+        Iterator<AbstractSosConnector> iterator = connectors.iterator();
+        AbstractSosConnector current = iterator.next();
+        while (!current.canHandle(config)) {
+            LOGGER.info(current.toString() + " cannot handle " + config);
+            current = iterator.next();
+        }
+
+        LOGGER.info(current.toString() + " create a constellation for " + config);
+        ServiceConstellation constellation = current.getConstellation(config);
+
         constellation.getCategories().forEach((name, entity) -> {
             LOGGER.info("Category: " + name);
         });

@@ -37,6 +37,7 @@ import java.util.SortedSet;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
+import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
@@ -50,39 +51,39 @@ import org.n52.shetland.ogc.sos.request.GetFeatureOfInterestRequest;
 import org.n52.shetland.ogc.sos.response.GetFeatureOfInterestResponse;
 import org.n52.svalbard.decode.Decoder;
 import org.n52.svalbard.decode.DecoderKey;
-import org.n52.svalbard.decode.DecoderRepository;
 import org.n52.svalbard.decode.exception.DecodingException;
 import org.n52.svalbard.encode.Encoder;
 import org.n52.svalbard.encode.EncoderKey;
-import org.n52.svalbard.encode.EncoderRepository;
 import org.n52.svalbard.encode.exception.EncodingException;
 import org.n52.svalbard.util.CodingHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class SOS2Connector extends AbstractSOSConnector {
+public class SOS2Connector extends AbstractSosConnector {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SOS2Connector.class);
 
-    private final EncoderRepository encoderRepository;
-    private final DecoderRepository decoderRepository;
-
-    public SOS2Connector(String serviceURI, String name, String description, DecoderRepository decoderRepo, EncoderRepository encoderRepo) {
-        super(serviceURI, name, description);
-        encoderRepository = encoderRepo;
-        decoderRepository = decoderRepo;
+    @Override
+    public String getHandlerName() {
+        return this.getClass().getName();
     }
 
-    public ServiceConstellation getConstellation() {
+    @Override
+    public boolean canHandle(DataSourcesConfig.DataSourceConfig config) {
+        return true;
+    }
+
+    @Override
+    public ServiceConstellation getConstellation(DataSourcesConfig.DataSourceConfig config) {
         try {
             ServiceConstellation serviceConstellation = new ServiceConstellation();
-            serviceConstellation.setService(EntityBuilder.createService(serviceName, serviceDescription, serviceURI, Sos2Constants.SERVICEVERSION));
+            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), config.getItemName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
 
-            HttpResponse response = this.sendRequest(createGetCapabilitiesDocument());
+            HttpResponse response = this.sendRequest(createGetCapabilitiesDocument(), config.getUrl());
             GetCapabilitiesResponse capabilitiesResponse = createGetCapabilitiesResponse(response.getEntity().getContent());
             SosCapabilities sosCaps = (SosCapabilities) capabilitiesResponse.getCapabilities();
-            addDatasets(serviceConstellation, sosCaps);
+            addDatasets(serviceConstellation, sosCaps, config.getUrl());
 
             return serviceConstellation;
         } catch (EncodingException | IOException | UnsupportedOperationException ex) {
@@ -91,7 +92,7 @@ public class SOS2Connector extends AbstractSOSConnector {
         return null;
     }
 
-    private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps) {
+    private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceURI) {
         Optional.ofNullable(sosCaps).map((capabilities) -> {
             Optional<SortedSet<SosObservationOffering>> contents = capabilities.getContents().map((offerings) -> {
                 offerings.forEach((offering) -> {
@@ -102,12 +103,12 @@ public class SOS2Connector extends AbstractSOSConnector {
                         try {
                             addProcedure(procedureId, serviceConstellation);
 
-                            HttpResponse response = this.sendRequest(createFOIRequest(procedureId));
+                            HttpResponse response = this.sendRequest(createFOIRequest(procedureId), serviceURI);
                             GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
 
                             addFeature(foiResponse, serviceConstellation);
 
-                            GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId)).getEntity().getContent());
+                            GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId), serviceURI).getEntity().getContent());
                             gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
                                 String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
                                 String categoryId = addCategory(dataAval, serviceConstellation);

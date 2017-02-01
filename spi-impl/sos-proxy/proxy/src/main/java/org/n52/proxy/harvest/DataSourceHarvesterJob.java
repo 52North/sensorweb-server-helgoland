@@ -28,17 +28,16 @@
  */
 package org.n52.proxy.harvest;
 
-import java.util.Date;
-
+import java.util.Iterator;
+import java.util.Set;
 import org.n52.io.task.ScheduledJob;
 import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.proxy.config.DataSourcesConfig.DataSourceConfig;
 import org.n52.proxy.connector.EntityBuilder;
-import org.n52.proxy.connector.SOS2Connector;
 import org.n52.proxy.connector.ServiceConstellation;
+import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryEntity;
-import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.OfferingEntity;
@@ -72,10 +71,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
     private InsertRepository insertRepository;
 
     @Autowired
-    private DecoderRepository decoderRepository;
-
-    @Autowired
-    private EncoderRepository encoderRepository;
+    private Set<AbstractSosConnector> connectors;
 
     public DataSourceConfig getConfig() {
         return config;
@@ -101,14 +97,21 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
         JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        String url = jobDataMap.getString("url");
-        String name = jobDataMap.getString("name");
-        String version = jobDataMap.getString("version");
 
-        SOS2Connector connector = new SOS2Connector(url, name, "Here can we display your service description", decoderRepository, encoderRepository);
-        ServiceConstellation constellation = connector.getConstellation();
+        DataSourceConfig config = new DataSourceConfig();
+        config.setItemName(jobDataMap.getString("name"));
+        config.setVersion(jobDataMap.getString("version"));
+        config.setUrl(jobDataMap.getString("url"));
 
-        saveConstellation(constellation);
+        Iterator<AbstractSosConnector> iterator = connectors.iterator();
+        AbstractSosConnector current = iterator.next();
+        while (!current.canHandle(config)) {
+            LOGGER.info(current.toString() + " cannot handle " + config);
+            current = iterator.next();
+        }
+
+        LOGGER.info(current.toString() + " create a constellation for " + config);
+        saveConstellation(current.getConstellation(config));
 
         LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }

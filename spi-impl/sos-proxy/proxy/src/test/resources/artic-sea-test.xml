@@ -78,4 +78,7 @@
     <bean class="org.n52.svalbard.encode.GetObservationRequestEncoder"/>
     <bean class="org.n52.svalbard.encode.GetFeatureOfInterestRequestEncoder"/>
 
+    <bean class="org.n52.proxy.connector.OceanotronSosConnector"/>
+    <bean class="org.n52.proxy.connector.SOS2Connector"/>
+
 </beans>
