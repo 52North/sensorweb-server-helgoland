@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.n52.proxy.config.DataSourcesConfig;
+import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.connector.ServiceConstellation;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class SosConnectorTest {
     @Test
     public void collectEntities() {
 
-        DataSourcesConfig.DataSourceConfig config = new DataSourcesConfig.DataSourceConfig();
+        DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("serviceName");
         config.setUrl(uri);
 

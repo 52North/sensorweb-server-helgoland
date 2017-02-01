@@ -28,16 +28,16 @@
  */
 package org.n52.proxy.harvest;
 
-import static org.quartz.TriggerBuilder.newTrigger;
 import java.util.ArrayList;
 import java.util.List;
-import org.n52.proxy.config.Configuration;
-import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.io.task.ScheduledJob;
+import org.n52.proxy.config.ConfigurationReader;
+import org.n52.proxy.config.DataSourceConfiguration;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import static org.quartz.TriggerBuilder.newTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class DataSourceHarvesterScheduler {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterScheduler.class);
 
-    private Configuration configurationProvider;
+    private ConfigurationReader configurationProvider;
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class DataSourceHarvesterScheduler {
             return;
         }
 
-        for (DataSourcesConfig.DataSourceConfig dataSourceConfig : configurationProvider.getDataSource()) {
+        for (DataSourceConfiguration dataSourceConfig : configurationProvider.getDataSource()) {
             LOGGER.info(dataSourceConfig.getItemName() + " " + dataSourceConfig.getUrl());
             DataSourceHarvesterJob dataSourceJob = new DataSourceHarvesterJob();
             dataSourceJob.init(dataSourceConfig);
@@ -137,11 +137,11 @@ public class DataSourceHarvesterScheduler {
         this.enabled = enabled;
     }
 
-    public Configuration getConfigurationProvider() {
+    public ConfigurationReader getConfigurationProvider() {
         return configurationProvider;
     }
 
-    public void setConfigurationProvider(Configuration configurationProvider) {
+    public void setConfigurationProvider(ConfigurationReader configurationProvider) {
         this.configurationProvider = configurationProvider;
     }
 

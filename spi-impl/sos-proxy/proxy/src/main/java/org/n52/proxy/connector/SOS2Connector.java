@@ -37,7 +37,7 @@ import java.util.SortedSet;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.n52.proxy.config.DataSourcesConfig;
+import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
@@ -70,12 +70,12 @@ public class SOS2Connector extends AbstractSosConnector {
     }
 
     @Override
-    public boolean canHandle(DataSourcesConfig.DataSourceConfig config) {
+    public boolean canHandle(DataSourceConfiguration config) {
         return true;
     }
 
     @Override
-    public ServiceConstellation getConstellation(DataSourcesConfig.DataSourceConfig config) {
+    public ServiceConstellation getConstellation(DataSourceConfiguration config) {
         try {
             ServiceConstellation serviceConstellation = new ServiceConstellation();
             serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), config.getItemName(), config.getUrl(), Sos2Constants.SERVICEVERSION));

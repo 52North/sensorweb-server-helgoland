@@ -31,11 +31,11 @@ package org.n52.proxy.harvest;
 import java.util.Iterator;
 import java.util.Set;
 import org.n52.io.task.ScheduledJob;
-import org.n52.proxy.config.DataSourcesConfig;
-import org.n52.proxy.config.DataSourcesConfig.DataSourceConfig;
+import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.config.DataSourceJobConfiguration;
+import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.connector.EntityBuilder;
 import org.n52.proxy.connector.ServiceConstellation;
-import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.FeatureEntity;
@@ -45,8 +45,6 @@ import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.svalbard.decode.DecoderRepository;
-import org.n52.svalbard.encode.EncoderRepository;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -65,7 +63,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterJob.class);
 
-    private DataSourceConfig config;
+    private DataSourceConfiguration config;
 
     @Autowired
     private InsertRepository insertRepository;
@@ -73,11 +71,11 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
     @Autowired
     private Set<AbstractSosConnector> connectors;
 
-    public DataSourceConfig getConfig() {
+    public DataSourceConfiguration getConfig() {
         return config;
     }
 
-    public void setConfig(DataSourceConfig config) {
+    public void setConfig(DataSourceConfiguration config) {
         this.config = config;
     }
 
@@ -98,7 +96,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-        DataSourceConfig config = new DataSourceConfig();
+        DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName(jobDataMap.getString("name"));
         config.setVersion(jobDataMap.getString("version"));
         config.setUrl(jobDataMap.getString("url"));
@@ -116,11 +114,11 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }
 
-    public void init(DataSourceConfig config) {
+    public void init(DataSourceConfiguration config) {
         setConfig(config);
         setJobName(config.getItemName());
         if (config.getJob() != null) {
-            DataSourcesConfig.DataSourceJobConfig job = config.getJob();
+            DataSourceJobConfiguration job = config.getJob();
             setEnabled(job.isEnabled());
             setCronExpression(job.getCronExpression());
             setTriggerAtStartup(job.isTriggerAtStartup());
