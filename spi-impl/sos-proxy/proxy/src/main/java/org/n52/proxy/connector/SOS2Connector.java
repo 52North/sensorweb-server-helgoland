@@ -37,7 +37,6 @@ import java.util.SortedSet;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.n52.shetland.ogc.gml.CodeType;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
@@ -162,8 +161,8 @@ public class SOS2Connector extends AbstractSOSConnector {
         } else {
             featureName = featureId;
         }
-        double lat = abstractFeature.getGeometry().getCoordinate().y;
-        double lng = abstractFeature.getGeometry().getCoordinate().x;
+        double lat = abstractFeature.getGeometry().getCoordinate().x;
+        double lng = abstractFeature.getGeometry().getCoordinate().y;
         int srid = abstractFeature.getGeometry().getSRID();
         serviceConstellation.putFeature(featureId, featureName, lat, lng, srid);
         return featureId;
