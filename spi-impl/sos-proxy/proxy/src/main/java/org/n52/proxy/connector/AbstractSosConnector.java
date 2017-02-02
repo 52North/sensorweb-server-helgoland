@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractSosConnector {
 
-    private final SimpleHttpClient httpClient = new SimpleHttpClient();
-
     @Autowired
     protected DecoderRepository decoderRepository;
 
@@ -35,7 +33,7 @@ public abstract class AbstractSosConnector {
     protected abstract boolean canHandle(DataSourceConfiguration config);
 
     protected HttpResponse sendRequest(XmlObject request, String uri) {
-        return httpClient.executePost(uri, request);
+        return new SimpleHttpClient().executePost(uri, request);
     }
 
 }
