@@ -5,6 +5,7 @@ public class DataSourceConfiguration {
     private String itemName;
     private String url;
     private String version;
+    private String connector;
     private DataSourceJobConfiguration job;
 
     public DataSourceJobConfiguration getJob() {
@@ -39,9 +40,17 @@ public class DataSourceConfiguration {
         this.version = version;
     }
 
+    public String getConnector() {
+        return connector;
+    }
+
+    public void setConnector(String connector) {
+        this.connector = connector;
+    }
+
     @Override
     public String toString() {
-        return "DataSourceConfiguration {" + "itemName=" + itemName + ", url=" + url + ", version=" + version + ", job=" + job + "}";
+        return "DataSourceConfiguration{" + "itemName=" + itemName + ", url=" + url + ", version=" + version + ", connector=" + connector + "}";
     }
 
 }

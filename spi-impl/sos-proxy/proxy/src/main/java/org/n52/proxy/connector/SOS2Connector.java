@@ -70,7 +70,7 @@ public class SOS2Connector extends AbstractSosConnector {
     }
 
     @Override
-    public boolean canHandle(DataSourceConfiguration config) {
+    protected boolean canHandle(DataSourceConfiguration config) {
         return true;
     }
 

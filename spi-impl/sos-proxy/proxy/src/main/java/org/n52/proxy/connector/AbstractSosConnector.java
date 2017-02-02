@@ -22,7 +22,17 @@ public abstract class AbstractSosConnector {
 
     public abstract ServiceConstellation getConstellation(DataSourceConfiguration config);
 
-    public abstract boolean canHandle(DataSourceConfiguration config);
+    public boolean matches(DataSourceConfiguration config) {
+        if (config.getConnector() != null
+                && (this.getClass().getSimpleName().equals(config.getConnector())
+                || this.getClass().getName().equals(config.getConnector()))) {
+            return true;
+        } else {
+            return canHandle(config);
+        }
+    }
+
+    protected abstract boolean canHandle(DataSourceConfiguration config);
 
     protected HttpResponse sendRequest(XmlObject request, String uri) {
         return httpClient.executePost(uri, request);

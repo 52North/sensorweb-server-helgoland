@@ -65,6 +65,11 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     private DataSourceConfiguration config;
 
+    private static final String JOB_CONNECTOR = "connector";
+    private static final String JOB_VERSION = "version";
+    private static final String JOB_NAME = "name";
+    private static final String JOB_URL = "url";
+
     @Autowired
     private InsertRepository insertRepository;
 
@@ -83,10 +88,20 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
     public JobDetail createJobDetails() {
         return JobBuilder.newJob(DataSourceHarvesterJob.class)
                 .withIdentity(getJobName())
-                .usingJobData("url", config.getUrl())
-                .usingJobData("name", config.getItemName())
-                .usingJobData("version", config.getVersion())
+                .usingJobData(JOB_URL, config.getUrl())
+                .usingJobData(JOB_NAME, config.getItemName())
+                .usingJobData(JOB_VERSION, config.getVersion())
+                .usingJobData(JOB_CONNECTOR, config.getConnector())
                 .build();
+    }
+
+    private DataSourceConfiguration recreateConfig(JobDataMap jobDataMap) {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setUrl(jobDataMap.getString(JOB_URL));
+        config.setItemName(jobDataMap.getString(JOB_NAME));
+        config.setVersion(jobDataMap.getString(JOB_VERSION));
+        config.setConnector(jobDataMap.getString(JOB_CONNECTOR));
+        return config;
     }
 
     @Override
@@ -96,14 +111,11 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-        DataSourceConfiguration config = new DataSourceConfiguration();
-        config.setItemName(jobDataMap.getString("name"));
-        config.setVersion(jobDataMap.getString("version"));
-        config.setUrl(jobDataMap.getString("url"));
+        DataSourceConfiguration config = recreateConfig(jobDataMap);
 
         Iterator<AbstractSosConnector> iterator = connectors.iterator();
         AbstractSosConnector current = iterator.next();
-        while (!current.canHandle(config)) {
+        while (!current.matches(config)) {
             LOGGER.info(current.toString() + " cannot handle " + config);
             current = iterator.next();
         }

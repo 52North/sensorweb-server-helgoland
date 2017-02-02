@@ -63,7 +63,7 @@ public class SosConnectorTest {
 
         Iterator<AbstractSosConnector> iterator = connectors.iterator();
         AbstractSosConnector current = iterator.next();
-        while (!current.canHandle(config)) {
+        while (!current.matches(config)) {
             LOGGER.info(current.toString() + " cannot handle " + config);
             current = iterator.next();
         }
