@@ -78,15 +78,17 @@ public class DataSourceHarvesterScheduler {
 
     private void scheduleJob(ScheduledJob taskToSchedule) {
         try {
-            JobDetail details = taskToSchedule.createJobDetails();
-            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
-            scheduler.scheduleJob(details, trigger);
-            if (taskToSchedule.isTriggerAtStartup()) {
-                LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
-                Trigger onceAtStartup = newTrigger()
-                        .withIdentity(details.getKey() + "_onceAtStartup")
-                        .forJob(details.getKey()).build();
-                scheduler.scheduleJob(onceAtStartup);
+            if (taskToSchedule.isEnabled()) {
+                JobDetail details = taskToSchedule.createJobDetails();
+                Trigger trigger = taskToSchedule.createTrigger(details.getKey());
+                scheduler.scheduleJob(details, trigger);
+                if (taskToSchedule.isTriggerAtStartup()) {
+                    LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
+                    Trigger onceAtStartup = newTrigger()
+                            .withIdentity(details.getKey() + "_onceAtStartup")
+                            .forJob(details.getKey()).build();
+                    scheduler.scheduleJob(onceAtStartup);
+                }
             }
         } catch (SchedulerException e) {
             LOGGER.warn("Could not schdule Job '{}'.", taskToSchedule.getJobName(), e);
