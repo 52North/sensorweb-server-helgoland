@@ -31,18 +31,9 @@ package org.n52.proxy.db.da;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.n52.series.db.SessionAwareRepository;
-import org.n52.series.db.beans.CategoryEntity;
-import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.FeatureEntity;
-import org.n52.series.db.beans.OfferingEntity;
-import org.n52.series.db.beans.PhenomenonEntity;
-import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 import org.n52.proxy.db.beans.RelatedFeatureEntity;
 import org.n52.proxy.db.beans.RelatedFeatureRoleEntity;
 import org.n52.proxy.db.dao.ProxyCategoryDao;
@@ -54,6 +45,14 @@ import org.n52.proxy.db.dao.ProxyProcedureDao;
 import org.n52.proxy.db.dao.ProxyRelatedFeatureDao;
 import org.n52.proxy.db.dao.ProxyRelatedFeatureRoleDao;
 import org.n52.proxy.db.dao.ProxyServiceDao;
+import org.n52.series.db.SessionAwareRepository;
+import org.n52.series.db.beans.CategoryEntity;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.OfferingEntity;
+import org.n52.series.db.beans.PhenomenonEntity;
+import org.n52.series.db.beans.ProcedureEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,11 +105,11 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public void insertOffering(OfferingEntity offferingEntity) {
+    public void insertOffering(OfferingEntity offeringEntity) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            OfferingEntity insertedOffering = insertOffering(offferingEntity, session);
+            OfferingEntity insertedOffering = insertOffering(offeringEntity, session);
             session.flush();
             transaction.commit();
         } finally {
@@ -124,10 +123,10 @@ public class InsertRepository extends SessionAwareRepository {
         try {
             Transaction transaction = session.beginTransaction();
 
-            ProcedureEntity procedure = insertProcedure((ProcedureEntity)dataset.getProcedure(), session);
+            ProcedureEntity procedure = insertProcedure(dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
             OfferingEntity offering = insertOffering(dataset.getOffering(), session);
-            FeatureEntity feature = insertFeature((FeatureEntity)dataset.getFeature(), session);
+            FeatureEntity feature = insertFeature(dataset.getFeature(), session);
             PhenomenonEntity phenomenon = insertPhenomenon(dataset.getPhenomenon(), session);
 
             insertDataset(dataset, category, procedure, offering, feature, phenomenon, session);

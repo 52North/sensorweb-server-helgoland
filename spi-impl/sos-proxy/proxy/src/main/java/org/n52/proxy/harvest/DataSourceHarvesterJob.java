@@ -145,13 +145,18 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         // save all constellations
         constellation.getDatasets().forEach((dataset) -> {
             final ProcedureEntity procedure = constellation.getProcedures().get(dataset.getProcedure());
+            procedure.setService(service);
             final CategoryEntity category = constellation.getCategories().get(dataset.getCategory());
+            category.setService(service);
             final FeatureEntity feature = constellation.getFeatures().get(dataset.getFeature());
+            feature.setService(service);
             final OfferingEntity offering = constellation.getOfferings().get(dataset.getOffering());
+            offering.setService(service);
             final PhenomenonEntity phenomenon = constellation.getPhenomenons().get(dataset.getPhenomenon());
-            final UnitEntity unit = EntityBuilder.createUnit("TODO", service); // TODO ...
+            phenomenon.setService(service);
+            final UnitEntity unit = null; // TODO create a unit entity
 
-            if (procedure != null && category != null && feature != null && offering != null && phenomenon != null && unit != null) {
+            if (procedure != null && category != null && feature != null && offering != null && phenomenon != null) {
                 MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(
                         procedure, category, feature, offering, phenomenon, unit, service
                 );
