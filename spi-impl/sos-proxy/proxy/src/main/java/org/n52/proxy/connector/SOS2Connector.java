@@ -32,13 +32,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.dao.DbQuery;
+import org.n52.shetland.ogc.om.ObservationValue;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
+import org.n52.shetland.ogc.om.values.Value;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.sos.Sos2Constants;
@@ -48,7 +56,9 @@ import org.n52.shetland.ogc.sos.SosObservationOffering;
 import org.n52.shetland.ogc.sos.gda.GetDataAvailabilityRequest;
 import org.n52.shetland.ogc.sos.gda.GetDataAvailabilityResponse;
 import org.n52.shetland.ogc.sos.request.GetFeatureOfInterestRequest;
+import org.n52.shetland.ogc.sos.request.GetObservationRequest;
 import org.n52.shetland.ogc.sos.response.GetFeatureOfInterestResponse;
+import org.n52.shetland.ogc.sos.response.GetObservationResponse;
 import org.n52.svalbard.decode.Decoder;
 import org.n52.svalbard.decode.DecoderKey;
 import org.n52.svalbard.decode.exception.DecodingException;
@@ -65,11 +75,6 @@ public class SOS2Connector extends AbstractSosConnector {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SOS2Connector.class);
 
     @Override
-    public String getHandlerName() {
-        return this.getClass().getName();
-    }
-
-    @Override
     protected boolean canHandle(DataSourceConfiguration config) {
         return true;
     }
@@ -78,7 +83,7 @@ public class SOS2Connector extends AbstractSosConnector {
     public ServiceConstellation getConstellation(DataSourceConfiguration config) {
         try {
             ServiceConstellation serviceConstellation = new ServiceConstellation();
-            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), config.getItemName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
+            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
 
             HttpResponse response = this.sendRequest(createGetCapabilitiesDocument(), config.getUrl());
             GetCapabilitiesResponse capabilitiesResponse = createGetCapabilitiesResponse(response.getEntity().getContent());
@@ -86,6 +91,28 @@ public class SOS2Connector extends AbstractSosConnector {
             addDatasets(serviceConstellation, sosCaps, config.getUrl());
 
             return serviceConstellation;
+        } catch (EncodingException | IOException | UnsupportedOperationException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
+    }
+
+    @Override
+    public List<MeasurementDataEntity> getObservations(MeasurementDatasetEntity seriesEntity, DbQuery query) {
+        try {
+            HttpResponse response = this.sendRequest(createGetObservationDocument(seriesEntity, query), seriesEntity.getService().getUrl());
+            GetObservationResponse obsResp = createGetObservationResponse(response.getEntity().getContent());
+
+            List<MeasurementDataEntity> data = new ArrayList<>();
+
+            obsResp.getObservationCollection().forEach((observation) -> {
+                MeasurementDataEntity entity = new MeasurementDataEntity();
+                ObservationValue<? extends Value<?>> value = observation.getValue();
+
+//                entity.setValue(observation.getValue());
+            });
+
+            return data;
         } catch (EncodingException | IOException | UnsupportedOperationException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
@@ -225,6 +252,30 @@ public class SOS2Connector extends AbstractSosConnector {
             Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
             return (GetDataAvailabilityResponse) decoder.decode(response);
         } catch (DecodingException | XmlException | IOException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
+    }
+
+    private XmlObject createGetObservationDocument(MeasurementDatasetEntity series, DbQuery query) throws EncodingException {
+        GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
+        request.setProcedures(new ArrayList<>(Arrays.asList(series.getProcedure().getDomainId())));
+        request.setOfferings(new ArrayList<>(Arrays.asList(series.getOffering().getDomainId())));
+        request.setObservedProperties(new ArrayList<>(Arrays.asList(series.getPhenomenon().getDomainId())));
+        request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(series.getFeature().getDomainId())));
+        // TODO add temporal filter
+        EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
+        Object encode = encoderRepository.getEncoder(encoderKey).encode(request);
+        return (XmlObject) encode;
+    }
+
+    private GetObservationResponse createGetObservationResponse(InputStream responseStream) {
+        try {
+            XmlObject response = XmlObject.Factory.parse(responseStream);
+            DecoderKey decoderKey = CodingHelper.getDecoderKey(response);
+            Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
+            return (GetObservationResponse) decoder.decode(response);
+        } catch (XmlException | IOException | DecodingException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
         return null;

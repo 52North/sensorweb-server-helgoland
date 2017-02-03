@@ -34,8 +34,8 @@
     <bean class="org.n52.svalbard.decode.SosStringDecoderv20"/>-->
     <bean class="org.n52.svalbard.decode.SwesDecoderv20"/>
     <!--<bean class="org.n52.svalbard.decode.SwesStringDecoderv20" />
-    <bean class="org.n52.svalbard.decode.SweCommonDecoderV20"/>
-    <bean class="org.n52.svalbard.decode.OmDecoderv20"/>-->
+    <bean class="org.n52.svalbard.decode.SweCommonDecoderV20"/>-->
+    <bean class="org.n52.svalbard.decode.OmDecoderv20"/>
     <bean class="org.n52.svalbard.decode.SamplingDecoderv20"/>
     <!--<bean class="org.n52.svalbard.decode.SwesExtensionDecoderv20"/>
     <bean class="org.n52.svalbard.decode.XlinkDecoderv1999"/>-->
