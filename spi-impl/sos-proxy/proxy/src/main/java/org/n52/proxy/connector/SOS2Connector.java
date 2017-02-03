@@ -42,9 +42,14 @@ import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.shetland.ogc.om.ObservationValue;
+import org.n52.shetland.ogc.filter.FilterConstants;
+import org.n52.shetland.ogc.filter.TemporalFilter;
+import org.n52.shetland.ogc.gml.time.Time;
+import org.n52.shetland.ogc.gml.time.TimeInstant;
+import org.n52.shetland.ogc.gml.time.TimePeriod;
+import org.n52.shetland.ogc.om.SingleObservationValue;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
-import org.n52.shetland.ogc.om.values.Value;
+import org.n52.shetland.ogc.om.values.QuantityValue;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.sos.Sos2Constants;
@@ -105,10 +110,18 @@ public class SOS2Connector extends AbstractSosConnector {
 
             obsResp.getObservationCollection().forEach((observation) -> {
                 MeasurementDataEntity entity = new MeasurementDataEntity();
-                ObservationValue<? extends Value<?>> value = observation.getValue();
+                SingleObservationValue obsValue = (SingleObservationValue) observation.getValue();
 
-//                entity.setValue(observation.getValue());
+                TimeInstant instant = (TimeInstant) obsValue.getPhenomenonTime();
+                entity.setTimestart(instant.getValue().toDate());
+                entity.setTimeend(instant.getValue().toDate());
+                QuantityValue value = (QuantityValue) obsValue.getValue();
+                entity.setValue(value.getValue());
+
+                data.add(entity);
             });
+
+            LOGGER.info("Found " + data.size() + " Entries");
 
             return data;
         } catch (EncodingException | IOException | UnsupportedOperationException ex) {
@@ -261,7 +274,9 @@ public class SOS2Connector extends AbstractSosConnector {
         request.setOfferings(new ArrayList<>(Arrays.asList(series.getOffering().getDomainId())));
         request.setObservedProperties(new ArrayList<>(Arrays.asList(series.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(series.getFeature().getDomainId())));
-        // TODO add temporal filter
+        Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
+        TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time,"phenomenonTime");
+        request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
         EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
         Object encode = encoderRepository.getEncoder(encoderKey).encode(request);
         return (XmlObject) encode;
