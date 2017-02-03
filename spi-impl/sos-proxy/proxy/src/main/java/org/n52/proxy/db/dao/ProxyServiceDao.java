@@ -31,14 +31,14 @@ package org.n52.proxy.db.dao;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.n52.series.db.beans.ServiceEntity;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.dao.ServiceDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEntity> {
+public class ProxyServiceDao extends ServiceDao implements InsertDao<ProxyServiceEntity> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ProxyServiceDao.class);
 
@@ -50,8 +50,8 @@ public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEnti
     }
 
     @Override
-    public ServiceEntity getOrInsertInstance(ServiceEntity service) {
-        ServiceEntity instance = getInstance(service);
+    public ProxyServiceEntity getOrInsertInstance(ProxyServiceEntity service) {
+        ProxyServiceEntity instance = getInstance(service);
         if (instance == null) {
             this.session.save(service);
             LOGGER.info("Save service: " + service);
@@ -60,11 +60,11 @@ public class ProxyServiceDao extends ServiceDao implements InsertDao<ServiceEnti
         return instance;
     }
 
-    private ServiceEntity getInstance(ServiceEntity service) {
+    private ProxyServiceEntity getInstance(ProxyServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq(COLUMN_TYPE, service.getType()))
                 .add(Restrictions.eq(COLUMN_URL, service.getUrl()));
-        return (ServiceEntity) criteria.uniqueResult();
+        return (ProxyServiceEntity) criteria.uniqueResult();
     }
 
 }

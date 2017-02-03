@@ -35,8 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
@@ -83,7 +81,7 @@ public class SOS2Connector extends AbstractSosConnector {
     public ServiceConstellation getConstellation(DataSourceConfiguration config) {
         try {
             ServiceConstellation serviceConstellation = new ServiceConstellation();
-            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
+            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
 
             HttpResponse response = this.sendRequest(createGetCapabilitiesDocument(), config.getUrl());
             GetCapabilitiesResponse capabilitiesResponse = createGetCapabilitiesResponse(response.getEntity().getContent());

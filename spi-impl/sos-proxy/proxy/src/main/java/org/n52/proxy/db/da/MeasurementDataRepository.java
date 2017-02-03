@@ -35,6 +35,7 @@ import org.hibernate.Session;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.proxy.connector.AbstractSosConnector;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
@@ -74,8 +75,8 @@ public class MeasurementDataRepository
 
     @Override
     protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
-        String description = seriesEntity.getService().getDescription();
-        AbstractSosConnector connector = this.getConnector(description);
+        String connectorName = ((ProxyServiceEntity) seriesEntity.getService()).getConnector();
+        AbstractSosConnector connector = this.getConnector(connectorName);
         MeasurementData result = new MeasurementData();
         List<MeasurementDataEntity> observations = connector.getObservations(seriesEntity, query);
         for (MeasurementDataEntity observation : observations) {

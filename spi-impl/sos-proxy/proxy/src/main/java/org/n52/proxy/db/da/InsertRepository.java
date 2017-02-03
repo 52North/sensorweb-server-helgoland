@@ -34,6 +34,7 @@ import java.util.Set;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.proxy.db.beans.RelatedFeatureEntity;
 import org.n52.proxy.db.beans.RelatedFeatureRoleEntity;
 import org.n52.proxy.db.dao.ProxyCategoryDao;
@@ -52,7 +53,6 @@ import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +60,7 @@ public class InsertRepository extends SessionAwareRepository {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(InsertRepository.class);
 
-    public synchronized void prepareInserting(ServiceEntity service) {
+    public synchronized void prepareInserting(ProxyServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
@@ -72,7 +72,7 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public void cleanUp(ServiceEntity service) {
+    public void cleanUp(ProxyServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
@@ -92,11 +92,11 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    public ServiceEntity insertService(ServiceEntity service) {
+    public ProxyServiceEntity insertService(ProxyServiceEntity service) {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            ServiceEntity insertedService = insertService(service, session);
+            ProxyServiceEntity insertedService = insertService(service, session);
             session.flush();
             transaction.commit();
             return insertedService;
@@ -109,7 +109,7 @@ public class InsertRepository extends SessionAwareRepository {
         Session session = getSession();
         try {
             Transaction transaction = session.beginTransaction();
-            OfferingEntity insertedOffering = insertOffering(offeringEntity, session);
+            insertOffering(offeringEntity, session);
             session.flush();
             transaction.commit();
         } finally {
@@ -156,7 +156,7 @@ public class InsertRepository extends SessionAwareRepository {
         }
     }
 
-    private ServiceEntity insertService(ServiceEntity service, Session session) {
+    private ProxyServiceEntity insertService(ProxyServiceEntity service, Session session) {
         return new ProxyServiceDao(session).getOrInsertInstance(service);
     }
 

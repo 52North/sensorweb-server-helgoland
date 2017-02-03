@@ -32,17 +32,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 
 public class ServiceConstellation {
 
     // service
-    private ServiceEntity service;
+    private ProxyServiceEntity service;
 
     // map für procedures
     private final Map<String, ProcedureEntity> procedures = new HashMap<>();
@@ -62,11 +62,11 @@ public class ServiceConstellation {
     // dataset collection
     private final Collection<DatasetConstellation> datasets = new HashSet<>();
 
-    public ServiceEntity getService() {
+    public ProxyServiceEntity getService() {
         return service;
     }
 
-    public void setService(ServiceEntity service) {
+    public void setService(ProxyServiceEntity service) {
         this.service = service;
     }
 

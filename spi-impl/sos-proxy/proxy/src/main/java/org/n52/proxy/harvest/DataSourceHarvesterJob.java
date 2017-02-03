@@ -36,6 +36,7 @@ import org.n52.proxy.config.DataSourceJobConfiguration;
 import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.connector.EntityBuilder;
 import org.n52.proxy.connector.ServiceConstellation;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.proxy.db.da.InsertRepository;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.FeatureEntity;
@@ -43,7 +44,6 @@ import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -139,7 +139,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     private void saveConstellation(ServiceConstellation constellation) {
         // serviceEntity
-        ServiceEntity service = insertRepository.insertService(constellation.getService());
+        ProxyServiceEntity service = insertRepository.insertService(constellation.getService());
         insertRepository.prepareInserting(service);
 
         // save all constellations
