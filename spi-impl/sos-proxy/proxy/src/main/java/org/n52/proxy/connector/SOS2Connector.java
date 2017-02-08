@@ -50,7 +50,8 @@ import org.n52.shetland.ogc.gml.time.TimePeriod;
 import org.n52.shetland.ogc.om.SingleObservationValue;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
 import org.n52.shetland.ogc.om.values.QuantityValue;
-import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
+import org.n52.shetland.ogc.ows.OwsCapabilities;
+import org.n52.shetland.ogc.ows.OwsServiceProvider;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosCapabilities;
@@ -65,7 +66,6 @@ import org.n52.shetland.ogc.sos.response.GetObservationResponse;
 import org.n52.svalbard.decode.Decoder;
 import org.n52.svalbard.decode.DecoderKey;
 import org.n52.svalbard.decode.exception.DecodingException;
-import org.n52.svalbard.encode.Encoder;
 import org.n52.svalbard.encode.EncoderKey;
 import org.n52.svalbard.encode.exception.EncodingException;
 import org.n52.svalbard.util.CodingHelper;
@@ -77,27 +77,33 @@ public class SOS2Connector extends AbstractSosConnector {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(SOS2Connector.class);
 
+    /**
+     * Matches when the provider name is equal "52North" and service version is
+     * 2.0.0
+     */
     @Override
-    protected boolean canHandle(DataSourceConfiguration config) {
-        return true;
+    protected boolean canHandle(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
+        OwsCapabilities owsCaps = capabilities.getCapabilities();
+        if (owsCaps.getVersion().equals(Sos2Constants.SERVICEVERSION) && owsCaps.getServiceProvider().isPresent()) {
+            OwsServiceProvider servProvider = owsCaps.getServiceProvider().get();
+            if (servProvider.getProviderName().equals("52North")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public ServiceConstellation getConstellation(DataSourceConfiguration config) {
+    public ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
+        ServiceConstellation serviceConstellation = new ServiceConstellation();
         try {
-            ServiceConstellation serviceConstellation = new ServiceConstellation();
-            serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
-
-            HttpResponse response = this.sendRequest(createGetCapabilitiesDocument(), config.getUrl());
-            GetCapabilitiesResponse capabilitiesResponse = createGetCapabilitiesResponse(response.getEntity().getContent());
-            SosCapabilities sosCaps = (SosCapabilities) capabilitiesResponse.getCapabilities();
+            addService(serviceConstellation, config);
+            SosCapabilities sosCaps = (SosCapabilities) capabilities.getCapabilities();
             addDatasets(serviceConstellation, sosCaps, config.getUrl());
-
-            return serviceConstellation;
-        } catch (EncodingException | IOException | UnsupportedOperationException ex) {
+        } catch (UnsupportedOperationException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
-        return null;
+        return serviceConstellation;
     }
 
     @Override
@@ -120,7 +126,6 @@ public class SOS2Connector extends AbstractSosConnector {
 
                 data.add(entity);
             });
-
             LOGGER.info("Found " + data.size() + " Entries");
 
             return data;
@@ -130,7 +135,7 @@ public class SOS2Connector extends AbstractSosConnector {
         return null;
     }
 
-    private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceURI) {
+    private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
         Optional.ofNullable(sosCaps).map((capabilities) -> {
             Optional<SortedSet<SosObservationOffering>> contents = capabilities.getContents().map((offerings) -> {
                 offerings.forEach((offering) -> {
@@ -141,12 +146,10 @@ public class SOS2Connector extends AbstractSosConnector {
                         try {
                             addProcedure(procedureId, serviceConstellation);
 
-                            HttpResponse response = this.sendRequest(createFOIRequest(procedureId), serviceURI);
-                            GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
-
+                            GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
                             addFeature(foiResponse, serviceConstellation);
 
-                            GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId), serviceURI).getEntity().getContent());
+                            GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
                             gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
                                 String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
                                 String categoryId = addCategory(dataAval, serviceConstellation);
@@ -164,6 +167,15 @@ public class SOS2Connector extends AbstractSosConnector {
             });
             return null;
         });
+    }
+
+    private GetDataAvailabilityResponse getDataAvailabilityResponse(String procedureId, String serviceUri) throws IOException, EncodingException, UnsupportedOperationException {
+        GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId), serviceUri).getEntity().getContent());
+        return gdaResponse;
+    }
+
+    private void addService(ServiceConstellation serviceConstellation, DataSourceConfiguration config) {
+        serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
     }
 
     private String addCategory(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
@@ -207,25 +219,10 @@ public class SOS2Connector extends AbstractSosConnector {
         return featureId;
     }
 
-    private XmlObject createGetCapabilitiesDocument() throws EncodingException {
-        GetCapabilitiesRequest request = new GetCapabilitiesRequest(SosConstants.SOS);
-        EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
-        Encoder<Object, Object> encoder = encoderRepository.getEncoder(encoderKey);
-        XmlObject xml = (XmlObject) encoder.encode(request);
-        return xml;
-    }
-
-    private GetCapabilitiesResponse createGetCapabilitiesResponse(InputStream responseStream) {
-        try {
-            XmlObject response = XmlObject.Factory.parse(responseStream);
-            DecoderKey decoderKey = CodingHelper.getDecoderKey(response);
-            Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
-            GetCapabilitiesResponse temp = (GetCapabilitiesResponse) decoder.decode(response);
-            return temp;
-        } catch (DecodingException | XmlException | IOException ex) {
-            LOGGER.error(ex.getLocalizedMessage(), ex);
-        }
-        return null;
+    private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String serviceUri) throws UnsupportedOperationException, IOException, EncodingException {
+        HttpResponse response = this.sendRequest(createFOIRequest(procedureId), serviceUri);
+        GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
+        return foiResponse;
     }
 
     private GetFeatureOfInterestResponse createFoiResponse(InputStream responseStream) {
@@ -251,9 +248,7 @@ public class SOS2Connector extends AbstractSosConnector {
         GetDataAvailabilityRequest request = new GetDataAvailabilityRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(procedure)));
         EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
-        XmlObject xml = (XmlObject) encoderRepository.getEncoder(encoderKey).encode(request);
-        LOGGER.info(xml.xmlText());
-        return xml;
+        return (XmlObject) encoderRepository.getEncoder(encoderKey).encode(request);
     }
 
     private GetDataAvailabilityResponse createGDAResponse(InputStream responseStream) {
@@ -275,7 +270,7 @@ public class SOS2Connector extends AbstractSosConnector {
         request.setObservedProperties(new ArrayList<>(Arrays.asList(series.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(series.getFeature().getDomainId())));
         Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
-        TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time,"phenomenonTime");
+        TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
         EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
         Object encode = encoderRepository.getEncoder(encoderKey).encode(request);

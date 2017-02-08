@@ -28,8 +28,13 @@
  */
 package org.n52.proxy.harvest;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import org.apache.http.HttpResponse;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.io.task.ScheduledJob;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.config.DataSourceJobConfiguration;
@@ -38,6 +43,7 @@ import org.n52.proxy.connector.EntityBuilder;
 import org.n52.proxy.connector.ServiceConstellation;
 import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.proxy.db.da.InsertRepository;
+import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
@@ -45,6 +51,17 @@ import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.UnitEntity;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.shetland.ogc.sos.Sos2Constants;
+import org.n52.shetland.ogc.sos.SosConstants;
+import org.n52.svalbard.decode.DecoderRepository;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.encode.Encoder;
+import org.n52.svalbard.encode.EncoderKey;
+import org.n52.svalbard.encode.EncoderRepository;
+import org.n52.svalbard.encode.exception.EncodingException;
+import org.n52.svalbard.util.CodingHelper;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -72,6 +89,9 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     @Autowired
     private InsertRepository insertRepository;
+
+    @Autowired
+    private DecoderRepository decoderRepository;
 
     @Autowired
     private Set<AbstractSosConnector> connectors;
@@ -112,16 +132,17 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
         DataSourceConfiguration config = recreateConfig(jobDataMap);
+        GetCapabilitiesResponse capabilities = getCapabilities(config);
 
         Iterator<AbstractSosConnector> iterator = connectors.iterator();
         AbstractSosConnector current = iterator.next();
-        while (!current.matches(config)) {
+        while (!current.matches(config, capabilities)) {
             LOGGER.info(current.toString() + " cannot handle " + config);
             current = iterator.next();
         }
 
         LOGGER.info(current.toString() + " create a constellation for " + config);
-        saveConstellation(current.getConstellation(config));
+        saveConstellation(current.getConstellation(config, capabilities));
 
         LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }
@@ -168,6 +189,18 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         });
 
         insertRepository.cleanUp(service);
+    }
+
+    private GetCapabilitiesResponse getCapabilities(DataSourceConfiguration config) {
+        try {
+            SimpleHttpClient simpleHttpClient = new SimpleHttpClient();
+            HttpResponse response = simpleHttpClient.executeGet(config.getUrl()+ "?service=SOS&request=GetCapabilities");
+            XmlObject xmlResponse = XmlObject.Factory.parse(response.getEntity().getContent());
+            return (GetCapabilitiesResponse) decoderRepository.getDecoder(CodingHelper.getDecoderKey(xmlResponse)).decode(xmlResponse);
+        } catch (IOException | UnsupportedOperationException | XmlException | DecodingException ex) {
+            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

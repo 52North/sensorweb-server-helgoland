@@ -28,13 +28,25 @@ package org.n52.proxy;
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.logging.Level;
+import org.apache.http.HttpResponse;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.connector.ServiceConstellation;
+import org.n52.proxy.harvest.DataSourceHarvesterJob;
+import org.n52.proxy.web.SimpleHttpClient;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.svalbard.decode.DecoderRepository;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.util.CodingHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,29 +60,30 @@ public class SosConnectorTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SosConnectorTest.class);
 
 //    private final String uri = "http://sensorweb.demo.52north.org/sensorwebtestbed/service";
-    private final String uri = "http://localhost:8081/52n-sos-webapp/service";
+//    private final String uri = "http://localhost:8081/52n-sos-webapp/service";
 //    private final String uri = "http://sensorweb.demo.52north.org/52n-sos-webapp/service";
+    private final String uri = "http://oceanotrondemo.ifremer.fr/oceanotron/SOS/default";
+//    private final String uri = "http://codm.hzg.de/52n-sos-webapp/service";
 
     @Autowired
     private Set<AbstractSosConnector> connectors;
 
+    @Autowired
+    private DecoderRepository decoderRepository;
+
     @Test
     public void collectEntities() {
-
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("serviceName");
         config.setUrl(uri);
+//        config.setConnector("SOS2Connector");
+        config.setConnector("OceanotronSosConnector");
 
-        Iterator<AbstractSosConnector> iterator = connectors.iterator();
-        AbstractSosConnector current = iterator.next();
-        while (!current.matches(config)) {
-            LOGGER.info(current.toString() + " cannot handle " + config);
-            current = iterator.next();
-        }
+        ServiceConstellation constellation = findConstellation(config);
+        printConstellation(constellation);
+    }
 
-        LOGGER.info(current.toString() + " create a constellation for " + config);
-        ServiceConstellation constellation = current.getConstellation(config);
-
+    private void printConstellation(ServiceConstellation constellation) {
         constellation.getCategories().forEach((name, entity) -> {
             LOGGER.info("Category: " + name);
         });
@@ -84,12 +97,37 @@ public class SosConnectorTest {
             LOGGER.info("Phenomenons: " + name);
         });
         constellation.getProcedures().forEach((name, entity) -> {
-            LOGGER.info("Features: " + name);
+            LOGGER.info("Procedures: " + name);
         });
         constellation.getDatasets().forEach(coll -> {
             LOGGER.info("DatasetCollection: " + coll);
         });
         LOGGER.info("Service: " + constellation.getService());
+    }
+
+    private ServiceConstellation findConstellation(DataSourceConfiguration config) {
+        Iterator<AbstractSosConnector> iterator = connectors.iterator();
+        AbstractSosConnector current = iterator.next();
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        while (!current.matches(config, capabilities)) {
+            LOGGER.info(current.toString() + " cannot handle " + config);
+            current = iterator.next();
+        }
+        LOGGER.info(current.toString() + " create a constellation for " + config);
+        ServiceConstellation constellation = current.getConstellation(config, capabilities);
+        return constellation;
+    }
+
+    private GetCapabilitiesResponse createCapabilities(DataSourceConfiguration config) {
+        try {
+            SimpleHttpClient simpleHttpClient = new SimpleHttpClient();
+            HttpResponse response = simpleHttpClient.executeGet(config.getUrl() + "?service=SOS&request=GetCapabilities");
+            XmlObject xmlResponse = XmlObject.Factory.parse(response.getEntity().getContent());
+            return (GetCapabilitiesResponse) decoderRepository.getDecoder(CodingHelper.getDecoderKey(xmlResponse)).decode(xmlResponse);
+        } catch (IOException | UnsupportedOperationException | XmlException | DecodingException ex) {
+            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

@@ -8,6 +8,8 @@ import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.shetland.ogc.sos.SosObservationOffering;
 import org.n52.svalbard.decode.DecoderRepository;
 import org.n52.svalbard.encode.EncoderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,12 @@ public abstract class AbstractSosConnector {
         return getClass().getName();
     }
 
-    public boolean matches(DataSourceConfiguration config) {
-        if (config.getConnector() != null
-                && (this.getClass().getSimpleName().equals(config.getConnector())
-                || this.getClass().getName().equals(config.getConnector()))) {
-            return true;
+    public boolean matches(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
+        if (config.getConnector() != null){
+            return this.getClass().getSimpleName().equals(config.getConnector())
+                    || this.getClass().getName().equals(config.getConnector());
         } else {
-            return canHandle(config);
+            return canHandle(config, capabilities);
         }
     }
 
@@ -38,9 +39,9 @@ public abstract class AbstractSosConnector {
         return new SimpleHttpClient().executePost(uri, request);
     }
 
-    protected abstract boolean canHandle(DataSourceConfiguration config);
+    protected abstract boolean canHandle(DataSourceConfiguration config, GetCapabilitiesResponse capabilities);
 
-    public abstract ServiceConstellation getConstellation(DataSourceConfiguration config);
+    public abstract ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities);
 
     public abstract List<MeasurementDataEntity> getObservations(MeasurementDatasetEntity seriesEntity, DbQuery query);
 
