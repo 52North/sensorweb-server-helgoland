@@ -28,11 +28,16 @@
  */
 package org.n52.proxy.connector;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
+import org.apache.http.HttpResponse;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
@@ -58,6 +63,12 @@ import org.n52.shetland.ogc.sos.request.GetFeatureOfInterestRequest;
 import org.n52.shetland.ogc.sos.request.GetObservationRequest;
 import org.n52.shetland.ogc.sos.response.GetFeatureOfInterestResponse;
 import org.n52.shetland.ogc.sos.response.GetObservationResponse;
+import org.n52.svalbard.decode.Decoder;
+import org.n52.svalbard.decode.DecoderKey;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.encode.EncoderKey;
+import org.n52.svalbard.encode.exception.EncodingException;
+import org.n52.svalbard.util.CodingHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -97,24 +108,31 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public List<MeasurementDataEntity> getObservations(MeasurementDatasetEntity seriesEntity, DbQuery query) {
-        GetObservationResponse obsResp = createObservationResponse(seriesEntity, query);
+        try {
+            HttpResponse response = this.sendRequest(createGetObservationDocument(seriesEntity, query), seriesEntity.getService().getUrl());
+            GetObservationResponse obsResp = createGetObservationResponse(response.getEntity().getContent());
 
-        List<MeasurementDataEntity> data = new ArrayList<>();
+            List<MeasurementDataEntity> data = new ArrayList<>();
 
-        obsResp.getObservationCollection().forEach((observation) -> {
-            MeasurementDataEntity entity = new MeasurementDataEntity();
-            SingleObservationValue obsValue = (SingleObservationValue) observation.getValue();
+            obsResp.getObservationCollection().forEach((observation) -> {
+                MeasurementDataEntity entity = new MeasurementDataEntity();
+                SingleObservationValue obsValue = (SingleObservationValue) observation.getValue();
 
-            TimeInstant instant = (TimeInstant) obsValue.getPhenomenonTime();
-            entity.setTimestart(instant.getValue().toDate());
-            entity.setTimeend(instant.getValue().toDate());
-            QuantityValue value = (QuantityValue) obsValue.getValue();
-            entity.setValue(value.getValue());
+                TimeInstant instant = (TimeInstant) obsValue.getPhenomenonTime();
+                entity.setTimestart(instant.getValue().toDate());
+                entity.setTimeend(instant.getValue().toDate());
+                QuantityValue value = (QuantityValue) obsValue.getValue();
+                entity.setValue(value.getValue());
 
-            data.add(entity);
-        });
-        LOGGER.info("Found " + data.size() + " Entries");
-        return data;
+                data.add(entity);
+            });
+            LOGGER.info("Found " + data.size() + " Entries");
+
+            return data;
+        } catch (EncodingException | IOException | UnsupportedOperationException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
@@ -125,26 +143,35 @@ public class SOS2Connector extends AbstractSosConnector {
                     String offeringId = addOffering(offering, serviceConstellation);
 
                     offering.getProcedures().forEach((procedureId) -> {
-                        addProcedure(procedureId, serviceConstellation);
+                        try {
+                            addProcedure(procedureId, serviceConstellation);
 
-                        GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
-                        addFeature(foiResponse, serviceConstellation);
+                            GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
+                            addFeature(foiResponse, serviceConstellation);
 
-                        GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
-                        gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
-                            String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
-                            String categoryId = addCategory(dataAval, serviceConstellation);
-                            String featureId = dataAval.getFeatureOfInterest().getHref();
-                            serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
-                        });
+                            GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
+                            gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
+                                String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
+                                String categoryId = addCategory(dataAval, serviceConstellation);
+                                String featureId = dataAval.getFeatureOfInterest().getHref();
+                                serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
+                            });
 
-                        LOGGER.info(foiResponse.toString());
+                            LOGGER.info(foiResponse.toString());
+                        } catch (EncodingException | IOException | UnsupportedOperationException ex) {
+                            LOGGER.error(ex.getLocalizedMessage(), ex);
+                        }
                     });
                 });
                 return null;
             });
             return null;
         });
+    }
+
+    private GetDataAvailabilityResponse getDataAvailabilityResponse(String procedureId, String serviceUri) throws IOException, EncodingException, UnsupportedOperationException {
+        GetDataAvailabilityResponse gdaResponse = createGDAResponse(this.sendRequest(createGDARequest(procedureId), serviceUri).getEntity().getContent());
+        return gdaResponse;
     }
 
     private void addService(ServiceConstellation serviceConstellation, DataSourceConfiguration config) {
@@ -192,28 +219,74 @@ public class SOS2Connector extends AbstractSosConnector {
         return featureId;
     }
 
-    private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String serviceUri) {
+    private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String serviceUri) throws UnsupportedOperationException, IOException, EncodingException {
+        HttpResponse response = this.sendRequest(createFOIRequest(procedureId), serviceUri);
+        GetFeatureOfInterestResponse foiResponse = createFoiResponse(response.getEntity().getContent());
+        return foiResponse;
+    }
+
+    private GetFeatureOfInterestResponse createFoiResponse(InputStream responseStream) {
+        try {
+            XmlObject response = XmlObject.Factory.parse(responseStream);
+            DecoderKey decoderKey = CodingHelper.getDecoderKey(response);
+            Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
+            return (GetFeatureOfInterestResponse) decoder.decode(response);
+        } catch (DecodingException | XmlException | IOException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
+    }
+
+    private XmlObject createFOIRequest(String procedure) throws EncodingException {
         GetFeatureOfInterestRequest request = new GetFeatureOfInterestRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
-        request.setProcedures(new ArrayList<>(Arrays.asList(procedureId)));
-        return (GetFeatureOfInterestResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
+        request.setProcedures(new ArrayList<>(Arrays.asList(procedure)));
+        EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
+        return (XmlObject) encoderRepository.getEncoder(encoderKey).encode(request);
     }
 
-    private GetDataAvailabilityResponse getDataAvailabilityResponse(String procedureId, String serviceUri) {
+    private XmlObject createGDARequest(String procedure) throws EncodingException {
         GetDataAvailabilityRequest request = new GetDataAvailabilityRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
-        request.setProcedures(new ArrayList<>(Arrays.asList(procedureId)));
-        return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
+        request.setProcedures(new ArrayList<>(Arrays.asList(procedure)));
+        EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
+        return (XmlObject) encoderRepository.getEncoder(encoderKey).encode(request);
     }
 
-    private GetObservationResponse createObservationResponse(MeasurementDatasetEntity seriesEntity, DbQuery query) {
+    private GetDataAvailabilityResponse createGDAResponse(InputStream responseStream) {
+        try {
+            XmlObject response = XmlObject.Factory.parse(responseStream);
+            DecoderKey decoderKey = CodingHelper.getDecoderKey(response);
+            Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
+            return (GetDataAvailabilityResponse) decoder.decode(response);
+        } catch (DecodingException | XmlException | IOException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
+    }
+
+    private XmlObject createGetObservationDocument(MeasurementDatasetEntity series, DbQuery query) throws EncodingException {
         GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
-        request.setProcedures(new ArrayList<>(Arrays.asList(seriesEntity.getProcedure().getDomainId())));
-        request.setOfferings(new ArrayList<>(Arrays.asList(seriesEntity.getOffering().getDomainId())));
-        request.setObservedProperties(new ArrayList<>(Arrays.asList(seriesEntity.getPhenomenon().getDomainId())));
-        request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
+        request.setProcedures(new ArrayList<>(Arrays.asList(series.getProcedure().getDomainId())));
+        request.setOfferings(new ArrayList<>(Arrays.asList(series.getOffering().getDomainId())));
+        request.setObservedProperties(new ArrayList<>(Arrays.asList(series.getPhenomenon().getDomainId())));
+        request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(series.getFeature().getDomainId())));
         Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
         TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
-        return (GetObservationResponse) this.getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+        EncoderKey encoderKey = CodingHelper.getEncoderKey(Sos2Constants.NS_SOS_20, request);
+        Object encode = encoderRepository.getEncoder(encoderKey).encode(request);
+        return (XmlObject) encode;
+    }
+
+    private GetObservationResponse createGetObservationResponse(InputStream responseStream) {
+        try {
+            XmlObject response = XmlObject.Factory.parse(responseStream);
+            DecoderKey decoderKey = CodingHelper.getDecoderKey(response);
+            Decoder<Object, Object> decoder = decoderRepository.getDecoder(decoderKey);
+            return (GetObservationResponse) decoder.decode(response);
+        } catch (XmlException | IOException | DecodingException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+        }
+        return null;
     }
 
 }

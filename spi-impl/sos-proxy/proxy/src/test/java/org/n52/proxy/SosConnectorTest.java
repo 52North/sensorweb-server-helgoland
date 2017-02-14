@@ -30,7 +30,6 @@ package org.n52.proxy;
  */
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import org.apache.http.HttpResponse;
@@ -59,45 +58,74 @@ public class SosConnectorTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SosConnectorTest.class);
 
-//    private final String uri = "http://sensorweb.demo.52north.org/sensorwebtestbed/service";
-//    private final String uri = "http://localhost:8081/52n-sos-webapp/service";
-//    private final String uri = "http://sensorweb.demo.52north.org/52n-sos-webapp/service";
-    private final String uri = "http://oceanotrondemo.ifremer.fr/oceanotron/SOS/default";
-//    private final String uri = "http://codm.hzg.de/52n-sos-webapp/service";
-
     @Autowired
     private Set<AbstractSosConnector> connectors;
 
     @Autowired
     private DecoderRepository decoderRepository;
 
-    @Test
-    public void collectEntities() {
+//    @Test
+    public void collectLocalhost() {
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("serviceName");
-        config.setUrl(uri);
-//        config.setConnector("SOS2Connector");
-        config.setConnector("OceanotronSosConnector");
+        config.setUrl("http://localhost:8081/52n-sos-webapp/service");
+        testConfig(config);
+    }
+    
+//    @Test
+    public void collectSensorwebTestbed() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setItemName("sensorwebTestbed");
+        config.setUrl("http://sensorweb.demo.52north.org/sensorwebtestbed/service");
+        testConfig(config);
+    }
+    
+//    @Test
+    public void collectSensorwebDemo() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setItemName("sensorwebDemo");
+        config.setUrl("http://sensorweb.demo.52north.org/52n-sos-webapp/service");
+        testConfig(config);
+    }
 
+//    @Test
+    public void collectOceanotron() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setItemName("serviceName");
+        config.setUrl("http://oceanotrondemo.ifremer.fr/oceanotron/SOS/default");
+        config.setConnector("OceanotronSosConnector");
+        testConfig(config);
+    }
+
+//    @Test
+    public void collectHzgSOS() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setItemName("serviceName");
+        config.setUrl("http://codm.hzg.de/52n-sos-webapp/service");
+        config.setConnector("TrajectorySOSConnector");
+        testConfig(config);
+    }
+
+    private void testConfig(DataSourceConfiguration config) {
         ServiceConstellation constellation = findConstellation(config);
         printConstellation(constellation);
     }
-
+    
     private void printConstellation(ServiceConstellation constellation) {
-        constellation.getCategories().forEach((name, entity) -> {
-            LOGGER.info("Category: " + name);
+        constellation.getCategories().forEach((id, entity) -> {
+            LOGGER.info("Category: " + id + " - " + entity.getName());
         });
-        constellation.getFeatures().forEach((name, entity) -> {
-            LOGGER.info("Features: " + name);
+        constellation.getFeatures().forEach((id, entity) -> {
+            LOGGER.info("Feature: " + id + " - " + entity.getName());
         });
-        constellation.getOfferings().forEach((name, entity) -> {
-            LOGGER.info("Offerings: " + name);
+        constellation.getOfferings().forEach((id, entity) -> {
+            LOGGER.info("Offering: " + id + " - " + entity.getName());
         });
-        constellation.getPhenomenons().forEach((name, entity) -> {
-            LOGGER.info("Phenomenons: " + name);
+        constellation.getPhenomenons().forEach((id, entity) -> {
+            LOGGER.info("Phenomenon: " + id + " - " + entity.getName());
         });
-        constellation.getProcedures().forEach((name, entity) -> {
-            LOGGER.info("Procedures: " + name);
+        constellation.getProcedures().forEach((id, entity) -> {
+            LOGGER.info("Procedure: " + id + " - " + entity.getName());
         });
         constellation.getDatasets().forEach(coll -> {
             LOGGER.info("DatasetCollection: " + coll);
