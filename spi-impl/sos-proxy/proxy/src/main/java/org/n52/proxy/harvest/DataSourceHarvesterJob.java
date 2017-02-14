@@ -29,7 +29,6 @@
 package org.n52.proxy.harvest;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import org.apache.http.HttpResponse;
@@ -51,16 +50,9 @@ import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.shetland.ogc.ows.service.GetCapabilitiesRequest;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
-import org.n52.shetland.ogc.sos.Sos2Constants;
-import org.n52.shetland.ogc.sos.SosConstants;
 import org.n52.svalbard.decode.DecoderRepository;
 import org.n52.svalbard.decode.exception.DecodingException;
-import org.n52.svalbard.encode.Encoder;
-import org.n52.svalbard.encode.EncoderKey;
-import org.n52.svalbard.encode.EncoderRepository;
-import org.n52.svalbard.encode.exception.EncodingException;
 import org.n52.svalbard.util.CodingHelper;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -131,18 +123,22 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
         JobDetail jobDetail = context.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-        DataSourceConfiguration config = recreateConfig(jobDataMap);
-        GetCapabilitiesResponse capabilities = getCapabilities(config);
+        DataSourceConfiguration dataSource = recreateConfig(jobDataMap);
+        GetCapabilitiesResponse capabilities = getCapabilities(dataSource);
 
-        Iterator<AbstractSosConnector> iterator = connectors.iterator();
-        AbstractSosConnector current = iterator.next();
-        while (!current.matches(config, capabilities)) {
-            LOGGER.info(current.toString() + " cannot handle " + config);
-            current = iterator.next();
+        ServiceConstellation constellation = null;
+        for (AbstractSosConnector connector : connectors) {
+            if (connector.matches(dataSource, capabilities)) {
+                LOGGER.info(connector.toString() + " create a constellation for " + dataSource);
+                constellation = connector.getConstellation(dataSource, capabilities);
+                break;
+            }
         }
-
-        LOGGER.info(current.toString() + " create a constellation for " + config);
-        saveConstellation(current.getConstellation(config, capabilities));
+        if (constellation == null) {
+            LOGGER.warn("No connector found for " + dataSource);
+        } else {
+            saveConstellation(constellation);
+        }
 
         LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }

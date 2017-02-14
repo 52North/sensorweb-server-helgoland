@@ -30,11 +30,13 @@ package org.n52.proxy;
  */
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.n52.proxy.config.DataSourceConfiguration;
@@ -52,6 +54,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:artic-sea-test.xml"})
 public class SosConnectorTest {
@@ -71,7 +74,7 @@ public class SosConnectorTest {
         config.setUrl("http://localhost:8081/52n-sos-webapp/service");
         testConfig(config);
     }
-    
+
 //    @Test
     public void collectSensorwebTestbed() {
         DataSourceConfiguration config = new DataSourceConfiguration();
@@ -79,7 +82,7 @@ public class SosConnectorTest {
         config.setUrl("http://sensorweb.demo.52north.org/sensorwebtestbed/service");
         testConfig(config);
     }
-    
+
 //    @Test
     public void collectSensorwebDemo() {
         DataSourceConfiguration config = new DataSourceConfiguration();
@@ -91,7 +94,7 @@ public class SosConnectorTest {
 //    @Test
     public void collectOceanotron() {
         DataSourceConfiguration config = new DataSourceConfiguration();
-        config.setItemName("serviceName");
+        config.setItemName("oceanoTron");
         config.setUrl("http://oceanotrondemo.ifremer.fr/oceanotron/SOS/default");
         config.setConnector("OceanotronSosConnector");
         testConfig(config);
@@ -100,17 +103,29 @@ public class SosConnectorTest {
 //    @Test
     public void collectHzgSOS() {
         DataSourceConfiguration config = new DataSourceConfiguration();
-        config.setItemName("serviceName");
+        config.setItemName("hzg-sos");
         config.setUrl("http://codm.hzg.de/52n-sos-webapp/service");
         config.setConnector("TrajectorySOSConnector");
         testConfig(config);
     }
 
+//    @Test
+    public void collectArpaV5() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setItemName("arpav5");
+        config.setUrl("http://arpa-er-axe.geodab.eu/gi-axe/services/sos/v5");
+        testConfig(config);
+    }
+
     private void testConfig(DataSourceConfiguration config) {
         ServiceConstellation constellation = findConstellation(config);
-        printConstellation(constellation);
+        if (constellation != null) {
+            printConstellation(constellation);
+        } else {
+            LOGGER.warn("No connector found for " + config);
+        }
     }
-    
+
     private void printConstellation(ServiceConstellation constellation) {
         constellation.getCategories().forEach((id, entity) -> {
             LOGGER.info("Category: " + id + " - " + entity.getName());
@@ -134,15 +149,15 @@ public class SosConnectorTest {
     }
 
     private ServiceConstellation findConstellation(DataSourceConfiguration config) {
-        Iterator<AbstractSosConnector> iterator = connectors.iterator();
-        AbstractSosConnector current = iterator.next();
         GetCapabilitiesResponse capabilities = createCapabilities(config);
-        while (!current.matches(config, capabilities)) {
-            LOGGER.info(current.toString() + " cannot handle " + config);
-            current = iterator.next();
+        ServiceConstellation constellation = null;
+        for (AbstractSosConnector connector : connectors) {
+            if (connector.matches(config, capabilities)) {
+                LOGGER.info(connector.toString() + " create a constellation for " + config);
+                constellation = connector.getConstellation(config, capabilities);
+                break;
+            }
         }
-        LOGGER.info(current.toString() + " create a constellation for " + config);
-        ServiceConstellation constellation = current.getConstellation(config, capabilities);
         return constellation;
     }
 
