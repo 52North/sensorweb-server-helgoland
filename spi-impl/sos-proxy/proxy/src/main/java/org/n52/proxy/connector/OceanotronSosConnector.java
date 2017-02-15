@@ -6,11 +6,13 @@ import java.util.List;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.connector.utils.ConnectorHelper;
+import org.n52.proxy.connector.utils.DatasetConstellation;
+import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.ows.OwsCapabilities;
-import org.n52.shetland.ogc.ows.OwsServiceIdentification;
 import org.n52.shetland.ogc.ows.OwsServiceProvider;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.sos.Sos1Constants;
@@ -35,17 +37,15 @@ public class OceanotronSosConnector extends AbstractSosConnector {
     public ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
         ServiceConstellation serviceConstellation = new ServiceConstellation();
         try {
-            addService(serviceConstellation, config);
+            config.setVersion(Sos1Constants.SERVICEVERSION);
+            config.setConnector(getConnectorName());
+            ConnectorHelper.addService(config, serviceConstellation);
             SosCapabilities sosCaps = (SosCapabilities) capabilities.getCapabilities();
             addDatasets(serviceConstellation, sosCaps, config.getUrl());
         } catch (UnsupportedOperationException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
         return serviceConstellation;
-    }
-
-    private void addService(ServiceConstellation serviceConstellation, DataSourceConfiguration config) {
-        serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos1Constants.SERVICEVERSION));
     }
 
     /**

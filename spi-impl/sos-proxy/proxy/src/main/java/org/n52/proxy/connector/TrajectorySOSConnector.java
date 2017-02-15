@@ -34,12 +34,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.connector.utils.ConnectorHelper;
+import org.n52.proxy.connector.utils.DatasetConstellation;
+import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.filter.FilterConstants;
 import org.n52.shetland.ogc.filter.TemporalFilter;
-import org.n52.shetland.ogc.gml.CodeType;
 import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.gml.time.TimePeriod;
@@ -86,7 +88,9 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
     public ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
         ServiceConstellation serviceConstellation = new ServiceConstellation();
         try {
-            addService(serviceConstellation, config);
+            config.setVersion(Sos2Constants.SERVICEVERSION);
+            config.setConnector(getConnectorName());
+            ConnectorHelper.addService(config, serviceConstellation);
             SosCapabilities sosCaps = (SosCapabilities) capabilities.getCapabilities();
             addDatasets(serviceConstellation, sosCaps, config.getUrl());
         } catch (UnsupportedOperationException ex) {
@@ -132,7 +136,7 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
     }
 
     private void doForOffering(SosObservationOffering offering, ServiceConstellation serviceConstellation, String serviceUri) {
-        String offeringId = addOffering(offering, serviceConstellation);
+        String offeringId = ConnectorHelper.addOffering(offering, serviceConstellation);
                     offering.getProcedures().forEach((procedureId) -> {
                         offering.getObservableProperties().forEach((obsProp) -> {
                             doDataAvailability(obsProp, procedureId, offeringId, serviceUri, serviceConstellation);
@@ -145,47 +149,11 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, offeringId, obsProp, serviceUri);
         gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
             String featureId = addFeature(dataAval, serviceConstellation);
-            addProcedure(dataAval, serviceConstellation);
-            String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
-            String categoryId = addCategory(dataAval, serviceConstellation);
+            ConnectorHelper.addProcedure(dataAval, true, true, serviceConstellation);
+            String phenomenonId = ConnectorHelper.addPhenomenon(dataAval, serviceConstellation);
+            String categoryId = ConnectorHelper.addCategory(dataAval, serviceConstellation);
             serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
         });
-    }
-
-    private void addService(ServiceConstellation serviceConstellation, DataSourceConfiguration config) {
-        serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
-    }
-
-    private String addCategory(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
-        String categoryId = dataAval.getObservedProperty().getHref();
-        String categoryName = dataAval.getObservedProperty().getTitle();
-        serviceConstellation.putCategory(categoryId, categoryName);
-        return categoryId;
-    }
-
-    private String addPhenomenon(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
-        String phenomenonId = dataAval.getObservedProperty().getHref();
-        String phenomenonName = dataAval.getObservedProperty().getTitle();
-        serviceConstellation.putPhenomenon(phenomenonId, phenomenonName);
-        return phenomenonId;
-    }
-
-    private String addProcedure(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
-        String procedureId = dataAval.getProcedure().getHref();
-        String procedureName = dataAval.getProcedure().getTitle();
-        serviceConstellation.putProcedure(procedureId, procedureName, true, true);
-        return procedureId;
-    }
-
-    private String addOffering(SosObservationOffering offering, ServiceConstellation serviceConstellation) {
-        String offeringId = offering.getIdentifier();
-        CodeType name = offering.getFirstName();
-        if (name != null) {
-            serviceConstellation.putOffering(offeringId, name.getValue());
-        } else {
-            serviceConstellation.putOffering(offeringId, offeringId);
-        }
-        return offeringId;
     }
 
     private String addFeature(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {

@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;

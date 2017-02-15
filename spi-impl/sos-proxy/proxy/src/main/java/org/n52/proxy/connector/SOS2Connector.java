@@ -34,11 +34,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.connector.utils.ConnectorHelper;
+import org.n52.proxy.connector.utils.DatasetConstellation;
+import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.filter.FilterConstants;
 import org.n52.shetland.ogc.filter.TemporalFilter;
+import org.n52.shetland.ogc.gml.AbstractFeature;
 import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.gml.time.TimePeriod;
@@ -86,7 +90,9 @@ public class SOS2Connector extends AbstractSosConnector {
     public ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
         ServiceConstellation serviceConstellation = new ServiceConstellation();
         try {
-            addService(serviceConstellation, config);
+            config.setVersion(Sos2Constants.SERVICEVERSION);
+            config.setConnector(getConnectorName());
+            ConnectorHelper.addService(config, serviceConstellation);
             SosCapabilities sosCaps = (SosCapabilities) capabilities.getCapabilities();
             addDatasets(serviceConstellation, sosCaps, config.getUrl());
         } catch (UnsupportedOperationException ex) {
@@ -122,18 +128,21 @@ public class SOS2Connector extends AbstractSosConnector {
             Optional<SortedSet<SosObservationOffering>> contents = capabilities.getContents().map((offerings) -> {
                 offerings.forEach((offering) -> {
 
-                    String offeringId = addOffering(offering, serviceConstellation);
+                    String offeringId = ConnectorHelper.addOffering(offering, serviceConstellation);
 
                     offering.getProcedures().forEach((procedureId) -> {
-                        addProcedure(procedureId, serviceConstellation);
+                        ConnectorHelper.addProcedure(procedureId, true, false, serviceConstellation);
 
                         GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
-                        addFeature(foiResponse, serviceConstellation);
+                        AbstractFeature abstractFeature = foiResponse.getAbstractFeature();
+                        if (abstractFeature instanceof SamplingFeature) {
+                            ConnectorHelper.addFeature((SamplingFeature) abstractFeature, serviceConstellation);
+                        }
 
                         GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
                         gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
-                            String phenomenonId = addPhenomenon(dataAval, serviceConstellation);
-                            String categoryId = addCategory(dataAval, serviceConstellation);
+                            String phenomenonId = ConnectorHelper.addPhenomenon(dataAval, serviceConstellation);
+                            String categoryId = ConnectorHelper.addCategory(dataAval, serviceConstellation);
                             String featureId = dataAval.getFeatureOfInterest().getHref();
                             serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
                         });
@@ -145,51 +154,6 @@ public class SOS2Connector extends AbstractSosConnector {
             });
             return null;
         });
-    }
-
-    private void addService(ServiceConstellation serviceConstellation, DataSourceConfiguration config) {
-        serviceConstellation.setService(EntityBuilder.createService(config.getItemName(), "here goes description", getConnectorName(), config.getUrl(), Sos2Constants.SERVICEVERSION));
-    }
-
-    private String addCategory(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
-        String categoryId = dataAval.getObservedProperty().getHref();
-        String categoryName = dataAval.getObservedProperty().getTitle();
-        serviceConstellation.putCategory(categoryId, categoryName);
-        return categoryId;
-    }
-
-    private String addPhenomenon(GetDataAvailabilityResponse.DataAvailability dataAval, ServiceConstellation serviceConstellation) {
-        String phenomenonId = dataAval.getObservedProperty().getHref();
-        String phenomenonName = dataAval.getObservedProperty().getTitle();
-        serviceConstellation.putPhenomenon(phenomenonId, phenomenonName);
-        return phenomenonId;
-    }
-
-    private String addProcedure(String procedureId, ServiceConstellation serviceConstellation) {
-        serviceConstellation.putProcedure(procedureId, procedureId, true, false);
-        return procedureId;
-    }
-
-    private String addOffering(SosObservationOffering offering, ServiceConstellation serviceConstellation) {
-        String offeringId = offering.getIdentifier();
-        serviceConstellation.putOffering(offeringId, offeringId);
-        return offeringId;
-    }
-
-    private String addFeature(GetFeatureOfInterestResponse foiResponse, ServiceConstellation serviceConstellation) {
-        SamplingFeature abstractFeature = (SamplingFeature) foiResponse.getAbstractFeature();
-        String featureId = abstractFeature.getIdentifier();
-        String featureName;
-        if (abstractFeature.getName().size() == 1 && abstractFeature.getName().get(0).getValue() != null) {
-            featureName = abstractFeature.getName().get(0).getValue();
-        } else {
-            featureName = featureId;
-        }
-        double lat = abstractFeature.getGeometry().getCoordinate().x;
-        double lng = abstractFeature.getGeometry().getCoordinate().y;
-        int srid = abstractFeature.getGeometry().getSRID();
-        serviceConstellation.putFeature(featureId, featureName, lat, lng, srid);
-        return featureId;
     }
 
     private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String serviceUri) {

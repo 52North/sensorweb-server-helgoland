@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.proxy.connector;
+package org.n52.proxy.connector.utils;
 
 import java.util.Collection;
 import java.util.HashMap;

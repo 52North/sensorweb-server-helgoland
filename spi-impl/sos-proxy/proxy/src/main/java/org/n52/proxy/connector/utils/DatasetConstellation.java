@@ -26,11 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.proxy.connector;
+package org.n52.proxy.connector.utils;
 
 /**
- *
- * @author jansch
+ * @author Jan Schulte
  */
 public class DatasetConstellation {
 

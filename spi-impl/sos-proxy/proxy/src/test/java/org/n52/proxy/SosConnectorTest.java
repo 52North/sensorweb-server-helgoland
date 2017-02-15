@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.AbstractSosConnector;
-import org.n52.proxy.connector.ServiceConstellation;
+import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.proxy.harvest.DataSourceHarvesterJob;
 import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
@@ -52,7 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:artic-sea-test.xml"})
 public class SosConnectorTest {
@@ -145,6 +145,14 @@ public class SosConnectorTest {
             LOGGER.info("DatasetCollection: " + coll);
         });
         LOGGER.info("Service: " + constellation.getService());
+        StringBuilder sb = new StringBuilder();
+        sb.append(constellation.getCategories().size()).append(" Categories - ");
+        sb.append(constellation.getFeatures().size()).append(" Features - ");
+        sb.append(constellation.getOfferings().size()).append(" Offerings - ");
+        sb.append(constellation.getPhenomenons().size()).append(" Phenomena - ");
+        sb.append(constellation.getProcedures().size()).append(" Procedures - ");
+        sb.append(constellation.getDatasets().size()).append(" Datasets");
+        LOGGER.info(sb.toString());
     }
 
     private ServiceConstellation findConstellation(DataSourceConfiguration config) {
