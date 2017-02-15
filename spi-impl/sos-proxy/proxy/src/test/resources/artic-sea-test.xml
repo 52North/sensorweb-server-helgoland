@@ -47,6 +47,7 @@
     <bean class="org.n52.svalbard.decode.CapabilitiesTypeDecoder"/>
     <bean class="org.n52.svalbard.decode.GetObservationResponseDocumentDecoder"/>
     <bean class="org.n52.svalbard.decode.GetFeatureOfInterestResponseDocumentDecoder"/>
+    <bean class="org.n52.proxy.decode.SamplingFeatureDecoder"/>
 
 
     <!-- Encoder implementations from svalbard -->
@@ -84,5 +85,7 @@
 
     <bean class="org.n52.proxy.connector.OceanotronSosConnector"/>
     <bean class="org.n52.proxy.connector.SOS2Connector"/>
+    <bean class="org.n52.proxy.connector.TrajectorySOSConnector"/>
+    <bean class="org.n52.proxy.connector.HydroSOSConnector"/>
 
 </beans>

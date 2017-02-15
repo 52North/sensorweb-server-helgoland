@@ -29,8 +29,6 @@ package org.n52.proxy;
  * for more details.
  */
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import org.apache.http.HttpResponse;
@@ -113,6 +111,7 @@ public class SosConnectorTest {
     public void collectArpaV5() {
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("arpav5");
+        config.setConnector("HydroSOSConnector");
         config.setUrl("http://arpa-er-axe.geodab.eu/gi-axe/services/sos/v5");
         testConfig(config);
     }
