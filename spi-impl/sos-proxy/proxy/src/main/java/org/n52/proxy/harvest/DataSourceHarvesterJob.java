@@ -190,7 +190,13 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
     private GetCapabilitiesResponse getCapabilities(DataSourceConfiguration config) {
         try {
             SimpleHttpClient simpleHttpClient = new SimpleHttpClient();
-            HttpResponse response = simpleHttpClient.executeGet(config.getUrl()+ "?service=SOS&request=GetCapabilities");
+            String url = config.getUrl();
+            if (url.contains("?")) {
+                url = url + "&";
+            } else {
+                url = url + "?";
+            }
+            HttpResponse response = simpleHttpClient.executeGet(url + "service=SOS&request=GetCapabilities");
             XmlObject xmlResponse = XmlObject.Factory.parse(response.getEntity().getContent());
             return (GetCapabilitiesResponse) decoderRepository.getDecoder(CodingHelper.getDecoderKey(xmlResponse)).decode(xmlResponse);
         } catch (IOException | UnsupportedOperationException | XmlException | DecodingException ex) {
