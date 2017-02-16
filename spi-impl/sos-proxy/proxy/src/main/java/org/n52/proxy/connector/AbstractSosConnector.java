@@ -8,8 +8,9 @@ import org.apache.xmlbeans.XmlObject;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.proxy.web.SimpleHttpClient;
+import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequest;
@@ -28,7 +29,7 @@ public abstract class AbstractSosConnector {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AbstractSosConnector.class);
 
-    private int CONNECTION_TIMEOUT = 30000;
+    private final int CONNECTION_TIMEOUT = 30000;
 
     @Autowired
     protected DecoderRepository decoderRepository;
@@ -71,6 +72,6 @@ public abstract class AbstractSosConnector {
 
     public abstract ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities);
 
-    public abstract List<MeasurementDataEntity> getObservations(MeasurementDatasetEntity seriesEntity, DbQuery query);
+    public abstract List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query);
 
 }

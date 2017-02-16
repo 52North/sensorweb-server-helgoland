@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
@@ -78,10 +79,10 @@ public class MeasurementDataRepository
         String connectorName = ((ProxyServiceEntity) seriesEntity.getService()).getConnector();
         AbstractSosConnector connector = this.getConnector(connectorName);
         MeasurementData result = new MeasurementData();
-        List<MeasurementDataEntity> observations = connector.getObservations(seriesEntity, query);
-        for (MeasurementDataEntity observation : observations) {
+        List<DataEntity> observations = connector.getObservations(seriesEntity, query);
+        for (DataEntity observation : observations) {
             if (observation != null) {
-                result.addValues(createSeriesValueFor(observation, seriesEntity, query));
+                result.addValues(createSeriesValueFor((MeasurementDataEntity) observation, seriesEntity, query));
             }
         }
         return result;

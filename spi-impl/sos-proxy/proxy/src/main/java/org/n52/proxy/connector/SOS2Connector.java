@@ -37,6 +37,8 @@ import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.utils.ConnectorHelper;
 import org.n52.proxy.connector.utils.DatasetConstellation;
 import org.n52.proxy.connector.utils.ServiceConstellation;
+import org.n52.series.db.beans.DataEntity;
+import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.dao.DbQuery;
@@ -102,10 +104,10 @@ public class SOS2Connector extends AbstractSosConnector {
     }
 
     @Override
-    public List<MeasurementDataEntity> getObservations(MeasurementDatasetEntity seriesEntity, DbQuery query) {
+    public List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query) {
         GetObservationResponse obsResp = createObservationResponse(seriesEntity, query);
 
-        List<MeasurementDataEntity> data = new ArrayList<>();
+        List<DataEntity> data = new ArrayList<>();
 
         obsResp.getObservationCollection().forEach((observation) -> {
             MeasurementDataEntity entity = new MeasurementDataEntity();
@@ -168,7 +170,7 @@ public class SOS2Connector extends AbstractSosConnector {
         return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
     }
 
-    private GetObservationResponse createObservationResponse(MeasurementDatasetEntity seriesEntity, DbQuery query) {
+    private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, DbQuery query) {
         GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(seriesEntity.getProcedure().getDomainId())));
         request.setOfferings(new ArrayList<>(Arrays.asList(seriesEntity.getOffering().getDomainId())));
