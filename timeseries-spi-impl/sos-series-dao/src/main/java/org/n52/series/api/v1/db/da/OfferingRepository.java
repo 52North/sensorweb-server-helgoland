@@ -78,45 +78,60 @@ public class OfferingRepository extends SessionAwareRepository implements Output
     public List<OfferingOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            OfferingDao offeringDao = new OfferingDao(session);
-            List<OfferingOutput> results = new ArrayList<OfferingOutput>();
-            for (OfferingEntity procedureEntity : offeringDao.getAllInstances(parameters)) {
-                results.add(createCondensed(procedureEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<OfferingOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        OfferingDao offeringDao = new OfferingDao(session);
+        List<OfferingOutput> results = new ArrayList<OfferingOutput>();
+        for (OfferingEntity procedureEntity : offeringDao.getAllInstances(parameters)) {
+            results.add(createCondensed(procedureEntity, parameters));
+        }
+        return results;
+    }
+    
+    @Override
     public List<OfferingOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            OfferingDao offeringDao = new OfferingDao(session);
-            List<OfferingOutput> results = new ArrayList<OfferingOutput>();
-            for (OfferingEntity procedureEntity : offeringDao.getAllInstances(parameters)) {
-                results.add(createExpanded(procedureEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<OfferingOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        OfferingDao offeringDao = new OfferingDao(session);
+        List<OfferingOutput> results = new ArrayList<OfferingOutput>();
+        for (OfferingEntity procedureEntity : offeringDao.getAllInstances(parameters)) {
+            results.add(createExpanded(procedureEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public OfferingOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            OfferingDao offeringDao = new OfferingDao(session);
-            OfferingEntity result = offeringDao.getInstance(parseId(id), parameters);
-            if (result == null) {
-                throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-            }
-            return createExpanded(result, parameters);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public OfferingOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        OfferingDao offeringDao = new OfferingDao(session);
+        OfferingEntity result = offeringDao.getInstance(parseId(id), parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return createExpanded(result, parameters);
     }
 
     private OfferingOutput createExpanded(OfferingEntity entity, DbQuery parameters) throws DataAccessException {

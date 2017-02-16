@@ -27,9 +27,10 @@
  */
 package org.n52.series.api.v1.db.da;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.n52.io.v1.data.ServiceOutput;
 import org.n52.io.v1.data.ServiceOutput.ParameterCount;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
@@ -53,20 +54,31 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     @Override
     public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
-        List<ServiceOutput> results = new ArrayList<ServiceOutput>();
-        results.add(getCondensedService());
-        return results;
+        return getAllCondensed(parameters, null);
+    }
+    
+    @Override
+    public List<ServiceOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        return Collections.singletonList(getCondensedService());
     }
 
     @Override
     public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
-        List<ServiceOutput> results = new ArrayList<ServiceOutput>();
-        results.add(getExpandedService());
-        return results;
+        return getAllExpanded(parameters, null);
+    }
+
+    @Override
+    public List<ServiceOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        return Collections.singletonList(getExpandedService());
     }
 
     @Override
     public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
+        return getInstance(id, parameters, null);
+    }
+
+    @Override
+    public ServiceOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
         return getExpandedService();
     }
 
