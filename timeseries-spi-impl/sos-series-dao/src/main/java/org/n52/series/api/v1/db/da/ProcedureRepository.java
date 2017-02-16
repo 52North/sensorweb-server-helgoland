@@ -78,30 +78,40 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ProcedureDao procedureDao = new ProcedureDao(session);
-            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
-            for (ProcedureEntity procedureEntity : procedureDao.getAllInstances(parameters)) {
-                results.add(createCondensed(procedureEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<ProcedureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        ProcedureDao procedureDao = new ProcedureDao(session);
+        List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
+        for (ProcedureEntity procedureEntity : procedureDao.getAllInstances(parameters)) {
+            results.add(createCondensed(procedureEntity, parameters));
+        }
+        return results;
+    }
+    
+    @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ProcedureDao procedureDao = new ProcedureDao(session);
-            List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
-            for (ProcedureEntity procedureEntity : procedureDao.getAllInstances(parameters)) {
-                results.add(createExpanded(procedureEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        ProcedureDao procedureDao = new ProcedureDao(session);
+        List<ProcedureOutput> results = new ArrayList<ProcedureOutput>();
+        for (ProcedureEntity procedureEntity : procedureDao.getAllInstances(parameters)) {
+            results.add(createExpanded(procedureEntity, parameters));
+        }
+        return results;
     }
 
     @Override
@@ -117,6 +127,16 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public ProcedureOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        ProcedureDao procedureDao = new ProcedureDao(session);
+        ProcedureEntity result = procedureDao.getInstance(parseId(id), parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return createExpanded(result, parameters);
     }
 
     private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {

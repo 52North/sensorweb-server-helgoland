@@ -72,33 +72,32 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         }
         return results;
     }
-
+    
     @Override
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryDao categoryDao = new CategoryDao(session);
-            List<CategoryOutput> results = new ArrayList<CategoryOutput>();
-            for (CategoryEntity categoryEntity : categoryDao.getAllInstances(parameters)) {
-                results.add(createCondensed(categoryEntity, parameters));
-            }
-            return results;
-        }
-        finally {
+            return getAllCondensed(parameters, null);
+        } finally {
             returnSession(session);
         }
+    }
+    
+    @Override
+    public List<CategoryOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        CategoryDao categoryDao = new CategoryDao(session);
+        List<CategoryOutput> results = new ArrayList<CategoryOutput>();
+        for (CategoryEntity categoryEntity : categoryDao.getAllInstances(parameters)) {
+            results.add(createCondensed(categoryEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<CategoryOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryDao categoryDao = new CategoryDao(session);
-            List<CategoryOutput> results = new ArrayList<CategoryOutput>();
-            for (CategoryEntity categoryEntity : categoryDao.getAllInstances(parameters)) {
-                results.add(createExpanded(categoryEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         }
         finally {
             returnSession(session);
@@ -106,19 +105,33 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     }
 
     @Override
+    public List<CategoryOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        CategoryDao categoryDao = new CategoryDao(session);
+        List<CategoryOutput> results = new ArrayList<CategoryOutput>();
+        for (CategoryEntity categoryEntity : categoryDao.getAllInstances(parameters)) {
+            results.add(createExpanded(categoryEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public CategoryOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryDao categoryDao = new CategoryDao(session);
-            CategoryEntity entity = categoryDao.getInstance(parseId(id), parameters);
-            if (entity != null) {
-                return createExpanded(entity, parameters);
-            }
-            return null;
+            return getInstance(id, parameters, session);
         }
         finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public CategoryOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        CategoryDao categoryDao = new CategoryDao(session);
+        CategoryEntity entity = categoryDao.getInstance(parseId(id), parameters);
+        return entity != null
+                ? createExpanded(entity, parameters)
+                : null;
     }
 
     private CategoryOutput createExpanded(CategoryEntity entity, DbQuery parameters) throws DataAccessException {
