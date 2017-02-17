@@ -33,14 +33,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedSet;
+import javassist.NotFoundException;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.utils.ConnectorHelper;
 import org.n52.proxy.connector.utils.DatasetConstellation;
+import org.n52.proxy.connector.utils.EntityBuilder;
 import org.n52.proxy.connector.utils.ServiceConstellation;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.filter.FilterConstants;
 import org.n52.shetland.ogc.filter.TemporalFilter;
@@ -54,6 +57,7 @@ import org.n52.shetland.ogc.om.values.QuantityValue;
 import org.n52.shetland.ogc.ows.OwsCapabilities;
 import org.n52.shetland.ogc.ows.OwsServiceProvider;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.shetland.ogc.sos.ExtendedIndeterminateTime;
 import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosCapabilities;
 import org.n52.shetland.ogc.sos.SosConstants;
@@ -105,7 +109,7 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query) {
-        GetObservationResponse obsResp = createObservationResponse(seriesEntity, query);
+        GetObservationResponse obsResp = createObservationResponse(seriesEntity, createTimeFilter(query));
 
         List<DataEntity> data = new ArrayList<>();
 
@@ -123,6 +127,16 @@ public class SOS2Connector extends AbstractSosConnector {
         });
         LOGGER.info("Found " + data.size() + " Entries");
         return data;
+    }
+
+    @Override
+    public UnitEntity getUom(DatasetEntity seriesEntity) {
+        GetObservationResponse response = createObservationResponse(seriesEntity, createFirstTimefilter());
+        if (response.getObservationCollection().size() == 1) {
+            String unit = response.getObservationCollection().get(0).getValue().getValue().getUnit();
+            return EntityBuilder.createUnit(unit, (ProxyServiceEntity) seriesEntity.getService());
+        }
+        return null;
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
@@ -170,16 +184,29 @@ public class SOS2Connector extends AbstractSosConnector {
         return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
     }
 
-    private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, DbQuery query) {
+    private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, TemporalFilter temporalFilter) {
         GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(seriesEntity.getProcedure().getDomainId())));
         request.setOfferings(new ArrayList<>(Arrays.asList(seriesEntity.getOffering().getDomainId())));
         request.setObservedProperties(new ArrayList<>(Arrays.asList(seriesEntity.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
-        Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
-        TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
         return (GetObservationResponse) this.getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+    }
+
+    private TemporalFilter createLatestTimefilter() {
+        Time time = new TimeInstant(ExtendedIndeterminateTime.LATEST);
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
+    }
+
+    private TemporalFilter createFirstTimefilter() {
+        Time time = new TimeInstant(ExtendedIndeterminateTime.FIRST);
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
+    }
+
+    private TemporalFilter createTimeFilter(DbQuery query) {
+        Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
     }
 
 }

@@ -11,6 +11,7 @@ import org.n52.proxy.connector.utils.DatasetConstellation;
 import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.ows.OwsCapabilities;
 import org.n52.shetland.ogc.ows.OwsServiceProvider;
@@ -56,7 +57,7 @@ public class OceanotronSosConnector extends AbstractSosConnector {
         OwsCapabilities owsCaps = capabilities.getCapabilities();
         if (owsCaps.getServiceProvider().isPresent()) {
             OwsServiceProvider servProvider = owsCaps.getServiceProvider().get();
-            if(servProvider.getProviderName().equals("Geomatys")) {
+            if (servProvider.getProviderName().equals("Geomatys")) {
                 return true;
             }
         }
@@ -65,7 +66,12 @@ public class OceanotronSosConnector extends AbstractSosConnector {
 
     @Override
     public List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public UnitEntity getUom(DatasetEntity seriesEntity) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String url) {

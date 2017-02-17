@@ -10,7 +10,7 @@ import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.shetland.ogc.ows.service.OwsServiceRequest;
@@ -73,5 +73,7 @@ public abstract class AbstractSosConnector {
     public abstract ServiceConstellation getConstellation(DataSourceConfiguration config, GetCapabilitiesResponse capabilities);
 
     public abstract List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query);
+
+    public abstract UnitEntity getUom(DatasetEntity seriesEntity);
 
 }

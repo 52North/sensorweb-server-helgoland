@@ -10,7 +10,7 @@ import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.filter.FilterConstants;
 import org.n52.shetland.ogc.filter.TemporalFilter;
@@ -80,6 +80,11 @@ public class HydroSOSConnector extends AbstractSosConnector {
         });
         LOGGER.info("Found " + data.size() + " Entries");
         return data;
+    }
+
+    @Override
+    public UnitEntity getUom(DatasetEntity seriesEntity) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String url) {

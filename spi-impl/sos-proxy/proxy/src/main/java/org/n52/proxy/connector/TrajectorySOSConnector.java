@@ -40,6 +40,7 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.om.NamedValue;
@@ -131,6 +132,11 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         LOGGER.info("Found " + data.size() + " Entries");
 
         return data;
+    }
+
+    @Override
+    public UnitEntity getUom(DatasetEntity seriesEntity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
