@@ -39,6 +39,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
 
+    private static int DEFAULT_WIDTH = 800;
+
+    private static int DEFAULT_HEIGHT = 500;
+
+    private static boolean DEFAULT_GRID = true;
+
+    private static boolean DEFAULT_LEGEND = false;
+
     // TODO lean at revised prerendering config
 
     /**
@@ -47,14 +55,6 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     @JsonProperty(required = true)
     private Map<String, StyleProperties> styleOptions;
 
-    private int width = 800;
-
-    private int height = 500;
-
-    private boolean grid = true;
-
-    private boolean legend = false;
-
     /**
      * Creates an instance with non-null default values.
      */
@@ -62,30 +62,29 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         styleOptions = new HashMap<>();
     }
 
-    /**
-     * @return the requested width or negative number if no size was set.
-     */
     public int getWidth() {
-        return width;
+        return getAsInt("width", DEFAULT_WIDTH);
     }
 
     /**
      * @param width the image width to set.
      */
     public void setWidth(int width) {
-        this.width = width;
+        width = width < 0 ? DEFAULT_WIDTH : width;
+        setParameter("width", width);
     }
 
     /**
-     * @return the requested height or negative number if no size was set.
+     * @return the requested height.
      */
     public int getHeight() {
-        return height;
+        return getAsInt("height", DEFAULT_HEIGHT);
     }
 
     public void setHeight(int height) {
-        this.height = height;
-    }
+        height = height < 0 ? DEFAULT_HEIGHT : height;
+        setParameter("height", height);
+}
 
     @Override
     public String[] getDatasets() {
@@ -97,23 +96,22 @@ public class RequestStyledParameterSet extends RequestParameterSet {
      * <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
-        this.grid = grid;
+        setParameter("grid", grid);
     }
 
     /**
-     * @return <code>true</code> if charts shall be rendered on a grid,
-     * <code>false</code> otherwise.
+     * @return <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public boolean isGrid() {
-        return grid;
+        return getAsBoolean("grid", DEFAULT_GRID);
     }
 
     public boolean isLegend() {
-        return legend;
+        return getAsBoolean("legend", DEFAULT_LEGEND);
     }
 
     public void setLegend(boolean legend) {
-        this.legend = legend;
+        setParameter("legend", legend);
     }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
