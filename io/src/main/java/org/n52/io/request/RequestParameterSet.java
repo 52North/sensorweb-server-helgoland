@@ -76,7 +76,7 @@ public abstract class RequestParameterSet {
      * @param generalize if output shall be generalized
      */
     public void setGeneralize(boolean generalize) {
-        addParameter("generalize", IoParameters.getJsonNodeFrom(generalize));
+        setParameter("generalize", IoParameters.getJsonNodeFrom(generalize));
     }
 
     /**
@@ -98,7 +98,7 @@ public abstract class RequestParameterSet {
         timespan = timespan != null
                 ? validateTimespan(timespan)
                 : createDefaultTimespan();
-        addParameter("timespan", IoParameters.getJsonNodeFrom(timespan));
+        setParameter("timespan", IoParameters.getJsonNodeFrom(timespan));
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class RequestParameterSet {
      * @param base64 If the image shall be base64 encoded.
      */
     public void setBase64(boolean base64) {
-        addParameter("base64", IoParameters.getJsonNodeFrom(base64));
+        setParameter("base64", IoParameters.getJsonNodeFrom(base64));
     }
 
     /**
@@ -129,7 +129,7 @@ public abstract class RequestParameterSet {
      * @param expanded verbose results.
      */
     public void setExpanded(boolean expanded) {
-        addParameter("expanded", IoParameters.getJsonNodeFrom(expanded));
+        setParameter("expanded", IoParameters.getJsonNodeFrom(expanded));
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class RequestParameterSet {
         language = !(language == null || language.isEmpty())
                 ? language
                 : "en";
-        addParameter("language", IoParameters.getJsonNodeFrom(language));
+        setParameter("language", IoParameters.getJsonNodeFrom(language));
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class RequestParameterSet {
      */
     public void setResultTime(String resultTime) {
         if (resultTime != null) {
-            addParameter("resultTime", IoParameters.getJsonNodeFrom(resultTime));
+            setParameter("resultTime", IoParameters.getJsonNodeFrom(resultTime));
         }
     }
 
@@ -191,9 +191,13 @@ public abstract class RequestParameterSet {
         if (parameters != null) {
             this.parameters.clear();
             for (Map.Entry<String, JsonNode> entry : parameters.entrySet()) {
-                addParameter(entry.getKey(), entry.getValue());
+                setParameter(entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    public final void setParameter(String parameter, Object value) {
+        setParameter(parameter, IoParameters.getJsonNodeFrom(value));
     }
 
     /**
@@ -202,7 +206,7 @@ public abstract class RequestParameterSet {
      * @param parameterName parameter name.
      * @param value the parameter's value.
      */
-    public final void addParameter(String parameterName, JsonNode value) {
+    public final void setParameter(String parameterName, JsonNode value) {
         this.parameters.put(parameterName.toLowerCase(), value);
     }
 
