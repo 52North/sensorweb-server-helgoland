@@ -74,50 +74,64 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
         return results;
     }
 
-
     @Override
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonDao phenomenonDao = new PhenomenonDao(session);
-            List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
-            for (PhenomenonEntity phenomenonEntity : phenomenonDao.getAllInstances(parameters)) {
-                results.add(createCondensed(phenomenonEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<PhenomenonOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+        List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
+        for (PhenomenonEntity phenomenonEntity : phenomenonDao.getAllInstances(parameters)) {
+            results.add(createCondensed(phenomenonEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonDao phenomenonDao = new PhenomenonDao(session);
-            List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
-            for (PhenomenonEntity phenomenonEntity : phenomenonDao.getAllInstances(parameters)) {
-                results.add(createExpanded(phenomenonEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<PhenomenonOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+        List<PhenomenonOutput> results = new ArrayList<PhenomenonOutput>();
+        for (PhenomenonEntity phenomenonEntity : phenomenonDao.getAllInstances(parameters)) {
+            results.add(createExpanded(phenomenonEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonDao phenomenonDao = new PhenomenonDao(session);
-            PhenomenonEntity result = phenomenonDao.getInstance(parseId(id), parameters);
-            if (result == null) {
-                throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-            }
-            return createExpanded(result, parameters);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public PhenomenonOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        PhenomenonDao phenomenonDao = new PhenomenonDao(session);
+        PhenomenonEntity result = phenomenonDao.getInstance(parseId(id), parameters);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return createExpanded(result, parameters);
     }
 
     private PhenomenonOutput createExpanded(PhenomenonEntity entity, DbQuery parameters) throws DataAccessException {

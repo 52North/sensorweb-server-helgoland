@@ -102,48 +102,38 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return results;
     }
 
-
     @Override
     public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao seriesDao = new SeriesDao(session);
-            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
-            for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (timeseries.getUnit() != null) {
-            		results.add(createCondensed(timeseries, query));
-            	}
-            }
-            return results;
-
+            return getAllCondensed(query, session);
         }
         finally {
             returnSession(session);
         }
     }
 
+    @Override
+    public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query, Session session) throws DataAccessException {
+        SeriesDao seriesDao = new SeriesDao(session);
+        List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+        for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            /*
+             *  ATM, the SWC REST API only supports numeric types
+             *  We check for a unit to check for them
+             */
+            if (timeseries.getUnit() != null) {
+                results.add(createCondensed(timeseries, query, session));
+            }
+        }
+        return results;
+    }
+    
     @Override
     public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao seriesDao = new SeriesDao(session);
-            List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
-            for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
-            	/*
-            	 *  ATM, the SWC REST API only supports numeric types
-            	 *  We check for a unit to check for them
-            	 */
-            	if (timeseries.getUnit() != null) {
-            		results.add(createExpanded(session, timeseries, query));
-            	} else {
-                    LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
-                }
-            }
-            return results;
+            return getAllExpanded(query, session);
         }
         finally {
             returnSession(session);
@@ -151,26 +141,49 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     @Override
+    public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query, Session session) throws DataAccessException {
+        SeriesDao seriesDao = new SeriesDao(session);
+        List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+        for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
+            /*
+             *  ATM, the SWC REST API only supports numeric types
+             *  We check for a unit to check for them
+             */
+            if (timeseries.getUnit() != null) {
+                results.add(createExpanded(timeseries, query, session));
+            } else {
+                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
+            }
+        }
+        return results;
+    }
+    
+    @Override
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao seriesDao = new SeriesDao(session);
-            SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-        	/*
-        	 *  ATM, the SWC REST API only supports numeric types
-        	 *  We check for a unit to check for them
-        	 */
-            if (result == null || result.getUnit() == null) {
-                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
-                throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
-            }
-            return createExpanded(session, result, dbQuery);
+            return getInstance(timeseriesId, dbQuery, session);
         }
         finally {
             returnSession(session);
         }
     }
 
+    @Override
+    public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery, Session session) throws DataAccessException {
+        SeriesDao seriesDao = new SeriesDao(session);
+        SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+        /*
+         *  ATM, the SWC REST API only supports numeric types
+         *  We check for a unit to check for them
+         */
+        if (result == null || result.getUnit() == null) {
+            LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
+            throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
+        }
+        return createExpanded(result, dbQuery, session);
+    }
+    
     public TimeseriesData getData(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
@@ -202,8 +215,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, SeriesEntity series, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = createCondensed(series, query);
+    private TimeseriesMetadataOutput createExpanded(SeriesEntity series, DbQuery query, Session session) throws DataAccessException {
+        TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
         output.setFirstValue(createTimeseriesValueFor(series.getFirstValue(), series));
@@ -230,7 +243,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(SeriesEntity entity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput();
         String locale = query.getLocale();
         String stationLabel = getLabelFrom(entity.getFeature(), locale);
@@ -239,7 +252,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnit().getNameI18n(locale));
-        output.setStation(createCondensedStation(entity, query));
+        output.setStation(createCondensedStation(entity, query, session));
         return output;
     }
 
@@ -250,11 +263,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return sb.append(station).toString();
     }
 
-    private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query, Session session) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
         StationRepository stationRepository = new StationRepository(getServiceInfo());
-        return stationRepository.getCondensedInstance(featurePkid, query);
+        return stationRepository.getCondensedInstance(featurePkid, query, session);
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,

@@ -29,12 +29,20 @@ package org.n52.series.api.v1.db.da;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 public interface OutputAssembler<T> {
 
     public List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;
     
+    public List<T> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException;
+    
     public List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
+
+    public List<T> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException;
     
     public T getInstance(String id, DbQuery parameters) throws DataAccessException;
+
+    public T getInstance(String id, DbQuery parameters, Session session) throws DataAccessException;
     
 }
