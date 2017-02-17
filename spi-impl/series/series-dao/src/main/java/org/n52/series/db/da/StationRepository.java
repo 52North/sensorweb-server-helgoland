@@ -103,35 +103,43 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public List<StationOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
-
-            List<StationOutput> results = new ArrayList<>();
-            for (FeatureEntity featureEntity : allFeatures) {
-                results.add(createCondensed(featureEntity, parameters));
-            }
-
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<StationOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
+        List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
+        List<StationOutput> results = new ArrayList<>();
+        for (FeatureEntity featureEntity : allFeatures) {
+            results.add(createCondensed(featureEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public List<StationOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
-
-            List<StationOutput> results = new ArrayList<>();
-            for (FeatureEntity featureEntity : allFeatures) {
-                results.add(createExpanded(featureEntity, parameters, session));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<StationOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
+        List<FeatureEntity> allFeatures = getAllInstances(parameters, session);
+
+        List<StationOutput> results = new ArrayList<>();
+        for (FeatureEntity featureEntity : allFeatures) {
+            results.add(createExpanded(featureEntity, parameters, session));
+        }
+        return results;
     }
 
     private List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
@@ -143,32 +151,32 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public StationOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            FeatureEntity result = getInstance(id, parameters, session);
-            if (result == null) {
-                throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-            }
-            return createExpanded(result, parameters, session);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
-    FeatureEntity getInstance(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
+    @Override
+    public StationOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        FeatureEntity result = getFeatureEntity(id, parameters, session);
+        if (result == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
+        }
+        return createExpanded(result, parameters, session);
+    }
+
+    FeatureEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
         FeatureDao featureDao = createDao(session);
         return featureDao.getInstance(parseId(id), parameters);
     }
 
-    public StationOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
-        Session session = getSession();
-        try {
-            parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            FeatureDao featureDao = createDao(session);
-            FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
-            return createCondensed(result, parameters);
-        } finally {
-            returnSession(session);
-        }
+    public StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
+        FeatureDao featureDao = createDao(session);
+        FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
+        return createCondensed(result, parameters);
     }
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
