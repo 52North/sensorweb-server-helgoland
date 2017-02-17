@@ -167,6 +167,10 @@ public abstract class ParameterSet {
             this.parameters.putAll(parameters);
         }
     }
+    
+    public final void setParameter(String parameter, Object value) {
+        setParameter(parameter, IoParameters.getJsonNodeFrom(value));
+    }
 
     /**
      * Sets the value for the given parameter name. Overrides if already exists.
