@@ -129,57 +129,71 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
-                if (timeseries.hasUnit()) {
-                    results.add(createCondensed(timeseries, query));
-                }
-            }
-            return results;
-
+            return getAllCondensed(query, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query, Session session) throws DataAccessException {
+        List<TimeseriesMetadataOutput> results = new ArrayList<>();
+        DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+        for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
+            if (timeseries.hasUnit()) {
+                results.add(createCondensed(timeseries, query, session));
+            }
+        }
+        return results;
     }
 
     @Override
     public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<TimeseriesMetadataOutput> results = new ArrayList<>();
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
-                if (timeseries.hasUnit()) {
-                    results.add(createExpanded(session, timeseries, query));
-                } else {
-                    LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
-                }
-            }
-            return results;
+            return getAllExpanded(query, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query, Session session) throws DataAccessException {
+        List<TimeseriesMetadataOutput> results = new ArrayList<>();
+        DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+        for (MeasurementDatasetEntity timeseries : seriesDao.getAllInstances(query)) {
+            if (timeseries.hasUnit()) {
+                results.add(createExpanded(timeseries, query, session));
+            } else {
+                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseries.getPkid());
+            }
+        }
+        return results;
+    }
+
+    @Override
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-            if (result == null || !result.hasUnit()) {
-                LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
-                throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
-            }
-            return createExpanded(session, result, dbQuery);
+            return getInstance(timeseriesId, dbQuery, session);
         } finally {
             returnSession(session);
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = createCondensed(series, query);
+    @Override
+    public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery, Session session) throws DataAccessException {
+        DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
+        MeasurementDatasetEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+        if (result == null || !result.hasUnit()) {
+            LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
+            throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
+        }
+        return createExpanded(result, dbQuery, session);
+    }
+
+    private TimeseriesMetadataOutput createExpanded(MeasurementDatasetEntity series, DbQuery query, Session session) throws DataAccessException {
+        TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
 
@@ -218,7 +232,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return outputs.toArray(new MeasurementReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
         String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
@@ -228,7 +242,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnitI18nName(locale));
-        output.setStation(createCondensedStation(entity, query));
+        output.setStation(createCondensedStation(entity, query, session));
         return output;
     }
 
@@ -240,12 +254,12 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return sb.append(offering).toString();
     }
 
-    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query, Session session) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 
         // XXX explicit cast here
-        return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query);
+        return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query, session);
     }
 
     public OutputAssembler<StationOutput> getStationRepository() {

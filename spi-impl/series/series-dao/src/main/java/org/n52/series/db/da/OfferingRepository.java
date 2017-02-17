@@ -92,39 +92,54 @@ public class OfferingRepository extends SessionAwareRepository implements Output
     public List<OfferingOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<OfferingOutput> results = new ArrayList<>();
-            for (OfferingEntity offeringEntity : getAllInstances(parameters, session)) {
-                results.add(createCondensed(offeringEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<OfferingOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        List<OfferingOutput> results = new ArrayList<>();
+        for (OfferingEntity offeringEntity : getAllInstances(parameters, session)) {
+            results.add(createCondensed(offeringEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<OfferingOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<OfferingOutput> results = new ArrayList<>();
-            for (OfferingEntity phenomenonEntity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(phenomenonEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<OfferingOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        List<OfferingOutput> results = new ArrayList<>();
+        for (OfferingEntity phenomenonEntity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(phenomenonEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public OfferingOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            OfferingEntity result = getInstance(parseId(id), parameters, session);
-            return createExpanded(result, parameters);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public OfferingOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        OfferingEntity result = getInstance(parseId(id), parameters, session);
+        return createExpanded(result, parameters);
     }
 
     protected List<OfferingEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {

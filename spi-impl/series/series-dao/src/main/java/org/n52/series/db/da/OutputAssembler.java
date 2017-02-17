@@ -31,6 +31,7 @@ package org.n52.series.db.da;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
@@ -41,9 +42,15 @@ public interface OutputAssembler<T> {
 
     List<T> getAllCondensed(DbQuery parameters) throws DataAccessException;
 
+    List<T> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException;
+
     List<T> getAllExpanded(DbQuery parameters) throws DataAccessException;
 
+    List<T> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException;
+
     T getInstance(String id, DbQuery parameters) throws DataAccessException;
+
+    T getInstance(String id, DbQuery parameters, Session session) throws DataAccessException;
 
     Collection<SearchResult> searchFor(IoParameters parameters);
 

@@ -93,42 +93,57 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<CategoryOutput> results = new ArrayList<>();
-            for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
-                results.add(createCondensed(categoryEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<CategoryOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        List<CategoryOutput> results = new ArrayList<>();
+        for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
+            results.add(createCondensed(categoryEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<CategoryOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<CategoryOutput> results = new ArrayList<>();
-            for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(categoryEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<CategoryOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        List<CategoryOutput> results = new ArrayList<>();
+        for (CategoryEntity categoryEntity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(categoryEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public CategoryOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            CategoryEntity entity = getInstance(parseId(id), parameters, session);
-            if (entity != null) {
-                return createExpanded(entity, parameters);
-            }
-            return null;
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public CategoryOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        CategoryEntity entity = getInstance(parseId(id), parameters, session);
+        if (entity != null) {
+            return createExpanded(entity, parameters);
+        }
+        return null;
     }
 
     protected List<CategoryEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {

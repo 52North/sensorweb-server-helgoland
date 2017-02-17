@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IoFactory;
@@ -105,6 +106,11 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     @Override
     public List<ServiceOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
+        return getAllCondensed(parameters, null);
+    }
+
+    @Override
+    public List<ServiceOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
         List<ServiceOutput> results = new ArrayList<>();
         results.add(getCondensedService(parameters));
         return results;
@@ -112,6 +118,11 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     @Override
     public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
+        return getAllExpanded(parameters, null);
+    }
+
+    @Override
+    public List<ServiceOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
         List<ServiceOutput> results = new ArrayList<>();
         results.add(getExpandedService(parameters));
         return results;
@@ -119,6 +130,11 @@ public class ServiceRepository implements OutputAssembler<ServiceOutput> {
 
     @Override
     public ServiceOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
+        return getInstance(id, parameters, null);
+    }
+
+    @Override
+    public ServiceOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
         return getExpandedService(parameters);
     }
 
