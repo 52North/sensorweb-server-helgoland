@@ -27,33 +27,23 @@
  */
 package org.n52.io;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.geotools.util.MapEntry;
+
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
 import org.n52.io.geojson.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
@@ -70,6 +60,13 @@ import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
 
 public class IoParameters {
 
@@ -856,7 +853,7 @@ public class IoParameters {
 
     private ParameterSet addValuesToParameterSet(ParameterSet parameterSet) {
         for (Entry<String, JsonNode> entry : query.entrySet()) {
-            parameterSet.addParameter(entry.getKey().toLowerCase(), entry.getValue());
+            parameterSet.setParameter(entry.getKey().toLowerCase(), entry.getValue());
         }
         return parameterSet;
     }

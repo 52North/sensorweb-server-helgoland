@@ -174,7 +174,7 @@ public abstract class ParameterSet {
      * @param parameter parameter name.
      * @param value the parameter's value.
      */
-    public final void addParameter(String parameter, JsonNode value) {
+    public final void setParameter(String parameter, JsonNode value) {
         this.parameters.put(parameter.toLowerCase(), value);
     }
     
