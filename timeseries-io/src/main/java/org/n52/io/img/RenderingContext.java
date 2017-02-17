@@ -27,13 +27,10 @@
  */
 package org.n52.io.img;
 
-import java.text.SimpleDateFormat;
-import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.DesignedParameterSet;
-import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 
 public final class RenderingContext {
