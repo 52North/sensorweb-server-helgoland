@@ -76,4 +76,8 @@ public abstract class AbstractSosConnector {
 
     public abstract UnitEntity getUom(DatasetEntity seriesEntity);
 
+    public abstract DataEntity getFirstObservation(DatasetEntity entity);
+
+    public abstract DataEntity getLastObservation(DatasetEntity entity);
+
 }

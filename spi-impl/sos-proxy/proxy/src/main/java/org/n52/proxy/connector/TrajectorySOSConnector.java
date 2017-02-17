@@ -139,6 +139,16 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public DataEntity getFirstObservation(DatasetEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataEntity getLastObservation(DatasetEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
         if (sosCaps != null) {
 //            sosCaps.getContents().get().forEach((obsOff) -> {

@@ -28,7 +28,6 @@
  */
 package org.n52.proxy.db.da;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
@@ -53,20 +52,21 @@ public class MeasurementDataRepository
         this.connectorMap = connectorMap;
     }
 
-    protected AbstractSosConnector getConnector(String connectorName) {
+    private AbstractSosConnector getConnector(MeasurementDatasetEntity seriesEntity) {
+        String connectorName = ((ProxyServiceEntity) seriesEntity.getService()).getConnector();
         return this.connectorMap.get(connectorName);
     }
 
     @Override
     public MeasurementValue getFirstValue(MeasurementDatasetEntity entity, Session session, DbQuery query) {
-        // TODO get firstValue by GetObservation...
-        return new MeasurementValue(new Date().getTime(), 123.0);
+        DataEntity firstObservation = this.getConnector(entity).getFirstObservation(entity);
+        return createSeriesValueFor((MeasurementDataEntity) firstObservation, entity, query);
     }
 
     @Override
     public MeasurementValue getLastValue(MeasurementDatasetEntity entity, Session session, DbQuery query) {
-        // TODO get lastValue by GetObservation...
-        return new MeasurementValue(new Date().getTime(), 234.0);
+        DataEntity lastObservation = this.getConnector(entity).getLastObservation(entity);
+        return createSeriesValueFor((MeasurementDataEntity) lastObservation, entity, query);
     }
 
     @Override
@@ -76,8 +76,7 @@ public class MeasurementDataRepository
 
     @Override
     protected MeasurementData assembleData(MeasurementDatasetEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
-        String connectorName = ((ProxyServiceEntity) seriesEntity.getService()).getConnector();
-        AbstractSosConnector connector = this.getConnector(connectorName);
+        AbstractSosConnector connector = this.getConnector(seriesEntity);
         MeasurementData result = new MeasurementData();
         List<DataEntity> observations = connector.getObservations(seriesEntity, query);
         for (DataEntity observation : observations) {
