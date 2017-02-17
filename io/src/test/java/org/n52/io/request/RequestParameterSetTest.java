@@ -92,14 +92,14 @@ public class RequestParameterSetTest {
     @Test
     public void when_addingCamelCasedParameter_then_caseSensitiveAccess() {
         RequestParameterSet parameterset = createDummyParameterSet();
-        parameterset.addParameter("myParameter", jsonFactory.textNode("value"));
+        parameterset.setParameter("myParameter", jsonFactory.textNode("value"));
         assertThat(parameterset.containsParameter("myParameter"), is(true));
     }
 
     @Test
     public void when_addingCamelCasedParameter_then_caseInsensitiveAccess() {
         RequestParameterSet parameterset = createDummyParameterSet();
-        parameterset.addParameter("myParameter", jsonFactory.textNode("value"));
+        parameterset.setParameter("myParameter", jsonFactory.textNode("value"));
         assertThat(parameterset.containsParameter("myparameter"), is(true));
     }
 
@@ -123,7 +123,7 @@ public class RequestParameterSetTest {
     public void when_addingStringArray_then_accessibleViaParameterName() {
         RequestParameterSet parameterset = createDummyParameterSet();
         JsonNode array = jsonFactory.arrayNode().add("foo").add("bar");
-        parameterset.addParameter("myParameter", array);
+        parameterset.setParameter("myParameter", array);
         assertThat(Arrays.asList(parameterset.getAsStringArray("myparameter")), contains("foo", "bar"));
     }
 

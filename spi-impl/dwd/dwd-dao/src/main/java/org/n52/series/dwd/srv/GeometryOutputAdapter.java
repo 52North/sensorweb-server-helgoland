@@ -106,7 +106,7 @@ public class GeometryOutputAdapter extends AbstractOuputAdapter<GeometryInfo> {
         GeometryInfo result = new GeometryInfo(GeometryType.PLATFORM_SITE);
         result.setId(item.getId());
         RequestSimpleParameterSet simpleParameterSet = query.toSimpleParameterSet();
-        simpleParameterSet.addParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(item.getId()));
+        simpleParameterSet.setParameter(Parameters.PLATFORMS, IoParameters.getJsonNodeFrom(item.getId()));
         OutputCollection<PlatformOutput> platforms = platformOutputAdapter.getCondensedParameters(IoParameters.createFromQuery(simpleParameterSet));
         result.setPlatform(platforms.iterator().next());
         checkForHref(result, query);

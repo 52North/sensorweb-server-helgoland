@@ -99,8 +99,8 @@ public class IoParametersTest {
     @Test
     public void when_creationViaRequestParameterSet_then_keysGetLowerCased() {
         RequestParameterSet request = new RequestSimpleParameterSet();
-        request.addParameter("camelCased", getJsonNodeFrom("value"));
-        request.addParameter("UPPERCASED", getJsonNodeFrom("value"));
+        request.setParameter("camelCased", getJsonNodeFrom("value"));
+        request.setParameter("UPPERCASED", getJsonNodeFrom("value"));
         IoParameters parameters = createFromQuery(request);
         Assert.assertTrue(parameters.containsParameter("camelCased"));
         Assert.assertTrue(parameters.containsParameter("camelcased"));
@@ -170,6 +170,13 @@ public class IoParametersTest {
     public void when_defaults_then_backwardCompatible() {
         FilterResolver filterResolver = createDefaults().getFilterResolver();
         assertThat(filterResolver.shallBehaveBackwardsCompatible(), is(true));
+    }
+    
+    @Test
+    public void when_convertingToStyledRequestParameters_then_overridingParametersAllowed() {
+        IoParameters defaults = createDefaults().extendWith("width", "200");
+        RequestStyledParameterSet parameters = defaults.toRequestStyledParameterSet();
+        assertThat(parameters.getWidth(), is(200));
     }
 
 }

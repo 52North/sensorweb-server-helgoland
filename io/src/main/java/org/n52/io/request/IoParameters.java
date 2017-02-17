@@ -28,12 +28,10 @@
  */
 package org.n52.io.request;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
+import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
+import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
+import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,15 +47,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.response.BBox;
@@ -69,6 +65,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
 
 public class IoParameters implements Parameters {
 
@@ -742,9 +745,9 @@ public class IoParameters implements Parameters {
             List<JsonNode> values = entry.getValue();
             String lowercasedKey = entry.getKey().toLowerCase();
             if (values.size() == 1) {
-                parameterSet.addParameter(lowercasedKey, values.get(0));
+                parameterSet.setParameter(lowercasedKey, values.get(0));
             } else {
-                parameterSet.addParameter(lowercasedKey, getJsonNodeFrom(values));
+                parameterSet.setParameter(lowercasedKey, getJsonNodeFrom(values));
             }
         }
         return parameterSet;
