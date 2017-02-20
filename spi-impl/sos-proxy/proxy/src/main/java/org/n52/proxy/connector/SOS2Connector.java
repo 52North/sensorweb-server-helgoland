@@ -201,7 +201,6 @@ public class SOS2Connector extends AbstractSosConnector {
     private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, TemporalFilter temporalFilter) {
         GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(seriesEntity.getProcedure().getDomainId())));
-        request.setOfferings(new ArrayList<>(Arrays.asList(seriesEntity.getOffering().getDomainId())));
         request.setObservedProperties(new ArrayList<>(Arrays.asList(seriesEntity.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
