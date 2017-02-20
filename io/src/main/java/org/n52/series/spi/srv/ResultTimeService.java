@@ -28,12 +28,12 @@
  */
 package org.n52.series.spi.srv;
 
-import java.util.ArrayList;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 
 public interface ResultTimeService {
 
-    ArrayList<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+    Set<String> getResultTimeList(IoParameters parameters, String timeseriesId);
 
 }

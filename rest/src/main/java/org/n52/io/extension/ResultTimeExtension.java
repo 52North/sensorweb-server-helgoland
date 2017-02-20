@@ -87,7 +87,7 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
         return wrapSingleIntoMap(getResultTimes(parameters, output));
     }
 
-    private ArrayList<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
+    private Set<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
         return resultTimeService.getResultTimeList(parameters, output.getId());
     }
 
