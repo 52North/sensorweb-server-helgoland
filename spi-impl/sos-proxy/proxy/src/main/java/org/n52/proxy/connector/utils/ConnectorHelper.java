@@ -1,8 +1,16 @@
 package org.n52.proxy.connector.utils;
 
+import org.joda.time.DateTime;
 import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.series.db.dao.DbQuery;
+import org.n52.shetland.ogc.filter.FilterConstants;
+import org.n52.shetland.ogc.filter.TemporalFilter;
 import org.n52.shetland.ogc.gml.CodeType;
+import org.n52.shetland.ogc.gml.time.Time;
+import org.n52.shetland.ogc.gml.time.TimeInstant;
+import org.n52.shetland.ogc.gml.time.TimePeriod;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
+import org.n52.shetland.ogc.sos.ExtendedIndeterminateTime;
 import org.n52.shetland.ogc.sos.SosObservationOffering;
 import org.n52.shetland.ogc.sos.gda.GetDataAvailabilityResponse.DataAvailability;
 
@@ -75,6 +83,25 @@ public class ConnectorHelper {
         int srid = abstractFeature.getGeometry().getSRID();
         serviceConstellation.putFeature(featureId, featureName, lat, lng, srid);
         return featureId;
+    }
+
+    public static TemporalFilter createFirstTimefilter() {
+        Time time = new TimeInstant(ExtendedIndeterminateTime.FIRST);
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
+    }
+
+    public static TemporalFilter createLatestTimefilter() {
+        Time time = new TimeInstant(ExtendedIndeterminateTime.LATEST);
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
+    }
+
+    public static TemporalFilter createTimePeriodFilter(DbQuery query) {
+        Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
+    }
+
+    public static TemporalFilter createTimeInstantFilter(DateTime dateTime) {
+        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, new TimeInstant(dateTime), "phenomenonTime");
     }
 
 }

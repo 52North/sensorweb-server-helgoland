@@ -172,7 +172,7 @@ public class DataSourceHarvesterJob extends ScheduledJob implements Job {
             final PhenomenonEntity phenomenon = constellation.getPhenomenons().get(dataset.getPhenomenon());
             phenomenon.setService(service);
             // add empty unit entity, will be replaced later in the repositories
-            final UnitEntity unit = EntityBuilder.createUnit("", service); 
+            final UnitEntity unit = EntityBuilder.createUnit("", service);
 
             if (procedure != null && category != null && feature != null && offering != null && phenomenon != null && unit != null) {
                 MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(

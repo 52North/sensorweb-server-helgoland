@@ -44,12 +44,9 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.shetland.ogc.filter.FilterConstants;
 import org.n52.shetland.ogc.filter.TemporalFilter;
 import org.n52.shetland.ogc.gml.AbstractFeature;
-import org.n52.shetland.ogc.gml.time.Time;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
-import org.n52.shetland.ogc.gml.time.TimePeriod;
 import org.n52.shetland.ogc.om.OmObservation;
 import org.n52.shetland.ogc.om.SingleObservationValue;
 import org.n52.shetland.ogc.om.features.samplingFeatures.SamplingFeature;
@@ -57,7 +54,6 @@ import org.n52.shetland.ogc.om.values.QuantityValue;
 import org.n52.shetland.ogc.ows.OwsCapabilities;
 import org.n52.shetland.ogc.ows.OwsServiceProvider;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
-import org.n52.shetland.ogc.sos.ExtendedIndeterminateTime;
 import org.n52.shetland.ogc.sos.Sos2Constants;
 import org.n52.shetland.ogc.sos.SosCapabilities;
 import org.n52.shetland.ogc.sos.SosConstants;
@@ -109,7 +105,7 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query) {
-        GetObservationResponse obsResp = createObservationResponse(seriesEntity, createTimeFilter(query));
+        GetObservationResponse obsResp = createObservationResponse(seriesEntity, ConnectorHelper.createTimePeriodFilter(query));
         List<DataEntity> data = new ArrayList<>();
         obsResp.getObservationCollection().forEach((observation) -> {
             data.add(createDataEntity(observation));
@@ -120,7 +116,7 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public DataEntity getFirstObservation(DatasetEntity entity) {
-        GetObservationResponse response = createObservationResponse(entity, createFirstTimefilter());
+        GetObservationResponse response = createObservationResponse(entity, ConnectorHelper.createFirstTimefilter());
         if (response.getObservationCollection().size() >= 1) {
             return createDataEntity(response.getObservationCollection().get(0));
         }
@@ -129,7 +125,7 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public DataEntity getLastObservation(DatasetEntity entity) {
-        GetObservationResponse response = createObservationResponse(entity, createLatestTimefilter());
+        GetObservationResponse response = createObservationResponse(entity, ConnectorHelper.createLatestTimefilter());
         if (response.getObservationCollection().size() >= 1) {
             return createDataEntity(response.getObservationCollection().get(0));
         }
@@ -138,7 +134,7 @@ public class SOS2Connector extends AbstractSosConnector {
 
     @Override
     public UnitEntity getUom(DatasetEntity seriesEntity) {
-        GetObservationResponse response = createObservationResponse(seriesEntity, createFirstTimefilter());
+        GetObservationResponse response = createObservationResponse(seriesEntity, ConnectorHelper.createFirstTimefilter());
         if (response.getObservationCollection().size() >= 1) {
             String unit = response.getObservationCollection().get(0).getValue().getValue().getUnit();
             return EntityBuilder.createUnit(unit, (ProxyServiceEntity) seriesEntity.getService());
@@ -210,21 +206,6 @@ public class SOS2Connector extends AbstractSosConnector {
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
         return (GetObservationResponse) this.getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
-    }
-
-    private TemporalFilter createLatestTimefilter() {
-        Time time = new TimeInstant(ExtendedIndeterminateTime.LATEST);
-        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
-    }
-
-    private TemporalFilter createFirstTimefilter() {
-        Time time = new TimeInstant(ExtendedIndeterminateTime.FIRST);
-        return new TemporalFilter(FilterConstants.TimeOperator.TM_Equals, time, "phenomenonTime");
-    }
-
-    private TemporalFilter createTimeFilter(DbQuery query) {
-        Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
-        return new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
     }
 
 }
