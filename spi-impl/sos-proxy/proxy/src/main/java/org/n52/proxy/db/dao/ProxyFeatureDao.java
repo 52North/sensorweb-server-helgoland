@@ -41,7 +41,6 @@ import org.n52.series.db.dao.FeatureDao;
 
 public class ProxyFeatureDao extends FeatureDao implements InsertDao<FeatureEntity>, ClearDao<FeatureEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyFeatureDao(Session session) {
@@ -70,7 +69,7 @@ public class ProxyFeatureDao extends FeatureDao implements InsertDao<FeatureEnti
 
     private FeatureEntity getInstance(FeatureEntity feature) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, feature.getName()))
+                .add(Restrictions.eq(FeatureEntity.DOMAIN_ID, feature.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, feature.getService().getPkid()));
         return (FeatureEntity) criteria.uniqueResult();
     }

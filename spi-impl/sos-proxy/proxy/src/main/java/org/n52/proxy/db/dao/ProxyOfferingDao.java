@@ -30,7 +30,6 @@ package org.n52.proxy.db.dao;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -73,7 +72,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
 
     private OfferingEntity getInstance(OfferingEntity offering) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(OfferingEntity.NAME, offering.getName()))
+                .add(Restrictions.eq(OfferingEntity.DOMAIN_ID, offering.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, offering.getService().getPkid()));
         return (OfferingEntity) criteria.uniqueResult();
     }
