@@ -51,17 +51,17 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 
     private static final String EXTENSION_NAME = "resultTime";
 
-    private final ResultTimeExtensionConfig config = readConfig();
+    private final List<String> enabledServices = readEnabledServices();
 
     private ResultTimeService resultTimeService;
 
-    private ResultTimeExtensionConfig readConfig() {
+    private List<String> readEnabledServices() {
         try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
             ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, ResultTimeExtensionConfig.class);
+            return Arrays.asList(om.readValue(taskConfig, String[].class));
         } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
-            return new ResultTimeExtensionConfig();
+            return Collections.emptyList();
         }
     }
 
@@ -79,7 +79,7 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
     }
 
     private boolean isAvailableFor(String serviceId) {
-        return config.getServices().contains(serviceId);
+        return enabledServices.contains(serviceId);
     }
 
     @Override
