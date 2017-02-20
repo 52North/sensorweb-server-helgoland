@@ -30,8 +30,11 @@ package org.n52.io.extension;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -49,7 +52,7 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 
     private static final String CONFIG_FILE = "/config-extension-resultTime.json";
 
-    private static final String EXTENSION_NAME = "resultTime";
+    private static final String EXTENSION_NAME = "resultTimes";
 
     private final List<String> enabledServices = readEnabledServices();
 
