@@ -19,7 +19,6 @@
             -->
             <property column="samplingGeometry" name="geometry" type="org.hibernate.spatial.GeometryType"/>
         </component>
-        <!-- Or add only to specific joined-subclasses -->
         <set inverse="true" name="parameters" table="parameter">
             <key column="observationid" not-null="true"/>
             <one-to-many class="DataParameter"/>
