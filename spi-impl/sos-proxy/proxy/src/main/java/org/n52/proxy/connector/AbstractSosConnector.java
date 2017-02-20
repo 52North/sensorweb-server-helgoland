@@ -54,7 +54,7 @@ public abstract class AbstractSosConnector {
         return new SimpleHttpClient(CONNECTION_TIMEOUT, CONNECTION_TIMEOUT).executePost(uri, request);
     }
 
-    protected OwsServiceResponse getSosRepsonseFor(OwsServiceRequest request, String namespace, String serviceUrl) {
+    protected OwsServiceResponse getSosResponseFor(OwsServiceRequest request, String namespace, String serviceUrl) {
         try {
             EncoderKey encoderKey = CodingHelper.getEncoderKey(namespace, request);
             XmlObject xmlRequest = (XmlObject) encoderRepository.getEncoder(encoderKey).encode(request);

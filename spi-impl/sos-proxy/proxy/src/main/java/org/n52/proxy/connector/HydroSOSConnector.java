@@ -131,7 +131,7 @@ public class HydroSOSConnector extends AbstractSosConnector {
     private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String url) {
         GetFeatureOfInterestRequest request = new GetFeatureOfInterestRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(procedureId)));
-        return (GetFeatureOfInterestResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, url);
+        return (GetFeatureOfInterestResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, url);
     }
 
     private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, DbQuery query) {
@@ -143,6 +143,6 @@ public class HydroSOSConnector extends AbstractSosConnector {
         Time time = new TimePeriod(query.getTimespan().getStart(), query.getTimespan().getEnd());
         TemporalFilter temporalFilter = new TemporalFilter(FilterConstants.TimeOperator.TM_During, time, "phenomenonTime");
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
-        return (GetObservationResponse) this.getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+        return (GetObservationResponse) this.getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
     }
 }

@@ -121,7 +121,7 @@ public class SOS2Connector extends AbstractSosConnector {
     @Override
     public DataEntity getFirstObservation(DatasetEntity entity) {
         GetObservationResponse response = createObservationResponse(entity, createFirstTimefilter());
-        if (response.getObservationCollection().size() == 1) {
+        if (response.getObservationCollection().size() >= 1) {
             return createDataEntity(response.getObservationCollection().get(0));
         }
         return null;
@@ -130,7 +130,7 @@ public class SOS2Connector extends AbstractSosConnector {
     @Override
     public DataEntity getLastObservation(DatasetEntity entity) {
         GetObservationResponse response = createObservationResponse(entity, createLatestTimefilter());
-        if (response.getObservationCollection().size() == 1) {
+        if (response.getObservationCollection().size() >= 1) {
             return createDataEntity(response.getObservationCollection().get(0));
         }
         return null;
@@ -139,7 +139,7 @@ public class SOS2Connector extends AbstractSosConnector {
     @Override
     public UnitEntity getUom(DatasetEntity seriesEntity) {
         GetObservationResponse response = createObservationResponse(seriesEntity, createFirstTimefilter());
-        if (response.getObservationCollection().size() == 1) {
+        if (response.getObservationCollection().size() >= 1) {
             String unit = response.getObservationCollection().get(0).getValue().getValue().getUnit();
             return EntityBuilder.createUnit(unit, (ProxyServiceEntity) seriesEntity.getService());
         }
@@ -193,13 +193,13 @@ public class SOS2Connector extends AbstractSosConnector {
     private GetFeatureOfInterestResponse getFeatureOfInterestResponse(String procedureId, String serviceUri) {
         GetFeatureOfInterestRequest request = new GetFeatureOfInterestRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(procedureId)));
-        return (GetFeatureOfInterestResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
+        return (GetFeatureOfInterestResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
     }
 
     private GetDataAvailabilityResponse getDataAvailabilityResponse(String procedureId, String serviceUri) {
         GetDataAvailabilityRequest request = new GetDataAvailabilityRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(procedureId)));
-        return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
+        return (GetDataAvailabilityResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, serviceUri);
     }
 
     private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, TemporalFilter temporalFilter) {
@@ -209,7 +209,7 @@ public class SOS2Connector extends AbstractSosConnector {
         request.setObservedProperties(new ArrayList<>(Arrays.asList(seriesEntity.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
         request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
-        return (GetObservationResponse) this.getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+        return (GetObservationResponse) this.getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
     }
 
     private TemporalFilter createLatestTimefilter() {

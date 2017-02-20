@@ -192,7 +192,7 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         request.setProcedures(Arrays.asList(procedureId));
         request.setOffering(Arrays.asList(offeringId));
         request.setObservedProperty(Arrays.asList(obsPropId));
-        return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, url);
+        return (GetDataAvailabilityResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, url);
     }
 
     private GetDataAvailabilityResponse getDataAvailabilityResponse(DatasetEntity seriesEntity) {
@@ -201,7 +201,7 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         request.setOffering(Arrays.asList(seriesEntity.getOffering().getDomainId()));
         request.setObservedProperty(Arrays.asList(seriesEntity.getPhenomenon().getDomainId()));
         request.setFeatureOfInterest(Arrays.asList(seriesEntity.getFeature().getDomainId()));
-        return (GetDataAvailabilityResponse) getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+        return (GetDataAvailabilityResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
     }
 
     private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, DbQuery query) {
@@ -212,7 +212,7 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
         // TODO use inspire omso 3.0 format later, when trajectory encoder/decoder are available
 //        request.setResponseFormat("http://inspire.ec.europa.eu/schemas/omso/3.0");
-        return (GetObservationResponse) this.getSosRepsonseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
+        return (GetObservationResponse) this.getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
     }
 
 }
