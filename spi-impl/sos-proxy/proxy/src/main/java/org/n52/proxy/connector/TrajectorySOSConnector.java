@@ -31,17 +31,22 @@ package org.n52.proxy.connector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import org.joda.time.DateTime;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.utils.ConnectorHelper;
 import org.n52.proxy.connector.utils.DatasetConstellation;
+import org.n52.proxy.connector.utils.EntityBuilder;
 import org.n52.proxy.connector.utils.ServiceConstellation;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
 import org.n52.series.db.beans.MeasurementDataEntity;
 import org.n52.series.db.beans.UnitEntity;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.shetland.ogc.filter.TemporalFilter;
 import org.n52.shetland.ogc.gml.time.TimeInstant;
 import org.n52.shetland.ogc.om.NamedValue;
 import org.n52.shetland.ogc.om.SingleObservationValue;
@@ -100,10 +105,11 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
 
     @Override
     public List<DataEntity> getObservations(DatasetEntity seriesEntity, DbQuery query) {
-        // TODO get information only if they are not currently there...
-//        GetDataAvailabilityResponse dataAvailabilityResponse = getDataAvailabilityResponse(seriesEntity);
+        Date start = new Date();
+        LOGGER.info("Start GetObs request");
+        GetObservationResponse obsResp = createObservationResponse(seriesEntity, null);
 
-        GetObservationResponse obsResp = createObservationResponse(seriesEntity, query);
+        LOGGER.info("Process GetObs response");
 
         List<DataEntity> data = new ArrayList<>();
 
@@ -130,23 +136,42 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
             data.add(entity);
         });
         LOGGER.info("Found " + data.size() + " Entries");
-
+        LOGGER.info("End GetObs request in " + ((new Date()).getTime() - start.getTime()) + " ms");
         return data;
     }
 
     @Override
     public UnitEntity getUom(DatasetEntity seriesEntity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        GetDataAvailabilityResponse availabilityResponse = getDataAvailabilityResponse(seriesEntity);
+        if (availabilityResponse.getDataAvailabilities().size() == 1) {
+            DateTime start = availabilityResponse.getDataAvailabilities().get(0).getPhenomenonTime().getStart();
+            GetObservationResponse response = createObservationResponse(seriesEntity, ConnectorHelper.createTimeInstantFilter(start));
+            if (response.getObservationCollection().size() >= 1) {
+                String unit = response.getObservationCollection().get(0).getValue().getValue().getUnit();
+                return EntityBuilder.createUnit(unit, (ProxyServiceEntity) seriesEntity.getService());
+            }
+        }
+        return null;
     }
 
     @Override
     public DataEntity getFirstObservation(DatasetEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // currently only return default first observation
+        MeasurementDataEntity measurementDataEntity = new MeasurementDataEntity();
+        measurementDataEntity.setTimestart(new Date());
+        measurementDataEntity.setTimeend(new Date());
+        measurementDataEntity.setValue(0.0);
+        return measurementDataEntity;
     }
 
     @Override
     public DataEntity getLastObservation(DatasetEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // currently only return default last observation
+        MeasurementDataEntity measurementDataEntity = new MeasurementDataEntity();
+        measurementDataEntity.setTimestart(new Date());
+        measurementDataEntity.setTimeend(new Date());
+        measurementDataEntity.setValue(0.0);
+        return measurementDataEntity;
     }
 
     private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
@@ -204,12 +229,15 @@ public class TrajectorySOSConnector extends AbstractSosConnector {
         return (GetDataAvailabilityResponse) getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
     }
 
-    private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, DbQuery query) {
+    private GetObservationResponse createObservationResponse(DatasetEntity seriesEntity, TemporalFilter temporalFilter) {
         GetObservationRequest request = new GetObservationRequest(SosConstants.SOS, Sos2Constants.SERVICEVERSION);
         request.setProcedures(new ArrayList<>(Arrays.asList(seriesEntity.getProcedure().getDomainId())));
         request.setOfferings(new ArrayList<>(Arrays.asList(seriesEntity.getOffering().getDomainId())));
         request.setObservedProperties(new ArrayList<>(Arrays.asList(seriesEntity.getPhenomenon().getDomainId())));
         request.setFeatureIdentifiers(new ArrayList<>(Arrays.asList(seriesEntity.getFeature().getDomainId())));
+        if (temporalFilter != null) {
+            request.setTemporalFilters(new ArrayList<>(Arrays.asList(temporalFilter)));
+        }
         // TODO use inspire omso 3.0 format later, when trajectory encoder/decoder are available
 //        request.setResponseFormat("http://inspire.ec.europa.eu/schemas/omso/3.0");
         return (GetObservationResponse) this.getSosResponseFor(request, Sos2Constants.NS_SOS_20, seriesEntity.getService().getUrl());
