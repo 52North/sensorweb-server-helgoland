@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:ctx="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:ctx="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
         http://www.springframework.org/schema/mvc
@@ -20,7 +20,7 @@
     <bean name="offeringRepository" class="org.n52.series.db.da.OfferingRepository" />
     <bean name="procedureRepository" class="org.n52.series.db.da.ProcedureRepository" />
     <bean name="platformRepository" class="org.n52.series.db.da.PlatformRepository" />
-    <bean name="datasetRepository" class="org.n52.proxy.db.da.DatasetRepository" />
+    <bean name="datasetRepository" class="org.n52.proxy.db.da.ProxyDatasetRepository" />
     <bean name="geometriesRepository" class="org.n52.series.db.da.GeometriesRepository">
         <property name="databaseSrid" value="${database.srid}" />
     </bean>

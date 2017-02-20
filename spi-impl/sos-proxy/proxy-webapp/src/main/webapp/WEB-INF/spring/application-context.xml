@@ -20,6 +20,8 @@
 
     <bean class="org.n52.proxy.connector.OceanotronSosConnector"/>
     <bean class="org.n52.proxy.connector.SOS2Connector"/>
+    <bean class="org.n52.proxy.connector.TrajectorySOSConnector"/>
+    <bean class="org.n52.proxy.connector.HydroSOSConnector"/>
 
     <!--<import resource="spi-impl-dao_tasks.xml" />-->
 
