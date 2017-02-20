@@ -191,7 +191,24 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        return (T) criteria.uniqueResult();
+//        return (T) criteria.uniqueResult();
+        List<T> list = criteria.list();
+        return getLastResultTimeValue(list);
+    }
+    
+    private T getLastResultTimeValue(List<T> values) {
+        T lastValue = null;
+        for (T value : values) {
+            lastValue = lastValue != null
+                    ? lastValue
+                    : value;
+            Date lastResultTime = lastValue.getResultTime();
+            Date resultTime = value.getResultTime();
+            if (new Instant(resultTime).isAfter(new Instant(lastResultTime))) {
+                lastValue = value;
+            }
+        }
+        return lastValue;
     }
 
 }
