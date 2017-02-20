@@ -120,8 +120,9 @@ public class InsertRepository extends SessionAwareRepository {
 
     public synchronized void insertDataset(DatasetEntity dataset) {
         Session session = getSession();
+        Transaction transaction = null;
         try {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
 
             ProcedureEntity procedure = insertProcedure(dataset.getProcedure(), session);
             CategoryEntity category = insertCategory(dataset.getCategory(), session);
@@ -134,6 +135,9 @@ public class InsertRepository extends SessionAwareRepository {
             session.flush();
             transaction.commit();
         } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
             LOGGER.error("Error occured while saving dataset: ", e);
         } finally {
             returnSession(session);
@@ -182,8 +186,8 @@ public class InsertRepository extends SessionAwareRepository {
 
     private RelatedFeatureEntity insertRelatedFeature(RelatedFeatureEntity relatedFeature, Session session) {
         // insert related feature roles
-        Set<RelatedFeatureRoleEntity> roles =
-                new HashSet<RelatedFeatureRoleEntity>(relatedFeature.getRelatedFeatureRoles().size());
+        Set<RelatedFeatureRoleEntity> roles
+                = new HashSet<RelatedFeatureRoleEntity>(relatedFeature.getRelatedFeatureRoles().size());
         for (RelatedFeatureRoleEntity relatedFeatureRole : relatedFeature.getRelatedFeatureRoles()) {
             roles.add(insertRelatedFeatureRole(relatedFeatureRole, session));
         }
