@@ -31,7 +31,6 @@ package org.n52.io.extension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 
 import org.n52.io.request.IoParameters;
@@ -85,24 +84,11 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 
     @Override
     public Map<String, Object> getExtras(DatasetOutput output, IoParameters parameters) {
-        if ( hasExtrasToReturn(output, parameters)) {
-            return wrapSingleIntoMap(getResultTimes(parameters, output));
-        }
-        return Collections.<String, Object>emptyMap();
+        return wrapSingleIntoMap(getResultTimes(parameters, output));
     }
 
     private ArrayList<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
         return resultTimeService.getResultTimeList(parameters, output.getId());
-    }
-
-    private boolean hasExtrasToReturn(DatasetOutput output, IoParameters parameters) {
-        return super.hasExtrasToReturn(output, parameters)
-                && hasResultTimeRequestParameter(parameters);
-    }
-
-    private static boolean hasResultTimeRequestParameter(IoParameters parameters) {
-        return parameters.containsParameter("request")
-                && parameters.getOther("request").equalsIgnoreCase(EXTENSION_NAME);
     }
 
     public ResultTimeService getResultTimeService() {
