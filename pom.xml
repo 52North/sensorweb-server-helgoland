@@ -51,6 +51,8 @@
     <properties>
         <!-- dev | ci | prod -->
         <env>dev</env>
+        <!-- TODO -->
+        <findbugs.skip>true</findbugs.skip>
         
         <!-- optional properties file -->
         <local.configFile>file:${user.home}/${project.build.finalName}.properties</local.configFile>
