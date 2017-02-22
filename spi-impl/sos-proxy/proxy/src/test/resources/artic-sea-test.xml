@@ -34,11 +34,12 @@
     <bean class="org.n52.svalbard.decode.SosStringDecoderv20"/>-->
     <bean class="org.n52.svalbard.decode.SwesDecoderv20"/>
     <!--<bean class="org.n52.svalbard.decode.SwesStringDecoderv20" />
-    <bean class="org.n52.svalbard.decode.SweCommonDecoderV20"/>
-    <bean class="org.n52.svalbard.decode.OmDecoderv20"/>-->
+    <bean class="org.n52.svalbard.decode.SweCommonDecoderV20"/>-->
+    <bean class="org.n52.svalbard.decode.OmDecoderv20"/>
     <bean class="org.n52.svalbard.decode.SamplingDecoderv20"/>
-    <!--<bean class="org.n52.svalbard.decode.SwesExtensionDecoderv20"/>
-    <bean class="org.n52.svalbard.decode.XlinkDecoderv1999"/>-->
+    <bean class="org.n52.svalbard.decode.SwesExtensionDecoderv20"/>
+    <bean class="org.n52.svalbard.decode.RelatedOfferingTypeDecoder"/>
+    <!--<bean class="org.n52.svalbard.decode.XlinkDecoderv1999"/>-->
     <bean class="org.n52.svalbard.decode.GetDataAvailabilityResponseDecoder"/>
     <!-- response decoder -->
     <bean class="org.n52.svalbard.decode.CapabilitiesDocumentDecoder"/>
@@ -87,5 +88,6 @@
     <bean class="org.n52.proxy.connector.SOS2Connector"/>
     <bean class="org.n52.proxy.connector.TrajectorySOSConnector"/>
     <bean class="org.n52.proxy.connector.HydroSOSConnector"/>
+    <bean class="org.n52.proxy.connector.NestedOfferingsSOSConnector"/>
 
 </beans>

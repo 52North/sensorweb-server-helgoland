@@ -34,14 +34,16 @@ import java.util.logging.Level;
 import org.apache.http.HttpResponse;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.AbstractSosConnector;
+import org.n52.proxy.connector.utils.EntityBuilder;
 import org.n52.proxy.connector.utils.ServiceConstellation;
 import org.n52.proxy.harvest.DataSourceHarvesterJob;
 import org.n52.proxy.web.SimpleHttpClient;
+import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.UnitEntity;
 import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
 import org.n52.svalbard.decode.DecoderRepository;
 import org.n52.svalbard.decode.exception.DecodingException;
@@ -68,9 +70,21 @@ public class SosConnectorTest {
 //    @Test
     public void collectLocalhost() {
         DataSourceConfiguration config = new DataSourceConfiguration();
-        config.setItemName("serviceName");
-        config.setUrl("http://localhost:8081/52n-sos-webapp/service");
-        testConfig(config);
+        String serviceName = "localhost";
+        String url = "http://localhost:8081/52n-sos-webapp/service";
+        config.setItemName(serviceName);
+        config.setUrl(url);
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
+        MeasurementDatasetEntity entity = new MeasurementDatasetEntity();
+        entity.setPhenomenon(EntityBuilder.createPhenomenon("AirTemperature", "AirTemperature", null));
+        entity.setProcedure(EntityBuilder.createProcedure("wxt520", "wxt520", true, false, null));
+        entity.setOffering(EntityBuilder.createOffering("field_0", "field_0", null));
+        entity.setFeature(EntityBuilder.createFeature("wxt520", "wxt520", null, null));
+        entity.setService(EntityBuilder.createService(serviceName, "bla", "", url, ""));
+        UnitEntity uom = connector.getUom(entity);
+        LOGGER.info(uom.getName().toString());
     }
 
 //    @Test
@@ -78,7 +92,9 @@ public class SosConnectorTest {
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("sensorwebTestbed");
         config.setUrl("http://sensorweb.demo.52north.org/sensorwebtestbed/service");
-        testConfig(config);
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
     }
 
 //    @Test
@@ -86,7 +102,9 @@ public class SosConnectorTest {
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("sensorwebDemo");
         config.setUrl("http://sensorweb.demo.52north.org/52n-sos-webapp/service");
-        testConfig(config);
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
     }
 
 //    @Test
@@ -95,16 +113,31 @@ public class SosConnectorTest {
         config.setItemName("oceanoTron");
         config.setUrl("http://oceanotrondemo.ifremer.fr/oceanotron/SOS/default");
         config.setConnector("OceanotronSosConnector");
-        testConfig(config);
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
     }
 
 //    @Test
     public void collectHzgSOS() {
         DataSourceConfiguration config = new DataSourceConfiguration();
-        config.setItemName("hzg-sos");
-        config.setUrl("http://codm.hzg.de/52n-sos-webapp/service");
+        String serviceName = "hzg-sos";
+        String url = "http://codm.hzg.de/52n-sos-webapp/service";
+        config.setItemName(serviceName);
+        config.setUrl(url);
         config.setConnector("TrajectorySOSConnector");
-        testConfig(config);
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+//        printConstellation(connector.getConstellation(config, capabilities));
+        MeasurementDatasetEntity entity = new MeasurementDatasetEntity();
+        entity.setPhenomenon(EntityBuilder.createPhenomenon("O2-Sat-Ind_Aanderaa", "O2-Sat-Ind_Aanderaa", null));
+        entity.setProcedure(EntityBuilder.createProcedure("FerryBox", "FerryBox", true, true, null));
+        entity.setOffering(EntityBuilder.createOffering("Cuxhaven-Harwich", "Cuxhaven-Harwich", null));
+        entity.setFeature(EntityBuilder.createFeature("2004-11-08T16:11:22Z Cuxhaven", "2004-11-08T16:11:22Z Cuxhaven", null, null));
+        entity.setService(EntityBuilder.createService(serviceName, "bla", "", url, ""));
+        connector.getObservations(entity, null);
+//        UnitEntity uom = connector.getUom(entity);
+//        LOGGER.info(uom.getName());
     }
 
 //    @Test
@@ -112,17 +145,44 @@ public class SosConnectorTest {
         DataSourceConfiguration config = new DataSourceConfiguration();
         config.setItemName("arpav5");
         config.setConnector("HydroSOSConnector");
-        config.setUrl("http://arpa-er-axe.geodab.eu/gi-axe/services/sos/v5");
-        testConfig(config);
+        config.setUrl("http://arpa-er-axe.geodab.eu/gi-axe-arpa/services/sos?viewId=vc0ef5197e1e74cb9bef34fe1e0ea4bbc");
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
     }
 
-    private void testConfig(DataSourceConfiguration config) {
-        ServiceConstellation constellation = findConstellation(config);
-        if (constellation != null) {
-            printConstellation(constellation);
-        } else {
-            LOGGER.warn("No connector found for " + config);
-        }
+//    @Test
+    public void collectAirSenSOS() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        String serviceName = "airSenSOS";
+        String url = "http://sossvr1.liberaintentio.com:8080/AirSenSOS/service";
+        config.setItemName(serviceName);
+        config.setUrl(url);
+        config.setConnector("SOS2Connector");
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
+//        MeasurementDatasetEntity entity = new MeasurementDatasetEntity();
+//        entity.setPhenomenon(EntityBuilder.createPhenomenon("AirTemperature", "AirTemperature", null));
+//        entity.setProcedure(EntityBuilder.createProcedure("wxt520", "wxt520", true, false, null));
+//        entity.setOffering(EntityBuilder.createOffering("field_0", "field_0", null));
+//        entity.setFeature(EntityBuilder.createFeature("wxt520", "wxt520", null, null));
+//        entity.setService(EntityBuilder.createService(serviceName, "bla", "", url, ""));
+//        UnitEntity uom = connector.getUom(entity);
+//        LOGGER.info(uom.getName().toString());
+    }
+
+    @Test
+    public void collectNestedOfferingsSOS() {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        String serviceName = "nestedOfferingsSOS";
+        String url = "http://192.168.52.117:8080/52n-sos-webapp/service";
+        config.setItemName(serviceName);
+        config.setUrl(url);
+        config.setConnector("NestedOfferingsSOSConnector");
+        GetCapabilitiesResponse capabilities = createCapabilities(config);
+        AbstractSosConnector connector = getConnector(config, capabilities);
+        printConstellation(connector.getConstellation(config, capabilities));
     }
 
     private void printConstellation(ServiceConstellation constellation) {
@@ -155,23 +215,27 @@ public class SosConnectorTest {
         LOGGER.info(sb.toString());
     }
 
-    private ServiceConstellation findConstellation(DataSourceConfiguration config) {
-        GetCapabilitiesResponse capabilities = createCapabilities(config);
-        ServiceConstellation constellation = null;
+    private AbstractSosConnector getConnector(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
+        AbstractSosConnector found = null;
         for (AbstractSosConnector connector : connectors) {
             if (connector.matches(config, capabilities)) {
-                LOGGER.info(connector.toString() + " create a constellation for " + config);
-                constellation = connector.getConstellation(config, capabilities);
+                found = connector;
                 break;
             }
         }
-        return constellation;
+        return found;
     }
 
     private GetCapabilitiesResponse createCapabilities(DataSourceConfiguration config) {
         try {
             SimpleHttpClient simpleHttpClient = new SimpleHttpClient();
-            HttpResponse response = simpleHttpClient.executeGet(config.getUrl() + "?service=SOS&request=GetCapabilities");
+            String url = config.getUrl();
+            if (url.contains("?")) {
+                url = url + "&";
+            } else {
+                url = url + "?";
+            }
+            HttpResponse response = simpleHttpClient.executeGet(url + "service=SOS&request=GetCapabilities");
             XmlObject xmlResponse = XmlObject.Factory.parse(response.getEntity().getContent());
             return (GetCapabilitiesResponse) decoderRepository.getDecoder(CodingHelper.getDecoderKey(xmlResponse)).decode(xmlResponse);
         } catch (IOException | UnsupportedOperationException | XmlException | DecodingException ex) {
