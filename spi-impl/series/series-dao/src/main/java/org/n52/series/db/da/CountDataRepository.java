@@ -39,6 +39,7 @@ import org.n52.io.response.dataset.count.CountValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.CountDataEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
 
@@ -133,7 +134,7 @@ public class CountDataRepository extends AbstractDataRepository<CountData, Count
 
         long timestart = observation.getTimestart().getTime();
         long timeend = observation.getTimeend().getTime();
-        Integer observationValue = !getServiceInfo().isNoDataValue(observation)
+        Integer observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         CountValue value = query.getParameters().isShowTimeIntervals()

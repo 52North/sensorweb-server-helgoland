@@ -37,7 +37,7 @@ import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.DataRepository;
-import org.n52.series.db.da.DataRepositoryFactory;
+import org.n52.series.db.da.IDataRepositoryFactory;
 import org.n52.series.db.da.TimeseriesRepository;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.DataService;
@@ -50,7 +50,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
         implements DataService<MeasurementData> {
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     public TimeseriesAccessService(TimeseriesRepository repository) {
         super(repository);
@@ -75,7 +75,7 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
 
     private MeasurementData getDataFor(String timeseriesId, RequestParameterSet parameters)
             throws DataAccessException {
-        DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        DbQuery dbQuery = dbQueryFactory.createFrom(IoParameters.createFromQuery(parameters));
         DataRepository dataRepository = createRepository("measurement");
         return (MeasurementData) dataRepository.getData(timeseriesId, dbQuery);
     }
@@ -91,11 +91,11 @@ public class TimeseriesAccessService extends AccessService<TimeseriesMetadataOut
         }
     }
 
-    public DataRepositoryFactory getFactory() {
+    public IDataRepositoryFactory getFactory() {
         return factory;
     }
 
-    public void setFactory(DataRepositoryFactory factory) {
+    public void setFactory(IDataRepositoryFactory factory) {
         this.factory = factory;
     }
 

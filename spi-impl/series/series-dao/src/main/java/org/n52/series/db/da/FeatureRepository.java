@@ -67,7 +67,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao featureDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             List<FeatureEntity> found = featureDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -150,11 +150,15 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 
     private FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         FeatureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         return result;
     }
 
-    private FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
+    protected FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));

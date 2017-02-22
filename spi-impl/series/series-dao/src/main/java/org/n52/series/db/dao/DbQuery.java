@@ -86,14 +86,10 @@ public class DbQuery {
 
     private String sridAuthorityCode = "EPSG:4326"; // default
 
-    protected DbQuery(IoParameters parameters) {
+    public DbQuery(IoParameters parameters) {
         if (parameters != null) {
             this.parameters = parameters;
         }
-    }
-
-    public static DbQuery createFrom(IoParameters parameters) {
-        return new DbQuery(parameters);
     }
 
     public void setDatabaseAuthorityCode(String code) {
@@ -225,6 +221,18 @@ public class DbQuery {
         return criteria;
     }
 
+    public Criteria addFilters(Criteria criteria, String seriesProperty) {
+        DetachedCriteria filter = createDetachedFilterCriteria(seriesProperty);
+        criteria = addPlatformTypeFilter(seriesProperty, criteria);
+        criteria = addDatasetTypeFilter(seriesProperty, criteria);
+        criteria = addLimitAndOffsetFilter(criteria);
+        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
+                            ? "pkid"
+                            : seriesProperty + ".pkid";
+        return addSpatialFilterTo(criteria, this)
+                .add(propertyIn(filterProperty, filter));
+    }
+
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
         boolean includeStationary = filterResolver.shallIncludeStationaryPlatformTypes();
         boolean includeMobile = filterResolver.shallIncludeMobilePlatformTypes();
@@ -253,7 +261,7 @@ public class DbQuery {
      * @return the long value of given string or {@link Long#MIN_VALUE} if string could not be parsed to type
      *         long.
      */
-    private Long parseToId(String id) {
+    protected Long parseToId(String id) {
         try {
             return Long.parseLong(id);
         }
@@ -279,7 +287,7 @@ public class DbQuery {
                 Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
                 Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
-                criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
+                criteria.add(SpatialRestrictions.filter("geometryEntity.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
 
@@ -300,7 +308,7 @@ public class DbQuery {
             if ( !geometryType.isEmpty()) {
                 Type type = getGeometryType(geometryType);
                 if (type != null) {
-                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                    criteria.add(SpatialRestrictions.geometryType("geometryEntity.geometry", type));
                 }
             }
         }

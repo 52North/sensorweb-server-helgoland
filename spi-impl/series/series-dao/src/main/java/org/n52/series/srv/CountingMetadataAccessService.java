@@ -32,6 +32,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.EntityCounter;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.DbQueryFactory;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.web.exception.InternalServerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Autowired
     private EntityCounter counter;
 
+    @Autowired
+    private DbQueryFactory dbQueryFactory;
+
     @Override
     public int getServiceCount(IoParameters parameters) {
         return 1; // we only provide 1 service
@@ -49,7 +53,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getOfferingCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countOfferings(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Offerings entities.", e);
@@ -59,7 +63,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getCategoryCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countCategories(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Categories entities.", e);
@@ -69,7 +73,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getFeatureCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countFeatures(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Feature entities.", e);
@@ -79,7 +83,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getProcedureCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countProcedures(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Procedure entities.", e);
@@ -89,7 +93,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getPhenomenaCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countPhenomena(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Phenomenon entities.", e);
@@ -99,7 +103,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getPlatformCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countPlatforms(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Phenomenon entities.", e);
@@ -109,7 +113,7 @@ public class CountingMetadataAccessService implements CountingMetadataService {
     @Override
     public int getDatasetCount(IoParameters parameters) {
         try {
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             return counter.countDatasets(query);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not count Phenomenon entities.", e);

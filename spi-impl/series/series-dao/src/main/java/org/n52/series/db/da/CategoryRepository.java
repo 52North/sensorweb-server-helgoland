@@ -159,13 +159,17 @@ public class CategoryRepository extends SessionAwareRepository implements Output
         return result;
     }
 
-    private CategoryOutput createExpanded(CategoryEntity entity, DbQuery parameters) throws DataAccessException {
+    protected CategoryOutput createExpanded(CategoryEntity entity, DbQuery parameters) throws DataAccessException {
         CategoryOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         return result;
     }
 
-    private CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {
+    protected CategoryOutput createCondensed(CategoryEntity entity, DbQuery parameters) {
         CategoryOutput result = new CategoryOutput();
         result.setId(Long.toString(entity.getPkid()));
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));

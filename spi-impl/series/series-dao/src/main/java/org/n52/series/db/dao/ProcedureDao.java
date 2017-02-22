@@ -56,14 +56,14 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     public List<ProcedureEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nProcedureEntity.class, getDefaultCriteria(), query);
-        return (List<ProcedureEntity>) addFilters(criteria, query).list();
+        return (List<ProcedureEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
