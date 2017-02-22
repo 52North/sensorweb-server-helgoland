@@ -38,7 +38,7 @@ public class FeatureEntity extends DescribableEntity implements Childs<FeatureEn
     /**
      * @since 2.0.0
      */
-    private GeometryEntity geometry;
+    private GeometryEntity geometryEntity;
     private Set<FeatureEntity> childFeatures;
     private Set<FeatureEntity> parentFeatures;
 
@@ -47,24 +47,24 @@ public class FeatureEntity extends DescribableEntity implements Childs<FeatureEn
     }
 
     public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
+        return geometryEntity != null ? geometryEntity.getGeometry(srid) : null;
     }
 
     public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
+        this.geometryEntity = new GeometryEntity();
+        this.geometryEntity.setGeometry(geometry);
     }
 
     public GeometryEntity getGeometryEntity() {
-        return geometry;
+        return geometryEntity;
     }
 
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
+    public void setGeometryEntity(GeometryEntity geometryEntity) {
+        this.geometryEntity = geometryEntity;
     }
 
     public boolean isSetGeometry() {
-        return geometry != null;
+        return geometryEntity != null;
     }
 
     public void setChilds(Set<FeatureEntity> childs) {

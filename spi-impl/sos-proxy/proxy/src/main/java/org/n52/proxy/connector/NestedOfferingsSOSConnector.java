@@ -54,7 +54,7 @@ public class NestedOfferingsSOSConnector extends SOS2Connector {
     protected void doForOffering(SosObservationOffering obsOff, ServiceConstellation serviceConstellation, String serviceUri) {
 
         String offeringId = ConnectorHelper.addOffering(obsOff, serviceConstellation);
-        
+
         Optional<Extension<?>> extension = obsOff.getExtension(RelatedOfferingConstants.RELATED_OFFERINGS);
         LOGGER.info(extension.toString());
     }

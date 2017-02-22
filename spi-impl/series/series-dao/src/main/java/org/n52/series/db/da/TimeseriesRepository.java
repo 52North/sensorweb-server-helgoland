@@ -178,14 +178,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
     }
 
-    private TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
+    protected TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
 
         output.setReferenceValues(createReferenceValueOutputs(series, query, repository));
-        output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series, query));
-        output.setLastValue(repository.createSeriesValueFor(series.getLastValue(), series, query));
+        output.setFirstValue(repository.getFirstValue(series, session, query));
+        output.setLastValue(repository.getLastValue(series, session, query));
         return output;
     }
 
