@@ -131,7 +131,7 @@ public class GeometryEntity {
     public boolean isEmpty() {
         return !isSetGeometry() && !isSetLonLat();
     }
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -133,7 +133,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
             returnSession(session);
         }
     }
-    
+
     @Override
     public List<ServiceOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
         if (serviceEntity != null) {
@@ -145,7 +145,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         }
         return results;
     }
-    
+
     @Override
     public List<ServiceOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         if (serviceEntity != null) {
@@ -215,7 +215,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         service.setQuantities(countParameters(service, parameters));
         service.setServiceUrl(serviceEntity.getUrl());
         service.setSupportsFirstLatest(true);
-        
+
         FilterResolver filterResolver = parameters.getFilterResolver();
         if (filterResolver.shallBehaveBackwardsCompatible()) {
             // ensure backwards compatibility
@@ -229,10 +229,10 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
                     ? entity.getVersion()
                     : "2.0");
             addSupportedDatasetsTo(service);
-        
+
             // TODO add features
             // TODO different counts
-        
+
         }
         return service;
     }
