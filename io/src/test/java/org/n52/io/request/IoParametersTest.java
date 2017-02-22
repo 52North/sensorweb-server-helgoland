@@ -171,7 +171,7 @@ public class IoParametersTest {
         FilterResolver filterResolver = createDefaults().getFilterResolver();
         assertThat(filterResolver.shallBehaveBackwardsCompatible(), is(true));
     }
-    
+
     @Test
     public void when_convertingToStyledRequestParameters_then_overridingParametersAllowed() {
         IoParameters defaults = createDefaults().extendWith("width", "200");
