@@ -81,7 +81,7 @@ public class ServiceOutput extends ParameterOutput {
         for (Set<String> supportedMimeTypes : mimeTypesByDatasetTypes.values()) {
             supportedMimeTypes.add(MimeType.APPLICATION_JSON.getMimeType());
         }
-        addFeature("mimeTypesByDatasets", mimeTypesByDatasetTypes);
+        addFeature("supportedMimeTypes", mimeTypesByDatasetTypes);
     }
 
     @JsonAnyGetter

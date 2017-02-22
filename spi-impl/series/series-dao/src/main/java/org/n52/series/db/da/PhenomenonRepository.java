@@ -92,39 +92,54 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     public List<PhenomenonOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PhenomenonOutput> results = new ArrayList<>();
-            for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
-                results.add(createCondensed(phenomenonEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<PhenomenonOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        List<PhenomenonOutput> results = new ArrayList<>();
+        for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
+            results.add(createCondensed(phenomenonEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<PhenomenonOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PhenomenonOutput> results = new ArrayList<>();
-            for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(phenomenonEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<PhenomenonOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        List<PhenomenonOutput> results = new ArrayList<>();
+        for (PhenomenonEntity phenomenonEntity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(phenomenonEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public PhenomenonOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            PhenomenonEntity result = getInstance(parseId(id), parameters, session);
-            return createExpanded(result, parameters);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public PhenomenonOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        PhenomenonEntity result = getInstance(parseId(id), parameters, session);
+        return createExpanded(result, parameters);
     }
 
     protected List<PhenomenonEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {

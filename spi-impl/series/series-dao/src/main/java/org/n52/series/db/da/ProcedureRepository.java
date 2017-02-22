@@ -93,39 +93,54 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<ProcedureOutput> results = new ArrayList<>();
-            for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-                results.add(createCondensed(procedureEntity, parameters));
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<ProcedureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            results.add(createCondensed(procedureEntity, parameters));
+        }
+        return results;
     }
 
     @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<ProcedureOutput> results = new ArrayList<>();
-            for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(procedureEntity, parameters));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(procedureEntity, parameters));
+        }
+        return results;
+    }
+
+    @Override
     public ProcedureOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            ProcedureEntity result = getInstance(parseId(id), parameters, session);
-            return createExpanded(result, parameters);
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public ProcedureOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        ProcedureEntity result = getInstance(parseId(id), parameters, session);
+        return createExpanded(result, parameters);
     }
 
     protected List<ProcedureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {

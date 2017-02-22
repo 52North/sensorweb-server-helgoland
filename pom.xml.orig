@@ -4,7 +4,11 @@
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
+<<<<<<< HEAD
         <version>6</version>
+=======
+        <version>4</version>
+>>>>>>> develop
     </parent>
 
     <groupId>org.n52.series-api</groupId>

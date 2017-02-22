@@ -47,7 +47,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      * @param datasets The series ids of interest.
      */
     void setDatasets(String[] datasets) {
-        addParameter("datasets", IoParameters.getJsonNodeFrom(datasets));
+        setParameter("datasets", IoParameters.getJsonNodeFrom(datasets));
     }
 
     @Deprecated
@@ -66,7 +66,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      * @param format Which output format the raw data shall have.
      */
     public void setFormat(String format) {
-        addParameter("format", IoParameters.getJsonNodeFrom(format));
+        setParameter("format", IoParameters.getJsonNodeFrom(format));
     }
 
     /**

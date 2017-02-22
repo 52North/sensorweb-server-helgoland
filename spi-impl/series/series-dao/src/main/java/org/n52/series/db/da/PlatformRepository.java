@@ -96,15 +96,20 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     public List<PlatformOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PlatformOutput> results = new ArrayList<>();
-            for (PlatformEntity entity : getAllInstances(parameters, session)) {
-                final PlatformOutput result = createCondensed(entity, parameters);
-                results.add(result);
-            }
-            return results;
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<PlatformOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        List<PlatformOutput> results = new ArrayList<>();
+        for (PlatformEntity entity : getAllInstances(parameters, session)) {
+            final PlatformOutput result = createCondensed(entity, parameters);
+            results.add(result);
+        }
+        return results;
     }
 
     private PlatformOutput createCondensed(PlatformEntity entity, DbQuery parameters) {
@@ -120,15 +125,20 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     public PlatformOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            if (PlatformType.isStationaryId(id)) {
-                PlatformEntity platform = getStation(id, parameters, session);
-                return createExpanded(platform, parameters, session);
-            } else {
-                PlatformEntity platform = getPlatform(id, parameters, session);
-                return createExpanded(platform, parameters, session);
-            }
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
+        }
+    }
+
+    @Override
+    public PlatformOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        if (PlatformType.isStationaryId(id)) {
+            PlatformEntity platform = getStation(id, parameters, session);
+            return createExpanded(platform, parameters, session);
+        } else {
+            PlatformEntity platform = getPlatform(id, parameters, session);
+            return createExpanded(platform, parameters, session);
         }
     }
 
@@ -136,14 +146,19 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     public List<PlatformOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            List<PlatformOutput> results = new ArrayList<>();
-            for (PlatformEntity entity : getAllInstances(parameters, session)) {
-                results.add(createExpanded(entity, parameters, session));
-            }
-            return results;
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<PlatformOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        List<PlatformOutput> results = new ArrayList<>();
+        for (PlatformEntity entity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(entity, parameters, session));
+        }
+        return results;
     }
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {

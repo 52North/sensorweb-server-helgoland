@@ -89,35 +89,50 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     public List<GeometryInfo> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllInstances(parameters, session, false);
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<GeometryInfo> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
+        return getAllInstances(parameters, session, false);
     }
 
     @Override
     public List<GeometryInfo> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllInstances(parameters, session, true);
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
     }
 
     @Override
+    public List<GeometryInfo> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
+        return getAllInstances(parameters, session, true);
+    }
+
+    @Override
     public GeometryInfo getInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-            if (GeometryType.isPlatformGeometryId(id)) {
-                return getPlatformLocationGeometry(id, parameters, session);
-            } else {
-                // TODO observed Geometry tpyes
-                return null;
-            }
+            return getInstance(id, parameters, session);
         } finally {
             returnSession(session);
+        }
+    }
+
+    @Override
+    public GeometryInfo getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        parameters.setDatabaseAuthorityCode(getDatabaseSrid());
+        if (GeometryType.isPlatformGeometryId(id)) {
+            return getPlatformLocationGeometry(id, parameters, session);
+        } else {
+            // TODO observed Geometry tpyes
+            return null;
         }
     }
 

@@ -31,6 +31,7 @@ package org.n52.series.db.da;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
@@ -93,25 +94,30 @@ public class DatasetRepository<T extends Data>
     public List<DatasetOutput> getAllCondensed(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<DatasetOutput> results = new ArrayList<>();
-            FilterResolver filterResolver = query.getFilterResolver();
-            if (query.getParameters().isMatchDomainIds()) {
-                String datasetType = query.getHandleAsDatasetTypeFallback();
-                addCondensedResults(getSeriesDao(datasetType, session), query, results);
-                return results;
-            }
-
-            if (filterResolver.shallIncludeAllDatasetTypes()) {
-                addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
-            } else {
-                for (String datasetType : query.getDatasetTypes()) {
-                    addCondensedResults(getSeriesDao(datasetType, session), query, results);
-                }
-            }
-            return results;
+            return getAllCondensed(query, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<DatasetOutput> getAllCondensed(DbQuery query, Session session) throws DataAccessException {
+        List<DatasetOutput> results = new ArrayList<>();
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (query.getParameters().isMatchDomainIds()) {
+            String datasetType = query.getHandleAsDatasetTypeFallback();
+            addCondensedResults(getSeriesDao(datasetType, session), query, results);
+            return results;
+        }
+
+        if (filterResolver.shallIncludeAllDatasetTypes()) {
+            addCondensedResults(getSeriesDao(DatasetEntity.class, session), query, results);
+        } else {
+            for (String datasetType : query.getDatasetTypes()) {
+                addCondensedResults(getSeriesDao(datasetType, session), query, results);
+            }
+        }
+        return results;
     }
 
     private void addCondensedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results) throws DataAccessException {
@@ -140,25 +146,30 @@ public class DatasetRepository<T extends Data>
     public List<DatasetOutput> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
         try {
-            List<DatasetOutput> results = new ArrayList<>();
-            FilterResolver filterResolver = query.getFilterResolver();
-            if (query.getParameters().isMatchDomainIds()) {
-                String datasetType = query.getHandleAsDatasetTypeFallback();
-                addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
-                return results;
-            }
-
-            if (filterResolver.shallIncludeAllDatasetTypes()) {
-                addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
-            } else {
-                for (String datasetType : query.getDatasetTypes()) {
-                    addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
-                }
-            }
-            return results;
+            return getAllExpanded(query, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public List<DatasetOutput> getAllExpanded(DbQuery query, Session session) throws DataAccessException {
+        List<DatasetOutput> results = new ArrayList<>();
+        FilterResolver filterResolver = query.getFilterResolver();
+        if (query.getParameters().isMatchDomainIds()) {
+            String datasetType = query.getHandleAsDatasetTypeFallback();
+            addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
+            return results;
+        }
+
+        if (filterResolver.shallIncludeAllDatasetTypes()) {
+            addExpandedResults(getSeriesDao(DatasetEntity.class, session), query, results, session);
+        } else {
+            for (String datasetType : query.getDatasetTypes()) {
+                addExpandedResults(getSeriesDao(datasetType, session), query, results, session);
+            }
+        }
+        return results;
     }
 
     private void addExpandedResults(DatasetDao<? extends DatasetEntity> dao, DbQuery query, List<DatasetOutput> results, Session session) throws DataAccessException {
@@ -169,13 +180,18 @@ public class DatasetRepository<T extends Data>
 
     @Override
     public DatasetOutput getInstance(String id, DbQuery query) throws DataAccessException {
-            Session session = getSession();
+        Session session = getSession();
         try {
-            DatasetEntity< ? > instanceEntity = getInstanceEntity(id, query, session);
-            return createExpanded(instanceEntity, query, session);
+            return getInstance(id, query, session);
         } finally {
             returnSession(session);
         }
+    }
+
+    @Override
+    public DatasetOutput getInstance(String id, DbQuery query, Session session) throws DataAccessException {
+        DatasetEntity< ? > instanceEntity = getInstanceEntity(id, query, session);
+        return createExpanded(instanceEntity, query, session);
     }
 
     DatasetEntity<?> getInstanceEntity(String id, DbQuery query, Session session) throws DataAccessException {
