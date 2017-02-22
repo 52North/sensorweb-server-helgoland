@@ -192,8 +192,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return createExpanded(result, dbQuery, session);
     }
 
-    protected TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = createCondensed(series, query);
+    protected TimeseriesMetadataOutput createExpanded(MeasurementDatasetEntity series, DbQuery query, Session session) throws DataAccessException {
+        TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
 
@@ -232,7 +232,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return outputs.toArray(new MeasurementReferenceValueOutput[0]);
     }
 
-    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private TimeseriesMetadataOutput createCondensed(MeasurementDatasetEntity entity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesMetadataOutput output = new TimeseriesMetadataOutput() ;
         String locale = query.getLocale();
         String phenomenonLabel = entity.getPhenomenon().getLabelFrom(locale);
@@ -242,7 +242,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         output.setLabel(createTimeseriesLabel(phenomenonLabel, procedureLabel, stationLabel, offeringLabel));
         output.setId(entity.getPkid().toString());
         output.setUom(entity.getUnitI18nName(locale));
-        output.setStation(createCondensedStation(entity, query));
+        output.setStation(createCondensedStation(entity, query, session));
         return output;
     }
 
@@ -254,12 +254,12 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return sb.append(offering).toString();
     }
 
-    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query) throws DataAccessException {
+    private StationOutput createCondensedStation(MeasurementDatasetEntity entity, DbQuery query, Session session) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
         String featurePkid = feature.getPkid().toString();
 
         // XXX explicit cast here
-        return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query);
+        return ((StationRepository) stationRepository).getCondensedInstance(featurePkid, query, session);
     }
 
     public OutputAssembler<StationOutput> getStationRepository() {

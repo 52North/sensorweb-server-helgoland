@@ -92,10 +92,6 @@ public class DbQuery {
         }
     }
 
-//    public static DbQuery createFrom(IoParameters parameters) {
-//        return new DbQuery(parameters); // TODO
-//    }
-
     public void setDatabaseAuthorityCode(String code) {
         this.sridAuthorityCode = code;
     }
