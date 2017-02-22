@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,6 @@ import org.n52.series.db.dao.ProcedureDao;
 
 public class ProxyProcedureDao extends ProcedureDao implements InsertDao<ProcedureEntity>, ClearDao<ProcedureEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyProcedureDao(Session session) {
@@ -70,7 +69,7 @@ public class ProxyProcedureDao extends ProcedureDao implements InsertDao<Procedu
 
     private ProcedureEntity getInstance(ProcedureEntity procedure) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, procedure.getName()))
+                .add(Restrictions.eq(ProcedureEntity.DOMAIN_ID, procedure.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, procedure.getService().getPkid()));
         return (ProcedureEntity) criteria.uniqueResult();
     }

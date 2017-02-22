@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,8 +28,6 @@
  */
 package org.n52.io.response.dataset.measurement;
 
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
@@ -38,18 +36,6 @@ public class MeasurementData extends Data<MeasurementValue> {
     private static final long serialVersionUID = 4717558247670336015L;
 
     private MeasurementDatasetMetadata metadata;
-
-    /**
-     * @param values the timestamp &lt;-&gt; value map.
-     * @return a measurement data object.
-     */
-    public static MeasurementData newMeasurementData(Map<Long, Double> values) {
-        MeasurementData timeseries = new MeasurementData();
-        for (Entry<Long, Double> data : values.entrySet()) {
-            timeseries.addNewValue(data.getKey(), data.getValue());
-        }
-        return timeseries;
-    }
 
     public static MeasurementData newMeasurementData(MeasurementValue... values) {
         MeasurementData timeseries = new MeasurementData();

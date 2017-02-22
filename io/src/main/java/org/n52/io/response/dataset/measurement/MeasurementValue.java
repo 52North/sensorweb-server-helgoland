@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,11 @@ public class MeasurementValue extends AbstractValue<Double> {
         // for serialization
     }
 
-    public MeasurementValue(long timestamp, Double value) {
+    public MeasurementValue(Long timestart, Long timeend, Double value) {
+        super(timestart, timeend, value);
+    }
+
+    public MeasurementValue(Long timestamp, Double value) {
         super(timestamp, value);
     }
 

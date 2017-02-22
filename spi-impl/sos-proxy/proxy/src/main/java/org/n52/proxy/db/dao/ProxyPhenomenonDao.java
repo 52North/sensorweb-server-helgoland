@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,6 @@ import org.n52.series.db.dao.PhenomenonDao;
 
 public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<PhenomenonEntity>, ClearDao<PhenomenonEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyPhenomenonDao(Session session) {
@@ -70,7 +69,7 @@ public class ProxyPhenomenonDao extends PhenomenonDao implements InsertDao<Pheno
 
     private PhenomenonEntity getInstance(PhenomenonEntity phenomenon) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, phenomenon.getName()))
+                .add(Restrictions.eq(PhenomenonEntity.DOMAIN_ID, phenomenon.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, phenomenon.getService().getPkid()));
         return (PhenomenonEntity) criteria.uniqueResult();
     }

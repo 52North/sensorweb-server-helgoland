@@ -8,7 +8,7 @@
                 <param name="sequence">offeringId_seq</param>
             </generator>
         </id>
-        <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
+        <property column="identifier" name="domainId" type="string"/>
         <property column="name" name="name" type="string"/>
         <property column="name" insert="false" name="description" type="string" update="false"/>
         <many-to-one class="ServiceEntity" column="serviceid" name="service"/>

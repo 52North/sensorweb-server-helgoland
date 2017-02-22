@@ -16,6 +16,12 @@
     <import resource="spi-impl-dao_v1_beans.xml"/>
     <import resource="spi-impl-dao_v1_beans_legacy.xml"/>
 
+    <import resource="artic-sea.xml"/>
+
+    <bean class="org.n52.proxy.connector.OceanotronSosConnector"/>
+    <bean class="org.n52.proxy.connector.SOS2Connector"/>
+    <bean class="org.n52.proxy.connector.TrajectorySOSConnector"/>
+    <bean class="org.n52.proxy.connector.HydroSOSConnector"/>
 
     <!--<import resource="spi-impl-dao_tasks.xml" />-->
 
@@ -23,7 +29,7 @@
     <!--<bean class="org.n52.series.db.da.sos.SOSHibernateSessionHolder" destroy-method="shutdown" />-->
     <import resource="series-database-config.xml" />
 
-    <bean id="configurationProvider" class="org.n52.proxy.config.Configuration"/>
+    <bean id="configurationProvider" class="org.n52.proxy.config.ConfigurationReader"/>
 
     <bean id="dataSourceScheduler" class="org.n52.proxy.harvest.DataSourceHarvesterScheduler" init-method="init" destroy-method="shutdown">
         <property name="scheduler">

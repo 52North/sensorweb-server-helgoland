@@ -28,11 +28,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>series-dao</artifactId>
         </dependency>
-        
+        <!-- 
         <dependency>
             <groupId>org.n52.sensorweb.sos</groupId>
             <artifactId>coding-sos-v20</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
             <scope>runtime</scope>
             <exclusions>
                 <exclusion>
@@ -42,33 +41,53 @@
             </exclusions>
         </dependency>
         
+       <dependency>
+           <groupId>org.n52.sensorweb.sos</groupId>
+           <artifactId>sqlite-config</artifactId>
+           <scope>runtime</scope>
+       </dependency>
+        -->
         <dependency>
-            <groupId>org.n52.sensorweb.sos</groupId>
-            <artifactId>api</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.reflections</groupId>
-                    <artifactId>reflections</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.n52.svalbard</groupId>
+            <artifactId>svalbard</artifactId>
         </dependency>
         
         <dependency>
-            <groupId>org.n52.sensorweb.sos</groupId>
-            <artifactId>sqlite-config</artifactId>
-            <version>4.4.0-SNAPSHOT</version>
-            <scope>runtime</scope>
+            <groupId>org.n52.shetland</groupId>
+            <artifactId>shetland</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.n52.iceland</groupId>
+            <artifactId>iceland</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
         
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <dependency>
@@ -84,11 +103,6 @@
         </dependency>
         
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
@@ -96,6 +110,19 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>4.2.3.RELEASE</version>
+            <scope>test</scope>
         </dependency>
         
         <dependency>
@@ -166,7 +193,31 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>20.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>52n-xml-sampling-v20</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.n52.sensorweb</groupId>
+            <artifactId>52n-xml-gml-v321</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        
+        
     </dependencies>
-
+    
 </project>
 

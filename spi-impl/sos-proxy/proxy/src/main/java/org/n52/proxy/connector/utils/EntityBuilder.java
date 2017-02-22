@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,11 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.proxy.connector;
+package org.n52.proxy.connector.utils;
 
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.DatasetEntity;
@@ -40,84 +41,85 @@ import org.n52.series.db.beans.MeasurementDatasetEntity;
 import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
-import org.n52.sos.util.JTSHelper;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.util.JTSHelper;
 
 public class EntityBuilder {
 
-    public static ServiceEntity createService(String name, String description, String url, String version) {
-        ServiceEntity service = new ServiceEntity();
+    public static ProxyServiceEntity createService(String name, String description, String connector, String url, String version) {
+        ProxyServiceEntity service = new ProxyServiceEntity();
         service.setName(name);
         service.setDescription(description);
         service.setVersion(version);
         service.setType("SOS");
         service.setUrl(url);
+        service.setConnector(connector);
         return service;
     }
 
-    public static ProcedureEntity createProcedure(String name, boolean insitu, boolean mobile, ServiceEntity service) {
+    public static ProcedureEntity createProcedure(String domainId, String name, boolean insitu, boolean mobile, ProxyServiceEntity service) {
         ProcedureEntity procedure = new ProcedureEntity();
         procedure.setName(name);
-        procedure.setDomainId(name);
+        procedure.setDomainId(domainId);
         procedure.setInsitu(insitu);
         procedure.setMobile(mobile);
         procedure.setService(service);
         return procedure;
     }
 
-    public static OfferingEntity createOffering(String name, ServiceEntity service) {
+    public static OfferingEntity createOffering(String domainId, String name, ProxyServiceEntity service) {
         OfferingEntity offering = new OfferingEntity();
+        offering.setDomainId(domainId);
         offering.setName(name);
         offering.setService(service);
         return offering;
     }
 
-    public static CategoryEntity createCategory(String name, ServiceEntity service) {
+    public static CategoryEntity createCategory(String domainId, String name, ProxyServiceEntity service) {
         CategoryEntity category = new CategoryEntity();
         category.setName(name);
-        category.setDomainId(name);
+        category.setDomainId(domainId);
         category.setService(service);
         return category;
     }
 
-    public static FeatureEntity createFeature(String name, GeometryEntity geometry, ServiceEntity service) throws OwsExceptionReport {
+    public static FeatureEntity createFeature(String domainId, String name, GeometryEntity geometry, ProxyServiceEntity service) {
         FeatureEntity feature = new FeatureEntity();
         feature.setName(name);
-        feature.setDomainId(name);
+        feature.setDomainId(domainId);
         feature.setGeometryEntity(geometry);
         feature.setService(service);
         return feature;
     }
 
-    public static GeometryEntity createGeometry(double latitude, double longitude) {
+    public static GeometryEntity createGeometry(double latitude, double longitude, int srid) {
         GeometryEntity geometry = new GeometryEntity();
         try {
-            geometry.setGeometry(JTSHelper.createGeometryFromWKT("POINT (" + longitude + " " + latitude + ")", 4326));
-        } catch (OwsExceptionReport ex) {
+            geometry.setGeometry(JTSHelper.createGeometryFromWKT("POINT (" + longitude + " " + latitude + ")", srid));
+        } catch (DecodingException ex) {
             Logger.getLogger(EntityBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
         return geometry;
     }
 
-    public static PhenomenonEntity createPhenomenon(String name, ServiceEntity service) {
+    public static PhenomenonEntity createPhenomenon(String domainId, String name, ProxyServiceEntity service) {
         PhenomenonEntity phenomenon = new PhenomenonEntity();
         phenomenon.setName(name);
-        phenomenon.setDomainId(name);
+        phenomenon.setDomainId(domainId);
         phenomenon.setService(service);
         return phenomenon;
     }
 
-    public static UnitEntity createUnit(String unit, ServiceEntity service) {
+    public static UnitEntity createUnit(String unit, ProxyServiceEntity service) {
         UnitEntity entity = new UnitEntity();
         entity.setName(unit);
         entity.setService(service);
         return entity;
     }
 
-    public static MeasurementDatasetEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, UnitEntity unit, ServiceEntity service) {
+    public static MeasurementDatasetEntity createMeasurementDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, UnitEntity unit, ProxyServiceEntity service) {
         MeasurementDatasetEntity measurementDataset = new MeasurementDatasetEntity();
         updateDataset(measurementDataset, procedure, category, feature, offering, phenomenon, service);
         measurementDataset.setUnit(unit);
@@ -126,13 +128,13 @@ public class EntityBuilder {
         return measurementDataset;
     }
 
-    public static TextDatasetEntity createTextDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static TextDatasetEntity createTextDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ProxyServiceEntity service) {
         TextDatasetEntity textDataset = new TextDatasetEntity();
         updateDataset(textDataset, procedure, category, feature, offering, phenomenon, service);
         return textDataset;
     }
 
-    public static CountDatasetEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
+    public static CountDatasetEntity createCountDataset(ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ProxyServiceEntity service) {
         CountDatasetEntity countDataset = new CountDatasetEntity();
         updateDataset(countDataset, procedure, category, feature, offering, phenomenon, service);
         countDataset.setFirstValueAt(new Date());
@@ -140,7 +142,7 @@ public class EntityBuilder {
         return countDataset;
     }
 
-    private static void updateDataset(DatasetEntity dataset, ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ServiceEntity service) {
+    private static void updateDataset(DatasetEntity dataset, ProcedureEntity procedure, CategoryEntity category, FeatureEntity feature, OfferingEntity offering, PhenomenonEntity phenomenon, ProxyServiceEntity service) {
         dataset.setProcedure(procedure);
         dataset.setCategory(category);
         dataset.setFeature(feature);

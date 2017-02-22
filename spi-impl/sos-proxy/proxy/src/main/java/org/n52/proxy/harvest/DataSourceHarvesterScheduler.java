@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,16 +28,16 @@
  */
 package org.n52.proxy.harvest;
 
-import static org.quartz.TriggerBuilder.newTrigger;
 import java.util.ArrayList;
 import java.util.List;
-import org.n52.proxy.config.Configuration;
-import org.n52.proxy.config.DataSourcesConfig;
 import org.n52.io.task.ScheduledJob;
+import org.n52.proxy.config.ConfigurationReader;
+import org.n52.proxy.config.DataSourceConfiguration;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import static org.quartz.TriggerBuilder.newTrigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class DataSourceHarvesterScheduler {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterScheduler.class);
 
-    private Configuration configurationProvider;
+    private ConfigurationReader configurationProvider;
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class DataSourceHarvesterScheduler {
             return;
         }
 
-        for (DataSourcesConfig.DataSourceConfig dataSourceConfig : configurationProvider.getDataSource()) {
+        for (DataSourceConfiguration dataSourceConfig : configurationProvider.getDataSource()) {
             LOGGER.info(dataSourceConfig.getItemName() + " " + dataSourceConfig.getUrl());
             DataSourceHarvesterJob dataSourceJob = new DataSourceHarvesterJob();
             dataSourceJob.init(dataSourceConfig);
@@ -78,15 +78,17 @@ public class DataSourceHarvesterScheduler {
 
     private void scheduleJob(ScheduledJob taskToSchedule) {
         try {
-            JobDetail details = taskToSchedule.createJobDetails();
-            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
-            scheduler.scheduleJob(details, trigger);
-            if (taskToSchedule.isTriggerAtStartup()) {
-                LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
-                Trigger onceAtStartup = newTrigger()
-                        .withIdentity(details.getKey() + "_onceAtStartup")
-                        .forJob(details.getKey()).build();
-                scheduler.scheduleJob(onceAtStartup);
+            if (taskToSchedule.isEnabled()) {
+                JobDetail details = taskToSchedule.createJobDetails();
+                Trigger trigger = taskToSchedule.createTrigger(details.getKey());
+                scheduler.scheduleJob(details, trigger);
+                if (taskToSchedule.isTriggerAtStartup()) {
+                    LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
+                    Trigger onceAtStartup = newTrigger()
+                            .withIdentity(details.getKey() + "_onceAtStartup")
+                            .forJob(details.getKey()).build();
+                    scheduler.scheduleJob(onceAtStartup);
+                }
             }
         } catch (SchedulerException e) {
             LOGGER.warn("Could not schdule Job '{}'.", taskToSchedule.getJobName(), e);
@@ -137,11 +139,11 @@ public class DataSourceHarvesterScheduler {
         this.enabled = enabled;
     }
 
-    public Configuration getConfigurationProvider() {
+    public ConfigurationReader getConfigurationProvider() {
         return configurationProvider;
     }
 
-    public void setConfigurationProvider(Configuration configurationProvider) {
+    public void setConfigurationProvider(ConfigurationReader configurationProvider) {
         this.configurationProvider = configurationProvider;
     }
 

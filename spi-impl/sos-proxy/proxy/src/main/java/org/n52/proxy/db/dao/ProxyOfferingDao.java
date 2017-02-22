@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@
  */
 package org.n52.proxy.db.dao;
 
+import java.util.Collection;
+import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
@@ -41,7 +43,6 @@ import org.n52.series.db.dao.OfferingDao;
 
 public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingEntity>, ClearDao<OfferingEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyOfferingDao(Session session) {
@@ -59,6 +60,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void clearUnusedForService(ServiceEntity service) {
         Criteria criteria = session.createCriteria(getEntityClass())
                 .add(Restrictions.eq("service.pkid", service.getPkid()))
@@ -70,7 +72,7 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
 
     private OfferingEntity getInstance(OfferingEntity offering) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, offering.getName()))
+                .add(Restrictions.eq(OfferingEntity.DOMAIN_ID, offering.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, offering.getService().getPkid()));
         return (OfferingEntity) criteria.uniqueResult();
     }
@@ -81,4 +83,10 @@ public class ProxyOfferingDao extends OfferingDao implements InsertDao<OfferingE
         return filter;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<OfferingEntity> getInstancesFor(Collection<String> domainIds) {
+        Criteria c = getDefaultCriteria()
+                .add(Restrictions.in(OfferingEntity.DOMAIN_ID, domainIds));
+        return c.list();
+    }
 }

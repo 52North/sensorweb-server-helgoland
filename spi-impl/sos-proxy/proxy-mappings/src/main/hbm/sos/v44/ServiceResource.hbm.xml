@@ -14,5 +14,11 @@
         <property column="url" name="url" type="string"/>
         <property column="type" name="type" type="string"/>
         <property column="version" name="version" type="string"/>
+
+        <joined-subclass extends="ServiceEntity" name="org.n52.proxy.db.beans.ProxyServiceEntity" table="serviceExtend">
+            <key column="id"/>
+            <property column="connector" name="connector" type="string"/>
+        </joined-subclass>
+
     </class>
 </hibernate-mapping>

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,14 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.da;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.record.RecordData;
 import org.n52.io.response.dataset.record.RecordDatasetMetadata;
@@ -141,14 +139,15 @@ public class RecordDataRepository extends AbstractDataRepository<RecordData, Rec
             return null;
         }
 
-        ServiceEntity service = series.getService();
-        Map<String, Object> observationValue = !service.isNoDataValue(observation)
+        long timeend = observation.getTimeend().getTime();
+        long timestart = observation.getTimestart().getTime();
+        Map<String, Object> observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
+        RecordValue value = query.getParameters().isShowTimeIntervals()
+                ? new RecordValue(timestart, timeend, observationValue)
+                : new RecordValue(timeend, observationValue);
 
-        RecordValue value = new RecordValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
-        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -94,7 +94,9 @@ public class SOSHibernateSessionHolder implements HibernateSessionStore {
     @Override
     public void shutdown() {
         LOGGER.info("shutdown '{}'", getClass().getSimpleName());
-        provider.cleanup();
+        if (provider != null) {
+            provider.cleanup();
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -41,7 +41,6 @@ import org.n52.series.db.dao.CategoryDao;
 
 public class ProxyCategoryDao extends CategoryDao implements InsertDao<CategoryEntity>, ClearDao<CategoryEntity> {
 
-    private static final String COLUMN_NAME = "name";
     private static final String COLUMN_SERVICE_PKID = "service.pkid";
 
     public ProxyCategoryDao(Session session) {
@@ -60,7 +59,7 @@ public class ProxyCategoryDao extends CategoryDao implements InsertDao<CategoryE
 
     private CategoryEntity getInstance(CategoryEntity category) {
         Criteria criteria = session.createCriteria(getEntityClass())
-                .add(Restrictions.eq(COLUMN_NAME, category.getName()))
+                .add(Restrictions.eq(CategoryEntity.DOMAIN_ID, category.getDomainId()))
                 .add(Restrictions.eq(COLUMN_SERVICE_PKID, category.getService().getPkid()));
         return (CategoryEntity) criteria.uniqueResult();
     }

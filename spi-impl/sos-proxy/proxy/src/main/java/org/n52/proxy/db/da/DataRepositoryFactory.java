@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,23 +26,33 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.proxy.db.da;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.n52.io.ConfigTypedFactory;
-
+import org.n52.proxy.connector.AbstractSosConnector;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.da.DataRepository;
 import org.n52.series.db.da.IDataRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> implements IDataRepositoryFactory {
+public class DataRepositoryFactory extends ConfigTypedFactory<ProxyDataRepository> implements IDataRepositoryFactory {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-repository-factory-proxy.properties";
 
     @Autowired
     private HibernateSessionStore sessionStore;
+
+    @Autowired
+    public void setConnectors(List<AbstractSosConnector> connectors) {
+        connectors.forEach((connector) -> {
+            connectorMap.put(connector.getConnectorName(), connector);
+        });
+    }
+
+    private Map<String, AbstractSosConnector> connectorMap = new HashMap<>();
 
     public DataRepositoryFactory() {
         super(DEFAULT_CONFIG_FILE);
@@ -53,8 +63,9 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> im
     }
 
     @Override
-    protected DataRepository initInstance(DataRepository instance) {
+    protected ProxyDataRepository initInstance(ProxyDataRepository instance) {
         instance.setSessionStore(sessionStore);
+        instance.setConnectorMap(connectorMap);
         return instance;
     }
 
@@ -64,8 +75,8 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> im
     }
 
     @Override
-    protected Class<DataRepository> getTargetType() {
-        return DataRepository.class;
+    protected Class<ProxyDataRepository> getTargetType() {
+        return ProxyDataRepository.class;
     }
 
 }

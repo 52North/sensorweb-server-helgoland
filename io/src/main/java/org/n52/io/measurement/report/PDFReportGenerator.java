@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -244,6 +244,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
         MeasurementData data = dataCollection.getSeries(metadata.getId());
         for (MeasurementValue valueEntry : data.getValues()) {
             Entry entry = dataTable.addNewEntry();
+            // TODO update TableType schema to allow start/end time
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());
             entry.setValue(Double.toString(valueEntry.getValue()));
         }

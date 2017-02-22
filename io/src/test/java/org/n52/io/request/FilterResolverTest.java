@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,11 +28,10 @@
  */
 package org.n52.io.request;
 
-import static org.junit.Assert.assertTrue;
-import static org.n52.io.request.IoParameters.createDefaults;
-
 import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import static org.n52.io.request.IoParameters.createDefaults;
 
 public class FilterResolverTest {
 

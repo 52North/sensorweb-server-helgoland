@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,10 +28,7 @@
  */
 package org.n52.series.db.da;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.AbstractValue.ValidTime;
@@ -68,18 +65,16 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
 
     @Override
     public V getFirstValue(DSE entity, Session session, DbQuery query) {
-        return getValueAt(entity.getFirstValueAt(), entity, session, query);
+        DataDao<DE> dao = createDataDao(session);
+        DE valueEntity = dao.getDataValueViaTimestart(entity);
+        return createSeriesValueFor(valueEntity, entity, query);
     }
 
     @Override
     public V getLastValue(DSE entity, Session session, DbQuery query) {
-        return getValueAt(entity.getLastValueAt(), entity, session, query);
-    }
-
-    private V getValueAt(Date valueAt, DSE datasetEntity, Session session, DbQuery query) {
         DataDao<DE> dao = createDataDao(session);
-        DE valueEntity = dao.getDataValueAt(valueAt, datasetEntity);
-        return createSeriesValueFor(valueEntity, datasetEntity, query);
+        DE valueEntity = dao.getDataValueViaTimeend(entity);
+        return createSeriesValueFor(valueEntity, entity, query);
     }
 
     protected DatasetDao<DSE> getSeriesDao(Session session) {

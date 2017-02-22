@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,23 +26,19 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.measurement;
-
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
+import static org.n52.io.MimeType.APPLICATION_PDF;
+import static org.n52.io.MimeType.IMAGE_PNG;
+import static org.n52.io.MimeType.TEXT_CSV;
 import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
 import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.measurement.img.ChartIoHandler;
@@ -54,6 +50,7 @@ import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.spi.srv.DataService;
+import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
 
@@ -123,7 +120,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
                                                                           getRequestParameters(),
                                                                           createProcessChain(),
-                                                                          createContext());
+                                                                          getMetadatas());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));

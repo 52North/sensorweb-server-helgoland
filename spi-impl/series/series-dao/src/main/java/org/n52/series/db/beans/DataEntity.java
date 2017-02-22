@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -36,9 +36,13 @@ import java.util.Set;
 
 public abstract class DataEntity<T> {
 
+    public static final String SERIES_PKID = "seriesPkid";
+
     private Long pkid;
 
-    private Date timestamp;
+    private Date timestart; // optional
+
+    private Date timeend; // required
 
     private T value;
 
@@ -62,12 +66,53 @@ public abstract class DataEntity<T> {
         this.pkid = pkid;
     }
 
+    /**
+     * @return timestamp
+     * @deprecated use {@link #getTimeend()}
+     */
     public Date getTimestamp() {
-        return timestamp;
+        return timeend;
     }
 
+    /**
+     * @param timestamp
+     * @deprecated use {@link #setTimeend(java.util.Date)}
+     */
     public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+        this.timeend = timestamp;
+    }
+
+    /**
+     * @return the timestart
+     * @since 2.0.0
+     */
+    public Date getTimestart() {
+        return timestart;
+    }
+
+    /**
+     * @param timestart
+     * @since 2.0.0
+     */
+    public void setTimestart(Date timestart) {
+        this.timestart = timestart;
+    }
+
+    /**
+     * @return the timeend
+     * @since 2.0.0
+     */
+    public Date getTimeend() {
+        return timeend;
+    }
+
+    /**
+     *
+     * @param timeend
+     * @since 2.0.0
+     */
+    public void setTimeend(Date timeend) {
+        this.timeend = timeend;
     }
 
     public T getValue() {

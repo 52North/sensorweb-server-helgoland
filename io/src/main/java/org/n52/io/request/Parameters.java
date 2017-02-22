@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -338,14 +338,24 @@ public interface Parameters {
 
     public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
 
+    /**
+     * SimpleFeature types e.g. POINT, LINESTRING, ...
+     */
+    public static final String GEOMETRY_TYPES = "geometryTypes";
+
+    /**
+     * Internally set via 2.x interface to create href links.
+     * Will be overridden, if it has been set externally.
+     */
     public static final String HREF_BASE = "internal.href.base";
 
-//    public static final String GEOMETRIES_INCLUDE_ALL= "internal.include.geometries.all";
-//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_ALL= "internal.include.geometries.platformlocations.all";
-//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_SITES = "internal.include.geometries.platformlocations.sites";
-//    public static final String GEOMETRIES_INCLUDE_PLATFORMLOCATIONS_TRACKS = "internal.include.geometries.platformlocations.tracks";
-//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_ALL= "internal.include.geometries.observedgeometries.all";
-//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_STATIC = "internal.include.geometries.observedgeometries.static";
-//    public static final String GEOMETRIES_INCLUDE_OBSERVEDGEOMETRIES_DYNAMIC = "internal.include.geometries.observedgeometries.dynamic";
+    /**
+     * If observation time shall be shown within intervals.
+     */
+    public static final String SHOW_TIME_INTERVALS = "showTimeIntervals";
 
+    /**
+     * Default for {@link #SHOW_TIME_INTERVALS}
+     */
+    public static final boolean DEFAULT_SHOW_TIME_INTERVALS = false;
 }

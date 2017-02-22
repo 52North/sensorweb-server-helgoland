@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,17 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.da;
 
-import static java.math.RoundingMode.HALF_UP;
-
 import java.math.BigDecimal;
+import static java.math.RoundingMode.HALF_UP;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
@@ -136,15 +133,16 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
             // do not fail on empty observations
             return null;
         }
-        MeasurementValue value = new MeasurementValue();
-        value.setTimestamp(observation.getTimestamp().getTime());
 
-        ServiceEntity service = series.getService();
-        Double observationValue = !service.isNoDataValue(observation)
+        long timeend = observation.getTimeend().getTime();
+        long timestart = observation.getTimestart().getTime();
+        Double observationValue = !series.getService().isNoDataValue(observation)
                 ? format(observation, series)
                 : null;
+        MeasurementValue value = query.getParameters().isShowTimeIntervals()
+                ? new MeasurementValue(timestart, timeend, observationValue)
+                : new MeasurementValue(timeend, observationValue);
 
-        value.setValue(observationValue);
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);

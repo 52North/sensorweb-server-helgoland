@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,6 @@
 package org.n52.io.response.dataset.record;
 
 import java.util.Map;
-
 import org.n52.io.response.dataset.AbstractValue;
 
 public class RecordValue extends AbstractValue<Map<String, Object>> {
@@ -40,7 +39,11 @@ public class RecordValue extends AbstractValue<Map<String, Object>> {
         // for serialization
     }
 
-    public RecordValue(long timestamp, Map<String, Object> value) {
+    public RecordValue(Long timestart, Long timeend, Map<String, Object> value) {
+        super(timestart, timeend, value);
+    }
+
+    public RecordValue(Long timestamp, Map<String, Object> value) {
         super(timestamp, value);
     }
 

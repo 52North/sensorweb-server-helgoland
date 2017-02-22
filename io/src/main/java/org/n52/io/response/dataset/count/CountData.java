@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,8 +28,6 @@
  */
 package org.n52.io.response.dataset.count;
 
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.n52.io.response.dataset.Data;
 
@@ -38,18 +36,6 @@ public class CountData extends Data<CountValue> {
     private static final long serialVersionUID = -3990317208637642482L;
 
     private CountDatasetMetadata metadata;
-
-    /**
-     * @param values the timestamp &lt;-&gt; value map.
-     * @return a measurement data object.
-     */
-    public static CountData newCountObservationData(Map<Long, Integer> values) {
-        CountData timeseries = new CountData();
-        for (Entry<Long, Integer> data : values.entrySet()) {
-            timeseries.addNewValue(data.getKey(), data.getValue());
-        }
-        return timeseries;
-    }
 
     public static CountData newCountObservationData(CountValue... values) {
         CountData timeseries = new CountData();

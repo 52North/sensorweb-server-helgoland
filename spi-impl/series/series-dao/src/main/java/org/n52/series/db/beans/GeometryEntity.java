@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.beans;
 
 import org.n52.io.crs.CRSUtils;
@@ -74,8 +73,9 @@ public class GeometryEntity {
         return getGeometry(null);
     }
 
-    public void setGeometry(Geometry geometry) {
+    public GeometryEntity setGeometry(Geometry geometry) {
         this.geometry = geometry;
+        return this;
     }
 
     /**
@@ -130,6 +130,15 @@ public class GeometryEntity {
 
     public boolean isEmpty() {
         return !isSetGeometry() && !isSetLonLat();
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" latitude: ").append(getLat());
+        sb.append(", longitude: ").append(getLon());
+        return sb.append(" ]").toString();
     }
 
 }

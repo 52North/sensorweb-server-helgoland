@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.beans;
 
 import java.util.ArrayList;
@@ -77,6 +76,8 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private Date lastValueAt;
 
     private UnitEntity unit;
+
+    private long observationCount = -1;
 
     public DatasetEntity() {
         this.observations = new ArrayList<>();
@@ -241,6 +242,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         return name;
     }
 
+    public void setObservationCount(long count) {
+        this.observationCount = count;
+    }
+
+    public long getObservationCount() {
+        return observationCount;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -252,7 +261,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         sb.append(" , offering: ").append(offering);
         sb.append(" , feature: ").append(feature);
         sb.append(" , service: ").append(getService());
-        sb.append(" , #observations: ").append(observations.size());
+        sb.append(" , #observations: ").append(getObservationCount() >= 0 ? getObservationCount() : observations.size());
         return sb.append(" ]").toString();
     }
 

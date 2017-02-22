@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,16 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.series.db.beans;
 
-public class ProcedureEntity extends DescribableEntity {
+import java.util.Set;
+
+public class ProcedureEntity extends DescribableEntity implements Childs<ProcedureEntity>, Parents<ProcedureEntity> {
 
     private boolean reference;
-
     private boolean mobile;
-
     private boolean insitu;
+    private String procedureDescriptionFormat;
+    private Set<ProcedureEntity> childProcedures;
+    private Set<ProcedureEntity> parentProcedures;
 
     public boolean isReference() {
         return reference;
@@ -59,6 +61,34 @@ public class ProcedureEntity extends DescribableEntity {
 
     public void setInsitu(boolean insitu) {
         this.insitu = insitu;
+    }
+
+    public String getProcedureDescriptionFormat() {
+        return this.procedureDescriptionFormat;
+    }
+
+    public void setProcedureDescriptionFormat(String procedureDescriptionFormat) {
+        this.procedureDescriptionFormat = procedureDescriptionFormat;
+    }
+
+    @Override
+    public void setChilds(Set<ProcedureEntity> childs) {
+        this.childProcedures = childs;
+    }
+
+    @Override
+    public Set<ProcedureEntity> getChilds() {
+        return childProcedures;
+    }
+
+    @Override
+    public void setParents(Set<ProcedureEntity> parents) {
+        this.parentProcedures = parents;
+    }
+
+    @Override
+    public Set<ProcedureEntity> getParents() {
+        return parentProcedures;
     }
 
     @Override

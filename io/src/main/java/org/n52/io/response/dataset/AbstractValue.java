@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,25 +28,25 @@
  */
 package org.n52.io.response.dataset;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
 public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
-    private Long timestamp;
+    private Long timestart;
+
+    private Long timestamp; // serves also as timeend
 
     private T value;
 
@@ -59,17 +59,46 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
     public AbstractValue() {
     }
 
-    public AbstractValue(long timestamp, T value) {
-        this.timestamp = timestamp;
+    public AbstractValue(Long timestamp, T value) {
+        this(null, timestamp, value);
+    }
+
+    public AbstractValue(Long timestart, Long timeend, T value) {
+        this.timestart = timestart;
+        this.timestamp = timeend;
         this.value = value;
     }
 
+    /**
+     * @return the timestamp/timeend when {@link #value} has been observed.
+     */
     public Long getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 
+    /**
+     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
+     */
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    /**
+     * Optional.
+     *
+     * @return the timestart when {@link #value} has been observed.
+     */
+    public Long getTimestart() {
+        return timestart;
+    }
+
+    /**
+     * Optional.
+     *
+     * @param timestart the timestart when {@link #value} has been observed.
+     */
+    public void setTimestart(Long timestart) {
+        this.timestart = timestart;
     }
 
     @JsonIgnore
@@ -128,12 +157,14 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
 
     @Override
     public int compareTo(AbstractValue<?> o) {
+        // TODO check odering when `showtimeintervals=true`
         return getTimestamp().compareTo(o.getTimestamp());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
+        sb.append("timestart: ").append(getTimestart()).append(", ");
         sb.append("timestamp: ").append(getTimestamp()).append(", ");
         sb.append("value: ").append(getValue());
         return sb.append(" ]").toString();
