@@ -29,38 +29,60 @@
 package org.n52.series.db.beans;
 
 
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 
-public class FeatureEntity extends DescribableEntity {
+public class FeatureEntity extends DescribableEntity implements Childs<FeatureEntity>, Parents<FeatureEntity> {
 
     /**
      * @since 2.0.0
      */
-    private GeometryEntity geometry;
+    private GeometryEntity geometryEntity;
+    private Set<FeatureEntity> childFeatures;
+    private Set<FeatureEntity> parentFeatures;
 
     public Geometry getGeometry() {
         return getGeometry(null);
     }
 
     public Geometry getGeometry(String srid) {
-        return geometry != null ? geometry.getGeometry(srid) : null;
+        return geometryEntity != null ? geometryEntity.getGeometry(srid) : null;
     }
 
     public void setGeometry(Geometry geometry) {
-        this.geometry = new GeometryEntity();
-        this.geometry.setGeometry(geometry);
+        this.geometryEntity = new GeometryEntity();
+        this.geometryEntity.setGeometry(geometry);
     }
 
     public GeometryEntity getGeometryEntity() {
-        return geometry;
+        return geometryEntity;
     }
 
-    public void setGeometryEntity(GeometryEntity geometry) {
-        this.geometry = geometry;
+    public void setGeometryEntity(GeometryEntity geometryEntity) {
+        this.geometryEntity = geometryEntity;
     }
 
     public boolean isSetGeometry() {
-        return geometry != null;
+        return geometryEntity != null;
+    }
+
+    public void setChilds(Set<FeatureEntity> childs) {
+        this.childFeatures = childs;
+    }
+
+    public Set<FeatureEntity> getChilds() {
+        return childFeatures;
+    }
+
+    @Override
+    public void setParents(Set<FeatureEntity> parents) {
+        this.parentFeatures = parents;
+    }
+
+    @Override
+    public Set<FeatureEntity> getParents() {
+        return parentFeatures;
     }
 
     @Override

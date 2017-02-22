@@ -28,55 +28,71 @@
  */
 package org.n52.proxy.harvest;
 
-import java.util.Date;
+import java.io.IOException;
+import java.util.Set;
 import java.util.logging.Level;
-import org.n52.proxy.config.DataSourcesConfig;
-import org.n52.proxy.config.DataSourcesConfig.DataSourceConfig;
-import org.n52.proxy.connector.EntityBuilder;
+import org.apache.http.HttpResponse;
+import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.n52.io.task.ScheduledJob;
+import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.config.DataSourceJobConfiguration;
+import org.n52.proxy.connector.AbstractSosConnector;
+import org.n52.proxy.connector.utils.EntityBuilder;
+import org.n52.proxy.connector.utils.ServiceConstellation;
+import org.n52.proxy.db.beans.ProxyServiceEntity;
+import org.n52.proxy.db.da.InsertRepository;
+import org.n52.proxy.web.SimpleHttpClient;
 import org.n52.series.db.beans.CategoryEntity;
-import org.n52.series.db.beans.CountDatasetEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.MeasurementDatasetEntity;
+import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.beans.PhenomenonEntity;
 import org.n52.series.db.beans.ProcedureEntity;
-import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.UnitEntity;
-import org.n52.proxy.db.da.InsertRepository;
-import org.n52.series.db.beans.OfferingEntity;
-import org.n52.sos.ogc.ows.OwsExceptionReport;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.svalbard.decode.DecoderRepository;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.util.CodingHelper;
+import org.quartz.DisallowConcurrentExecution;
+import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.StatefulJob;
+import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob {
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
+public class DataSourceHarvesterJob extends ScheduledJob implements Job {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(DataSourceHarvesterJob.class);
 
-    private DataSourceConfig config;
+    private DataSourceConfiguration config;
+
+    private static final String JOB_CONNECTOR = "connector";
+    private static final String JOB_VERSION = "version";
+    private static final String JOB_NAME = "name";
+    private static final String JOB_URL = "url";
 
     @Autowired
     private InsertRepository insertRepository;
 
-    public InsertRepository getInsertRepository() {
-        return insertRepository;
-    }
+    @Autowired
+    private DecoderRepository decoderRepository;
 
-    public void setInsertRepository(InsertRepository insertRepository) {
-        this.insertRepository = insertRepository;
-    }
+    @Autowired
+    private Set<AbstractSosConnector> connectors;
 
-    public DataSourceConfig getConfig() {
+    public DataSourceConfiguration getConfig() {
         return config;
     }
 
-    public void setConfig(DataSourceConfig config) {
+    public void setConfig(DataSourceConfiguration config) {
         this.config = config;
     }
 
@@ -84,58 +100,110 @@ public class DataSourceHarvesterJob extends ScheduledJob implements StatefulJob 
     public JobDetail createJobDetails() {
         return JobBuilder.newJob(DataSourceHarvesterJob.class)
                 .withIdentity(getJobName())
-                .usingJobData("url", config.getUrl())
-                .usingJobData("name", config.getItemName())
-                .usingJobData("version", config.getVersion())
+                .usingJobData(JOB_URL, config.getUrl())
+                .usingJobData(JOB_NAME, config.getItemName())
+                .usingJobData(JOB_VERSION, config.getVersion())
+                .usingJobData(JOB_CONNECTOR, config.getConnector())
                 .build();
+    }
+
+    private DataSourceConfiguration recreateConfig(JobDataMap jobDataMap) {
+        DataSourceConfiguration config = new DataSourceConfiguration();
+        config.setUrl(jobDataMap.getString(JOB_URL));
+        config.setItemName(jobDataMap.getString(JOB_NAME));
+        config.setVersion(jobDataMap.getString(JOB_VERSION));
+        config.setConnector(jobDataMap.getString(JOB_CONNECTOR));
+        return config;
     }
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        try {
-            LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
+        LOGGER.info(context.getJobDetail().getKey() + " execution starts.");
 
-            JobDetail jobDetail = context.getJobDetail();
-            JobDataMap jobDataMap = jobDetail.getJobDataMap();
-            String url = jobDataMap.getString("url");
-            String name = jobDataMap.getString("name");
-            String version = jobDataMap.getString("version");
+        JobDetail jobDetail = context.getJobDetail();
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
-            ServiceEntity service = insertRepository.insertService(EntityBuilder.createService(name, "description of " + name, url, version));
+        DataSourceConfiguration dataSource = recreateConfig(jobDataMap);
+        GetCapabilitiesResponse capabilities = getCapabilities(dataSource);
 
-            insertRepository.prepareInserting(service);
-
-            ProcedureEntity procedure = EntityBuilder.createProcedure("procedure", true, false, service);
-            FeatureEntity feature = EntityBuilder.createFeature("feature", EntityBuilder.createGeometry((52 + Math.random()), (7 + Math.random())), service);
-            OfferingEntity offering = EntityBuilder.createOffering("offering", service);
-            CategoryEntity category = EntityBuilder.createCategory("category" + new Date().getMinutes(), service);
-            CategoryEntity category1 = EntityBuilder.createCategory("category", service);
-            PhenomenonEntity phenomenon = EntityBuilder.createPhenomenon("phen", service);
-            UnitEntity unit = EntityBuilder.createUnit("unit", service);
-
-            MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(procedure, category, feature, offering, phenomenon, unit, service);
-            CountDatasetEntity countDataset = EntityBuilder.createCountDataset(procedure, category1, feature, offering, phenomenon, service);
-
-            insertRepository.insertDataset(measurement);
-            insertRepository.insertDataset(countDataset);
-
-            insertRepository.cleanUp(service);
-
-            LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
-        } catch (OwsExceptionReport ex) {
-            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+        ServiceConstellation constellation = null;
+        for (AbstractSosConnector connector : connectors) {
+            if (connector.matches(dataSource, capabilities)) {
+                LOGGER.info(connector.toString() + " create a constellation for " + dataSource);
+                constellation = connector.getConstellation(dataSource, capabilities);
+                break;
+            }
         }
+        if (constellation == null) {
+            LOGGER.warn("No connector found for " + dataSource);
+        } else {
+            saveConstellation(constellation);
+        }
+
+        LOGGER.info(context.getJobDetail().getKey() + " execution ends.");
     }
 
-    public void init(DataSourceConfig config) {
+    public void init(DataSourceConfiguration config) {
         setConfig(config);
         setJobName(config.getItemName());
         if (config.getJob() != null) {
-            DataSourcesConfig.DataSourceJobConfig job = config.getJob();
+            DataSourceJobConfiguration job = config.getJob();
             setEnabled(job.isEnabled());
             setCronExpression(job.getCronExpression());
             setTriggerAtStartup(job.isTriggerAtStartup());
         }
+    }
+
+    private void saveConstellation(ServiceConstellation constellation) {
+        // serviceEntity
+        ProxyServiceEntity service = insertRepository.insertService(constellation.getService());
+        insertRepository.prepareInserting(service);
+
+        // save all constellations
+        constellation.getDatasets().forEach((dataset) -> {
+            final ProcedureEntity procedure = constellation.getProcedures().get(dataset.getProcedure());
+            procedure.setService(service);
+            final CategoryEntity category = constellation.getCategories().get(dataset.getCategory());
+            category.setService(service);
+            final FeatureEntity feature = constellation.getFeatures().get(dataset.getFeature());
+            feature.setService(service);
+            final OfferingEntity offering = constellation.getOfferings().get(dataset.getOffering());
+            offering.setService(service);
+            final PhenomenonEntity phenomenon = constellation.getPhenomenons().get(dataset.getPhenomenon());
+            phenomenon.setService(service);
+            // add empty unit entity, will be replaced later in the repositories
+            final UnitEntity unit = EntityBuilder.createUnit("", service);
+
+            if (procedure != null && category != null && feature != null && offering != null && phenomenon != null && unit != null) {
+                MeasurementDatasetEntity measurement = EntityBuilder.createMeasurementDataset(
+                        procedure, category, feature, offering, phenomenon, unit, service
+                );
+                insertRepository.insertDataset(measurement);
+                LOGGER.info("Add dataset constellation: " + dataset);
+            } else {
+                LOGGER.warn("Can't add dataset: " + dataset);
+            }
+        });
+
+        insertRepository.cleanUp(service);
+    }
+
+    private GetCapabilitiesResponse getCapabilities(DataSourceConfiguration config) {
+        try {
+            SimpleHttpClient simpleHttpClient = new SimpleHttpClient();
+            String url = config.getUrl();
+            if (url.contains("?")) {
+                url = url + "&";
+            } else {
+                url = url + "?";
+            }
+            HttpResponse response = simpleHttpClient.executeGet(url + "service=SOS&request=GetCapabilities");
+            XmlObject xmlResponse = XmlObject.Factory.parse(response.getEntity().getContent());
+            return (GetCapabilitiesResponse) decoderRepository.getDecoder(CodingHelper.getDecoderKey(xmlResponse)).decode(xmlResponse);
+        } catch (IOException | UnsupportedOperationException | XmlException | DecodingException ex) {
+            java.util.logging.Logger.getLogger(DataSourceHarvesterJob.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
 }

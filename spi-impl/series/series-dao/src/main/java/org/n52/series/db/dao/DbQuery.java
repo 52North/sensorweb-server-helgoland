@@ -291,7 +291,7 @@ public class DbQuery {
                 Point ll = (Point) crsUtils.transformInnerToOuter(spatialFilter.getLowerLeft(), sridAuthorityCode);
                 Point ur = (Point) crsUtils.transformInnerToOuter(spatialFilter.getUpperRight(), sridAuthorityCode);
                 Envelope envelope = new Envelope(ll.getCoordinate(), ur.getCoordinate());
-                criteria.add(SpatialRestrictions.filter("geometry.geometry", envelope, databaseSrid));
+                criteria.add(SpatialRestrictions.filter("geometryEntity.geometry", envelope, databaseSrid));
 
                 // TODO intersect with linestring
 
@@ -312,7 +312,7 @@ public class DbQuery {
             if ( !geometryType.isEmpty()) {
                 Type type = getGeometryType(geometryType);
                 if (type != null) {
-                    criteria.add(SpatialRestrictions.geometryType("geometry.geometry", type));
+                    criteria.add(SpatialRestrictions.geometryType("geometryEntity.geometry", type));
                 }
             }
         }

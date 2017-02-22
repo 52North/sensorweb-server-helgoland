@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
-        <version>2</version>
+        <version>6</version>
     </parent>
 
     <groupId>org.n52.series-api</groupId>
@@ -194,10 +194,10 @@
                 </exclusions>
             </dependency>
             <dependency>
-			   <groupId>org.geotools</groupId>
-			   <artifactId>gt-shapefile</artifactId>
-			   <version>${geotools.version}</version>
-			   <exclusions>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-shapefile</artifactId>
+                <version>${geotools.version}</version>
+                <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
                         <artifactId>jai_core</artifactId>
@@ -207,7 +207,7 @@
                         <artifactId>jai_codec</artifactId>
                     </exclusion>
                 </exclusions>
-			</dependency>
+            </dependency>
             <dependency>
                 <groupId>com.vividsolutions</groupId>
                 <artifactId>jts</artifactId>
@@ -691,6 +691,7 @@
                                     <id>geotools</id>
                                     <id>n52-releases</id>
                                     <id>n52-snapshots</id>
+                                    <id>sonatype-nexus-snapshots</id>
                                 </allowedRepositories>
                             </requireNoRepositories>
                         </rules>
@@ -792,6 +793,13 @@
             <id>n52-snapshots</id>
             <name>n52-snapshots</name>
             <url>http://52north.org/maven/repo/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

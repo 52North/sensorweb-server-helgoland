@@ -26,14 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.proxy.db.da;
+package org.n52.series.db.beans;
 
-import org.n52.io.response.dataset.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
-public class DatasetRepository<T extends Data> extends org.n52.series.db.da.DatasetRepository<T> {
+public interface Parents<T> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DatasetRepository.class);
+    public void setParents(Set<T> parents);
+
+    public Set<T> getParents();
+
+    public default boolean hasParents() {
+        return getParents() != null && !getParents().isEmpty();
+    }
 
 }

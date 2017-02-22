@@ -26,25 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.proxy.connector;
+package org.n52.proxy.db.da;
 
-import org.apache.http.HttpResponse;
-import org.n52.proxy.web.HttpClient;
-import org.n52.proxy.web.SimpleHttpClient;
+import java.util.Map;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.proxy.connector.AbstractSosConnector;
+import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.da.DataRepository;
 
-public class AbstractSOSConnector {
+public interface ProxyDataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> extends DataRepository<DSE, V> {
 
-  private HttpClient httpClient;
+    public void setConnectorMap(Map<String, AbstractSosConnector> connectorMap);
 
-  private String serviceURI;
-
-  public AbstractSOSConnector(String serviceURI) {
-    httpClient = new SimpleHttpClient();
-    this.serviceURI = serviceURI;
-  }
-
-  protected HttpResponse sendRequest(String request) {
-    HttpResponse response = httpClient.executePost(serviceURI, request);
-    return response;
-  }
 }

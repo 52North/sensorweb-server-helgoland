@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.n52.series.db.beans">
+    <class name="OfferingEntity" table="offering">
+        <id name="pkid" type="long">
+            <column name="offeringid"/>
+            <generator class="native">
+                <param name="sequence">offeringId_seq</param>
+            </generator>
+        </id>
+        <property column="identifier" name="domainId" type="string" not-null="true" unique-key="offIdentifier"/>
+        <property column="name" name="name" type="string"/>
+        <property column="description" name="description" type="string"/>
+        <many-to-one class="ServiceEntity" column="serviceid" name="service" unique-key="offIdentifier"/>
+        <set name="childs" table="offeringhierarchy" inverse="false" fetch="select" cascade="all">
+            <key column="parentOfferingId" not-null="true" />
+            <many-to-many entity-name="org.n52.series.db.beans.OfferingEntity" column="childOfferingId" foreign-key="offeringChildFk"/>
+        </set>
+        <set name="parents" table="offeringhierarchy" inverse="false" fetch="select" cascade="all">
+            <key column="childOfferingId" not-null="true" />
+            <many-to-many entity-name="org.n52.series.db.beans.OfferingEntity" column="parentOfferingId" foreign-key="offeringParentFk"/>
+        </set>
+        <set name="observationTypes" table="offeringobservationtypes" inverse="false" fetch="select" cascade="all">
+            <key column="offeringId" not-null="true"/>
+            <element column="observationType" not-null="true" type="string"/>
+        </set>
+        <set name="featureTypes" table="offeringfeaturetypes" inverse="false" fetch="select" cascade="all">
+            <key column="offeringId" not-null="true"/>
+            <element column="featureType" not-null="true" type="string"/>
+        </set>
+        <property column="envelope" name="envelope" type="org.hibernate.spatial.GeometryType"/>
+        <property column="phenomenonTimeStart" name="phenomenonTimeStart" type="timestamp"/>
+        <property column="phenomenonTimeEnd" name="phenomenonTimeEnd" type="timestamp"/>
+        <property column="resultTimeStart" name="resultTimeStart" type="timestamp"/>
+        <property column="resultTimeEnd" name="resultTimeEnd" type="timestamp"/>
+    </class>
+</hibernate-mapping>

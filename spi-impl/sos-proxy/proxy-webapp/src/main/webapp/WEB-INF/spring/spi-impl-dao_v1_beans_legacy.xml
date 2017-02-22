@@ -14,7 +14,7 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean id="timeseriesRepository" class="org.n52.series.db.da.TimeseriesRepository" />
+    <bean id="timeseriesRepository" class="org.n52.proxy.db.da.ProxyTimeseriesRepository" />
     <bean id="stationRepository" class="org.n52.series.db.da.StationRepository">
         <property name="databaseSrid" value="${database.srid}" />
     </bean>

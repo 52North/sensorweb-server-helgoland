@@ -28,32 +28,19 @@
  */
 package org.n52.proxy.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class Configuration {
+public class DataSourcesConfiguration {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+    private List<DataSourceConfiguration> dataSources = new ArrayList<>();
 
-    private static final String CONFIG_FILE = "/config-data-sources.json";
-
-    private final DataSourcesConfig intervalConfig = readConfig();
-
-    private DataSourcesConfig readConfig() {
-        try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
-            ObjectMapper om = new ObjectMapper();
-            return om.readValue(config, DataSourcesConfig.class);
-        } catch (Exception e) {
-            LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
-            return new DataSourcesConfig();
-        }
+    public List<DataSourceConfiguration> getDataSources() {
+        return dataSources;
     }
 
-    public List<DataSourcesConfig.DataSourceConfig> getDataSource() {
-        return intervalConfig.getDataSources();
+    public void setDataSources(List<DataSourceConfiguration> dataSources) {
+        this.dataSources = dataSources;
     }
 
 }

@@ -10,7 +10,8 @@
         </encoder>
     </appender>
 
-    <root level="ERROR">
+    <!--<logger name="org.springframework" level="DEBUG"/>-->
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
