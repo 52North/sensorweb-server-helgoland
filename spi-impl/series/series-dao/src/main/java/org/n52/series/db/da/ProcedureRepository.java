@@ -101,11 +101,8 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureOutput> results = new ArrayList<>();
-        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-            results.add(createCondensed(procedureEntity, parameters));
-        }
-        return results;
+        List<ProcedureEntity> procedures = getAllInstances(parameters, session);
+        return createCondensed(procedures, parameters);
     }
 
     @Override
@@ -120,11 +117,8 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureOutput> results = new ArrayList<>();
-        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-            results.add(createExpanded(procedureEntity, parameters));
-        }
-        return results;
+        List<ProcedureEntity> procedures = getAllInstances(parameters, session);
+        return createExpanded(procedures, parameters);
     }
 
     @Override
@@ -156,10 +150,12 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return result;
     }
 
-    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
-        ProcedureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
-        return result;
+    private List<ProcedureOutput> createCondensed(Collection<ProcedureEntity> procedures, DbQuery parameters) {
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : procedures) {
+            results.add(createCondensed(procedureEntity, parameters));
+        }
+        return results;
     }
 
     private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
@@ -168,6 +164,22 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);
+        return result;
+    }
+
+    private List<ProcedureOutput> createExpanded(Collection<ProcedureEntity> procedures, DbQuery parameters) throws DataAccessException {
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : procedures) {
+            results.add(createExpanded(procedureEntity, parameters));
+        }
+        return results;
+    }
+
+    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
+        ProcedureOutput result = createCondensed(entity, parameters);
+        result.setService(getServiceOutput());
+        result.setParents(createCondensed(entity.getParents(), parameters));
+        result.setChildren(createCondensed(entity.getChildren(), parameters));
         return result;
     }
 

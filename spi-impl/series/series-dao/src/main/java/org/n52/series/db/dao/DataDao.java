@@ -76,6 +76,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         this.entityType = clazz;
     }
 
+    @SuppressWarnings("unchecked")
     public DataDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DataEntity.class;
@@ -160,18 +161,17 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         return entityType;
     }
 
-    @SuppressWarnings("unchecked")
     public T getDataValueViaTimeend(DatasetEntity series) {
         Date timeend = series.getLastValueAt();
         return getDataValueAt(timeend, COLUMN_TIMEEND, series);
     }
 
-    @SuppressWarnings("unchecked")
     public T getDataValueViaTimestart(DatasetEntity series) {
         Date timestart = series.getFirstValueAt();
         return getDataValueAt(timestart, COLUMN_TIMESTART, series);
     }
 
+    @SuppressWarnings("unchecked")
     private T getDataValueAt(Date timestamp, String column, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()

@@ -28,6 +28,8 @@
  */
 package org.n52.series.db.beans;
 
+import java.util.Set;
+
 public class ProcedureEntity extends DescribableEntity {
 
     private boolean reference;
@@ -35,6 +37,10 @@ public class ProcedureEntity extends DescribableEntity {
     private boolean mobile;
 
     private boolean insitu;
+
+    private Set<ProcedureEntity> parents;
+
+    private Set<ProcedureEntity> children;
 
     public boolean isReference() {
         return reference;
@@ -58,6 +64,22 @@ public class ProcedureEntity extends DescribableEntity {
 
     public void setInsitu(boolean insitu) {
         this.insitu = insitu;
+    }
+
+    public Set<ProcedureEntity> getParents() {
+        return parents;
+    }
+
+    public void setParents(Set<ProcedureEntity> parents) {
+        this.parents = parents;
+    }
+
+    public Set<ProcedureEntity> getChildren() {
+        return children;
+    }
+
+    public void setChildren(Set<ProcedureEntity> children) {
+        this.children = children;
     }
 
     @Override
