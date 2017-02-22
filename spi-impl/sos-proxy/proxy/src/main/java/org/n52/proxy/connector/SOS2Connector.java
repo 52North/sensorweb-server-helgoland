@@ -31,8 +31,6 @@ package org.n52.proxy.connector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.SortedSet;
 import org.n52.proxy.config.DataSourceConfiguration;
 import org.n52.proxy.connector.utils.ConnectorHelper;
 import org.n52.proxy.connector.utils.DatasetConstellation;
@@ -153,36 +151,33 @@ public class SOS2Connector extends AbstractSosConnector {
         return entity;
     }
 
-    private void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
-        Optional.ofNullable(sosCaps).map((capabilities) -> {
-            Optional<SortedSet<SosObservationOffering>> contents = capabilities.getContents().map((offerings) -> {
-                offerings.forEach((offering) -> {
+    protected void addDatasets(ServiceConstellation serviceConstellation, SosCapabilities sosCaps, String serviceUri) {
+        sosCaps.getContents().get().forEach((sosObsOff) -> {
+            doForOffering(sosObsOff, serviceConstellation, serviceUri);
+        });
+    }
 
-                    String offeringId = ConnectorHelper.addOffering(offering, serviceConstellation);
+    protected void doForOffering(SosObservationOffering offering, ServiceConstellation serviceConstellation, String serviceUri) {
+        String offeringId = ConnectorHelper.addOffering(offering, serviceConstellation);
 
-                    offering.getProcedures().forEach((procedureId) -> {
-                        ConnectorHelper.addProcedure(procedureId, true, false, serviceConstellation);
+        offering.getProcedures().forEach((procedureId) -> {
+            ConnectorHelper.addProcedure(procedureId, true, false, serviceConstellation);
 
-                        GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
-                        AbstractFeature abstractFeature = foiResponse.getAbstractFeature();
-                        if (abstractFeature instanceof SamplingFeature) {
-                            ConnectorHelper.addFeature((SamplingFeature) abstractFeature, serviceConstellation);
-                        }
+            GetFeatureOfInterestResponse foiResponse = getFeatureOfInterestResponse(procedureId, serviceUri);
+            AbstractFeature abstractFeature = foiResponse.getAbstractFeature();
+            if (abstractFeature instanceof SamplingFeature) {
+                ConnectorHelper.addFeature((SamplingFeature) abstractFeature, serviceConstellation);
+            }
 
-                        GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
-                        gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
-                            String phenomenonId = ConnectorHelper.addPhenomenon(dataAval, serviceConstellation);
-                            String categoryId = ConnectorHelper.addCategory(dataAval, serviceConstellation);
-                            String featureId = dataAval.getFeatureOfInterest().getHref();
-                            serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
-                        });
-
-                        LOGGER.info(foiResponse.toString());
-                    });
-                });
-                return null;
+            GetDataAvailabilityResponse gdaResponse = getDataAvailabilityResponse(procedureId, serviceUri);
+            gdaResponse.getDataAvailabilities().forEach((dataAval) -> {
+                String phenomenonId = ConnectorHelper.addPhenomenon(dataAval, serviceConstellation);
+                String categoryId = ConnectorHelper.addCategory(dataAval, serviceConstellation);
+                String featureId = dataAval.getFeatureOfInterest().getHref();
+                serviceConstellation.add(new DatasetConstellation(procedureId, offeringId, categoryId, phenomenonId, featureId));
             });
-            return null;
+
+            LOGGER.info(foiResponse.toString());
         });
     }
 

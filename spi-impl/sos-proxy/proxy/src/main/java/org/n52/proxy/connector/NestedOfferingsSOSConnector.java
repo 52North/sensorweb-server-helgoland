@@ -26,38 +26,37 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.n52.proxy.db.da;
+package org.n52.proxy.connector;
 
-import com.google.common.base.Strings;
-import org.hibernate.Session;
-import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.beans.MeasurementDatasetEntity;
-import org.n52.series.db.da.TimeseriesRepository;
-import org.n52.series.db.dao.DbQuery;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
+import org.n52.proxy.config.DataSourceConfiguration;
+import org.n52.proxy.connector.utils.ConnectorHelper;
+import org.n52.proxy.connector.utils.ServiceConstellation;
+import org.n52.shetland.ogc.ows.extension.Extension;
+import org.n52.shetland.ogc.ows.service.GetCapabilitiesResponse;
+import org.n52.shetland.ogc.sos.SosObservationOffering;
+import org.n52.shetland.ogc.sos.ro.RelatedOfferingConstants;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author jansch
+ * @author Jan Schulte
  */
-public class ProxyTimeseriesRepository extends TimeseriesRepository {
+public class NestedOfferingsSOSConnector extends SOS2Connector {
 
-    @Autowired
-    private ProxyDatasetRepository datasetRepository;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(NestedOfferingsSOSConnector.class);
 
     @Override
-    protected TimeseriesMetadataOutput createExpanded(Session session, MeasurementDatasetEntity series, DbQuery query) throws DataAccessException {
-        TimeseriesMetadataOutput output = super.createExpanded(session, series, query);
-        if (Strings.isNullOrEmpty(output.getUom())) {
-            DatasetOutput datasetOutput = datasetRepository.createExpanded(series, query, session);
-            output.setUom(datasetOutput.getUom());
-        }
-        return output;
+    protected boolean canHandle(DataSourceConfiguration config, GetCapabilitiesResponse capabilities) {
+        return false;
     }
+
+    @Override
+    protected void doForOffering(SosObservationOffering obsOff, ServiceConstellation serviceConstellation, String serviceUri) {
+
+        String offeringId = ConnectorHelper.addOffering(obsOff, serviceConstellation);
+        
+        Optional<Extension<?>> extension = obsOff.getExtension(RelatedOfferingConstants.RELATED_OFFERINGS);
+        LOGGER.info(extension.toString());
+    }
+
 }
