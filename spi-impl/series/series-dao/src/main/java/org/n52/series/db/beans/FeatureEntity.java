@@ -29,18 +29,14 @@
 package org.n52.series.db.beans;
 
 
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 
-public class FeatureEntity extends DescribableEntity implements Childs<FeatureEntity>, Parents<FeatureEntity> {
+public class FeatureEntity extends HierarchicalEntity<FeatureEntity> {
 
     /**
      * @since 2.0.0
      */
     private GeometryEntity geometryEntity;
-    private Set<FeatureEntity> childFeatures;
-    private Set<FeatureEntity> parentFeatures;
 
     public Geometry getGeometry() {
         return getGeometry(null);
@@ -65,24 +61,6 @@ public class FeatureEntity extends DescribableEntity implements Childs<FeatureEn
 
     public boolean isSetGeometry() {
         return geometryEntity != null;
-    }
-
-    public void setChilds(Set<FeatureEntity> childs) {
-        this.childFeatures = childs;
-    }
-
-    public Set<FeatureEntity> getChilds() {
-        return childFeatures;
-    }
-
-    @Override
-    public void setParents(Set<FeatureEntity> parents) {
-        this.parentFeatures = parents;
-    }
-
-    @Override
-    public Set<FeatureEntity> getParents() {
-        return parentFeatures;
     }
 
     @Override

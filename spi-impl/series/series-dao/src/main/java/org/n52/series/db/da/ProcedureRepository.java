@@ -120,11 +120,8 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureOutput> results = new ArrayList<>();
-        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-            results.add(createExpanded(procedureEntity, parameters));
-        }
-        return results;
+        List<ProcedureEntity> procedures = getAllInstances(parameters, session);
+        return createExpanded(procedures, parameters);
     }
 
     @Override
@@ -156,12 +153,6 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return result;
     }
 
-    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
-        ProcedureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
-        return result;
-    }
-
     private List<ProcedureOutput> createCondensed(Collection<ProcedureEntity> procedures, DbQuery parameters) {
         List<ProcedureOutput> results = new ArrayList<>();
         for (ProcedureEntity procedureEntity : procedures) {
@@ -189,7 +180,11 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
         ProcedureOutput result = createCondensed(entity, parameters);
-        result.setService(getServiceOutput());
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
         result.setParents(createCondensed(entity.getParents(), parameters));
         result.setChildren(createCondensed(entity.getChildren(), parameters));
         return result;

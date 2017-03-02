@@ -33,42 +33,21 @@ import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-public class OfferingEntity extends DescribableEntity implements Childs<OfferingEntity>, Parents<OfferingEntity> {
+public class OfferingEntity extends HierarchicalEntity<OfferingEntity> {
 
-    private Set<OfferingEntity> childOfferings;
-    private Set<OfferingEntity> parentOfferings;
     private Geometry envelope;
+
     private Set<String> observationTypes;
+
     private Set<String> featureTypes;
+
     private Date phenomenonTimeStart;
+
     private Date phenomenonTimeEnd;
+
     private Date resultTimeStart;
+
     private Date resultTimeEnd;
-
-    @Override
-    public void setChilds(Set<OfferingEntity> childs) {
-        this.childOfferings = childs;
-    }
-
-    @Override
-    public Set<OfferingEntity> getChilds() {
-        return childOfferings;
-    }
-
-    @Override
-    public boolean hasChilds() {
-        return getChilds() != null && !getChilds().isEmpty();
-    }
-
-    @Override
-    public void setParents(Set<OfferingEntity> parents) {
-        this.parentOfferings = parents;
-    }
-
-    @Override
-    public Set<OfferingEntity> getParents() {
-        return parentOfferings;
-    }
 
     /**
      * @return the envelope
