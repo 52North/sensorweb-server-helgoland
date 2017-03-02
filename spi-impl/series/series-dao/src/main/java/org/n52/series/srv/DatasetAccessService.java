@@ -39,8 +39,8 @@ import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.DataRepository;
-import org.n52.series.db.da.DataRepositoryFactory;
 import org.n52.series.db.da.DatasetRepository;
+import org.n52.series.db.da.IDataRepositoryFactory;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.DataService;
 import org.n52.web.exception.InternalServerException;
@@ -55,7 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class DatasetAccessService extends AccessService<DatasetOutput> implements DataService<Data<?>> {
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory dataFactory;
 
     public DatasetAccessService(DatasetRepository<Data<?>> repository) {
         super(repository);
@@ -80,7 +80,7 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
 
     private Data<?> getDataFor(String seriesId, RequestParameterSet parameters)
             throws DataAccessException {
-        DbQuery dbQuery = DbQuery.createFrom(IoParameters.createFromQuery(parameters));
+        DbQuery dbQuery = dbQueryFactory.createFrom(IoParameters.createFromQuery(parameters));
         String handleAsDatasetFallback = parameters.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
         String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
         DataRepository dataRepository = createRepository(datasetType);
@@ -88,11 +88,11 @@ public class DatasetAccessService extends AccessService<DatasetOutput> implement
     }
 
     private DataRepository createRepository(String datasetType) throws DataAccessException {
-        if ( !("all".equalsIgnoreCase(datasetType) || factory.isKnown(datasetType))) {
+        if ( !("all".equalsIgnoreCase(datasetType) || dataFactory.isKnown(datasetType))) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
         try {
-            return factory.create(datasetType);
+            return dataFactory.create(datasetType);
         } catch (DatasetFactoryException e) {
             throw new DataAccessException(e.getMessage());
         }

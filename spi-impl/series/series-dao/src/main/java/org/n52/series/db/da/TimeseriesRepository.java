@@ -71,7 +71,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private OutputAssembler<StationOutput> stationRepository;
 
     @Autowired
-    private DataRepositoryFactory factory;
+    private IDataRepositoryFactory factory;
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -93,7 +93,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             DatasetDao<MeasurementDatasetEntity> seriesDao = createDao(session);
-            DbQuery query = DbQuery.createFrom(parameters);
+            DbQuery query = dbQueryFactory.createFrom(parameters);
             List<MeasurementDatasetEntity> found = seriesDao.find(query);
             return convertToResults(found, query.getLocale());
         } finally {
@@ -192,14 +192,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return createExpanded(result, dbQuery, session);
     }
 
-    private TimeseriesMetadataOutput createExpanded(MeasurementDatasetEntity series, DbQuery query, Session session) throws DataAccessException {
+    protected TimeseriesMetadataOutput createExpanded(MeasurementDatasetEntity series, DbQuery query, Session session) throws DataAccessException {
         TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setSeriesParameters(createTimeseriesOutput(series, query));
         MeasurementDataRepository repository = createRepository("measurement");
 
         output.setReferenceValues(createReferenceValueOutputs(series, query, repository));
-        output.setFirstValue(repository.createSeriesValueFor(series.getFirstValue(), series, query));
-        output.setLastValue(repository.createSeriesValueFor(series.getLastValue(), series, query));
+        output.setFirstValue(repository.getFirstValue(series, session, query));
+        output.setLastValue(repository.getLastValue(series, session, query));
         return output;
     }
 

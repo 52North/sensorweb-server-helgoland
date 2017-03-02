@@ -1,7 +1,5 @@
 language: java
 jdk:
-  - oraclejdk7
-  - openjdk7
   - oraclejdk8
 # https://github.com/travis-ci/travis-ci/issues/5227#issuecomment-165131913
 before_install:

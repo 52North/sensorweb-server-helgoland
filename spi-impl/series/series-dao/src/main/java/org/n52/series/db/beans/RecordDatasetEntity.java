@@ -30,10 +30,15 @@ package org.n52.series.db.beans;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.n52.io.response.dataset.record.RecordDatasetOutput;
 
 public class RecordDatasetEntity extends DatasetEntity<RecordDataEntity> {
 
     private Set<RecordDatasetEntity> referenceValues = new HashSet<>();
+
+    public RecordDatasetEntity() {
+        super(RecordDatasetOutput.DATASET_TYPE);
+    }
 
     public Set<RecordDatasetEntity> getReferenceValues() {
         return referenceValues;

@@ -101,8 +101,11 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureEntity> procedures = getAllInstances(parameters, session);
-        return createCondensed(procedures, parameters);
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            results.add(createCondensed(procedureEntity, parameters));
+        }
+        return results;
     }
 
     @Override
@@ -117,8 +120,11 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureEntity> procedures = getAllInstances(parameters, session);
-        return createExpanded(procedures, parameters);
+        List<ProcedureOutput> results = new ArrayList<>();
+        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
+            results.add(createExpanded(procedureEntity, parameters));
+        }
+        return results;
     }
 
     @Override
@@ -150,6 +156,12 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return result;
     }
 
+    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
+        ProcedureOutput result = createCondensed(entity, parameters);
+        result.setService(getServiceOutput());
+        return result;
+    }
+
     private List<ProcedureOutput> createCondensed(Collection<ProcedureEntity> procedures, DbQuery parameters) {
         List<ProcedureOutput> results = new ArrayList<>();
         for (ProcedureEntity procedureEntity : procedures) {
@@ -158,7 +170,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return results;
     }
 
-    private ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
+    protected ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));

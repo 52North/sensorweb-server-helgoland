@@ -28,7 +28,173 @@
  */
 package org.n52.series.db.beans;
 
-public class OfferingEntity extends DescribableEntity {
+import java.util.Date;
+import java.util.Set;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+public class OfferingEntity extends DescribableEntity implements Childs<OfferingEntity>, Parents<OfferingEntity> {
+
+    private Set<OfferingEntity> childOfferings;
+    private Set<OfferingEntity> parentOfferings;
+    private Geometry envelope;
+    private Set<String> observationTypes;
+    private Set<String> featureTypes;
+    private Date phenomenonTimeStart;
+    private Date phenomenonTimeEnd;
+    private Date resultTimeStart;
+    private Date resultTimeEnd;
+
+    @Override
+    public void setChilds(Set<OfferingEntity> childs) {
+        this.childOfferings = childs;
+    }
+
+    @Override
+    public Set<OfferingEntity> getChilds() {
+        return childOfferings;
+    }
+
+    @Override
+    public boolean hasChilds() {
+        return getChilds() != null && !getChilds().isEmpty();
+    }
+
+    @Override
+    public void setParents(Set<OfferingEntity> parents) {
+        this.parentOfferings = parents;
+    }
+
+    @Override
+    public Set<OfferingEntity> getParents() {
+        return parentOfferings;
+    }
+
+    /**
+     * @return the envelope
+     */
+    public Geometry getEnvelope() {
+        return envelope;
+    }
+
+    /**
+     * @param envelope the envelope to set
+     */
+    public void setEnvelope(Geometry envelope) {
+        this.envelope = envelope;
+    }
+
+    public boolean hasEnvelope() {
+        return getEnvelope() != null && !getEnvelope().isEmpty();
+    }
+
+    /**
+     * @return the observationTypes
+     */
+    public Set<String> getObservationTypes() {
+        return observationTypes;
+    }
+
+    /**
+     * @param observationTypes the observationTypes to set
+     */
+    public void setObservationTypes(Set<String> observationTypes) {
+        this.observationTypes = observationTypes;
+    }
+
+    public boolean hasObservationTypes() {
+        return getObservationTypes() != null && !getObservationTypes().isEmpty();
+    }
+
+    /**
+     * @return the featureTypes
+     */
+    public Set<String> getFeatureTypes() {
+        return featureTypes;
+    }
+
+    /**
+     * @param featureTypes the featureTypes to set
+     */
+    public void setFeatureTypes(Set<String> featureTypes) {
+        this.featureTypes = featureTypes;
+    }
+
+    public boolean hasFeatureTypes() {
+        return getFeatureTypes() != null && !getFeatureTypes().isEmpty();
+    }
+
+    /**
+     * @return the phenomenonTimeStart
+     */
+    public Date getPhenomenonTimeStart() {
+        return phenomenonTimeStart;
+    }
+
+    /**
+     * @param phenomenonTimeStart the phenomenonTimeStart to set
+     */
+    public void setPhenomenonTimeStart(Date phenomenonTimeStart) {
+        this.phenomenonTimeStart = phenomenonTimeStart;
+    }
+
+    public boolean hasPhenomenonTimeStart() {
+        return getPhenomenonTimeStart() != null;
+    }
+
+    /**
+     * @return the phenomenonTimeEnd
+     */
+    public Date getPhenomenonTimeEnd() {
+        return phenomenonTimeEnd;
+    }
+
+    /**
+     * @param phenomenonTimeEnd the phenomenonTimeEnd to set
+     */
+    public void setPhenomenonTimeEnd(Date phenomenonTimeEnd) {
+        this.phenomenonTimeEnd = phenomenonTimeEnd;
+    }
+
+    public boolean hasPhenomenonTimeEnd() {
+        return getPhenomenonTimeEnd() != null;
+    }
+
+    /**
+     * @return the resultTimeStart
+     */
+    public Date getResultTimeStart() {
+        return resultTimeStart;
+    }
+
+    /**
+     * @param resultTimeStart the resultTimeStart to set
+     */
+    public void setResultTimeStart(Date resultTimeStart) {
+        this.resultTimeStart = resultTimeStart;
+    }
+
+    public boolean hasResultTimeStart() {
+        return getResultTimeStart() != null;
+    }
+
+    /**
+     * @return the resultTimeEnd
+     */
+    public Date getResultTimeEnd() {
+        return resultTimeEnd;
+    }
+
+    /**
+     * @param resultTimeEnd the resultTimeEnd to set
+     */
+    public void setResultTimeEnd(Date resultTimeEnd) {
+        this.resultTimeEnd = resultTimeEnd;
+    }
+
+    public boolean hasResultTimeEnd() {
+        return getResultTimeEnd() != null;
+    }
 
     @Override
     public String toString() {

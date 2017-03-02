@@ -192,7 +192,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     private List<GeometryInfo> getAllSites(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao dao = new FeatureDao(session);
-        DbQuery siteQuery = DbQuery.createFrom(parameters.getParameters()
+        DbQuery siteQuery = dbQueryFactory.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary")
         );
@@ -221,7 +221,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     private Collection<GeometryInfo> getAllTracks(DbQuery parameters, Session session, boolean expanded) throws DataAccessException {
         List<GeometryInfo> geometryInfoList = new ArrayList<>();
         FeatureDao featureDao = new FeatureDao(session);
-        DbQuery trackQuery = DbQuery.createFrom(parameters.getParameters()
+        DbQuery trackQuery = dbQueryFactory.createFrom(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")
         );
@@ -241,7 +241,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
                 return geometryInfo;
             } else {
                 // track available as points from observation table
-                DbQuery featureQuery = DbQuery.createFrom(parameters.getParameters()
+                DbQuery featureQuery = dbQueryFactory.createFrom(parameters.getParameters()
                         .extendWith(FEATURES, String.valueOf(featureEntity.getPkid()))
                 );
                 final SamplingGeometryDao dao = new SamplingGeometryDao(session);
@@ -282,7 +282,7 @@ public class GeometriesRepository extends SessionAwareRepository implements Outp
     }
 
     private PlatformOutput getPlatfom(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
-        DbQuery platformQuery = DbQuery.createFrom(parameters.getParameters()
+        DbQuery platformQuery = dbQueryFactory.createFrom(parameters.getParameters()
                 .extendWith(Parameters.FEATURES, String.valueOf(entity.getPkid()))
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all")
         );

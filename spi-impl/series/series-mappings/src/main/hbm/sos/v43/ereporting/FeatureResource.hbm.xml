@@ -9,6 +9,12 @@
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
     <property column="name" name="name" type="string"/>
     <property column="description" name="description" type="string"/>
-    <property column="geom" name="geom" type="org.hibernate.spatial.GeometryType"/>
+    <component class="GeometryEntity" name="geometryEntity">
+      <!--
+            <property column="lat" name="lat" type="double" />
+            <property column="lon" name="lon" type="double" />
+             -->
+      <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
+    </component>
   </class>
 </hibernate-mapping>

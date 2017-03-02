@@ -32,6 +32,11 @@ import java.util.Set;
 
 public class DescribableEntity {
 
+    public final static String PKID = "pkid";
+    public final static String DOMAIN_ID = "domainId";
+    public final static String NAME = "name";
+    public final static String SERVICE_ID = "serviceid";
+
     /**
      * A serial primary key.
      */
@@ -52,30 +57,35 @@ public class DescribableEntity {
      */
     private String description;
 
+    private ServiceEntity service;
+
     private Set<I18nEntity> translations;
 
     public Long getPkid() {
         return pkid;
     }
 
-    public void setPkid(Long pkid) {
+    public <T> T setPkid(Long pkid) {
         this.pkid = pkid;
+        return (T)this;
     }
 
     public String getDomainId() {
         return domainId;
     }
 
-    public void setDomainId(String domainId) {
+    public <T> T setDomainId(String domainId) {
         this.domainId = domainId;
+        return (T)this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public <T> T setName(String name) {
         this.name = name;
+        return (T)this;
     }
 
     public boolean isSetName() {
@@ -90,12 +100,24 @@ public class DescribableEntity {
         this.description = description;
     }
 
+    public boolean isSetDescription() {
+        return getDescription() != null && !getDescription().isEmpty();
+    }
+
     public Set<I18nEntity> getTranslations() {
         return translations;
     }
 
     public void setTranslations(Set<I18nEntity> translations) {
         this.translations = translations;
+    }
+
+    public ServiceEntity getService() {
+        return service;
+    }
+
+    public void setService(ServiceEntity service) {
+        this.service = service;
     }
 
     public String getNameI18n(String locale) {

@@ -28,8 +28,6 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.Set;
-
 public class ProcedureEntity extends DescribableEntity {
 
     private boolean reference;
@@ -38,9 +36,11 @@ public class ProcedureEntity extends DescribableEntity {
 
     private boolean insitu;
 
-    private Set<ProcedureEntity> parents;
+    private String procedureDescriptionFormat;
 
-    private Set<ProcedureEntity> children;
+    private Set<ProcedureEntity> childProcedures;
+
+    private Set<ProcedureEntity> parentProcedures;
 
     public boolean isReference() {
         return reference;
@@ -66,20 +66,32 @@ public class ProcedureEntity extends DescribableEntity {
         this.insitu = insitu;
     }
 
-    public Set<ProcedureEntity> getParents() {
-        return parents;
+    public String getProcedureDescriptionFormat() {
+        return this.procedureDescriptionFormat;
     }
 
+    public void setProcedureDescriptionFormat(String procedureDescriptionFormat) {
+        this.procedureDescriptionFormat = procedureDescriptionFormat;
+    }
+
+    @Override
+    public void setChilds(Set<ProcedureEntity> childs) {
+        this.childProcedures = childs;
+    }
+
+    @Override
+    public Set<ProcedureEntity> getChilds() {
+        return childProcedures;
+    }
+
+    @Override
     public void setParents(Set<ProcedureEntity> parents) {
-        this.parents = parents;
+        this.parentProcedures = parents;
     }
 
-    public Set<ProcedureEntity> getChildren() {
-        return children;
-    }
-
-    public void setChildren(Set<ProcedureEntity> children) {
-        this.children = children;
+    @Override
+    public Set<ProcedureEntity> getParents() {
+        return parentProcedures;
     }
 
     @Override
@@ -87,6 +99,7 @@ public class ProcedureEntity extends DescribableEntity {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName()).append(" [");
         sb.append(" Domain id: ").append(getDomainId());
+        sb.append(", service: ").append(getService());
         return sb.append(" ]").toString();
     }
 }

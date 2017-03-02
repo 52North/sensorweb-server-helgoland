@@ -37,13 +37,11 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class ServiceInfo {
+public class ServiceEntity extends DescribableEntity {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceInfo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceEntity.class);
 
-    private String serviceId;
-
-    private String serviceDescription;
+    private String url;
 
     private String type = "Thin DB access layer service.";
 
@@ -51,24 +49,16 @@ public class ServiceInfo {
 
     private String version;
 
-    public ServiceInfo() {
+    public ServiceEntity() {
         noDataValues = Collections.emptyList();
     }
 
-    public String getServiceId() {
-        return serviceId;
+    public String getUrl() {
+        return url;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public String getServiceDescription() {
-        return serviceDescription;
-    }
-
-    public void setServiceDescription(String serviceDescription) {
-        this.serviceDescription = serviceDescription;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getType() {
@@ -85,7 +75,7 @@ public class ServiceInfo {
     }
 
     public String getNoDataValues() {
-        final String csv = Arrays.toString(noDataValues.toArray(new Double[0]));
+        final String csv = Arrays.toString(noDataValues.toArray(new Double[0])); //XXX
         return csv.substring(1).substring(0, csv.length() - 2);
     }
 
@@ -107,5 +97,15 @@ public class ServiceInfo {
         this.version = version;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName()).append(" [");
+        sb.append(" url: ").append(getUrl());
+        sb.append(", type: ").append(getType());
+        sb.append(", version: ").append(getVersion());
+        sb.append(", noDataValues: ").append(getNoDataValues());
+        return sb.append(" ]").toString();
+    }
 
 }
