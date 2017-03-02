@@ -149,7 +149,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutput;
     }
 
-    protected SeriesParameters createSeriesParameters(DatasetEntity series, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createSeriesParameters(DatasetEntity<?> series, DbQuery parameters) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(getCondensedExtendedService(series.getService(), parameters));
         seriesParameter.setOffering(getCondensedExtendedOffering(series.getOffering(), parameters));

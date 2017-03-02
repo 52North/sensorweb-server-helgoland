@@ -65,27 +65,30 @@ public class DescribableEntity {
         return pkid;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setPkid(Long pkid) {
         this.pkid = pkid;
-        return (T)this;
+        return (T) this;
     }
 
     public String getDomainId() {
         return domainId;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setDomainId(String domainId) {
         this.domainId = domainId;
-        return (T)this;
+        return (T) this;
     }
 
     public String getName() {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setName(String name) {
         this.name = name;
-        return (T)this;
+        return (T) this;
     }
 
     public boolean isSetName() {
