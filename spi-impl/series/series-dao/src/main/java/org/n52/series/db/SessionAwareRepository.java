@@ -127,6 +127,7 @@ public abstract class SessionAwareRepository {
         this.databaseSrid = databaseSrid;
     }
 
+
     protected Map<String, SeriesParameters> createTimeseriesList(List<MeasurementDatasetEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, SeriesParameters> timeseriesOutputs = new HashMap<>();
         for (MeasurementDatasetEntity timeseries : series) {

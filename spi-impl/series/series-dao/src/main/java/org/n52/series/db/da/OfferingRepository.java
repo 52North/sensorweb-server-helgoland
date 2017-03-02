@@ -36,7 +36,6 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OfferingOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.OfferingEntity;
 import org.n52.series.db.dao.DbQuery;
@@ -45,7 +44,7 @@ import org.n52.series.spi.search.OfferingSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class OfferingRepository extends SessionAwareRepository implements OutputAssembler<OfferingOutput> {
+public class OfferingRepository extends HierarchicalRepository<OfferingEntity, OfferingOutput>{
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -100,11 +99,7 @@ public class OfferingRepository extends SessionAwareRepository implements Output
 
     @Override
     public List<OfferingOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        List<OfferingOutput> results = new ArrayList<>();
-        for (OfferingEntity offeringEntity : getAllInstances(parameters, session)) {
-            results.add(createCondensed(offeringEntity, parameters));
-        }
-        return results;
+        return createCondensed(getAllInstances(parameters, session), parameters);
     }
 
     @Override
@@ -119,11 +114,7 @@ public class OfferingRepository extends SessionAwareRepository implements Output
 
     @Override
     public List<OfferingOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        List<OfferingOutput> results = new ArrayList<>();
-        for (OfferingEntity phenomenonEntity : getAllInstances(parameters, session)) {
-            results.add(createExpanded(phenomenonEntity, parameters));
-        }
-        return results;
+        return createExpanded(getAllInstances(parameters, session), parameters);
     }
 
     @Override
@@ -142,11 +133,11 @@ public class OfferingRepository extends SessionAwareRepository implements Output
         return createExpanded(result, parameters);
     }
 
-    protected List<OfferingEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    private List<OfferingEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected OfferingEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    private OfferingEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         OfferingDao dao = createDao(session);
         OfferingEntity result = dao.getInstance(id, parameters);
         if (result == null) {
@@ -155,7 +146,8 @@ public class OfferingRepository extends SessionAwareRepository implements Output
         return result;
     }
 
-    private OfferingOutput createExpanded(OfferingEntity entity, DbQuery parameters) throws DataAccessException {
+    @Override
+    protected OfferingOutput createExpanded(OfferingEntity entity, DbQuery parameters) throws DataAccessException {
         OfferingOutput result = createCondensed(entity, parameters);
         if (parameters.getHrefBase() != null) {
             result.setService(getCondensedExtendedService(entity.getService(), parameters));
@@ -165,7 +157,8 @@ public class OfferingRepository extends SessionAwareRepository implements Output
         return result;
     }
 
-    private OfferingOutput createCondensed(OfferingEntity entity, DbQuery parameters) {
+    @Override
+    protected OfferingOutput createCondensed(OfferingEntity entity, DbQuery parameters) {
         OfferingOutput result = new OfferingOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
