@@ -44,7 +44,7 @@ import org.n52.series.spi.search.OfferingSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class OfferingRepository extends HierarchicalRepository<OfferingEntity, OfferingOutput>{
+public class OfferingRepository extends HierarchicalParameterRepository<OfferingEntity, OfferingOutput>{
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

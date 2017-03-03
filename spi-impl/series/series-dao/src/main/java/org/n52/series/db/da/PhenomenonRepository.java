@@ -44,7 +44,7 @@ import org.n52.series.spi.search.PhenomenonSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class PhenomenonRepository extends HierarchicalRepository<PhenomenonEntity,PhenomenonOutput> {
+public class PhenomenonRepository extends HierarchicalParameterRepository<PhenomenonEntity,PhenomenonOutput> {
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

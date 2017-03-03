@@ -44,7 +44,7 @@ import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class FeatureRepository extends HierarchicalRepository<FeatureEntity, FeatureOutput> {
+public class FeatureRepository extends HierarchicalParameterRepository<FeatureEntity, FeatureOutput> {
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

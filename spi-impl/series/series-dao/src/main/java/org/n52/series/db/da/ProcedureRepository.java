@@ -44,7 +44,7 @@ import org.n52.series.spi.search.ProcedureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class ProcedureRepository extends HierarchicalRepository<ProcedureEntity, ProcedureOutput> {
+public class ProcedureRepository extends HierarchicalParameterRepository<ProcedureEntity, ProcedureOutput> {
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {

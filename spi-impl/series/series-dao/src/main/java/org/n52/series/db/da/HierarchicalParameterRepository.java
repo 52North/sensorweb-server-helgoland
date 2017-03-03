@@ -11,7 +11,7 @@ import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.HierarchicalEntity;
 import org.n52.series.db.dao.DbQuery;
 
-public abstract class HierarchicalRepository<E extends HierarchicalEntity<E>, O> extends SessionAwareRepository implements OutputAssembler<O> {
+public abstract class HierarchicalParameterRepository<E extends HierarchicalEntity<E>, O> extends SessionAwareRepository implements OutputAssembler<O> {
 
     // TODO introduce lambdas here
 
