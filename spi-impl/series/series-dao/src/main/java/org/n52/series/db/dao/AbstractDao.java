@@ -97,19 +97,6 @@ public abstract class AbstractDao<T> implements GenericDao<T, Long> {
         return ((Long) query.addFilters(criteria, getSeriesProperty()).uniqueResult()).intValue();
     }
 
-    protected Criteria addFilters(Criteria criteria, DbQuery query) {
-        String seriesProperty = getSeriesProperty();
-        DetachedCriteria filter = query.createDetachedFilterCriteria(seriesProperty);
-        criteria = query.addPlatformTypeFilter(seriesProperty, criteria);
-        criteria = query.addDatasetTypeFilter(seriesProperty, criteria);
-        criteria = query.addLimitAndOffsetFilter(criteria);
-        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
-                            ? "pkid"
-                            : seriesProperty + ".pkid";
-        return query.addSpatialFilterTo(criteria, query)
-                .add(propertyIn(filterProperty, filter));
-    }
-
     protected <I extends I18nEntity> Criteria translate(Class<I> clazz, Criteria criteria, DbQuery query) {
         return hasTranslation(query, clazz)
                 ? query.addLocaleTo(criteria, clazz)

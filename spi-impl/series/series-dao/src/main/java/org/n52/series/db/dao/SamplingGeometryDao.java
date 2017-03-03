@@ -41,6 +41,7 @@ import org.n52.series.db.beans.SamplingGeometryEntity;
 public class SamplingGeometryDao {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
+    
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
     private final Session session;
@@ -52,8 +53,7 @@ public class SamplingGeometryDao {
     @SuppressWarnings("unchecked") // Hibernate
     public List<GeometryEntity> getGeometriesOrderedByTimestamp(DbQuery parameters) {
         Criteria criteria = session.createCriteria(SamplingGeometryEntity.class);
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
+        parameters.addDetachedFilters(COLUMN_SERIES_PKID, criteria);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.addOrder(Order.asc(COLUMN_TIMESTAMP));
         parameters.addSpatialFilterTo(criteria, parameters);

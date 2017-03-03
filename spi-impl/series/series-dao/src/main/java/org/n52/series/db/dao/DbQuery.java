@@ -28,26 +28,30 @@
  */
 package org.n52.series.db.dao;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Point;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
 import static org.hibernate.criterion.DetachedCriteria.forClass;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.ProjectionList;
 import static org.hibernate.criterion.Projections.projectionList;
 import static org.hibernate.criterion.Projections.property;
-import org.hibernate.criterion.Restrictions;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
 import static org.hibernate.criterion.Subqueries.propertyIn;
+import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
+import static org.n52.series.db.DataModelUtil.isEntitySupported;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Property;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.GeometryType;
 import org.hibernate.spatial.GeometryType.Type;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
@@ -58,15 +62,16 @@ import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import static org.n52.io.request.Parameters.HANDLE_AS_DATASET_TYPE;
 import org.n52.io.response.PlatformType;
-import static org.n52.series.db.DataModelUtil.isEntitySupported;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Point;
 
 public class DbQuery {
 
@@ -222,15 +227,11 @@ public class DbQuery {
     }
 
     public Criteria addFilters(Criteria criteria, String seriesProperty) {
-        DetachedCriteria filter = createDetachedFilterCriteria(seriesProperty);
-        criteria = addPlatformTypeFilter(seriesProperty, criteria);
-        criteria = addDatasetTypeFilter(seriesProperty, criteria);
-        criteria = addLimitAndOffsetFilter(criteria);
-        String filterProperty = seriesProperty == null || seriesProperty.isEmpty()
-                            ? "pkid"
-                            : seriesProperty + ".pkid";
-        return addSpatialFilterTo(criteria, this)
-                .add(propertyIn(filterProperty, filter));
+        addLimitAndOffsetFilter(criteria);
+        addDetachedFilters(seriesProperty, criteria);
+        addPlatformTypeFilter(seriesProperty, criteria);
+        addDatasetTypeFilter(seriesProperty, criteria);
+        return addSpatialFilterTo(criteria, this);
     }
 
     private LogicalExpression createMobileExpression(FilterResolver filterResolver) {
@@ -324,8 +325,9 @@ public class DbQuery {
         return null;
     }
 
-    public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class);
+    public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
+        DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class)
+                .setProjection(Property.forName("pkid"));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
 
@@ -348,11 +350,11 @@ public class DbQuery {
             }
         }
 
-        propertyName = propertyName != null
-                && !propertyName.isEmpty()
-                    ? propertyName
-                    : "pkid";
-        return filter.setProjection(projectionList().add(property(propertyName)));
+        String filterProperty = propertyName != null && !propertyName.isEmpty()
+                ? propertyName + ".pkid"
+                : "pkid";
+        criteria.add(propertyIn(filterProperty, filter));
+        return criteria;
     }
 
     private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
