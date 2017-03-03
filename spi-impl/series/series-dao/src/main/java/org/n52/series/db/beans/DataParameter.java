@@ -31,9 +31,13 @@ package org.n52.series.db.beans;
 
 public abstract class DataParameter<T> {
 
+    public abstract static class FeatureParameter<T> extends DataParameter<T> {
+        // allows explicit mapping
+    }
+
     private long parameterId;
 
-    private long observationId;
+    private long fkId;
 
     private String name;
 
@@ -47,12 +51,12 @@ public abstract class DataParameter<T> {
         this.parameterId = parameterId;
     }
 
-    public long getObservationId() {
-        return observationId;
+    public long getFkId() {
+        return fkId;
     }
 
-    public void setObservationId(long observationId) {
-        this.observationId = observationId;
+    public void setFkId(long fkId) {
+        this.fkId = fkId;
     }
 
     public String getName() {
@@ -77,4 +81,5 @@ public abstract class DataParameter<T> {
     public boolean isSetValue() {
         return getValue() != null;
     }
+
 }

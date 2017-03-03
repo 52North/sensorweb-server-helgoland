@@ -30,6 +30,10 @@ package org.n52.series.db.beans;
 
 public class DataParameterCount extends DataParameter<Integer>{
 
+    public static class FeatureParameterCount extends DataParameterCount {
+        // allows explicit mapping
+    }
+
     // allows explicit mapping
 
 }

@@ -30,6 +30,10 @@ package org.n52.series.db.beans;
 
 public class DataParameterCategory extends DataParameter<String> {
 
+    public static class FeatureParameterCategory extends DataParameterCategory {
+        // allows explicit mapping
+    }
+
     private UnitEntity unit;
 
     public UnitEntity getUnit() {

@@ -30,6 +30,10 @@ package org.n52.series.db.beans;
 
 public class DataParameterBoolean extends DataParameter<Boolean> {
 
+    public static class FeatureParameterBoolean extends DataParameterBoolean {
+        // allows explicit mapping
+    }
+
     // allows explicit mapping
 
 }

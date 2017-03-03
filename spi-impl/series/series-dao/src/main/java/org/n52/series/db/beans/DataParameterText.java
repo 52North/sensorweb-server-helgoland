@@ -30,6 +30,10 @@ package org.n52.series.db.beans;
 
 public class DataParameterText extends DataParameter<String> {
 
+    public static class FeatureParameterText extends DataParameterText {
+        // allows explicit mapping
+    }
+
     // allows explicit mapping
 
 }
