@@ -272,11 +272,7 @@ public class DbQuery {
     }
 
     public Set<Long> parseToIds(Set<String> ids) {
-        Set<Long> parsedIds = new HashSet<>(ids.size());
-        for (String id : ids) {
-            parsedIds.add(parseToId(id));
-        }
-        return parsedIds;
+        return ids.stream().map(e -> Long.parseLong(e)).collect(Collectors.toSet());
     }
 
     public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
