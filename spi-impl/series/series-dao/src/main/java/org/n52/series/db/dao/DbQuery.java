@@ -326,11 +326,10 @@ public class DbQuery {
                 .setProjection(Property.forName("pkid"));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
-
-        addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
-        addFilterRestriction(parameters.getProcedures(), "procedure", filter);
-        addFilterRestriction(parameters.getOfferings(), "offering", filter);
-        addFilterRestriction(parameters.getFeatures(), "feature", filter);
+        addHierarchicalFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
+        addHierarchicalFilterRestriction(parameters.getProcedures(), "procedure", filter);
+        addHierarchicalFilterRestriction(parameters.getOfferings(), "offering", filter);
+        addHierarchicalFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
         addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
@@ -356,12 +355,19 @@ public class DbQuery {
     private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
         return addFilterRestriction(values, null, filter);
     }
+    
+    private DetachedCriteria addHierarchicalFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
+        if (hasValues(values)) {
+            filter.createCriteria(entity + ".parents").add(
+                    Restrictions.or(createIdCriterion(values), 
+                    Restrictions.in("pkid", parseToIds(values))));
+        }
+        return filter;
+    }
 
     private DetachedCriteria addFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
         if (hasValues(values)) {
-            Criterion restriction = parameters.isMatchDomainIds()
-                    ? createDomainIdFilter(values)
-                    : createIdFilter(values);
+            Criterion restriction = createIdCriterion(values);
             if (entity == null || entity.isEmpty()) {
                 filter.add(restriction);
             } else {
@@ -369,6 +375,12 @@ public class DbQuery {
             }
         }
         return filter;
+    }
+
+    private Criterion createIdCriterion(Set<String> values) {
+        return parameters.isMatchDomainIds()
+                ? createDomainIdFilter(values)
+                : createIdFilter(values);
     }
 
     private Criterion createDomainIdFilter(Set<String> filterValues) {
