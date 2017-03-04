@@ -26,76 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.extension.metadata;
 
 import java.util.Date;
 
-public abstract class MetadataEntity<T> {
-
-    private Long pkid;
-
-    private Long seriesId;
-
-    private String name;
-
-    private String type;
+public class DatabaseMetadataOutput<T> {
 
     private T value;
 
     private Date lastUpdate;
 
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public Long getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(Long seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public T getValue() {
         return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
     }
 
     public Date getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
+    static <T> DatabaseMetadataOutput<T> create() {
+        return new DatabaseMetadataOutput<>();
+    }
+
+    DatabaseMetadataOutput<T> withValue(T value) {
+        this.value = value;
+        return this;
+    }
+
+    DatabaseMetadataOutput<T> lastUpdatedAt(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+        return this;
     }
-
-    public DatabaseMetadataOutput<T> toOutput() {
-        return DatabaseMetadataOutput.<T>create()
-                .withValue(value)
-                .lastUpdatedAt(lastUpdate);
-    }
-
 }

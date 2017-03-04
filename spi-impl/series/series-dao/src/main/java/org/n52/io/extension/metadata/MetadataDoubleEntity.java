@@ -26,8 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.extension.metadata;
 
-public class MetadataStringEntity extends MetadataEntity<String> {
+public class MetadataDoubleEntity extends MetadataEntity<Double> {
 
 }

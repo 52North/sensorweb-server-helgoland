@@ -20,6 +20,11 @@
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
     <property column="firsttimestamp" name="firstValueAt" type="timestamp"/>
     <property column="lasttimestamp" name="lastValueAt" type="timestamp"/>
+    
+    <set inverse="true" name="resultTimes" table="observation">
+        <key column="seriesid" />
+        <element column="resulttime" type="string" />
+    </set>
 
     <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
       <property formula="3" name="numberOfDecimals" type="int"/>

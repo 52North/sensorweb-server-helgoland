@@ -23,6 +23,7 @@
     <bean name="geometriesRepository" class="org.n52.series.db.da.GeometriesRepository">
         <property name="databaseSrid" value="${database.srid}" />
     </bean>
+    <bean name="resultTimeRepository" class="org.n52.io.extension.resulttime.ResultTimeRepository" />
 
     <bean id="serviceParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="serviceRepository" />
@@ -50,5 +51,9 @@
     </bean>
     <bean id="phenomenonParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="phenomenonRepository" />
+    </bean>
+    
+    <bean id="resultTimeService" class="org.n52.io.extension.resulttime.DatabaseResultTimeService">
+        <constructor-arg index="0" ref="resultTimeRepository" />
     </bean>
 </beans>

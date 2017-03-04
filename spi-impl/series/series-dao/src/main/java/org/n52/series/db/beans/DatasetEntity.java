@@ -31,6 +31,7 @@ package org.n52.series.db.beans;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
@@ -64,6 +65,8 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private List<T> observations;
 
     private String datasetType;
+    
+    private Set<String> resultTimes;
 
     @Deprecated
     private T firstValue;
@@ -220,6 +223,14 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     public void setDatasetType(String datasetType) {
         this.datasetType = datasetType;
+    }
+
+    public Set<String> getResultTimes() {
+        return resultTimes;
+    }
+
+    public void setResultTimes(Set<String> resultTimes) {
+        this.resultTimes = resultTimes;
     }
 
     public UnitEntity getUnit() {

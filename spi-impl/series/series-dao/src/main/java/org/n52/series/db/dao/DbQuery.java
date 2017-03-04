@@ -133,6 +133,12 @@ public class DbQuery {
         return !parameters.getDatasetTypes().isEmpty();
     }
 
+    public Date getResultTime() {
+        return parameters.containsParameter(Parameters.RESULTTIME)
+                ? parameters.getResultTime().toDate()
+                : null;
+    }
+
     public String getHandleAsDatasetTypeFallback() {
         return parameters.containsParameter(HANDLE_AS_DATASET_TYPE)
                 ? parameters.getAsString(HANDLE_AS_DATASET_TYPE)

@@ -30,9 +30,11 @@ package org.n52.io.extension;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -50,19 +52,19 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 
     private static final String CONFIG_FILE = "/config-extension-resultTime.json";
 
-    private static final String EXTENSION_NAME = "resultTime";
+    private static final String EXTENSION_NAME = "resultTimes";
 
-    private final ResultTimeExtensionConfig config = readConfig();
+    private final List<String> enabledServices = readEnabledServices();
 
     private ResultTimeService resultTimeService;
 
-    private ResultTimeExtensionConfig readConfig() {
+    private List<String> readEnabledServices() {
         try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
             ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, ResultTimeExtensionConfig.class);
+            return Arrays.asList(om.readValue(taskConfig, String[].class));
         } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
-            return new ResultTimeExtensionConfig();
+            return Collections.emptyList();
         }
     }
 
@@ -80,29 +82,16 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
     }
 
     private boolean isAvailableFor(String serviceId) {
-        return config.getServices().contains(serviceId);
+        return enabledServices.contains(serviceId);
     }
 
     @Override
     public Map<String, Object> getExtras(DatasetOutput output, IoParameters parameters) {
-        if ( hasExtrasToReturn(output, parameters)) {
-            return wrapSingleIntoMap(getResultTimes(parameters, output));
-        }
-        return Collections.<String, Object>emptyMap();
+        return wrapSingleIntoMap(getResultTimes(parameters, output));
     }
 
-    private ArrayList<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
+    private Set<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
         return resultTimeService.getResultTimeList(parameters, output.getId());
-    }
-
-    private boolean hasExtrasToReturn(DatasetOutput output, IoParameters parameters) {
-        return super.hasExtrasToReturn(output, parameters)
-                && hasResultTimeRequestParameter(parameters);
-    }
-
-    private static boolean hasResultTimeRequestParameter(IoParameters parameters) {
-        return parameters.containsParameter("request")
-                && parameters.getOther("request").equalsIgnoreCase(EXTENSION_NAME);
     }
 
     public ResultTimeService getResultTimeService() {
