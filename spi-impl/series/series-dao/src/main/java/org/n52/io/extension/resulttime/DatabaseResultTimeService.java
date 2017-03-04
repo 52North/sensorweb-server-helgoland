@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DatabaseResultTimeService implements ResultTimeService {
-    
+
     static final Logger LOGGER = LoggerFactory.getLogger(DatabaseResultTimeService.class);
 
     private final ResultTimeRepository repository;
-    
+
     public DatabaseResultTimeService(ResultTimeRepository repository) {
         this.repository = repository;
     }

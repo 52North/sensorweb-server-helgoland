@@ -154,7 +154,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     protected String getSeriesProperty() {
         return ""; // there's no series property for observation
     }
-    
+
     private Criteria getDefaultCriteria(DbQuery parameters) {
         Criteria criteria = getDefaultCriteria();
         return parameters.getResultTime() != null
@@ -199,7 +199,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         List<T> list = criteria.list();
         return getLastResultTimeValue(list);
     }
-    
+
     private T getLastResultTimeValue(List<T> values) {
         T lastValue = null;
         for (T value : values) {

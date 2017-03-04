@@ -13,7 +13,7 @@ import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 
 class ResultTimeRepository extends SessionAwareRepository {
-    
+
     Set<String> getExtras(String timeseriesId, IoParameters parameters) {
         Session session = getSession();
         try {

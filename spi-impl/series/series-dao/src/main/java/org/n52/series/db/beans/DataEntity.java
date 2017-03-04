@@ -55,7 +55,7 @@ public abstract class DataEntity<T> {
     private Date validTimeStart;
 
     private Date validTimeEnd;
-    
+
     private Date resultTime;
 
     private final Set<DataParameter<?>> parameters = new HashSet<>(0);
@@ -170,7 +170,7 @@ public abstract class DataEntity<T> {
     public void setValidTimeEnd(Date validTimeEnd) {
         this.validTimeEnd = validTimeEnd;
     }
- 
+
     public boolean isSetValidTime() {
         return isSetValidStartTime() && isSetValidEndTime();
     }

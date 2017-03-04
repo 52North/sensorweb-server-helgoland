@@ -65,7 +65,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     private List<T> observations;
 
     private String datasetType;
-    
+
     private Set<String> resultTimes;
 
     @Deprecated
