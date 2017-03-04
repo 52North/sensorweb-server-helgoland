@@ -55,7 +55,6 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
-import org.n52.series.spi.search.ServiceSearchResult;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -241,7 +240,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
         for (String datasetType : ioFactoryCreator.getKnownTypes()) {
             try {
-                IoFactory factory = ioFactoryCreator.create(datasetType);
+                IoFactory<?, ? ,?> factory = ioFactoryCreator.create(datasetType);
                 mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
             } catch (DatasetFactoryException e) {
                 LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);
