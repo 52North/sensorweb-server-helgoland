@@ -361,11 +361,11 @@ public class DbQuery {
     private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
         return addFilterRestriction(values, null, filter);
     }
-    
+
     private DetachedCriteria addHierarchicalFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
         if (hasValues(values)) {
             filter.createCriteria(entity + ".parents").add(
-                    Restrictions.or(createIdCriterion(values), 
+                    Restrictions.or(createIdCriterion(values),
                     Restrictions.in("pkid", parseToIds(values))));
         }
         return filter;

@@ -26,38 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.series.db.beans.parameter;
 
-public class FeatureOutput extends OutputWithParameters {
+import java.util.Map;
+
+import org.n52.series.db.beans.UnitEntity;
+
+public class ParameterQuantity extends Parameter<Double> {
+
+    private UnitEntity unit;
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        return result;
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = super.toValueMap();
+        if (isSetUnit()) {
+            valueMap.put("unit", getUnit());
+        }
+        return valueMap;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof FeatureOutput)) {
-            return false;
-        }
-        FeatureOutput other = (FeatureOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        } else if (!service.equals(other.service)) {
-            return false;
-        }
-        return true;
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(final UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean isSetUnit() {
+        return getUnit() != null;
     }
 
 }

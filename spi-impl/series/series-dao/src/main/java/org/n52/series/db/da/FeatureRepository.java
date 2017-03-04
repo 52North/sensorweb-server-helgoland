@@ -38,6 +38,7 @@ import org.n52.io.response.FeatureOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.parameter.Parameter;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
@@ -106,7 +107,7 @@ public class FeatureRepository extends HierarchicalParameterRepository<FeatureEn
     public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllCondensed(parameters, session);
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
@@ -148,6 +149,11 @@ public class FeatureRepository extends HierarchicalParameterRepository<FeatureEn
             result.setService(getCondensedExtendedService(entity.getService(), parameters));
         } else {
             result.setService(getCondensedService(entity.getService(), parameters));
+        }
+        if (entity.hasParameters()) {
+            for (Parameter<?> parameter : entity.getParameters()) {
+                result.addParameter(parameter.toValueMap());
+            }
         }
         return result;
     }

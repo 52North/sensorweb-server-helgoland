@@ -26,38 +26,66 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.series.db.beans.parameter;
 
-public class FeatureOutput extends OutputWithParameters {
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        return result;
+public abstract class Parameter<T> {
+
+    private long parameterId;
+
+    private long fkId;
+
+    private String name;
+
+    private T value;
+
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("name", getName());
+        valueMap.put("value", getValue());
+        return valueMap;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof FeatureOutput)) {
-            return false;
-        }
-        FeatureOutput other = (FeatureOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        } else if (!service.equals(other.service)) {
-            return false;
-        }
-        return true;
+    public long getParameterId() {
+        return parameterId;
+    }
+
+    public void setParameterId(long parameterId) {
+        this.parameterId = parameterId;
+    }
+
+    public long getFkId() {
+        return fkId;
+    }
+
+    public void setFkId(long fkId) {
+        this.fkId = fkId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isSetName() {
+        return getName() != null;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public boolean isSetValue() {
+        return getValue() != null;
     }
 
 }

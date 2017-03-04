@@ -48,6 +48,7 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
 import org.n52.series.db.beans.PlatformEntity;
+import org.n52.series.db.beans.parameter.Parameter;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.db.dao.PlatformDao;
@@ -174,6 +175,11 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setGeometry(geometry == null
                 ? getLastSamplingGeometry(datasets, query, session)
                 : geometry);
+        if (entity.hasParameters()) {
+            for (Parameter<?> parameter : entity.getParameters()) {
+                result.addParameter(parameter.toValueMap());
+            }
+        }
         return result;
     }
 
@@ -359,6 +365,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setDomainId(entity.getDomainId());
         result.setPkid(entity.getPkid());
         result.setName(entity.getName());
+        result.setParameters(entity.getParameters());
         result.setTranslations(entity.getTranslations());
         result.setDescription(entity.getDescription());
         result.setGeometry(entity.getGeometry());

@@ -39,7 +39,7 @@ import org.n52.series.db.beans.SamplingGeometryEntity;
 public class SamplingGeometryDao {
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
-    
+
     private static final String COLUMN_TIMESTAMP = "timestamp";
 
     private final Session session;

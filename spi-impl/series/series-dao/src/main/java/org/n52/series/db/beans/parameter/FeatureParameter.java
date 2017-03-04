@@ -26,55 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
 
-public abstract class DataParameter<T> {
+public abstract class FeatureParameter<T> extends Parameter<T> {
 
-    private long parameterId;
+    // allows explicit mapping
 
-    private long observationId;
-
-    private String name;
-
-    private T value;
-
-    public long getParameterId() {
-        return parameterId;
-    }
-
-    public void setParameterId(long parameterId) {
-        this.parameterId = parameterId;
-    }
-
-    public long getObservationId() {
-        return observationId;
-    }
-
-    public void setObservationId(long observationId) {
-        this.observationId = observationId;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isSetName() {
-        return getName() != null;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
 }

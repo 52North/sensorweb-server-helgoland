@@ -20,9 +20,6 @@ public abstract class HierarchicalParameterRepository<E extends HierarchicalEnti
         for (E entity : entities) {
             O result = createExpanded(entity, parameters);
             results.add(result);
-            if (entity.hasChildren()) {
-                results.addAll(createExpanded(entity.getChildren(), parameters));
-            }
             if (entity.hasParents()) {
                 results.addAll(createExpanded(entity.getParents(), parameters));
             }

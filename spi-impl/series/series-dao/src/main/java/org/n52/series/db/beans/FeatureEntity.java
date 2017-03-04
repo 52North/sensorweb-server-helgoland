@@ -29,6 +29,10 @@
 package org.n52.series.db.beans;
 
 
+import java.util.Set;
+
+import org.n52.series.db.beans.parameter.Parameter;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 public class FeatureEntity extends HierarchicalEntity<FeatureEntity> {

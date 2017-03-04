@@ -30,11 +30,16 @@ package org.n52.series.db.beans;
 
 import java.util.Set;
 
+import org.n52.series.db.beans.parameter.Parameter;
+
 public class DescribableEntity {
 
     public final static String PKID = "pkid";
+
     public final static String DOMAIN_ID = "domainId";
+
     public final static String NAME = "name";
+
     public final static String SERVICE_ID = "serviceid";
 
     /**
@@ -60,6 +65,8 @@ public class DescribableEntity {
     private ServiceEntity service;
 
     private Set<I18nEntity> translations;
+
+    private Set<Parameter<?>> parameters;
 
     public Long getPkid() {
         return pkid;
@@ -113,6 +120,18 @@ public class DescribableEntity {
 
     public void setTranslations(Set<I18nEntity> translations) {
         this.translations = translations;
+    }
+
+    public Set<Parameter<?>> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Set<Parameter<?>> parameters) {
+        this.parameters = parameters;
+    }
+
+    public boolean hasParameters() {
+        return getParameters() != null && !getParameters().isEmpty();
     }
 
     public ServiceEntity getService() {

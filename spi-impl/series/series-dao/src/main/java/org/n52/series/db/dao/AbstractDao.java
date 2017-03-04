@@ -30,13 +30,11 @@ package org.n52.series.db.dao;
 
 import static org.hibernate.criterion.Projections.rowCount;
 import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Subqueries.propertyIn;
 
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.I18nEntity;
 import org.slf4j.Logger;

@@ -13,7 +13,7 @@
         <property column="validtimestart" name="validTimeStart" not-null="false" type="timestamp"/>
         <property column="validtimeend" name="validTimeEnd" not-null="false" type="timestamp"/>
         <property column="resulttime" name="resultTime" not-null="false" type="timestamp"/>
-        <component class="org.n52.series.db.beans.GeometryEntity" name="geometry">
+        <component class="GeometryEntity" name="geometry">
             <!--
            <property column="lat" name="lat" type="double" />
            <property column="lon" name="lon" type="double" />
@@ -22,7 +22,7 @@
         </component>
         <set inverse="true" name="parameters" table="parameter">
             <key column="observationid" not-null="true"/>
-            <one-to-many class="DataParameter"/>
+            <one-to-many class="org.n52.series.db.beans.parameter.ObservationParameter"/>
         </set>
 
         <joined-subclass extends="DataEntity" name="MeasurementDataEntity" table="numericvalue">

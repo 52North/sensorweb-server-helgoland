@@ -26,22 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
-public class DataParameterCategory extends DataParameter<String> {
+public class ObservationParameterCount extends ParameterCount {
 
-    private UnitEntity unit;
-
-    public UnitEntity getUnit() {
-        return unit;
-    }
-
-    public void setUnit(final UnitEntity unit) {
-        this.unit = unit;
-    }
-
-    public boolean isSetUnit() {
-        return getUnit() != null;
-    }
+    // allows explicit mapping
 
 }
