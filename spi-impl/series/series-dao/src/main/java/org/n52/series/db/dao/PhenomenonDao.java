@@ -52,14 +52,14 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     public List<PhenomenonEntity> find(DbQuery query) {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query)
                 .add(Restrictions.ilike("name", "%" + query.getSearchTerm() + "%"));
-        return addFilters(criteria, query).list();
+        return query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = translate(I18nPhenomenonEntity.class, getDefaultCriteria(), query);
-        return (List<PhenomenonEntity>) addFilters(criteria, query).list();
+        return (List<PhenomenonEntity>) query.addFilters(criteria, getSeriesProperty()).list();
     }
 
     @Override

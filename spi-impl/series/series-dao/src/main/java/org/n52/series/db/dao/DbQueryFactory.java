@@ -26,20 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.srv;
+package org.n52.series.db.dao;
 
-import org.n52.series.db.beans.ServiceInfo;
+import org.n52.io.request.IoParameters;
 
-public abstract class ServiceInfoAccess {
+public interface DbQueryFactory {
 
-    private ServiceInfo serviceInfo;
-
-    public ServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(ServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
-    }
-
+    DbQuery createFrom(IoParameters parameters);
 }

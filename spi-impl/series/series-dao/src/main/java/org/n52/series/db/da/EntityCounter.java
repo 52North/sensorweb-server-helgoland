@@ -41,6 +41,7 @@ import org.n52.series.db.dao.PhenomenonDao;
 import org.n52.series.db.dao.PlatformDao;
 import org.n52.series.db.dao.ProcedureDao;
 import org.n52.series.db.dao.DatasetDao;
+import org.n52.series.db.dao.DbQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,9 @@ public class EntityCounter {
 
     @Autowired
     private HibernateSessionStore sessionStore;
+
+    @Autowired
+    private DbQueryFactory dbQueryFactory;
 
     public Integer countFeatures(DbQuery query) throws DataAccessException {
         Session session = sessionStore.getSession();
@@ -130,7 +134,7 @@ public class EntityCounter {
     }
 
     private DbQuery createBackwardsCompatibleQuery() {
-        return DbQuery.createFrom(IoParameters.createDefaults()
+        return dbQueryFactory.createFrom(IoParameters.createDefaults()
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
                 .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement"));
     }

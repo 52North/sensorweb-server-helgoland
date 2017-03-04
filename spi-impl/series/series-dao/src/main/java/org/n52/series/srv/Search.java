@@ -42,13 +42,12 @@ import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.StationOutput;
 import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.series.db.beans.ServiceInfo;
 import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.series.spi.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class Search extends ServiceInfo implements SearchService {
+public class Search implements SearchService {
 
     @Autowired
     private OutputAssembler<ProcedureOutput> procedureRepository;

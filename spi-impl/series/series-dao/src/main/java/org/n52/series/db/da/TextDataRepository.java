@@ -37,6 +37,7 @@ import org.n52.io.response.dataset.text.TextData;
 import org.n52.io.response.dataset.text.TextDatasetMetadata;
 import org.n52.io.response.dataset.text.TextValue;
 import org.n52.series.db.DataAccessException;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.beans.TextDataEntity;
 import org.n52.series.db.beans.TextDatasetEntity;
 import org.n52.series.db.dao.DataDao;
@@ -140,7 +141,7 @@ public class TextDataRepository extends AbstractDataRepository<TextData, TextDat
 
         long timeend = observation.getTimeend().getTime();
         long timestart = observation.getTimestart().getTime();
-        String observationValue = !getServiceInfo().isNoDataValue(observation)
+        String observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         TextValue value = query.getParameters().isShowTimeIntervals()

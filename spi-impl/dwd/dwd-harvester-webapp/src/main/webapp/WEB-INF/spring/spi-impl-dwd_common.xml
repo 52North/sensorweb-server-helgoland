@@ -13,7 +13,7 @@
     <mvc:annotation-driven />
     <ctx:annotation-config />
 
-    <bean id="serviceInfo" class="org.n52.series.dwd.beans.ServiceInfo">
+    <bean id="serviceInfo" class="org.n52.series.dwd.beans.ServiceEntity">
         <property name="serviceId" value="1" />
         <property name="serviceDescription" value="DWD Warnings Series Service." />
         <property name="noDataValues" value="-9999.0,99999" />

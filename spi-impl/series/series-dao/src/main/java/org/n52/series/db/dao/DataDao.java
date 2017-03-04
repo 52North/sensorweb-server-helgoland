@@ -50,6 +50,7 @@ import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -61,6 +62,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SuppressWarnings("rawtypes") // infer entitType runtime
 public class DataDao<T extends DataEntity> extends AbstractDao<T> {
+
+    @Autowired
+    private DbQueryFactory dbQueryFactory;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataDao.class);
 
@@ -124,7 +128,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
      */
     public List<T> getAllInstancesFor(DatasetEntity series) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}'", series.getPkid());
-        return getAllInstancesFor(series, DbQuery.createFrom(IoParameters.createDefaults()));
+        return getAllInstancesFor(series, dbQueryFactory.createFrom(IoParameters.createDefaults()));
     }
 
     /**

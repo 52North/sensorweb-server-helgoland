@@ -37,12 +37,17 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.OutputAssembler;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.dao.DbQueryFactory;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.exception.InternalServerException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AccessService<T extends ParameterOutput> extends ParameterService<T> {
 
     protected final OutputAssembler<T> repository;
+
+    @Autowired
+    protected DbQueryFactory dbQueryFactory;
 
     public AccessService(OutputAssembler<T> repository) {
         this.repository = repository;
@@ -51,7 +56,7 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     @Override
     public OutputCollection<T> getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = dbQueryFactory.createFrom(query);
             List<T> results = repository.getAllExpanded(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -62,7 +67,7 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     @Override
     public OutputCollection<T> getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = dbQueryFactory.createFrom(query);
             List<T> results = repository.getAllCondensed(dbQuery);
             return createOutputCollection(results);
         } catch (DataAccessException e) {
@@ -73,7 +78,7 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     @Override
     public OutputCollection<T> getParameters(String[] ids, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = dbQueryFactory.createFrom(query);
             List<T> results = new ArrayList<>();
             for (String id : ids) {
                 results.add(repository.getInstance(id, dbQuery));
@@ -87,7 +92,7 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     @Override
     public T getParameter(String id, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = dbQueryFactory.createFrom(query);
             return repository.getInstance(id, dbQuery);
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not get data.", e);
@@ -97,7 +102,7 @@ public class AccessService<T extends ParameterOutput> extends ParameterService<T
     @Override
     public boolean exists(String id, IoParameters parameters) {
         try {
-            return repository.exists(id, DbQuery.createFrom(parameters));
+            return repository.exists(id, dbQueryFactory.createFrom(parameters));
         } catch (DataAccessException e) {
             throw new InternalServerException("Could not check if resource '" + id + "' does exist.");
         }

@@ -175,7 +175,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
         FeatureDao featureDao = createDao(session);
-        FeatureEntity result = featureDao.getInstance(parseId(id), DbQuery.createFrom(IoParameters.createDefaults()));
+        FeatureEntity result = featureDao.getInstance(parseId(id), getDbQuery(IoParameters.createDefaults()));
         return createCondensed(result, parameters);
     }
 
@@ -202,11 +202,11 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
-        return addPointLocationOnlyRestriction(DbQuery.createFrom(parameters));
+        return addPointLocationOnlyRestriction(dbQueryFactory.createFrom(parameters));
     }
 
     private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
-        return DbQuery.createFrom(query.getParameters()
+        return dbQueryFactory.createFrom(query.getParameters()
                           .extendWith("geometryTypes", "Point"));
     }
 

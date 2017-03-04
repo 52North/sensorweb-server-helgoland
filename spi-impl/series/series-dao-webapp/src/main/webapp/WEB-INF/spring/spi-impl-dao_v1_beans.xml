@@ -25,7 +25,7 @@
     </bean>
     <bean name="resultTimeRepository" class="org.n52.io.extension.resulttime.ResultTimeRepository" />
 
-    <bean id="serviceParameterService" class="org.n52.series.srv.ServiceAccessService">
+    <bean id="serviceParameterService" class="org.n52.series.srv.AccessService">
         <constructor-arg index="0" ref="serviceRepository" />
     </bean>
     <bean id="platformParameterService" class="org.n52.series.srv.AccessService">

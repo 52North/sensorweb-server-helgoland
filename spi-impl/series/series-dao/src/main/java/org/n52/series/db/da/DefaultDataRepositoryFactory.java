@@ -32,11 +32,9 @@ import java.io.File;
 
 import org.n52.io.ConfigTypedFactory;
 import org.n52.series.db.HibernateSessionStore;
-import org.n52.series.db.beans.ServiceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
+public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataRepository> implements IDataRepositoryFactory {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-repository-factory.properties";
 
@@ -45,20 +43,16 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
     @Autowired
     private HibernateSessionStore sessionStore;
 
-    @Autowired
-    private ServiceInfo serviceInfo;
-
-    public DataRepositoryFactory() {
+    public DefaultDataRepositoryFactory() {
         super(DEFAULT_CONFIG_FILE);
     }
 
-    public DataRepositoryFactory(File configFile) {
+    public DefaultDataRepositoryFactory(File configFile) {
         super(configFile);
     }
 
     @Override
     protected DataRepository initInstance(DataRepository instance) {
-        instance.setServiceInfo(serviceInfo);
         instance.setSessionStore(sessionStore);
         return instance;
     }
@@ -79,14 +73,6 @@ public class DataRepositoryFactory extends ConfigTypedFactory<DataRepository> {
 
     public void setSessionStore(HibernateSessionStore sessionStore) {
         this.sessionStore = sessionStore;
-    }
-
-    public ServiceInfo getServiceInfo() {
-        return serviceInfo;
-    }
-
-    public void setServiceInfo(ServiceInfo serviceInfo) {
-        this.serviceInfo = serviceInfo;
     }
 
 }

@@ -39,6 +39,7 @@ import org.n52.io.response.dataset.record.RecordValue;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.RecordDataEntity;
 import org.n52.series.db.beans.RecordDatasetEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DbQuery;
 
@@ -140,7 +141,7 @@ public class RecordDataRepository extends AbstractDataRepository<RecordData, Rec
 
         long timeend = observation.getTimeend().getTime();
         long timestart = observation.getTimestart().getTime();
-        Map<String, Object> observationValue = !getServiceInfo().isNoDataValue(observation)
+        Map<String, Object> observationValue = !series.getService().isNoDataValue(observation)
                 ? observation.getValue()
                 : null;
         RecordValue value = query.getParameters().isShowTimeIntervals()
