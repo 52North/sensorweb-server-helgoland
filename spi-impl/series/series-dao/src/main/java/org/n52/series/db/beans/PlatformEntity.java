@@ -28,7 +28,10 @@
  */
 package org.n52.series.db.beans;
 
+import java.util.Set;
+
 import org.n52.io.response.PlatformType;
+import org.n52.series.db.beans.parameter.FeatureParameter;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -49,6 +52,8 @@ public class PlatformEntity extends DescribableEntity {
     private boolean insitu = true;
 
     private Geometry geometry;
+
+    private Set<FeatureParameter<?>> parameters;
 
     public PlatformType getPlatformType() {
         return PlatformType.toInstance(mobile, insitu);
@@ -76,6 +81,18 @@ public class PlatformEntity extends DescribableEntity {
 
     public void setGeometry(Geometry geometry) {
         this.geometry = geometry;
+    }
+
+    public Set<FeatureParameter<?>> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Set<FeatureParameter<?>> parameters) {
+        this.parameters = parameters;
+    }
+
+    public boolean hasParameters() {
+        return getParameters() != null && !getParameters().isEmpty();
     }
 
 }

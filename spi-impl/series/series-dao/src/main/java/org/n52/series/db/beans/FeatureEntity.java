@@ -31,6 +31,8 @@ package org.n52.series.db.beans;
 
 import java.util.Set;
 
+import org.n52.series.db.beans.parameter.FeatureParameter;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 public class FeatureEntity extends DescribableEntity implements Childs<FeatureEntity>, Parents<FeatureEntity> {
@@ -41,6 +43,8 @@ public class FeatureEntity extends DescribableEntity implements Childs<FeatureEn
     private GeometryEntity geometryEntity;
     private Set<FeatureEntity> childFeatures;
     private Set<FeatureEntity> parentFeatures;
+
+    private Set<FeatureParameter<?>> parameters;
 
     public Geometry getGeometry() {
         return getGeometry(null);
@@ -83,6 +87,18 @@ public class FeatureEntity extends DescribableEntity implements Childs<FeatureEn
     @Override
     public Set<FeatureEntity> getParents() {
         return parentFeatures;
+    }
+
+    public Set<FeatureParameter<?>> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Set<FeatureParameter<?>> parameters) {
+        this.parameters = parameters;
+    }
+
+    public boolean hasParameters() {
+        return getParameters() != null && !getParameters().isEmpty();
     }
 
     @Override

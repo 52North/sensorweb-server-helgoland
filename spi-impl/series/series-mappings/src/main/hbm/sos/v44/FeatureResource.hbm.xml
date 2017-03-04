@@ -17,5 +17,10 @@
              -->
       <property column="geom" name="geometry" type="org.hibernate.spatial.GeometryType"/>
     </component>
+
+    <set inverse="true" name="parameters" table="featureparameter">
+        <key column="featureofinterestid" not-null="true"/>
+        <one-to-many entity-name="featureparameter"/>
+    </set>
   </class>
 </hibernate-mapping>
