@@ -26,14 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class DataParameter<T> {
-
-    public abstract static class FeatureParameter<T> extends DataParameter<T> {
-        // allows explicit mapping
-    }
+public abstract class Parameter<T> {
 
     private long parameterId;
 
@@ -42,6 +40,13 @@ public abstract class DataParameter<T> {
     private String name;
 
     private T value;
+
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("name", getName());
+        valueMap.put("value", getValue());
+        return valueMap;
+    }
 
     public long getParameterId() {
         return parameterId;
@@ -62,6 +67,7 @@ public abstract class DataParameter<T> {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }

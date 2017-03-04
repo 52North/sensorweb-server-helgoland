@@ -118,10 +118,10 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
         }
     }
 
-    protected void addParameter(DataEntity<?> observation, AbstractValue<?> value) {
+    protected void addParameters(DataEntity<?> observation, AbstractValue<?> value) {
         if (observation.hasParameters()) {
-            for (DataParameter<?> parameter : observation.getParameters()) {
-                value.addParameter(parameter.getName(), parameter.getValue());
+            for (Parameter<?> parameter : observation.getParameters()) {
+                value.addParameter(parameter.toValueMap());
             }
         }
     }

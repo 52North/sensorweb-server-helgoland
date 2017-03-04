@@ -156,6 +156,11 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         } else {
             result.setService(getCondensedService(entity.getService(), parameters));
         }
+        if (entity.hasParameters()) {
+            for (FeatureParameter<?> parameter : entity.getParameters()) {
+                result.addParameter(parameter.toValueMap());
+            }
+        }
         return result;
     }
 

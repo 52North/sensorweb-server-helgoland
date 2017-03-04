@@ -36,6 +36,15 @@ public class ParameterQuantity extends Parameter<Double> {
 
     private UnitEntity unit;
 
+    @Override
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = super.toValueMap();
+        if (isSetUnit()) {
+            valueMap.put("unit", getUnit());
+        }
+        return valueMap;
+    }
+
     public UnitEntity getUnit() {
         return unit;
     }

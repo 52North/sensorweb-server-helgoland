@@ -175,6 +175,11 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setGeometry(geometry == null
                 ? getLastSamplingGeometry(datasets, query, session)
                 : geometry);
+        if (entity.hasParameters()) {
+            for (FeatureParameter<?> parameter : entity.getParameters()) {
+                result.addParameter(parameter.toValueMap());
+            }
+        }
         return result;
     }
 
@@ -360,6 +365,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setDomainId(entity.getDomainId());
         result.setPkid(entity.getPkid());
         result.setName(entity.getName());
+        result.setParameters(entity.getParameters());
         result.setTranslations(entity.getTranslations());
         result.setDescription(entity.getDescription());
         result.setGeometry(entity.getGeometry());
