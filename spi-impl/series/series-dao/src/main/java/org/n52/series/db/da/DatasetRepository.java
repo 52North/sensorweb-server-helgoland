@@ -243,6 +243,9 @@ public class DatasetRepository<T extends Data>
         try {
             DatasetOutput result = createCondensed(series, query);
             result.setSeriesParameters(getParameters(series, query));
+            if (series.getService() == null) {
+                series.setService(getStaticServiceEntity());
+            }
             result.setUom(series.getUnitI18nName(query.getLocale()));
             DataRepository dataRepository = factory.create(series.getDatasetType());
             result.setFirstValue(dataRepository.getFirstValue(series, session, query));

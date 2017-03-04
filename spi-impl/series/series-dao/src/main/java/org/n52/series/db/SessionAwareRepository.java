@@ -187,14 +187,19 @@ public abstract class SessionAwareRepository {
         return createCondensed(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
 
+    protected ServiceEntity getStaticServiceEntity() {
+        return serviceEntity;
+    }
+
     protected ServiceOutput getCondensedExtendedService(ServiceEntity entity, DbQuery parameters) {
-        if (serviceEntity == null && entity == null) {
+        ServiceEntity staticService = getStaticServiceEntity();
+        if (staticService == null && entity == null) {
             LOGGER.warn("No service instance available");
             throw new IllegalStateException("No service instance available!");
         }
-        return serviceEntity == null
+        return staticService == null
                 ? createCondensed(new ServiceOutput(), entity, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()))
-                : createCondensed(new ServiceOutput(), serviceEntity, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
+                : createCondensed(new ServiceOutput(), staticService, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
     }
 
     private <T extends ParameterOutput> T createCondensed(T outputvalue, DescribableEntity entity, DbQuery parameters) {
