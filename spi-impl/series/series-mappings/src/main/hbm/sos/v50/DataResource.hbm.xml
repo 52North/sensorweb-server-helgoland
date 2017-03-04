@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-    <class name="DataEntity" entity-name="data" table="observation">
+    <class name="DataEntity" table="observation">
         <id name="pkid" type="long">
             <column name="observationid"/>
             <generator class="assigned"/>
@@ -21,7 +21,7 @@
         <!-- Or add only to specific joined-subclasses -->
         <set inverse="true" name="parameters" table="parameters">
             <key column="observationid" not-null="true"/>
-            <one-to-many entity-name="observationparameter"/>
+            <one-to-many class="org.n52.series.db.beans.parameter.ObservationParameter"/>
         </set>
 
         <joined-subclass extends="DataEntity" name="MeasurementDataEntity" table="numericValue">

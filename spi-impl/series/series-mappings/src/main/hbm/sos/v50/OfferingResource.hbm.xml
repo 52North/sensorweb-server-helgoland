@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-  <class name="OfferingEntity" entity-name="offering" table="offering">
+  <class name="OfferingEntity" table="offering">
     <id name="pkid" type="long">
       <column name="offeringid"/>
       <generator class="assigned"/>
@@ -11,11 +11,11 @@
     <property column="name" insert="false" name="description" type="string" update="false"/>
     <set name="childs" table="offeringrelation" inverse="false" fetch="select" >
         <key column="parentOfferingId" not-null="true" />
-        <many-to-many entity-name="OfferingEntity" column="childOfferingId" not-null="true" foreign-key="offeringChildFk"/>
+        <many-to-many class="OfferingEntity" column="childOfferingId" not-null="true" foreign-key="offeringChildFk"/>
     </set>
     <set name="parents" table="offeringrelation" inverse="false" fetch="select">
         <key column="childOfferingId" not-null="true" />
-        <many-to-many entity-name="OfferingEntity" column="parentOfferingId" not-null="true" foreign-key="offeringParentFk"/>
+        <many-to-many class="OfferingEntity" column="parentOfferingId" not-null="true" foreign-key="offeringParentFk"/>
     </set>
   </class>
 </hibernate-mapping>

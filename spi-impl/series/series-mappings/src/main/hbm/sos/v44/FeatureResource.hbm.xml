@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-  <class name="FeatureEntity" entity-name="feature" table="featureofinterest">
+  <class name="FeatureEntity" table="featureofinterest">
     <id name="pkid" type="long">
       <column name="featureofinterestid"/>
       <generator class="assigned"/>
@@ -20,7 +20,7 @@
 
     <set inverse="true" name="parameters" table="featureparameter">
         <key column="featureofinterestid" not-null="true"/>
-        <one-to-many entity-name="featureparameter"/>
+        <one-to-many class="org.n52.series.db.beans.parameter.FeatureParameter"/>
     </set>
   </class>
 </hibernate-mapping>

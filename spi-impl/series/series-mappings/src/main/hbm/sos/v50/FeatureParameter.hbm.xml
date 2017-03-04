@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans.parameter">
-    <class name="FeatureParameter" entity-name="featureparameter" table="featureparameter">
+    <class name="FeatureParameter" table="featureparameter">
         <id name="parameterId" type="long">
             <column name="parameterid"/>
             <generator class="assigned"/>
@@ -18,7 +18,7 @@
         <joined-subclass extends="FeatureParameter" name="FeatureParameterCategory" table="categoryfeatparamvalue">
             <key column="parameterid"/>
             <property column="value" name="value" type="string"/>
-            <many-to-one entity-name="unit" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db.beans.UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="FeatureParameter" name="FeatureParameterCount" table="countfeatparamvalue">
@@ -29,7 +29,7 @@
         <joined-subclass extends="FeatureParameter" name="FeatureParameterQuantity" table="numericfeatparamvalue">
             <key column="parameterid"/>
             <property column="value" name="value" type="double"/>
-            <many-to-one entity-name="unit" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db.beans.UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="FeatureParameter" name="FeatureParameterText" table="textfeatparamvalue">

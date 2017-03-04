@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans.parameter">
-    <class name="ObservationParameter" entity-name="observationparameter" table="parameter">
+    <class name="ObservationParameter" table="parameter">
         <id name="parameterId" type="long">
             <column name="parameterid"/>
             <generator class="assigned"/>
@@ -18,7 +18,7 @@
         <joined-subclass extends="ObservationParameter" name="ObservationParameterCategory" table="categoryparametervalue">
             <key column="parameterid"/>
             <property column="value" name="value" type="string"/>
-            <many-to-one entity-name="unit" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db.beans.UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="ObservationParameter" name="ObservationParameterCount" table="countparametervalue">
@@ -29,7 +29,7 @@
         <joined-subclass extends="ObservationParameter" name="ObservationParameterQuantity" table="numericparametervalue">
             <key column="parameterid"/>
             <property column="value" name="value" type="double"/>
-            <many-to-one entity-name="unit" column="unitid" insert="false" name="unit" update="false"/>
+            <many-to-one class="org.n52.series.db.beans.UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
         </joined-subclass>
 
         <joined-subclass extends="ObservationParameter" name="ObservationParameterText" table="textparametervalue">
