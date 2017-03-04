@@ -28,7 +28,7 @@
  */
 package org.n52.io.response;
 
-public class FeatureOutput extends AbstractOutput {
+public class FeatureOutput extends OutputWithParameters {
 
     @Override
     public int hashCode() {

@@ -44,7 +44,7 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  * @since 2.0.0
  */
-public class PlatformOutput extends AbstractOutput {
+public class PlatformOutput extends OutputWithParameters {
 
     private final PlatformType platformType;
 
