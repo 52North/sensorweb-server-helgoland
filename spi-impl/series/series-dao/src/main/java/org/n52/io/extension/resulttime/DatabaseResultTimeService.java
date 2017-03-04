@@ -21,7 +21,7 @@ public class DatabaseResultTimeService implements ResultTimeService {
 
     @Override
     public Set<String> getResultTimeList(IoParameters parameters, String timeseriesId) {
-        return repository.getExtras(DatasetType.extractId(timeseriesId), DbQuery.createFrom(parameters));
+        return repository.getExtras(DatasetType.extractId(timeseriesId), parameters);
     }
 
 }
