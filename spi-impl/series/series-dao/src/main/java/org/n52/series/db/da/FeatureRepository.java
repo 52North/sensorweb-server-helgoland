@@ -113,7 +113,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllCondensed(parameters, session);
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
