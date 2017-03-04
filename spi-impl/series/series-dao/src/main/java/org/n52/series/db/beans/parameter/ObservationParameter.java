@@ -26,13 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
-public class DataParameterCount extends DataParameter<Integer>{
 
-    public static class FeatureParameterCount extends DataParameterCount {
-        // allows explicit mapping
-    }
+public abstract class ObservationParameter<T> extends Parameter<T> {
 
     // allows explicit mapping
 

@@ -26,13 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
-public class DataParameterText extends DataParameter<String> {
 
-    public static class FeatureParameterText extends DataParameterText {
-        // allows explicit mapping
-    }
+public class FeatureParameterCategory extends ParameterCategory {
 
     // allows explicit mapping
 

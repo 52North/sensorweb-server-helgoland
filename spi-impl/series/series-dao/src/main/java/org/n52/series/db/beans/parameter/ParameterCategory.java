@@ -26,14 +26,26 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
-public class DataParameterBoolean extends DataParameter<Boolean> {
+import java.util.Map;
 
-    public static class FeatureParameterBoolean extends DataParameterBoolean {
-        // allows explicit mapping
+import org.n52.series.db.beans.UnitEntity;
+
+public class ParameterCategory extends Parameter<String> {
+
+    private UnitEntity unit;
+
+    public UnitEntity getUnit() {
+        return unit;
     }
 
-    // allows explicit mapping
+    public void setUnit(final UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean isSetUnit() {
+        return getUnit() != null;
+    }
 
 }

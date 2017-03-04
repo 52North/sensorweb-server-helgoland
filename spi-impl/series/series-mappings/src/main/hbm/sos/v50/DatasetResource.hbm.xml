@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.n52.series.db.beans">
-  <class name="DatasetEntity" table="series">
+  <class name="DatasetEntity" entity-name="dataset" table="series">
     <id name="pkid" type="long">
       <column name="seriesid"/>
       <generator class="assigned"/>
     </id>
     <discriminator column="seriesType" force="true" type="string"/>
-    <many-to-one class="CategoryEntity" column="observablepropertyid" insert="false" name="category" update="false"/>
-    <many-to-one class="ProcedureEntity" column="procedureid" insert="false" name="procedure" update="false"/>
-    <many-to-one class="OfferingEntity" column="offeringid" insert="false" name="offering" update="false"/>
-    <many-to-one class="PhenomenonEntity" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
-    <many-to-one class="FeatureEntity" column="featureofinterestid" insert="false" name="feature" update="false"/>
-    <many-to-one class="PlatformEntity" column="procedureid" insert="false" name="platform" update="false"/>
+    <many-to-one entity-name="category" column="observablepropertyid" insert="false" name="category" update="false"/>
+    <many-to-one entity-name="procedure" column="procedureid" insert="false" name="procedure" update="false"/>
+    <many-to-one entity-name="offering" column="offeringid" insert="false" name="offering" update="false"/>
+    <many-to-one entity-name="phenomenon" column="observablepropertyid" insert="false" name="phenomenon" update="false"/>
+    <many-to-one entity-name="feature" column="featureofinterestid" insert="false" name="feature" update="false"/>
+    <many-to-one entity-name="platform" column="procedureid" insert="false" name="platform" update="false"/>
     <property column="published" insert="false" name="published" type="org.hibernate.type.TrueFalseType" update="false"/>
     <property column="deleted" insert="false" name="deleted" type="org.hibernate.type.TrueFalseType" update="false"/>
     <property column="seriesType" insert="false" name="datasetType" type="string" update="false"/>
@@ -24,20 +24,20 @@
     <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
       <property formula="3" name="numberOfDecimals" type="int"/>
       <!-- first value for backwards compatibility -->
-      <component class="org.n52.series.db.beans.ObservationEntity" name="firstValue">
+      <component class="ObservationEntity" name="firstValue">
         <property column="firsttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
         <property column="firstnumericvalue" name="value" type="double"/>
       </component>
       <!-- last value for backwards compatibility -->
-      <component class="org.n52.series.db.beans.ObservationEntity" name="lastValue">
+      <component class="ObservationEntity" name="lastValue">
         <property column="lasttimestamp" name="timestamp" type="timestamp" insert="false" update="false"/>
         <property column="lastnumericvalue" name="value" type="double"/>
       </component>
-      <many-to-one class="UnitEntity" column="unitid" insert="false" name="unit" update="false"/>
+      <many-to-one entity-name="unit" column="unitid" insert="false" name="unit" update="false"/>
       <list fetch="select" inverse="true" name="observations" table="observation">
         <key column="observationid"/>
         <index column="seriesid"/>
-        <one-to-many class="DataEntity"/>
+        <one-to-many entity-name="data"/>
       </list>
     </subclass>
 
@@ -45,7 +45,7 @@
       <list fetch="select" inverse="true" name="observations" table="observation">
         <key column="observationid"/>
         <index column="seriesid"/>
-        <one-to-many class="DataEntity"/>
+        <one-to-many entity-name="data"/>
       </list>
     </subclass>
 
@@ -53,7 +53,7 @@
       <list fetch="select" inverse="true" name="observations" table="observation">
         <key column="observationid"/>
         <index column="seriesid"/>
-        <one-to-many class="DataEntity"/>
+        <one-to-many entity-name="data"/>
       </list>
     </subclass>
   </class>

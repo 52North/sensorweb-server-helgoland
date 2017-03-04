@@ -33,6 +33,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.series.db.beans.parameter.Parameter;
+
 
 public abstract class DataEntity<T> {
 
@@ -56,7 +58,7 @@ public abstract class DataEntity<T> {
 
     private Date validTimeEnd;
 
-    private final Set<DataParameter<?>> parameters = new HashSet<>(0);
+    private final Set<Parameter<?>> parameters = new HashSet<>(0);
 
     public Long getPkid() {
         return pkid;
@@ -181,11 +183,11 @@ public abstract class DataEntity<T> {
         return validTimeEnd != null;
     }
 
-    public Set<DataParameter<?>> getParameters() {
+    public Set<Parameter<?>> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Set<DataParameter<?>> parameters) {
+    public void setParameters(Set<Parameter<?>> parameters) {
         if (parameters != null) {
             this.parameters.addAll(parameters);
         }
