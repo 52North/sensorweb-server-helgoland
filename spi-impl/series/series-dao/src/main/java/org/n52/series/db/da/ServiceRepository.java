@@ -239,7 +239,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
         for (String datasetType : ioFactoryCreator.getKnownTypes()) {
             try {
-                IoFactory factory = ioFactoryCreator.create(datasetType);
+                IoFactory<?, ? ,?> factory = ioFactoryCreator.create(datasetType);
                 mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
             } catch (DatasetFactoryException e) {
                 LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);
