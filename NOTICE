@@ -34,7 +34,6 @@ This project includes:
   Batik SVG transcoder classes under The Apache Software License, Version 2.0
   Batik utility library under The Apache Software License, Version 2.0
   Batik XML utility library under The Apache Software License, Version 2.0
-  c3p0 under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   c3p0:JDBC DataSources/Resource Pools under GNU LESSER GENERAL PUBLIC LICENSE
   ClassLoader leak prevention under Apache 2
   Commons IO under The Apache Software License, Version 2.0
@@ -80,7 +79,6 @@ This project includes:
   Logback Classic Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Logback Core Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Main module under GNU Lesser General Public License (LGPL) version 2.1
-  mchange-commons-java library under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   Metadata under GNU Lesser General Public License (LGPL) version 2.1
   Open GIS Interfaces under GNU Lesser General Public License (LGPL) version 2.1
   Postgis JDBC Driver under GNU Lesser General Public License
