@@ -152,6 +152,8 @@ public class RecordDataRepository extends AbstractDataRepository<RecordData, Rec
             addGeometry(observation, value);
             addValidTime(observation, value);
             addParameters(observation, value);
+        } else if (series.getPlatform().isMobile()) {
+            addGeometry(observation, value);
         }
         return value;
     }

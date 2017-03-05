@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
@@ -55,7 +54,6 @@ import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.ServiceDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
-import org.n52.series.spi.search.ServiceSearchResult;
 import org.n52.web.ctrl.UrlHelper;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -211,9 +209,9 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
     }
 
     private ServiceOutput createExpandedService(ServiceEntity entity, DbQuery parameters) {
-        ServiceOutput service = getCondensedService(serviceEntity, parameters);
+        ServiceOutput service = getCondensedService(entity, parameters);
         service.setQuantities(countParameters(service, parameters));
-        service.setServiceUrl(serviceEntity.getUrl());
+        service.setServiceUrl(entity.getUrl());
         service.setSupportsFirstLatest(true);
 
         FilterResolver filterResolver = parameters.getFilterResolver();
@@ -241,7 +239,7 @@ public class ServiceRepository extends SessionAwareRepository implements OutputA
         Map<String, Set<String>> mimeTypesByDatasetTypes = new HashMap<>();
         for (String datasetType : ioFactoryCreator.getKnownTypes()) {
             try {
-                IoFactory factory = ioFactoryCreator.create(datasetType);
+                IoFactory<?, ? ,?> factory = ioFactoryCreator.create(datasetType);
                 mimeTypesByDatasetTypes.put(datasetType, factory.getSupportedMimeTypes());
             } catch (DatasetFactoryException e) {
                 LOGGER.error("IO Factory for dataset type '{}' couldn't be created.", datasetType);
