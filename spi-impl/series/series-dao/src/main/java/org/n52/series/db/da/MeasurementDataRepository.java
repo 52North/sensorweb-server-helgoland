@@ -146,7 +146,7 @@ public class MeasurementDataRepository extends AbstractDataRepository<Measuremen
         if (query.isExpanded()) {
             addGeometry(observation, value);
             addValidTime(observation, value);
-            addParameter(observation, value);
+            addParameters(observation, value);
         } else if (series.getPlatform().isMobile()) {
             addGeometry(observation, value);
         }

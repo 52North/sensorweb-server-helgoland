@@ -26,14 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.io.extension.metadata;
 
-import java.util.Set;
-
-import org.n52.io.request.IoParameters;
-
-public interface ResultTimeService {
-
-    Set<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+public class MetadataStringEntity extends MetadataEntity<String> {
 
 }

@@ -26,22 +26,30 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.extension.metadata;
 
-public class DataParameterCategory extends DataParameter<String> {
+import java.io.IOException;
 
-    private UnitEntity unit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public UnitEntity getUnit() {
-        return unit;
-    }
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-    public void setUnit(final UnitEntity unit) {
-        this.unit = unit;
-    }
+public class MetadataJsonEntity extends MetadataEntity<String> {
 
-    public boolean isSetUnit() {
-        return getUnit() != null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetadataJsonEntity.class);
+
+    @JsonGetter(value = "value")
+    public JsonNode getJsonValue() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.readTree(getValue());
+        } catch (IOException e) {
+            LOGGER.error("Could not parse to json ({}): {}", getName(), getValue(), e);
+            return null;
+        }
     }
 
 }

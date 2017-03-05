@@ -34,9 +34,13 @@ import java.util.Set;
 
 import org.n52.io.v1.data.RawFormats;
 
-public class ProcedureOutput extends OfferingOutput implements RawFormats {
+public class ProcedureOutput extends AbstractOutput implements RawFormats {
 
     private Set<String> rawFormats;
+
+    private Collection<ProcedureOutput> parents;
+
+    private Collection<ProcedureOutput> children;
 
     @Override
     public String[] getRawFormats() {
@@ -66,6 +70,26 @@ public class ProcedureOutput extends OfferingOutput implements RawFormats {
             }
             this.rawFormats.addAll(formats);
         }
+    }
+
+    public Collection<ProcedureOutput> getParents() {
+        return parents != null && !parents.isEmpty()
+                ? parents
+                : null;
+    }
+
+    public void setParents(Collection<ProcedureOutput> parents) {
+        this.parents = parents;
+    }
+
+    public Collection<ProcedureOutput> getChildren() {
+        return children != null && !children.isEmpty()
+                ? children
+                : null;
+    }
+
+    public void setChildren(Collection<ProcedureOutput> children) {
+        this.children = children;
     }
 
 }

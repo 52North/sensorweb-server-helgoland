@@ -26,17 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.extension.metadata;
 
-import java.util.Set;
+public class MetadataDoubleEntity extends MetadataEntity<Double> {
 
-public interface Childs<T> {
-
-    public void setChilds(Set<T> childs);
-
-    public Set<T> getChilds();
-
-    public default boolean hasChilds() {
-        return getChilds() != null && !getChilds().isEmpty();
-    }
 }

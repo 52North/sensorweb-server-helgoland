@@ -26,76 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.series.db.beans.parameter;
 
-import java.util.Date;
+public class FeatureParameterQuantity extends ParameterQuantity {
 
-public abstract class MetadataEntity<T> {
-
-    private Long pkid;
-
-    private Long seriesId;
-
-    private String name;
-
-    private String type;
-
-    private T value;
-
-    private Date lastUpdate;
-
-    public Long getPkid() {
-        return pkid;
-    }
-
-    public void setPkid(Long pkid) {
-        this.pkid = pkid;
-    }
-
-    public Long getSeriesId() {
-        return seriesId;
-    }
-
-    public void setSeriesId(Long seriesId) {
-        this.seriesId = seriesId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
-    public DatabaseMetadataOutput<T> toOutput() {
-        return DatabaseMetadataOutput.<T>create()
-                .withValue(value)
-                .lastUpdatedAt(lastUpdate);
-    }
+    // allows explicit mapping
 
 }

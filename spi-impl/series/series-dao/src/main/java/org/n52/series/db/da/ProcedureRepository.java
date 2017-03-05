@@ -36,7 +36,6 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.dao.DbQuery;
@@ -45,7 +44,7 @@ import org.n52.series.spi.search.ProcedureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class ProcedureRepository extends SessionAwareRepository implements OutputAssembler<ProcedureOutput> {
+public class ProcedureRepository extends HierarchicalParameterRepository<ProcedureEntity, ProcedureOutput> {
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -101,11 +100,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureOutput> results = new ArrayList<>();
-        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-            results.add(createCondensed(procedureEntity, parameters));
-        }
-        return results;
+        return createCondensed(getAllInstances(parameters, session), parameters);
     }
 
     @Override
@@ -120,11 +115,7 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
 
     @Override
     public List<ProcedureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        List<ProcedureOutput> results = new ArrayList<>();
-        for (ProcedureEntity procedureEntity : getAllInstances(parameters, session)) {
-            results.add(createExpanded(procedureEntity, parameters));
-        }
-        return results;
+        return createExpanded(getAllInstances(parameters, session), parameters);
     }
 
     @Override
@@ -143,11 +134,11 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return createExpanded(result, parameters);
     }
 
-    protected List<ProcedureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+    private List<ProcedureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
         return createDao(session).getAllInstances(parameters);
     }
 
-    protected ProcedureEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
+    private ProcedureEntity getInstance(Long id, DbQuery parameters, Session session) throws DataAccessException {
         ProcedureDao procedureDAO = createDao(session);
         ProcedureEntity result = procedureDAO.getInstance(id, parameters);
         if (result == null) {
@@ -156,22 +147,26 @@ public class ProcedureRepository extends SessionAwareRepository implements Outpu
         return result;
     }
 
-    private ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) throws DataAccessException {
-        ProcedureOutput result = createCondensed(entity, parameters);
-        if (parameters.getHrefBase() != null) {
-            result.setService(getCondensedExtendedService(entity.getService(), parameters));
-        } else {
-            result.setService(getCondensedService(entity.getService(), parameters));
-        }
-        return result;
-    }
-
+    @Override
     protected ProcedureOutput createCondensed(ProcedureEntity entity, DbQuery parameters) {
         ProcedureOutput result = new ProcedureOutput();
         result.setLabel(entity.getLabelFrom(parameters.getLocale()));
         result.setId(Long.toString(entity.getPkid()));
         result.setDomainId(entity.getDomainId());
         checkForHref(result, parameters);
+        return result;
+    }
+
+    @Override
+    protected ProcedureOutput createExpanded(ProcedureEntity entity, DbQuery parameters) {
+        ProcedureOutput result = createCondensed(entity, parameters);
+        if (parameters.getHrefBase() != null) {
+            result.setService(getCondensedExtendedService(entity.getService(), parameters));
+        } else {
+            result.setService(getCondensedService(entity.getService(), parameters));
+        }
+        result.setParents(createCondensed(entity.getParents(), parameters));
+        result.setChildren(createCondensed(entity.getChildren(), parameters));
         return result;
     }
 

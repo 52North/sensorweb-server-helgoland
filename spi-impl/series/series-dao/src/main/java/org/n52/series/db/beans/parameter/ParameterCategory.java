@@ -26,30 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.series.db.beans.parameter;
 
-import java.io.IOException;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.n52.series.db.beans.UnitEntity;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+public class ParameterCategory extends Parameter<String> {
 
-public class MetadataJsonEntity extends MetadataEntity<String> {
+    private UnitEntity unit;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MetadataJsonEntity.class);
-
-    @JsonGetter(value = "value")
-    public JsonNode getJsonValue() {
-        ObjectMapper om = new ObjectMapper();
-        try {
-            return om.readTree(getValue());
-        } catch (IOException e) {
-            LOGGER.error("Could not parse to json ({}): {}", getName(), getValue(), e);
-            return null;
+    @Override
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = super.toValueMap();
+        if (isSetUnit()) {
+            valueMap.put("unit", getUnit());
         }
+        return valueMap;
+    }
+
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(final UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean isSetUnit() {
+        return getUnit() != null;
     }
 
 }

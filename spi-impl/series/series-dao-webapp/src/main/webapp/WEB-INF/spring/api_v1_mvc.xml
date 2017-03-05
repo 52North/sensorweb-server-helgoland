@@ -90,6 +90,9 @@
             <list merge="true">
                 <bean class="org.n52.io.extension.RenderingHintsExtension" />
                 <bean class="org.n52.io.extension.StatusIntervalsExtension" />
+                <bean class="org.n52.io.extension.ResultTimeExtension">
+                    <property name="resultTimeService" ref="resultTimeService" />
+                </bean>
                 <!-- Using DatabaseMetadataExtension requires some preparation work. -->
                 <!-- Have a look at the README.md at TBD -->
                 <!--<bean class="org.n52.io.extension.DatabaseMetadataExtension" />-->

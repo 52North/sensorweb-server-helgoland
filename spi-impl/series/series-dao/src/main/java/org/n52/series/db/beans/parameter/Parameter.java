@@ -26,35 +26,66 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.series.db.beans.parameter;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class DatabaseMetadataOutput<T> {
+public abstract class Parameter<T> {
+
+    private long parameterId;
+
+    private long fkId;
+
+    private String name;
 
     private T value;
 
-    private Date lastUpdate;
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = new HashMap<>();
+        valueMap.put("name", getName());
+        valueMap.put("value", getValue());
+        return valueMap;
+    }
+
+    public long getParameterId() {
+        return parameterId;
+    }
+
+    public void setParameterId(long parameterId) {
+        this.parameterId = parameterId;
+    }
+
+    public long getFkId() {
+        return fkId;
+    }
+
+    public void setFkId(long fkId) {
+        this.fkId = fkId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isSetName() {
+        return getName() != null;
+    }
 
     public T getValue() {
         return value;
     }
 
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    static <T> DatabaseMetadataOutput<T> create() {
-        return new DatabaseMetadataOutput<>();
-    }
-
-    DatabaseMetadataOutput<T> withValue(T value) {
+    public void setValue(T value) {
         this.value = value;
-        return this;
     }
 
-    DatabaseMetadataOutput<T> lastUpdatedAt(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
-        return this;
+    public boolean isSetValue() {
+        return getValue() != null;
     }
+
 }

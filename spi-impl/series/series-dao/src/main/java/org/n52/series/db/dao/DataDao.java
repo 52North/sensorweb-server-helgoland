@@ -28,19 +28,22 @@
  */
 package org.n52.series.db.dao;
 
+import static org.hibernate.criterion.DetachedCriteria.forClass;
+import static org.hibernate.criterion.Projections.projectionList;
+import static org.hibernate.criterion.Projections.property;
+import static org.hibernate.criterion.Restrictions.eq;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
-import static org.hibernate.criterion.DetachedCriteria.forClass;
 import org.hibernate.criterion.Order;
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
 import org.hibernate.criterion.Restrictions;
-import static org.hibernate.criterion.Restrictions.eq;
 import org.hibernate.criterion.Subqueries;
+import org.joda.time.Instant;
 import org.n52.io.request.IoParameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DataEntity;
@@ -80,6 +83,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         this.entityType = clazz;
     }
 
+    @SuppressWarnings("unchecked")
     public DataDao(Session session) {
         super(session);
         this.entityType = (Class<T>) DataEntity.class;
@@ -109,7 +113,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked") // cast from hibernate
     public List<T> getAllInstances(DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances: {}", parameters);
-        Criteria criteria = getDefaultCriteria();
+        Criteria criteria = getDefaultCriteria(parameters);
         parameters.addTimespanTo(criteria);
         return (List<T>) criteria.list();
     }
@@ -140,7 +144,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     @SuppressWarnings("unchecked") // cast from hibernate
     public List<T> getAllInstancesFor(DatasetEntity series, DbQuery parameters) throws DataAccessException {
         LOGGER.debug("get all instances for series '{}': {}", series.getPkid(), parameters);
-        Criteria criteria = getDefaultCriteria()
+        Criteria criteria = getDefaultCriteria(parameters)
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()));
         parameters.addTimespanTo(criteria);
         return (List<T>) criteria.list();
@@ -149,6 +153,13 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     @Override
     protected String getSeriesProperty() {
         return ""; // there's no series property for observation
+    }
+
+    private Criteria getDefaultCriteria(DbQuery parameters) {
+        Criteria criteria = getDefaultCriteria();
+        return parameters.getResultTime() != null
+            ? criteria.add(Restrictions.eq("resultTime", parameters.getResultTime()))
+            : criteria;
     }
 
     @Override
@@ -164,18 +175,17 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         return entityType;
     }
 
-    @SuppressWarnings("unchecked")
     public T getDataValueViaTimeend(DatasetEntity series) {
         Date timeend = series.getLastValueAt();
         return getDataValueAt(timeend, COLUMN_TIMEEND, series);
     }
 
-    @SuppressWarnings("unchecked")
     public T getDataValueViaTimestart(DatasetEntity series) {
         Date timestart = series.getFirstValueAt();
         return getDataValueAt(timestart, COLUMN_TIMESTART, series);
     }
 
+    @SuppressWarnings("unchecked")
     private T getDataValueAt(Date timestamp, String column, DatasetEntity series) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
@@ -185,7 +195,24 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        return (T) criteria.uniqueResult();
+//        return (T) criteria.uniqueResult();
+        List<T> list = criteria.list();
+        return getLastResultTimeValue(list);
+    }
+
+    private T getLastResultTimeValue(List<T> values) {
+        T lastValue = null;
+        for (T value : values) {
+            lastValue = lastValue != null
+                    ? lastValue
+                    : value;
+            Date lastResultTime = lastValue.getResultTime();
+            Date resultTime = value.getResultTime();
+            if (new Instant(resultTime).isAfter(new Instant(lastResultTime))) {
+                lastValue = value;
+            }
+        }
+        return lastValue;
     }
 
 }

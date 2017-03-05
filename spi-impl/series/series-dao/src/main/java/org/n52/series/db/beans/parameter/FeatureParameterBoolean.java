@@ -26,14 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.series.db.beans.parameter;
 
-import java.util.Set;
+public class FeatureParameterBoolean extends ParameterBoolean {
 
-import org.n52.io.request.IoParameters;
-
-public interface ResultTimeService {
-
-    Set<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+    // allows explicit mapping
 
 }

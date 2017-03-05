@@ -36,16 +36,16 @@ import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
+import org.n52.series.db.beans.parameter.Parameter;
 import org.n52.series.db.dao.DbQuery;
 import org.n52.series.db.dao.FeatureDao;
 import org.n52.series.spi.search.FeatureSearchResult;
 import org.n52.series.spi.search.SearchResult;
 import org.n52.web.exception.ResourceNotFoundException;
 
-public class FeatureRepository extends SessionAwareRepository implements OutputAssembler<FeatureOutput> {
+public class FeatureRepository extends HierarchicalParameterRepository<FeatureEntity, FeatureOutput> {
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -100,19 +100,14 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public List<FeatureOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = createDao(session);
-        List<FeatureOutput> results = new ArrayList<>();
-        for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
-            results.add(createCondensed(featureEntity, parameters));
-        }
-        return results;
+        return createCondensed(getAllInstances(parameters, session), parameters);
     }
 
     @Override
     public List<FeatureOutput> getAllExpanded(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllCondensed(parameters, session);
+            return getAllExpanded(parameters, session);
         } finally {
             returnSession(session);
         }
@@ -120,12 +115,11 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public List<FeatureOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        FeatureDao featureDao = createDao(session);
-        List<FeatureOutput> results = new ArrayList<>();
-        for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
-            results.add(createExpanded(featureEntity, parameters));
-        }
-        return results;
+        return createExpanded(getAllInstances(parameters, session), parameters);
+    }
+
+    private List<FeatureEntity> getAllInstances(DbQuery parameters, Session session) throws DataAccessException {
+        return createDao(session).getAllInstances(parameters);
     }
 
     @Override
@@ -148,16 +142,23 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
         return createExpanded(result, parameters);
     }
 
-    private FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
+    @Override
+    protected FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         FeatureOutput result = createCondensed(entity, parameters);
         if (parameters.getHrefBase() != null) {
             result.setService(getCondensedExtendedService(entity.getService(), parameters));
         } else {
             result.setService(getCondensedService(entity.getService(), parameters));
         }
+        if (entity.hasParameters()) {
+            for (Parameter<?> parameter : entity.getParameters()) {
+                result.addParameter(parameter.toValueMap());
+            }
+        }
         return result;
     }
 
+    @Override
     protected FeatureOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         FeatureOutput result = new FeatureOutput();
         result.setId(Long.toString(entity.getPkid()));

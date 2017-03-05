@@ -30,11 +30,16 @@ package org.n52.series.db.beans;
 
 import java.util.Set;
 
+import org.n52.series.db.beans.parameter.Parameter;
+
 public class DescribableEntity {
 
     public final static String PKID = "pkid";
+
     public final static String DOMAIN_ID = "domainId";
+
     public final static String NAME = "name";
+
     public final static String SERVICE_ID = "serviceid";
 
     /**
@@ -61,31 +66,36 @@ public class DescribableEntity {
 
     private Set<I18nEntity> translations;
 
+    private Set<Parameter<?>> parameters;
+
     public Long getPkid() {
         return pkid;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setPkid(Long pkid) {
         this.pkid = pkid;
-        return (T)this;
+        return (T) this;
     }
 
     public String getDomainId() {
         return domainId;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setDomainId(String domainId) {
         this.domainId = domainId;
-        return (T)this;
+        return (T) this;
     }
 
     public String getName() {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setName(String name) {
         this.name = name;
-        return (T)this;
+        return (T) this;
     }
 
     public boolean isSetName() {
@@ -110,6 +120,18 @@ public class DescribableEntity {
 
     public void setTranslations(Set<I18nEntity> translations) {
         this.translations = translations;
+    }
+
+    public Set<Parameter<?>> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Set<Parameter<?>> parameters) {
+        this.parameters = parameters;
+    }
+
+    public boolean hasParameters() {
+        return getParameters() != null && !getParameters().isEmpty();
     }
 
     public ServiceEntity getService() {

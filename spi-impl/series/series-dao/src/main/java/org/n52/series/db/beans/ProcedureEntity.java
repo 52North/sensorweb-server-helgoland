@@ -28,16 +28,15 @@
  */
 package org.n52.series.db.beans;
 
-import java.util.Set;
-
-public class ProcedureEntity extends DescribableEntity implements Childs<ProcedureEntity>, Parents<ProcedureEntity> {
+public class ProcedureEntity extends HierarchicalEntity<ProcedureEntity> {
 
     private boolean reference;
+
     private boolean mobile;
+
     private boolean insitu;
+
     private String procedureDescriptionFormat;
-    private Set<ProcedureEntity> childProcedures;
-    private Set<ProcedureEntity> parentProcedures;
 
     public boolean isReference() {
         return reference;
@@ -69,26 +68,6 @@ public class ProcedureEntity extends DescribableEntity implements Childs<Procedu
 
     public void setProcedureDescriptionFormat(String procedureDescriptionFormat) {
         this.procedureDescriptionFormat = procedureDescriptionFormat;
-    }
-
-    @Override
-    public void setChilds(Set<ProcedureEntity> childs) {
-        this.childProcedures = childs;
-    }
-
-    @Override
-    public Set<ProcedureEntity> getChilds() {
-        return childProcedures;
-    }
-
-    @Override
-    public void setParents(Set<ProcedureEntity> parents) {
-        this.parentProcedures = parents;
-    }
-
-    @Override
-    public Set<ProcedureEntity> getParents() {
-        return parentProcedures;
     }
 
     @Override

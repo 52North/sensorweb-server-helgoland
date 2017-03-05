@@ -37,7 +37,10 @@ import com.vividsolutions.jts.geom.Geometry;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
 public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,Serializable {
@@ -52,7 +55,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
 
     private Geometry geometry;
 
-    private Map<String, Object> parameters;
+    private Set<Map<String, Object>> parameters;
 
     private ValidTime validTime;
 
@@ -129,22 +132,21 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
         return geometry != null && !geometry.isEmpty();
     }
 
-    public void setParameters(Map<String, Object> parameters) {
-        this.parameters = new HashMap<>(parameters);
+    public void setParameters(Set<Map<String, Object>> parameters) {
+        this.parameters = new HashSet<>(parameters);
     }
 
-    @JsonAnyGetter
-    public Map<String, Object> getParameters() {
+    public Set<Map<String, Object>> getParameters() {
         return parameters != null
-                ? Collections.unmodifiableMap(parameters)
+                ? Collections.unmodifiableSet(parameters)
                 : null;
     }
 
-    public void addParameter(String parameterName, Object parameterValue) {
-        if (parameterName != null && parameters == null) {
-            parameters = new HashMap<>();
+    public void addParameter(Map<String, Object> parameterValue) {
+        if (parameters == null) {
+            parameters = new HashSet<>();
         }
-        parameters.put(parameterName, parameterValue);
+        parameters.add(parameterValue);
     }
 
     public ValidTime getValidTime() {

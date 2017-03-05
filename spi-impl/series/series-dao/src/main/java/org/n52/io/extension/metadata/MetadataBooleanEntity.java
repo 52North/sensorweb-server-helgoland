@@ -26,55 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.io.extension.metadata;
 
+public class MetadataBooleanEntity extends MetadataEntity<Boolean> {
 
-public abstract class DataParameter<T> {
-
-    private long parameterId;
-
-    private long observationId;
-
-    private String name;
-
-    private T value;
-
-    public long getParameterId() {
-        return parameterId;
-    }
-
-    public void setParameterId(long parameterId) {
-        this.parameterId = parameterId;
-    }
-
-    public long getObservationId() {
-        return observationId;
-    }
-
-    public void setObservationId(long observationId) {
-        this.observationId = observationId;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isSetName() {
-        return getName() != null;
-    }
-
-    public T getValue() {
-        return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
-    public boolean isSetValue() {
-        return getValue() != null;
-    }
 }

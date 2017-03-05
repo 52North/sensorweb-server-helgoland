@@ -26,8 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.series.db.beans.parameter;
 
-public class MetadataBooleanEntity extends MetadataEntity<Boolean> {
+public class ObservationParameterQuantity extends ParameterQuantity {
+
+    // allows explicit mapping
 
 }

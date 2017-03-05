@@ -36,4 +36,5 @@ public class DefaultDbQueryFactory implements DbQueryFactory {
     public DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
     }
+
 }

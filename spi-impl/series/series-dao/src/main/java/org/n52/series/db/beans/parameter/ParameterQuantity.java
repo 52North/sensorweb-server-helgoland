@@ -26,14 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.series.db.beans.parameter;
 
-import java.util.Set;
+import java.util.Map;
 
-import org.n52.io.request.IoParameters;
+import org.n52.series.db.beans.UnitEntity;
 
-public interface ResultTimeService {
+public class ParameterQuantity extends Parameter<Double> {
 
-    Set<String> getResultTimeList(IoParameters parameters, String timeseriesId);
+    private UnitEntity unit;
+
+    @Override
+    public Map<String, Object> toValueMap() {
+        Map<String, Object> valueMap = super.toValueMap();
+        if (isSetUnit()) {
+            valueMap.put("unit", getUnit());
+        }
+        return valueMap;
+    }
+
+    public UnitEntity getUnit() {
+        return unit;
+    }
+
+    public void setUnit(final UnitEntity unit) {
+        this.unit = unit;
+    }
+
+    public boolean isSetUnit() {
+        return getUnit() != null;
+    }
 
 }

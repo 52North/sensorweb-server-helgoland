@@ -26,18 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.db.beans;
+package org.n52.series.db.beans.parameter;
 
-import java.util.Set;
 
-public interface Parents<T> {
+public class FeatureParameterCategory extends ParameterCategory {
 
-    public void setParents(Set<T> parents);
-
-    public Set<T> getParents();
-
-    public default boolean hasParents() {
-        return getParents() != null && !getParents().isEmpty();
-    }
+    // allows explicit mapping
 
 }
