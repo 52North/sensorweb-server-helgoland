@@ -250,6 +250,16 @@ public class IoParameters {
     private static final String DEFAULT_FORMAT = "tvp";
 
     /**
+     * Determines if what event causes a rendering task.
+     */
+    static final String RENDERING_TRIGGER = "rendering_trigger";
+
+    /**
+     * Default event causing a rendering task.
+     */
+    private static final String DEFAULT_RENDERING_TRIGGER = "request";
+
+    /**
      * Determines the style parameter
      */
     static final String STYLE = "style";
@@ -553,6 +563,18 @@ public class IoParameters {
     public boolean isSetRawFormat() {
         return query.containsKey(RAW_FORMAT);
     }
+
+    public String getRenderingTrigger() {
+        if ( !query.containsKey(RENDERING_TRIGGER)) {
+            return DEFAULT_RENDERING_TRIGGER;
+        }
+        return getAsString(RENDERING_TRIGGER);
+    }
+
+    public boolean isSetRenderingTrigger() {
+        return query.containsKey(RENDERING_TRIGGER);
+    }
+
     public String getRawFormat() {
         if (isSetRawFormat()) {
             final JsonNode value = query.getFirst(RAW_FORMAT);
