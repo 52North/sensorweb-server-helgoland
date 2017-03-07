@@ -9,7 +9,7 @@
     "phenomenonStyles": [
         {
             "id" : "3",
-            "title" : "Title of a Timeseries (without legend)",
+            "title" : "Station: %1$s, Phenomenon: %2$s [{%8$s}] (w/o legend)",
             "chartQualifier" : "without_legend",
             "interval": [
                 "lastWeek",
@@ -26,7 +26,7 @@
         },
         {
             "id" : "3",
-            "title" : "Title of a Timeseries (with legend)",
+            "title" : "Station: %1$s, Phenomenon: %2$s [{%8$s}] (w/ legend)",
             "chartQualifier" : "with_legend",
             "interval": [
                 "lastWeek",

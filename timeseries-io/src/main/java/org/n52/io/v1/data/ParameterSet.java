@@ -148,95 +148,103 @@ public abstract class ParameterSet {
         return new IntervalWithTimeZone(timespan).toString();
     }
 
-    public Set<String> availableParameters() {
+    public Set<String> availableParameterNames() {
         return Collections.unmodifiableSet(this.parameters.keySet());
     }
 
     public final boolean containsParameter(String parameter) {
-        return this.parameters.containsKey(parameter)
-                && this.parameters.get(parameter) != null;
+        String lowerCasedParameter = parameter.toLowerCase();
+        return this.parameters.containsKey(lowerCasedParameter)
+                && this.parameters.get(lowerCasedParameter) != null;
     }
 
-    public final Object getParameter(String parameter) {
-        return parameters.get(parameter);
+    public void removeParameter(String parameterName) {
+        if (parameterName != null && !parameterName.isEmpty()) {
+            parameters.remove(parameterName.toLowerCase());
+        }
     }
- 
+
     public final void setParameters(Map<String, JsonNode> parameters) {
         if (parameters != null) {
             this.parameters.clear();
-            this.parameters.putAll(parameters);
+            for (Map.Entry<String, JsonNode> entry : parameters.entrySet()) {
+                addParameter(entry.getKey(), entry.getValue());
+            }
         }
-    }
-    
-    public final void setParameter(String parameter, Object value) {
-        setParameter(parameter, IoParameters.getJsonNodeFrom(value));
     }
 
     /**
      * Sets the value for the given parameter name. Overrides if already exists.
      *
-     * @param parameter parameter name.
+     * @param parameterName parameter name.
      * @param value the parameter's value.
      */
-    public final void setParameter(String parameter, JsonNode value) {
-        this.parameters.put(parameter.toLowerCase(), value);
+    public final void addParameter(String parameterName, JsonNode value) {
+        this.parameters.put(parameterName.toLowerCase(), value);
     }
-    
-    public final <T> T getAs(Class<T> clazz, String parameter) {
+
+    public final <T> T getAs(Class<T> clazz, String parameterName, T defaultValue) {
         try {
-            if ( !parameters.containsKey(parameter.toLowerCase())) {
-                LOGGER.debug("parameter '{}' is not available.", parameter);
-                return null;
+            if ( !parameters.containsKey(parameterName.toLowerCase())) {
+                return defaultValue;
             }
             ObjectMapper om = new ObjectMapper();
-            return om.treeToValue(getAsJsonNode(parameter), clazz);
+            return om.treeToValue(getParameterValue(parameterName), clazz);
         } catch (IOException e) {
-            LOGGER.error("No appropriate config for parameter '{}'.", parameter, e);
+            LOGGER.error("No appropriate config for parameter '{}'.", parameterName, e);
             return null;
         }
     }
 
-    public final Object getAsObject(String parameter) {
-        return this.parameters.get(parameter.toLowerCase());
-    }
-    
-    public final Object getAsObject(String parameter, Object defaultValue) {
-        return this.parameters.containsKey(parameter.toLowerCase())
-                ? this.parameters.get(parameter.toLowerCase())
-                : defaultValue;
-    }
-    
-    public final JsonNode getAsJsonNode(String parameter) {
-        return (JsonNode) this.parameters.get(parameter.toLowerCase());
+    public final <T> T getAs(Class<T> clazz, String parameterName) {
+        return getAs(clazz, parameterName, null);
     }
 
-    public final String getAsString(String parameter) {
-        return this.parameters.get(parameter.toLowerCase()).asText();
+    public final JsonNode getParameterValue(String parameterName) {
+        return this.parameters.get(parameterName.toLowerCase());
     }
 
-    public final String getAsObject(String parameter, String defaultValue) {
-        return this.parameters.containsKey(parameter.toLowerCase())
-                ? this.parameters.get(parameter.toLowerCase()).asText()
-                : defaultValue;
-    }
-    
-    public final int getAsInt(String parameter) {
-        return this.parameters.get(parameter.toLowerCase()).asInt();
+    public final String[] getAsStringArray(String parameterName) {
+        return getAsStringArray(parameterName, null);
     }
 
-    public final int getAsInt(String parameter, int defaultValue) {
-        return this.parameters.containsKey(parameter.toLowerCase())
-                ? this.parameters.get(parameter.toLowerCase()).asInt()
+    public final String[] getAsStringArray(String parameterName, String[] defaultValue) {
+        if ( !parameters.containsKey(parameterName.toLowerCase())) {
+            return defaultValue;
+        }
+        JsonNode parameterValue = getParameterValue(parameterName);
+        return parameterValue.isArray()
+                ? getAs(String[].class, parameterName, defaultValue)
+                : new String[] { getAsString(parameterName) };
+    }
+
+    public final String getAsString(String parameterName) {
+        return getAsString(parameterName, null);
+    }
+
+    public final String getAsString(String parameterName, String defaultValue) {
+        return this.parameters.containsKey(parameterName.toLowerCase())
+                ? getParameterValue(parameterName).asText()
                 : defaultValue;
     }
-    
-    public final boolean getAsBoolean(String parameter) {
-        return this.parameters.get(parameter.toLowerCase()).asBoolean();
+
+    public final Integer getAsInt(String parameterName) {
+        return getAsInt(parameterName, null);
     }
-    
-    public final boolean getAsBoolean(String parameter, boolean defaultValue) {
-        return this.parameters.containsKey(parameter.toLowerCase())
-                ? this.parameters.get(parameter.toLowerCase()).asBoolean()
+
+    public final Integer getAsInt(String parameterName, Integer defaultValue) {
+        return this.parameters.containsKey(parameterName.toLowerCase())
+                ? (Integer) getParameterValue(parameterName).asInt()
+                : defaultValue;
+    }
+
+    public final Boolean getAsBoolean(String parameterName) {
+        return getAsBoolean(parameterName, null);
+    }
+
+    public final Boolean getAsBoolean(String parameterName, Boolean defaultValue) {
+        return this.parameters.containsKey(parameterName.toLowerCase())
+                ? (Boolean) getParameterValue(parameterName).asBoolean()
                 : defaultValue;
     }
     
