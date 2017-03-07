@@ -27,8 +27,12 @@
  */
 package org.n52.io.v1.data;
 
+import static org.n52.io.IoParameters.getJsonNodeFrom;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import org.n52.io.IoParameters;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -72,7 +76,7 @@ public class DesignedParameterSet extends ParameterSet {
      */
     public void setWidth(int width) {
         width = width < 0 ? DEFAULT_WIDTH : width;
-        setParameter("width", width);
+        addParameter("width", getJsonNodeFrom(width));
     }
 
     /**
@@ -84,7 +88,7 @@ public class DesignedParameterSet extends ParameterSet {
 
     public void setHeight(int height) {
         height = height < 0 ? DEFAULT_HEIGHT : height;
-        setParameter("height", height);
+        addParameter("height", getJsonNodeFrom(height));
     }
 
     public String[] getTimeseries() {
@@ -96,7 +100,7 @@ public class DesignedParameterSet extends ParameterSet {
      *        <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
-        setParameter("grid", grid);
+        addParameter("grid", getJsonNodeFrom(grid));
     }
 
     /**
@@ -111,7 +115,7 @@ public class DesignedParameterSet extends ParameterSet {
     }
 
     public void setLegend(boolean legend) {
-        setParameter("legend", legend);
+        addParameter("legend", IoParameters.getJsonNodeFrom(legend));
     }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {

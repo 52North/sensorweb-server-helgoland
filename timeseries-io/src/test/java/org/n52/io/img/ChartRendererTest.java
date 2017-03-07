@@ -29,13 +29,16 @@ package org.n52.io.img;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.n52.io.IoParameters.createDefaults;
+import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
+import static org.n52.io.img.RenderingContext.createEmpty;
 
 import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
 import org.junit.Test;
+import org.n52.io.IoParameters;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
 
@@ -47,17 +50,11 @@ public class ChartRendererTest {
 
     private static final String VALID_ISO8601_DAYLIGHT_SAVING_SWITCH = "2013-10-28T02:00:00+02:00/2013-10-28T02:00:00+01:00";
 
-    private MyChartRenderer chartRenderer;
-
-    @Before
-    public void
-            setUp() {
-        this.chartRenderer = new MyChartRenderer(RenderingContext.createEmpty());
-    }
 
     @Test
     public void
             shouldParseBeginFromIso8601PeriodWithRelativeStart() {
+        MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_RELATIVE_START);
         assertThat(start, is(DateTime.parse("2013-08-13TZ").minusHours(6).toDate()));
     }
@@ -65,6 +62,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldParseBeginFromIso8601PeriodWithAbsoluteStart() {
+        MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_ABSOLUTE_START);
         assertThat(start, is(DateTime.parse("2013-08-13TZ").minusMonths(1).toDate()));
     }
@@ -72,6 +70,7 @@ public class ChartRendererTest {
     @Test
     public void
             shouldParseBeginAndEndFromIso8601PeriodContainingDaylightSavingTimezoneSwith() {
+        MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         Date end = chartRenderer.getEndTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         assertThat(start, is(DateTime.parse("2013-10-28T00:00:00Z").toDate()));
@@ -83,7 +82,7 @@ public class ChartRendererTest {
             shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
         RenderingContext context = RenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
-        this.chartRenderer = new MyChartRenderer(context);
+        MyChartRenderer chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
         assertThat(label, is("Time (+01:00)"));
     }
@@ -93,7 +92,7 @@ public class ChartRendererTest {
             shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
         RenderingContext context = RenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(null);
-        this.chartRenderer = new MyChartRenderer(context);
+        MyChartRenderer chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
         //assertThat(label, is("Time (+01:00)"));
     }
@@ -103,7 +102,7 @@ public class ChartRendererTest {
             shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
         RenderingContext context = RenderingContext.createEmpty();
         context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
-        this.chartRenderer = new MyChartRenderer(context);
+        MyChartRenderer chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
         ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseDateTime(VALID_ISO8601_ABSOLUTE_START.split("/")[1]);
         assertThat(label, is("Time (UTC)"));
