@@ -73,11 +73,18 @@ import org.joda.time.Interval;
 import org.n52.io.I18N;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
+import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;
+import org.n52.io.v1.data.CategoryOutput;
 import org.n52.io.v1.data.DesignedParameterSet;
+import org.n52.io.v1.data.FeatureOutput;
+import org.n52.io.v1.data.OfferingOutput;
 import org.n52.io.v1.data.PhenomenonOutput;
+import org.n52.io.v1.data.ProcedureOutput;
+import org.n52.io.v1.data.ServiceOutput;
+import org.n52.io.v1.data.StationOutput;
 import org.n52.io.v1.data.StyleProperties;
 import org.n52.io.v1.data.TimeseriesMetadataOutput;
 import org.n52.io.v1.data.TimeseriesOutput;
@@ -286,11 +293,69 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private void configureTitle(JFreeChart chart) {
-        if (getChartStyleDefinitions().containsParameter("title")) {
-            chart.setTitle(getChartStyleDefinitions().getAsString("title"));
+        DesignedParameterSet config = getChartStyleDefinitions();
+        if (config.containsParameter("title")) {
+            String title = config.getAsString("title");
+            if (config.containsParameter("rendering_trigger")) {
+                String trigger = config.getAsString("rendering_trigger");
+                title = "prerendering".equalsIgnoreCase(trigger)
+                        ? getTitleForSingle(config, title)
+                        : title;
+            }
+            chart.setTitle(title);
         }
     }
-    
+
+    private String getTitleForSingle(DesignedParameterSet config, String template) {
+        String[] timeseries = config.getTimeseries();
+        if (timeseries != null && timeseries.length > 0) {
+            String timeseriesId = timeseries[0];
+            TimeseriesMetadataOutput metadata = getTimeseriesMetadataOutput(timeseriesId);
+            if (metadata != null) {
+                return formatTitle(metadata, template);
+            }
+        }
+        return template;
+    }
+
+    protected String formatTitle(TimeseriesMetadataOutput metadata, String title) {
+        StationOutput station = metadata.getStation();
+        TimeseriesOutput parameters = metadata.getParameters();
+        PhenomenonOutput phenomenon = parameters.getPhenomenon();
+        ProcedureOutput procedure = parameters.getProcedure();
+        CategoryOutput category = parameters.getCategory();
+        OfferingOutput offering = parameters.getOffering();
+        FeatureOutput feature = parameters.getFeature();
+        ServiceOutput service = parameters.getService();
+        Object[] varargs = {
+                // index important to reference in config!
+                station.getProperties().get("label"), // {0}
+                phenomenon.getLabel(), // {1}
+                procedure.getLabel(), // {2}
+                category.getLabel(), // {3}
+                offering.getLabel(), // {4}
+                feature.getLabel(), // {5}
+                service.getLabel(), // {6}
+                metadata.getUom(), // {7}
+        };
+        try {
+            return String.format(title, varargs);
+        } catch (Exception e) {
+            String timeseriesId = metadata.getId();
+            LOGGER.info("Could not format title while prerendering timeseries '{}'", timeseriesId, e);
+            return title; // return template as fallback
+        }
+    }
+
+    private TimeseriesMetadataOutput getTimeseriesMetadataOutput(String timeseriesId) {
+        for (TimeseriesMetadataOutput metadata : getTimeseriesMetadataOutputs()) {
+            if (metadata.getId().equals(timeseriesId)) {
+                return metadata;
+            }
+        }
+        return null;
+    }
+
     protected TimeseriesMetadataOutput[] getTimeseriesMetadataOutputs() {
         return context.getTimeseriesMetadatas();
     }
