@@ -332,10 +332,10 @@ public class DbQuery {
                 .setProjection(Property.forName("pkid"));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
-        addHierarchicalFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
+        addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
         addHierarchicalFilterRestriction(parameters.getProcedures(), "procedure", filter);
         addHierarchicalFilterRestriction(parameters.getOfferings(), "offering", filter);
-        addHierarchicalFilterRestriction(parameters.getFeatures(), "feature", filter);
+        addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
         addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
