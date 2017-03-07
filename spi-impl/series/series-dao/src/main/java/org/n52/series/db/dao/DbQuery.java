@@ -329,13 +329,13 @@ public class DbQuery {
 
     public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
         DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class)
-                .setProjection(Property.forName("pkid"));
+                .setProjection(projectionList().add(property(propertyName)));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
-        addHierarchicalFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
+        addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
         addHierarchicalFilterRestriction(parameters.getProcedures(), "procedure", filter);
         addHierarchicalFilterRestriction(parameters.getOfferings(), "offering", filter);
-        addHierarchicalFilterRestriction(parameters.getFeatures(), "feature", filter);
+        addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
         addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
