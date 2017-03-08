@@ -341,8 +341,12 @@ public class DbQuery {
         addHierarchicalFilterRestriction(parameters.getOfferings(), "offering", filter);
         addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
-        addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
+
+        addFilterRestriction(parameters.getDatasets()
+                .stream()
+                .map(e -> DatasetType.extractId(e))
+                .collect(Collectors.toSet()), filter);
 
         if (hasValues(parameters.getPlatforms())) {
             Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
@@ -404,7 +408,7 @@ public class DbQuery {
     private Criterion createIdFilter(Set<String> filterValues) {
         return Restrictions.in(COLUMN_KEY, parseToIds(filterValues));
     }
-
+    
     private boolean hasValues(Set<String> values) {
         return values != null && !values.isEmpty();
     }
