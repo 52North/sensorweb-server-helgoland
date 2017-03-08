@@ -63,6 +63,7 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
+import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
@@ -278,7 +279,7 @@ public class DbQuery {
     }
 
     public Set<Long> parseToIds(Set<String> ids) {
-        return ids.stream().map(e -> Long.parseLong(e)).collect(Collectors.toSet());
+        return ids.stream().map(e -> parseToId(e)).collect(Collectors.toSet());
     }
 
     public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
