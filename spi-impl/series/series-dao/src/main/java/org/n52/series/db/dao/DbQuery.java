@@ -330,7 +330,10 @@ public class DbQuery {
 
     public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
         DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class)
-                .setProjection(projectionList().add(property(propertyName)));
+                .setProjection(projectionList()
+                        .add(Property.forName(propertyName != null && !propertyName.isEmpty()
+                                ? propertyName
+                                : "pkid")));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
         addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
