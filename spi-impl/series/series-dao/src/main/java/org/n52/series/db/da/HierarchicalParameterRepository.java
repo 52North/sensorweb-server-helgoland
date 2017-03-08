@@ -14,7 +14,7 @@ import org.n52.series.db.dao.DbQuery;
 public abstract class HierarchicalParameterRepository<E extends HierarchicalEntity<E>, O> extends SessionAwareRepository implements OutputAssembler<O> {
 
     // TODO introduce lambdas here
-    
+
     protected List<O> createExpanded(Collection<E> entities, DbQuery parameters) throws DataAccessException {
         Set<O> results = new HashSet<>();
         if (entities != null) {
