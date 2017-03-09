@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52.sensorweb</groupId>
         <artifactId>timeseries-spi-impl</artifactId>
-        <version>1.9.6-SNAPSHOT</version>
+        <version>1.9.6</version>
     </parent>
     <artifactId>timeseries-series-dao</artifactId>
     <packaging>jar</packaging>
@@ -13,7 +13,7 @@
     <url>http://52north.org/communities/sensorweb/</url>
 
     <properties>
-        <sos.version>4.3.9</sos.version>
+        <sos.version>4.3.11</sos.version>
     </properties>
     <dependencies>
         <dependency>
