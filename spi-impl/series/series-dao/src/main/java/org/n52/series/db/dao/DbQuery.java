@@ -63,6 +63,7 @@ import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.PlatformType;
+import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.PlatformEntity;
 import org.opengis.referencing.FactoryException;
@@ -278,7 +279,7 @@ public class DbQuery {
     }
 
     public Set<Long> parseToIds(Set<String> ids) {
-        return ids.stream().map(e -> Long.parseLong(e)).collect(Collectors.toSet());
+        return ids.stream().map(e -> parseToId(e)).collect(Collectors.toSet());
     }
 
     public Criteria addSpatialFilterTo(Criteria criteria, DbQuery query) {
@@ -340,8 +341,12 @@ public class DbQuery {
         addHierarchicalFilterRestriction(parameters.getOfferings(), "offering", filter);
         addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
-        addFilterRestriction(parameters.getDatasets(), filter);
         addFilterRestriction(parameters.getSeries(), filter);
+
+        addFilterRestriction(parameters.getDatasets()
+                .stream()
+                .map(e -> DatasetType.extractId(e))
+                .collect(Collectors.toSet()), filter);
 
         if (hasValues(parameters.getPlatforms())) {
             Set<String> stationaryIds = getStationaryIds(parameters.getPlatforms());
@@ -403,7 +408,7 @@ public class DbQuery {
     private Criterion createIdFilter(Set<String> filterValues) {
         return Restrictions.in(COLUMN_KEY, parseToIds(filterValues));
     }
-
+    
     private boolean hasValues(Set<String> values) {
         return values != null && !values.isEmpty();
     }
