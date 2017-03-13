@@ -29,7 +29,7 @@
        <constructor-arg name="dbSrid" value="EPSG:4326" />
     </bean>
     <bean id="phenomenonParameterService" class="org.n52.series.api.v1.db.srv.PhenomenaAccessService"  parent="serviceInfoAccess" />
-    <bean id="timeseriesService" class="org.n52.series.api.v1.db.srv.TimeseriesAccessService" parent="serviceInfoAccess" />
+    <bean id="timeseriesService" class="org.n52.series.api.v1.db.srv.MergingTimeseriesAccessService" parent="serviceInfoAccess" />
     <bean id="metadataService" class="org.n52.series.api.v1.db.srv.MetadataAccessService" />
 
 </beans>
