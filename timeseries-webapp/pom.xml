@@ -60,6 +60,7 @@
             <artifactId>logback-classic</artifactId>
             <scope>runtime</scope>
         </dependency>
+        
     </dependencies>
 
     <build>
@@ -130,5 +131,40 @@
                 </configuration>
             </plugin>
         </plugins>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>9.3.7.v20160115</version>
+                    <configuration>
+                        <stopKey>C</stopKey>
+                        <stopPort>34343</stopPort>
+                        <scanIntervalSeconds>0</scanIntervalSeconds>
+                        <reload>manual</reload>
+                        <webAppConfig>
+                            <contextPath>/</contextPath>
+                            <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+                            <extraClasspath>/target/classes/;${project.build.outputDirectory};timeseries-spi-impl/sos-series-dao/target/classes;timeseries-io/target/classes;timeseries-web/target/classes;timeseries-spi/target/classes;</extraClasspath>
+                        </webAppConfig>
+                        <scanTargets>
+                            <scanTarget>/target/classes/</scanTarget>
+                            <scanTarget>${project.build.outputDirectory}</scanTarget>
+<!--                             <scanTarget>timeseries-spi-impl/sos-series-dao/target/classes</scanTarget> -->
+                            <scanTarget>timeseries-io/target/classes</scanTarget>
+                            <scanTarget>timeseries-web/target/classes</scanTarget>
+                            <scanTarget>timeseries-spi/target/classes</scanTarget>
+                        </scanTargets>
+                        <systemProperties>
+                            <systemProperty>
+                                <name>catalina.base</name>
+                                <value>${project.build.directory}</value>
+                            </systemProperty>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
