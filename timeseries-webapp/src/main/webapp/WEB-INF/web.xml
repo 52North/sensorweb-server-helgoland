@@ -36,15 +36,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-    <!-- Spring startup listener -->
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/spring/api-dispatcher.xml</param-value>
-    </context-param>
-
 	<!-- Spring dispatcher servlet -->
     <servlet>
         <servlet-name>rest-dispatcher</servlet-name>
@@ -52,7 +43,7 @@
         <load-on-startup>1</load-on-startup>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/spring/api-view-config.xml</param-value>>
+			<param-value>/WEB-INF/spring/api-view-config.xml,/WEB-INF/spring/api-dispatcher.xml</param-value>>
         </init-param>
     </servlet>
 
