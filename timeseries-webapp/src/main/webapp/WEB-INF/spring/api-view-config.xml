@@ -46,6 +46,5 @@
 				</bean>
 			</list>
 		</property>
-		<property name="defaultContentType" value="application/json" />
 	</bean>
 </beans>
