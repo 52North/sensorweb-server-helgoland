@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class HierarchicalParameterRepository extends PlatformRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchicalParameterRepository.class);
-    
+
     @Autowired
     private ProcedureRepository procedureRepository;
 
@@ -40,7 +40,7 @@ class HierarchicalParameterRepository extends PlatformRepository {
         try {
             DbQuery dbQuery = getDbQuery(parameters);
             Map<String, Collection<String>> extras = new HashMap<>();
-            
+
             PlatformOutput platform = getInstance(platformId, dbQuery);
             Collection<DatasetOutput> datasets = platform.getDatasets();
             DatasetDao<DatasetEntity<?>> dao = new DatasetDao<>(session);
@@ -49,7 +49,8 @@ class HierarchicalParameterRepository extends PlatformRepository {
                 DatasetEntity<?> instance = dao.getInstance(Long.parseLong(datasetId), dbQuery);
                 ProcedureEntity procedure = instance.getProcedure();
                 Hibernate.initialize(procedure);
-                Collection<String> parents = getParents(procedure);
+                
+                Collection<String> parents = getParents(procedure, dbQuery);
                 if (!parents.isEmpty()) {
                     if ( !extras.containsKey("procedures")) {
                         extras.put("procedures", new HashSet<>());
@@ -57,7 +58,7 @@ class HierarchicalParameterRepository extends PlatformRepository {
                     extras.get("procedures").addAll(parents);
                 }
             }
-            
+
             return extras;
         } catch (NumberFormatException e) {
             LOGGER.debug("Could not convert id '{}' to long.", platformId, e);
@@ -69,12 +70,12 @@ class HierarchicalParameterRepository extends PlatformRepository {
         return Collections.emptyMap();
     }
 
-    private Collection<String> getParents(ProcedureEntity entity) {
+    private Collection<String> getParents(ProcedureEntity entity, DbQuery query) {
         if (entity.hasParents()) {
             return entity.getParents().stream()
-                    .map(e -> createCondensed(new ProcedureOutput(), e, null).getId())
+                    .map(e -> createCondensed(new ProcedureOutput(), e, query).getId())
                     .collect(Collectors.toList());
         }
-        return Collections.emptyList();
+        return Collections.singleton(createCondensed(new ProcedureOutput(), entity, query).getId());
     }
 }
