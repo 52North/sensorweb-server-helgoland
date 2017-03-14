@@ -17,23 +17,16 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
-import org.n52.series.db.beans.DescribableEntity;
-import org.n52.series.db.beans.HierarchicalEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.da.PlatformRepository;
-import org.n52.series.db.da.ProcedureRepository;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 class HierarchicalParameterRepository extends PlatformRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchicalParameterRepository.class);
-
-    @Autowired
-    private ProcedureRepository procedureRepository;
 
     Map<String, Collection<String>> getExtras(String platformId, IoParameters parameters) {
         Session session = getSession();
@@ -49,7 +42,7 @@ class HierarchicalParameterRepository extends PlatformRepository {
                 DatasetEntity<?> instance = dao.getInstance(Long.parseLong(datasetId), dbQuery);
                 ProcedureEntity procedure = instance.getProcedure();
                 Hibernate.initialize(procedure);
-                
+
                 Collection<String> parents = getParents(procedure, dbQuery);
                 if (!parents.isEmpty()) {
                     if ( !extras.containsKey("procedures")) {

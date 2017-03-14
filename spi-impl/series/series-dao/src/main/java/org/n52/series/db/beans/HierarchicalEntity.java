@@ -30,7 +30,7 @@ public abstract class HierarchicalEntity<T> extends DescribableEntity {
     }
 
     public final boolean hasParents() {
-        return parents != null && !parents.isEmpty();
+        return getParents() != null && !getParents().isEmpty();
     }
 
 }
