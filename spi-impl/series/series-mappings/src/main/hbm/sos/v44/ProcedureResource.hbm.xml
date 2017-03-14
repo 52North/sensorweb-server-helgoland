@@ -12,11 +12,11 @@
     <property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>
     <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
     <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
-    <set name="parents" table="sensorsystem" inverse="false" >
+    <set name="parents" table="sensorsystem" inverse="false" lazy="false">
         <key column="childSensorId" not-null="true" />
         <many-to-many class="ProcedureEntity" column="parentSensorId" />
     </set>
-    <set name="children" table="sensorsystem" inverse="false" >
+    <set name="children" table="sensorsystem" inverse="false" lazy="false">
         <key column="parentSensorId" not-null="true" />
         <many-to-many class="ProcedureEntity" column="childSensorId" />
     </set>
