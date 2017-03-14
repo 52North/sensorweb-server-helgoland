@@ -10,21 +10,25 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.dao.DatasetDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class ResultTimeRepository extends SessionAwareRepository {
 
-    Set<String> getExtras(String timeseriesId, IoParameters parameters) {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResultTimeRepository.class);
+
+    Set<String> getExtras(String datasetId, IoParameters parameters) {
         Session session = getSession();
         try {
             DatasetDao<DatasetEntity<?>> dao = new DatasetDao<>(session);
-            DatasetEntity<?> instance = dao.getInstance(Long.parseLong(timeseriesId), getDbQuery(parameters));
+            DatasetEntity<?> instance = dao.getInstance(Long.parseLong(datasetId), getDbQuery(parameters));
             Set<String> resultTimes = instance.getResultTimes();
             Hibernate.initialize(resultTimes);
             return resultTimes;
         } catch (NumberFormatException e) {
-            DatabaseResultTimeService.LOGGER.debug("Could not convert id '{}' to long.", timeseriesId, e);
+            LOGGER.debug("Could not convert id '{}' to long.", datasetId, e);
         } catch (DataAccessException e) {
-            DatabaseResultTimeService.LOGGER.error("Could not query result times for series with id '{}'", timeseriesId, e);
+            LOGGER.error("Could not query result times for dataset with id '{}'", datasetId, e);
         } finally {
             returnSession(session);
         }

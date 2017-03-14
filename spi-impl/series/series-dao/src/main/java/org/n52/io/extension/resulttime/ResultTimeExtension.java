@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.extension;
+package org.n52.io.extension.resulttime;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +56,7 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
 
     private final List<String> enabledServices = readEnabledServices();
 
-    private ResultTimeService resultTimeService;
+    private ResultTimeService service;
 
     private List<String> readEnabledServices() {
         try (InputStream taskConfig = getClass().getResourceAsStream(CONFIG_FILE);) {
@@ -91,15 +91,15 @@ public class ResultTimeExtension extends MetadataExtension<DatasetOutput> {
     }
 
     private Set<String> getResultTimes(IoParameters parameters, DatasetOutput output) {
-        return resultTimeService.getResultTimeList(parameters, output.getId());
+        return service.getResultTimeList(parameters, output.getId());
     }
 
-    public ResultTimeService getResultTimeService() {
-        return resultTimeService;
+    public ResultTimeService getService() {
+        return service;
     }
 
-    public void setResultTimeService(ResultTimeService resultTimeService) {
-        this.resultTimeService = resultTimeService;
+    public void setService(ResultTimeService resultTimeService) {
+        this.service = resultTimeService;
     }
 
 }

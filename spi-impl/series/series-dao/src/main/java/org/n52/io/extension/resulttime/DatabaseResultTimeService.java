@@ -4,15 +4,9 @@ import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetType;
-import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.DefaultDbQueryFactory;
 import org.n52.series.spi.srv.ResultTimeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DatabaseResultTimeService implements ResultTimeService {
-
-    static final Logger LOGGER = LoggerFactory.getLogger(DatabaseResultTimeService.class);
 
     private final ResultTimeRepository repository;
 
