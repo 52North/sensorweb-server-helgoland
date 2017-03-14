@@ -33,8 +33,16 @@ import java.util.List;
 import java.util.Set;
 
 public class SeriesEntity {
+public class SeriesEntity implements Serializable {
+
+    private static final long serialVersionUID = -6979717443102020645L;
 
     private Long pkid;
+    
+    /**
+     * Only relevant for some e-reporting cases
+     */
+    private Long samplingPointId;
 
     private CategoryEntity category;
 
@@ -62,6 +70,9 @@ public class SeriesEntity {
 
     private ObservationEntity lastValue;
 
+    
+    private Set<SeriesEntity> mergableSeries;
+    
     public Long getPkid() {
         return pkid;
     }
@@ -182,6 +193,17 @@ public class SeriesEntity {
 
     public void setLastValue(ObservationEntity lastValue) {
         this.lastValue = lastValue;
+    }
+
+    public Set<SeriesEntity> getMergableSeries() {
+        if (mergableSeries == null) {
+            return Collections.singleton(this);
+        }
+        return mergableSeries;
+    }
+
+    public void setMergableSeries(Set<SeriesEntity> mergableSeries) {
+        this.mergableSeries = mergableSeries;
     }
 
     @Override
