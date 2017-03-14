@@ -53,6 +53,7 @@
         <constructor-arg index="0" ref="phenomenonRepository" />
     </bean>
 
+    <bean name="resultTimeRepository" class="org.n52.io.extension.resulttime.ResultTimeRepository" />
     <bean id="resultTimeService" class="org.n52.io.extension.resulttime.DatabaseResultTimeService">
         <constructor-arg index="0" ref="resultTimeRepository" />
     </bean>
