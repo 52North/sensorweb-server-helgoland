@@ -1,9 +1,8 @@
 package org.n52.series.db.beans;
 
-import java.util.Collections;
 import java.util.Set;
 
-public class HierarchicalEntity<T> extends DescribableEntity {
+public abstract class HierarchicalEntity<T> extends DescribableEntity {
 
     private Set<T> children;
 
@@ -14,9 +13,7 @@ public class HierarchicalEntity<T> extends DescribableEntity {
     }
 
     public final Set<T> getChildren() {
-        return children != null
-                ? Collections.unmodifiableSet(children)
-                : null;
+        return children;
     }
 
     public final void setParents(Set<T> parents) {
@@ -25,9 +22,7 @@ public class HierarchicalEntity<T> extends DescribableEntity {
     }
 
     public final Set<T> getParents() {
-        return parents != null
-                ? Collections.unmodifiableSet(parents)
-                : null;
+        return parents;
     }
 
     public final boolean hasChildren() {
@@ -35,7 +30,7 @@ public class HierarchicalEntity<T> extends DescribableEntity {
     }
 
     public final boolean hasParents() {
-        return getParents() != null && !getParents().isEmpty();
+        return parents != null && !parents.isEmpty();
     }
 
 }

@@ -203,7 +203,7 @@ public abstract class SessionAwareRepository {
                 : createCondensed(new ServiceOutput(), staticService, parameters, urHelper.getServicesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    private <T extends ParameterOutput> T createCondensed(T outputvalue, DescribableEntity entity, DbQuery parameters) {
+    protected <T extends ParameterOutput> T createCondensed(T outputvalue, DescribableEntity entity, DbQuery parameters) {
         outputvalue.setLabel(entity.getLabelFrom(parameters.getLocale()));
         outputvalue.setId(Long.toString(entity.getPkid()));
         return outputvalue;

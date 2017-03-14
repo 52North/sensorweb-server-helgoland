@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.n52.io.response.AbstractOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.HierarchicalEntity;
 import org.n52.series.db.dao.DbQuery;
 
-public abstract class HierarchicalParameterRepository<E extends HierarchicalEntity<E>, O> extends SessionAwareRepository implements OutputAssembler<O> {
+public abstract class HierarchicalParameterRepository<E extends HierarchicalEntity<E>, O extends AbstractOutput> extends SessionAwareRepository implements OutputAssembler<O> {
 
     // TODO introduce lambdas here
 
