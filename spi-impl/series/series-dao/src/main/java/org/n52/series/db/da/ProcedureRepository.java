@@ -31,6 +31,7 @@ package org.n52.series.db.da;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.n52.io.request.IoParameters;
@@ -165,8 +166,12 @@ public class ProcedureRepository extends HierarchicalParameterRepository<Procedu
         } else {
             result.setService(getCondensedService(entity.getService(), parameters));
         }
-        result.setParents(createCondensed(entity.getParents(), parameters));
-        result.setChildren(createCondensed(entity.getChildren(), parameters));
+        result.setParents(entity.getParents().stream()
+                .map(e -> createCondensed(e, parameters))
+                .collect(Collectors.toList()));
+        result.setChildren(entity.getChildren().stream()
+                .map(e -> createCondensed(e, parameters))
+                .collect(Collectors.toList()));
         return result;
     }
 
