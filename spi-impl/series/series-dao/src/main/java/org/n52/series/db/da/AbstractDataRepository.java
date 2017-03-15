@@ -46,7 +46,7 @@ import org.n52.series.db.dao.DbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
-    
+
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();

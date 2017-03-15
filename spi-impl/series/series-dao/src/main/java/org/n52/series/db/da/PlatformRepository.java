@@ -120,7 +120,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
         return result;
     }
-    
+
     PlatformOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
@@ -144,13 +144,13 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             returnSession(session);
         }
     }
-    
+
     @Override
     public PlatformOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
         PlatformEntity entity = getEntity(id, parameters, session);
         return createExpanded(entity, parameters, session);
     }
-    
+
     PlatformEntity getEntity(String id, DbQuery parameters, Session session) throws DataAccessException {
         if (PlatformType.isStationaryId(id)) {
             return getStation(id, parameters, session);

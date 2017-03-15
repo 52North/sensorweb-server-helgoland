@@ -76,7 +76,7 @@ public abstract class SessionAwareRepository {
 
     @Autowired
     private PlatformRepository platformRepository;
-    
+
     @Autowired
     private HibernateSessionStore sessionStore;
 
@@ -167,7 +167,7 @@ public abstract class SessionAwareRepository {
         seriesParameter.setPlatform(getCondensedPlatform(series, parameters, session));
         return seriesParameter;
     }
-    
+
     protected PhenomenonOutput getCondensedPhenomenon(PhenomenonEntity entity, DbQuery parameters) {
         return createCondensed(new PhenomenonOutput(), entity, parameters);
     }
