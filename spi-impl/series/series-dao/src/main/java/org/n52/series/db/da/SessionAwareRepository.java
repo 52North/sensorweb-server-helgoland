@@ -41,9 +41,12 @@ import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
+import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.CategoryEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
@@ -71,6 +74,9 @@ public abstract class SessionAwareRepository {
 
     private String databaseSrid; // if null, database is expected to have srs set properly
 
+    @Autowired
+    private PlatformRepository platformRepository;
+    
     @Autowired
     private HibernateSessionStore sessionStore;
 
@@ -150,7 +156,7 @@ public abstract class SessionAwareRepository {
         return timeseriesOutput;
     }
 
-    protected SeriesParameters createSeriesParameters(DatasetEntity<?> series, DbQuery parameters) throws DataAccessException {
+    protected SeriesParameters createSeriesParameters(DatasetEntity<?> series, DbQuery parameters, Session session) throws DataAccessException {
         SeriesParameters seriesParameter = new SeriesParameters();
         seriesParameter.setService(getCondensedExtendedService(series.getService(), parameters));
         seriesParameter.setOffering(getCondensedExtendedOffering(series.getOffering(), parameters));
@@ -158,10 +164,10 @@ public abstract class SessionAwareRepository {
         seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
         seriesParameter.setFeature(getCondensedExtendedFeature(series.getFeature(), parameters));
         seriesParameter.setCategory(getCondensedExtendedCategory(series.getCategory(), parameters));
-//        seriesParameter.setPlatform(getCondensedPlatform(series.getPlatform(), parameters)); // issue #309
+        seriesParameter.setPlatform(getCondensedPlatform(series, parameters, session));
         return seriesParameter;
     }
-
+    
     protected PhenomenonOutput getCondensedPhenomenon(PhenomenonEntity entity, DbQuery parameters) {
         return createCondensed(new PhenomenonOutput(), entity, parameters);
     }
@@ -239,9 +245,22 @@ public abstract class SessionAwareRepository {
         return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected PlatformOutput getCondensedPlatform(PlatformEntity entity, DbQuery parameters) {
-        return createCondensed(new PlatformOutput(entity.getPlatformType()), entity, parameters, urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
+    protected PlatformOutput getCondensedPlatform(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+        // platform has to be handled dynamically (see #309)
+        return platformRepository.getCondensedInstance(getPlatformId(series), query, session);
     }
 
+    protected PlatformEntity getPlatformEntity(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+        // platform has to be handled dynamically (see #309)
+        return platformRepository.getEntity(getPlatformId(series), query, session);
+    }
+
+    private String getPlatformId(DatasetEntity<?> series) {
+        PlatformType platformType = series.getProcedure().getPlatformType();
+        Long rawId = platformType.isStationary()
+                ? series.getFeature().getPkid()
+                : series.getProcedure().getPkid();
+        return platformType.createId(rawId);
+    }
 
 }

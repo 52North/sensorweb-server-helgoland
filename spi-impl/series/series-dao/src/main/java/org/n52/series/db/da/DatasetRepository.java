@@ -198,7 +198,9 @@ public class DatasetRepository<T extends Data>
         String handleAsFallback = query.getHandleAsDatasetTypeFallback();
         final String datasetType = DatasetType.extractType(id, handleAsFallback);
         DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
-        return dao.getInstance(Long.parseLong(seriesId), query);
+        DatasetEntity instance = dao.getInstance(Long.parseLong(seriesId), query);
+        instance.setPlatform(getPlatformEntity(instance, query, session));
+        return instance;
     }
 
     @Override
@@ -241,7 +243,8 @@ public class DatasetRepository<T extends Data>
     protected DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         try {
             DatasetOutput result = createCondensed(series, query);
-            result.setSeriesParameters(getParameters(series, query));
+            result.setSeriesParameters(createSeriesParameters(series, query, session));
+            
             if (series.getService() == null) {
                 series.setService(getStaticServiceEntity());
             }
@@ -253,10 +256,6 @@ public class DatasetRepository<T extends Data>
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
         }
-    }
-
-    protected SeriesParameters getParameters(DatasetEntity<?> series, DbQuery query) throws DataAccessException {
-        return createSeriesParameters(series, query);
     }
 
     private String createSeriesLabel(DatasetEntity<?> series, String locale) {
