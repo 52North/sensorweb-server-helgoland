@@ -18,14 +18,19 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.da.PlatformRepository;
+import org.n52.series.db.da.ProcedureRepository;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 class HierarchicalParameterRepository extends PlatformRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchicalParameterRepository.class);
+    
+    @Autowired
+    private ProcedureRepository procedureRepository;
 
     Map<String, Set<HierarchicalParameterOutput>> getExtras(String platformId, IoParameters parameters) {
         Session session = getSession();
@@ -38,7 +43,19 @@ class HierarchicalParameterRepository extends PlatformRepository {
             for (DatasetOutput dataset : platform.getDatasets()) {
                 String datasetId = DatasetType.extractId(dataset.getId());
                 DatasetEntity<?> instance = dao.getInstance(Long.parseLong(datasetId), dbQuery);
-                Set<? extends HierarchicalParameterOutput> parents = getParents(instance.getProcedure(), dbQuery);
+                String procedureId = Long.toString(instance.getProcedure().getPkid());
+                
+                // ugly hack to ensure parents get initialized
+                ProcedureOutput output = procedureRepository.getAllExpanded(dbQuery)
+                        .stream()
+                        .filter(e -> e.getId().equals(procedureId))
+                        .limit(1)
+                        .collect(Collectors.toList())
+                        .get(0);
+                ProcedureEntity entity = instance.getProcedure();
+                Set<? extends HierarchicalParameterOutput> parents = output.hasParents()
+                        ? new HashSet<>(output.getParents())
+                        : Collections.singleton(createCondensed(new ProcedureOutput(), entity, dbQuery));
                 if ( !extras.containsKey("procedures")) {
                     extras.put("procedures", new HashSet<>());
                 }
@@ -56,12 +73,4 @@ class HierarchicalParameterRepository extends PlatformRepository {
         return Collections.emptyMap();
     }
 
-    private Set<? extends HierarchicalParameterOutput> getParents(ProcedureEntity entity, DbQuery query) {
-        if (entity.hasParents()) {
-            return entity.getParents().stream()
-                    .map(e -> createCondensed(new ProcedureOutput(), e, query))
-                    .collect(Collectors.toSet());
-        }
-        return Collections.singleton(createCondensed(new ProcedureOutput(), entity, query));
-    }
 }
