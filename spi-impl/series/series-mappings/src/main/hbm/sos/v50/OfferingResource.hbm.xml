@@ -11,11 +11,11 @@
     <property column="name" insert="false" name="description" type="string" update="false"/>
     <set name="children" table="offeringrelation" inverse="false" fetch="select" >
         <key column="parentOfferingId" not-null="true" />
-        <many-to-many class="OfferingEntity" column="childOfferingId" not-null="true" foreign-key="offeringChildFk"/>
+        <many-to-many class="OfferingEntity" column="childOfferingId" foreign-key="offeringChildFk"/>
     </set>
     <set name="parents" table="offeringrelation" inverse="false" fetch="select">
         <key column="childOfferingId" not-null="true" />
-        <many-to-many class="OfferingEntity" column="parentOfferingId" not-null="true" foreign-key="offeringParentFk"/>
+        <many-to-many class="OfferingEntity" column="parentOfferingId" foreign-key="offeringParentFk"/>
     </set>
   </class>
 </hibernate-mapping>

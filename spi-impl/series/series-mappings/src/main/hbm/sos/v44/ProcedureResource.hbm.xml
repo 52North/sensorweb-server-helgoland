@@ -14,11 +14,11 @@
     <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
     <set name="parents" table="sensorsystem" inverse="false" lazy="false">
         <key column="childSensorId" not-null="true" />
-        <many-to-many class="ProcedureEntity" column="parentSensorId" />
+        <many-to-many class="ProcedureEntity" column="parentSensorId" foreign-key="procedureParentFk"/>
     </set>
     <set name="children" table="sensorsystem" inverse="false" lazy="false">
         <key column="parentSensorId" not-null="true" />
-        <many-to-many class="ProcedureEntity" column="childSensorId" />
+        <many-to-many class="ProcedureEntity" column="childSensorId" foreign-key="procedureChildFk"/>
     </set>
   </class>
 </hibernate-mapping>
