@@ -30,7 +30,9 @@ package org.n52.series.db.da;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
@@ -166,13 +168,17 @@ public class ProcedureRepository extends HierarchicalParameterRepository<Procedu
         } else {
             result.setService(getCondensedService(entity.getService(), parameters));
         }
-        result.setParents(entity.getParents().stream()
-                .map(e -> createCondensed(e, parameters))
-                .collect(Collectors.toList()));
-        result.setChildren(entity.getChildren().stream()
-                .map(e -> createCondensed(e, parameters))
-                .collect(Collectors.toList()));
+        result.setParents(createCondensed(entity.getParents(), parameters));
+        result.setChildren(createCondensed(entity.getChildren(), parameters));
         return result;
+    }
+
+    protected List<ProcedureOutput> createCondensedHierarchyMembers(Set<ProcedureEntity> members, DbQuery parameters) {
+        return members == null 
+                ? Collections.emptyList()
+                : members.stream()
+                    .map(e -> createCondensed(e, parameters))
+                    .collect(Collectors.toList());
     }
 
     private void checkForHref(ProcedureOutput result, DbQuery parameters) {
