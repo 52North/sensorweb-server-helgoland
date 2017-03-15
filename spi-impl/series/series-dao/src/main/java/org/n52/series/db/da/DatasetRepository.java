@@ -41,7 +41,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.dao.DatasetDao;

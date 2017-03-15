@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.n52.io.response.AbstractOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.HierarchicalEntity;
 import org.n52.series.db.dao.DbQuery;
 
