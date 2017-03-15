@@ -372,9 +372,12 @@ public class DbQuery {
 
     private DetachedCriteria addHierarchicalFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
         if (hasValues(values)) {
-            filter.createCriteria(entity + ".parents").add(
-                    Restrictions.or(createIdCriterion(values),
-                    Restrictions.in("pkid", parseToIds(values))));
+            DetachedCriteria subquery = filter.createCriteria(entity);
+            subquery.createAlias("parents", "p")
+                .setProjection(Property.forName("pkid"))
+                .add(Restrictions.or(
+                        Restrictions.or(createIdCriterion(values)),
+                        Restrictions.in("p.pkid", parseToIds(values))));
         }
         return filter;
     }
@@ -383,9 +386,10 @@ public class DbQuery {
         if (hasValues(values)) {
             Criterion restriction = createIdCriterion(values);
             if (entity == null || entity.isEmpty()) {
-                filter.add(restriction);
+                return filter.add(restriction);
             } else {
-                filter.createCriteria(entity).add(restriction);
+                // return subquery for further chaining
+                return filter.createCriteria(entity).add(restriction);
             }
         }
         return filter;
