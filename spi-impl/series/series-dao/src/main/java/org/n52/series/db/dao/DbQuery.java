@@ -408,7 +408,7 @@ public class DbQuery {
     private Criterion createIdFilter(Set<String> filterValues) {
         return Restrictions.in(COLUMN_KEY, parseToIds(filterValues));
     }
-    
+
     private boolean hasValues(Set<String> values) {
         return values != null && !values.isEmpty();
     }

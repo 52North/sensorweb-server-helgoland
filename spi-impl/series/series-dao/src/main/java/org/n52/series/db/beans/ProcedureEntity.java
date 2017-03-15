@@ -28,6 +28,8 @@
  */
 package org.n52.series.db.beans;
 
+import org.n52.io.response.PlatformType;
+
 public class ProcedureEntity extends HierarchicalEntity<ProcedureEntity> {
 
     private boolean reference;
@@ -68,6 +70,10 @@ public class ProcedureEntity extends HierarchicalEntity<ProcedureEntity> {
 
     public void setProcedureDescriptionFormat(String procedureDescriptionFormat) {
         this.procedureDescriptionFormat = procedureDescriptionFormat;
+    }
+    
+    public PlatformType getPlatformType() {
+        return PlatformType.toInstance(mobile, insitu);
     }
 
     @Override

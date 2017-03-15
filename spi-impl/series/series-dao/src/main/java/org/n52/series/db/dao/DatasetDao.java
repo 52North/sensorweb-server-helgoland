@@ -134,7 +134,6 @@ public class DatasetDao<T extends DatasetEntity> extends AbstractDao<T> {
         return (List<T>) criteria.list();
     }
 
-
     @Override
     protected Class<T> getEntityClass() {
         return entityType;

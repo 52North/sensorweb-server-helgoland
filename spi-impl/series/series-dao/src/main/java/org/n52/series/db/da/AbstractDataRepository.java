@@ -29,13 +29,13 @@
 package org.n52.series.db.da;
 
 import java.util.List;
+
 import org.hibernate.Session;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.AbstractValue.ValidTime;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.GeometryEntity;
@@ -46,7 +46,7 @@ import org.n52.series.db.dao.DbQuery;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
-
+    
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
@@ -54,6 +54,7 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(id, dbQuery);
+            series.setPlatform(getPlatformEntity(series, dbQuery, session));
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);

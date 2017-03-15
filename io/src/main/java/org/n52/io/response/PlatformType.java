@@ -48,8 +48,22 @@ public enum PlatformType {
         return name().toLowerCase();
     }
 
+    public String createId(Long id) {
+        return getIdPrefix() + "_" + Long.toString(id);
+    }
+    
     public String createId(String id) {
         return getIdPrefix() + "_" + id;
+    }
+    
+    public boolean isStationary() {
+        return this == STATIONARY_INSITU
+                || this == STATIONARY_REMOTE;
+    }
+    
+    public boolean isMobile() {
+        return this == PlatformType.MOBILE_INSITU
+                || this == MOBILE_REMOTE;
     }
 
     public static String extractId(String id) {
@@ -72,7 +86,7 @@ public enum PlatformType {
                 ? id.substring(maxLength)
                 : id;
     }
-
+    
     public static boolean isStationaryId(String id) {
         return startsWith("stationary", id);
     }

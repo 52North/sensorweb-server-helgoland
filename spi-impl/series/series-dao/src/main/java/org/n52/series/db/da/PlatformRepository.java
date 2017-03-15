@@ -43,7 +43,6 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.db.DataAccessException;
-import org.n52.series.db.SessionAwareRepository;
 import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.DescribableEntity;
 import org.n52.series.db.beans.FeatureEntity;
@@ -121,6 +120,20 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setHrefBase(urHelper.getPlatformsHrefBaseUrl(parameters.getHrefBase()));
         return result;
     }
+    
+    PlatformOutput getCondensedInstance(String id, DbQuery parameters) throws DataAccessException {
+        Session session = getSession();
+        try {
+            return getCondensedInstance(id, parameters, session);
+        } finally {
+            returnSession(session);
+        }
+    }
+
+    PlatformOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        PlatformEntity entity = getEntity(id, parameters, session);
+        return createCondensed(entity, parameters);
+    }
 
     @Override
     public PlatformOutput getInstance(String id, DbQuery parameters) throws DataAccessException {
@@ -131,15 +144,18 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             returnSession(session);
         }
     }
-
+    
     @Override
     public PlatformOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
+        PlatformEntity entity = getEntity(id, parameters, session);
+        return createExpanded(entity, parameters, session);
+    }
+    
+    PlatformEntity getEntity(String id, DbQuery parameters, Session session) throws DataAccessException {
         if (PlatformType.isStationaryId(id)) {
-            PlatformEntity platform = getStation(id, parameters, session);
-            return createExpanded(platform, parameters, session);
+            return getStation(id, parameters, session);
         } else {
-            PlatformEntity platform = getPlatform(id, parameters, session);
-            return createExpanded(platform, parameters, session);
+            return getPlatform(id, parameters, session);
         }
     }
 
@@ -164,7 +180,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private PlatformOutput createExpanded(PlatformEntity entity, DbQuery parameters, Session session) throws DataAccessException {
         PlatformOutput result = createCondensed(entity, parameters);
-        DbQuery query = dbQueryFactory.createFrom(parameters.getParameters()
+        DbQuery query = getDbQuery(parameters.getParameters()
                 .extendWith(Parameters.PLATFORMS, result.getId())
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES));
 
