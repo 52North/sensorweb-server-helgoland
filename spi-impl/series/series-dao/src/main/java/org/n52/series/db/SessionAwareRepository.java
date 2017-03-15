@@ -158,7 +158,7 @@ public abstract class SessionAwareRepository {
         seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
         seriesParameter.setFeature(getCondensedExtendedFeature(series.getFeature(), parameters));
         seriesParameter.setCategory(getCondensedExtendedCategory(series.getCategory(), parameters));
-        seriesParameter.setPlatform(getCondensedPlatform(series.getPlatform(), parameters));
+//        seriesParameter.setPlatform(getCondensedPlatform(series.getPlatform(), parameters)); // issue #309
         return seriesParameter;
     }
 
