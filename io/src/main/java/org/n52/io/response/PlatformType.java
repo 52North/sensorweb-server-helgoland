@@ -48,6 +48,10 @@ public enum PlatformType {
         return name().toLowerCase();
     }
 
+    public String createId(Long id) {
+        return getIdPrefix() + "_" + Long.toString(id);
+    }
+    
     public String createId(String id) {
         return getIdPrefix() + "_" + id;
     }
