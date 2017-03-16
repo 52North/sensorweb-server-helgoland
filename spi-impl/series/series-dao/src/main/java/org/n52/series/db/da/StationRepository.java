@@ -77,7 +77,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         Session session = getSession();
         try {
             FeatureDao stationDao = createDao(session);
-            DbQuery query = addPointLocationOnlyRestriction(parameters);
+            DbQuery query = addPointLocationOnlyRestriction(getDbQuery(parameters));
             List<FeatureEntity> found = stationDao.find(query);
             return convertToSearchResults(found, query);
         } finally {
@@ -198,10 +198,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         return featureEntity.isSetGeometry()
                 ? featureEntity.getGeometry(getDatabaseSrid())
                 : null;
-    }
-
-    private DbQuery addPointLocationOnlyRestriction(IoParameters parameters) {
-        return addPointLocationOnlyRestriction(dbQueryFactory.createFrom(parameters));
     }
 
     private DbQuery addPointLocationOnlyRestriction(DbQuery query) {
