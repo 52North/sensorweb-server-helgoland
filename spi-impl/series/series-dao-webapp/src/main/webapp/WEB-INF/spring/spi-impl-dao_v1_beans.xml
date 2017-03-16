@@ -52,13 +52,14 @@
         <constructor-arg index="0" ref="phenomenonRepository" />
     </bean>
 
-    <bean name="resultTimeRepository" class="org.n52.io.extension.resulttime.ResultTimeRepository" />
-    <bean id="resultTimeService" class="org.n52.io.extension.resulttime.DatabaseResultTimeService">
-        <constructor-arg index="0" ref="resultTimeRepository" />
+    <bean id="resultTimeService" class="org.n52.io.extension.resulttime.ResultTimeService">
+        <constructor-arg index="0">
+            <bean class="org.n52.io.extension.resulttime.ResultTimeRepository" />
+        </constructor-arg>
     </bean>
-
-    <bean name="hierarchicalParameterRepository" class="org.n52.io.extension.parents.HierarchicalParameterRepository" />
     <bean id="hierarchicalParameterService" class="org.n52.io.extension.parents.HierarchicalParameterService">
-        <constructor-arg index="0" ref="hierarchicalParameterRepository" />
+        <constructor-arg index="0">
+            <bean class="org.n52.io.extension.parents.HierarchicalParameterRepository" />
+        </constructor-arg>
     </bean>
 </beans>
