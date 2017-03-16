@@ -19,18 +19,22 @@ import org.n52.series.db.beans.DatasetEntity;
 import org.n52.series.db.beans.ProcedureEntity;
 import org.n52.series.db.da.PlatformRepository;
 import org.n52.series.db.da.ProcedureRepository;
+import org.n52.series.db.da.SessionAwareRepository;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class HierarchicalParameterRepository extends PlatformRepository {
+class HierarchicalParameterRepository extends SessionAwareRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchicalParameterRepository.class);
-    
+
     @Autowired
     private ProcedureRepository procedureRepository;
+
+    @Autowired
+    private PlatformRepository platformRepository;
 
     Map<String, Set<HierarchicalParameterOutput>> getExtras(String platformId, IoParameters parameters) {
         Session session = getSession();
@@ -38,7 +42,7 @@ class HierarchicalParameterRepository extends PlatformRepository {
             DbQuery dbQuery = getDbQuery(parameters);
             Map<String, Set<HierarchicalParameterOutput>> extras = new HashMap<>();
 
-            PlatformOutput platform = getInstance(platformId, dbQuery);
+            PlatformOutput platform = platformRepository.getInstance(platformId, dbQuery);
             DatasetDao<DatasetEntity<?>> dao = new DatasetDao<>(session);
             for (DatasetOutput dataset : platform.getDatasets()) {
                 String datasetId = DatasetType.extractId(dataset.getId());
