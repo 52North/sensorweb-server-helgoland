@@ -129,6 +129,11 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             returnSession(session);
         }
     }
+    
+    PlatformOutput getCondensedInstance(DatasetEntity<?> series, DbQuery parameters, Session session) throws DataAccessException {
+        PlatformEntity entity = getEntity(getPlatformId(series), parameters, session);
+        return createCondensed(entity, parameters);
+    }
 
     PlatformOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
         PlatformEntity entity = getEntity(id, parameters, session);
@@ -386,6 +391,19 @@ public class PlatformRepository extends SessionAwareRepository implements Output
         result.setDescription(entity.getDescription());
         result.setGeometry(entity.getGeometry());
         return result;
+    }
+
+    protected PlatformEntity getPlatformEntity(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+        // platform has to be handled dynamically (see #309)
+        return getEntity(getPlatformId(series), query, session);
+    }
+
+    private String getPlatformId(DatasetEntity<?> series) {
+        PlatformType platformType = series.getProcedure().getPlatformType();
+        Long rawId = platformType.isStationary()
+                ? series.getFeature().getPkid()
+                : series.getProcedure().getPkid();
+        return platformType.createId(rawId);
     }
 
 }

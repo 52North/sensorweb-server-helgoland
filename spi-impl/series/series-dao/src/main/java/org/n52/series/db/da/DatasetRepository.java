@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetType;
@@ -66,6 +67,9 @@ public class DatasetRepository<T extends Data>
 
     @Autowired
     private IDataRepositoryFactory factory;
+    
+    @Autowired
+    private PlatformRepository platformRepository;
 
     @Override
     public boolean exists(String id, DbQuery parameters) throws DataAccessException {
@@ -199,7 +203,7 @@ public class DatasetRepository<T extends Data>
         final String datasetType = DatasetType.extractType(id, handleAsFallback);
         DatasetDao<? extends DatasetEntity> dao = getSeriesDao(datasetType, session);
         DatasetEntity instance = dao.getInstance(Long.parseLong(seriesId), query);
-        instance.setPlatform(getPlatformEntity(instance, query, session));
+        instance.setPlatform(platformRepository.getPlatformEntity(instance, query, session));
         return instance;
     }
 
@@ -243,7 +247,9 @@ public class DatasetRepository<T extends Data>
     protected DatasetOutput createExpanded(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
         try {
             DatasetOutput result = createCondensed(series, query);
-            result.setSeriesParameters(createSeriesParameters(series, query, session));
+            SeriesParameters seriesParameters = createSeriesParameters(series, query, session);
+
+            result.setSeriesParameters(seriesParameters);
 
             if (series.getService() == null) {
                 series.setService(getStaticServiceEntity());
@@ -256,6 +262,11 @@ public class DatasetRepository<T extends Data>
         } catch (DatasetFactoryException ex) {
             throw new DataAccessException("Could not determine if id exists.", ex);
         }
+    }
+
+    private PlatformOutput getCondensedPlatform(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
+        // platform has to be handled dynamically (see #309)
+        return platformRepository.getCondensedInstance(series, query, session);
     }
 
     private String createSeriesLabel(DatasetEntity<?> series, String locale) {
