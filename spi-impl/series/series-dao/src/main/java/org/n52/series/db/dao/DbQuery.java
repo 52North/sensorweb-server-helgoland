@@ -372,11 +372,9 @@ public class DbQuery {
 
     private DetachedCriteria addHierarchicalFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
         if (hasValues(values)) {
-            filter.createAlias(entity, "e")
-                .setProjection(Property.forName(entity + ".pkid"))
+            filter.createCriteria(entity, "e")
                 // join the parents to enable filtering via parent ids
                 .createAlias("e.parents", "p", JoinType.LEFT_OUTER_JOIN)
-                .setProjection(Property.forName("pkid"))
                 .add(Restrictions.or(
                         createIdCriterion(values, "e"),
                         Restrictions.in("p.pkid", parseToIds(values))));
@@ -396,7 +394,7 @@ public class DbQuery {
         }
         return filter;
     }
-    
+
     private Criterion createIdCriterion(Set<String> values) {
         return createIdCriterion(values, null);
     }
@@ -408,7 +406,7 @@ public class DbQuery {
     }
 
     private Criterion createDomainIdFilter(Set<String> filterValues, String alias) {
-        String column = alias != null 
+        String column = alias != null
                 ? alias + "." + COLUMN_DOMAIN_ID
                 : COLUMN_DOMAIN_ID;
         Disjunction disjunction = Restrictions.disjunction();
@@ -419,7 +417,7 @@ public class DbQuery {
     }
 
     private Criterion createIdFilter(Set<String> filterValues, String alias) {
-        String column = alias != null 
+        String column = alias != null
                 ? alias + "." + COLUMN_KEY
                 : COLUMN_KEY;
         return Restrictions.in(column, parseToIds(filterValues));
