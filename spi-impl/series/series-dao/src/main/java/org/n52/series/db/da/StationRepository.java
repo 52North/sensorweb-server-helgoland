@@ -165,10 +165,10 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         return createExpanded(result, parameters, session);
     }
 
-    FeatureEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
+    private FeatureEntity getFeatureEntity(String id, DbQuery parameters, Session session) throws DataAccessException, BadRequestException {
         parameters.setDatabaseAuthorityCode(getDatabaseSrid());
-        FeatureDao featureDao = createDao(session);
-        return featureDao.getInstance(parseId(id), parameters);
+        DbQuery query = addPointLocationOnlyRestriction(parameters);
+        return createDao(session).getInstance(parseId(id), query);
     }
 
     public StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
