@@ -311,7 +311,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private List<PlatformEntity> getAllStationaryInsitu(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
-        DbQuery query = dbQueryFactory.createFrom(parameters.getParameters()
+        DbQuery query = getDbQuery(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu"));
         return convertAllInsitu(featureDao.getAllInstances(query));
@@ -319,7 +319,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
 
     private List<PlatformEntity> getAllStationaryRemote(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
-        DbQuery query = dbQueryFactory.createFrom(parameters.getParameters()
+        DbQuery query = getDbQuery(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote"));
         return convertAllRemote(featureDao.getAllInstances(query));
@@ -338,7 +338,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     private List<PlatformEntity> getAllMobileInsitu(DbQuery parameters, Session session) throws DataAccessException {
-        DbQuery query = dbQueryFactory.createFrom(parameters.getParameters()
+        DbQuery query = getDbQuery(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu"));
         PlatformDao dao = new PlatformDao(session);
@@ -346,7 +346,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
     }
 
     private List<PlatformEntity> getAllMobileRemote(DbQuery parameters, Session session) throws DataAccessException {
-        DbQuery query = dbQueryFactory.createFrom(parameters.getParameters()
+        DbQuery query = getDbQuery(parameters.getParameters()
                 .removeAllOf(Parameters.FILTER_PLATFORM_TYPES)
                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote"));
         PlatformDao dao = new PlatformDao(session);

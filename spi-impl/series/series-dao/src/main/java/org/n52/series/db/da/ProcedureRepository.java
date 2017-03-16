@@ -174,7 +174,7 @@ public class ProcedureRepository extends HierarchicalParameterRepository<Procedu
     }
 
     protected List<ProcedureOutput> createCondensedHierarchyMembers(Set<ProcedureEntity> members, DbQuery parameters) {
-        return members == null 
+        return members == null
                 ? Collections.emptyList()
                 : members.stream()
                     .map(e -> createCondensed(e, parameters))
