@@ -47,18 +47,21 @@ class HierarchicalParameterRepository extends SessionAwareRepository {
             for (DatasetOutput dataset : platform.getDatasets()) {
                 String datasetId = DatasetType.extractId(dataset.getId());
                 DatasetEntity<?> instance = dao.getInstance(Long.parseLong(datasetId), dbQuery);
-                String procedureId = Long.toString(instance.getProcedure().getPkid());
-                
-                // ugly hack to ensure parents get initialized
-                ProcedureOutput output = procedureRepository.getAllExpanded(dbQuery)
-                        .stream()
-                        .filter(e -> e.getId().equals(procedureId))
-                        .limit(1)
-                        .collect(Collectors.toList())
-                        .get(0);
+
+//                // ugly hack to ensure parents get initialized
+//                String procedureId = Long.toString(instance.getProcedure().getPkid());
+//                DbQuery query = getDbQuery(dbQuery.getParameters()
+//                        .extendWith(Parameters.PROCEDURES, procedureId));
+//                ProcedureOutput output = procedureRepository.getAllExpanded(query)
+//                        .stream()
+//                        .filter(e -> e.getId().equals(procedureId))
+//                        .limit(1)
+//                        .collect(Collectors.toList())
+//                        .get(0);
+
                 ProcedureEntity entity = instance.getProcedure();
-                Set<? extends HierarchicalParameterOutput> parents = output.hasParents()
-                        ? new HashSet<>(output.getParents())
+                Set<? extends HierarchicalParameterOutput> parents = entity.hasParents()
+                        ? new HashSet<>(entity.getParents().stream().map(e -> createCondensed(new ProcedureOutput(), e, dbQuery)).collect(Collectors.toSet()))
                         : Collections.singleton(createCondensed(new ProcedureOutput(), entity, dbQuery));
                 if ( !extras.containsKey("procedures")) {
                     extras.put("procedures", new HashSet<>());

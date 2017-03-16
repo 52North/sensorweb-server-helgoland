@@ -10,7 +10,6 @@ public class HierarchicalParameterExtension extends MetadataExtension<PlatformOu
 
     private static final String EXTENSION_NAME = "parents";
 
-
     private HierarchicalParameterService service;
 
     @Override
