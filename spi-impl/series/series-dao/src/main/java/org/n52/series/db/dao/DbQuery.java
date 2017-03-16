@@ -329,11 +329,11 @@ public class DbQuery {
     }
 
     public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
+        String projectionProperty = propertyName != null && !propertyName.isEmpty()
+                        ? propertyName
+                        : "pkid";
         DetachedCriteria filter = DetachedCriteria.forClass(DatasetEntity.class)
-                .setProjection(projectionList()
-                        .add(Property.forName(propertyName != null && !propertyName.isEmpty()
-                                ? propertyName
-                                : "pkid")));
+                .setProjection(Property.forName(projectionProperty));
 
         filterWithSingularParmameters(filter); // stay backwards compatible
         addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
@@ -372,9 +372,12 @@ public class DbQuery {
 
     private DetachedCriteria addHierarchicalFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
         if (hasValues(values)) {
-            filter.createCriteria(entity + ".parents").add(
-                    Restrictions.or(createIdCriterion(values),
-                    Restrictions.in("pkid", parseToIds(values))));
+            filter.createCriteria(entity, "e")
+                // join the parents to enable filtering via parent ids
+                .createAlias("e.parents", "p", JoinType.LEFT_OUTER_JOIN)
+                .add(Restrictions.or(
+                        createIdCriterion(values, "e"),
+                        Restrictions.in("p.pkid", parseToIds(values))));
         }
         return filter;
     }
@@ -383,30 +386,41 @@ public class DbQuery {
         if (hasValues(values)) {
             Criterion restriction = createIdCriterion(values);
             if (entity == null || entity.isEmpty()) {
-                filter.add(restriction);
+                return filter.add(restriction);
             } else {
-                filter.createCriteria(entity).add(restriction);
+                // return subquery for further chaining
+                return filter.createCriteria(entity).add(restriction);
             }
         }
         return filter;
     }
 
     private Criterion createIdCriterion(Set<String> values) {
-        return parameters.isMatchDomainIds()
-                ? createDomainIdFilter(values)
-                : createIdFilter(values);
+        return createIdCriterion(values, null);
     }
 
-    private Criterion createDomainIdFilter(Set<String> filterValues) {
+    private Criterion createIdCriterion(Set<String> values, String alias) {
+        return parameters.isMatchDomainIds()
+                ? createDomainIdFilter(values, alias)
+                : createIdFilter(values, alias);
+    }
+
+    private Criterion createDomainIdFilter(Set<String> filterValues, String alias) {
+        String column = alias != null
+                ? alias + "." + COLUMN_DOMAIN_ID
+                : COLUMN_DOMAIN_ID;
         Disjunction disjunction = Restrictions.disjunction();
         for (String filter : filterValues) {
-            disjunction.add(Restrictions.ilike(COLUMN_DOMAIN_ID, filter));
+            disjunction.add(Restrictions.ilike(column, filter));
         }
         return disjunction;
     }
 
-    private Criterion createIdFilter(Set<String> filterValues) {
-        return Restrictions.in(COLUMN_KEY, parseToIds(filterValues));
+    private Criterion createIdFilter(Set<String> filterValues, String alias) {
+        String column = alias != null
+                ? alias + "." + COLUMN_KEY
+                : COLUMN_KEY;
+        return Restrictions.in(column, parseToIds(filterValues));
     }
 
     private boolean hasValues(Set<String> values) {

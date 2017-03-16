@@ -9,5 +9,13 @@
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
     <property column="name" name="name" type="string"/>
     <property column="name" insert="false" name="description" type="string" update="false"/>
+    <set name="children" table="offeringrelation" inverse="false" fetch="select" >
+        <key column="parentofferingid" not-null="true" />
+        <many-to-many class="OfferingEntity" column="childofferingid" />
+    </set>
+    <set name="parents" table="offeringrelation" inverse="false" fetch="select">
+        <key column="childofferingid" not-null="true" />
+        <many-to-many class="OfferingEntity" column="parentofferingId" />
+    </set>
   </class>
 </hibernate-mapping>

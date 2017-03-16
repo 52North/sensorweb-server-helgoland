@@ -75,12 +75,9 @@ public abstract class SessionAwareRepository {
     private String databaseSrid; // if null, database is expected to have srs set properly
 
     @Autowired
-    private PlatformRepository platformRepository;
-    
-    @Autowired
     private HibernateSessionStore sessionStore;
 
-    @Autowired(required = false)
+    @Autowired(required = false) // via xml or db
     protected ServiceEntity serviceEntity;
 
     @Autowired
@@ -164,10 +161,10 @@ public abstract class SessionAwareRepository {
         seriesParameter.setPhenomenon(getCondensedExtendedPhenomenon(series.getPhenomenon(), parameters));
         seriesParameter.setFeature(getCondensedExtendedFeature(series.getFeature(), parameters));
         seriesParameter.setCategory(getCondensedExtendedCategory(series.getCategory(), parameters));
-        seriesParameter.setPlatform(getCondensedPlatform(series, parameters, session));
+//        seriesParameter.setPlatform(getCondensedPlatform(series, parameters, session)); // #309
         return seriesParameter;
     }
-    
+
     protected PhenomenonOutput getCondensedPhenomenon(PhenomenonEntity entity, DbQuery parameters) {
         return createCondensed(new PhenomenonOutput(), entity, parameters);
     }
@@ -245,22 +242,5 @@ public abstract class SessionAwareRepository {
         return createCondensed(new CategoryOutput(), entity, parameters, urHelper.getCategoriesHrefBaseUrl(parameters.getHrefBase()));
     }
 
-    protected PlatformOutput getCondensedPlatform(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
-        // platform has to be handled dynamically (see #309)
-        return platformRepository.getCondensedInstance(getPlatformId(series), query, session);
-    }
-
-    protected PlatformEntity getPlatformEntity(DatasetEntity<?> series, DbQuery query, Session session) throws DataAccessException {
-        // platform has to be handled dynamically (see #309)
-        return platformRepository.getEntity(getPlatformId(series), query, session);
-    }
-
-    private String getPlatformId(DatasetEntity<?> series) {
-        PlatformType platformType = series.getProcedure().getPlatformType();
-        Long rawId = platformType.isStationary()
-                ? series.getFeature().getPkid()
-                : series.getProcedure().getPkid();
-        return platformType.createId(rawId);
-    }
 
 }

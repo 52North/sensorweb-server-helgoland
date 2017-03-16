@@ -12,13 +12,13 @@
     <property formula="'F'" name="reference" type="org.hibernate.type.TrueFalseType"/>
     <property column="mobile" name="mobile" type="org.hibernate.type.TrueFalseType"/>
     <property column="insitu" name="insitu" type="org.hibernate.type.TrueFalseType"/>
-    <set name="children" table="sensorssytem" inverse="false" fetch="select">
-        <key column="parentProcedureId" not-null="true"/>
-        <many-to-many class="ProcedureEntity" column="childProcedureId" />
+    <set name="parents" table="sensorsystem" inverse="false" fetch="select">
+        <key column="childsensorid" not-null="true" />
+        <many-to-many class="ProcedureEntity" column="parentsensorid" />
     </set>
-    <set name="parents" table="sensorssytem" inverse="false" fetch="select">
-        <key column="childProcedureId" not-null="true"/>
-        <many-to-many class="ProcedureEntity" column="parentProcedureId" />
+    <set name="children" table="sensorsystem" inverse="false" fetch="select">
+        <key column="parentsensorid" not-null="true" />
+        <many-to-many class="ProcedureEntity" column="childsensorid" />
     </set>
     <property column="proceduredescriptionformat" name="procedureDescriptionFormat" type=string"/>
   </class>

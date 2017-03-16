@@ -8,8 +8,7 @@ import org.n52.io.response.extension.MetadataExtension;
 
 public class HierarchicalParameterExtension extends MetadataExtension<PlatformOutput> {
 
-    private static final String EXTENSION_NAME = "parent_parameters";
-
+    private static final String EXTENSION_NAME = "parents";
 
     private HierarchicalParameterService service;
 

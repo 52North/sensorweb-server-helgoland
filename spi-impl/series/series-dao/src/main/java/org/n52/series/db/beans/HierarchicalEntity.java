@@ -8,20 +8,20 @@ public abstract class HierarchicalEntity<T> extends DescribableEntity {
 
     private Set<T> parents;
 
-    public final void setChildren(Set<T> children) {
+    public void setChildren(Set<T> children) {
         this.children = children;
     }
 
-    public final Set<T> getChildren() {
+    public Set<T> getChildren() {
         return children;
     }
 
-    public final void setParents(Set<T> parents) {
+    public void setParents(Set<T> parents) {
         this.parents = parents;
 
     }
 
-    public final Set<T> getParents() {
+    public Set<T> getParents() {
         return parents;
     }
 
