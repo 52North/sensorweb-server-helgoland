@@ -66,7 +66,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
 
     private String datasetType;
 
-    private Set<String> resultTimes;
+    private Set<Date> resultTimes;
 
     @Deprecated
     private T firstValue;
@@ -225,11 +225,11 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
         this.datasetType = datasetType;
     }
 
-    public Set<String> getResultTimes() {
+    public Set<Date> getResultTimes() {
         return resultTimes;
     }
 
-    public void setResultTimes(Set<String> resultTimes) {
+    public void setResultTimes(Set<Date> resultTimes) {
         this.resultTimes = resultTimes;
     }
 
