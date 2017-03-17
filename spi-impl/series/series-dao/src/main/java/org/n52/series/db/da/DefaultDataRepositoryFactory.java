@@ -43,7 +43,7 @@ public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataReposit
 
     @Autowired
     private HibernateSessionStore sessionStore;
-    
+
     @Autowired
     private ServiceEntity serviceEntity;
 

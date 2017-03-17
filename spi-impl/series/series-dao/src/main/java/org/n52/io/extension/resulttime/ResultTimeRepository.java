@@ -32,9 +32,9 @@ class ResultTimeRepository extends SessionAwareRepository {
 //                    .map(i -> parseToIso(i))
 //                    .collect(Collectors.toSet());
 //            return resultTimes;
-            
+
             return instance.getResultTimes().stream().map(i -> new DateTime(i).toString()).collect(Collectors.toSet());
-            
+
 //            Hibernate.initialize(instance.getResultTimes());
 //            return instance.getResultTimes();
         } catch (NumberFormatException e) {
@@ -46,7 +46,7 @@ class ResultTimeRepository extends SessionAwareRepository {
         }
         return Collections.emptySet();
     }
-    
+
     private boolean isParsableDateTime(String input) {
         try {
            parseToIso(input);

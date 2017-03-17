@@ -46,7 +46,7 @@ public interface DataRepository<DSE extends DatasetEntity<?>, V extends Abstract
     V getLastValue(DSE entity, Session session, DbQuery query);
 
     void setSessionStore(HibernateSessionStore sessionStore);
-    
+
     default void setStaticServiceEntity(ServiceEntity serviceEntity) {
         // void
     }

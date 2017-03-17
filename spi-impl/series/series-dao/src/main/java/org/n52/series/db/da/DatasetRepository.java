@@ -67,7 +67,7 @@ public class DatasetRepository<T extends Data>
 
     @Autowired
     private IDataRepositoryFactory factory;
-    
+
     @Autowired
     private PlatformRepository platformRepository;
 

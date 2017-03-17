@@ -129,7 +129,7 @@ public class PlatformRepository extends SessionAwareRepository implements Output
             returnSession(session);
         }
     }
-    
+
     PlatformOutput getCondensedInstance(DatasetEntity<?> series, DbQuery parameters, Session session) throws DataAccessException {
         PlatformEntity entity = getEntity(getPlatformId(series), parameters, session);
         return createCondensed(entity, parameters);
