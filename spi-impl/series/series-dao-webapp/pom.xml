@@ -15,8 +15,10 @@
         <postgis.version>2.2.0</postgis.version>
         <aspectj.version>1.8.9</aspectj.version>
         <postgresql.version>9.4.1208.jre7</postgresql.version>
-        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-        <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${project.build.finalName}</config.logger.fileappender.filepath>
+        
+        <finalName>${project.artifactId}</finalName>
+        <webappDirectory>${project.build.directory}/${finalName}</webappDirectory>
+        <config.logger.fileappender.filepath>${catalina.base:-.}/logs/${finalName}</config.logger.fileappender.filepath>
     </properties>
 
     <dependencies>
@@ -121,7 +123,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
+        <finalName>${finalName}</finalName>
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
         <resources>
             <resource>
