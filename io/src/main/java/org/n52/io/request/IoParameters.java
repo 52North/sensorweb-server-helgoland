@@ -50,6 +50,7 @@ import java.util.Set;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
+import org.joda.time.format.DateTimeFormatter;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
@@ -80,7 +81,7 @@ public class IoParameters implements Parameters {
     private final static String DEFAULT_CONFIG_FILE = "config-general.json";
 
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
-
+    
     private final MultiValueMap<String, JsonNode> query;
 
     private static InputStream getDefaultConfigFile() {
@@ -295,8 +296,20 @@ public class IoParameters implements Parameters {
      */
     public IntervalWithTimeZone getTimespan() {
         return containsParameter(TIMESPAN)
-                ? validateTimespan(getAsString(TIMESPAN))
+                ? validateTimespan(getNormalizedTimespan())
                 : createDefaultTimespan();
+    }
+
+    private String getNormalizedTimespan() {
+        return getNormalizedTimespan(null);
+    }
+    
+    protected String getNormalizedTimespan(DateTimeFormatter dateFormat) {
+        String parameterValue = getAsString(TIMESPAN);
+        String now = dateFormat == null
+                ? new DateTime().toString()
+                : dateFormat.print(new DateTime());
+        return parameterValue.replaceAll("(?i)now", now);
     }
 
     private IntervalWithTimeZone createDefaultTimespan() {

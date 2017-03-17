@@ -39,10 +39,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import static org.hamcrest.Matchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.crs.BoundingBox;
 import static org.n52.io.request.IoParameters.createDefaults;
 import static org.n52.io.request.IoParameters.createFromMultiValueMap;
@@ -178,5 +183,16 @@ public class IoParametersTest {
         RequestStyledParameterSet parameters = defaults.toRequestStyledParameterSet();
         assertThat(parameters.getWidth(), is(200));
     }
+    
+    @Test
+    public void when_timespanWithNow_then_normalizeWithDateString() {
+        DateTimeFormatter dateFormat = DateTimeFormat.forPattern("YYYY-MM-dd");
+        String now = dateFormat.print(new DateTime());
+        
+        IoParameters parameters = createDefaults().extendWith(Parameters.TIMESPAN, "PT4h/now");
+        IntervalWithTimeZone expected = new IntervalWithTimeZone("PT4h/" + now);
+        assertThat(parameters.getNormalizedTimespan(dateFormat), is(expected));
+    }
+    
 
 }
