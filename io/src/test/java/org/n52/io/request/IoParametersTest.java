@@ -183,16 +183,16 @@ public class IoParametersTest {
         RequestStyledParameterSet parameters = defaults.toRequestStyledParameterSet();
         assertThat(parameters.getWidth(), is(200));
     }
-    
+
     @Test
     public void when_timespanWithNow_then_normalizeWithDateString() {
         DateTimeFormatter dateFormat = DateTimeFormat.forPattern("YYYY-MM-dd");
         String now = dateFormat.print(new DateTime());
-        
+
         IoParameters parameters = createDefaults().extendWith(Parameters.TIMESPAN, "PT4h/now");
         IntervalWithTimeZone expected = new IntervalWithTimeZone("PT4h/" + now);
-        assertThat(parameters.getNormalizedTimespan(dateFormat), is(expected));
+        assertThat(parameters.getNormalizedTimespan(dateFormat), is(expected.toString()));
     }
-    
+
 
 }

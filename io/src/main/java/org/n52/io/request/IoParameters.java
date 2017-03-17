@@ -81,7 +81,7 @@ public class IoParameters implements Parameters {
     private final static String DEFAULT_CONFIG_FILE = "config-general.json";
 
     private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
-    
+
     private final MultiValueMap<String, JsonNode> query;
 
     private static InputStream getDefaultConfigFile() {
@@ -303,7 +303,7 @@ public class IoParameters implements Parameters {
     private String getNormalizedTimespan() {
         return getNormalizedTimespan(null);
     }
-    
+
     protected String getNormalizedTimespan(DateTimeFormatter dateFormat) {
         String parameterValue = getAsString(TIMESPAN);
         String now = dateFormat == null
