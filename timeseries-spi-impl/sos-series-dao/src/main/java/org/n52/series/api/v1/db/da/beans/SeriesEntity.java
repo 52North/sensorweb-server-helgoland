@@ -27,12 +27,16 @@
  */
 package org.n52.series.api.v1.db.da.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SeriesEntity {
+import javax.transaction.Transactional;
+
+import org.hibernate.Hibernate;
+
 public class SeriesEntity implements Serializable {
 
     private static final long serialVersionUID = -6979717443102020645L;
@@ -69,9 +73,46 @@ public class SeriesEntity implements Serializable {
     private ObservationEntity firstValue;
 
     private ObservationEntity lastValue;
-
     
-    private Set<SeriesEntity> mergableSeries;
+    private Set<SeriesEntity> mergableSeries = new HashSet<>();
+    
+    public static SeriesEntity getMergedSeries(SeriesEntity series) {
+        SeriesEntity mergedSeries = series;
+        Set<SeriesEntity> toMerge = series.getMergableSeries();
+        for (SeriesEntity otherSeries : toMerge) {
+            if (Long.compare(mergedSeries.getPkid(), otherSeries.getPkid()) > 0) {
+                mergedSeries = otherSeries;
+            }
+        }
+
+        
+        for (SeriesEntity otherSeries : toMerge) {
+            final ObservationEntity mergedFirstObservation = mergedSeries.getFirstValue();
+            final ObservationEntity otherFirstObservation = otherSeries.getFirstValue();
+            if (mergedFirstObservation == null) {
+                mergedSeries.setFirstValue(otherFirstObservation);
+            } else {
+                if (mergedFirstObservation != null 
+                        && otherFirstObservation != null
+                        && mergedFirstObservation.getTimestamp().after(otherFirstObservation.getTimestamp())) {
+                    mergedSeries.setFirstValue(otherFirstObservation);
+                }
+            }
+            final ObservationEntity mergedLastObservation = mergedSeries.getLastValue();
+            final ObservationEntity otherLastObservation = otherSeries.getLastValue();
+            if (mergedLastObservation == null) {
+                mergedSeries.setLastValue(otherSeries.getLastValue());
+            } else {
+                if (mergedLastObservation != null 
+                        && otherLastObservation != null
+                        && mergedLastObservation.getTimestamp().before(otherLastObservation.getTimestamp())) {
+                    mergedSeries.setLastValue(otherLastObservation);
+                }
+            }
+        }
+        
+        return mergedSeries;
+    }
     
     public Long getPkid() {
         return pkid;
@@ -79,6 +120,14 @@ public class SeriesEntity implements Serializable {
 
     public void setPkid(Long pkid) {
         this.pkid = pkid;
+    }
+
+    public Long getSamplingPointId() {
+        return samplingPointId;
+    }
+
+    public void setSamplingPointId(Long samplingPointId) {
+        this.samplingPointId = samplingPointId;
     }
 
     public CategoryEntity getCategory() {
@@ -98,7 +147,7 @@ public class SeriesEntity implements Serializable {
     }
 
     public ProcedureEntity getProcedure() {
-        return procedure;
+        return getMergedSeries(this).procedure;
     }
 
     public void setProcedure(ProcedureEntity procedure) {
@@ -114,7 +163,7 @@ public class SeriesEntity implements Serializable {
     }
     
     public OfferingEntity getOffering() {
-        return offering;
+        return getMergedSeries(this).offering;
     }
 
     public void setOffering(OfferingEntity offering) {
@@ -122,7 +171,11 @@ public class SeriesEntity implements Serializable {
     }
 
     public List<ObservationEntity> getObservations() {
-        return observations;
+        List<ObservationEntity> mergedObservations = new ArrayList<>();
+        for (SeriesEntity entity : getMergableSeries()) {
+            mergedObservations.addAll(entity.observations);
+        }
+        return mergedObservations;
     }
 
     public void setObservations(List<ObservationEntity> observations) {
@@ -130,7 +183,11 @@ public class SeriesEntity implements Serializable {
     }
 
     public Set<SeriesEntity> getReferenceValues() {
-        return referenceValues;
+        Set<SeriesEntity> mergedReferenceValues = new HashSet<>();
+        for (SeriesEntity entity : getMergableSeries()) {
+            mergedReferenceValues.addAll(entity.referenceValues);
+        }
+        return mergedReferenceValues;
     }
 
     public void setReferenceValues(Set<SeriesEntity> referenceValues) {
@@ -170,12 +227,15 @@ public class SeriesEntity implements Serializable {
     }
 
     public ObservationEntity getFirstValue() {
-        if (firstValue != null) {
-           if (firstValue.getTimestamp() == null) {
-                return null; // empty component
+        ObservationEntity value = getValue(firstValue);
+        for (SeriesEntity seriesEntity : getMergableSeries()) {
+            ObservationEntity otherValue = seriesEntity.getValue(seriesEntity.firstValue);
+            value = value == null ? otherValue : value;
+            if (otherValue != null && otherValue.getTimestamp().before(value.getTimestamp())) {
+                value = otherValue;
             }
         }
-        return firstValue;
+        return value;
     }
 
     public void setFirstValue(ObservationEntity firstValue) {
@@ -183,27 +243,48 @@ public class SeriesEntity implements Serializable {
     }
 
     public ObservationEntity getLastValue() {
-        if (lastValue != null) {
-            if (lastValue.getTimestamp() == null) {
-                return null; // empty component
+        ObservationEntity value = getValue(lastValue);
+        for (SeriesEntity seriesEntity : getMergableSeries()) {
+            ObservationEntity otherValue = seriesEntity.getValue(seriesEntity.lastValue);
+            value = value == null ? otherValue : value;
+            if (otherValue != null && otherValue.getTimestamp().after(value.getTimestamp())) {
+                value = otherValue;
             }
         }
-        return lastValue;
+        return value;
+    }
+    
+    private ObservationEntity getValue(ObservationEntity value) {
+        if (value != null) {
+            if (value.getTimestamp() == null) {
+                 return null; // empty component
+             }
+         }
+         return value;
     }
 
     public void setLastValue(ObservationEntity lastValue) {
         this.lastValue = lastValue;
     }
 
+    /**
+     * @return all series to be merged with this instance
+     */
     public Set<SeriesEntity> getMergableSeries() {
-        if (mergableSeries == null) {
-            return Collections.singleton(this);
-        }
         return mergableSeries;
     }
 
     public void setMergableSeries(Set<SeriesEntity> mergableSeries) {
         this.mergableSeries = mergableSeries;
+    }
+    
+    public Set<Long> getMergablePkids() {
+        Set<Long> pkids = new HashSet<>();
+        for (SeriesEntity entity : getMergableSeries()) {
+            pkids.add(entity.getPkid());
+        }
+        pkids.add(pkid);
+        return pkids;
     }
 
     @Override
