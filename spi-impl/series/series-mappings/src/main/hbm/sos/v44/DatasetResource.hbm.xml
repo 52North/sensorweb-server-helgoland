@@ -23,7 +23,7 @@
 
     <set inverse="true" name="resultTimes" table="observation">
         <key column="seriesid" />
-        <element column="resulttime" type="string" />
+        <element column="resulttime" type="timestamp" />
     </set>
 
     <subclass discriminator-value="measurement" name="MeasurementDatasetEntity">
