@@ -28,6 +28,7 @@
 package org.n52.series.api.v1.db.da.dao;
 
 import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.in;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -117,7 +119,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     @SuppressWarnings("unchecked")
     public List<ObservationEntity> getAllInstancesFor(SeriesEntity series, DbQuery parameters) throws DataAccessException {
         Criteria criteria = session.createCriteria(ObservationEntity.class)
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+//                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+                .add(in(COLUMN_SERIES_PKID, series.getMergablePkids()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
@@ -128,7 +131,8 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     public List<ObservationEntity> getObservationsFor(SeriesEntity series, DbQuery query) {
         Criteria criteria = query.addTimespanTo(session
                 .createCriteria(ObservationEntity.class))
-                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+//                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
+                .add(in(COLUMN_SERIES_PKID, series.getMergablePkids()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         return criteria.list();
     }
