@@ -248,7 +248,7 @@ public class DatasetRepository<T extends Data>
         try {
             DatasetOutput result = createCondensed(series, query);
             SeriesParameters seriesParameters = createSeriesParameters(series, query, session);
-
+            seriesParameters.setPlatform(getCondensedPlatform(series, query, session));
             result.setSeriesParameters(seriesParameters);
 
             if (series.getService() == null) {
