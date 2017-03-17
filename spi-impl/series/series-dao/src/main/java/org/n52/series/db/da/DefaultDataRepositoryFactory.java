@@ -32,6 +32,7 @@ import java.io.File;
 
 import org.n52.io.ConfigTypedFactory;
 import org.n52.series.db.HibernateSessionStore;
+import org.n52.series.db.beans.ServiceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataRepository> implements IDataRepositoryFactory {
@@ -42,6 +43,9 @@ public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataReposit
 
     @Autowired
     private HibernateSessionStore sessionStore;
+    
+    @Autowired
+    private ServiceEntity serviceEntity;
 
     public DefaultDataRepositoryFactory() {
         super(DEFAULT_CONFIG_FILE);
@@ -54,6 +58,10 @@ public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataReposit
     @Override
     protected DataRepository initInstance(DataRepository instance) {
         instance.setSessionStore(sessionStore);
+        if (serviceEntity != null) {
+            // static instance available from Spring config
+            instance.setStaticServiceEntity(serviceEntity);
+        }
         return instance;
     }
 
@@ -73,6 +81,14 @@ public class DefaultDataRepositoryFactory extends ConfigTypedFactory<DataReposit
 
     public void setSessionStore(HibernateSessionStore sessionStore) {
         this.sessionStore = sessionStore;
+    }
+
+    public ServiceEntity getServiceEntity() {
+        return serviceEntity;
+    }
+
+    public void setServiceEntity(ServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
     }
 
 }

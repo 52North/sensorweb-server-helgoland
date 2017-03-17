@@ -43,13 +43,9 @@ import org.n52.series.db.beans.parameter.Parameter;
 import org.n52.series.db.dao.DataDao;
 import org.n52.series.db.dao.DatasetDao;
 import org.n52.series.db.dao.DbQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractDataRepository<D extends Data<?>, DSE extends DatasetEntity<?>, DE extends DataEntity<?>, V extends AbstractValue<?>>
         extends SessionAwareRepository implements DataRepository<DSE, V> {
-
-    @Autowired
-    private PlatformRepository platformRepository;
 
     @Override
     public Data<?> getData(String seriesId, DbQuery dbQuery) throws DataAccessException {
@@ -58,7 +54,9 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(id, dbQuery);
-            series.setPlatform(platformRepository.getPlatformEntity(series, dbQuery, session));
+            if (series.getService() == null) {
+                series.setService(getStaticServiceEntity());
+            }
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);

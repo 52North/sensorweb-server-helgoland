@@ -34,6 +34,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.HibernateSessionStore;
 import org.n52.series.db.beans.DatasetEntity;
+import org.n52.series.db.beans.ServiceEntity;
 import org.n52.series.db.dao.DbQuery;
 
 public interface DataRepository<DSE extends DatasetEntity<?>, V extends AbstractValue<?>> {
@@ -45,6 +46,10 @@ public interface DataRepository<DSE extends DatasetEntity<?>, V extends Abstract
     V getLastValue(DSE entity, Session session, DbQuery query);
 
     void setSessionStore(HibernateSessionStore sessionStore);
+    
+    default void setStaticServiceEntity(ServiceEntity serviceEntity) {
+        // void
+    }
 
     Class<DSE> getEntityType();
 }
