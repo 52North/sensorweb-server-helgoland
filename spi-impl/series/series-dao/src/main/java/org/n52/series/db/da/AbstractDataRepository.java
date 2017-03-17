@@ -54,6 +54,9 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
             DatasetDao<DSE> seriesDao = getSeriesDao(session);
             String id = DatasetType.extractId(seriesId);
             DSE series = seriesDao.getInstance(id, dbQuery);
+            if (series.getService() == null) {
+                series.setService(getStaticServiceEntity());
+            }
             return dbQuery.isExpanded()
                 ? assembleDataWithReferenceValues(series, dbQuery, session)
                 : assembleData(series, dbQuery, session);

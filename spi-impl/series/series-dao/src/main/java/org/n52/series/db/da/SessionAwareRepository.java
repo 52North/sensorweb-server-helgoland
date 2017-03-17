@@ -190,6 +190,10 @@ public abstract class SessionAwareRepository {
     protected OfferingOutput getCondensedExtendedOffering(OfferingEntity entity, DbQuery parameters) {
         return createCondensed(new OfferingOutput(), entity, parameters, urHelper.getOfferingsHrefBaseUrl(parameters.getHrefBase()));
     }
+    
+    public void setStaticServiceEntity(ServiceEntity serviceEntity) {
+        this.serviceEntity = serviceEntity;
+    }
 
     protected ServiceEntity getStaticServiceEntity() {
         return serviceEntity;
