@@ -45,6 +45,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.joda.time.Instant;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.beans.DataEntity;
 import org.n52.series.db.beans.DatasetEntity;
@@ -72,6 +73,8 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
 
     private static final String COLUMN_DELETED = "deleted";
 
+    private static final String COLUMN_RESULTTIME = "resultTime";
+    
     private static final String COLUMN_TIMESTART = "timestart";
 
     private static final String COLUMN_TIMEEND = "timeend";
@@ -175,18 +178,18 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         return entityType;
     }
 
-    public T getDataValueViaTimeend(DatasetEntity series) {
+    public T getDataValueViaTimeend(DatasetEntity series, DbQuery query) {
         Date timeend = series.getLastValueAt();
-        return getDataValueAt(timeend, COLUMN_TIMEEND, series);
+        return getDataValueAt(timeend, COLUMN_TIMEEND, series, query);
     }
 
-    public T getDataValueViaTimestart(DatasetEntity series) {
+    public T getDataValueViaTimestart(DatasetEntity series, DbQuery query) {
         Date timestart = series.getFirstValueAt();
-        return getDataValueAt(timestart, COLUMN_TIMESTART, series);
+        return getDataValueAt(timestart, COLUMN_TIMESTART, series, query);
     }
 
     @SuppressWarnings("unchecked")
-    private T getDataValueAt(Date timestamp, String column, DatasetEntity series) {
+    private T getDataValueAt(Date timestamp, String column, DatasetEntity series, DbQuery query) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
@@ -195,9 +198,16 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-//        return (T) criteria.uniqueResult();
-        List<T> list = criteria.list();
-        return getLastResultTimeValue(list);
+        
+        IoParameters parameters = query.getParameters();
+        if ( !parameters.containsParameter(Parameters.RESULTTIME)) {
+            List<T> list = criteria.list();
+            return getLastResultTimeValue(list);
+        } else {
+            Instant resultTime = parameters.getResultTime();
+            criteria.add(Restrictions.eq(COLUMN_RESULTTIME, resultTime.toDate()));
+            return (T) criteria.uniqueResult();
+        }
     }
 
     private T getLastResultTimeValue(List<T> values) {

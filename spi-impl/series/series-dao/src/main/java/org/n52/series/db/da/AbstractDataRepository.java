@@ -69,14 +69,14 @@ public abstract class AbstractDataRepository<D extends Data<?>, DSE extends Data
     @Override
     public V getFirstValue(DSE entity, Session session, DbQuery query) {
         DataDao<DE> dao = createDataDao(session);
-        DE valueEntity = dao.getDataValueViaTimestart(entity);
+        DE valueEntity = dao.getDataValueViaTimestart(entity, query);
         return createSeriesValueFor(valueEntity, entity, query);
     }
 
     @Override
     public V getLastValue(DSE entity, Session session, DbQuery query) {
         DataDao<DE> dao = createDataDao(session);
-        DE valueEntity = dao.getDataValueViaTimeend(entity);
+        DE valueEntity = dao.getDataValueViaTimeend(entity, query);
         return createSeriesValueFor(valueEntity, entity, query);
     }
 
