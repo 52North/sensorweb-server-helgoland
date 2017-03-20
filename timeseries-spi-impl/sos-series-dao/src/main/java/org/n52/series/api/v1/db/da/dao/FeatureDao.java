@@ -55,7 +55,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<FeatureEntity> find(String search, DbQuery query) {
-        Criteria criteria = getDefaultCriteria("f");
+        Criteria criteria = getDefaultCriteria("feature");
         if (hasTranslation(query, I18nFeatureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
@@ -109,7 +109,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("f")
+        Criteria criteria = getDefaultCriteria("feature")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
