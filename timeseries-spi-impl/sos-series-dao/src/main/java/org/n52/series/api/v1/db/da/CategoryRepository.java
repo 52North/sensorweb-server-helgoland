@@ -77,7 +77,7 @@ public class CategoryRepository extends SessionAwareRepository implements Output
     public List<CategoryOutput> getAllCondensed(DbQuery parameters) throws DataAccessException {
         Session session = getSession();
         try {
-            return getAllCondensed(parameters, null);
+            return getAllCondensed(parameters, session);
         } finally {
             returnSession(session);
         }
