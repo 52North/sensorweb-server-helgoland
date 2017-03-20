@@ -267,37 +267,79 @@ public class IoParameters {
     /**
      * Determines the service filter
      */
+    @Deprecated
     static final String SERVICE = "service";
 
     /**
+     * Determines the services filter
+     */
+    static final String SERVICES = "services";
+    
+    /**
      * Determines the feature filter
      */
+    @Deprecated
     static final String FEATURE = "feature";
 
     /**
+     * Determines the features filter
+     */
+    static final String FEATURES = "features";
+    
+    /**
      * Determines the service filter
      */
+    @Deprecated
     static final String OFFERING = "offering";
 
     /**
+     * Determines the offerings filter
+     */
+    static final String OFFERINGS = "offerings";
+    
+    /**
      * Determines the procedure filter
      */
+    @Deprecated
     static final String PROCEDURE = "procedure";
 
     /**
+     * Determines the procedures filter
+     */
+    static final String PROCEDURES = "procedures";
+    
+    /**
      * Determines the phenomenon filter
      */
+    @Deprecated
     static final String PHENOMENON = "phenomenon";
 
     /**
+     * Determines the phenomena filter
+     */
+    static final String PHENOMENA = "phenomena";
+    
+    /**
      * Determines the station filter
      */
+    @Deprecated
     static final String STATION = "station";
 
     /**
+     * Determines the stations filter
+     */
+    static final String STATIONS = "stations";
+    
+    /**
      * Determines the category filter
      */
+    @Deprecated
     static final String CATEGORY = "category";
+
+    /**
+     * Determines the categories filter
+     */
+    static final String CATEGORIES = "categories";
 
     /**
      * Determines the reference system to be used for input/output coordinates.
@@ -627,33 +669,93 @@ public class IoParameters {
         }
     }
 
+    /**
+     * @return the category filter
+     * @deprecated use {@link #getCategories()}
+     */
+    @Deprecated
     public String getCategory() {
         return getAsString(CATEGORY);
     }
 
+    /**
+     * @return the service filter
+     * @deprecated use {@link #getServices()}
+     */
+    @Deprecated
     public String getService() {
         return getAsString(SERVICE);
     }
 
+    /**
+     * @return the offering filter
+     * @deprecated use {@link #getOfferings()}
+     */
+    @Deprecated
     public String getOffering() {
         return getAsString(OFFERING);
     }
 
+    /**
+     * @return the feature filter
+     * @deprecated use {@link #getFeatures()}
+     */
+    @Deprecated
     public String getFeature() {
         return getAsString(FEATURE);
     }
 
+    /**
+     * @return the procedure filter
+     * @deprecated use {@link #getProcedures()}
+     */
+    @Deprecated
     public String getProcedure() {
         return getAsString(PROCEDURE);
     }
 
+    /**
+     * @return the phenomenon filter
+     * @deprecated use {@link #getPhenomena()}
+     */
+    @Deprecated
     public String getPhenomenon() {
         return getAsString(PHENOMENON);
     }
 
+    @Deprecated
     public String getStation() {
         return getAsString(STATION);
     }
+
+    public Set<String> getCategories() {
+        return getValuesOf(CATEGORIES);
+    }
+
+    public Set<String> getServices() {
+        return getValuesOf(SERVICES);
+    }
+
+    public Set<String> getOfferings() {
+        return getValuesOf(OFFERINGS);
+    }
+
+    public Set<String> getFeatures() {
+        return getValuesOf(FEATURES);
+    }
+
+    public Set<String> getProcedures() {
+        return getValuesOf(PROCEDURES);
+    }
+
+    public Set<String> getPhenomena() {
+        return getValuesOf(PHENOMENA);
+    }
+
+    public Set<String> getStations() {
+        return getValuesOf(STATIONS);
+    }
+    
     
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
