@@ -27,18 +27,21 @@
  */
 package org.n52.series.api.v1.db.da;
 
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
 import static org.hibernate.criterion.Restrictions.between;
 import static org.hibernate.criterion.Restrictions.isNull;
 import static org.hibernate.criterion.Restrictions.like;
 import static org.hibernate.criterion.Restrictions.or;
+import static org.hibernate.criterion.Subqueries.propertyIn;
 import static org.n52.series.api.v1.db.da.beans.DataModelUtil.isEntitySupported;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;
 import org.hibernate.sql.JoinType;
@@ -127,10 +130,77 @@ public class DbQuery {
         }
         return criteria;
     }
+    
+    public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
+        String projectionProperty = propertyName != null && !propertyName.isEmpty()
+                        ? propertyName
+                        : "pkid";
+        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
+                .setProjection(Property.forName(projectionProperty));
 
-    public DetachedCriteria createDetachedFilterCriteria(String propertyName) {
-        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class);
+        filterWithSingularParameters(filter); // stay backwards compatible
+        addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
+        addFilterRestriction(parameters.getProcedures(), "procedure", filter);
+        addFilterRestriction(parameters.getOfferings(), "offering", filter);
+        addFilterRestriction(parameters.getFeatures(), "feature", filter);
+        addFilterRestriction(parameters.getStations(), "feature", filter);
+        addFilterRestriction(parameters.getCategories(), "category", filter);
+        addFilterRestriction(parameters.getTimeseries(), filter);
 
+        String filterProperty = propertyName != null && !propertyName.isEmpty()
+                ? propertyName + ".pkid"
+                : "pkid";
+        criteria.add(propertyIn(filterProperty, filter));
+        return criteria;
+    }
+    
+    private DetachedCriteria addFilterRestriction(Set<String> values, DetachedCriteria filter) {
+        return addFilterRestriction(values, null, filter);
+    }
+    
+    private DetachedCriteria addFilterRestriction(Set<String> values, String entity, DetachedCriteria filter) {
+        if (hasValues(values)) {
+            Criterion restriction = createIdCriterion(values);
+            if (entity == null || entity.isEmpty()) {
+                return filter.add(restriction);
+            } else {
+                // return subquery for further chaining
+                return filter.createCriteria(entity).add(restriction);
+            }
+        }
+        return filter;
+    }
+    
+    private boolean hasValues(Set<String> values) {
+        return values != null && !values.isEmpty();
+    }
+    
+    private Criterion createIdCriterion(Set<String> values) {
+        return createIdCriterion(values, null);
+    }
+
+    private Criterion createIdCriterion(Set<String> values, String alias) {
+        return createIdFilter(values, alias);
+    }
+    
+    private Criterion createIdFilter(Set<String> filterValues, String alias) {
+        String column = alias != null
+                ? alias + "." + COLUMN_KEY
+                : COLUMN_KEY;
+        return Restrictions.in(column, parseToIds(filterValues));
+    }
+    
+    public Set<Long> parseToIds(Set<String> ids) {
+        Set<Long> parsedIds = new HashSet<>();
+        for (String id : ids) {
+            parsedIds.add(parseToId(id));
+        }
+        return parsedIds;
+    }
+    
+    @Deprecated
+    public void filterWithSingularParameters(DetachedCriteria filter) {
+        // old query parameter to stay backward compatible
         if (parameters.getPhenomenon() != null) {
             filter.createCriteria("phenomenon")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getPhenomenon())));
@@ -156,8 +226,6 @@ public class DbQuery {
             filter.createCriteria("category")
                     .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getCategory())));
         }
-
-        return filter.setProjection(projectionList().add(property(propertyName)));
     }
 
     /**

@@ -27,15 +27,14 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
+import static org.hibernate.criterion.Restrictions.eq;
+
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import static org.hibernate.criterion.Restrictions.eq;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -85,9 +84,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("procedure");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
-
+        criteria = parameters.addDetachedFilters("procedure", criteria);
         parameters.addPagingTo(criteria);
         return (List<ProcedureEntity>) criteria.list();
     }

@@ -31,10 +31,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -80,10 +78,8 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
         if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
-        
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("phenomenon");
-        criteria.add(Subqueries.propertyIn("p.pkid", filter));
-        
+
+        criteria = parameters.addDetachedFilters("phenomenon", criteria);
         parameters.addPagingTo(criteria);
         return (List<PhenomenonEntity>) criteria.list();
     }
