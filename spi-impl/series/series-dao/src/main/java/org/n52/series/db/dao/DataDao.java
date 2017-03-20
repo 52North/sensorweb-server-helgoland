@@ -175,18 +175,18 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         return entityType;
     }
 
-    public T getDataValueViaTimeend(DatasetEntity series) {
+    public T getDataValueViaTimeend(DatasetEntity series, DbQuery query) {
         Date timeend = series.getLastValueAt();
-        return getDataValueAt(timeend, COLUMN_TIMEEND, series);
+        return getDataValueAt(timeend, COLUMN_TIMEEND, series, query);
     }
 
-    public T getDataValueViaTimestart(DatasetEntity series) {
+    public T getDataValueViaTimestart(DatasetEntity series, DbQuery query) {
         Date timestart = series.getFirstValueAt();
-        return getDataValueAt(timestart, COLUMN_TIMESTART, series);
+        return getDataValueAt(timestart, COLUMN_TIMESTART, series, query);
     }
 
     @SuppressWarnings("unchecked")
-    private T getDataValueAt(Date timestamp, String column, DatasetEntity series) {
+    private T getDataValueAt(Date timestamp, String column, DatasetEntity series, DbQuery query) {
         LOGGER.debug("get instances @{} for '{}'", timestamp, series.getPkid());
         Criteria criteria = getDefaultCriteria()
                 .add(Restrictions.eq(COLUMN_SERIES_PKID, series.getPkid()))
