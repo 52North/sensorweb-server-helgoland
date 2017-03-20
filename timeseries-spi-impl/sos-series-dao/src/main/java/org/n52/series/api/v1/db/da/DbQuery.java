@@ -145,6 +145,7 @@ public class DbQuery {
         addFilterRestriction(parameters.getFeatures(), "feature", filter);
         addFilterRestriction(parameters.getStations(), "feature", filter);
         addFilterRestriction(parameters.getCategories(), "category", filter);
+        addFilterRestriction(parameters.getTimeseries(), filter);
 
         String filterProperty = propertyName != null && !propertyName.isEmpty()
                 ? propertyName + ".pkid"

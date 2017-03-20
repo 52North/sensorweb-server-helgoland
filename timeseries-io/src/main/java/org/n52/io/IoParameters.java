@@ -342,6 +342,11 @@ public class IoParameters {
     static final String CATEGORIES = "categories";
 
     /**
+     * Determines the categories filter
+     */
+    static final String TIMESERIES = "timeseries";
+    
+    /**
      * Determines the reference system to be used for input/output coordinates.
      */
     static final String CRS = "crs";
@@ -756,6 +761,9 @@ public class IoParameters {
         return getValuesOf(STATIONS);
     }
     
+    public Set<String> getTimeseries() {
+        return getValuesOf(TIMESERIES);
+    }
     
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
