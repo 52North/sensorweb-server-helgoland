@@ -173,6 +173,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     @Override
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
+        dbQuery = DbQuery.createFrom(dbQuery.getParameters()
+                .extendWith("merge_roles", "master"));
         SeriesEntity result = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
         /*
          *  ATM, the SWC REST API only supports numeric types
@@ -189,6 +191,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
+            dbQuery = DbQuery.createFrom(dbQuery.getParameters()
+                    .extendWith("merge_roles", "master", "slave"));
             SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             return createTimeseriesData(timeseries, dbQuery, session);
         }
@@ -201,6 +205,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Session session = getSession();
         try {
             SeriesDao seriesDao = new SeriesDao(session);
+            dbQuery = DbQuery.createFrom(dbQuery.getParameters()
+                    .extendWith("merge_roles", "master", "slave"));
             SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
             TimeseriesData result = createTimeseriesData(timeseries, dbQuery, session);
             Set<SeriesEntity> referenceValues = timeseries.getReferenceValues();

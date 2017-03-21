@@ -32,11 +32,15 @@ import static org.hibernate.sql.JoinType.LEFT_OUTER_JOIN;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -100,11 +104,31 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @Override
-    public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
+    public SeriesEntity getInstance(Long key, DbQuery query) throws DataAccessException {
         Criteria criteria = session.createCriteria(SeriesEntity.class)
                 .add(eq("pkid", key));
+        addMergeRoles(criteria, query);
         addIgnoreNonPublishedSeriesTo(criteria);
         return (SeriesEntity) criteria.uniqueResult();
+    }
+    
+
+    private void addMergeRoles(Criteria criteria, DbQuery query) {
+        addMergeRoles(criteria, query, "");
+    }
+
+    private void addMergeRoles(Criteria criteria, DbQuery query, String alias) {
+        String property = alias != null && !alias.isEmpty()
+                ? alias + ".mergeRole"
+                : "mergeRole";
+        if (query.getParameters().containsParameter("merge_roles")) {
+            Set<String> roles = query.getParameters().getOthers("merge_roles");
+            Disjunction disjunction = Restrictions.disjunction();
+            for (String role : roles) {
+                disjunction.add(eq(property, role));
+            }
+            criteria.add(disjunction);
+        }
     }
 
     @Override
@@ -114,14 +138,19 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
+    public List<SeriesEntity> getAllInstances(DbQuery query) throws DataAccessException {
         Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
         addIgnoreNonPublishedSeriesTo(criteria, "s");
+        if ( !query.getParameters().containsParameter("merge_roles")) {
+            query = DbQuery.createFrom(query.getParameters()
+                    .extendWith("merge_roles", "master"));
+        }
+        addMergeRoles(criteria, query);
         criteria.createCriteria("procedure")
                 .add(eq("reference", false));
 
-        criteria = parameters.addDetachedFilters("", criteria);
-        parameters.addPagingTo(criteria);
+        criteria = query.addDetachedFilters("", criteria);
+        query.addPagingTo(criteria);
         return (List<SeriesEntity>) criteria.list();
     }
 

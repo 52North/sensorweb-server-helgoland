@@ -78,6 +78,10 @@ public class DbQuery {
         }
     }
 
+    public IoParameters getParameters() {
+        return parameters;
+    }
+
     public void setDatabaseAuthorityCode(String code) {
         this.sridAuthorityCode = code;
     }

@@ -967,6 +967,10 @@ public class IoParameters {
         return getAsString(parameter.toLowerCase());
     }
     
+    public Set<String> getOthers(String parameter) {
+        return getValuesOf(parameter);
+    }
+    
     public String getAsString(String parameter) {
         return containsParameter(parameter)
                 ? asCsv(query.get(parameter.toLowerCase()))
