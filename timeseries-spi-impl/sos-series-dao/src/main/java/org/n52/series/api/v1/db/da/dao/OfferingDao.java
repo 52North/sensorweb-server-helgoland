@@ -74,7 +74,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<OfferingEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(OfferingEntity.class, "off");
+        Criteria criteria = session.createCriteria(OfferingEntity.class);
         if (hasTranslation(parameters, I18nOfferingEntity.class)) {
             parameters.addLocaleTo(criteria, I18nOfferingEntity.class);
         }
