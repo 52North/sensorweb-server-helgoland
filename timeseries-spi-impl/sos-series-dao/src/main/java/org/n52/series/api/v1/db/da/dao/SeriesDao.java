@@ -35,10 +35,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -122,9 +120,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         criteria.createCriteria("procedure")
                 .add(eq("reference", false));
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("pkid");
-        criteria.add(Subqueries.propertyIn("s.pkid", filter));
-
+        criteria = parameters.addDetachedFilters("", criteria);
         parameters.addPagingTo(criteria);
         return (List<SeriesEntity>) criteria.list();
     }

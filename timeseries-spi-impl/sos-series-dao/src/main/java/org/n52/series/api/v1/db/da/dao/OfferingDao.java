@@ -31,10 +31,8 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -81,9 +79,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
             parameters.addLocaleTo(criteria, I18nOfferingEntity.class);
         }
 
-        DetachedCriteria filter = parameters.createDetachedFilterCriteria("offering");
-        criteria.add(Subqueries.propertyIn("off.pkid", filter));
-
+        criteria = parameters.addDetachedFilters("offering", criteria);
         parameters.addPagingTo(criteria);
         return (List<OfferingEntity>) criteria.list();
     }
