@@ -33,10 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
-import org.hibernate.Hibernate;
-
 public class SeriesEntity implements Serializable {
 
     private static final long serialVersionUID = -6979717443102020645L;
@@ -47,6 +43,11 @@ public class SeriesEntity implements Serializable {
      * Only relevant for some e-reporting cases
      */
     private Long samplingPointId;
+
+    /**
+     * Only relevant for some e-reporting cases
+     */
+    private String mergeRole;
 
     private CategoryEntity category;
 
@@ -128,6 +129,14 @@ public class SeriesEntity implements Serializable {
 
     public void setSamplingPointId(Long samplingPointId) {
         this.samplingPointId = samplingPointId;
+    }
+
+    public String getMergeRole() {
+        return mergeRole;
+    }
+
+    public void setMergeRole(String mergeRole) {
+        this.mergeRole = mergeRole;
     }
 
     public CategoryEntity getCategory() {
