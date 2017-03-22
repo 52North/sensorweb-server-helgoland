@@ -56,14 +56,6 @@ public class SeriesHibernateSessionHolder implements HibernateSessionStore {
         }
     }
 
-//    public EntityManager createEntityManager(String persistenceUnitName) {
-//        return createEntityManager(persistenceUnitName, Collections.<String, Object>emptyMap());
-//    }
-//
-//    public EntityManager createEntityManager(String persistenceUnitName, Map<String, Object> overrides) {
-//        return Persistence.createEntityManagerFactory(persistenceUnitName, overrides)
-//                .createEntityManager();
-//    }
     @Override
     public void shutdown() {
         LOGGER.info("Closing '{}'", getClass().getSimpleName());
