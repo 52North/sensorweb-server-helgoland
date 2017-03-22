@@ -75,7 +75,6 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
 import org.n52.io.request.RequestParameterSet;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
@@ -83,8 +82,12 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
     private final IoStyleContext context;
 
@@ -257,9 +260,60 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     private void configureTitle(JFreeChart chart) {
-        if (getChartStyleDefinitions().containsParameter("title")) {
-            chart.setTitle(getChartStyleDefinitions().getAsString("title"));
+        RequestStyledParameterSet config = getChartStyleDefinitions();
+        if (config.containsParameter("title")) {
+            String title = config.getAsString("title");
+            if (config.containsParameter("rendering_trigger")) {
+                String trigger = config.getAsString("rendering_trigger");
+                title = "prerendering".equalsIgnoreCase(trigger)
+                        ? getTitleForSingle(config, title)
+                        : title;
+            }
+            chart.setTitle(title);
         }
+    }
+
+    private String getTitleForSingle(RequestStyledParameterSet config, String template) {
+        String[] timeseries = config.getDatasets();
+        if (timeseries != null && timeseries.length > 0) {
+            String timeseriesId = timeseries[0];
+            DatasetOutput metadata = getTimeseriesMetadataOutput(timeseriesId);
+            if (metadata != null) {
+                return formatTitle(metadata, template);
+            }
+        }
+        return template;
+    }
+
+    protected String formatTitle(DatasetOutput metadata, String title) {
+        SeriesParameters parameters = metadata.getSeriesParameters();
+        Object[] varargs = {
+                // index important to reference in config!
+                parameters.getPlatform().getLabel(), // {0}
+                parameters.getPhenomenon().getLabel(), // {1}
+                parameters.getProcedure().getLabel(), // {2}
+                parameters.getCategory().getLabel(), // {3}
+                parameters.getOffering().getLabel(), // {4}
+                parameters.getFeature().getLabel(), // {5}
+                parameters.getService().getLabel(), // {6}
+                metadata.getUom(), // {7}
+        };
+        try {
+            return String.format(title, varargs);
+        } catch (Exception e) {
+            String datasetId = metadata.getId();
+            LOGGER.info("Could not format title while prerendering dataset '{}'", datasetId, e);
+            return title; // return template as fallback
+        }
+    }
+
+    private DatasetOutput getTimeseriesMetadataOutput(String timeseriesId) {
+        for (DatasetOutput metadata : getMetadataOutputs()) {
+            if (metadata.getId().equals(timeseriesId)) {
+                return metadata;
+            }
+        }
+        return null;
     }
 
     protected List<? extends DatasetOutput> getMetadataOutputs() {

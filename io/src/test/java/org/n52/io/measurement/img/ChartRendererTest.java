@@ -30,6 +30,7 @@ package org.n52.io.measurement.img;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.n52.io.request.IoParameters.createDefaults;
 
 import java.util.Date;
 
@@ -39,9 +40,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
+import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.response.CategoryOutput;
+import org.n52.io.response.FeatureOutput;
+import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.PhenomenonOutput;
+import org.n52.io.response.PlatformOutput;
+import org.n52.io.response.PlatformType;
+import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 public class ChartRendererTest {
 
@@ -113,6 +127,55 @@ public class ChartRendererTest {
         assertThat(label, is("Time (UTC)"));
     }
 
+    @Test
+    public void
+            shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
+        
+        MeasurementDatasetOutput metadata = new MeasurementDatasetOutput(); 
+        SeriesParameters parameters = new SeriesParameters();
+        parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
+        parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
+        parameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
+        parameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
+        parameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
+        parameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
+        metadata.setSeriesParameters(parameters);
+        metadata.setId("timeseries");
+        metadata.setUom("");
+        
+        PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
+        platformOutput.setId("sta_1");
+        platformOutput.setLabel("station");
+        parameters.setPlatform(platformOutput);
+
+        // build expected title
+        StringBuilder expected = new StringBuilder();
+        expected.append(parameters.getPlatform().getLabel());
+        expected.append(" ").append(parameters.getPhenomenon().getLabel());
+        expected.append(" ").append(parameters.getProcedure().getLabel());
+//        expected.append(" ").append(parameters.getCategory().getLabel());
+        expected.append(" (4 opted-out)");
+        expected.append(" ").append(parameters.getOffering().getLabel());
+        expected.append(" ").append(parameters.getFeature().getLabel());
+        expected.append(" ").append(parameters.getService().getLabel());
+        expected.append(" ").append(metadata.getUom());
+
+        IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
+        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, ioConfig);
+        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+//        String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
+        String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
+        String actual = chartRenderer.formatTitle(metadata, template);
+        
+        assertThat(actual, is(expected.toString()));
+    }
+
+    private <T extends ParameterOutput> T createParameter(T output, String id, String label) {
+        output.setId(id);
+        output.setLabel(label);
+        return output;
+    }
+    
     static class MyChartRenderer extends ChartIoHandler {
 
         public MyChartRenderer(IoStyleContext context) {
