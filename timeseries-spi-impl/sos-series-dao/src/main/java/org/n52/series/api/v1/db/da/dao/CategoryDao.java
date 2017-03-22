@@ -74,7 +74,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(CategoryEntity.class, "c");
+        Criteria criteria = session.createCriteria(CategoryEntity.class, "category");
         if (hasTranslation(parameters, I18nCategoryEntity.class)) {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }

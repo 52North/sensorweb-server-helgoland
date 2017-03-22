@@ -107,7 +107,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("f")
+        Criteria criteria = getDefaultCriteria("feature")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }

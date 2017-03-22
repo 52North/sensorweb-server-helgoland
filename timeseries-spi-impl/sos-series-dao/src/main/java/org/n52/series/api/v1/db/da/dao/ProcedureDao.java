@@ -78,7 +78,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ProcedureEntity.class, "p")
+        Criteria criteria = session.createCriteria(ProcedureEntity.class, "procedure")
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);

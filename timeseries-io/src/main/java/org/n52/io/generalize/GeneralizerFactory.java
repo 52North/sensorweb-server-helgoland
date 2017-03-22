@@ -61,7 +61,7 @@ public class GeneralizerFactory {
             generalizer = new NoActionGeneralizer(parameters);
         }
 
-        LOG.info("Selected {} algorithm.", generalizer.getName());
+        LOG.debug("Selected {} algorithm.", generalizer.getName());
         return generalizer;
     }
 
