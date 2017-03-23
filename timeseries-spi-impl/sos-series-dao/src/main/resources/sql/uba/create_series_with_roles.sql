@@ -11,6 +11,7 @@
     s1.featureofinterestid,
     s1.observablepropertyid,
     s1.procedureid,
+    s1.procedureid as offeringid,
     s1.deleted,
     s1.published,
     s1.firsttimestamp,
