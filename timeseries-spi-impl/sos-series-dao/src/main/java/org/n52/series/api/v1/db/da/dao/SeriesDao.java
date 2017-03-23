@@ -36,11 +36,9 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -48,6 +46,7 @@ import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
+import org.n52.series.api.v1.db.da.beans.MergableBaseSeriesEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 public class SeriesDao extends AbstractDao<SeriesEntity> {
@@ -166,7 +165,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     @Override
     public int getCount() throws DataAccessException {
         Criteria criteria = session
-                .createCriteria(SeriesEntity.class)
+                .createCriteria(MergableBaseSeriesEntity.class)
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
