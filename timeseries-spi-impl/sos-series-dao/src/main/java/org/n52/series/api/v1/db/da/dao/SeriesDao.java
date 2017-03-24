@@ -100,11 +100,10 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @Override
-    public SeriesEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(SeriesEntity.class)
-                .add(eq("pkid", key));
-        addIgnoreNonPublishedSeriesTo(criteria);
-        return (SeriesEntity) criteria.uniqueResult();
+    public SeriesEntity getInstance(Long key, DbQuery query) throws DataAccessException {
+        return (SeriesEntity) getDefaultCriteria("series", query)
+                .add(eq(COLUMN_PKID, key))
+                .uniqueResult();
     }
 
     @Override
@@ -114,32 +113,29 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("series");
-        criteria = parameters.addDetachedFilters("", criteria);
-        parameters.addPagingTo(criteria);
+    public List<SeriesEntity> getAllInstances(DbQuery query) throws DataAccessException {
+        Criteria criteria = getDefaultCriteria("series", query);
+        criteria = query.addDetachedFilters("", criteria);
+        query.addPagingTo(criteria);
         return (List<SeriesEntity>) criteria.list();
     }
 
     @SuppressWarnings("unchecked")
     public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = getDefaultCriteria("series");
-        criteria.add(eq("feature.pkid", feature.getPkid()));
+        Criteria criteria = getDefaultCriteria("series")
+                .createAlias("feature", "f")
+                .add(Restrictions.eq("f.pkid", feature.getPkid()));
+//        criteria.add(eq("feature.pkid", feature.getPkid()));
         return (List<SeriesEntity>) criteria.list();
     }
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(SeriesEntity.class)
+        Criteria criteria = getDefaultCriteria("series")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
-    private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria) {
-        return addIgnoreNonPublishedSeriesTo(criteria, null);
-    }
-    
     @Override
     protected String getDefaultAlias() {
         return "series";
@@ -151,7 +147,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @Override
-    protected Criteria getDefaultCriteria(String alias) {
+    protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
         Criteria criteria = session.createCriteria(getEntityClass(), alias)
                 .createAlias("procedure", "p")
