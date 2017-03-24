@@ -41,13 +41,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class DesignedParameterSet extends ParameterSet {
 
-    private static int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_WIDTH = 800;
     
-    private static int DEFAULT_HEIGHT = 500;
+    private static final int DEFAULT_HEIGHT = 500;
     
-    private static boolean DEFAULT_GRID = true;
+    private static final boolean DEFAULT_GRID = true;
     
-    private static boolean DEFAULT_LEGEND = false;
+    private static final boolean DEFAULT_LEGEND = false;
+    
+    private static final String DEFAULT_TIMEZONE = "UTC";
     
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 

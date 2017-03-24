@@ -262,8 +262,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         StringBuilder sb = new StringBuilder();
         sb.append(phenomenon).append(" ");
         sb.append(procedure).append(", ");
-        sb.append(station).append(", ");
-        return sb.append(offering).toString();
+        // "old" labels when offering == procedure
+        return procedure.equals(offering)
+                ? sb.append(station).toString()
+                : sb.append(station).append(", ")
+                    .append(offering).toString();
     }
 
     private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query, Session session) throws DataAccessException {

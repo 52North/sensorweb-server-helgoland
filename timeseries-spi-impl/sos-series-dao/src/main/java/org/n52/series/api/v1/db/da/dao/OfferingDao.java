@@ -48,7 +48,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<OfferingEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(OfferingEntity.class);
+        Criteria criteria = getDefaultCriteria("offering");
         if (hasTranslation(query, I18nOfferingEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nOfferingEntity.class);
         }
@@ -63,7 +63,10 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
 
     @Override
     public OfferingEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (OfferingEntity) session.get(OfferingEntity.class, key);
+        return (OfferingEntity) getDefaultCriteria("offering")
+                .add(Restrictions.eqOrIsNull("pkid", key))
+                .uniqueResult();
+//        return (OfferingEntity) session.get(OfferingEntity.class, key);
     }
 
     @Override
@@ -74,7 +77,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<OfferingEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(OfferingEntity.class, "offering");
+        Criteria criteria = getDefaultCriteria("offering");
         if (hasTranslation(parameters, I18nOfferingEntity.class)) {
             parameters.addLocaleTo(criteria, I18nOfferingEntity.class);
         }
@@ -86,9 +89,16 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(OfferingEntity.class)
+        Criteria criteria = getDefaultCriteria("offering")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    }
+
+    private Criteria getDefaultCriteria(String alias) {
+        alias = alias != null ? alias : "feature";
+        return session.createCriteria(OfferingEntity.class, alias)
+                // Behave backwards compatible with ProcedureEntity when
+                // mapping is Procedure == Offering 
+                .add(Restrictions.eq("reference", Boolean.FALSE));
     }
 }
