@@ -31,8 +31,13 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
+import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 abstract class AbstractDao<T> implements GenericDao<T, Long> {
     
@@ -50,6 +55,22 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
     protected boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
+    }
+    
+    protected abstract String getDefaultAlias();
+    
+    protected abstract Class<?> getEntityClass();
+
+    protected Criteria getDefaultCriteria(String alias) {
+        alias = alias != null ? alias : getDefaultAlias();
+        String filterProperty = alias != null && !alias.isEmpty()
+                ? alias + ".pkid"
+                : "pkid";
+        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
+                .add(Restrictions.eq("published", Boolean.TRUE))
+                .setProjection(Projections.property(filterProperty));
+        return session.createCriteria(getEntityClass(), alias)
+                .add(Subqueries.propertyIn("pkid", filter));
     }
 
 }

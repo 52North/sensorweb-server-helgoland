@@ -30,9 +30,13 @@ package org.n52.io.v1.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * The chart style options for a timeseries.
  */
+@JsonInclude(Include.NON_NULL)
 public final class StyleProperties {
     
     /**
@@ -42,7 +46,7 @@ public final class StyleProperties {
     
     private Map<String, String> properties = new HashMap<>();
     
-    private Map<String, StyleProperties> referenceValueStyleProperties = new HashMap<>();
+    private Map<String, StyleProperties> referenceValueStyleProperties;
     
     private StyleProperties() {
         // use static constructor

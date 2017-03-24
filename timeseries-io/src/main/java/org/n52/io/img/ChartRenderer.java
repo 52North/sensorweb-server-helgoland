@@ -73,7 +73,6 @@ import org.joda.time.Interval;
 import org.n52.io.I18N;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
-import org.n52.io.IoParameters;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
 import org.n52.io.format.TvpDataCollection;

@@ -144,5 +144,15 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
+    
+    @Override
+    protected String getDefaultAlias() {
+        return "observation";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return ObservationEntity.class;
+    }
 
 }

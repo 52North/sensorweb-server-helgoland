@@ -52,7 +52,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(ProcedureEntity.class);
+        Criteria criteria = getDefaultCriteria("procedure");
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
@@ -67,7 +67,9 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     public ProcedureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (ProcedureEntity) session.get(ProcedureEntity.class, key);
+        return (ProcedureEntity) getDefaultCriteria("procedure")
+                .add(Restrictions.eq("pkid", key))
+                .uniqueResult();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(ProcedureEntity.class, "procedure")
+        Criteria criteria = getDefaultCriteria("procedure")
                 .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
@@ -91,10 +93,18 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(ProcedureEntity.class)
+        Criteria criteria = getDefaultCriteria("procedure")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
+    @Override
+    protected String getDefaultAlias() {
+        return "procedure";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return ProcedureEntity.class;
+    }
 }

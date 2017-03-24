@@ -768,6 +768,26 @@ public class IoParameters {
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
     }
+    
+    public boolean hasFilterParameters() {
+        return !(getCategories().isEmpty()
+                && getCategory() != null
+                && getServices().isEmpty()
+                && getService() != null
+                && getOffering().isEmpty()
+                && getOffering() != null
+                && getFeatures().isEmpty()
+                && getFeature() != null
+                && getProcedures().isEmpty()
+                && getProcedure() != null
+                && getPhenomena().isEmpty()
+                && getPhenomenon() != null
+                && getStations().isEmpty()
+                && getStation() != null
+                && getTimeseries().isEmpty());
+                
+    }
+    
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)

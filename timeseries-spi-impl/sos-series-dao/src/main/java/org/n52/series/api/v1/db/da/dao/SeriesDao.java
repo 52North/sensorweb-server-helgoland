@@ -68,7 +68,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
          */
 
         List<SeriesEntity> series = new ArrayList<SeriesEntity>();
-        Criteria criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        Criteria criteria = getDefaultCriteria("series");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
 
         if (hasTranslation(query, I18nFeatureEntity.class)) {
@@ -78,7 +78,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         series.addAll(featureCriteria.list());
         
         // reset criteria
-        criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        criteria = getDefaultCriteria("series");
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
         if (hasTranslation(query, I18nProcedureEntity.class)) {
             procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
@@ -87,7 +87,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         series.addAll(procedureCriteria.list());
 
         // reset criteria
-        criteria = addIgnoreNonPublishedSeriesTo(session.createCriteria(SeriesEntity.class));
+        criteria = getDefaultCriteria("series");
         Criteria offeringCriteria = criteria.createCriteria("offering", LEFT_OUTER_JOIN);
         if (hasTranslation(query, I18nOfferingEntity.class)) {
             offeringCriteria = query.addLocaleTo(offeringCriteria, I18nOfferingEntity.class);
@@ -138,15 +138,13 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<SeriesEntity> getAllInstances(DbQuery query) throws DataAccessException {
-        Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
+        Criteria criteria = getDefaultCriteria("series");
+        addIgnoreNonPublishedSeriesTo(criteria, "series");
         if ( !query.getParameters().containsParameter("merge_roles")) {
             query = DbQuery.createFrom(query.getParameters()
                     .extendWith("merge_roles", "master"));
         }
         addMergeRoles(criteria, query);
-        criteria.createCriteria("procedure")
-                .add(eq("reference", false));
 
         criteria = query.addDetachedFilters("", criteria);
         query.addPagingTo(criteria);
@@ -155,10 +153,8 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @SuppressWarnings("unchecked")
     public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = session.createCriteria(SeriesEntity.class, "s");
-        addIgnoreNonPublishedSeriesTo(criteria, "s");
-        criteria.createCriteria("feature", LEFT_OUTER_JOIN)
-                .add(eq(COLUMN_PKID, feature.getPkid()));
+        Criteria criteria = getDefaultCriteria("series");
+        criteria.add(eq("feature.pkid", feature.getPkid()));
         return (List<SeriesEntity>) criteria.list();
     }
 
@@ -172,6 +168,26 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria) {
         return addIgnoreNonPublishedSeriesTo(criteria, null);
+    }
+    
+    @Override
+    protected String getDefaultAlias() {
+        return "series";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return SeriesEntity.class;
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria(String alias) {
+        alias = alias != null ? alias : getDefaultAlias();
+        Criteria criteria = session.createCriteria(getEntityClass(), alias)
+                .createAlias("procedure", "p")
+                .add(eq("p.reference", Boolean.FALSE));
+        addIgnoreNonPublishedSeriesTo(criteria, alias);
+        return criteria;
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
