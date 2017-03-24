@@ -27,24 +27,17 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
-import static org.hibernate.criterion.Projections.projectionList;
-import static org.hibernate.criterion.Projections.property;
-import static org.hibernate.criterion.Restrictions.eqOrIsNull;
-
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
-import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
@@ -63,16 +56,6 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         return criteria.list();
     }
 
-    private Criteria getDefaultCriteria(String alias) {
-        alias = alias != null ? alias : "feature";
-        DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
-                .add(eqOrIsNull("published", Boolean.TRUE));
-        DetachedCriteria projection = filter.setProjection(projectionList().add(property(alias)));
-        Criteria criteria = session.createCriteria(FeatureEntity.class, alias)
-                .add(Subqueries.propertyIn(alias + ".pkid", projection));
-        return criteria;
-    }
-    
     @Override
     public FeatureEntity getInstance(Long key) throws DataAccessException {
         return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
@@ -112,4 +95,14 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
+    @Override
+    protected String getDefaultAlias() {
+        return "feature";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return FeatureEntity.class;
+    }
+    
 }

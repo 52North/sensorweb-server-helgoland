@@ -94,11 +94,20 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
-    private Criteria getDefaultCriteria(String alias) {
-        alias = alias != null ? alias : "feature";
-        return session.createCriteria(OfferingEntity.class, alias)
-                // Behave backwards compatible with ProcedureEntity when
-                // mapping is Procedure == Offering 
-                .add(Restrictions.eq("reference", Boolean.FALSE));
+    @Override
+    protected String getDefaultAlias() {
+        return "offering";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return OfferingEntity.class;
+    }
+    
+    protected Criteria getDefaultCriteria(String alias) {
+        Criteria criteria = super.getDefaultCriteria(alias);
+        // Behave backwards compatible with ProcedureEntity
+        // in cases where mapping is Procedure == Offering 
+        return criteria.add(Restrictions.eq("reference", Boolean.FALSE));
     }
 }
