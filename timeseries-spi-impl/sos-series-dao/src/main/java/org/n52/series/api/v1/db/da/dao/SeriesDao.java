@@ -44,6 +44,7 @@ import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
+import org.n52.series.api.v1.db.da.beans.MergableBaseSeriesEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 public class SeriesDao extends AbstractDao<SeriesEntity> {

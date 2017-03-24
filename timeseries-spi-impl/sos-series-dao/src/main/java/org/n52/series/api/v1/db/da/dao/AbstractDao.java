@@ -27,6 +27,10 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.n52.io.IoParameters.createDefaults;
+import static org.n52.series.api.v1.db.da.DbQuery.createFrom;
+
 import java.util.List;
 import java.util.Set;
 
