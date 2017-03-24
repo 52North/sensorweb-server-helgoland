@@ -10,5 +10,6 @@
         <property name="domainId" column="identifier" type="string" insert="false" update="false"/>
         <property name="name" column="name" type="string" />
         <property name="description" column="description" type="string"/>
+        <property name="reference" column="referenceflag" type="org.hibernate.type.TrueFalseType" />
     </class>
 </hibernate-mapping>
