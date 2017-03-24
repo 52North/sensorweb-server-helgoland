@@ -48,7 +48,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(CategoryEntity.class);
+        Criteria criteria = getDefaultCriteria("category");
         if (hasTranslation(query, I18nCategoryEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
@@ -63,7 +63,10 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     public CategoryEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (CategoryEntity) session.get(CategoryEntity.class, key);
+        return (CategoryEntity) getDefaultCriteria("category")
+                .add(Restrictions.eq("pkid", key))
+                .uniqueResult();
+//        return (CategoryEntity) session.get(CategoryEntity.class, key);
     }
     
     @Override
@@ -74,7 +77,7 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<CategoryEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(CategoryEntity.class, "category");
+        Criteria criteria = getDefaultCriteria("category");
         if (hasTranslation(parameters, I18nCategoryEntity.class)) {
             parameters.addLocaleTo(criteria, I18nCategoryEntity.class);
         }
@@ -86,10 +89,18 @@ public class CategoryDao extends AbstractDao<CategoryEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(CategoryEntity.class)
+        Criteria criteria = getDefaultCriteria("category")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
+    @Override
+    protected String getDefaultAlias() {
+        return "category";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return CategoryEntity.class;
+    }
 }

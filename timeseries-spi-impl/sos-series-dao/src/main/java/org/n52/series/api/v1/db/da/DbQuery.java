@@ -132,6 +132,11 @@ public class DbQuery {
     }
     
     public Criteria addDetachedFilters(String propertyName, Criteria criteria) {
+        
+        if ( !parameters.hasFilterParameters()) {
+            return criteria;
+        }
+        
         String projectionProperty = propertyName != null && !propertyName.isEmpty()
                         ? propertyName
                         : "pkid";

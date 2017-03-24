@@ -48,14 +48,14 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> find(String search, DbQuery query) {
-        Criteria criteria = session.createCriteria(PhenomenonEntity.class);
+        Criteria criteria = getDefaultCriteria("phenomenon");
         if (hasTranslation(query, I18nPhenomenonEntity.class)) {
             criteria = query.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
         criteria.add(Restrictions.ilike("name", "%" + search + "%"));
         return criteria.list();
     }
-    
+
     @Override
     public PhenomenonEntity getInstance(Long key) throws DataAccessException {
         return getInstance(key, DbQuery.createFrom(IoParameters.createDefaults()));
@@ -63,7 +63,10 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
     @Override
     public PhenomenonEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (PhenomenonEntity) session.get(PhenomenonEntity.class, key);
+        return (PhenomenonEntity) getDefaultCriteria("phenomenon")
+                .add(Restrictions.eq("pkid", key))
+                .uniqueResult();
+//        return (PhenomenonEntity) session.get(PhenomenonEntity.class, key);
     }
     
     @Override
@@ -74,7 +77,7 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<PhenomenonEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = session.createCriteria(PhenomenonEntity.class, "phenomenon");
+        Criteria criteria = getDefaultCriteria("phenomenon");
         if (hasTranslation(parameters, I18nPhenomenonEntity.class)) {
             parameters.addLocaleTo(criteria, I18nPhenomenonEntity.class);
         }
@@ -86,10 +89,20 @@ public class PhenomenonDao extends AbstractDao<PhenomenonEntity> {
 
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = session
-                .createCriteria(PhenomenonEntity.class)
+        Criteria criteria = getDefaultCriteria("phenomenon")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
 
+
+    @Override
+    protected String getDefaultAlias() {
+        return "phenomenon";
+    }
+
+    @Override
+    protected Class<?> getEntityClass() {
+        return PhenomenonEntity.class;
+    }
+    
 }
