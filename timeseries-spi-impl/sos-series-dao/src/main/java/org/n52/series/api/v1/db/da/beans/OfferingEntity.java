@@ -29,6 +29,20 @@ package org.n52.series.api.v1.db.da.beans;
 
 public class OfferingEntity extends DescribableEntity<I18nOfferingEntity> {
 
+    /*
+     *  Behave backwards compatible with ProcedureEntity when
+     *  mapping is Procedure == Offering 
+     */
+    private boolean reference;
+
+    public boolean isReference() {
+        return reference;
+    }
+
+    public void setReference(boolean reference) {
+        this.reference = reference;
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
