@@ -27,7 +27,12 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.n52.io.IoParameters.createDefaults;
+import static org.n52.series.api.v1.db.da.DbQuery.createFrom;
+
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -62,12 +67,32 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
     protected abstract Class<?> getEntityClass();
 
     protected Criteria getDefaultCriteria(String alias) {
+        return getDefaultCriteria(alias, createFrom(createDefaults()));
+    }
+    
+    protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
+//        DetachedCriteria filter = createSeriesSubQuery(alias, query);
+        DetachedCriteria filter = createSeriesSubQueryViaExplicitJoin(alias, query);
+        return session.createCriteria(getEntityClass(), alias)
+                .add(Subqueries.propertyIn("pkid", filter));
+    }
+
+    private DetachedCriteria createSeriesSubQueryViaExplicitJoin(String alias, DbQuery query) {
+        return DetachedCriteria.forClass(SeriesEntity.class)
+                .add(Restrictions.eq("published", Boolean.TRUE))
+                .createAlias(alias, "ref")
+                .setProjection(Projections.property("ref.pkid"));
+    }
+
+    private DetachedCriteria createSeriesSubQuery(String alias, DbQuery query) {
         String filterProperty = alias != null && !alias.isEmpty()
                 ? alias + ".pkid"
                 : "pkid";
         DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
+        return DetachedCriteria.forClass(SeriesEntity.class)
                 .add(Restrictions.eq("published", Boolean.TRUE))
+                // XXX NPE when filterProperty is mapped by formula
                 .setProjection(Projections.property(filterProperty));
         return session.createCriteria(getEntityClass(), alias)
                 .add(Subqueries.propertyIn("pkid", filter));

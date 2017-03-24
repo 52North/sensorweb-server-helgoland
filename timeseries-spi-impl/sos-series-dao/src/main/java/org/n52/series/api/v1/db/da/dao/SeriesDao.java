@@ -39,6 +39,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -108,7 +109,9 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 .add(eq("pkid", key));
         addMergeRoles(criteria, query);
         addIgnoreNonPublishedSeriesTo(criteria);
-        return (SeriesEntity) criteria.uniqueResult();
+        return (SeriesEntity) getDefaultCriteria("series", query)
+                .add(eq(COLUMN_PKID, key))
+                .uniqueResult();
     }
     
 
@@ -145,7 +148,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                     .extendWith("merge_roles", "master"));
         }
         addMergeRoles(criteria, query);
-
+        Criteria criteria = getDefaultCriteria("series", query);
         criteria = query.addDetachedFilters("", criteria);
         query.addPagingTo(criteria);
         return (List<SeriesEntity>) criteria.list();
@@ -155,6 +158,10 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
         Criteria criteria = getDefaultCriteria("series");
         criteria.add(eq("feature.pkid", feature.getPkid()));
+        Criteria criteria = getDefaultCriteria("series")
+                .createAlias("feature", "f")
+                .add(Restrictions.eq("f.pkid", feature.getPkid()));
+//        criteria.add(eq("feature.pkid", feature.getPkid()));
         return (List<SeriesEntity>) criteria.list();
     }
 
@@ -181,7 +188,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @Override
-    protected Criteria getDefaultCriteria(String alias) {
+    protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
         Criteria criteria = session.createCriteria(getEntityClass(), alias)
                 .createAlias("procedure", "p")
