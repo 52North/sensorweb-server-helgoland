@@ -27,10 +27,6 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.n52.io.IoParameters.createDefaults;
-import static org.n52.series.api.v1.db.da.DbQuery.createFrom;
-
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +62,6 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
     protected abstract String getDefaultAlias();
     
     protected abstract Class<?> getEntityClass();
-
 
     protected Criteria getDefaultCriteria(String alias) {
         return getDefaultCriteria(alias, createFrom(createDefaults()));
