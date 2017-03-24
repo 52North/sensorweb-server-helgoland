@@ -104,7 +104,7 @@ public class ChartRendererTest {
         context.getChartStyleDefinitions().setTimespan(null);
         MyChartRenderer chartRenderer = new MyChartRenderer(context);
         String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-        //assertThat(label, is("Time (+01:00)"));
+        assertThat(label, is("Time (+01:00)"));
     }
 
     @Test
