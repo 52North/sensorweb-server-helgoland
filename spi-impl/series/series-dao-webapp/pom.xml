@@ -166,13 +166,6 @@
                                 <outputDirectory>${webappDirectory}</outputDirectory>
                                 <overWrite>false</overWrite>
                             </artifactItem>
-<!--                             <artifactItem> 
-                                 <groupId>${project.groupId}</groupId> 
-                                 <artifactId>series-mappings</artifactId> 
-                                 <includes>hbm/**</includes> 
-                                 <outputDirectory>${project.build.outputDirectory}</outputDirectory> 
-                                 <overWrite>true</overWrite> 
-                             </artifactItem> -->
                         </artifactItems>
                         <overWriteReleases>false</overWriteReleases>
                     </configuration>
