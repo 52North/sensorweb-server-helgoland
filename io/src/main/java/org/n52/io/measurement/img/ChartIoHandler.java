@@ -74,6 +74,7 @@ import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
+import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
@@ -263,8 +264,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         RequestStyledParameterSet config = getChartStyleDefinitions();
         if (config.containsParameter("title")) {
             String title = config.getAsString("title");
-            if (config.containsParameter("rendering_trigger")) {
-                String trigger = config.getAsString("rendering_trigger");
+            if (config.containsParameter(Parameters.RENDERING_TRIGGER)) {
+                String trigger = config.getAsString(Parameters.RENDERING_TRIGGER);
                 title = "prerendering".equalsIgnoreCase(trigger)
                         ? getTitleForSingle(config, title)
                         : title;
