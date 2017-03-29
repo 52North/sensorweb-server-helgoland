@@ -74,7 +74,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
     private static final String COLUMN_DELETED = "deleted";
 
     private static final String COLUMN_RESULTTIME = "resultTime";
-    
+
     private static final String COLUMN_TIMESTART = "timestart";
 
     private static final String COLUMN_TIMEEND = "timeend";
@@ -198,7 +198,7 @@ public class DataDao<T extends DataEntity> extends AbstractDao<T> {
         DetachedCriteria filter = forClass(DatasetEntity.class)
                 .setProjection(projectionList().add(property("pkid")));
         criteria.add(Subqueries.propertyIn(COLUMN_SERIES_PKID, filter));
-        
+
         IoParameters parameters = query.getParameters();
         if ( !parameters.containsParameter(Parameters.RESULTTIME)) {
             List<T> list = criteria.list();
