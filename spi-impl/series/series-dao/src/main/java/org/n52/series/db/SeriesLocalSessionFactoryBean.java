@@ -10,7 +10,7 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 
 public class SeriesLocalSessionFactoryBean extends LocalSessionFactoryBean {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SeriesLocalSessionFactoryBean.class);
 
     private static final String JDBC_TIME_ZONE = "jdbc.time.zone";
@@ -25,7 +25,7 @@ public class SeriesLocalSessionFactoryBean extends LocalSessionFactoryBean {
     private ZonalTimestampType createZonalTimestampType(Properties properties) {
         return new ZonalTimestampType(createTimeZone(properties));
     }
-    
+
     private TimeZone createTimeZone(Properties properties) {
         String zone = properties.containsKey(JDBC_TIME_ZONE)
             ? properties.getProperty(JDBC_TIME_ZONE)
