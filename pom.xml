@@ -57,10 +57,10 @@
     
         <sensorwebclient.version>3.2.0</sensorwebclient.version>
         <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
-        <logback.version>1.1.3</logback.version>
+        <logback.version>1.2.1</logback.version>
         <jackson.version>2.7.3</jackson.version>
         <geotools.version>14.0</geotools.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <slf4j.version>1.7.24</slf4j.version>
         <hamcrest.version>1.3</hamcrest.version>
 
         <java.compiler.source>1.8</java.compiler.source>
@@ -93,7 +93,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.8.2</version>
+                <version>2.9.7</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -265,7 +265,7 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.1.7</version>
+                <version>2.2.3</version>
             </dependency>
 
             <dependency>
@@ -276,7 +276,7 @@
             <dependency>
                 <groupId>org.jfree</groupId>
                 <artifactId>jcommon</artifactId>
-                <version>1.0.23</version>
+                <version>1.0.24</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
@@ -297,7 +297,7 @@
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
-                <version>2.7.0</version>
+                <version>2.7.2</version>
                 <exclusions>
                     <exclusion>
                         <!-- uses older xml-apis than other fop dependencies -->
@@ -337,7 +337,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
 
             <dependency>
@@ -381,6 +381,12 @@
                 <artifactId>commons-logging</artifactId>
                 <version>1.2</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -561,20 +567,20 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.0.2</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.0.0</version>
                 </plugin>
 
                 <plugin>
                     <!-- license headers -->
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>2.11</version>
+                    <version>3.0</version>
                     <configuration>
                         <header>misc/52N_license-header.txt</header>
                         <properties>
@@ -602,7 +608,7 @@
                     <!-- dependencies' licenses -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.8</version>
+                    <version>1.12</version>
                     <configuration>
                         <useMissingFile>true</useMissingFile>
                         <fileTemplate>misc/license-as-csv.ftl</fileTemplate>
@@ -651,7 +657,7 @@
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.1</version>
+                    <version>2.2.2</version>
                     <configuration>
                         <dateFormat>yyyy-MM-dd HH:mm:ssZ</dateFormat>
                         <gitDescribe>
@@ -666,7 +672,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.3</version>
+                    <version>3.6.1</version>
                     <configuration>
                         <source>${java.compiler.source}</source>
                         <target>${java.compiler.target}</target>
@@ -677,7 +683,7 @@
 
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>2.5.3</version>
                     <configuration>
                         <preparationGoals>clean</preparationGoals>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -687,7 +693,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.0.0</version>
                     <configuration>
                         <descriptors>
                             <descriptor>src/main/assembly/release.xml</descriptor>
