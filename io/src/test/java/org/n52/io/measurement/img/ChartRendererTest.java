@@ -130,8 +130,8 @@ public class ChartRendererTest {
     @Test
     public void
             shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
-        
-        MeasurementDatasetOutput metadata = new MeasurementDatasetOutput(); 
+
+        MeasurementDatasetOutput metadata = new MeasurementDatasetOutput();
         SeriesParameters parameters = new SeriesParameters();
         parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
         parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
@@ -142,7 +142,7 @@ public class ChartRendererTest {
         metadata.setSeriesParameters(parameters);
         metadata.setId("timeseries");
         metadata.setUom("");
-        
+
         PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
         platformOutput.setId("sta_1");
         platformOutput.setLabel("station");
@@ -166,7 +166,7 @@ public class ChartRendererTest {
 //        String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
         String actual = chartRenderer.formatTitle(metadata, template);
-        
+
         assertThat(actual, is(expected.toString()));
     }
 
@@ -175,7 +175,7 @@ public class ChartRendererTest {
         output.setLabel(label);
         return output;
     }
-    
+
     static class MyChartRenderer extends ChartIoHandler {
 
         public MyChartRenderer(IoStyleContext context) {
