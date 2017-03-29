@@ -164,7 +164,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     }
 
     /**
-     * @return
+     * @return the first value
      * @deprecated since 2.0.0, use {@link #getFirstValueAt()}
      */
     @Deprecated
@@ -173,7 +173,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     }
 
     /**
-     * @param firstValue
+     * @param firstValue the first value
      * @deprecated since 2.0.0, use {@link #setFirstValueAt(Date)}
      */
     @Deprecated
@@ -182,7 +182,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     }
 
     /**
-     * @return
+     * @return the last value
      * @deprecated since 2.0.0, use {@link #getLastValueAt()}
      */
     @Deprecated
@@ -191,7 +191,7 @@ public class DatasetEntity<T extends DataEntity<?>> extends DescribableEntity {
     }
 
     /**
-     * @param lastValue
+     * @param lastValue the last value
      * @deprecated since 2.0.0, use {@link #setLastValueAt(Date)}
      */
     @Deprecated

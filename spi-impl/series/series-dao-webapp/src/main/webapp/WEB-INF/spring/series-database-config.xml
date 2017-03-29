@@ -30,7 +30,7 @@
         <property name="driverClass" value="${series.database.driver}" />
     </bean>
 
-    <bean id="seriesSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <bean id="seriesSessionFactory" class="org.n52.series.db.SeriesLocalSessionFactoryBean">
         <property name="dataSource" ref="seriesDatasource" />
         <property name="hibernateProperties">
             <props>
@@ -38,6 +38,7 @@
                 <prop key="hibernate.default_schema">${series.database.schema.default}</prop>
                 <prop key="hibernate.hbm2ddl.auto">${series.hibernate.hbm2ddl.auto}</prop>
                 <prop key="hibernate.format_sql">true</prop>
+                <prop key="jdbc.time.zone">${series.database.timezone}</prop>
             </props>
         </property>
         <property name="mappingLocations" value="#{'${series.database.mappings}'.split(',')}" />
