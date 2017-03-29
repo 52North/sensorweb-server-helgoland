@@ -204,6 +204,17 @@ public interface Parameters {
      */
     public static final String DEFAULT_FORMAT = "tvp";
 
+
+    /**
+     * Determines if what event causes a rendering task.
+     */
+    static final String RENDERING_TRIGGER = "rendering_trigger";
+
+    /**
+     * Default event causing a rendering task.
+     */
+    static final String DEFAULT_RENDERING_TRIGGER = "request";
+
     /**
      * Determines the style parameter
      */
