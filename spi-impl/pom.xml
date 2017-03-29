@@ -12,7 +12,6 @@
 
     <modules>
         <module>series</module>
-        <module>dwd</module>
     </modules>
 
     <build>
