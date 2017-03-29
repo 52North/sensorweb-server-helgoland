@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2016 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -59,11 +59,13 @@ public class PrerenderingJobConfig {
         this.phenomenonStyles = phenomenonStyles;
     }
 
+    // keep for backwards compatibility
     @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
         return seriesStyles;
     }
 
+    // keep for backwards compatibility
     @Deprecated
     public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
         this.seriesStyles = timeseriesStyles;
@@ -73,8 +75,8 @@ public class PrerenderingJobConfig {
         return seriesStyles;
     }
 
-    public void setSeriesStyles(List<RenderingConfig> timeseriesStyles) {
-        this.seriesStyles = timeseriesStyles;
+    public void setSeriesStyles(List<RenderingConfig> seriesStyles) {
+        this.seriesStyles = seriesStyles;
     }
 
     public static class RenderingConfig {
