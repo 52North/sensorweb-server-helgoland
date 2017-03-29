@@ -46,7 +46,7 @@ import org.hibernate.type.descriptor.java.JdbcTimestampTypeDescriptor;
  * specifies ZonalTimestampTypeDescriptor as the SqlTypeDescriptor so that times
  * from the database can be configured to have a specific timezone.
  *
- * @see <a 
+ * @see <a
  *      href="https://github.com/52North/SOS/blob/8e448e79788abeb8e817be7819e46aa54adc55cc/hibernate/session-factory/src/main/java/org/n52/sos/ds/hibernate/type/UtcTimestampType.java">UtcTimestampType</a>
  * @see <a
  *      href="http://stackoverflow.com/questions/508019/jpa-hibernate-store-date-in-utc-time-zone/3430957#3430957">http://stackoverflow.com/questions/508019/jpa-hibernate-store-date-in-utc-time-zone/3430957#3430957</a>

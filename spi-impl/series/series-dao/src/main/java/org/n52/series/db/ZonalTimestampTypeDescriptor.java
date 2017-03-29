@@ -90,8 +90,7 @@ public class ZonalTimestampTypeDescriptor extends TimestampTypeDescriptor {
             @Override
             protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options)
                     throws SQLException {
-                st.setTimestamp(index, javaTypeDescriptor.unwrap(value, Timestamp.class, options),
-                        zonalCalendar);
+                st.setTimestamp(index, javaTypeDescriptor.unwrap(value, Timestamp.class, options), zonalCalendar);
             }
         };
     }
@@ -101,20 +100,21 @@ public class ZonalTimestampTypeDescriptor extends TimestampTypeDescriptor {
         return new BasicExtractor<X>(javaTypeDescriptor, this) {
             @Override
             protected X doExtract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
-            	if (rs.getObject(name) != null) {
-            		return javaTypeDescriptor.wrap(rs.getTimestamp(name, zonalCalendar), options);
-            	}
-            	return null;
+                if (rs.getObject(name) != null) {
+                    return javaTypeDescriptor.wrap(rs.getTimestamp(name, zonalCalendar), options);
+                }
+                return null;
             }
 
             @Override
             protected X doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
-                    return javaTypeDescriptor.wrap( statement.getTimestamp( index , zonalCalendar), options );
+                return javaTypeDescriptor.wrap(statement.getTimestamp(index, zonalCalendar), options);
             }
 
             @Override
-            protected X doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
-                    return javaTypeDescriptor.wrap( statement.getTimestamp( name, zonalCalendar ), options );
+            protected X doExtract(CallableStatement statement, String name, WrapperOptions options)
+                    throws SQLException {
+                return javaTypeDescriptor.wrap(statement.getTimestamp(name, zonalCalendar), options);
             }
         };
     }
