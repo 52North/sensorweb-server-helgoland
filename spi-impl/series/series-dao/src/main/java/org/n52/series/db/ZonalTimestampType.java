@@ -50,7 +50,7 @@ import org.hibernate.type.descriptor.java.JdbcTimestampTypeDescriptor;
  * @see <a
  *      href="http://stackoverflow.com/questions/508019/jpa-hibernate-store-date-in-utc-time-zone/3430957#3430957">http://stackoverflow.com/questions/508019/jpa-hibernate-store-date-in-utc-time-zone/3430957#3430957</a>
  *
- * @author <a href="mailto:h.bredel@52north.org>Henning Bredel</a>
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  *
  * @since 2.0.0
  */
