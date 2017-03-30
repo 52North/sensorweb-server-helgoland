@@ -26,46 +26,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.series.spi.srv;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.n52.io.v1.data.RawFormats;
+public interface RawFormats {
 
-public class ProcedureOutput extends HierarchicalParameterOutput implements RawFormats {
+    static final String RAW_FORMAT = "rawFormat";
 
-    private Set<String> rawFormats;
+    /**
+     * @return the rawFormats
+     */
+    String[] getRawFormats();
 
-    @Override
-    public String[] getRawFormats() {
-        if (rawFormats != null) {
-            return rawFormats.toArray(new String[0]);
-        }
-        return null;
-    }
+    /**
+     * @param rawFormat the rawFormat to add
+     */
+    void addRawFormat(String rawFormat);
 
-    @Override
-    public void addRawFormat(String format) {
-        if (format != null && !format.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
-            }
-            rawFormats.add(format);
-        }
-    }
-
-    @Override
-    public void setRawFormats(Collection<String> formats) {
-        if (formats != null && !formats.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<String>();
-            } else {
-                rawFormats.clear();
-            }
-            this.rawFormats.addAll(formats);
-        }
-    }
+    /**
+     * @param rawFormats the rawFormats to set
+     */
+    void setRawFormats(Collection<String> rawFormats);
 
 }

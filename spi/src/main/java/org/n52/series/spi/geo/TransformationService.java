@@ -35,13 +35,16 @@ import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.request.IoParameters;
-import org.n52.web.exception.BadQueryParameterException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 public class TransformationService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
 
     public Geometry transform(Geometry geometry, IoParameters query) {
         String crs = query.getCrs();
@@ -59,7 +62,8 @@ public class TransformationService {
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {
-            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
+            LOGGER.debug("Couldn't create geometry factory", e);
+            return geometry;
         }
     }
 
@@ -85,7 +89,7 @@ public class TransformationService {
         } catch (TransformException e) {
             throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
         } catch (FactoryException e) {
-            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
+            LOGGER.debug("Couldn't create geometry factory", e);
         }
     }
 

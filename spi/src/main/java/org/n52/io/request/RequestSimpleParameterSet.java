@@ -29,7 +29,7 @@
 package org.n52.io.request;
 
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.v1.data.RawFormats;
+import org.n52.series.spi.srv.RawFormats;
 
 public class RequestSimpleParameterSet extends RequestParameterSet {
 

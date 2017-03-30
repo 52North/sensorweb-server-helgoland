@@ -116,13 +116,13 @@ public class IoParametersTest {
     @Test
     public void when_defaults_then_valuesFromDefaultConfigFile() {
         IoParameters parameters = createDefaults();
-        assertThat(parameters.getChartDimension().getWidth(), is(2000));
+        assertThat(parameters.getWidth(), is(2000));
     }
 
     @Test
     public void when_createdWithConfig_then_widthIsOfAppropriateValue() throws URISyntaxException {
         IoParameters parameters = createDefaults(getAlternativeConfigFile());
-        assertThat(parameters.getChartDimension().getWidth(), is(1000));
+        assertThat(parameters.getWidth(), is(1000));
     }
 
     @Test

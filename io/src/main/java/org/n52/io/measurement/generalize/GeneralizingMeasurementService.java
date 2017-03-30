@@ -26,16 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.io.measurement.generalize;
 
 import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
 import static org.n52.io.request.IoParameters.createFromQuery;
 
-import org.n52.io.measurement.generalize.Generalizer;
-import org.n52.io.measurement.generalize.GeneralizerException;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
+import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.RawDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,13 +43,13 @@ import org.slf4j.LoggerFactory;
  * Composes a {@link DataService} instance to generalize requested
  * timeseries data.
  */
-public class GeneralizingMeasurementDataService implements DataService<MeasurementData> {
+public class GeneralizingMeasurementService implements DataService<MeasurementData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingMeasurementDataService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingMeasurementService.class);
 
     private final DataService<MeasurementData> composedService;
 
-    public GeneralizingMeasurementDataService(DataService<MeasurementData> toCompose) {
+    public GeneralizingMeasurementService(DataService<MeasurementData> toCompose) {
         this.composedService = toCompose;
     }
 
@@ -83,7 +83,7 @@ public class GeneralizingMeasurementDataService implements DataService<Measureme
     }
 
     public static DataService<MeasurementData> composeDataService(DataService<MeasurementData> toCompose) {
-        return new GeneralizingMeasurementDataService(toCompose);
+        return new GeneralizingMeasurementService(toCompose);
     }
 
     @Override

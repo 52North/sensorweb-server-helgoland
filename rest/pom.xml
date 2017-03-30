@@ -9,11 +9,14 @@
     <artifactId>rest</artifactId>
     <packaging>jar</packaging>
     <name>Series REST API - REST module</name>
-    <url>http://52north.org/communities/sensorweb/</url>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>spi</artifactId>
         </dependency>
 
         <dependency>

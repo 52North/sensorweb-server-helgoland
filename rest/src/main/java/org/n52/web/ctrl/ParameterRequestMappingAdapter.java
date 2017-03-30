@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
-import org.n52.io.v1.data.RawFormats;
+import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

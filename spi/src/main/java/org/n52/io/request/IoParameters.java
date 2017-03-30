@@ -56,7 +56,6 @@ import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
-import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.response.BBox;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
@@ -161,22 +160,11 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the chart dimensions. If {@value #WIDTH} and {@value #HEIGHT}
-     * parameters are missing the defaults are used:
-     * <code>width=</code>{@value #DEFAULT_WIDTH}, <code>height=</code>
-     * {@value #DEFAULT_HEIGHT}
-     * @throws IoParseException if parsing parameter fails.
-     */
-    public ChartDimension getChartDimension() {
-        return new ChartDimension(getWidth(), getHeight());
-    }
-
-    /**
      * @return the requested chart width in pixels or the default
      * {@value #DEFAULT_WIDTH}.
      * @throws IoParseException if parsing parameter fails.
      */
-    private int getWidth() {
+    public int getWidth() {
         return getAsInteger(WIDTH, DEFAULT_WIDTH);
     }
 
@@ -187,7 +175,7 @@ public class IoParameters implements Parameters {
      * {@value #DEFAULT_HEIGHT}.
      * @throws IoParseException if parsing parameter fails.
      */
-    private int getHeight() {
+    public int getHeight() {
         return getAsInteger(HEIGHT, DEFAULT_HEIGHT);
     }
 

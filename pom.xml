@@ -18,6 +18,7 @@
     <modules>
         <module>io</module>
         <module>rest</module>
+        <module>spi</module>
     </modules>
 
     <organization>
@@ -73,6 +74,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>io</artifactId>
@@ -502,7 +508,7 @@
                         <id>check-license</id>
                         <phase>initialize</phase>
                         <goals>
-                            <goal>check</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
