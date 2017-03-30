@@ -39,6 +39,8 @@ import org.n52.io.MimeType;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
 import static org.n52.io.MimeType.TEXT_CSV;
+import static org.n52.io.measurement.generalize.GeneralizingMeasurementService.composeDataService;
+
 import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
 import org.n52.io.measurement.format.FormatterFactory;
 import org.n52.io.measurement.img.ChartIoHandler;
@@ -50,7 +52,6 @@ import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.series.spi.srv.DataService;
-import static org.n52.series.spi.srv.GeneralizingMeasurementDataService.composeDataService;
 
 public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
 

@@ -345,7 +345,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         // set flag to mark this config comes from prerendering
         configuration.put(IoParameters.RENDERING_TRIGGER, "prerendering");
-        
+
         try {
             ObjectMapper om = new ObjectMapper();
             configuration.put("style", om.writeValueAsString(renderingConfig.getStyle()));

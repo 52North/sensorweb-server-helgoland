@@ -1,39 +1,30 @@
-# Changelog
+# 2.x
 
-## 2.x
+## 2.0.0
 
-### 2.0.0
+### Changes
+- extend interface to allow multiple types of sensor platforms and observations
+- `offering` and `procedure` are now hierarchical
+- result time extension
+- SOS `om:parameter`s are added to `feature`/`platform`
+- SOS observation parameters are mapped to data output
+- separated impl projects (fotoquest and dwd) to own repositories
+- `service` is now a full qualified entity
+- pluralized filter parameters
+- output includes href property
 
-#### Web API Extension
-The platform resource is more generic and the following platform types are available now: 
-*stationary*, *mobile*, *insitu* and *remote*. It includes the old *station* resource as a 
-*stationary/insitu* typed platform.
+### Features
+- #232 possibility to use `domainId` instead of database id
+- #251 allow offering to be full qualified parameter
+- #266 observations having time intervals
+- #312 support for using `now`, e.g. `timespan=PT4H/now`
+- #304 flexible prerendering title config via placeholders
+- #320 register configurable timezone type
 
-Also, version 2.0.0 is more flexible in supporting observation types. These are accessible
-from the new *series* endpoint. Before, only measurements were supported (as *timeseries*).
-
-To not break old clients with the new concepts, the API offers new endpoints:
-
-- `/ext/services/`
-- `/ext/procedures/`
-- `/ext/features/`
-- `/ext/phenomena/`
-- `/ext/offerings/`
-- `/ext/categories/`
-- `/series/`
-- `/platforms/`
-
-The following resources remain for backwards compatibility reasons. They provide 
-*stationary/insitu* platforms only:
-
-- `/services/`
-- `/procedures/`
-- `/features/`
-- `/phenomena/`
-- `/offerings/`
-- `/categories/`
-- `/timeseries/`
-- `/stations/`
+### Issues 
+- #246 no use of deleted flag in `series` table
+- #279 Querying multiple (time-)series causes race condition 
+- #286 prerendering config does not allow overriding general settings
 
 ## 1.x
 

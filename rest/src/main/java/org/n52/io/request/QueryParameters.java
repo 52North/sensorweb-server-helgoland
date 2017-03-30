@@ -91,10 +91,9 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
-    @Override
     public ChartDimension getChartDimension() {
         try {
-            return super.getChartDimension();
+            return new ChartDimension(getWidth(), getHeight());
         } catch (IoParseException e) {
             throw new BadRequestException("Bad '" + WIDTH + "' or '" + HEIGHT + "' parameter(s).", e);
         }
