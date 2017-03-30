@@ -70,7 +70,6 @@ public class TransformationService {
     /**
      * @param feature the feature to transform.
      * @param query the query containing CRS and how to handle axes order.
-     * @throws BadQueryParameterException if an invalid CRS has been passed in.
      */
     @Deprecated
     protected void transformInline(GeoJSONFeature feature, IoParameters query) {

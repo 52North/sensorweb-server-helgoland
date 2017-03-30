@@ -125,7 +125,7 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     /**
-     * @param countedParameters
+     * @param countedParameters the parameter count object
      */
     public void setQuantities(ParameterCount countedParameters) {
         addFeature("quantities", countedParameters);

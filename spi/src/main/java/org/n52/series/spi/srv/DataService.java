@@ -34,7 +34,7 @@ import org.n52.io.response.dataset.DataCollection;
 
 /**
  * Provides access to the actual series data via {@link RequestParameterSet}.
- * @param <T>
+ * @param <T> the data type
  */
 public interface DataService<T extends Data<?>> extends RawDataInfo {
 
