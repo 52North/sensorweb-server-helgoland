@@ -18,7 +18,6 @@
     <modules>
         <module>io</module>
         <module>rest</module>
-        <module>spi-impl</module>
     </modules>
 
     <organization>
