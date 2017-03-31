@@ -2,13 +2,11 @@
 
 ## 2.0.0
 
-### CHECK
-- SOS `om:parameter`s are added to `feature`/`platform`
-
 ### Changes
 - extend interface to allow multiple types of sensor platforms and observations
 - `offering` and `procedure` are now hierarchical
 - `AbstractValue` outputs can have additional parameter information
+- `FeatureOutput` and `PlatformOutput` can have additional parameter information
 - separated impl projects (fotoquest and dwd) to own repositories
 - pluralized filter parameters
 - output includes href property
