@@ -34,10 +34,10 @@ package org.n52.web.exception;
  */
 public interface WebException {
 
-    public void addHint(String details);
+    void addHint(String details);
 
-    public String[] getHints();
+    String[] getHints();
 
-    public Throwable getThrowable();
+    Throwable getThrowable();
 
 }

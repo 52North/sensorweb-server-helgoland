@@ -28,9 +28,7 @@
  */
 package org.n52.io.measurement.generalize;
 
-import static org.n52.io.measurement.generalize.GeneralizerFactory.createGeneralizer;
-import static org.n52.io.request.IoParameters.createFromQuery;
-
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
@@ -40,12 +38,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Composes a {@link DataService} instance to generalize requested
- * timeseries data.
+ * Composes a {@link DataService} instance to generalize requested timeseries data.
  */
 public class GeneralizingMeasurementService implements DataService<MeasurementData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingMeasurementService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            GeneralizingMeasurementService.class);
 
     private final DataService<MeasurementData> composedService;
 
@@ -55,35 +53,34 @@ public class GeneralizingMeasurementService implements DataService<MeasurementDa
 
     @Override
     public DataCollection<MeasurementData> getData(RequestParameterSet parameters) {
-
         DataCollection<MeasurementData> data = composedService.getData(parameters);
         DataCollection<MeasurementData> ungeneralizedData = data;
         try {
-            Generalizer<MeasurementData> generalizer = createGeneralizer(createFromQuery(parameters));
-            DataCollection<MeasurementData> generalizedData = generalizer.generalize(ungeneralizedData);
+            Generalizer<MeasurementData> generalizer = GeneralizerFactory
+                    .createGeneralizer(IoParameters.createFromQuery(parameters));
+            DataCollection<MeasurementData> generalizedData = generalizer
+                    .generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
             return generalizedData;
         } catch (GeneralizerException e) {
-            LOGGER.error("Could not generalize timeseries collection. Returning original data.", e);
+            LOGGER.error("Couldn't generalize timeseries collection. Returning original data.", e);
             return ungeneralizedData;
         }
     }
 
-    private void logGeneralizationAmount(DataCollection<MeasurementData> ungeneralizedData,
-                                         DataCollection<MeasurementData> generalizedData) {
+    private void logGeneralizationAmount(
+            DataCollection<MeasurementData> ungeneralizedData,
+            DataCollection<MeasurementData> generalizedData) {
         for (String timeseriesId : ungeneralizedData.getAllSeries().keySet()) {
             MeasurementData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
             MeasurementData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
             int originalAmount = originalTimeseries.getValues().size();
             int generalizedAmount = generalizedTimeseries.getValues().size();
-            LOGGER.debug("Generalized timeseries: {} (#{} --> #{}).", timeseriesId, originalAmount, generalizedAmount);
+            LOGGER.debug("Generalized timeseries: {} (#{} --> #{}).",
+                    timeseriesId, originalAmount, generalizedAmount);
         }
-    }
-
-    public static DataService<MeasurementData> composeDataService(DataService<MeasurementData> toCompose) {
-        return new GeneralizingMeasurementService(toCompose);
     }
 
     @Override

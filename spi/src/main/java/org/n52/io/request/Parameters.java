@@ -37,336 +37,355 @@ import org.n52.series.spi.srv.RawFormats;
  */
 public interface Parameters {
 
-    public static final String SEARCH_TERM = "q";
+    String SEARCH_TERM = "q";
 
     /**
      * How detailed the output shall be.
      */
-    public static final String EXPANDED = "expanded";
+    String EXPANDED = "expanded";
 
     /**
      * The default expansion of collection items.
      *
      * @see #EXPANDED
      */
-    public static final boolean DEFAULT_EXPANDED = false;
+    boolean DEFAULT_EXPANDED = false;
 
     /**
      * If latest values shall be requested in a bulk timeseries request.
      */
-    public static final String FORCE_LATEST_VALUE = "force_latest_values";
+    String FORCE_LATEST_VALUE = "force_latest_values";
 
     /**
      * The default behaviour if latest value requests shall be invoked during a
      * timeseries collection request.
      */
-    public static final boolean DEFAULT_FORCE_LATEST_VALUE = false;
+    boolean DEFAULT_FORCE_LATEST_VALUE = false;
 
     /**
      * If status intervals section is requested.
      */
-    public static final String STATUS_INTERVALS = "status_intervals";
+    String STATUS_INTERVALS = "status_intervals";
 
     /**
      * The default behaviour for status intervals.
      */
-    public static final boolean DEFAULT_STATUS_INTERVALS = false;
+    boolean DEFAULT_STATUS_INTERVALS = false;
 
     /**
      * If rendering hints are requested for a timeseries
      */
-    public static final String RENDERING_HINTS = "rendering_hints";
+    String RENDERING_HINTS = "rendering_hints";
 
     /**
      * The default behaviour for rendering hints.
      */
-    public static final boolean DEFAULT_RENDERING_HINTS = false;
+    boolean DEFAULT_RENDERING_HINTS = false;
 
     /**
      * Determines the index of the first member of the response page (a.k.a.
      * page offset).
      */
-    public static final String OFFSET = "offset";
+    String OFFSET = "offset";
 
     /**
      * The default page offset.
      *
      * @see #OFFSET
      */
-    public static final int DEFAULT_OFFSET = -1;
+    int DEFAULT_OFFSET = -1;
 
     /**
      * Determines the limit of the page to be returned.
      */
-    public static final String LIMIT = "limit";
+    String LIMIT = "limit";
 
     /**
      * The default page size limit.
      *
      * @see #LIMIT
      */
-    public static final int DEFAULT_LIMIT = -1;
+    int DEFAULT_LIMIT = -1;
 
     /**
      * Determines the locale the output shall have.
      */
-    public static final String LOCALE = "locale";
+    String LOCALE = "locale";
 
     /**
      * The default locale.
      *
      * @see #LOCALE
      */
-    public static final String DEFAULT_LOCALE = "en";
+    String DEFAULT_LOCALE = "en";
 
     /**
      * Determines the timespan parameter
      */
-    public static final String TIMESPAN = "timespan";
+    String TIMESPAN = "timespan";
 
     /**
      * Parameter to specify the timeseries data with a result time
      */
-    public static final String RESULTTIME = "resultTime";
+    String RESULTTIME = "resultTime";
 
     /**
      * The width in px of the image to be rendered.
      */
-    public static final String WIDTH = "width";
+    String WIDTH = "width";
 
     /**
      * The default width of the chart image to render.
      */
-    public static final int DEFAULT_WIDTH = 800;
+    int DEFAULT_WIDTH = 800;
 
     /**
      * The height in px of the image to be rendered.
      */
-    public static final String HEIGHT = "height";
+    String HEIGHT = "height";
 
     /**
      * The default height of the chart image to render.
      */
-    public static final int DEFAULT_HEIGHT = 500;
+    int DEFAULT_HEIGHT = 500;
 
     /**
      * If a chart shall be rendered with a background grid.
      */
-    public static final String GRID = "grid";
+    String GRID = "grid";
 
     /**
      * Defaults to a background grid in a rendered chart.
      */
-    public static final boolean DEFAULT_GRID = true;
+    boolean DEFAULT_GRID = true;
 
     /**
      * If a legend shall be drawn on the chart.
      */
-    public static final String LEGEND = "legend";
+    String LEGEND = "legend";
 
     /**
      * Defaults to a not drawn legend.
      */
-    public static final boolean DEFAULT_LEGEND = false;
+    boolean DEFAULT_LEGEND = false;
 
     /**
      * If a rendered chart shall be written as base64 encoded string.
      */
-    public static final String BASE_64 = "base64";
+    String BASE_64 = "base64";
 
     /**
      * Defaults to binary output.
      */
-    public static final boolean DEFAULT_BASE_64 = false;
+    boolean DEFAULT_BASE_64 = false;
 
     /**
      * Determines the generalize flag.
      */
-    public static final String GENERALIZE = "generalize";
+    String GENERALIZE = "generalize";
 
     /**
      * The default (no generalization) behaviour.
      */
-    public static final boolean DEFAULT_GENERALIZE = false;
-
-    /**
-     * Determines how raw data shall be formatted.
-     */
-    public static final String FORMAT = "format";
+    boolean DEFAULT_GENERALIZE = false;
 
     /**
      * Determines how raw data shall be queried from service.
      */
-    public static final String RAW_FORMAT = RawFormats.RAW_FORMAT;
+    String RAW_FORMAT = RawFormats.RAW_FORMAT;
+
+    /**
+     * Determines how raw data shall be formatted.
+     */
+    String FORMAT = "format";
 
     /**
      * The default format for raw data output.
      */
-    public static final String DEFAULT_FORMAT = "tvp";
+    String DEFAULT_FORMAT = "tvp";
 
+    /**
+     * Determines how dates should be formatted (in charts).
+     */
+    String TIME_FORMAT = "timeformat";
+
+    /**
+     * The default timeformat.
+     */
+    String DEFAULT_TIME_FORMAT = "yyyy-MM-dd, HH:mm";
 
     /**
      * Determines if what event causes a rendering task.
      */
-    static final String RENDERING_TRIGGER = "rendering_trigger";
+    String RENDERING_TRIGGER = "rendering_trigger";
 
     /**
      * Default event causing a rendering task.
      */
-    static final String DEFAULT_RENDERING_TRIGGER = "request";
+    String DEFAULT_RENDERING_TRIGGER = "request";
 
     /**
      * Determines the style parameter
      */
-    public static final String STYLE = "style";
+    String STYLE = "style";
 
     /**
      * Determines the service filter
+     * @deprecated use {@link #SERVICES}
      */
     @Deprecated
-    public static final String SERVICE = "service";
+    String SERVICE = "service";
 
     /**
      * Determines the services filter
      */
-    public static final String SERVICES = "services";
+    String SERVICES = "services";
 
     /**
      * Determines the feature filter
+     * @deprecated use {@link #FEATURES}
      */
     @Deprecated
-    public static final String FEATURE = "feature";
+    String FEATURE = "feature";
 
     /**
      * Determines the features filter
      */
-    public static final String FEATURES = "features";
+    String FEATURES = "features";
 
     /**
      * Determines the service filter
+     * @deprecated use {@link #OFFERINGS}
      */
     @Deprecated
-    public static final String OFFERING = "offering";
+    String OFFERING = "offering";
 
     /**
      * Determines the offerings filter
      */
-    public static final String OFFERINGS = "offerings";
+    String OFFERINGS = "offerings";
 
     /**
      * Determines the procedure filter
+     * @deprecated use {@link #PROCEDURES}
      */
     @Deprecated
-    public static final String PROCEDURE = "procedure";
+    String PROCEDURE = "procedure";
 
     /**
      * Determines the procedures filter
      */
-    public static final String PROCEDURES = "procedures";
+    String PROCEDURES = "procedures";
 
     /**
      * Determines the phenomenon filter
+     * @deprecated use {@link #PHENOMENA}
      */
     @Deprecated
-    public static final String PHENOMENON = "phenomenon";
+    String PHENOMENON = "phenomenon";
 
     /**
      * Determines the phenomena filter
      */
-    public static final String PHENOMENA = "phenomena";
+    String PHENOMENA = "phenomena";
 
     /**
      * Determines the station filter
+     * @deprecated since 2.0.0
      */
     @Deprecated
-    public static final String STATION = "station";
+    String STATION = "station";
 
-    public static final String PLATFORMS = "platforms";
+    String PLATFORMS = "platforms";
 
+    /**
+     * @deprecated since 2.0.0
+     */
     @Deprecated
-    public static final String SERIES = "series";
+    String SERIES = "series";
 
-    public static final String DATASETS = "datasets";
+    String DATASETS = "datasets";
 
-    public static final String HANDLE_AS_DATASET_TYPE = "handleAs";
+    String HANDLE_AS_DATASET_TYPE = "handleAs";
 
     /**
      * Determines the category filter
+     * @deprecated use {@link #CATEGORIES}
      */
     @Deprecated
-    public static final String CATEGORY = "category";
+    String CATEGORY = "category";
 
     /**
      * Determines the categories filter
      */
-    public static final String CATEGORIES = "categories";
+    String CATEGORIES = "categories";
 
     /**
      * Determines the reference system to be used for input/output coordinates.
      */
-    public static final String CRS = "crs";
+    String CRS = "crs";
 
     /**
      * Determines if CRS axes order shall always be XY, i.e. lon/lat.
      */
-    public static final String FORCE_XY = "forceXY";
+    String FORCE_XY = "forceXY";
 
     /**
      * Default axes order respects EPSG axes ordering.
      */
-    public static final boolean DEFAULT_FORCE_XY = false;
+    boolean DEFAULT_FORCE_XY = false;
 
     /**
      * Determines if filter shall match domain ids instead of global ids
      */
-    public static final String MATCH_DOMAIN_IDS = "matchDomainIds";
+    String MATCH_DOMAIN_IDS = "matchDomainIds";
 
     /**
      * Default filter match property.
      */
-    public static final boolean DEFAULT_MATCH_DOMAIN_IDS = false;
+    boolean DEFAULT_MATCH_DOMAIN_IDS = false;
 
     /**
      * Determines the within filter
      */
-    public static final String NEAR = "near";
+    String NEAR = "near";
 
     /**
      * Determines the bbox filter
      */
-    public static final String BBOX = "bbox";
+    String BBOX = "bbox";
 
     /**
      * Determines the fields filter
      */
-    public static final String FILTER_FIELDS = "fields";
+    String FILTER_FIELDS = "fields";
 
-    public static final String FILTER_PLATFORM_TYPES = "platformTypes";
+    String FILTER_PLATFORM_TYPES = "platformTypes";
 
-    public static final String FILTER_DATASET_TYPES = "datasetTypes";
+    String FILTER_DATASET_TYPES = "datasetTypes";
 
-    public static final String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
+    String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
 
-    public static final String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
+    String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
 
     /**
      * SimpleFeature types e.g. POINT, LINESTRING, ...
      */
-    public static final String GEOMETRY_TYPES = "geometryTypes";
+    String GEOMETRY_TYPES = "geometryTypes";
 
     /**
      * Internally set via 2.x interface to create href links.
      * Will be overridden, if it has been set externally.
      */
-    public static final String HREF_BASE = "internal.href.base";
+    String HREF_BASE = "internal.href.base";
 
     /**
      * If observation time shall be shown within intervals.
      */
-    public static final String SHOW_TIME_INTERVALS = "showTimeIntervals";
+    String SHOW_TIME_INTERVALS = "showTimeIntervals";
 
     /**
      * Default for {@link #SHOW_TIME_INTERVALS}
      */
-    public static final boolean DEFAULT_SHOW_TIME_INTERVALS = false;
+    boolean DEFAULT_SHOW_TIME_INTERVALS = false;
 }

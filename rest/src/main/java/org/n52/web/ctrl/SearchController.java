@@ -28,12 +28,9 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.io.request.IoParameters.ensureBackwardsCompatibility;
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.ctrl.UrlSettings.SEARCH;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.series.spi.search.SearchService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,15 +40,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = SEARCH, produces = {"application/json"})
+@RequestMapping(value = UrlSettings.SEARCH, produces = {"application/json"})
 public class SearchController extends BaseController {
 
     private SearchService searchService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView searchResources(@RequestParam String q, @RequestParam(defaultValue = "en") String locale,
-                                        @RequestParam(required=false) MultiValueMap<String, String> parameters) {
-        IoParameters query = ensureBackwardsCompatibility(createFromQuery(parameters)
+    public ModelAndView searchResources(@RequestParam String q,
+            @RequestParam(defaultValue = "en") String locale,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+        IoParameters query = IoParameters.ensureBackwardsCompatibility(QueryParameters.createFromQuery(parameters)
                     .extendWith(Parameters.SEARCH_TERM, q)
                     .extendWith(Parameters.LOCALE, locale));
         return new ModelAndView().addObject(searchService.searchResources(query));

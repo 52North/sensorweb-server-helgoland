@@ -28,10 +28,7 @@
  */
 package org.n52.io.task;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.DateBuilder.futureDate;
-import static org.quartz.TriggerBuilder.newTrigger;
-
+import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -100,15 +97,15 @@ public abstract class ScheduledJob {
     }
 
     public Trigger createTrigger(JobKey jobKey) {
-        TriggerBuilder<Trigger> tb = newTrigger()
+        TriggerBuilder<Trigger> tb = TriggerBuilder.newTrigger()
                 .forJob(jobKey)
                 .withIdentity(getTriggerName());
         if (getCronExpression() != null) {
-            tb.withSchedule(cronSchedule(getCronExpression()));
+            tb.withSchedule(CronScheduleBuilder.cronSchedule(getCronExpression()));
         }
 
         if (isTriggerAtStartup()) {
-            tb.startAt(futureDate(5, DateBuilder.IntervalUnit.SECOND));
+            tb.startAt(DateBuilder.futureDate(5, DateBuilder.IntervalUnit.SECOND));
         }
         return tb.build();
     }

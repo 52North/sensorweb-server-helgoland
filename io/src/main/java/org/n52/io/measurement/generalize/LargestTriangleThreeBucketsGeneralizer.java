@@ -28,8 +28,6 @@
  */
 package org.n52.io.measurement.generalize;
 
-import static java.lang.Double.parseDouble;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
@@ -39,35 +37,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of a generalizer using the Largest-Triangle-Three-Buckets
- * algorithm
+ * Implementation of a generalizer using the Largest-Triangle-Three-Buckets algorithm
  *
- * https://github.com/sveinn-steinarsson/flot-downsample/
+ * @see
+ * <a href="https://github.com/sveinn-steinarsson/flot-downsample/">
+ * https://github.com/sveinn-steinarsson/flot-downsample/</a>
  */
 public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<MeasurementData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            LargestTriangleThreeBucketsGeneralizer.class);
 
     private static final String THRESHOLD = "threshold";
 
     private static final String NO_DATA_GAP_THRESHOLD = "noDataGapThreshold";
 
-    private double maxOutputValues = 200; // fallback default
+    // fallback default
+    private double maxOutputValues = 200;
 
-    private double noDataGapThreshold = 0.2d; // fallback default
+    // fallback default
+    private double noDataGapThreshold = 0.2d;
 
     public LargestTriangleThreeBucketsGeneralizer(IoParameters parameters) {
         super(parameters);
         try {
             maxOutputValues = parameters.containsParameter(THRESHOLD)
-                    ? parseDouble(parameters.getOther(THRESHOLD))
+                    ? Double.parseDouble(parameters.getOther(THRESHOLD))
                     : maxOutputValues;
-            noDataGapThreshold = parameters.containsParameter(NO_DATA_GAP_THRESHOLD.toLowerCase())
-                    ? parseDouble(parameters.getOther(NO_DATA_GAP_THRESHOLD.toLowerCase()))
+            noDataGapThreshold = parameters.containsParameter(NO_DATA_GAP_THRESHOLD)
+                    ? Double.parseDouble(parameters.getOther(NO_DATA_GAP_THRESHOLD))
                     : noDataGapThreshold;
         } catch (NumberFormatException ne) {
-            LOGGER.error("Error while reading properties! Using fallback defaults.", ne);
-//            throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
+            LOGGER.error("Error reading properties! Using fallback.", ne);
         }
     }
 
@@ -77,8 +78,9 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
     }
 
     @Override
-    public DataCollection<MeasurementData> generalize(DataCollection<MeasurementData> data) throws GeneralizerException {
-        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<MeasurementData>();
+    public DataCollection<MeasurementData> generalize(
+            DataCollection<MeasurementData> data) throws GeneralizerException {
+        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
             MeasurementData timeseries = data.getSeries(timeseriesId);
             MeasurementData generalizedTimeseries = generalize(timeseries);
@@ -92,15 +94,14 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
         MeasurementValue[] data = timeseries.getValues().toArray(new MeasurementValue[0]);
 
         int dataLength = data.length;
-
         if (maxOutputValues >= dataLength || maxOutputValues == 0) {
-            return timeseries; // nothing to do
+            // nothing to do
+            return timeseries;
         }
         return generalizeData(data);
     }
 
     private MeasurementData generalizeData(MeasurementValue[] data) {
-
         int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
@@ -109,7 +110,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
         MeasurementData sampled = new MeasurementData();
         sampled.addValues(data[pointIndex]);
 
-        for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2; bucketIndex++) {
+        for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2;
+                bucketIndex++) {
 
             // get the range for this bucket
             int rangeOff = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
@@ -124,10 +126,11 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
             }
 
             // last point of triangle (next bucket's average)
-            BucketAverage triangleRight = calculateAverageOfBucket(bucketIndex + 1, bucketSize, data);
+            BucketAverage triangleRight = calculateBucketAverage(bucketIndex + 1,
+                    bucketSize, data);
 
             // init fallback value
-            BucketAverage avgCurrentBucket = calculateAverageOfBucket(bucketIndex, bucketSize, data);
+            BucketAverage avgCurrentBucket = calculateBucketAverage(bucketIndex, bucketSize, data);
             long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp();
             MeasurementValue maxAreaPoint = new MeasurementValue(fallBackTimestamp, null);
 
@@ -138,9 +141,9 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
 
             for (; rangeOff < rangeTo; rangeOff++) {
 
-//                if (triangleRight.isNoDataBucket()) {
-//                    triangleRight = // TODO
-//                }
+                //if (triangleRight.isNoDataBucket()) {
+                //  triangleRight = // TODO
+                //}
                 // calculate triangle area over three buckets
                 final MeasurementValue triangleMiddle = data[rangeOff];
 
@@ -149,13 +152,15 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
                     if (isExceededGapThreshold(amountOfNodataValues, bucketSize)) {
                         if (triangleMiddle.isNoDataValue()) {
                             maxAreaPoint = avgCurrentBucket.toTimeseriesValue();
-                            LOGGER.debug("No data value for bucket {}.", bucketIndex);
+                            LOGGER.debug("No data value for bucket {}.",
+                                    bucketIndex);
                             pointIndex = rangeTo - 1;
                             break;
                         }
                     }
                 } else {
-                    area = calcTriangleArea(triangleLeft, triangleRight, triangleMiddle);
+                    area = calcTriangleArea(triangleLeft, triangleRight,
+                            triangleMiddle);
                     if (area > maxArea) {
                         maxArea = area;
                         maxAreaPoint = triangleMiddle;
@@ -164,25 +169,32 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
                 }
             }
 
-            sampled.addValues(maxAreaPoint); // Pick this point from the Bucket
-            pointIndex = nextPointIndex; // This a is the next a
+            // Pick this point from the Bucket
+            sampled.addValues(maxAreaPoint);
+            // This a is the next a
+            pointIndex = nextPointIndex;
         }
 
-        sampled.addValues(data[dataLength - 1]); // Always add last value
+        // Always add last value
+        sampled.addValues(data[dataLength - 1]);
         return sampled;
     }
 
-    private boolean isExceededGapThreshold(int amountOfNodataValues, double bucketSize) {
+    private boolean isExceededGapThreshold(int amountOfNodataValues,
+            double bucketSize) {
         return noDataGapThreshold <= 1
-                ? amountOfNodataValues > noDataGapThreshold * bucketSize // max percent
-                : amountOfNodataValues > noDataGapThreshold; // max absolute
+                // max percent
+                ? amountOfNodataValues > noDataGapThreshold * bucketSize
+                // max absolute
+                : amountOfNodataValues > noDataGapThreshold;
     }
 
     private void addNodataValue(MeasurementData sampled, long timestamp) {
         sampled.addValues(new MeasurementValue(timestamp, null));
     }
 
-    private static double calcTriangleArea(MeasurementValue left, BucketAverage right, MeasurementValue middle) {
+    private static double calcTriangleArea(MeasurementValue left,
+            BucketAverage right, MeasurementValue middle) {
         Double middleValue = middle.getValue();
         final Double leftValue = left.getValue();
         final Double rightValue = right.value;
@@ -192,10 +204,10 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
                 * (rightValue - leftValue)) * 0.5;
     }
 
-    private BucketAverage calculateAverageOfBucket(int bucketIndex, double bucketSize, MeasurementValue[] data) {
+    private BucketAverage calculateBucketAverage(int bucketIndex,
+            double bucketSize, MeasurementValue[] data) {
 
         int dataLength = data.length;
-
         int avgRangeStart = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
         int avgRangeEnd = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
         avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
@@ -209,7 +221,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
             final MeasurementValue current = data[avgRangeStart];
             avgTimestamp += current.getTimestamp();
             if (noDataThresholdExceeded) {
-                continue; // keep on calc avg timestamp
+                // keep on calc avg timestamp
+                continue;
             }
             if (current.isNoDataValue()) {
                 amountOfNodataValues++;
@@ -226,7 +239,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Measurem
         return new BucketAverage(avgTimestamp, avgValue);
     }
 
-    private class BucketAverage {
+    private static class BucketAverage {
 
         private Double timestamp;
         private Double value;

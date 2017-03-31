@@ -28,9 +28,8 @@
  */
 package org.n52.io;
 
-import static org.n52.io.IoStyleContext.createContextForSingleSeries;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,10 +43,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
@@ -77,12 +74,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
 
     private static final int WIDTH_DEFAULT = 800;
     private static final int HEIGHT_DEFAULT = 500;
@@ -90,6 +84,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private static final boolean GRID_DEFAULT = true;
     private static final boolean LEGEND_DEFAULT = false;
     private static final boolean GENERALIZE_DEFAULT = false;
+
+    private static final String JOB_DATA_CONFIG_FILE = "configFile";
+    private static final String JOB_DATA_WEBAPP_FOLDER = "webappFolder";
+    private static final String IMAGE_EXTENSION = "png";
 
     @Autowired
     @Qualifier("timeseriesService")
@@ -107,12 +105,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private boolean interrupted;
 
-    private PrerenderingJobConfig readJobConfig(String configFile) {
-        try (InputStream taskConfig = getClass().getResourceAsStream(configFile)) {
+    private PrerenderingJobConfig readJobConfig(String file) {
+        try (InputStream taskConfig = getClass().getResourceAsStream(file)) {
             ObjectMapper om = new ObjectMapper();
             return om.readValue(taskConfig, PrerenderingJobConfig.class);
         } catch (IOException e) {
-            LOGGER.error("Could not load {}. Using empty config.", configFile, e);
+            LOGGER.error("Could not load {}. Using empty config.", file, e);
             return new PrerenderingJobConfig();
         }
     }
@@ -122,8 +120,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return JobBuilder.newJob(PreRenderingJob.class)
                 .withIdentity(getJobName())
                 .withDescription(getJobDescription())
-                .usingJobData("configFile", configFile)
-                .usingJobData("webappFolder", webappFolder)
+                .usingJobData(JOB_DATA_CONFIG_FILE, configFile)
+                .usingJobData(JOB_DATA_WEBAPP_FOLDER, webappFolder)
                 .build();
     }
 
@@ -137,8 +135,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         final Stopwatch stopwatch = Stopwatch.startStopwatch();
         final JobDetail details = context.getJobDetail();
         JobDataMap jobDataMap = details.getJobDataMap();
-        taskConfigPrerendering = readJobConfig(jobDataMap.getString("configFile"));
-        webappFolder = jobDataMap.getString("webappFolder");
+        taskConfigPrerendering = readJobConfig(jobDataMap.getString(JOB_DATA_CONFIG_FILE));
+        webappFolder = jobDataMap.getString(JOB_DATA_WEBAPP_FOLDER);
 
         List<RenderingConfig> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
         List<RenderingConfig> timeseriesStyles = taskConfigPrerendering.getTimeseriesStyles();
@@ -146,7 +144,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
             IoParameters query = QueryParameters.createFromQuery(parameters);
-            OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService.getCondensedParameters(query);
+            OutputCollection<TimeseriesMetadataOutput> metadatas = timeseriesMetadataService
+                        .getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
                 String timeseriesId = metadata.getId();
 //                RenderingConfig style = timeseriesStyles.containsKey(timeseriesId)
@@ -182,17 +181,18 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval) throws IOException, DatasetFactoryException, URISyntaxException {
+    private void renderWithStyle(String timeseriesId, RenderingConfig renderingConfig, String interval)
+                throws IOException, DatasetFactoryException, URISyntaxException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(timeseriesId, interval);
         IoParameters config = createConfig(timespan.toString(), renderingConfig);
 
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, config);
-        IoStyleContext context = createContextForSingleSeries(metadata, config);
+        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, config);
         int width = context.getChartStyleDefinitions().getWidth();
         int height = context.getChartStyleDefinitions().getHeight();
         context.setDimensions(new ChartDimension(width, height));
 
-        RequestSimpleParameterSet parameters = createForSingleSeries(timeseriesId, config);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, config);
 
 
         String chartQualifier = renderingConfig.getChartQualifier();
@@ -200,7 +200,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         try (FileOutputStream out = fos;) {
             createIoFactory(parameters)
-                .createHandler("png")
+                .createHandler(IMAGE_EXTENSION)
                 .writeBinary(out);
             fos.flush();
         } catch (IoHandlerException | IOException e) {
@@ -208,7 +208,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>
+            createIoFactory(RequestSimpleParameterSet parameters)
             throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return new DefaultIoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>()
                 .create("measurement")
@@ -268,7 +269,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 ex.addHint("Perhaps the image is being rendered at the moment. Try again later.");
                 throw ex;
             }
-            ImageIO.write(image, "png", outputStream);
+            ImageIO.write(image, IMAGE_EXTENSION, outputStream);
         } catch (IOException e) {
             LOGGER.error("Error while loading pre rendered image", e);
         }
@@ -300,10 +301,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 ? interval + "_" + postfix
                 : interval;
         File file = createFileName(timeseriesId, chartQualifier);
-        if (file.exists()) {
-            file.setLastModified(new Date().getTime());
+        if (file.exists() && !file.setLastModified(new Date().getTime())) {
+            LOGGER.debug("Can't set last modified date at '{}'", file.getAbsolutePath());
         } else {
-            file.createNewFile();
+            if (!file.createNewFile()) {
+                LOGGER.warn("Can't create file '{}'", file.getAbsolutePath());
+            }
         }
         return new FileOutputStream(file);
     }
@@ -319,8 +322,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         String outputPath = generalConfig.get("outputPath");
         String outputDirectory = webappFolder + File.separator + outputPath + File.separator;
         File dir = new File(outputDirectory);
-        if (!dir.exists()) {
-            dir.mkdirs();
+        if (!dir.exists() && !dir.mkdirs()) {
+            LOGGER.warn("Unable to create output folder '{}'.", outputDirectory);
         }
         return outputDirectory;
     }

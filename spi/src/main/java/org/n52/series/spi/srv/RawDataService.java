@@ -29,7 +29,6 @@
 package org.n52.series.spi.srv;
 
 import java.io.InputStream;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 
@@ -47,7 +46,7 @@ public interface RawDataService {
      * @param query Requested parameter
      * @return Raw data output as {@link InputStream}
      */
-    public InputStream getRawData(String id, IoParameters query);
+    InputStream getRawData(String id, IoParameters query);
 
     /**
      * Get raw data for
@@ -55,6 +54,6 @@ public interface RawDataService {
      * @param parameters Requested parameter
      * @return Raw data output as {@link InputStream}
      */
-    public InputStream getRawData(RequestSimpleParameterSet parameters);
+    InputStream getRawData(RequestSimpleParameterSet parameters);
 
 }

@@ -28,31 +28,31 @@
  */
 package org.n52.io.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.response.dataset.DatasetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public abstract class RequestParameterSet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
+
+    private static final String PARAMETER_RESULT_TIME = "resultTime";
 
     private final Map<String, JsonNode> parameters;
 
     protected RequestParameterSet() {
         parameters = new HashMap<>();
-        parameters.put("timespan", IoParameters.getJsonNodeFrom(createDefaultTimespan()));
+        parameters.put(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(createDefaultTimespan()));
     }
 
     private String createDefaultTimespan() {
@@ -69,101 +69,98 @@ public abstract class RequestParameterSet {
      * @return If timeseries data shall be generalized or not.
      */
     public boolean isGeneralize() {
-        return getAsBoolean("generalize", false);
+        return getAsBoolean(Parameters.GENERALIZE, false);
     }
 
     /**
      * @param generalize if output shall be generalized
      */
     public void setGeneralize(boolean generalize) {
-        setParameter("generalize", IoParameters.getJsonNodeFrom(generalize));
+        setParameter(Parameters.GENERALIZE, IoParameters.getJsonNodeFrom(generalize));
     }
 
     /**
      * Sets the timespan of interest (as
-     * <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601
-     * interval</a> excluding the Period only version).
+     * <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 interval</a> excluding
+     * the Period only version).
      *
      * @return the timespan in ISO-8601
      */
     @JsonProperty
     public String getTimespan() {
-        return getAsString("timespan");
+        return getAsString(Parameters.TIMESPAN);
     }
 
     /**
      * @param timespan the timespan to set.
      */
     public void setTimespan(String timespan) {
-        timespan = timespan != null
+        String nonNullTimespan = timespan != null
                 ? validateTimespan(timespan)
                 : createDefaultTimespan();
-        setParameter("timespan", IoParameters.getJsonNodeFrom(timespan));
+        setParameter(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(nonNullTimespan));
     }
 
     /**
-     * If image data shall be encoded in Base64 to be easily embedded in HTML by
-     * JS clients.
+     * If image data shall be encoded in Base64 to be easily embedded in HTML by JS clients.
      *
      * @return if image shall be base64 encoded.
      */
     public boolean isBase64() {
-        return getAsBoolean("base64", false);
+        return getAsBoolean(Parameters.BASE_64, false);
     }
 
     /**
      * @param base64 If the image shall be base64 encoded.
      */
     public void setBase64(boolean base64) {
-        setParameter("base64", IoParameters.getJsonNodeFrom(base64));
+        setParameter(Parameters.BASE_64, IoParameters.getJsonNodeFrom(base64));
     }
 
     /**
      * @return If reference values shall be appended to the timeseries data.
      */
     public boolean isExpanded() {
-        return getAsBoolean("expanded", false);
+        return getAsBoolean(Parameters.EXPANDED, false);
     }
 
     /**
      * @param expanded verbose results.
      */
     public void setExpanded(boolean expanded) {
-        setParameter("expanded", IoParameters.getJsonNodeFrom(expanded));
+        setParameter(Parameters.EXPANDED, IoParameters.getJsonNodeFrom(expanded));
     }
 
     /**
-     * @return A language code to determine the requested locale. "en" is the
-     * default.
+     * @return A language code to determine the requested locale. "en" is the default.
      */
     public String getLocale() {
-        return getAsString("language");
+        return getAsString(Parameters.LOCALE);
     }
 
     /**
-     * @param language A language code to determine the requested locale.
+     * @param locale A language code to determine the requested locale.
      */
-    public void setLocale(String language) {
-        language = !(language == null || language.isEmpty())
-                ? language
-                : "en";
-        setParameter("language", IoParameters.getJsonNodeFrom(language));
+    public void setLocale(String locale) {
+        String nonNullLanguage = !(locale == null || locale.isEmpty())
+                ? locale
+                : Parameters.DEFAULT_LOCALE;
+        setParameter(Parameters.LOCALE, IoParameters.getJsonNodeFrom(nonNullLanguage));
     }
 
     /**
      * @return the result time.
      */
     public String getResultTime() {
-        return getAsString("resultTime");
+        return getAsString(PARAMETER_RESULT_TIME);
     }
 
     /**
-     * @param resultTime Optional parameter, to define a result time in the
-     * request.
+     * @param resultTime Optional parameter, to define a result time in the request.
      */
     public void setResultTime(String resultTime) {
         if (resultTime != null) {
-            setParameter("resultTime", IoParameters.getJsonNodeFrom(resultTime));
+            setParameter(PARAMETER_RESULT_TIME, IoParameters.getJsonNodeFrom(resultTime));
         }
     }
 
@@ -210,15 +207,17 @@ public abstract class RequestParameterSet {
         this.parameters.put(parameterName.toLowerCase(), value);
     }
 
-    public final <T> T getAs(Class<T> clazz, String parameterName, T defaultValue) {
+    public final <T> T getAs(Class<T> clazz, String parameterName,
+            T defaultValue) {
         try {
-            if ( !parameters.containsKey(parameterName.toLowerCase())) {
+            if (!parameters.containsKey(parameterName.toLowerCase())) {
                 return defaultValue;
             }
             ObjectMapper om = new ObjectMapper();
             return om.treeToValue(getParameterValue(parameterName), clazz);
         } catch (IOException e) {
-            LOGGER.error("No appropriate config for parameter '{}'.", parameterName, e);
+            LOGGER.error("No appropriate config for parameter '{}'.",
+                    parameterName, e);
             return null;
         }
     }
@@ -235,14 +234,15 @@ public abstract class RequestParameterSet {
         return getAsStringArray(parameterName, null);
     }
 
-    public final String[] getAsStringArray(String parameterName, String[] defaultValue) {
-        if ( !parameters.containsKey(parameterName.toLowerCase())) {
+    public final String[] getAsStringArray(String parameterName,
+            String[] defaultValue) {
+        if (!parameters.containsKey(parameterName.toLowerCase())) {
             return defaultValue;
         }
         JsonNode parameterValue = getParameterValue(parameterName);
         return parameterValue.isArray()
                 ? getAs(String[].class, parameterName, defaultValue)
-                : new String[] { getAsString(parameterName) };
+                : new String[] {getAsString(parameterName)};
     }
 
     public final String getAsString(String parameterName) {
@@ -287,7 +287,7 @@ public abstract class RequestParameterSet {
         String[] datasetIds = getDatasets();
         return datasetIds.length > 0
                 ? DatasetType.extractType(datasetIds[0], handleAs)
-                : "measurement"; // default
+                : "measurement";
     }
 
     @Override

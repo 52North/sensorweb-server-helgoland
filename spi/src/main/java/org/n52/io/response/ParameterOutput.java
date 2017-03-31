@@ -28,6 +28,8 @@
  */
 package org.n52.io.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,29 +37,11 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.n52.series.spi.srv.RawFormats;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ParameterOutput implements CollatorComparable<ParameterOutput>, RawFormats {
-
-    /**
-     * Takes the labels to compare.
-     *
-     * @param <T> the actual type.
-     * @return a label comparing {@link Comparator}
-     */
-    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
-        return new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.getLabel().compareTo(o2.getLabel());
-            }
-        };
-    }
+public abstract class ParameterOutput implements
+        CollatorComparable<ParameterOutput>, RawFormats {
 
     private String id;
 
@@ -107,9 +91,8 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * Returns the domain id of the parameter, e.g. a natural id (not
-     * arbitrarily generated) or the original id actually being used by proxied
-     * data sources.
+     * Returns the domain id of the parameter, e.g. a natural id (not arbitrarily generated) or the
+     * original id actually being used by proxied data sources.
      *
      * @return the domain id.
      */
@@ -118,9 +101,8 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * Sets the domain id of the parameter, e.g. a natural (not arbitrarily
-     * generated) id or the original id actually being used by proxied data
-     * sources.
+     * Sets the domain id of the parameter, e.g. a natural (not arbitrarily generated) id or the
+     * original id actually being used by proxied data sources.
      *
      * @param domainId the domain id of the parameter.
      */
@@ -135,7 +117,8 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      */
     @JsonIgnore
     public boolean isSetDomainId() {
-        return getDomainId() != null && !getDomainId().isEmpty();
+        return getDomainId() != null
+                && !getDomainId().isEmpty();
     }
 
     /**
@@ -161,8 +144,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * @return a list of extra identifiers available via
-     * /&lt;resource&gt;/extras
+     * @return a list of extra identifiers available via /&lt;resource&gt;/extras
      */
     public String[] getExtras() {
         if (extras != null) {
@@ -210,10 +192,9 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     @Override
     public int compare(Collator collator, ParameterOutput o) {
-        if (collator == null) {
-            collator = Collator.getInstance();
-        }
-        return collator.compare(getLabel().toLowerCase(), o.getLabel().toLowerCase());
+        return collator.compare(getLabel()
+                .toLowerCase(), o.getLabel()
+                .toLowerCase());
     }
 
     @Override
@@ -238,13 +219,25 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
         if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }
-        if ((this.domainId == null) ? (other.domainId != null) : !this.domainId.equals(other.domainId)) {
+        if ((this.domainId == null) ? (other.domainId != null) : !this.domainId
+                .equals(other.domainId)) {
             return false;
         }
-        if ((this.label == null) ? (other.label != null) : !this.label.equals(other.label)) {
+        if ((this.label == null) ? (other.label != null) : !this.label.equals(
+                other.label)) {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Takes the labels to compare.
+     *
+     * @param <T> the actual type.
+     * @return a label comparing {@link Comparator}
+     */
+    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+        return (T o1, T o2) -> o1.getLabel().compareTo(o2.getLabel());
     }
 
 }

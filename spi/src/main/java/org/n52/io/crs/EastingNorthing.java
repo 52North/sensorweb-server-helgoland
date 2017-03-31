@@ -28,11 +28,7 @@
  */
 package org.n52.io.crs;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.geojson.old.GeojsonCrs.createNamedCRS;
-
 import java.io.Serializable;
-
 import org.n52.io.geojson.old.GeojsonCrs;
 import org.n52.io.geojson.old.GeojsonPoint;
 
@@ -50,7 +46,7 @@ class EastingNorthing implements Serializable {
         // client requires class to be default instantiable
     }
 
-    public EastingNorthing(GeojsonPoint point) {
+    EastingNorthing(GeojsonPoint point) {
         this(point.getCoordinates(), point.getCrs());
     }
 
@@ -59,25 +55,27 @@ class EastingNorthing implements Serializable {
      * @param northing the north value.
      * @param srs the CRS name, e.g. 'EPSG:25832'
      */
-    public EastingNorthing(Double easting, Double northing, String srs) {
-        this(new Double[]{easting, northing}, createNamedCRS(srs));
+    EastingNorthing(Double easting, Double northing, String srs) {
+        this(new Double[]{easting, northing}, GeojsonCrs.createNamedCRS(srs));
     }
 
     /**
      * @param coordinates the coordinates in EPSG:4326
      */
-    public EastingNorthing(Double[] coordinates) {
-        this(coordinates, createNamedCRS(DEFAULT_CRS));
+    EastingNorthing(Double[] coordinates) {
+        this(coordinates, GeojsonCrs.createNamedCRS(CRSUtils.DEFAULT_CRS));
     }
 
-    public EastingNorthing(Double[] coordinates, GeojsonCrs crs) {
+    EastingNorthing(Double[] coordinates, GeojsonCrs crs) {
         if (coordinates == null) {
             throw new NullPointerException("Coordinates must not null.");
         }
         if (coordinates.length != 2 && coordinates.length != 3) {
             throw new IllegalArgumentException("Coordinates must be either 2- or 3-dimensional.");
         }
-        this.crs = crs == null ? createNamedCRS(DEFAULT_CRS) : crs;
+        this.crs = crs == null
+                ? GeojsonCrs.createNamedCRS(CRSUtils.DEFAULT_CRS)
+                : crs;
         easting = coordinates[0];
         northing = coordinates[1];
         if (coordinates.length == 3) {
@@ -85,27 +83,27 @@ class EastingNorthing implements Serializable {
         }
     }
 
-    public double getEasting() {
+    double getEasting() {
         return easting;
     }
 
-    public double getNorthing() {
+    double getNorthing() {
         return northing;
     }
 
-    public double getAltitude() {
+    double getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(double altitude) {
+    void setAltitude(double altitude) {
         this.altitude = altitude;
     }
 
-    public String getCrsDefinition() {
+    String getCrsDefinition() {
         return crs.getName();
     }
 
-    public GeojsonCrs getCrs() {
+    GeojsonCrs getCrs() {
         return crs;
     }
 

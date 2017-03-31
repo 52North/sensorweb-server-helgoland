@@ -28,14 +28,13 @@
  */
 package org.n52.io.response.dataset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class Data<T extends AbstractValue<?>> implements Serializable {
 
@@ -43,9 +42,9 @@ public abstract class Data<T extends AbstractValue<?>> implements Serializable {
 
     private List<T> values = new ArrayList<>();
 
-    public void addValues(T... values) {
-        if (values != null && values.length > 0) {
-            this.values.addAll(Arrays.asList(values));
+    public void addValues(T... toAdd) {
+        if (toAdd != null && toAdd.length > 0) {
+            this.values.addAll(Arrays.asList(toAdd));
         }
     }
 

@@ -28,16 +28,10 @@
  */
 package org.n52.io.measurement.img;
 
-import static org.n52.io.measurement.img.BarRenderer.createBarRenderer;
-import static org.n52.io.measurement.img.LineRenderer.createStyledLineRenderer;
-import static org.n52.io.style.BarStyle.createBarStyle;
-import static org.n52.io.style.LineStyle.createLineStyle;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.time.Day;
@@ -51,7 +45,6 @@ import org.jfree.data.time.Week;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.RequestParameterSet;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
@@ -62,6 +55,7 @@ import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
+import org.n52.io.style.Style;
 
 public class MultipleChartsRenderer extends ChartIoHandler {
 
@@ -140,12 +134,12 @@ public class MultipleChartsRenderer extends ChartIoHandler {
     private Renderer createRenderer(StyleProperties properties) {
         if (isBarStyle(properties)) {
             // configure bar chart renderer
-            BarStyle barStyle = createBarStyle(properties);
-            return createBarRenderer(barStyle);
+            BarStyle barStyle = BarStyle.createBarStyle(properties);
+            return BarRenderer.createBarRenderer(barStyle);
         }
         // configure line chart renderer
-        LineStyle lineStyle = createLineStyle(properties);
-        return createStyledLineRenderer(lineStyle);
+        LineStyle lineStyle = LineStyle.createLineStyle(properties);
+        return LineRenderer.createStyledLineRenderer(lineStyle);
     }
 
     private ReferenceValueOutput getReferenceValue(String id, DatasetOutput metadata) {
@@ -163,7 +157,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
 
         private String chartId;
 
-        public ChartIndexConfiguration(String chartId, int index) {
+        ChartIndexConfiguration(String chartId, int index) {
             if (chartId == null) {
                 throw new NullPointerException("ChartId must not be null.");
             }
@@ -228,13 +222,13 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         }
 
         private RegularTimePeriod determineTimeInterval(Date date, StyleProperties styleProperties) {
-            if (styleProperties.getProperties().containsKey("interval")) {
-                String interval = styleProperties.getProperties().get("interval");
-                if (interval.equals("byHour")) {
+            if (styleProperties.getProperties().containsKey(Style.PARAMETER_INTERVAL)) {
+                String interval = styleProperties.getProperties().get(Style.PARAMETER_INTERVAL);
+                if (interval.equals(Style.VALUE_INTERVAL_BY_HOUR)) {
                     return new Hour(date);
-                } else if (interval.equals("byDay")) {
+                } else if (interval.equals(Style.VALUE_INTERVAL_BY_DAY)) {
                     return new Day(date);
-                } else if (interval.equals("byMonth")) {
+                } else if (interval.equals(Style.VALUE_INTERVAL_BY_MONTH)) {
                     return new Month(date);
                 }
             }

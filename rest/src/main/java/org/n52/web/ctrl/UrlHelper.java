@@ -75,12 +75,12 @@ public class UrlHelper {
             // backwards compatible relative link
             return ".".concat(stripVersionFromPath(path));
         }
-        hrefBase = hrefBase.endsWith("/")
+        String href = hrefBase.endsWith("/")
                 ? hrefBase.substring(0, hrefBase.length() - 1)
                 : hrefBase;
-        return hrefBase.contains(UrlSettings.API_VERSION_PATH)
-            ? stripVersionFromHrefBase(hrefBase).concat(path)
-            : hrefBase.concat(path);
+        return href.contains(UrlSettings.API_VERSION_PATH)
+                ? stripVersionFromHrefBase(href).concat(path)
+                : href.concat(path);
     }
 
     protected String stripVersionFromHrefBase(String hrefBase) {

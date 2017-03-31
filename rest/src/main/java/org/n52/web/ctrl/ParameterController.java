@@ -28,9 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.common.Stopwatch.startStopwatch;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,11 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
@@ -60,7 +56,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
+public abstract class ParameterController<T extends ParameterOutput>
+            extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -82,10 +79,10 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     @Override
     public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
         if (!getParameterService().supportsRawData()) {
-            throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
+            throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
-        IoParameters queryMap = createFromQuery(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
         try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
@@ -101,7 +98,7 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     @Override
     public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
 
-        IoParameters queryMap = createFromQuery(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, queryMap);
 
         Map<String, Object> extras = new HashMap<>();
@@ -128,11 +125,11 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     @Override
     public ModelAndView getCollection(MultiValueMap<String, String> query) {
 
-        IoParameters queryMap = createFromQuery(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
 
         if (queryMap.isExpanded()) {
-            Stopwatch stopwatch = startStopwatch();
+            Stopwatch stopwatch = Stopwatch.startStopwatch();
             OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
             return createModelAndView(result);
@@ -145,13 +142,13 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     @Override
     public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
 
-        IoParameters queryMap = createFromQuery(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, queryMap);
 
         T item = parameterService.getParameter(id, queryMap);
 
         if (item == null) {
-            throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
         }
 
         T parameter = addExtensionInfos(item);

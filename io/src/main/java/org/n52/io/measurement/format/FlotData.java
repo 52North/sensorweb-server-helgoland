@@ -58,8 +58,8 @@ public class FlotData {
         this.referenceValues = referenceValues;
     }
 
-    public void addReferenceValues(String id, List<Number[]> values) {
-        this.referenceValues.put(id, values);
+    public void addReferenceValues(String id, List<Number[]> toAdd) {
+        this.referenceValues.put(id, toAdd);
     }
 
 }

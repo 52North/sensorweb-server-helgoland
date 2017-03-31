@@ -28,15 +28,12 @@
  */
 package org.n52.web.common;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -54,28 +51,27 @@ public class RequestUtils {
     /**
      * Get the request {@link URL} without the query parameter
      *
+     * @param externalUrl the external URL.
      * @return Request {@link URL} without query parameter
-     * @throws IOException
-     * @throws URISyntaxException
      */
-    public static String resolveQueryLessRequestUrl(String externalUrl) throws IOException, URISyntaxException {
+    public static String resolveQueryLessRequestUrl(String externalUrl) {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
         if (LOGGER.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
             Enumeration<?> headerNames = request.getHeaderNames();
-            while(headerNames.hasMoreElements()) {
-              String headerName = (String)headerNames.nextElement();
-              sb.append(headerName + ": " + request.getHeader(headerName));
-              sb.append("\n");
+            while (headerNames.hasMoreElements()) {
+                String headerName = (String) headerNames.nextElement();
+                sb.append(headerName + ": " + request.getHeader(headerName));
+                sb.append("\n");
             }
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
 
         return externalUrl == null || externalUrl.isEmpty()
-            ? createRequestUrl(request)
-            : createRequestUrl(externalUrl);
+                ? createRequestUrl(request)
+                : createRequestUrl(externalUrl);
     }
 
     private static String createRequestUrl(String externalUrl) {

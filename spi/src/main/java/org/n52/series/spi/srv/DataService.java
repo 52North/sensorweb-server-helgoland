@@ -38,6 +38,6 @@ import org.n52.io.response.dataset.DataCollection;
  */
 public interface DataService<T extends Data<?>> extends RawDataInfo {
 
-    public DataCollection<T> getData(RequestParameterSet parameters);
+    DataCollection<T> getData(RequestParameterSet parameters);
 
 }

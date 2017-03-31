@@ -28,13 +28,9 @@
  */
 package org.n52.io.measurement.generalize;
 
-import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
-
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
@@ -46,9 +42,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm
  *
- * Characteristic measurement values are picked depending on a given tolerance
- * value. Values that differ less than this tolerance value from an ideal line
- * between some minima and maxima will be dropped.
+ * Characteristic measurement values are picked depending on a given tolerance value. Values that
+ * differ less than this tolerance value from an ideal line between some minima and maxima will be
+ * dropped.
  */
 public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData> {
 
@@ -70,44 +66,49 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     private static final String TOLERANCE_VALUE = "TOLERANCE_VALUE";
 
     /**
-     * {@link #maxEntries} is the value for the maximum points the generalizer
-     * will handle, otherwise an exception will be thrown; -1 is unlimited
+     * {@link #maxEntries} is the value for the maximum points the generalizer will handle,
+     * otherwise an exception will be thrown; -1 is unlimited
      */
-    private int maxEntries = -1; // fallback default
+    // fallback default
+    private int maxEntries = -1;
 
     /**
-     * estimated reduction rate for this use case, where {@link #reductionRate}
-     * = 3 means the time series is reduced to 1/3 of it's size; -1 means there
-     * is no proper empirical value
+     * estimated reduction rate for this use case, where {@link #reductionRate} = 3 means the time
+     * series is reduced to 1/3 of it's size; -1 means there is no proper empirical value
      */
-    private int reductionRate = -1; // fallback default
+    // fallback default
+    private int reductionRate = -1;
 
     /**
      * Absolute tolerance value.
      */
-    private double toleranceValue = 0.1; // fallback default
+    // fallback default
+    private double toleranceValue = 0.1;
 
     /**
      * Creates a new instance. Use static constructors for instantiation.
      *
-     * @param parameters Configuration parameters. If <code>null</code> a
-     * fallback configuration will be used.
+     * @param parameters Configuration parameters. If <code>null</code> a fallback configuration
+     * will be used.
      */
     public DouglasPeuckerGeneralizer(IoParameters parameters) {
         super(parameters);
         try {
             maxEntries = parameters.containsParameter(MAX_ENTRIES)
-                    ? parseInt(parameters.getOther(MAX_ENTRIES))
+                    ? Integer.parseInt(parameters.getOther(MAX_ENTRIES))
                     : maxEntries;
             reductionRate = parameters.containsParameter(REDUCTION_RATE)
-                    ? parseInt(parameters.getOther(REDUCTION_RATE))
+                    ? Integer.parseInt(parameters.getOther(REDUCTION_RATE))
                     : reductionRate;
             toleranceValue = parameters.containsParameter(TOLERANCE_VALUE)
-                    ? parseDouble(parameters.getOther(TOLERANCE_VALUE))
+                    ? Double.parseDouble(parameters.getOther(TOLERANCE_VALUE))
                     : toleranceValue;
         } catch (NumberFormatException ne) {
-            LOGGER.error("Error while reading properties!  Using fallback defaults.", ne);
-            throw new IllegalStateException("Error while reading properties! Using fallback defaults.");
+            LOGGER.error(
+                    "Error while reading properties!  Using fallback defaults.",
+                    ne);
+            throw new IllegalStateException(
+                    "Error while reading properties! Using fallback defaults.");
         }
     }
 
@@ -117,8 +118,9 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     @Override
-    public DataCollection<MeasurementData> generalize(DataCollection<MeasurementData> data) throws GeneralizerException {
-        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<MeasurementData>();
+    public DataCollection<MeasurementData> generalize(DataCollection<MeasurementData> data)
+            throws GeneralizerException {
+        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
             MeasurementData timeseries = data.getSeries(timeseriesId);
             generalizedDataCollection.addNewSeries(timeseriesId, generalize(timeseries));
@@ -126,14 +128,17 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         return generalizedDataCollection;
     }
 
-    private MeasurementData generalize(MeasurementData timeseries) throws GeneralizerException {
+    private MeasurementData generalize(MeasurementData timeseries) throws
+            GeneralizerException {
         MeasurementValue[] originalValues = getValueArray(timeseries);
         if (originalValues.length < 3 || toleranceValue <= 0) {
             return timeseries;
         }
 
         if (maxEntries != -1 && originalValues.length > maxEntries) {
-            throw new GeneralizerException("Maximum number of entries exceeded (" + originalValues.length + ">"
+            throw new GeneralizerException(
+                    "Maximum number of entries exceeded ("
+                    + originalValues.length + ">"
                     + maxEntries + ")!");
         }
 
@@ -142,15 +147,15 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         generalizedTimeseries.addValues(generalizedValues);
 
         // add first element if new list is empty
-        if (generalizedValues.length == 0 && originalValues.length > 0) {
+        if (generalizedValues.length == 0/* && originalValues.length > 0*/) {
             generalizedTimeseries.addValues(originalValues[0]);
         }
 
         // add the last one if not already contained!
-        if (generalizedValues.length > 0 && originalValues.length > 0) {
+        if (generalizedValues.length > 0/* && originalValues.length > 0*/) {
             MeasurementValue lastOriginialValue = originalValues[originalValues.length - 1];
             MeasurementValue lastGeneralizedValue = generalizedValues[generalizedValues.length - 1];
-            if (lastGeneralizedValue.getTimestamp() != lastOriginialValue.getTimestamp()) {
+            if (!lastGeneralizedValue.getTimestamp().equals(lastOriginialValue.getTimestamp())) {
                 generalizedTimeseries.addValues(lastOriginialValue);
             }
         }
@@ -158,7 +163,8 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     private MeasurementValue[] getValueArray(MeasurementData timeseries) {
-        return timeseries.getValues().toArray(new MeasurementValue[0]);
+        return timeseries.getValues()
+                .toArray(new MeasurementValue[0]);
     }
 
     private MeasurementValue[] recursiveGeneralize(MeasurementData timeseries) {
@@ -222,7 +228,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     private MeasurementValue getFirstValue(MeasurementData timeseries) {
         MeasurementValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
-            throw new IllegalArgumentException("Timeseries must not be empty.");
+            throwNewMustNotBeEmptyException();
         }
         return values[0];
     }
@@ -230,9 +236,14 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     private MeasurementValue getLastValue(MeasurementData timeseries) {
         MeasurementValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
-            throw new IllegalArgumentException("Timeseries must not be empty.");
+            throwNewMustNotBeEmptyException();
+            return null;
         }
         return values[values.length - 1];
+    }
+
+    private void throwNewMustNotBeEmptyException() throws IllegalArgumentException {
+        throw new IllegalArgumentException("Timeseries must not be empty.");
     }
 
 }

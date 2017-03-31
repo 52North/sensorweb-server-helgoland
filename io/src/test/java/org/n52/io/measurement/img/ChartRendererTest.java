@@ -28,20 +28,17 @@
  */
 package org.n52.io.measurement.img;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.n52.io.request.IoParameters.createDefaults;
-
 import java.util.Date;
-
+import static org.hamcrest.CoreMatchers.is;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
-import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.request.IoParameters;
+import static org.n52.io.request.IoParameters.createDefaults;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;

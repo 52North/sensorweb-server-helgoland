@@ -28,22 +28,20 @@
  */
 package org.n52.web.common;
 
-import static java.lang.System.currentTimeMillis;
-
 import java.text.NumberFormat;
 
 public class Stopwatch {
 
     private final NumberFormat secondsFormatter = NumberFormat.getInstance();
 
-    private long start = currentTimeMillis();
+    private final long start = System.currentTimeMillis();
 
     public Stopwatch() {
         secondsFormatter.setMinimumFractionDigits(3);
     }
 
     public long stopInMillis() {
-        return currentTimeMillis() - start;
+        return System.currentTimeMillis() - start;
     }
 
     public String stopInSeconds() {

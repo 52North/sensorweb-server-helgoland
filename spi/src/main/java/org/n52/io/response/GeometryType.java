@@ -62,7 +62,7 @@ public enum GeometryType {
 
     private static boolean startsWith(String prefix, String id) {
         final String idPrefix = extractPrefix(id);
-        if ( !isKnownType(idPrefix)) {
+        if (!isKnownType(idPrefix)) {
             return false;
         }
         return id.toLowerCase().startsWith(prefix);
@@ -86,7 +86,7 @@ public enum GeometryType {
 
     private static boolean hasSuffix(String suffix, String id) {
         final String idPrefix = extractPrefix(id);
-        if ( !isKnownType(idPrefix)) {
+        if (!isKnownType(idPrefix)) {
             return false;
         }
         final GeometryType geometryType = toInstance(idPrefix);
@@ -103,10 +103,11 @@ public enum GeometryType {
     }
 
     public static String extractId(String id) {
+        String replacedId = id;
         for (GeometryType geometryType : values()) {
-            id = id.replaceAll(geometryType.getGeometryType() + SEPARATOR, "");
+            replacedId = replacedId.replaceAll(geometryType.getGeometryType() + SEPARATOR, "");
         }
-        return id;
+        return replacedId;
     }
 
     private static String extractPrefix(String id) {
@@ -128,4 +129,3 @@ public enum GeometryType {
         throw new IllegalArgumentException("no type for '" + id + "'.");
     }
 }
-

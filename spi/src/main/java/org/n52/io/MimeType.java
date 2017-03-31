@@ -40,7 +40,7 @@ public enum MimeType {
 
     private final String formatName;
 
-    private MimeType(String mimeType, String formatName) {
+    MimeType(String mimeType, String formatName) {
         this.mimeType = mimeType;
         this.formatName = formatName;
     }

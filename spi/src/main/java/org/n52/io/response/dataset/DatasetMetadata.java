@@ -30,7 +30,7 @@ package org.n52.io.response.dataset;
 
 public interface DatasetMetadata<T> {
 
-    public T getReferenceValues();
+    T getReferenceValues();
 
-    public void setReferenceValues(T referenceValues);
+    void setReferenceValues(T referenceValues);
 }

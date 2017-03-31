@@ -63,9 +63,9 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private boolean useByteOrderMark = true;
 
-    private boolean zipOutput = false;
-
     private String tokenSeparator = ";";
+
+    private boolean zipOutput;
 
     public MeasurementCsvIoHandler(RequestParameterSet simpleRequest,
             IoProcessChain<MeasurementData> processChain,

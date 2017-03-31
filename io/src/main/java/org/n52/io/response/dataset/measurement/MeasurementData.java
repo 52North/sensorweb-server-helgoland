@@ -43,10 +43,6 @@ public class MeasurementData extends Data<MeasurementValue> {
         return timeseries;
     }
 
-    private void addNewValue(Long timestamp, Double value) {
-        addNewValue(new MeasurementValue(timestamp, value));
-    }
-
     @Override
     public MeasurementDatasetMetadata getMetadata() {
         return metadata;

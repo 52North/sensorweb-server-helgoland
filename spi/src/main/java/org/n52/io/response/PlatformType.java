@@ -35,10 +35,26 @@ package org.n52.io.response;
  */
 public enum PlatformType {
 
+    // TODO make more fine granular:
+    // MOBILE
+    // INSITU
+    // STATIONARY
+    // REMOTE
+
     STATIONARY_INSITU,
     STATIONARY_REMOTE,
     MOBILE_INSITU,
     MOBILE_REMOTE;
+
+    public static final String PLATFORM_TYPE_MOBILE = "mobile";
+
+    public static final String PLATFORM_TYPE_STATIONARY = "stationary";
+
+    public static final String PLATFORM_TYPE_INSITU = "insitu";
+
+    public static final String PLATFORM_TYPE_REMOTE = "remote";
+
+    public static final String PLATFORM_TYPE_ALL = "all";
 
     public String getPlatformType() {
         return name().toLowerCase();
@@ -88,32 +104,32 @@ public enum PlatformType {
     }
 
     public static boolean isStationaryId(String id) {
-        return startsWith("stationary", id);
+        return startsWith(PLATFORM_TYPE_STATIONARY, id);
     }
 
     public static boolean isMobileId(String id) {
-        return startsWith("mobile", id);
+        return startsWith(PLATFORM_TYPE_MOBILE, id);
     }
 
     private static boolean startsWith(String prefix, String id) {
         final String idPrefix = extractPrefix(id);
-        if ( !isKnownType(idPrefix)) {
+        if (!isKnownType(idPrefix)) {
             return false;
         }
         return id.toLowerCase().startsWith(prefix);
     }
 
     public static boolean isRemoteId(String id) {
-        return hasSuffix("remote", id);
+        return hasSuffix(PLATFORM_TYPE_REMOTE, id);
     }
 
     public static boolean isInsitu(String id) {
-        return hasSuffix("insitu", id);
+        return hasSuffix(PLATFORM_TYPE_INSITU, id);
     }
 
     private static boolean hasSuffix(String suffix, String id) {
         final String idPrefix = extractPrefix(id);
-        if ( !isKnownType(idPrefix)) {
+        if (!isKnownType(idPrefix)) {
             return false;
         }
         final PlatformType geometryType = toInstance(idPrefix);

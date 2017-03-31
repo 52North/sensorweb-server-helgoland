@@ -28,8 +28,6 @@
  */
 package org.n52.io.response.dataset.record;
 
-import java.util.Map;
-
 import org.n52.io.response.dataset.Data;
 
 public class RecordData extends Data<RecordValue> {
@@ -42,10 +40,6 @@ public class RecordData extends Data<RecordValue> {
         RecordData timeseries = new RecordData();
         timeseries.addValues(values);
         return timeseries;
-    }
-
-    private void addNewValue(Long timestamp, Map<String, Object> value) {
-        addNewValue(new RecordValue(timestamp, value));
     }
 
     @Override

@@ -31,11 +31,11 @@ package org.n52.io.response.dataset;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.n52.io.Utils;
 import org.n52.io.response.ParameterOutput;
 
-public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>> extends ParameterOutput {
+public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
+        extends ParameterOutput {
 
     private final String datasetType;
 
@@ -51,7 +51,7 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
 
     private String uom;
 
-    public DatasetOutput(String datasetType){
+    public DatasetOutput(String datasetType) {
         this.datasetType = datasetType;
     }
 
@@ -109,7 +109,6 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
             this.rawFormats.addAll(formats);
         }
     }
-
 
     public V getFirstValue() {
         return firstValue;

@@ -32,7 +32,7 @@ import java.util.Collection;
 
 public interface RawFormats {
 
-    static final String RAW_FORMAT = "rawFormat";
+    String RAW_FORMAT = "rawFormat";
 
     /**
      * @return the rawFormats

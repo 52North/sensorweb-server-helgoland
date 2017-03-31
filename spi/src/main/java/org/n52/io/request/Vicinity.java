@@ -28,21 +28,12 @@
  */
 package org.n52.io.request;
 
-import static java.lang.Double.parseDouble;
-import static java.lang.Math.toRadians;
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-import static org.n52.io.crs.WGS84Util.getLatitudeDelta;
-import static org.n52.io.crs.WGS84Util.getLongitudeDelta;
-import static org.n52.io.crs.WGS84Util.normalizeLatitude;
-import static org.n52.io.crs.WGS84Util.normalizeLongitude;
-
+import com.vividsolutions.jts.geom.Point;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
+import org.n52.io.crs.WGS84Util;
 import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
-
-import com.vividsolutions.jts.geom.Point;
 
 /**
  * Represents the surrounding area based on a center and a radius. All
@@ -55,7 +46,7 @@ public class Vicinity {
      * The coordinate reference system. Defaults to
      * {@link CRSUtils#DEFAULT_CRS}.
      */
-    private String crs = DEFAULT_CRS;
+    private String crs = CRSUtils.DEFAULT_CRS;
 
     private GeojsonPoint center;
 
@@ -71,7 +62,7 @@ public class Vicinity {
      */
     public Vicinity(GeojsonPoint center, String radius) {
         try {
-            this.radius = parseDouble(radius);
+            this.radius = Double.parseDouble(radius);
             this.center = center;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Could not parse radius.");
@@ -83,7 +74,7 @@ public class Vicinity {
      * context.
      */
     public BoundingBox calculateBounds() {
-        return calculateBounds(createEpsgStrictAxisOrder());
+        return calculateBounds(CRSUtils.createEpsgStrictAxisOrder());
     }
 
     /**
@@ -94,13 +85,15 @@ public class Vicinity {
      * @throws IllegalStateException if invalid crs was set.
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
-        Point center = createCenter(this.center, crsUtils);
+        Point point = createPoint(this.center, crsUtils);
 
-        double latInRad = toRadians(center.getY());
-        double llEasting = normalizeLongitude(center.getX() - getLongitudeDelta(latInRad, radius));
-        double llNorthing = normalizeLatitude(center.getY() - getLatitudeDelta(radius));
-        double urEasting = normalizeLongitude(center.getX() + getLongitudeDelta(latInRad, radius));
-        double urNorthing = normalizeLatitude(center.getY() + getLatitudeDelta(radius));
+        double latInRad = Math.toRadians(point.getY());
+        final double latitudeDelta = WGS84Util.getLatitudeDelta(radius);
+        final double longitudeDelta = WGS84Util.getLongitudeDelta(latInRad, radius);
+        double llEasting = WGS84Util.normalizeLongitude(point.getX() - longitudeDelta);
+        double llNorthing = WGS84Util.normalizeLatitude(point.getY() - latitudeDelta);
+        double urEasting = WGS84Util.normalizeLongitude(point.getX() + longitudeDelta);
+        double urNorthing = WGS84Util.normalizeLatitude(point.getY() + latitudeDelta);
         try {
             if (crsUtils.isLatLonAxesOrder(crs)) {
                 Point ll = crsUtils.createPoint(llNorthing, llEasting, crs);
@@ -116,14 +109,14 @@ public class Vicinity {
     }
 
     /**
-     * @param center the center point as GeoJSON point.
+     * @param point the point as GeoJSON point.
      * @param crsUtils the reference context.
-     * @return the center point.
+     * @return the JTS point.
      */
-    private Point createCenter(GeojsonPoint center, CRSUtils crsUtils) {
-        Double easting = center.getCoordinates()[0];
-        Double northing = center.getCoordinates()[1];
-        return crsUtils.createPoint(easting, northing, DEFAULT_CRS);
+    private Point createPoint(GeojsonPoint point, CRSUtils crsUtils) {
+        Double easting = point.getCoordinates()[0];
+        Double northing = point.getCoordinates()[1];
+        return crsUtils.createPoint(easting, northing, CRSUtils.DEFAULT_CRS);
     }
 
     /**
@@ -152,7 +145,7 @@ public class Vicinity {
      * value.
      */
     public void setRadius(String radius) {
-        this.radius = parseDouble(radius);
+        this.radius = Double.parseDouble(radius);
     }
 
     @Override

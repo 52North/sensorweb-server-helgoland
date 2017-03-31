@@ -30,7 +30,6 @@ package org.n52.io.measurement.report;
 
 
 import java.util.List;
-
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
@@ -44,8 +43,8 @@ public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>
     private final IoStyleContext context;
 
     /**
-     * @param simpleRequest
-     * @param processChain
+     * @param simpleRequest simple parameter set.
+     * @param processChain the process chain.
      * @param context the rendering context.
      */
     public ReportGenerator(RequestParameterSet simpleRequest,

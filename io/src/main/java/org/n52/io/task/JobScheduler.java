@@ -28,15 +28,14 @@
  */
 package org.n52.io.task;
 
-import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,8 @@ public class JobScheduler {
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
 
-    private int startupDelayInSeconds = 5; // 5s
+    // 5 seconds
+    private int startupDelayInSeconds = 5;
 
     private Scheduler scheduler;
 
@@ -57,15 +57,14 @@ public class JobScheduler {
      */
     public void init() {
         if (!enabled) {
-            LOGGER.info("Job schedular disabled. No jobs will be triggered. This is also true for particularly enabled jobs.");
+            LOGGER.info("Job schedular disabled. No jobs will be triggered. "
+                    + "This is also true for particularly enabled jobs.");
             return;
         }
 
-        for (ScheduledJob scheduledJob : scheduledJobs) {
-            if (scheduledJob.isEnabled()) {
-                scheduleJob(scheduledJob);
-            }
-        }
+        scheduledJobs.stream()
+                .filter(scheduledJob -> scheduledJob.isEnabled())
+                .forEach(scheduledJob -> scheduleJob(scheduledJob));
 
         try {
             scheduler.startDelayed(startupDelayInSeconds);
@@ -82,7 +81,7 @@ public class JobScheduler {
             scheduler.scheduleJob(details, trigger);
             if (taskToSchedule.isTriggerAtStartup()) {
                 LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
-                Trigger onceAtStartup = newTrigger()
+                Trigger onceAtStartup = TriggerBuilder.newTrigger()
                         .withIdentity("onceAtStartup")
                         .forJob(details.getKey()).build();
                 scheduler.scheduleJob(onceAtStartup);
