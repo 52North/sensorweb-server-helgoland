@@ -534,16 +534,14 @@
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <configuration>
-                        <aggregate>true</aggregate>
                         <header>misc/52N_license-header.txt</header>
                         <properties>
                             <inceptionYear>${project.inceptionYear}</inceptionYear>
                             <latestYearOfContribution>${currentYear}</latestYearOfContribution>
                             <latestYearOfContribution>${currentYearDynamic}</latestYearOfContribution>
                         </properties>
-                        <aggregate>true</aggregate>
                         <includes>
-                            <include>src/**/*.java</include>
+                            <include>**/src/**/*.java</include>
                         </includes>
                         <excludes>
                             <exclude>**/logback.xml</exclude>
