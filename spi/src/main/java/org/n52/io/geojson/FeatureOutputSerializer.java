@@ -28,25 +28,24 @@
  */
 package org.n52.io.geojson;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.vividsolutions.jts.geom.Geometry;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FeatureOutputSerializer.class);
 
     @Override
-    public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers) throws IOException, JsonProcessingException {
+    public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers)
+            throws IOException, JsonProcessingException {
         if (value.isSetGeometry()) {
             writeFeature(value, gen);
         } else {
@@ -63,7 +62,8 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
         gen.writeEndObject();
     }
 
-    private void writeGeometryLessFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {
+    private void writeGeometryLessFeature(GeoJSONFeature value,
+            JsonGenerator gen) throws IOException {
         gen.writeStartObject();
         writeMap(value.getProperties(), gen);
         gen.writeEndObject();

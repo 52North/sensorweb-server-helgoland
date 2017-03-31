@@ -28,17 +28,15 @@
  */
 package org.n52.io.measurement.format;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.n52.io.DataFormatter;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetMetadata;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
-
-import com.vividsolutions.jts.geom.Coordinate;
 
 public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
 
@@ -77,7 +75,7 @@ public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
                 Coordinate coordinate = currentValue.getGeometry().getCoordinate();
                 list.add(coordinate.x);
                 list.add(coordinate.y);
-                if ( !Double.isNaN(coordinate.z)) {
+                if (!Double.isNaN(coordinate.z)) {
                     list.add(coordinate.z);
                 }
             }

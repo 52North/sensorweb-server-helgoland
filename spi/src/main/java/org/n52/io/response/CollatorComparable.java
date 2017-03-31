@@ -44,5 +44,5 @@ public interface CollatorComparable<T> {
      * less than, equal to, or greater than the specified object.
      * @see Collator
      */
-    public int compare(Collator collator, T o);
+    int compare(Collator collator, T o);
 }

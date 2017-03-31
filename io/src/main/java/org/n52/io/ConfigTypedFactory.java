@@ -41,7 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +51,20 @@ public abstract class ConfigTypedFactory<T> {
     protected final Map<String, T> cache = new HashMap<>();
 
     protected Properties mappings;
+
+    protected ConfigTypedFactory(File configFile) {
+        this.mappings = new Properties();
+        try {
+            loadMappings(createConfigStream(configFile, getClass()), mappings);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Could not find mapping file: '{}'", configFile.getAbsolutePath(), e);
+        }
+    }
+
+    protected ConfigTypedFactory(InputStream is) {
+        this.mappings = new Properties();
+        loadMappings(is, mappings);
+    }
 
     protected ConfigTypedFactory(String defaultConfig) {
         this(getDefaultConfigFile(defaultConfig));
@@ -75,29 +88,15 @@ public abstract class ConfigTypedFactory<T> {
         }
     }
 
-    protected ConfigTypedFactory(File configFile) {
-        this.mappings = new Properties();
-        try {
-            loadMappings(mappings, createConfigStream(configFile, getClass()));
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Could not find mapping file: '{}'", configFile.getAbsolutePath(), e);
-        }
-    }
-
-    protected ConfigTypedFactory(InputStream is) {
-        this.mappings = new Properties();
-        loadMappings(mappings, is);
-    }
-
-    private void loadMappings(Properties mappings, InputStream is) {
-        try (InputStream stream = is) {
-            mappings.load(stream);
+    private void loadMappings(InputStream loadFrom, Properties loadTo) {
+        try (InputStream stream = loadFrom) {
+            loadTo.load(stream);
         } catch (IOException e) {
             LOGGER.error("Could not load mapping from stream!", e);
         }
     }
 
-    protected InputStream createConfigStream(File file, Class<?> clazz) throws FileNotFoundException {
+    private InputStream createConfigStream(File file, Class<?> clazz) throws FileNotFoundException {
         if (file != null && file.exists()) {
             LOGGER.debug("loading factory config from '{}'", file.getAbsolutePath());
             return new FileInputStream(file);
@@ -131,9 +130,10 @@ public abstract class ConfigTypedFactory<T> {
         if (cache.containsKey(type)) {
             return cache.get(type);
         }
-        if ( !mappings.containsKey(type)) {
+        if (!mappings.containsKey(type)) {
             LOGGER.debug("No mapping entry for type '{}'", type);
-            throw new DatasetFactoryException("No datasets available for '" + type + "'.");
+            throwNewNoDatasetsAvailableForTypeException(type);
+            return null;
         }
         final String clazz = mappings.getProperty(type);
         try {
@@ -144,7 +144,8 @@ public abstract class ConfigTypedFactory<T> {
             return instance;
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
             LOGGER.error("Invalid mapping entry '{}'='{}'", type, clazz, e);
-            throw new DatasetFactoryException("No datasets available for '" + type + "'.");
+            throwNewNoDatasetsAvailableForTypeException(type);
+            return null;
         }
     }
 
@@ -163,9 +164,15 @@ public abstract class ConfigTypedFactory<T> {
     protected abstract String getFallbackConfigResource();
 
     protected T initInstance(T instance) {
-        return instance; // override if needed
+        // override if needed
+        return instance;
     }
 
     protected abstract Class<?> getTargetType();
+
+    private void throwNewNoDatasetsAvailableForTypeException(String type) throws
+            DatasetFactoryException {
+        throw new DatasetFactoryException("No datasets available for '" + type + "'.");
+    }
 
 }

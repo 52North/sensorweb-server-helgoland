@@ -38,8 +38,8 @@ public interface RawDataInfo {
      *
      * @return <code>true</code>, if raw data output is supported
      */
-    public boolean supportsRawData();
+    boolean supportsRawData();
 
-    public RawDataService getRawDataService();
+    RawDataService getRawDataService();
 
 }

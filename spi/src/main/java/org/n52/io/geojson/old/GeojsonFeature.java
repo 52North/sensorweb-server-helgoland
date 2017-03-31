@@ -35,31 +35,13 @@ import java.util.Map;
 @Deprecated
 public class GeojsonFeature extends GeojsonObject {
 
-    public static <T extends GeojsonFeature> Comparator<T> defaultComparator() {
-        return new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                if (o1 == null || o2 == null) {
-                    throw new NullPointerException("comparing null value(s)!");
-                }
-                String label1 = getLabelOf(o1);
-                String label2 = getLabelOf(o2);
-                return label1.compareTo(label2);
-            }
-
-            private String getLabelOf(GeojsonFeature feature) {
-                return feature.hasProperty("label")
-                        ? (String) feature.getProperties().get("label")
-                        : "";
-            }
-        };
-    }
-
     private static final long serialVersionUID = 863297394860249486L;
 
     private static final String GEOJSON_TYPE_FEATURE = "Feature";
 
-    protected Map<String, Object> properties = null;
+    private static final String LABEL_PROPERTY = "label";
+
+    protected Map<String, Object> properties;
 
     private GeojsonGeometry geometry;
 
@@ -109,6 +91,26 @@ public class GeojsonFeature extends GeojsonObject {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public static <T extends GeojsonFeature> Comparator<T> defaultComparator() {
+        return new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                if (o1 == null || o2 == null) {
+                    throw new NullPointerException("comparing null value(s)!");
+                }
+                String label1 = getLabelOf(o1);
+                String label2 = getLabelOf(o2);
+                return label1.compareTo(label2);
+            }
+
+            private String getLabelOf(GeojsonFeature feature) {
+                return feature.hasProperty(LABEL_PROPERTY)
+                        ? (String) feature.getProperties().get(LABEL_PROPERTY)
+                        : "";
+            }
+        };
     }
 
 }

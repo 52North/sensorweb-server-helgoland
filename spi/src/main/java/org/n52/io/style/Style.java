@@ -28,12 +28,6 @@
  */
 package org.n52.io.style;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Double.parseDouble;
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.toHexString;
-import static java.lang.System.currentTimeMillis;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -44,9 +38,19 @@ import java.util.Random;
  */
 public abstract class Style {
 
-    private static final String PARAMETER_COLOR = "color";
+    public static final String PARAMETER_COLOR = "color";
 
-    private Map<String, String> properties = new HashMap<String, String>();
+    public static final String PARAMETER_INTERVAL = "interval";
+
+    public static final String VALUE_INTERVAL_BY_MONTH = "byMonth";
+
+    public static final String VALUE_INTERVAL_BY_WEEK = "byWeek";
+
+    public static final String VALUE_INTERVAL_BY_DAY = "byDay";
+
+    public static final String VALUE_INTERVAL_BY_HOUR = "byHour";
+
+    private Map<String, String> properties = new HashMap<>();
 
     /**
      * @return a 6-digit hex color. If not set a random color will be returned.
@@ -66,8 +70,8 @@ public abstract class Style {
     }
 
     private String getNextFormattedRandomNumber() {
-        Random random = new Random(currentTimeMillis());
-        String randomHex = toHexString(random.nextInt(256));
+        Random random = new Random(System.currentTimeMillis());
+        String randomHex = Integer.toHexString(random.nextInt(256));
         if (randomHex.length() == 1) {
             // ensure two digits
             randomHex = "0" + randomHex;
@@ -93,9 +97,9 @@ public abstract class Style {
      */
     double getPropertyAsDouble(String property) {
         if (properties == null) {
-            throw new NullPointerException("No property with name '" + property + "'.");
+            throwUnknownPropertyException(property);
         }
-        return parseDouble(properties.get(property));
+        return Double.parseDouble(properties.get(property));
     }
 
     /**
@@ -108,9 +112,9 @@ public abstract class Style {
      */
     int getPropertyAsInt(String property) {
         if (properties == null) {
-            throw new NullPointerException("No property with name '" + property + "'.");
+            throwUnknownPropertyException(property);
         }
-        return parseInt(properties.get(property));
+        return Integer.parseInt(properties.get(property));
     }
 
     /**
@@ -122,9 +126,9 @@ public abstract class Style {
      */
     boolean getPropertyAsBoolean(String property) {
         if (properties == null) {
-            throw new NullPointerException("No property with name '" + property + "'.");
+            throwUnknownPropertyException(property);
         }
-        return parseBoolean(properties.get(property));
+        return Boolean.parseBoolean(properties.get(property));
     }
 
     Object[] getPropertyAsArray(String property) {
@@ -153,6 +157,10 @@ public abstract class Style {
      */
     void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    private void throwUnknownPropertyException(String property) {
+        throw new NullPointerException("No property with name '" + property + "'.");
     }
 
 }

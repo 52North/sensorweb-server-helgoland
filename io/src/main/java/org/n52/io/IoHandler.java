@@ -28,13 +28,9 @@
  */
 package org.n52.io;
 
-import static org.n52.io.I18N.getDefaultLocalizer;
-import static org.n52.io.I18N.getMessageLocalizer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import org.apache.commons.codec.binary.Base64;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
@@ -56,8 +52,8 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
         this.processChain = processChain;
         this.request = request;
         i18n = request.containsParameter(Parameters.LOCALE)
-                ? getMessageLocalizer(request.getLocale())
-                : getDefaultLocalizer();
+                ? I18N.getMessageLocalizer(request.getLocale())
+                : I18N.getDefaultLocalizer();
     }
 
     /**
@@ -77,15 +73,12 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
                 byte[] data = baos.toByteArray();
                 byte[] encode = Base64.encodeBase64(data);
                 outputStream.write(encode);
-            }
-            else {
+            } else {
                 encodeAndWriteTo(processChain.getData(), outputStream);
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IoHandlerException("Error handling output stream.", e);
-        }
-        catch (IoParseException e) {
+        } catch (IoParseException e) {
             throw new IoHandlerException("Could not write binary to stream.", e);
         }
     }

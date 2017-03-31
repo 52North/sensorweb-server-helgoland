@@ -32,9 +32,9 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 
 interface Renderer {
 
-    public XYItemRenderer getXYRenderer();
+    XYItemRenderer getXYRenderer();
 
-    public String getRendererType();
+    String getRendererType();
 
-    public void setColorForSeries();
+    void setColorForSeries();
 }

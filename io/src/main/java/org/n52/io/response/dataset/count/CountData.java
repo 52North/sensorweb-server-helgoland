@@ -43,10 +43,6 @@ public class CountData extends Data<CountValue> {
         return timeseries;
     }
 
-    private void addNewValue(Long timestamp, Integer value) {
-        addNewValue(new CountValue(timestamp, value));
-    }
-
     @Override
     public CountDatasetMetadata getMetadata() {
         return metadata;

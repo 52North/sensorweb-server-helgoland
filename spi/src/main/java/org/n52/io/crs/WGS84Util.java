@@ -28,13 +28,6 @@
  */
 package org.n52.io.crs;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.acos;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.toDegrees;
-import static java.lang.Math.toRadians;
-
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -49,7 +42,7 @@ public class WGS84Util {
     /**
      * The mean radius of WGS84 ellipse.
      */
-    static double EARTH_MEAN_RADIUS = 6371.000;
+    protected static final double EARTH_MEAN_RADIUS = 6371.000;
 
     /**
      * Calculates the shortest distance between two points on a great circle.
@@ -59,12 +52,13 @@ public class WGS84Util {
      * @return the shortest distance between point A and point B.
      */
     public static double shortestDistanceBetween(Point a, Point b) {
-        double aXinRad = toRadians(a.getX());
-        double aYinRad = toRadians(a.getY());
-        double bXinRad = toRadians(b.getX());
-        double bYinRad = toRadians(b.getY());
-        return acos(sin(aYinRad) * sin(bYinRad) + cos(aYinRad) * cos(bYinRad) * cos(aXinRad - bXinRad))
-                * EARTH_MEAN_RADIUS;
+        double aXinRad = Math.toRadians(a.getX());
+        double aYinRad = Math.toRadians(a.getY());
+        double bXinRad = Math.toRadians(b.getX());
+        double bYinRad = Math.toRadians(b.getY());
+        double aProd = Math.sin(aYinRad) * Math.sin(bYinRad);
+        double bProd = Math.cos(aYinRad) * Math.cos(bYinRad) * Math.cos(aXinRad - bXinRad);
+        return Math.acos(aProd + bProd) * EARTH_MEAN_RADIUS;
     }
 
     /**
@@ -76,7 +70,7 @@ public class WGS84Util {
      * @return the longitude delta in degrees.
      */
     public static double getLongitudeDelta(double latitude, double distance) {
-        return toDegrees(distance / getLatitutesCircleRadius(latitude)) % 360;
+        return Math.toDegrees(distance / getLatitutesCircleRadius(latitude)) % 360;
     }
 
     /**
@@ -86,7 +80,7 @@ public class WGS84Util {
      * @return the latitude delta in degrees.
      */
     public static double getLatitudeDelta(double distance) {
-        return toDegrees(distance / EARTH_MEAN_RADIUS) % 180;
+        return Math.toDegrees(distance / EARTH_MEAN_RADIUS) % 180;
     }
 
     /**
@@ -94,7 +88,7 @@ public class WGS84Util {
      * @return the length of the latitude radius.
      */
     static double getLatitutesCircleRadius(double latitude) {
-        return EARTH_MEAN_RADIUS * sin(PI / 2 - latitude);
+        return EARTH_MEAN_RADIUS * Math.sin(Math.PI / 2 - latitude);
     }
 
     /**
@@ -104,11 +98,11 @@ public class WGS84Util {
      * @return the normalized longitude.
      */
     public static double normalizeLongitude(double longitude) {
-        double asRad = toRadians(longitude);
-        if (asRad > PI) {
-            return toDegrees(-2 * PI + asRad) % 180;
-        } else if (-PI > asRad) {
-            return toDegrees(2 * PI + asRad) % 180;
+        double asRad = Math.toRadians(longitude);
+        if (asRad > Math.PI) {
+            return Math.toDegrees(-2 * Math.PI + asRad) % 180;
+        } else if (-Math.PI > asRad) {
+            return Math.toDegrees(2 * Math.PI + asRad) % 180;
         }
         return longitude;
     }
@@ -120,11 +114,11 @@ public class WGS84Util {
      * @return the normalized latitude.
      */
     public static double normalizeLatitude(double latitude) {
-        double asRad = toRadians(latitude);
-        if (asRad > PI / 2) {
-            return toDegrees(2 * PI - asRad) % 90;
-        } else if (-PI / 2 > asRad) {
-            return toDegrees(-2 * PI - asRad) % 90;
+        double asRad = Math.toRadians(latitude);
+        if (asRad > Math.PI / 2) {
+            return Math.toDegrees(2 * Math.PI - asRad) % 90;
+        } else if (-Math.PI / 2 > asRad) {
+            return Math.toDegrees(-2 * Math.PI - asRad) % 90;
         }
         return latitude;
     }

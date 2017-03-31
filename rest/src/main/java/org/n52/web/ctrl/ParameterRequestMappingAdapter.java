@@ -28,15 +28,9 @@
  */
 package org.n52.web.ctrl;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.RawFormats;
@@ -46,10 +40,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(method = GET, produces = {"application/json"})
+@RequestMapping(method = RequestMethod.GET, produces = {"application/json"})
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T>  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterRequestMappingAdapter.class);
@@ -84,13 +79,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        try {
-            String externalUrl = getExternalUrl();
-            String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
-            query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
-        } catch (IOException | URISyntaxException e) {
-            LOGGER.error("could not resolve href base URL.", e);
-        }
+        String externalUrl = getExternalUrl();
+        String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
+        query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
         return query;
     }
 

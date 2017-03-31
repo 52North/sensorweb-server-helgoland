@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.count;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class CountReferenceValueOutput implements ReferenceValueOutput<CountValue>{
+public class CountReferenceValueOutput implements ReferenceValueOutput<CountValue> {
 
     private String referenceValueId;
 

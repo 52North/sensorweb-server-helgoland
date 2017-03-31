@@ -50,7 +50,7 @@ public final class Utils {
      * @return a copied instance of the array.
      */
     @SuppressWarnings("unchecked")
-    public static final <T> T[] copy(T[] source) {
+    public static <T> T[] copy(T[] source) {
         if (source != null) {
             Class< ?> type = source.getClass().getComponentType();
             T[] target = (T[]) Array.newInstance(type, source.length);

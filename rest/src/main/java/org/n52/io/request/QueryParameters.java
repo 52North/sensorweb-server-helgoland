@@ -29,11 +29,9 @@
 package org.n52.io.request;
 
 import java.util.Map;
-
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
-import org.n52.io.measurement.img.ChartDimension;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
@@ -49,22 +47,6 @@ public final class QueryParameters extends IoParameters {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryParameters.class);
 
-    public static IoParameters createFromQuery(Map<String, String> query) {
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.setAll(query);
-        return createFromQuery(parameters);
-    }
-
-    /**
-     * @param query the incoming query parameters.
-     * @return a query parameters instance handling Web exceptions.
-     * @see WebException
-     */
-    public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
-        QueryParameters queryParameters = new QueryParameters(query);
-        return IoParameters.createFromMultiValueMap(query);
-    }
-
     private QueryParameters(MultiValueMap<String, String> query) {
         super(convertValuesToJsonNodes(query));
     }
@@ -74,84 +56,12 @@ public final class QueryParameters extends IoParameters {
     }
 
     @Override
-    public int getOffset() {
-        try {
-            return super.getOffset();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + OFFSET + "' parameter.", e);
-        }
-    }
-
-    @Override
-    public int getLimit() {
-        try {
-            return super.getLimit();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + LIMIT + "' parameter.", e);
-        }
-    }
-
-    public ChartDimension getChartDimension() {
-        try {
-            return new ChartDimension(getWidth(), getHeight());
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + WIDTH + "' or '" + HEIGHT + "' parameter(s).", e);
-        }
-    }
-
-    @Override
-    public boolean isBase64() {
-        try {
-            return super.isBase64();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + BASE_64 + "' parameter.", e);
-        }
-    }
-
-    @Override
-    public boolean isGrid() {
-        try {
-            return super.isGrid();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + GRID + "' parameter.", e);
-        }
-    }
-
-    @Override
-    public boolean isGeneralize() {
-        try {
-            return super.isGeneralize();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + GENERALIZE + "' parameter.", e);
-        }
-    }
-
-    @Override
-    public boolean isLegend() {
-        try {
-            return super.isLegend();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + LEGEND + "' parameter.", e);
-        }
-    }
-
-    @Override
-    public String getLocale() {
-        return super.getLocale();
-    }
-
-    @Override
     public StyleProperties getStyle() {
         try {
             return super.getStyle();
         } catch (IoParseException e) {
             throw new BadRequestException("Could not read '" + STYLE + "' property.", e);
         }
-    }
-
-    @Override
-    public String getFormat() {
-        return super.getFormat();
     }
 
     @Override
@@ -178,31 +88,23 @@ public final class QueryParameters extends IoParameters {
         }
     }
 
-    @Override
-    public boolean isForceXY() {
-        try {
-            return super.isForceXY();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + FORCE_XY + "' parameter.", e);
-        }
+    public static IoParameters createFromQuery(Map<String, String> query) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.setAll(query);
+        return createFromQuery(parameters);
     }
 
-    @Override
-    public boolean isExpanded() {
-        try {
-            return super.isExpanded();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + EXPANDED + "' parameter.", e);
-        }
+    /**
+     * @param query the incoming query parameters.
+     * @return a query parameters instance handling Web exceptions.
+     * @see WebException
+     */
+    public static IoParameters createFromQuery(MultiValueMap<String, String> query) {
+        return IoParameters.createFromMultiValueMap(query);
     }
 
-    @Override
-    public boolean isForceLatestValueRequests() {
-        try {
-            return super.isForceLatestValueRequests();
-        } catch (IoParseException e) {
-            throw new BadRequestException("Bad '" + FORCE_LATEST_VALUE + "' parameter", e);
-        }
+    private void throwBadParameterException(String parameter, Exception e) {
+        throw new BadRequestException("Bad '" + parameter + "' parameter.", e);
     }
 
 }

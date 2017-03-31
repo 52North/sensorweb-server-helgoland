@@ -28,20 +28,6 @@
  */
 package org.n52.io.measurement.img;
 
-import static java.awt.Color.BLACK;
-import static java.awt.Color.LIGHT_GRAY;
-import static java.awt.Color.WHITE;
-import static java.awt.Font.BOLD;
-import static java.awt.Font.PLAIN;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static javax.imageio.ImageIO.write;
-import static org.jfree.chart.ChartFactory.createTimeSeriesChart;
-import static org.n52.io.measurement.img.BarRenderer.BAR_CHART_TYPE;
-import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.COLOR;
-import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.FONT_LABEL;
-import static org.n52.io.measurement.img.ChartIoHandler.LabelConstants.FONT_LABEL_SMALL;
-import static org.n52.io.measurement.img.LineRenderer.LINE_CHART_TYPE;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -53,7 +39,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Locale;
+import javax.imageio.ImageIO;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
@@ -90,13 +78,19 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
+    // TODO refactor prerendering to that it can be moved to io module
+    private static final String RENDERING_TRIGGER_PRERENDERING = "prerendering";
+
+    // TODO refactor prerendering to that it can be moved to io module
+    private static final String PARAMETER_PRERENDERING_TITLE = "title";
+
     private final IoStyleContext context;
+
+    private final XYPlot xyPlot;
 
     private MimeType mimeType;
 
-    private JFreeChart chart;
-
-    private XYPlot xyPlot;
+    private JFreeChart jFreeChart;
 
     public ChartIoHandler(RequestParameterSet request,
             IoProcessChain<MeasurementData> processChain,
@@ -106,13 +100,15 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         this.xyPlot = createChart(context);
     }
 
-    public abstract void writeDataToChart(DataCollection<MeasurementData> data) throws IoParseException;
+    public abstract void writeDataToChart(DataCollection<MeasurementData> data)
+            throws IoParseException;
 
     @Override
-    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<MeasurementData> data,
+            OutputStream stream) throws IoParseException {
         try {
             writeDataToChart(data);
-            write(createImage(), mimeType.getFormatName(), stream);
+            ImageIO.write(createImage(), mimeType.getFormatName(), stream);
         } catch (IOException e) {
             throw new IoParseException("Could not write image to output stream.", e);
         }
@@ -121,17 +117,17 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     private BufferedImage createImage() {
         int width = getChartStyleDefinitions().getWidth();
         int height = getChartStyleDefinitions().getHeight();
-        BufferedImage chartImage = new BufferedImage(width, height, TYPE_INT_RGB);
+        BufferedImage chartImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D chartGraphics = chartImage.createGraphics();
         chartGraphics.fillRect(0, 0, width, height);
-        chartGraphics.setColor(WHITE);
+        chartGraphics.setColor(Color.WHITE);
 
-        chart.setTextAntiAlias(true);
-        chart.setAntiAlias(true);
-        if (chart.getLegend() != null) {
-            chart.getLegend().setFrame(BlockBorder.NONE);
+        jFreeChart.setTextAntiAlias(true);
+        jFreeChart.setAntiAlias(true);
+        if (jFreeChart.getLegend() != null) {
+            jFreeChart.getLegend().setFrame(BlockBorder.NONE);
         }
-        chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
+        jFreeChart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
     }
 
@@ -147,32 +143,35 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         this.mimeType = mimeType;
     }
 
-    private XYPlot createChart(IoStyleContext context) {
+    private XYPlot createChart(IoStyleContext styleContext) {
         DateTime end = getTimespan() != null
-                ? DateTime.parse(getTimespan().split("/")[1])
+                ? DateTime.parse(getTimespan()
+                        .split("/")[1])
                 : new DateTime();
         //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
         String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
         zoneName = "+00:00".equalsIgnoreCase(zoneName) ? "UTC" : zoneName;
 
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
-        domainAxisLabel.append(" (").append(zoneName).append(")");
+        domainAxisLabel.append(" (")
+                .append(zoneName)
+                .append(")");
         boolean showLegend = getChartStyleDefinitions().isLegend();
-        chart = createTimeSeriesChart(null,
+        jFreeChart = ChartFactory.createTimeSeriesChart(null,
                 domainAxisLabel.toString(),
                 i18n.get("msg.io.chart.value"),
                 null,
                 showLegend,
                 false,
                 true);
-        return createPlotArea(chart);
+        return createPlotArea(jFreeChart);
     }
 
     private XYPlot createPlotArea(JFreeChart chart) {
         XYPlot plot = chart.getXYPlot();
-        plot.setBackgroundPaint(WHITE);
-        plot.setDomainGridlinePaint(LIGHT_GRAY);
-        plot.setRangeGridlinePaint(LIGHT_GRAY);
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
         plot.setAxisOffset(new RectangleInsets(2.0, 2.0, 2.0, 2.0));
         showCrosshairsOnAxes(plot);
         configureDomainAxis(plot);
@@ -188,8 +187,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         String msg = i18n.get("msg.io.chart.notice");
         if (msg != null && !msg.isEmpty()) {
             notice.setText(msg);
-            notice.setPaint(BLACK);
-            notice.setFont(FONT_LABEL_SMALL);
+            notice.setPaint(Color.BLACK);
+            notice.setFont(LabelConstants.FONT_LABEL_SMALL);
             notice.setPosition(RectangleEdge.BOTTOM);
             notice.setHorizontalAlignment(HorizontalAlignment.RIGHT);
             notice.setVerticalAlignment(VerticalAlignment.BOTTOM);
@@ -198,41 +197,44 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         }
     }
 
-    private void configureDomainAxis(XYPlot xyPlot) {
-        ValueAxis domainAxis = xyPlot.getDomainAxis();
-        domainAxis.setTickLabelFont(FONT_LABEL);
-        domainAxis.setLabelFont(FONT_LABEL);
-        domainAxis.setTickLabelPaint(COLOR);
-        domainAxis.setLabelPaint(COLOR);
+    private void configureDomainAxis(XYPlot plot) {
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setTickLabelFont(LabelConstants.FONT_LABEL);
+        domainAxis.setLabelFont(LabelConstants.FONT_LABEL);
+        domainAxis.setTickLabelPaint(LabelConstants.COLOR);
+        domainAxis.setLabelPaint(LabelConstants.COLOR);
     }
 
-    private void showCrosshairsOnAxes(XYPlot xyPlot) {
-        xyPlot.setDomainCrosshairVisible(true);
-        xyPlot.setRangeCrosshairVisible(true);
+    private void showCrosshairsOnAxes(XYPlot plot) {
+        plot.setDomainCrosshairVisible(true);
+        plot.setRangeCrosshairVisible(true);
     }
 
-    private void showGridlinesOnChart(XYPlot xyPlot) {
-        boolean showGrid = getChartStyleDefinitions().isGrid();
-        xyPlot.setDomainGridlinesVisible(showGrid);
-        xyPlot.setRangeGridlinesVisible(showGrid);
+    private void showGridlinesOnChart(XYPlot plot) {
+        boolean showGrid = getChartStyleDefinitions()
+                .isGrid();
+        plot.setDomainGridlinesVisible(showGrid);
+        plot.setRangeGridlinesVisible(showGrid);
     }
 
-    private void configureTimeAxis(XYPlot xyPlot) {
-        DateAxis timeAxis = (DateAxis) xyPlot.getDomainAxis();
-        timeAxis.setRange(getStartTime(getTimespan()), getEndTime(getTimespan()));
+    private void configureTimeAxis(XYPlot plot) {
+        DateAxis timeAxis = (DateAxis) plot.getDomainAxis();
+        final Date start = getStartTime(getTimespan());
+        final Date end = getEndTime(getTimespan());
+        timeAxis.setRange(start, end);
 
-        String timeformat = "yyyy-MM-dd, HH:mm";
-        if (getChartStyleDefinitions().containsParameter("timeformat")) {
-            timeformat = getChartStyleDefinitions().getAsString("timeformat");
-        }
-        DateFormat requestTimeFormat = new SimpleDateFormat(timeformat, i18n.getLocale());
-        requestTimeFormat.setTimeZone(getTimezone().toTimeZone());
+        final Locale locale = i18n.getLocale();
+        String timeformat = getChartStyleDefinitions().getTimeFormat();
+        DateFormat requestTimeFormat = new SimpleDateFormat(timeformat, locale);
+        final DateTimeZone timezone = getTimezone();
+        requestTimeFormat.setTimeZone(timezone.toTimeZone());
         timeAxis.setDateFormatOverride(requestTimeFormat);
-        timeAxis.setTimeZone(getTimezone().toTimeZone());
+        timeAxis.setTimeZone(timezone.toTimeZone());
     }
 
     private String getTimespan() {
-        return getChartStyleDefinitions().getTimespan();
+        return getChartStyleDefinitions()
+                .getTimespan();
     }
 
     private DateTimeZone getTimezone() {
@@ -241,10 +243,10 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     public ValueAxis createRangeAxis(DatasetOutput metadata) {
         NumberAxis axis = new NumberAxis(createRangeLabel(metadata));
-        axis.setTickLabelFont(FONT_LABEL);
-        axis.setLabelFont(FONT_LABEL);
-        axis.setTickLabelPaint(COLOR);
-        axis.setLabelPaint(COLOR);
+        axis.setTickLabelFont(LabelConstants.FONT_LABEL);
+        axis.setLabelFont(LabelConstants.FONT_LABEL);
+        axis.setTickLabelPaint(LabelConstants.COLOR);
+        axis.setLabelPaint(LabelConstants.COLOR);
         return axis;
     }
 
@@ -262,11 +264,11 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private void configureTitle(JFreeChart chart) {
         RequestStyledParameterSet config = getChartStyleDefinitions();
-        if (config.containsParameter("title")) {
-            String title = config.getAsString("title");
+        if (config.containsParameter(PARAMETER_PRERENDERING_TITLE)) {
+            String title = config.getAsString(PARAMETER_PRERENDERING_TITLE);
             if (config.containsParameter(Parameters.RENDERING_TRIGGER)) {
                 String trigger = config.getAsString(Parameters.RENDERING_TRIGGER);
-                title = "prerendering".equalsIgnoreCase(trigger)
+                title = RENDERING_TRIGGER_PRERENDERING.equalsIgnoreCase(trigger)
                         ? getTitleForSingle(config, title)
                         : title;
             }
@@ -274,7 +276,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         }
     }
 
-    private String getTitleForSingle(RequestStyledParameterSet config, String template) {
+    private String getTitleForSingle(RequestStyledParameterSet config,
+            String template) {
         String[] timeseries = config.getDatasets();
         if (timeseries != null && timeseries.length > 0) {
             String timeseriesId = timeseries[0];
@@ -289,22 +292,22 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     protected String formatTitle(DatasetOutput metadata, String title) {
         SeriesParameters parameters = metadata.getSeriesParameters();
         Object[] varargs = {
-                // index important to reference in config!
-                parameters.getPlatform().getLabel(), // {0}
-                parameters.getPhenomenon().getLabel(), // {1}
-                parameters.getProcedure().getLabel(), // {2}
-                parameters.getCategory().getLabel(), // {3}
-                parameters.getOffering().getLabel(), // {4}
-                parameters.getFeature().getLabel(), // {5}
-                parameters.getService().getLabel(), // {6}
-                metadata.getUom(), // {7}
-        };
+            // index important to reference in config!
+            parameters.getPlatform().getLabel(),
+            parameters.getPhenomenon().getLabel(),
+            parameters.getProcedure().getLabel(),
+            parameters.getCategory().getLabel(),
+            parameters.getOffering().getLabel(),
+            parameters.getFeature().getLabel(),
+            parameters.getService().getLabel(),
+            metadata.getUom()};
         try {
             return String.format(title, varargs);
         } catch (Exception e) {
             String datasetId = metadata.getId();
-            LOGGER.info("Could not format title while prerendering dataset '{}'", datasetId, e);
-            return title; // return template as fallback
+            LOGGER.info("Couldn't format title while prerendering dataset '{}'", datasetId, e);
+            // return template as fallback
+            return title;
         }
     }
 
@@ -325,8 +328,11 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         return getChartStyleDefinitions().getStyleOptions(timeseriesId);
     }
 
-    protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
-        return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
+    protected StyleProperties getTimeseriesStyleFor(String timeseriesId,
+            String referenceValueSeriesId) {
+        return getChartStyleDefinitions()
+                .getReferenceSeriesStyleOptions(timeseriesId,
+                        referenceValueSeriesId);
     }
 
     protected RequestStyledParameterSet getChartStyleDefinitions() {
@@ -334,11 +340,13 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     protected boolean isLineStyle(StyleProperties properties) {
-        return isLineStyleDefault(properties) || LINE_CHART_TYPE.equals(properties.getChartType());
+        return LineRenderer.LINE_CHART_TYPE.equals(properties.getChartType())
+                || isLineStyleDefault(properties);
     }
 
     protected boolean isBarStyle(StyleProperties properties) {
-        return !isLineStyleDefault(properties) && BAR_CHART_TYPE.equals(properties.getChartType());
+        return BarRenderer.BAR_CHART_TYPE.equals(properties.getChartType())
+                && !isLineStyleDefault(properties);
     }
 
     private boolean isLineStyleDefault(StyleProperties properties) {
@@ -356,15 +364,14 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     static class LabelConstants {
-
-        static final Color COLOR = BLACK;
+        static final Color COLOR = Color.BLACK;
         static final int FONT_SIZE = 12;
         static final int FONT_SIZE_SMALL = 9;
         static final int FONT_SIZE_TICKS = 10;
         static final String LOGICAL_FONT = "Sans-serif";
-        static final Font FONT_LABEL = new Font(LOGICAL_FONT, BOLD, FONT_SIZE);
-        static final Font FONT_DOMAIN = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_TICKS);
-        static final Font FONT_LABEL_SMALL = new Font(LOGICAL_FONT, PLAIN, FONT_SIZE_SMALL);
+        static final Font FONT_LABEL = new Font(LOGICAL_FONT, Font.BOLD, FONT_SIZE);
+        static final Font FONT_DOMAIN = new Font(LOGICAL_FONT, Font.PLAIN, FONT_SIZE_TICKS);
+        static final Font FONT_LABEL_SMALL = new Font(LOGICAL_FONT, Font.PLAIN, FONT_SIZE_SMALL);
     }
 
 }

@@ -28,10 +28,12 @@
  */
 package org.n52.io.request;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
@@ -57,6 +58,8 @@ import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.response.BBox;
+import org.n52.io.response.PlatformType;
+import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.opengis.referencing.FactoryException;
@@ -66,34 +69,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
-
 public class IoParameters implements Parameters {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
-    private final static String DEFAULT_CONFIG_FILE = "config-general.json";
+    private static final String DEFAULT_CONFIG_FILE = "config-general.json";
 
-    private static final ObjectMapper om = new ObjectMapper(); // TODO use global object mapper
+    // TODO use global object mapper
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final MultiValueMap<String, JsonNode> query;
 
-    private static InputStream getDefaultConfigFile() {
-        try {
-            Path path = Paths.get(IoParameters.class.getResource("/").toURI());
-            File config = path.resolve(DEFAULT_CONFIG_FILE).toFile();
-            return config.exists()
-                ? new FileInputStream(config)
-                : IoParameters.class.getClassLoader().getResourceAsStream("/" + DEFAULT_CONFIG_FILE);
-        } catch (URISyntaxException | IOException e) {
-            LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
-            return null;
-        }
+    private IoParameters(File defaultConfig) {
+        query = new LinkedMultiValueMap<>();
+        query.setAll(readDefaultConfig(defaultConfig));
     }
 
     protected IoParameters(IoParameters parameters) {
@@ -103,10 +92,6 @@ public class IoParameters implements Parameters {
         }
     }
 
-    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
-        this(queryParameters, (File) null);
-    }
-
     protected IoParameters(MultiValueMap<String, JsonNode> queryParameters, File defaults) {
         this(defaults);
         if (queryParameters != null) {
@@ -114,7 +99,7 @@ public class IoParameters implements Parameters {
         }
     }
 
-    protected IoParameters(Map<String, JsonNode> queryParameters) {
+    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
         this(queryParameters, (File) null);
     }
 
@@ -123,17 +108,15 @@ public class IoParameters implements Parameters {
         query.setAll(queryParameters);
     }
 
-    private IoParameters(File defaultConfig) {
-        query = new LinkedMultiValueMap<>();
-        query.setAll(readDefaultConfig(defaultConfig));
+    protected IoParameters(Map<String, JsonNode> queryParameters) {
+        this(queryParameters, (File) null);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
         try (InputStream stream = config == null
                 ? getDefaultConfigFile()
                 : new FileInputStream(config)) {
-            return om.readValue(stream, TypeFactory
-                    .defaultInstance()
+            return OBJECT_MAPPER.readValue(stream, TypeFactory.defaultInstance()
                     .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
         } catch (IOException e) {
             LOGGER.info("Could not load '{}'. Using empty config.", DEFAULT_CONFIG_FILE, e);
@@ -141,9 +124,23 @@ public class IoParameters implements Parameters {
         }
     }
 
+    private static InputStream getDefaultConfigFile() {
+        try {
+            Path path = Paths.get(IoParameters.class.getResource("/").toURI());
+            File config = path.resolve(DEFAULT_CONFIG_FILE).toFile();
+            final String fallbackPath = "/" + DEFAULT_CONFIG_FILE;
+            return config.exists()
+                    ? new FileInputStream(config)
+                    : IoParameters.class.getClassLoader().getResourceAsStream(fallbackPath);
+        } catch (URISyntaxException | IOException e) {
+            LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
+            return null;
+        }
+    }
+
     /**
-     * @return the value of {@value #OFFSET} parameter. If not present, the
-     * default {@value #DEFAULT_OFFSET} is returned.
+     * @return the value of {@value #OFFSET} parameter. If not present, the default
+     * {@value #DEFAULT_OFFSET} is returned.
      * @throws IoParseException if parameter could not be parsed.
      */
     public int getOffset() {
@@ -151,8 +148,8 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #LIMIT} parameter. If not present, the
-     * default {@value #DEFAULT_LIMIT} is returned.
+     * @return the value of {@value #LIMIT} parameter. If not present, the default
+     * {@value #DEFAULT_LIMIT} is returned.
      * @throws IoParseException if parameter could not be parsed.
      */
     public int getLimit() {
@@ -160,8 +157,7 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the requested chart width in pixels or the default
-     * {@value #DEFAULT_WIDTH}.
+     * @return the requested chart width in pixels or the default {@value #DEFAULT_WIDTH}.
      * @throws IoParseException if parsing parameter fails.
      */
     public int getWidth() {
@@ -171,8 +167,7 @@ public class IoParameters implements Parameters {
     /**
      * Returns the requested chart height in pixels.
      *
-     * @return the requested chart height in pixels or the default
-     * {@value #DEFAULT_HEIGHT}.
+     * @return the requested chart height in pixels or the default {@value #DEFAULT_HEIGHT}.
      * @throws IoParseException if parsing parameter fails.
      */
     public int getHeight() {
@@ -182,8 +177,7 @@ public class IoParameters implements Parameters {
     /**
      * Indicates if rendered chart shall be returned as Base64 encoded string.
      *
-     * @return the value of parameter {@value #BASE_64} or the default
-     * {@value #DEFAULT_BASE_64}.
+     * @return the value of parameter {@value #BASE_64} or the default {@value #DEFAULT_BASE_64}.
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isBase64() {
@@ -191,8 +185,7 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return <code>true</code> if timeseries chart shall include a background
-     * grid.
+     * @return <code>true</code> if timeseries chart shall include a background grid.
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isGrid() {
@@ -208,8 +201,8 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return <code>true</code> if a legend shall be included when rendering a
-     * chart, <code>false</code> otherwise.
+     * @return <code>true</code> if a legend shall be included when rendering a chart,
+     * <code>false</code> otherwise.
      * @throws IoParseException if parsing parameter fails.
      */
     public boolean isLegend() {
@@ -217,16 +210,16 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #LOCALE} parameter. If not present, the
-     * default {@value #DEFAULT_LOCALE} is returned.
+     * @return the value of {@value #LOCALE} parameter. If not present, the default
+     * {@value #DEFAULT_LOCALE} is returned.
      */
     public String getLocale() {
         return getAsString(LOCALE, DEFAULT_LOCALE);
     }
 
     /**
-     * @return the value of {@value #STYLE} parameter. If not present, the
-     * default styles are returned.
+     * @return the value of {@value #STYLE} parameter. If not present, the default styles are
+     * returned.
      * @throws IoParseException if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
@@ -236,10 +229,9 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * Creates a generic {@link StyleProperties} instance which can be used to
-     * create more concrete {@link Style}s. For example use
-     * {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
-     * style view which can be used for lines.
+     * Creates a generic {@link StyleProperties} instance which can be used to create more concrete
+     * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which
+     * gives you a style view which can be used for lines.
      *
      * @param style the JSON style parameter to parse.
      * @return a parsed {@link StyleProperties} instance.
@@ -247,16 +239,16 @@ public class IoParameters implements Parameters {
      */
     private StyleProperties parseStyleProperties(String style) {
         try {
-            return style == null ? StyleProperties.createDefaults()
+            return style == null
+                    ? StyleProperties.createDefaults()
                     : new ObjectMapper().readValue(style, StyleProperties.class);
         } catch (JsonMappingException e) {
             throw new IoParseException("Could not read style properties: " + style, e);
         } catch (JsonParseException e) {
-            throw new IoParseException("Could not parse style properties: " + style, e);
+            throw new IoParseException("Could not parse style properties:" + style, e);
         } catch (IOException e) {
             throw new IllegalArgumentException("An error occured during request handling.", e);
         }
-
     }
 
     public String getFormat() {
@@ -277,9 +269,13 @@ public class IoParameters implements Parameters {
         return null;
     }
 
+    public String getTimeFormat() {
+        return getAsString(TIME_FORMAT, DEFAULT_TIME_FORMAT);
+    }
+
     /**
-     * @return the value of {@value #TIMESPAN} parameter. If not present, the
-     * default timespan is returned.
+     * @return the value of {@value #TIMESPAN} parameter. If not present, the default timespan is
+     * returned.
      * @throws IoParseException if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
@@ -472,14 +468,13 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * Creates a {@link BoundingBox} instance from given spatial request
-     * parameters. The resulting bounding box is the merged extent of all
-     * spatial filters given. For example if {@value #NEAR} and {@value #BBOX}
-     * exist, the returned bounding box includes both extents.
+     * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting
+     * bounding box is the merged extent of all spatial filters given. For example if {@value #NEAR}
+     * and {@value #BBOX} exist, the returned bounding box includes both extents.
      *
      * @return a spatial filter created from given spatial parameters.
-     * @throws IoParseException if parsing parameters fails, or if a requested
-     * {@value #CRS} object could not be created.
+     * @throws IoParseException if parsing parameters fails, or if a requested {@value #CRS} object
+     * could not be created.
      */
     public BoundingBox getSpatialFilter() {
         if (!containsParameter(NEAR) && !containsParameter(BBOX)) {
@@ -496,23 +491,24 @@ public class IoParameters implements Parameters {
             // nothing to merge
             return bounds;
         }
-        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
         Point lowerLeft = crsUtils.convertToPointFrom(bboxBounds.getLl());
         Point upperRight = crsUtils.convertToPointFrom(bboxBounds.getUr());
         if (bounds == null) {
-            bounds = new BoundingBox(lowerLeft, upperRight, DEFAULT_CRS);
-            LOGGER.debug("Parsed bbox bounds: {}", bounds.toString());
+            BoundingBox parsed = new BoundingBox(lowerLeft, upperRight, CRSUtils.DEFAULT_CRS);
+            LOGGER.debug("Parsed bbox bounds: {}", parsed.toString());
+            return parsed;
         } else {
             extendBy(lowerLeft, bounds);
             extendBy(upperRight, bounds);
             LOGGER.debug("Merged bounds: {}", bounds.toString());
+            return bounds;
         }
-        return bounds;
     }
 
     /**
-     * Extends the bounding box with the given point. If point is contained by
-     * this instance nothing is changed.
+     * Extends the bounding box with the given point. If point is contained by this instance nothing
+     * is changed.
      *
      * @param point the point in CRS:84 which shall extend the bounding box.
      */
@@ -525,17 +521,16 @@ public class IoParameters implements Parameters {
         double urX = Math.min(point.getY(), bbox.getLowerLeft().getY());
         double urY = Math.max(point.getY(), bbox.getUpperRight().getY());
 
-        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
+        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
         bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
         bbox.setUr(crsUtils.createPoint(urX, urY, bbox.getSrs()));
     }
 
     /**
-     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX}
-     * parameter is present.
+     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX} parameter is
+     * present.
      * @throws IoParseException if parsing parameter fails.
-     * @throws IoParseException if a requested {@value #CRS} object could not be
-     * created
+     * @throws IoParseException if a requested {@value #CRS} object could not be created
      */
     private BBox createBbox() {
         if (!containsParameter(BBOX)) {
@@ -566,8 +561,7 @@ public class IoParameters implements Parameters {
      * @param jsonString the JSON string to parse.
      * @param clazz the type to serialize given JSON string to.
      * @return a mapped instance parsed from JSON.
-     * @throws IoParseException if JSON is invalid or does not map to given
-     * type.
+     * @throws IoParseException if JSON is invalid or does not map to given type.
      */
     private <T> T parseJson(String jsonString, Class<T> clazz) {
         try {
@@ -583,19 +577,21 @@ public class IoParameters implements Parameters {
     }
 
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
-        return isForceXY() // is strict XY axis order?!
-                ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
-                : transformToInnerCrs(point, createEpsgStrictAxisOrder());
+        // is strict XY axis order?!
+        return isForceXY()
+                ? transformToInnerCrs(point, CRSUtils.createEpsgForcedXYAxisOrder())
+                : transformToInnerCrs(point, CRSUtils.createEpsgStrictAxisOrder());
     }
 
     /**
      * @param point a GeoJSON point to be transformed to internally used CRS:84.
      * @param crsUtils a reference helper.
      * @return a transformed GeoJSON instance.
-     * @throws IoParseException if point could not be transformed, or if
-     * requested CRS object could not be created.
+     * @throws IoParseException if point could not be transformed, or if requested CRS object could
+     * not be created.
      */
-    private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
+    private GeojsonPoint transformToInnerCrs(GeojsonPoint point,
+            CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
             Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
@@ -603,17 +599,17 @@ public class IoParameters implements Parameters {
         } catch (TransformException e) {
             throw new IoParseException("Could not transform to internally used CRS:84.", e);
         } catch (FactoryException e) {
-            throw new IoParseException("Check if 'crs' parameter is a valid EPSG CRS. Was: '" + getCrs() + "'.", e);
+            throw new IoParseException("Check if 'crs' parameter is a valid EPSG CRS. Was: '"
+                    + getCrs() + "'.", e);
         }
     }
 
     /**
-     * @return the requested reference context, or the default
-     * ({@value CRSUtils#DEFAULT_CRS}) which will be interpreted as lon/lat
-     * ordered axes).
+     * @return the requested reference context, or the default ({@value CRSUtils#DEFAULT_CRS}) which
+     * will be interpreted as lon/lat ordered axes).
      */
     public String getCrs() {
-        return getAsString(CRS, DEFAULT_CRS);
+        return getAsString(CRS, CRSUtils.DEFAULT_CRS);
     }
 
     public boolean isForceXY() {
@@ -690,19 +686,19 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @param parameter
-     *        the parameter to parse to an <code>int</code> value.
+     * @param parameter the parameter to parse to an <code>int</code> value.
      * @return an integer value.
-     * @throws IoParseException
-     *         if parsing to <code>int</code> fails.
+     * @throws IoParseException if parsing to <code>int</code> fails.
      */
     public int getAsInteger(String parameter) {
         try {
             String value = getAsString(parameter);
             Integer.parseInt(value);
-            return query.getFirst(parameter.toLowerCase()).asInt();
+            return query.getFirst(parameter.toLowerCase())
+                    .asInt();
         } catch (NumberFormatException e) {
-            throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
+            throwIoParseException(parameter, "Must be an integer!", e);
+            return -1;
         }
     }
 
@@ -721,10 +717,18 @@ public class IoParameters implements Parameters {
         try {
             String value = getAsString(parameter);
             Boolean.parseBoolean(value);
-            return query.getFirst(parameter.toLowerCase()).asBoolean();
+            return query.getFirst(parameter.toLowerCase())
+                    .asBoolean();
         } catch (NumberFormatException e) {
-            throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
+            throwIoParseException(parameter, "Must be 'false' or 'true'!", e);
+            return false;
         }
+    }
+
+    private void throwIoParseException(String parameter, String expected, Exception e)
+            throws IoParseException {
+        String msg = "Parameter '" + parameter + "'. ";
+        throw new IoParseException(msg + expected, e);
     }
 
     public RequestSimpleParameterSet toSimpleParameterSet() {
@@ -744,7 +748,8 @@ public class IoParameters implements Parameters {
         // TODO keep multi value map
         for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
             List<JsonNode> values = entry.getValue();
-            String lowercasedKey = entry.getKey().toLowerCase();
+            String lowercasedKey = entry.getKey()
+                    .toLowerCase();
             if (values.size() == 1) {
                 parameterSet.setParameter(lowercasedKey, values.get(0));
             } else {
@@ -759,7 +764,7 @@ public class IoParameters implements Parameters {
             return null;
         }
         try {
-            return om.readTree(om.writeValueAsString(object));
+            return OBJECT_MAPPER.readTree(OBJECT_MAPPER.writeValueAsString(object));
         } catch (IOException e) {
             LOGGER.error("Could not parse parameter", e);
             return null;
@@ -776,21 +781,25 @@ public class IoParameters implements Parameters {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         newValues.put(key.toLowerCase(), Arrays.asList(values));
 
-        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
+        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(
+                query);
         mergedValues.putAll(convertValuesToJsonNodes(newValues));
         return new IoParameters(mergedValues);
     }
 
-    protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
+    protected static Map<String, JsonNode> convertValuesToJsonNodes(
+            Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
-            String key = entry.getKey().toLowerCase();
+            String key = entry.getKey()
+                    .toLowerCase();
             parameters.put(key, getJsonNodeFrom(entry.getValue()));
         }
         return parameters;
     }
 
-    protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(MultiValueMap<String, String> queryParameters) {
+    protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(
+            MultiValueMap<String, String> queryParameters) {
         MultiValueMap<String, JsonNode> parameters = new LinkedMultiValueMap<>();
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
@@ -810,7 +819,6 @@ public class IoParameters implements Parameters {
     /* ****************************************************************
      *                    FACTORY METHODS
      * ************************************************************** */
-
     public static IoParameters createDefaults() {
         return createDefaults(null);
     }
@@ -819,11 +827,13 @@ public class IoParameters implements Parameters {
         return new IoParameters(Collections.<String, JsonNode>emptyMap(), defaultConfig);
     }
 
-    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
+    static IoParameters createFromMultiValueMap(
+            MultiValueMap<String, String> query) {
         return createFromMultiValueMap(query, null);
     }
 
-    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
+    static IoParameters createFromMultiValueMap(
+            MultiValueMap<String, String> query, File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
@@ -831,7 +841,8 @@ public class IoParameters implements Parameters {
         return createFromSingleValueMap(query, null);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
+    static IoParameters createFromSingleValueMap(Map<String, String> query,
+            File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
@@ -843,7 +854,8 @@ public class IoParameters implements Parameters {
         return createFromQuery(parameters, null);
     }
 
-    public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
+    public static IoParameters createFromQuery(RequestParameterSet parameters,
+            File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameterNames()) {
             JsonNode value = parameters.getParameterValue(parameter);
@@ -852,16 +864,20 @@ public class IoParameters implements Parameters {
         return new IoParameters(queryParameters, defaultConfig);
     }
 
-    public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
+    public static IoParameters ensureBackwardsCompatibility(
+            IoParameters parameters) {
+        String[] platformTypes = {
+            PlatformType.PLATFORM_TYPE_STATIONARY,
+            PlatformType.PLATFORM_TYPE_INSITU};
         return isBackwardsCompatibilityRequest(parameters)
-                ? parameters
-                    .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu")
-                    .extendWith(Parameters.FILTER_DATASET_TYPES, "measurement")
-                    .removeAllOf(Parameters.HREF_BASE)
+                ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
+                .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DATASET_TYPE_MEASUREMENT)
+                .removeAllOf(Parameters.HREF_BASE)
                 : parameters;
     }
 
-    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
+    private static boolean isBackwardsCompatibilityRequest(
+            IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
     }
@@ -875,13 +891,13 @@ public class IoParameters implements Parameters {
 
     private boolean isStationaryInsituOnly(Set<String> platformTypes) {
         return platformTypes.size() == 2
-                && platformTypes.contains("stationary")
-                && platformTypes.contains("insitu");
+                && platformTypes.contains(PlatformType.PLATFORM_TYPE_STATIONARY)
+                && platformTypes.contains(PlatformType.PLATFORM_TYPE_INSITU);
     }
 
     private boolean isMeasurementOnly(Set<String> datasetTypes) {
         return datasetTypes.size() == 1
-                && datasetTypes.contains("measurement");
+                && datasetTypes.contains(DatasetType.DATASET_TYPE_MEASUREMENT);
     }
 
 }

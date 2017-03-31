@@ -79,7 +79,7 @@ public class HighchartFormatter implements DataFormatter<MeasurementData, Highch
                 Coordinate coordinate = currentValue.getGeometry().getCoordinate();
                 list.add(coordinate.x);
                 list.add(coordinate.y);
-                if ( !Double.isNaN(coordinate.z)) {
+                if (!Double.isNaN(coordinate.z)) {
                     list.add(coordinate.z);
                 }
             }

@@ -51,7 +51,7 @@ public class GeneralizerFactory {
 
         String algorithm = parameters.containsParameter(GENERALIZING_ALGORITHM)
                 ? parameters.getOther(GENERALIZING_ALGORITHM)
-                : "LTTB";
+                : LARGEST_TRIANGLE_THREE_BUCKETS;
 
         Generalizer<MeasurementData> generalizer;
         if (LARGEST_TRIANGLE_THREE_BUCKETS.equalsIgnoreCase(algorithm)) {

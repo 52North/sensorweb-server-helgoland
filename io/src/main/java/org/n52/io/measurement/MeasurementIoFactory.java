@@ -36,13 +36,9 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.measurement.generalize.GeneralizingMeasurementService.composeDataService;
-
 import org.n52.io.measurement.csv.MeasurementCsvIoHandler;
 import org.n52.io.measurement.format.FormatterFactory;
+import org.n52.io.measurement.generalize.GeneralizingMeasurementService;
 import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.measurement.img.MultipleChartsRenderer;
 import org.n52.io.measurement.report.PDFReportGenerator;
@@ -55,12 +51,13 @@ import org.n52.series.spi.srv.DataService;
 
 public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
 
-    private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(new MimeType[] {
-                                                                                            MimeType.TEXT_CSV,
-                                                                                            MimeType.IMAGE_PNG,
-                                                                                            MimeType.APPLICATION_ZIP,
-                                                                                            MimeType.APPLICATION_PDF
-    });
+    private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
+            new MimeType[] {
+                MimeType.TEXT_CSV,
+                MimeType.IMAGE_PNG,
+                MimeType.APPLICATION_ZIP,
+                MimeType.APPLICATION_PDF,
+            });
 
     @Override
     public IoProcessChain<MeasurementData> createProcessChain() {
@@ -69,8 +66,8 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
             public DataCollection<MeasurementData> getData() {
                 final boolean generalize = getParameters().isGeneralize();
                 DataService<MeasurementData> dataService = generalize
-                    ? composeDataService(getDataService())
-                    : getDataService();
+                        ? new GeneralizingMeasurementService(getDataService())
+                        : getDataService();
                 return dataService.getData(getRequestParameters());
             }
 
@@ -105,23 +102,21 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
     public IoHandler<MeasurementData> createHandler(String outputMimeType) {
         IoParameters parameters = getParameters();
         MimeType mimeType = MimeType.toInstance(outputMimeType);
-        if (mimeType == IMAGE_PNG) {
+        if (mimeType == MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        }
-        else if (mimeType == APPLICATION_PDF) {
+        } else if (mimeType == MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                                                                        getRequestParameters(),
-                                                                        createProcessChain(),
-                                                                        imgRenderer);
+                    getRequestParameters(),
+                    createProcessChain(),
+                    imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
-        }
-        else if (mimeType == TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
+        } else if (mimeType == MimeType.TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
             MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
-                                                                          getRequestParameters(),
-                                                                          createProcessChain(),
-                                                                          getMetadatas());
+                    getRequestParameters(),
+                    createProcessChain(),
+                    getMetadatas());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
@@ -138,9 +133,9 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
 
     private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                                                                          getRequestParameters(),
-                                                                          createProcessChain(),
-                                                                          createContext());
+                getRequestParameters(),
+                createProcessChain(),
+                createContext());
 
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;

@@ -30,6 +30,8 @@ package org.n52.io.response.dataset;
 
 public class DatasetType {
 
+    public static final String DATASET_TYPE_MEASUREMENT = "measurement";
+
     private static final String SEPERATOR = "_";
 
     public static String extractType(String id) {
@@ -37,16 +39,16 @@ public class DatasetType {
     }
 
     public static String extractType(String id, String fallback) {
-        fallback = fallback == null || fallback.isEmpty()
-                ? "measurement" // last fallback
+        String nonEmptyFallback = fallback == null || fallback.isEmpty()
+                ? DATASET_TYPE_MEASUREMENT
                 : fallback;
         if (id == null || id.isEmpty()) {
-            return fallback;
+            return nonEmptyFallback;
         }
         int separatorIndex = id.indexOf(SEPERATOR);
         return separatorIndex >= 0
                 ? id.substring(0, separatorIndex)
-                : fallback;
+                : nonEmptyFallback;
     }
 
     public static String extractId(String id) {

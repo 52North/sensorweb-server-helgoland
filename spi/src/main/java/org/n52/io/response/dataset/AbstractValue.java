@@ -28,7 +28,6 @@
  */
 package org.n52.io.response.dataset;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -36,20 +35,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 
-public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,Serializable {
+public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
     private Long timestart;
 
-    private Long timestamp; // serves also as timeend
+     // serves also as timeend
+    private Long timestamp;
 
     private T value;
 
@@ -174,20 +172,26 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>,S
 
     public static class ValidTime {
         private Long start;
+
         private Long end;
+
         public ValidTime(Long start, Long end) {
             this.start = start;
             this.end = end;
         }
+
         public Long getStart() {
             return start;
         }
+
         public void setStart(Long start) {
             this.start = start;
         }
+
         public Long getEnd() {
             return end;
         }
+
         public void setEnd(Long end) {
             this.end = end;
         }

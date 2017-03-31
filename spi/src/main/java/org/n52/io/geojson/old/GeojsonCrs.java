@@ -28,17 +28,18 @@
  */
 package org.n52.io.geojson.old;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Deprecated
 public class GeojsonCrs extends GeojsonObject {
 
     private static final long serialVersionUID = 5964748458745655509L;
 
-    private static final String TYPE_NAME = "name";
+    private static final String PROPERTY_NAME = "name";
+
+    private static final String TYPE_NAME = PROPERTY_NAME;
 
     private Map<String, String> properties;
 
@@ -71,7 +72,7 @@ public class GeojsonCrs extends GeojsonObject {
 
     @JsonIgnore
     public String getName() {
-        return properties.get("name");
+        return properties.get(PROPERTY_NAME);
     }
 
     public static GeojsonCrs createNamedCRS(String name) {
@@ -79,7 +80,7 @@ public class GeojsonCrs extends GeojsonObject {
             throw new NullPointerException("Argument 'name' must not be null.");
         }
         GeojsonCrs namedCrs = new GeojsonCrs();
-        namedCrs.addProperty("name", name);
+        namedCrs.addProperty(PROPERTY_NAME, name);
         namedCrs.setType(TYPE_NAME);
         return namedCrs;
     }

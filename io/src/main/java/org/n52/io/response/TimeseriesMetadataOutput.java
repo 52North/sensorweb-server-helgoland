@@ -28,17 +28,16 @@
  */
 package org.n52.io.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
+import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -119,12 +118,12 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
     @Deprecated
     public StatusInterval[] getStatusIntervals() {
-        return statusIntervals;
+        return Utils.copy(statusIntervals);
     }
 
     @Deprecated
     public void setStatusIntervals(StatusInterval[] statusIntervals) {
-        this.statusIntervals = statusIntervals;
+        this.statusIntervals = Utils.copy(statusIntervals);
     }
 
     @Override
@@ -133,11 +132,11 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
         return new AdaptedSeriesParameters(super.getSeriesParameters());
     }
 
-    private class AdaptedSeriesParameters extends SeriesParameters {
+    private static class AdaptedSeriesParameters extends SeriesParameters {
 
         private final SeriesParameters parameters;
 
-        public AdaptedSeriesParameters(SeriesParameters parameters) {
+        AdaptedSeriesParameters(SeriesParameters parameters) {
             this.parameters = parameters == null
                     ? new SeriesParameters()
                     : parameters;
@@ -145,7 +144,8 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
         @Override
         public ParameterOutput getPlatform() {
-            return null; // stay backwards compatible
+            // stay backwards compatible
+            return null;
         }
 
         @Override

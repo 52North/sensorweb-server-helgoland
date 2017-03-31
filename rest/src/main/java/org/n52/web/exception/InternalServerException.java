@@ -28,14 +28,12 @@
  */
 package org.n52.web.exception;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = INTERNAL_SERVER_ERROR)
+@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class InternalServerException extends RuntimeException implements WebException {
 
     private static final long serialVersionUID = -299285770822168789L;
@@ -51,14 +49,14 @@ public class InternalServerException extends RuntimeException implements WebExce
     }
 
     @Override
-    public void addHint(String details) {
-        if (details == null) {
+    public void addHint(String hint) {
+        if (hint == null) {
             return;
         }
         if (getHints() == null) {
-            this.details = new ArrayList<String>();
+            this.details = new ArrayList<>();
         }
-        this.details.add(details);
+        this.details.add(hint);
     }
 
     @Override

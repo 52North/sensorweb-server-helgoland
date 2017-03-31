@@ -28,15 +28,11 @@
  */
 package org.n52.io.measurement.img;
 
-import static java.awt.BasicStroke.CAP_ROUND;
-import static java.awt.BasicStroke.JOIN_ROUND;
-import static java.awt.Color.decode;
-
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
-
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.n52.io.style.LineStyle;
@@ -54,41 +50,46 @@ final class LineRenderer implements Renderer {
 
     static final String LINE_CHART_TYPE = "line";
 
-    private XYLineAndShapeRenderer lineRenderer;
+    private final XYLineAndShapeRenderer lineRenderer;
 
-    private LineStyle style;
+    private final LineStyle style;
 
     private LineRenderer(LineStyle style) {
         this.style = style;
-        if (style.getLineType().equals("dashed")) {
+        final String lineType = style.getLineType();
+        if (lineType.equals("dashed")) {
             this.lineRenderer = new XYLineAndShapeRenderer(true, false);
             this.lineRenderer.setSeriesStroke(0, getDashedLineDefinition(style));
-        } else if (style.getLineType().equals("dotted")) {
+        } else if (lineType.equals("dotted")) {
             this.lineRenderer = new XYLineAndShapeRenderer(false, true);
             lineRenderer.setBaseShape(getDotsDefinition(style));
-        } else if (style.getLineType().equals("solidWithDots")) {
+        } else if (lineType.equals("solidWithDots")) {
             this.lineRenderer = new XYLineAndShapeRenderer(true, true);
             this.lineRenderer.setSeriesStroke(0, getSolidLineDefinition(style));
             this.lineRenderer.setSeriesShape(0, getDotsDefinition(style));
-        } else { // solid is default
+        } else {
+            // solid is default
             this.lineRenderer = new XYLineAndShapeRenderer(true, false);
             this.lineRenderer.setSeriesStroke(0, getSolidLineDefinition(style));
         }
     }
 
-    private Shape getDotsDefinition(LineStyle style) {
-        int width = style.getDotWidth();
+    private Shape getDotsDefinition(LineStyle lineStyle) {
+        int width = lineStyle.getDotWidth();
         return new Ellipse2D.Double(-width, -width, 2 * width, 2 * width);
     }
 
-    private Stroke getSolidLineDefinition(LineStyle style) {
-        return new BasicStroke(style.getLineWidth());
+    private Stroke getSolidLineDefinition(LineStyle lineStyle) {
+        return new BasicStroke(lineStyle.getLineWidth());
     }
 
-    private BasicStroke getDashedLineDefinition(LineStyle style) {
-        int width = style.getDashGapWidth();
-        float[] dashSequence = new float[]{4.0f * width, 4.0f * width};
-        return new BasicStroke(width, CAP_ROUND, JOIN_ROUND, 1.0f, dashSequence, 0.0f);
+    private BasicStroke getDashedLineDefinition(LineStyle lineStyle) {
+        int width = lineStyle.getDashGapWidth();
+        float[] dashSequence = new float[] {
+            4.0f * width,
+            4.0f * width};
+        return new BasicStroke(width, BasicStroke.CAP_ROUND,
+                BasicStroke.JOIN_ROUND, 1.0f, dashSequence, 0.0f);
     }
 
     @Override
@@ -104,7 +105,7 @@ final class LineRenderer implements Renderer {
     @Override
     public void setColorForSeries() {
         // each renderer renders just one series
-        lineRenderer.setSeriesPaint(0, decode(style.getColor()));
+        lineRenderer.setSeriesPaint(0, Color.decode(style.getColor()));
     }
 
     public static LineRenderer createStyledLineRenderer(LineStyle style) {

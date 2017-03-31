@@ -30,7 +30,6 @@ package org.n52.io;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
@@ -49,7 +48,8 @@ public final class IoStyleContext {
     }
 
     // use static constructors
-    private IoStyleContext(RequestStyledParameterSet timeseriesStyles, List<? extends DatasetOutput> metadatas) {
+    private IoStyleContext(RequestStyledParameterSet timeseriesStyles,
+            List<? extends DatasetOutput> metadatas) {
         this.seriesMetadatas = metadatas.isEmpty()
                 ? Collections.<DatasetOutput>emptyList()
                 : metadatas;
@@ -64,14 +64,14 @@ public final class IoStyleContext {
     /**
      * @param styles the style definitions.
      * @param metadatas the metadata for each timeseries.
-     * @throws NullPointerException if any of the given arguments is
-     * <code>null</code>.
-     * @throws IllegalStateException if amount of timeseries described by the
-     * given arguments is not in sync.
+     * @throws NullPointerException if any of the given arguments is <code>null</code>.
+     * @throws IllegalStateException if amount of timeseries described by the given arguments is not
+     * in sync.
      * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
      * {@link IoHandler}.
      */
-    public static IoStyleContext createContextWith(RequestStyledParameterSet styles, List<? extends DatasetOutput> metadatas) {
+    public static IoStyleContext createContextWith(RequestStyledParameterSet styles,
+            List<? extends DatasetOutput> metadatas) {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
@@ -88,7 +88,8 @@ public final class IoStyleContext {
         return new IoStyleContext(styles, metadatas);
     }
 
-    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata, IoParameters ioConfig) {
+    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
+            IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toRequestStyledParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
@@ -105,14 +106,6 @@ public final class IoStyleContext {
 
     public List<? extends DatasetOutput> getSeriesMetadatas() {
         return seriesMetadatas;
-    }
-
-    public String getTimeAxisFormat() {
-        if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
-            return chartStyleDefinitions.getAsString("timeaxis.format");
-        } else {
-            return "yyyy-MM-dd, HH:mm";
-        }
     }
 
 }

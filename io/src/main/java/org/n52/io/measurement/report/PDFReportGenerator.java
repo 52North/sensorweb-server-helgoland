@@ -28,16 +28,11 @@
  */
 package org.n52.io.measurement.report;
 
-import static java.io.File.createTempFile;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -47,7 +42,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
@@ -55,10 +49,12 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
+import org.n52.io.MimeType;
 import org.n52.io.measurement.img.ChartIoHandler;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.TimeseriesMetadataOutput;
@@ -72,7 +68,6 @@ import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
 import org.n52.oxf.DocumentStructureType.TimeSeries;
 import org.n52.oxf.MetadataType;
-import org.n52.oxf.MetadataType.GenericMetadataPair;
 import org.n52.oxf.TableType;
 import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
@@ -101,16 +96,12 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
         super(simpleRequest, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
-        this.renderer = configureRenderer(renderer);
+        renderer.setMimeType(MimeType.IMAGE_PNG);
+        this.renderer = renderer;
     }
 
     public void setBaseURI(URI baseURI) {
         this.baseURI = baseURI;
-    }
-
-    private ChartIoHandler configureRenderer(ChartIoHandler renderer) {
-        renderer.setMimeType(IMAGE_PNG);
-        return renderer;
     }
 
     public void generateOutput(DataCollection<MeasurementData> data) throws IoParseException {
@@ -124,12 +115,12 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private void generateTimeseriesChart(DataCollection<MeasurementData> data) throws IOException {
         renderer.writeDataToChart(data);
-        File tmpFile = createTempFile(TEMP_FILE_PREFIX, "_chart.png");
-        try (FileOutputStream stream = new FileOutputStream(tmpFile)){
+        File tmpFile = File.createTempFile(TEMP_FILE_PREFIX, "_chart.png");
+        try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
             renderer.encodeAndWriteTo(data, stream);
             document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-//            String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
-//            document.getDocumentStructure().setDiagramURL(absoluteFilePath);
+            //String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
+            //document.getDocumentStructure().setDiagramURL(absoluteFilePath);
             stream.flush();
         }
     }
@@ -155,12 +146,14 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
             FopFactory fopFactory = new FopFactoryBuilder(baseURI)
                     .setConfiguration(cfg)
                     .build();
-            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+            final String mimeType = MimeType.APPLICATION_PDF.getMimeType();
+            Fop fop = fopFactory.newFop(mimeType, stream);
 
-//            FopFactory fopFactory = FopFactory.newInstance(cfg);
-//            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-//            FopFactory fopFactory = fopFactoryBuilder.build();
-//            Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+            //FopFactory fopFactory = FopFactory.newInstance(cfg);
+            //Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+            //FopFactory fopFactory = fopFactoryBuilder.build();
+            //Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+
             // Create PDF via XSLT transformation
             TransformerFactory transFact = TransformerFactory.newInstance();
             StreamSource transformationRule = getTransforamtionRule();
@@ -170,12 +163,12 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
             Result result = new SAXResult(fop.getDefaultHandler());
             if (LOGGER.isDebugEnabled()) {
                 try {
-                    File tempFile = createTempFile(TEMP_FILE_PREFIX, ".xml");
+                    File tempFile = File.createTempFile(TEMP_FILE_PREFIX, ".xml");
                     StreamResult debugResult = new StreamResult(tempFile);
                     transformer.transform(source, debugResult);
                     String xslResult = XmlObject.Factory.parse(tempFile).xmlText();
                     LOGGER.debug("xsl-fo input (locale '{}'): {}", i18n.getTwoDigitsLanguageCode(), xslResult);
-                } catch (Exception e) {
+                } catch (IOException | TransformerException | XmlException e) {
                     LOGGER.error("Could not debug XSL result output!", e);
                 }
             }
@@ -211,8 +204,8 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput timeseriesMetadata) {
         MetadataType metadata = timeseries.addNewMetadata();
-        GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
 
+        //  GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
         // if (attributeVal.equals("urn:ogc:identifier:stationName")) {
         //            name = "Station"; //$NON-NLS-1$
         // }
@@ -228,8 +221,8 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
         // if (attributeVal.equals("urn:ogc:identifier:sensorType")) {
         //            name = "Sensor"; //$NON-NLS-1$
         // }
-        return metadata;
 
+        return metadata;
     }
 
     private void addDataTable(TimeSeries timeseries,

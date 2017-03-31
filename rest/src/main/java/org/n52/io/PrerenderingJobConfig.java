@@ -29,10 +29,10 @@
 package org.n52.io;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.n52.io.request.StyleProperties;
 
 public class PrerenderingJobConfig {
@@ -120,7 +120,7 @@ public class PrerenderingJobConfig {
         }
 
         public String[] getInterval() {
-            return interval;
+            return Utils.copy(interval);
         }
 
         public void setInterval(String[] interval) {
@@ -136,7 +136,7 @@ public class PrerenderingJobConfig {
         }
 
         public Map<String, String> getConfig() {
-            return config;
+            return Collections.unmodifiableMap(config);
         }
 
         public void setConfig(Map<String, String> config) {
@@ -144,7 +144,7 @@ public class PrerenderingJobConfig {
         }
 
         public Map<String, StyleProperties> getReferenceValueStyleProperties() {
-            return referenceValueStyleProperties;
+            return Collections.unmodifiableMap(referenceValueStyleProperties);
         }
 
         public void setReferenceValueStyleProperties(Map<String, StyleProperties> referenceValueStyleProperties) {

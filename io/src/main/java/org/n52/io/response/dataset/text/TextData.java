@@ -43,10 +43,6 @@ public class TextData extends Data<TextValue> {
         return timeseries;
     }
 
-    private void addNewValue(Long timestamp, String value) {
-        addNewValue(new TextValue(timestamp, value));
-    }
-
     @Override
     public TextDatasetMetadata getMetadata() {
         return metadata;

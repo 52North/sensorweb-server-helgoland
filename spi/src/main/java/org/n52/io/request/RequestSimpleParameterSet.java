@@ -40,14 +40,14 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     @Override
     public String[] getDatasets() {
-        return getAsStringArray("datasets", new String[0]);
+        return getAsStringArray(Parameters.DATASETS, new String[0]);
     }
 
     /**
      * @param datasets The series ids of interest.
      */
     void setDatasets(String[] datasets) {
-        setParameter("datasets", IoParameters.getJsonNodeFrom(datasets));
+        setParameter(Parameters.DATASETS, IoParameters.getJsonNodeFrom(datasets));
     }
 
     @Deprecated
@@ -59,21 +59,21 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      * @return the output format the raw data shall have.
      */
     public String getFormat() {
-        return getAsString("format");
+        return getAsString(Parameters.FORMAT);
     }
 
     /**
      * @param format Which output format the raw data shall have.
      */
     public void setFormat(String format) {
-        setParameter("format", IoParameters.getJsonNodeFrom(format));
+        setParameter(Parameters.FORMAT, IoParameters.getJsonNodeFrom(format));
     }
 
     /**
      * @return the raw output format the raw data shall have.
      */
     public String getRawFormat() {
-        if ((rawFormat == null || (rawFormat != null && rawFormat.isEmpty()))
+        if ((rawFormat == null || rawFormat.isEmpty())
                 && containsParameter(RawFormats.RAW_FORMAT.toLowerCase())) {
             setRawFormat(getAsString(RawFormats.RAW_FORMAT.toLowerCase()));
         }

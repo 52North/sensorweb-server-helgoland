@@ -28,15 +28,14 @@
  */
 package org.n52.io.response;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.n52.io.MimeType;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.n52.io.Utils;
 
 public class ServiceOutput extends ParameterOutput {
 
@@ -50,6 +49,9 @@ public class ServiceOutput extends ParameterOutput {
 
     private ParameterCount quantities;
 
+    /**
+     * @deprecated since 2.0.0
+     */
     @Deprecated
     private Boolean supportsFirstLatest;
 
@@ -107,6 +109,7 @@ public class ServiceOutput extends ParameterOutput {
      * @deprecated since 2.0.0, {@link #features} get serialized instead
      */
     @JsonIgnore
+    @Deprecated
     public Boolean isSupportsFirstLatest() {
         return supportsFirstLatest;
     }
@@ -132,6 +135,52 @@ public class ServiceOutput extends ParameterOutput {
         this.quantities = countedParameters;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((serviceUrl == null) ? 0 : serviceUrl.hashCode());
+        result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof ServiceOutput)) {
+            return false;
+        }
+        ServiceOutput other = (ServiceOutput) obj;
+        if (serviceUrl == null) {
+            if (other.serviceUrl != null) {
+                return false;
+            }
+        } else if (!serviceUrl.equals(other.serviceUrl)) {
+            return false;
+        }
+        if (type == null) {
+            if (other.type != null) {
+                return false;
+            }
+        } else if (!type.equals(other.type)) {
+            return false;
+        }
+        if (version == null) {
+            if (other.version != null) {
+                return false;
+            }
+        } else if (!version.equals(other.version)) {
+            return false;
+        }
+        return true;
+    }
+
     public static class ParameterCount {
 
         private String[] selectedPlatformTypes;
@@ -150,14 +199,20 @@ public class ServiceOutput extends ParameterOutput {
 
         private Integer amountDatasets;
 
-        @Deprecated // since 2.0.0
+        /**
+         * @deprecated  since 2.0.0
+         */
+        @Deprecated
         private Integer amountStations;
 
-        @Deprecated // since 2.0.0
+        /**
+         * @deprecated  since 2.0.0
+         */
+        @Deprecated
         private Integer amountTimeseries;
 
         public String[] getSelectedPlatformTypes() {
-            return selectedPlatformTypes;
+            return Utils.copy(selectedPlatformTypes);
         }
 
         public void setSelectedPlatformTypes(String... selectedPlatformTypes) {
@@ -239,52 +294,6 @@ public class ServiceOutput extends ParameterOutput {
         public Integer getTimeseries() {
             return this.amountTimeseries;
         }
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof ServiceOutput)) {
-            return false;
-        }
-        ServiceOutput other = (ServiceOutput) obj;
-        if (serviceUrl == null) {
-            if (other.serviceUrl != null) {
-                return false;
-            }
-        } else if (!serviceUrl.equals(other.serviceUrl)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!version.equals(other.version)) {
-            return false;
-        }
-        return true;
     }
 
 }

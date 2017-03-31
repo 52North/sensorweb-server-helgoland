@@ -28,26 +28,15 @@
  */
 package org.n52.io.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents a parameter object to request a rendered chart output from
  * multiple timeseries.
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
-
-    private static int DEFAULT_WIDTH = 800;
-
-    private static int DEFAULT_HEIGHT = 500;
-
-    private static boolean DEFAULT_GRID = true;
-
-    private static boolean DEFAULT_LEGEND = false;
-
-    // TODO lean at revised prerendering config
 
     /**
      * Style options for each timeseriesId of interest.
@@ -63,27 +52,27 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     public int getWidth() {
-        return getAsInt("width", DEFAULT_WIDTH);
+        return getAsInt(Parameters.WIDTH, Parameters.DEFAULT_WIDTH);
     }
 
     /**
      * @param width the image width to set.
      */
     public void setWidth(int width) {
-        width = width < 0 ? DEFAULT_WIDTH : width;
-        setParameter("width", width);
+        int w = width < 0 ? Parameters.DEFAULT_WIDTH : width;
+        setParameter(Parameters.WIDTH, w);
     }
 
     /**
      * @return the requested height.
      */
     public int getHeight() {
-        return getAsInt("height", DEFAULT_HEIGHT);
+        return getAsInt(Parameters.HEIGHT, Parameters.DEFAULT_HEIGHT);
     }
 
     public void setHeight(int height) {
-        height = height < 0 ? DEFAULT_HEIGHT : height;
-        setParameter("height", height);
+        int h = height < 0 ? Parameters.DEFAULT_HEIGHT : height;
+        setParameter(Parameters.HEIGHT, h);
 }
 
     @Override
@@ -96,22 +85,26 @@ public class RequestStyledParameterSet extends RequestParameterSet {
      * <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
-        setParameter("grid", grid);
+        setParameter(Parameters.GRID, grid);
     }
 
     /**
      * @return <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public boolean isGrid() {
-        return getAsBoolean("grid", DEFAULT_GRID);
+        return getAsBoolean(Parameters.GRID, Parameters.DEFAULT_GRID);
     }
 
     public boolean isLegend() {
-        return getAsBoolean("legend", DEFAULT_LEGEND);
+        return getAsBoolean(Parameters.LEGEND, Parameters.DEFAULT_LEGEND);
     }
 
     public void setLegend(boolean legend) {
-        setParameter("legend", legend);
+        setParameter(Parameters.LEGEND, legend);
+    }
+
+    public String getTimeFormat() {
+        return getAsString(Parameters.TIME_FORMAT, Parameters.DEFAULT_TIME_FORMAT);
     }
 
     public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
@@ -133,8 +126,8 @@ public class RequestStyledParameterSet extends RequestParameterSet {
                 : null;
     }
 
-    public void addSeriesWithStyleOptions(String timeseriesId, StyleProperties styleOptions) {
-        this.styleOptions.put(timeseriesId, styleOptions);
+    public void addSeriesWithStyleOptions(String timeseriesId, StyleProperties options) {
+        this.styleOptions.put(timeseriesId, options);
     }
 
 }

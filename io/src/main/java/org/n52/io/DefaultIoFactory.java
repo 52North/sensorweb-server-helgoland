@@ -29,12 +29,12 @@
 package org.n52.io;
 
 import java.io.File;
-
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> extends ConfigTypedFactory<IoFactory<D, DS, V>> {
+public class DefaultIoFactory<D extends Data<V>, O extends DatasetOutput<V, ?>, V extends AbstractValue<?>>
+        extends ConfigTypedFactory<IoFactory<D, O, V>> {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-io-factory.properties";
 
@@ -47,12 +47,17 @@ public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>,
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> create() {
+    public static DefaultIoFactory<Data<AbstractValue<?>>,
+                DatasetOutput<AbstractValue<?>, ?>,
+                AbstractValue< ?>> create() {
         return new DefaultIoFactory();
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> create(File configFile) {
+    public static DefaultIoFactory<Data<AbstractValue< ?>>,
+                DatasetOutput<AbstractValue< ?>, ?>,
+                AbstractValue< ?>> create(
+            File configFile) {
         return new DefaultIoFactory(configFile);
     }
 
@@ -62,7 +67,7 @@ public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>,
     }
 
     @Override
-    protected IoFactory<D, DS, V> initInstance(IoFactory<D, DS, V> instance) {
+    protected IoFactory<D, O, V> initInstance(IoFactory<D, O, V> instance) {
         return instance;
     }
 
@@ -70,6 +75,5 @@ public class DefaultIoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>,
     protected Class<?> getTargetType() {
         return IoFactory.class;
     }
-
 
 }

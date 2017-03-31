@@ -28,10 +28,7 @@
  */
 package org.n52.series.spi.geo;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
+import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.request.IoParameters;
@@ -40,56 +37,54 @@ import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 public class TransformationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
 
     public Geometry transform(Geometry geometry, IoParameters query) {
         String crs = query.getCrs();
-        if (DEFAULT_CRS.equals(crs)) {
-            return geometry; // no need to transform
-        }
-
-        try {
-            CRSUtils crsUtils = query.isForceXY()
-                    ? createEpsgForcedXYAxisOrder()
-                    : createEpsgStrictAxisOrder();
-            return geometry != null
-                    ? crsUtils.transformInnerToOuter(geometry, crs)
-                    : geometry;
-        } catch (TransformException e) {
-            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
-        } catch (FactoryException e) {
-            LOGGER.debug("Couldn't create geometry factory", e);
+        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
+             // no need to transform
             return geometry;
         }
+        return transformGeometry(query, geometry, crs);
     }
 
     /**
      * @param feature the feature to transform.
      * @param query the query containing CRS and how to handle axes order.
      */
-    @Deprecated
     protected void transformInline(GeoJSONFeature feature, IoParameters query) {
         String crs = query.getCrs();
-        if (DEFAULT_CRS.equals(crs)) {
-            return; // no need to transform
+        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
+             // no need to transform
+            return;
         }
+        Geometry geometry = transform(feature.getGeometry(), query);
+        if (geometry != null) {
+            feature.setGeometry(geometry);
+        }
+    }
+
+    private Geometry transformGeometry(IoParameters query, Geometry geometry,
+            String crs) throws RuntimeException {
         try {
             CRSUtils crsUtils = query.isForceXY()
-                    ? createEpsgForcedXYAxisOrder()
-                    : createEpsgStrictAxisOrder();
-            Geometry geometry = feature.getGeometry();
-            if (geometry != null) {
-                feature.setGeometry(crsUtils.transformInnerToOuter(geometry, crs));
-            }
+                    ? CRSUtils.createEpsgForcedXYAxisOrder()
+                    : CRSUtils.createEpsgStrictAxisOrder();
+            return geometry != null
+                    ? crsUtils.transformInnerToOuter(geometry, crs)
+                    : geometry;
         } catch (TransformException e) {
-            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
+            throwRuntimeException(crs, e);
         } catch (FactoryException e) {
             LOGGER.debug("Couldn't create geometry factory", e);
         }
+        return geometry;
+    }
+
+    private void throwRuntimeException(String crs, TransformException e) throws RuntimeException {
+        throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
     }
 
 }

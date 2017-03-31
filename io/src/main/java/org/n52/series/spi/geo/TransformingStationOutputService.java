@@ -38,6 +38,8 @@ import org.n52.series.spi.srv.RawDataService;
 /**
  * Composes a {@link ParameterService} for {@link GeoJSONFeature}s to transform
  * geometries to requested spatial reference system.
+ *
+ * @deprecated since 2.0.0
  */
 @Deprecated
 // TODO consolidate
@@ -80,7 +82,8 @@ public class TransformingStationOutputService extends ParameterService<StationOu
         return feature;
     }
 
-    private OutputCollection<StationOutput> transformFeatures(IoParameters query, OutputCollection<StationOutput> features) {
+    private OutputCollection<StationOutput> transformFeatures(IoParameters query,
+            OutputCollection<StationOutput> features) {
         if (features != null) {
             for (StationOutput feature : features) {
                 transformService.transformInline(feature, query);

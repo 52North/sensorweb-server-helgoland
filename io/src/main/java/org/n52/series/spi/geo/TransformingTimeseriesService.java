@@ -41,40 +41,52 @@ public class TransformingTimeseriesService extends ParameterService<TimeseriesMe
 
     private final TransformationService transformationService;
 
-    public TransformingTimeseriesService(ParameterService<TimeseriesMetadataOutput> toCompose) {
+    public TransformingTimeseriesService(
+            ParameterService<TimeseriesMetadataOutput> toCompose) {
         this.composedService = toCompose;
         this.transformationService = new TransformationService();
     }
 
     @Override
-    public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(IoParameters query) {
-        OutputCollection<TimeseriesMetadataOutput> metadata = composedService.getExpandedParameters(query);
+    public OutputCollection<TimeseriesMetadataOutput> getExpandedParameters(
+            IoParameters query) {
+        OutputCollection<TimeseriesMetadataOutput> metadata = composedService
+                .getExpandedParameters(query);
         return transformStations(query, metadata);
     }
 
     @Override
-    public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(IoParameters query) {
-        OutputCollection<TimeseriesMetadataOutput> metadata = composedService.getCondensedParameters(query);
+    public OutputCollection<TimeseriesMetadataOutput> getCondensedParameters(
+            IoParameters query) {
+        OutputCollection<TimeseriesMetadataOutput> metadata = composedService
+                .getCondensedParameters(query);
         return transformStations(query, metadata);
     }
 
     @Override
-    public OutputCollection<TimeseriesMetadataOutput> getParameters(String[] items, IoParameters query) {
-        return transformStations(query, composedService.getParameters(items, query));
+    public OutputCollection<TimeseriesMetadataOutput> getParameters(
+            String[] items, IoParameters query) {
+        return transformStations(query, composedService.getParameters(items,
+                query));
     }
 
     @Override
-    public TimeseriesMetadataOutput getParameter(String timeseriesId, IoParameters query) {
-        TimeseriesMetadataOutput metadata = composedService.getParameter(timeseriesId, query);
+    public TimeseriesMetadataOutput getParameter(String timeseriesId,
+            IoParameters query) {
+        TimeseriesMetadataOutput metadata = composedService.getParameter(
+                timeseriesId, query);
         if (metadata != null) {
             transformationService.transformInline(metadata.getStation(), query);
         }
         return metadata;
     }
 
-    private OutputCollection<TimeseriesMetadataOutput> transformStations(IoParameters query, OutputCollection<TimeseriesMetadataOutput> metadata) {
+    private OutputCollection<TimeseriesMetadataOutput> transformStations(
+            IoParameters query,
+            OutputCollection<TimeseriesMetadataOutput> metadata) {
         for (TimeseriesMetadataOutput timeseriesMetadata : metadata) {
-            transformationService.transformInline(timeseriesMetadata.getStation(), query);
+            transformationService.transformInline(timeseriesMetadata
+                    .getStation(), query);
         }
         return metadata;
     }

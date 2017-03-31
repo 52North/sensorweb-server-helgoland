@@ -38,7 +38,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Scanner;
-
 import org.apache.commons.io.FileUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
     private static final String CONFIG_FILE = "config-license.txt";
 
@@ -87,7 +86,7 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     }
 
     private String readFromInputStream(InputStream stream) {
-        try (Scanner scanner = new Scanner(stream)) {
+        try (Scanner scanner = new Scanner(stream, "UTF-8")) {
             StringBuilder sb = new StringBuilder();
             while (scanner.hasNextLine()) {
                 sb.append(scanner.nextLine());

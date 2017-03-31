@@ -28,25 +28,6 @@
  */
 package org.n52.io.geojson;
 
-import static java.lang.Integer.parseInt;
-import static org.n52.io.geojson.JSONConstants.COORDINATES;
-import static org.n52.io.geojson.JSONConstants.CRS;
-import static org.n52.io.geojson.JSONConstants.GEOMETRIES;
-import static org.n52.io.geojson.JSONConstants.GEOMETRY_COLLECTION;
-import static org.n52.io.geojson.JSONConstants.HREF;
-import static org.n52.io.geojson.JSONConstants.LINE_STRING;
-import static org.n52.io.geojson.JSONConstants.LINK;
-import static org.n52.io.geojson.JSONConstants.MULTI_LINE_STRING;
-import static org.n52.io.geojson.JSONConstants.MULTI_POINT;
-import static org.n52.io.geojson.JSONConstants.MULTI_POLYGON;
-import static org.n52.io.geojson.JSONConstants.NAME;
-import static org.n52.io.geojson.JSONConstants.POINT;
-import static org.n52.io.geojson.JSONConstants.POLYGON;
-import static org.n52.io.geojson.JSONConstants.PROPERTIES;
-import static org.n52.io.geojson.JSONConstants.TYPE;
-
-import org.n52.io.crs.CRSUtils;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -60,6 +41,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import org.n52.io.crs.CRSUtils;
 
 /**
  *
@@ -70,21 +52,27 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  */
 public class GeoJSONDecoder {
 
-    private static final String[] SRS_LINK_PREFIXES = {"http://www.opengis.net/def/crs/EPSG/0/",
-        "http://spatialreference.org/ref/epsg/"};
-
-    private static final String[] SRS_NAME_PREFIXES = {"urn:ogc:def:crs:EPSG::", "EPSG::", "EPSG:"};
-
-    private static final int DEFAULT_SRID = CRSUtils.EPSG_WGS84;
-
-    private static final PrecisionModel DEFAULT_PRECISION_MODEL = new PrecisionModel(PrecisionModel.FLOATING);
-
-    private static final GeometryFactory DEFAULT_GEOMETRY_FACTORY = new GeometryFactory(DEFAULT_PRECISION_MODEL,
-            DEFAULT_SRID);
-
     public static final int DIM_2D = 2;
 
     public static final int DIM_3D = 3;
+
+    private static final String[] SRS_LINK_PREFIXES = {
+        "http://www.opengis.net/def/crs/EPSG/0/",
+        "http://spatialreference.org/ref/epsg/"};
+
+    private static final String[] SRS_NAME_PREFIXES = {
+        "urn:ogc:def:crs:EPSG::",
+        "EPSG::",
+        "EPSG:"};
+
+    private static final int DEFAULT_SRID = CRSUtils.EPSG_WGS84;
+
+    private static final PrecisionModel DEFAULT_PRECISION_MODEL = new PrecisionModel(
+            PrecisionModel.FLOATING);
+
+    private static final GeometryFactory DEFAULT_GEOMETRY_FACTORY = new GeometryFactory(
+            DEFAULT_PRECISION_MODEL,
+            DEFAULT_SRID);
 
     public Geometry decodeGeometry(JsonNode node) throws GeoJSONException {
         if (node == null || node.isNull() || node.isMissingNode()) {
@@ -94,35 +82,37 @@ public class GeoJSONDecoder {
         }
     }
 
-    protected Geometry decodeGeometry(Object o, GeometryFactory parentFactory) throws GeoJSONException {
+    protected Geometry decodeGeometry(Object o, GeometryFactory parentFactory)
+            throws GeoJSONException {
         if (!(o instanceof JsonNode)) {
             throw new GeoJSONException("Cannot decode " + o);
         }
         final JsonNode node = (JsonNode) o;
         final String type = getType(node);
         final GeometryFactory factory = getGeometryFactory(node, parentFactory);
-        if (type.equals(POINT)) {
+        if (type.equals(JSONConstants.POINT)) {
             return decodePoint(node, factory);
-        } else if (type.equals(MULTI_POINT)) {
+        } else if (type.equals(JSONConstants.MULTI_POINT)) {
             return decodeMultiPoint(node, factory);
-        } else if (type.equals(LINE_STRING)) {
+        } else if (type.equals(JSONConstants.LINE_STRING)) {
             return decodeLineString(node, factory);
-        } else if (type.equals(MULTI_LINE_STRING)) {
+        } else if (type.equals(JSONConstants.MULTI_LINE_STRING)) {
             return decodeMultiLineString(node, factory);
-        } else if (type.equals(POLYGON)) {
+        } else if (type.equals(JSONConstants.POLYGON)) {
             return decodePolygon(node, factory);
-        } else if (type.equals(MULTI_POLYGON)) {
+        } else if (type.equals(JSONConstants.MULTI_POLYGON)) {
             return decodeMultiPolygon(node, factory);
-        } else if (type.equals(GEOMETRY_COLLECTION)) {
+        } else if (type.equals(JSONConstants.GEOMETRY_COLLECTION)) {
             return decodeGeometryCollection(node, factory);
         } else {
             throw new GeoJSONException("Unkown geometry type: " + type);
         }
     }
 
-    protected Coordinate[] decodeCoordinates(JsonNode node) throws GeoJSONException {
+    protected Coordinate[] decodeCoordinates(JsonNode node) throws
+            GeoJSONException {
         if (!node.isArray()) {
-            throw new GeoJSONException("expected array");
+            throwExpectedArrayException();
         }
         Coordinate[] coordinates = new Coordinate[node.size()];
         for (int i = 0; i < node.size(); ++i) {
@@ -131,9 +121,10 @@ public class GeoJSONDecoder {
         return coordinates;
     }
 
-    protected Polygon decodePolygonCoordinates(JsonNode coordinates, GeometryFactory fac) throws GeoJSONException {
+    protected Polygon decodePolygonCoordinates(JsonNode coordinates,
+            GeometryFactory fac) throws GeoJSONException {
         if (!coordinates.isArray()) {
-            throw new GeoJSONException("expected array");
+            throwExpectedArrayException();
         }
         if (coordinates.size() < 1) {
             throw new GeoJSONException("missing polygon shell");
@@ -146,7 +137,8 @@ public class GeoJSONDecoder {
         return fac.createPolygon(shell, holes);
     }
 
-    protected MultiLineString decodeMultiLineString(JsonNode node, GeometryFactory fac) throws GeoJSONException {
+    protected MultiLineString decodeMultiLineString(JsonNode node,
+            GeometryFactory fac) throws GeoJSONException {
         JsonNode coordinates = requireCoordinates(node);
         LineString[] lineStrings = new LineString[coordinates.size()];
         for (int i = 0; i < coordinates.size(); ++i) {
@@ -156,12 +148,14 @@ public class GeoJSONDecoder {
         return fac.createMultiLineString(lineStrings);
     }
 
-    protected LineString decodeLineString(JsonNode node, GeometryFactory fac) throws GeoJSONException {
+    protected LineString decodeLineString(JsonNode node, GeometryFactory fac)
+            throws GeoJSONException {
         Coordinate[] coordinates = decodeCoordinates(requireCoordinates(node));
         return fac.createLineString(coordinates);
     }
 
-    protected MultiPoint decodeMultiPoint(JsonNode node, GeometryFactory fac) throws GeoJSONException {
+    protected MultiPoint decodeMultiPoint(JsonNode node, GeometryFactory fac)
+            throws GeoJSONException {
         Coordinate[] coordinates = decodeCoordinates(requireCoordinates(node));
         return fac.createMultiPoint(coordinates);
     }
@@ -171,12 +165,14 @@ public class GeoJSONDecoder {
         return fac.createPoint(parsed);
     }
 
-    protected Polygon decodePolygon(JsonNode node, GeometryFactory fac) throws GeoJSONException {
+    protected Polygon decodePolygon(JsonNode node, GeometryFactory fac) throws
+            GeoJSONException {
         JsonNode coordinates = requireCoordinates(node);
         return decodePolygonCoordinates(coordinates, fac);
     }
 
-    protected MultiPolygon decodeMultiPolygon(JsonNode node, GeometryFactory fac) throws GeoJSONException {
+    protected MultiPolygon decodeMultiPolygon(JsonNode node, GeometryFactory fac)
+            throws GeoJSONException {
         JsonNode coordinates = requireCoordinates(node);
         Polygon[] polygons = new Polygon[coordinates.size()];
         for (int i = 0; i < coordinates.size(); ++i) {
@@ -185,8 +181,9 @@ public class GeoJSONDecoder {
         return fac.createMultiPolygon(polygons);
     }
 
-    protected GeometryCollection decodeGeometryCollection(JsonNode node, GeometryFactory fac) throws GeoJSONException {
-        final JsonNode geometries = node.path(GEOMETRIES);
+    protected GeometryCollection decodeGeometryCollection(JsonNode node,
+            GeometryFactory fac) throws GeoJSONException {
+        final JsonNode geometries = node.path(JSONConstants.GEOMETRIES);
         if (!geometries.isArray()) {
             throw new GeoJSONException("expected 'geometries' array");
         }
@@ -198,15 +195,15 @@ public class GeoJSONDecoder {
     }
 
     protected JsonNode requireCoordinates(JsonNode node) throws GeoJSONException {
-        if (!node.path(COORDINATES).isArray()) {
+        if (!node.path(JSONConstants.COORDINATES).isArray()) {
             throw new GeoJSONException("missing 'coordinates' field");
         }
-        return node.path(COORDINATES);
+        return node.path(JSONConstants.COORDINATES);
     }
 
     protected Coordinate decodeCoordinate(JsonNode node) throws GeoJSONException {
         if (!node.isArray()) {
-            throw new GeoJSONException("expected array");
+            throwExpectedArrayException();
         }
         final int dim = node.size();
         if (dim < DIM_2D) {
@@ -226,38 +223,44 @@ public class GeoJSONDecoder {
         return coordinate;
     }
 
-    protected GeometryFactory getGeometryFactory(JsonNode node, GeometryFactory factory) throws GeoJSONException {
-        if (!node.hasNonNull(CRS)) {
+    protected GeometryFactory getGeometryFactory(JsonNode node,
+            GeometryFactory factory) throws GeoJSONException {
+        if (!node.hasNonNull(JSONConstants.CRS)) {
             return factory;
         } else {
             return decodeCRS(node, factory);
         }
     }
 
-    protected GeometryFactory decodeCRS(JsonNode node, GeometryFactory factory) throws GeoJSONException {
-        if (!node.path(CRS).hasNonNull(TYPE)) {
+    protected GeometryFactory decodeCRS(JsonNode node, GeometryFactory factory)
+            throws GeoJSONException {
+        if (!node.path(JSONConstants.CRS).hasNonNull(JSONConstants.TYPE)) {
             throw new GeoJSONException("Missing CRS type");
         }
-        String type = node.path(CRS).path(TYPE).textValue();
-        JsonNode properties = node.path(CRS).path(PROPERTIES);
-        if (type.equals(NAME)) {
+        String type = node.path(JSONConstants.CRS)
+                .path(JSONConstants.TYPE)
+                .textValue();
+        JsonNode properties = node.path(JSONConstants.CRS)
+                .path(JSONConstants.PROPERTIES);
+        if (type.equals(JSONConstants.NAME)) {
             return decodeNamedCRS(properties, factory);
-        } else if (type.equals(LINK)) {
+        } else if (type.equals(JSONConstants.LINK)) {
             return decodeLinkedCRS(properties, factory);
         } else {
             throw new GeoJSONException("Unknown CRS type: " + type);
         }
     }
 
-    protected GeometryFactory decodeNamedCRS(JsonNode properties, GeometryFactory factory) throws GeoJSONException {
-        String name = properties.path(NAME).textValue();
+    protected GeometryFactory decodeNamedCRS(JsonNode properties,
+            GeometryFactory factory) throws GeoJSONException {
+        String name = properties.path(JSONConstants.NAME).textValue();
         if (name == null) {
             throw new GeoJSONException("Missing name attribute for name crs");
         }
         for (String prefix : SRS_NAME_PREFIXES) {
             if (name.startsWith(prefix)) {
                 try {
-                    int srid = parseInt(name.substring(prefix.length()));
+                    int srid = Integer.parseInt(name.substring(prefix.length()));
                     return getGeometryFactory(srid, factory);
                 } catch (NumberFormatException e) {
                     throw new GeoJSONException("Invalid CRS name", e);
@@ -267,15 +270,16 @@ public class GeoJSONDecoder {
         throw new GeoJSONException("Unsupported named crs: " + name);
     }
 
-    protected GeometryFactory decodeLinkedCRS(JsonNode properties, GeometryFactory factory) throws GeoJSONException {
-        String href = properties.path(HREF).textValue();
+    protected GeometryFactory decodeLinkedCRS(JsonNode properties,
+            GeometryFactory factory) throws GeoJSONException {
+        String href = properties.path(JSONConstants.HREF).textValue();
         if (href == null) {
             throw new GeoJSONException("Missing href attribute for link crs");
         }
         for (String prefix : SRS_LINK_PREFIXES) {
             if (href.startsWith(prefix)) {
                 try {
-                    int srid = parseInt(href.substring(prefix.length()));
+                    int srid = Integer.parseInt(href.substring(prefix.length()));
                     return getGeometryFactory(srid, factory);
                 } catch (NumberFormatException e) {
                     throw new GeoJSONException("Invalid CRS link", e);
@@ -285,7 +289,8 @@ public class GeoJSONDecoder {
         throw new GeoJSONException("Unsupported linked crs: " + href);
     }
 
-    protected GeometryFactory getGeometryFactory(int srid, GeometryFactory factory) {
+    protected GeometryFactory getGeometryFactory(int srid,
+            GeometryFactory factory) {
         if (srid == factory.getSRID()) {
             return factory;
         } else {
@@ -294,17 +299,21 @@ public class GeoJSONDecoder {
     }
 
     protected String getType(final JsonNode node) throws GeoJSONException {
-        if (!node.has(TYPE)) {
+        if (!node.has(JSONConstants.TYPE)) {
             throw new GeoJSONException("Can not determine geometry type (missing 'type' field)");
         }
-        if (!node.path(TYPE).isTextual()) {
+        if (!node.path(JSONConstants.TYPE).isTextual()) {
             throw new GeoJSONException("'type' field has to be a string");
         }
-        return node.path(TYPE).textValue();
+        return node.path(JSONConstants.TYPE).textValue();
     }
 
     protected boolean isNumber(JsonNode x) {
         return x == null || !x.isNumber();
+    }
+
+    private void throwExpectedArrayException() throws GeoJSONException {
+        throw new GeoJSONException("expected array");
     }
 
 }
