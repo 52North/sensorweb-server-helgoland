@@ -871,7 +871,7 @@ public class IoParameters implements Parameters {
             PlatformType.PLATFORM_TYPE_INSITU};
         return isBackwardsCompatibilityRequest(parameters)
                 ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DATASET_TYPE_MEASUREMENT)
+                .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DEFAULT_DATASET_TYPE)
                 .removeAllOf(Parameters.HREF_BASE)
                 : parameters;
     }
@@ -897,7 +897,7 @@ public class IoParameters implements Parameters {
 
     private boolean isMeasurementOnly(Set<String> datasetTypes) {
         return datasetTypes.size() == 1
-                && datasetTypes.contains(DatasetType.DATASET_TYPE_MEASUREMENT);
+                && datasetTypes.contains(DatasetType.DEFAULT_DATASET_TYPE);
     }
 
 }
