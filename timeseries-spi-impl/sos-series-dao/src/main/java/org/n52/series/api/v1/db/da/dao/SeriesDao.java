@@ -146,8 +146,10 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
         Criteria criteria = session.createCriteria(getEntityClass(), alias)
-                .createAlias("procedure", "p")
-                .add(eq("p.reference", Boolean.FALSE));
+                // XXX reference flag slows down query about factor "wtf"!
+                // -> join still needed in case of searching <-
+                .createAlias("procedure", "p");
+                //.add(eq("p.reference", Boolean.FALSE));
         addIgnoreNonPublishedSeriesTo(criteria, alias);
         addMergeRoles(alias, criteria, query);
         return criteria;
@@ -156,7 +158,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
         alias = alias == null ? "" : alias + ".";
         criteria.add(Restrictions.and(
-                Restrictions.and(
+                Restrictions.and(   
                         Restrictions.isNotNull(alias + "firstValue"),
                         Restrictions.isNotNull(alias + "lastValue")),
                         Restrictions.eq(alias + "published", true),
