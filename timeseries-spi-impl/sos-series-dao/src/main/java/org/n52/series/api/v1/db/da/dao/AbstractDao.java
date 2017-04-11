@@ -42,6 +42,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.SessionAwareRepository;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
@@ -80,8 +81,9 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
     }
 
     private DetachedCriteria createSeriesSubQueryViaExplicitJoin(String alias, DbQuery query) {
+        String mergeRoleParameter = SessionAwareRepository.SERIES_MERGE_ROLES;
         return DetachedCriteria.forClass(SeriesEntity.class)
-                .add(createMergeRolesDisjunction(query, ""))
+                .add(createMergeRolesDisjunction(mergeRoleParameter, query, "master"))
                 .add(Restrictions.eq("published", Boolean.TRUE))
                 .createAlias(alias, "ref")
                 .setProjection(Projections.property("ref.pkid"));
@@ -91,25 +93,30 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
         String filterProperty = alias != null && !alias.isEmpty()
                 ? alias + ".pkid"
                 : "pkid";
+        String mergeRoleParameter = SessionAwareRepository.SERIES_MERGE_ROLES;
         return DetachedCriteria.forClass(SeriesEntity.class)
-                .add(createMergeRolesDisjunction(query, ""))
+                .add(createMergeRolesDisjunction(mergeRoleParameter, query, "master"))
                 .add(Restrictions.eq("published", Boolean.TRUE))
                 // XXX NPE when filterProperty is mapped by formula
                 .setProjection(Projections.property(filterProperty));
     }
+    
+    protected Disjunction createMergeRolesDisjunction(String roleParameter, DbQuery query, String... defaults) {
+        return createMergeRolesDisjunction(roleParameter, "", query, defaults);
+    }
 
-    protected Disjunction createMergeRolesDisjunction(DbQuery query, String alias) {
-        if ( !query.getParameters().containsParameter("merge_roles")) {
+    protected Disjunction createMergeRolesDisjunction(String roleParameter, String alias, DbQuery query, String... defaults) {
+        if ( !query.getParameters().containsParameter(roleParameter)) {
             query = DbQuery.createFrom(query.getParameters()
-                    .extendWith("merge_roles", "master"));
+                    .extendWith(roleParameter, defaults));
         }
 
         Disjunction disjunction = Restrictions.disjunction();
-        if (query.getParameters().containsParameter("merge_roles")) {
+        if (query.getParameters().containsParameter(roleParameter)) {
             String property = alias != null && !alias.isEmpty()
                     ? alias + ".mergeRole"
                     : "mergeRole";
-            Set<String> roles = query.getParameters().getOthers("merge_roles");
+            Set<String> roles = query.getParameters().getOthers(roleParameter);
             for (String role : roles) {
                 disjunction.add(eq(property, role));
             }

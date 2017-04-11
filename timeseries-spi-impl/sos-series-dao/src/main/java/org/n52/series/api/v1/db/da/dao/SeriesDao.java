@@ -155,12 +155,8 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 .createAlias("procedure", "p")
                 .add(eq("p.reference", Boolean.FALSE));
         addIgnoreNonPublishedSeriesTo(criteria, alias);
-        addMergeRoles(criteria, query);
+        addMergeRoles(alias, criteria, query);
         return criteria;
-    }
-
-    private void addMergeRoles(Criteria criteria, DbQuery query) {
-        criteria.add(createMergeRolesDisjunction(query, ""));
     }
 
     private Criteria addIgnoreNonPublishedSeriesTo(Criteria criteria, String alias) {
@@ -172,6 +168,11 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                         Restrictions.eq(alias + "published", true),
                         Restrictions.eqOrIsNull(alias + "deleted", false)));
         return criteria;
+    }
+
+    private void addMergeRoles(String alias, Criteria criteria, DbQuery query) {
+        String mergeRoleParameter = SessionAwareRepository.SERIES_MERGE_ROLES;
+        criteria.add(createMergeRolesDisjunction(mergeRoleParameter, alias, query, "master"));
     }
 
 }
