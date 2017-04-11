@@ -34,22 +34,22 @@ public class DescribableEntity<T extends I18nEntity> {
     /**
      * A serial primary key.
      */
-    private Long pkid;
+    protected Long pkid;
 
     /**
      * Identification of the entity without special chars.
      */
-    private String domainId;
+    protected String domainId;
     
     /**
      * Default name of the entity.
      */
-    private String name;
+    protected String name;
     
     /**
      * Default description of the entity.
      */
-    private String description;
+    protected String description;
 
     private Set<T> translations;
     

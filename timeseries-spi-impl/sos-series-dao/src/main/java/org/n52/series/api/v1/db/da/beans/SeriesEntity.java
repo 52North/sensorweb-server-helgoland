@@ -166,7 +166,7 @@ public class SeriesEntity implements MergableEntity, Serializable {
     }
 
     public FeatureEntity getFeature() {
-        return feature;
+        return FeatureEntity.getMergedFeature(feature);
     }
 
     public void setFeature(FeatureEntity feature) {

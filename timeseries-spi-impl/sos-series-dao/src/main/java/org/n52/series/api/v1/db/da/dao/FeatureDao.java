@@ -31,13 +31,14 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.SessionAwareRepository;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
+import org.n52.series.api.v1.db.da.beans.MergableBaseFeatureEntity;
 
 public class FeatureDao extends AbstractDao<FeatureEntity> {
 
@@ -89,9 +90,16 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     
     @Override
     public int getCount() throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("feature")
-                .setProjection(Projections.rowCount());
+        Criteria criteria = session
+                .createCriteria(MergableBaseFeatureEntity.class);
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    }
+    
+    @Override
+    protected Criteria getDefaultCriteria(String alias, DbQuery query) {
+        return super.getDefaultCriteria(alias, query)
+                .add(createMergeRolesDisjunction(SessionAwareRepository.FOI_MERGE_ROLES, alias, query, "master"))
+                .add(Restrictions.isNotNull("geom"));
     }
 
     @Override

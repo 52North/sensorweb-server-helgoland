@@ -68,6 +68,8 @@ public abstract class SessionAwareRepository {
 
     public static final String SERIES_MERGE_ROLES = "series_merge_roles";
     
+    public static final String FOI_MERGE_ROLES = "foi_merge_roles";
+    
     // TODO tackle issue #71
     private static final String DATASOURCE_PROPERTIES = "/datasource.properties";
 
