@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
@@ -91,7 +92,8 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
     @Override
     public int getCount() throws DataAccessException {
         Criteria criteria = session
-                .createCriteria(MergableBaseFeatureEntity.class);
+                .createCriteria(MergableBaseFeatureEntity.class)
+                .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
     }
     
