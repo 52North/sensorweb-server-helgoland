@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SeriesEntity implements Serializable {
+public class SeriesEntity implements MergableEntity, Serializable {
 
     private static final long serialVersionUID = -6979717443102020645L;
 
@@ -131,10 +131,12 @@ public class SeriesEntity implements Serializable {
         this.samplingPointId = samplingPointId;
     }
 
+    @Override
     public String getMergeRole() {
         return mergeRole;
     }
 
+    @Override
     public void setMergeRole(String mergeRole) {
         this.mergeRole = mergeRole;
     }
@@ -287,6 +289,7 @@ public class SeriesEntity implements Serializable {
         this.mergableSeries = mergableSeries;
     }
     
+    @Override
     public Set<Long> getMergablePkids() {
         Set<Long> pkids = new HashSet<>();
         for (SeriesEntity entity : getMergableSeries()) {
