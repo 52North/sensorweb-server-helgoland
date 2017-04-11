@@ -9,7 +9,7 @@
     
     <discriminator force="true" column="merge_role" type="string" />
     <property column="identifier" insert="false" name="domainId" type="string" update="false"/>
-    <property column="name" name="name" type="string"/>
+    <property formula="concat(name, ', ', identifier)" name="name" type="string"/>
     <property column="description" name="description" type="string"/>
     <property column="geom" name="geom" type="org.hibernate.spatial.GeometryType" />
     <property name="mergeRole" column="merge_role" type="string" insert="false" update="false" />
