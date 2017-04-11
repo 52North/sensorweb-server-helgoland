@@ -130,7 +130,6 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
     public List<ObservationEntity> getObservationsFor(SeriesEntity series, DbQuery query) {
         Criteria criteria = query.addTimespanTo(session
                 .createCriteria(ObservationEntity.class))
-//                .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(in(COLUMN_SERIES_PKID, series.getMergablePkids()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         return criteria.list();
