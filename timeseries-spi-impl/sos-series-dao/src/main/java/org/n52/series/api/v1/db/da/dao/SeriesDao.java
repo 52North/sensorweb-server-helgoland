@@ -42,6 +42,7 @@ import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.SessionAwareRepository;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
+import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
@@ -67,33 +68,26 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
          */
 
         List<SeriesEntity> series = new ArrayList<SeriesEntity>();
-        Criteria criteria = getDefaultCriteria("series");
-        Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
-
-        if (hasTranslation(query, I18nFeatureEntity.class)) {
-            featureCriteria = query.addLocaleTo(featureCriteria, I18nFeatureEntity.class);
-        }
-        featureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
-        series.addAll(featureCriteria.list());
-        
-        // reset criteria
-        criteria = getDefaultCriteria("series");
-        Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
-        if (hasTranslation(query, I18nProcedureEntity.class)) {
-            procedureCriteria = query.addLocaleTo(procedureCriteria, I18nProcedureEntity.class);
-        }
-        procedureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
-        series.addAll(procedureCriteria.list());
-
-        // reset criteria
-        criteria = getDefaultCriteria("series");
-        Criteria offeringCriteria = criteria.createCriteria("offering", LEFT_OUTER_JOIN);
-        if (hasTranslation(query, I18nOfferingEntity.class)) {
-            offeringCriteria = query.addLocaleTo(offeringCriteria, I18nOfferingEntity.class);
-        }
-        offeringCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
-        series.addAll(offeringCriteria.list());
+        series.addAll(findRelatedSeries(search, "feature", I18nFeatureEntity.class, query));
+        series.addAll(findRelatedSeries(search, "procedure", I18nProcedureEntity.class, query));
+        series.addAll(findRelatedSeries(search, "offering", I18nOfferingEntity.class, query));
         return series;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<SeriesEntity> findRelatedSeries(String search, String member, Class<? extends I18nEntity> translation, DbQuery query) {
+        Criteria criteria = getDefaultCriteria("series");
+        if ( !"procedure".equalsIgnoreCase(member)) {
+            criteria = criteria.createCriteria(member, LEFT_OUTER_JOIN)
+                    .add(Restrictions.ilike("name", "%" + search + "%"));
+        } else {
+            // procedure already joined by default
+            criteria.add(Restrictions.ilike("p.name", "%" + search + "%"));
+        }
+        if (hasTranslation(query, translation)) {
+            criteria = query.addLocaleTo(criteria, translation);
+        }
+        return (List<SeriesEntity>)criteria.list();
     }
 
     @Override
