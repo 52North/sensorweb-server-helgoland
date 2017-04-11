@@ -77,7 +77,10 @@ public class SeriesEntity implements MergableEntity, Serializable {
     
     private Set<SeriesEntity> mergableSeries = new HashSet<>();
     
-    public static SeriesEntity getMergedSeries(SeriesEntity series) {
+    private static SeriesEntity getMergedSeries(SeriesEntity series) {
+        if (series == null) {
+            throw new IllegalStateException("Cannot merge null series");
+        }
         SeriesEntity mergedSeries = series;
         Set<SeriesEntity> toMerge = series.getMergableSeries();
         for (SeriesEntity otherSeries : toMerge) {
