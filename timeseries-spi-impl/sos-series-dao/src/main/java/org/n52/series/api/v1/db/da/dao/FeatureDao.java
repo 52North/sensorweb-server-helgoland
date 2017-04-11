@@ -63,7 +63,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
 
     @Override
     public FeatureEntity getInstance(Long key, DbQuery parameters) throws DataAccessException {
-        return (FeatureEntity) getDefaultCriteria("feature")
+        return (FeatureEntity) getDefaultCriteria("feature", parameters)
                 .add(Restrictions.eq("pkid", key))
                 .uniqueResult();
     }

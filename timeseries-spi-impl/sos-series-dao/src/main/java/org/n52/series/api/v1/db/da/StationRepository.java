@@ -171,7 +171,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
-        List<SeriesEntity> series = seriesDao.getInstancesWith(feature);
+        List<SeriesEntity> series = seriesDao.getInstancesWith(feature, parameters);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.addProperty("timeseries", createTimeseriesList(series, parameters));
         return stationOutput;

@@ -122,8 +122,8 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<SeriesEntity> getInstancesWith(FeatureEntity feature) {
-        Criteria criteria = getDefaultCriteria("series")
+    public List<SeriesEntity> getInstancesWith(FeatureEntity feature, DbQuery query) {
+        Criteria criteria = getDefaultCriteria("series", query)
                 .createAlias("feature", "f")
                 .add(Restrictions.eq("f.pkid", feature.getPkid()));
 //        criteria.add(eq("feature.pkid", feature.getPkid()));
