@@ -137,6 +137,7 @@ public class OfferingRepository extends SessionAwareRepository implements Output
     private OfferingOutput createExpanded(OfferingEntity entity, DbQuery parameters) throws DataAccessException {
         OfferingOutput result = createCondensed(entity, parameters);
         result.setService(getServiceOutput());
+        result.setDomainId(entity.getDomainId());
         return result;
     }
 

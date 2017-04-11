@@ -138,6 +138,7 @@ public class FeatureRepository extends SessionAwareRepository implements OutputA
     private FeatureOutput createExpanded(FeatureEntity entity, DbQuery parameters) throws DataAccessException {
         FeatureOutput result = createCondensed(entity, parameters);
         result.setService(getServiceOutput());
+        result.setDomainId(entity.getDomainId());
         return result;
     }
 

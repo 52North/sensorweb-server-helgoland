@@ -178,6 +178,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         List<SeriesEntity> series = seriesDao.getInstancesWith(feature, parameters);
         StationOutput stationOutput = createCondensed(feature, parameters);
         stationOutput.addProperty("timeseries", createTimeseriesList(series, parameters));
+        stationOutput.addProperty("domainId", feature.getDomainId());
         return stationOutput;
     }
 

@@ -137,6 +137,7 @@ public class PhenomenonRepository extends SessionAwareRepository implements Outp
     private PhenomenonOutput createExpanded(PhenomenonEntity entity, DbQuery parameters) throws DataAccessException {
         PhenomenonOutput result = createCondensed(entity, parameters);
         result.setService(getServiceOutput());
+        result.setDomainId(entity.getDomainId());
         return result;
     }
 
