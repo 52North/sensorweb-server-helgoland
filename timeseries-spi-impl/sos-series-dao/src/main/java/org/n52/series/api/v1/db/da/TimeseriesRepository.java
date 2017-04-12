@@ -63,6 +63,8 @@ import org.slf4j.LoggerFactory;
 public class TimeseriesRepository extends SessionAwareRepository implements OutputAssembler<TimeseriesMetadataOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
+    
+    private static final Map<Long, StationOutput> CACHED_STATIONS = new HashMap<>();
 
     public TimeseriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -278,9 +280,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query, Session session) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
-        String featurePkid = feature.getPkid().toString();
-        StationRepository stationRepository = new StationRepository(getServiceInfo());
-        return stationRepository.getCondensedInstance(featurePkid, query, session);
+        if ( !CACHED_STATIONS.containsKey(feature.getPkid())) {
+            String featurePkid = feature.getPkid().toString();
+            StationRepository stationRepository = new StationRepository(getServiceInfo());
+            StationOutput instance = stationRepository.getCondensedInstance(featurePkid, query, session);
+            CACHED_STATIONS.put(feature.getPkid(), instance);
+        }
+        return CACHED_STATIONS.get(feature.getPkid());
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,
