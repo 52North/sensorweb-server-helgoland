@@ -146,6 +146,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
         Criteria criteria = session.createCriteria(getEntityClass(), alias)
+                .createAlias("feature", "f")
                 // XXX reference flag slows down query about factor "wtf"!
                 // -> join still needed in case of searching <-
                 .createAlias("procedure", "p");
@@ -167,8 +168,8 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
     private void addMergeRoles(String alias, Criteria criteria, DbQuery query) {
-        String mergeRoleParameter = SessionAwareRepository.SERIES_MERGE_ROLES;
-        criteria.add(createMergeRolesDisjunction(mergeRoleParameter, alias, query, "master"));
+        criteria.add(createMergeRolesDisjunction(SessionAwareRepository.SERIES_MERGE_ROLES, alias, query, "master"));
+        criteria.add(createMergeRolesDisjunction(SessionAwareRepository.FOI_MERGE_ROLES, alias, query, "master"));
     }
 
 }
