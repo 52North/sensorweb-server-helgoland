@@ -9,4 +9,6 @@ FROM series s,
   featureofinterest foi,
   samplingpoint sp,
   station st
-WHERE s.featureofinterestid = foi.featureofinterestid AND s.samplingpointid = sp.samplingpointid AND sp.station = st.stationid
+WHERE s.featureofinterestid = foi.featureofinterestid
+AND s.samplingpointid = sp.samplingpointid
+AND sp.station = st.stationid
