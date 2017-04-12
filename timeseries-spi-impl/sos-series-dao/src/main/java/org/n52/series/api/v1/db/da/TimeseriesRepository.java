@@ -64,7 +64,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesRepository.class);
     
-    private static final Map<Long, StationOutput> CACHED_STATIONS = new HashMap<>();
+    private static final Map<String, StationOutput> CACHED_STATIONS = new HashMap<>();
 
     public TimeseriesRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -120,6 +120,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
         List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+
+        preloadStations(query, session);
         for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
             /*
              *  ATM, the SWC REST API only supports numeric types
@@ -147,6 +149,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
         List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+        
+        preloadStations(query, session);
         for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
             /*
              *  ATM, the SWC REST API only supports numeric types
@@ -159,6 +163,15 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             }
         }
         return results;
+    }
+
+    private void preloadStations(DbQuery query, Session session) throws DataAccessException {
+        StationRepository stationRepository = new StationRepository(getServiceInfo());
+        List<StationOutput> stations = stationRepository.getAllCondensed(query, session);
+        for (StationOutput output : stations) {
+            Object id = output.getProperties().get("id");
+            CACHED_STATIONS.put(id.toString(), output);
+        }
     }
     
     @Override
@@ -226,6 +239,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     }
 
     private TimeseriesMetadataOutput createExpanded(SeriesEntity series, DbQuery query, Session session) throws DataAccessException {
+        
         TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
@@ -280,13 +294,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     private StationOutput createCondensedStation(SeriesEntity entity, DbQuery query, Session session) throws DataAccessException {
         FeatureEntity feature = entity.getFeature();
-        if ( !CACHED_STATIONS.containsKey(feature.getPkid())) {
-            String featurePkid = feature.getPkid().toString();
-            StationRepository stationRepository = new StationRepository(getServiceInfo());
-            StationOutput instance = stationRepository.getCondensedInstance(featurePkid, query, session);
-            CACHED_STATIONS.put(feature.getPkid(), instance);
-        }
-        return CACHED_STATIONS.get(feature.getPkid());
+        return CACHED_STATIONS.get(Long.toString(feature.getPkid()));
     }
 
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,
