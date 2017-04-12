@@ -96,8 +96,8 @@ public abstract class ParameterController extends BaseController implements Rest
     public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
         IoParameters queryMap = createFromQuery(query);
 
+        Stopwatch stopwatch = startStopwatch();
         if (queryMap.isExpanded()) {
-            Stopwatch stopwatch = startStopwatch();
             ParameterOutput[] result = ParameterController.this.addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
 
@@ -110,6 +110,7 @@ public abstract class ParameterController extends BaseController implements Rest
         }
         else {
             ParameterOutput[] results = parameterService.getCondensedParameters(queryMap);
+            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
             
             // TODO remove in v2.0 
             addExtrasForBackwardCompatiblity(results, queryMap);
