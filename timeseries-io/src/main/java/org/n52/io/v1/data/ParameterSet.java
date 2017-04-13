@@ -141,7 +141,9 @@ public abstract class ParameterSet {
 
     /**
      * @return A language code to determine the requested locale. "en" is the default.
+     * @deprecated use {@link #getLocale()}
      */
+    @Deprecated
     public String getLanguage() {
         return getAsString("language", DEFAULT_LOCALE);
     }
@@ -149,12 +151,32 @@ public abstract class ParameterSet {
     /**
      * @param language
      *        A language code to determine the requested locale.
+     * @deprecated use {@link #setLocale(String)}
      */
+    @Deprecated
     public void setLanguage(String language) {
         language = !(language == null || language.isEmpty())
                 ? language
                 : "en";
         addParameter("language", IoParameters.getJsonNodeFrom(language));
+    }
+
+    /**
+     * @return A locale code to determine the requested locale. "en" is the default.
+     */
+    public String getLocale() {
+        return getAsString("locale", DEFAULT_LOCALE);
+    }
+
+    /**
+     * @param locale
+     *        A locale code to determine the requested locale.
+     */
+    public void setLocale(String locale) {
+        locale = !(locale == null || locale.isEmpty())
+                ? locale
+                : "en";
+        addParameter("locale", IoParameters.getJsonNodeFrom(locale));
     }
 
     private String validateTimespan(String timespan) {
