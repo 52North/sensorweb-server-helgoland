@@ -91,21 +91,6 @@ public class ChartRendererTest {
     }
 
     @Test
-    public void shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
-        IoParameters config = IoParameters.createDefaults()
-                .removeAllOf("outputTimezone")
-                .extendWith("outputTimezone", "Europe/Berlin");
-        RenderingContext context = RenderingContext.create(config);
-        context.getChartStyleDefinitions()
-               .setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
-        String label = chartRenderer.getXYPlot()
-                                    .getDomainAxis()
-                                    .getLabel();
-        assertThat(label, is("Time (Europe/Berlin)"));
-    }
-    
-    @Test
     public void shouldPrintDefaultOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults();
         RenderingContext context = RenderingContext.create(config);
@@ -124,7 +109,7 @@ public class ChartRendererTest {
         String label = new MyChartRenderer(context).getXYPlot()
                                                    .getDomainAxis()
                                                    .getLabel();
-        assertThat(label, is("Time (America/Los_Angeles)"));
+        assertThat(label, is("Time (PDT)"));
     }
 
     @Test
