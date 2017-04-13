@@ -46,7 +46,15 @@ public final class RenderingContext {
     }
 
     public static RenderingContext createEmpty() {
-        return new RenderingContext(new DesignedParameterSet(), new TimeseriesMetadataOutput[0]);
+        return create(IoParameters.createDefaults());
+    }
+    
+    public static RenderingContext create(IoParameters config) {
+        return create(config.toDesignedParameterSet());
+    }
+    
+    public static RenderingContext create(DesignedParameterSet parameterSet) {
+        return new RenderingContext(parameterSet, new TimeseriesMetadataOutput[0]);
     }
 
     /**
