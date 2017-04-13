@@ -38,6 +38,7 @@ import org.n52.series.db.DataAccessException;
 import org.n52.series.db.da.ProcedureRepository;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.db.dao.DbQuery;
+import org.n52.web.ctrl.DatasetController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class DescribeSensorExtension extends MetadataExtension<ParameterOutput> 
     @Autowired
     private ProcedureRepository procedureRepository;
 
+    @Autowired
+    private DatasetController parameterController;
+
     public DescribeSensorExtension(){}
 
     private String createURL(ParameterOutput output, IoParameters parameters) {
@@ -58,7 +62,7 @@ public class DescribeSensorExtension extends MetadataExtension<ParameterOutput> 
         try {
             procedureid =  ((DatasetOutput)output).getSeriesParameters().getProcedure().getId();
             ProcedureOutput procedure = procedureRepository.getInstance(procedureid , DbQuery.createFrom(parameters));
-            return createBaseUrl(output.getHrefBase())
+            return parameterController.getExternalUrl()
                     + "service?service=SOS&version=2.0.0&request=DescribeSensor&procedure="
                     + procedure.getDomainId()
                     + "&procedureDescriptionFormat=http%3A%2F%2Fwww.opengis.net%2FsensorML%2F1.0.1";
@@ -67,17 +71,6 @@ public class DescribeSensorExtension extends MetadataExtension<ParameterOutput> 
             LOGGER.error("Could not find domainID for procedure with id '{}'", procedureid);
             return "";
         }
-    }
-
-    private String createBaseUrl(String base){
-
-        //TODO(specki): Get correct external URL from ParameterController -> but avoid circular dependency with rest->io->rest
-        String[] BaseUrl_split = base.split("/");
-        String url = BaseUrl_split[0] + "/";
-        for (int i = 1; i < BaseUrl_split.length - 2; i++){
-            url += BaseUrl_split[i] + "/";
-        }
-        return url;
     }
 
     @Override
