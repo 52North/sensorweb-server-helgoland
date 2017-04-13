@@ -25,6 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.img;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -60,71 +61,89 @@ public class ChartRendererTest {
 
     private static final String VALID_ISO8601_DAYLIGHT_SAVING_SWITCH = "2013-10-28T02:00:00+02:00/2013-10-28T02:00:00+01:00";
 
-
     @Test
-    public void
-            shouldParseBeginFromIso8601PeriodWithRelativeStart() {
+    public void shouldParseBeginFromIso8601PeriodWithRelativeStart() {
         MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_RELATIVE_START);
-        assertThat(start, is(DateTime.parse("2013-08-13TZ").minusHours(6).toDate()));
+        assertThat(start, is(DateTime.parse("2013-08-13TZ")
+                                     .minusHours(6)
+                                     .toDate()));
     }
 
     @Test
-    public void
-            shouldParseBeginFromIso8601PeriodWithAbsoluteStart() {
+    public void shouldParseBeginFromIso8601PeriodWithAbsoluteStart() {
         MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_ABSOLUTE_START);
-        assertThat(start, is(DateTime.parse("2013-08-13TZ").minusMonths(1).toDate()));
+        assertThat(start, is(DateTime.parse("2013-08-13TZ")
+                                     .minusMonths(1)
+                                     .toDate()));
     }
 
     @Test
-    public void
-            shouldParseBeginAndEndFromIso8601PeriodContainingDaylightSavingTimezoneSwith() {
+    public void shouldParseBeginAndEndFromIso8601PeriodContainingDaylightSavingTimezoneSwith() {
         MyChartRenderer chartRenderer = new MyChartRenderer(createEmpty());
         Date start = chartRenderer.getStartTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         Date end = chartRenderer.getEndTime(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
-        assertThat(start, is(DateTime.parse("2013-10-28T00:00:00Z").toDate()));
-        assertThat(end, is(DateTime.parse("2013-10-28T01:00:00Z").toDate()));
+        assertThat(start, is(DateTime.parse("2013-10-28T00:00:00Z")
+                                     .toDate()));
+        assertThat(end, is(DateTime.parse("2013-10-28T01:00:00Z")
+                                   .toDate()));
     }
 
     @Test
-    public void
-            shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
-        context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
+    public void shouldHaveCETTimezoneIncludedInDomainAxisLabel() {
+        IoParameters config = IoParameters.createDefaults()
+                .removeAllOf("outputTimezone")
+                .extendWith("outputTimezone", "Europe/Berlin");
+        RenderingContext context = RenderingContext.create(config);
+        context.getChartStyleDefinitions()
+               .setTimespan(VALID_ISO8601_DAYLIGHT_SAVING_SWITCH);
         MyChartRenderer chartRenderer = new MyChartRenderer(context);
-        String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-        assertThat(label, is("Time (+01:00)"));
-    }
-
-    @Test
-    public void
-            shouldHandleEmptyTimespanWhenIncludingTimezoneInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
-        context.getChartStyleDefinitions().setTimespan(null);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
-        String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-        
-        // XXX fails on different machines as different local times
-        // TODO -->make output timezone configurable
-//        assertThat(label, is("Time (+01:00)"));
-    }
-
-    @Test
-    public void
-            shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        RenderingContext context = RenderingContext.createEmpty();
-        context.getChartStyleDefinitions().setTimespan(VALID_ISO8601_ABSOLUTE_START);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
-        String label = chartRenderer.getXYPlot().getDomainAxis().getLabel();
-        ISODateTimeFormat.dateTimeParser().withOffsetParsed().parseDateTime(VALID_ISO8601_ABSOLUTE_START.split("/")[1]);
-        assertThat(label, is("Time (UTC)"));
+        String label = chartRenderer.getXYPlot()
+                                    .getDomainAxis()
+                                    .getLabel();
+        assertThat(label, is("Time (Europe/Berlin)"));
     }
     
     @Test
-    public void
-            shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
-        
+    public void shouldPrintDefaultOutputTimezoneInDomainAxisLabel() {
+        IoParameters config = IoParameters.createDefaults();
+        RenderingContext context = RenderingContext.create(config);
+        String label = new MyChartRenderer(context).getXYPlot()
+                                                   .getDomainAxis()
+                                                   .getLabel();
+        assertThat(label, is("Time (UTC)"));
+    }
+
+    @Test
+    public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
+        IoParameters config = IoParameters.createDefaults()
+                                          .removeAllOf("outputTimezone")
+                                          .extendWith("outputTimezone", "America/Los_Angeles");
+        RenderingContext context = RenderingContext.create(config);
+        String label = new MyChartRenderer(context).getXYPlot()
+                                                   .getDomainAxis()
+                                                   .getLabel();
+        assertThat(label, is("Time (America/Los_Angeles)"));
+    }
+
+    @Test
+    public void shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
+        RenderingContext context = RenderingContext.createEmpty();
+        context.getChartStyleDefinitions()
+               .setTimespan(VALID_ISO8601_ABSOLUTE_START);
+        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+        String label = chartRenderer.getXYPlot()
+                                    .getDomainAxis()
+                                    .getLabel();
+        ISODateTimeFormat.dateTimeParser()
+                         .withOffsetParsed()
+                         .parseDateTime(VALID_ISO8601_ABSOLUTE_START.split("/")[1]);
+        assertThat(label, is("Time (UTC)"));
+    }
+
+    @Test
+    public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
         TimeseriesMetadataOutput metadata = new TimeseriesMetadataOutput();
         TimeseriesOutput timeseriesOutput = new TimeseriesOutput();
         timeseriesOutput.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
@@ -136,7 +155,7 @@ public class ChartRendererTest {
         metadata.setParameters(timeseriesOutput);
         metadata.setId("timeseries");
         metadata.setUom("");
-        
+
         StationOutput stationOutput = new StationOutput();
         stationOutput.addProperty("id", "sta_1");
         stationOutput.addProperty("label", "station");
@@ -144,23 +163,36 @@ public class ChartRendererTest {
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        expected.append(metadata.getStation().getProperties().get("label"));
-        expected.append(" ").append(timeseriesOutput.getPhenomenon().getLabel());
-        expected.append(" ").append(timeseriesOutput.getProcedure().getLabel());
-//        expected.append(" ").append(timeseriesOutput.getCategory().getLabel());
+        expected.append(metadata.getStation()
+                                .getProperties()
+                                .get("label"));
+        expected.append(" ")
+                .append(timeseriesOutput.getPhenomenon()
+                                        .getLabel());
+        expected.append(" ")
+                .append(timeseriesOutput.getProcedure()
+                                        .getLabel());
+        // expected.append(" ").append(timeseriesOutput.getCategory().getLabel());
         expected.append(" (4 opted-out)");
-        expected.append(" ").append(timeseriesOutput.getOffering().getLabel());
-        expected.append(" ").append(timeseriesOutput.getFeature().getLabel());
-        expected.append(" ").append(timeseriesOutput.getService().getLabel());
-        expected.append(" ").append(metadata.getUom());
+        expected.append(" ")
+                .append(timeseriesOutput.getOffering()
+                                        .getLabel());
+        expected.append(" ")
+                .append(timeseriesOutput.getFeature()
+                                        .getLabel());
+        expected.append(" ")
+                .append(timeseriesOutput.getService()
+                                        .getLabel());
+        expected.append(" ")
+                .append(metadata.getUom());
 
         IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
         RenderingContext context = createContextForSingleTimeseries(metadata, ioConfig);
         MyChartRenderer chartRenderer = new MyChartRenderer(context);
-//        String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
+        // String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
         String actual = chartRenderer.formatTitle(metadata, template);
-        
+
         assertThat(actual, is(expected.toString()));
     }
 

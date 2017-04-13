@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
+import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 import org.n52.io.IoParameters;
@@ -62,6 +63,13 @@ public class IOParametersTest {
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/").toURI());
         return root.resolve("test-config.json").toFile();
+    }
+    
+    @Test
+    public void when_defaultTimezone_then_timezoneIsUTC() {
+        IoParameters config = IoParameters.createDefaults();
+        String timezone = config.getOutputTimezone();
+        assertThat(DateTimeZone.forID(timezone), is(DateTimeZone.UTC));
     }
 
     @Test

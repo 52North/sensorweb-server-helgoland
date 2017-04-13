@@ -375,6 +375,10 @@ public class IoParameters {
      * Determines the fields filter
      */
     static final String FILTER_FIELDS = "fields";
+    
+    private final String OUTPUT_TIMEZONE = "outputTimezone";
+    
+    private final String DEFAULT_OUTPUT_TIMEZONE = "UTC";
 
     private MultiValueMap<String, JsonNode> query;
 
@@ -668,6 +672,13 @@ public class IoParameters {
         }
     }
 
+    public String getOutputTimezone() {
+        if ( !containsParameter(OUTPUT_TIMEZONE)) {
+            return DEFAULT_OUTPUT_TIMEZONE;
+        }
+        return getAsString(OUTPUT_TIMEZONE);
+    }
+    
     /**
      * @return the category filter
      * @deprecated use {@link #getCategories()}
@@ -992,6 +1003,10 @@ public class IoParameters {
         return asCsv(value);
     }
     
+    public JsonNode getAsJsonNode(String parameter) {
+        return !containsParameter(parameter)
+                ? query.getFirst(parameter.toLowerCase())
+                : query.getFirst(parameter);
     }
     
     private String asCsv(List<JsonNode> list) {
@@ -1095,8 +1110,19 @@ public class IoParameters {
         return parameterSet;
     }
 
+    public UndesignedParameterSet mergeToUndesigned(DesignedParameterSet designedSet) {
+        UndesignedParameterSet parameters = toUndesignedParameterSet();
+        parameters.setOutputTimezone(designedSet.getOutputTimezone());
+        parameters.setTimeseries(designedSet.getTimeseries());
+        parameters.setTimespan(designedSet.getTimespan());
+        return parameters;
+    }
+
     public DesignedParameterSet toDesignedParameterSet() {
-        DesignedParameterSet parameterSet = new DesignedParameterSet();
+        return mergeParameterSet(new DesignedParameterSet());
+    }
+
+    public DesignedParameterSet mergeParameterSet(DesignedParameterSet parameterSet) {
         addValuesToParameterSet(parameterSet);
         return parameterSet;
     }
@@ -1120,6 +1146,7 @@ public class IoParameters {
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
     }
+    
 
     /* ****************************************************************
      *                    FACTORY METHODS

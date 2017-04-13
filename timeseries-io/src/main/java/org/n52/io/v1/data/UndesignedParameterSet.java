@@ -56,7 +56,7 @@ public class UndesignedParameterSet extends ParameterSet {
     /**
      * @param timeseries The timeseriesIds of interest.
      */
-    void setTimeseries(String[] timeseries) {
+    public void setTimeseries(String[] timeseries) {
         this.timeseries = Utils.copy(timeseries);
     }
 
@@ -121,10 +121,4 @@ public class UndesignedParameterSet extends ParameterSet {
         return parameterSet;
     }
 
-    public static UndesignedParameterSet createFromDesignedParameters(DesignedParameterSet designedSet) {
-        UndesignedParameterSet parameters = new UndesignedParameterSet();
-        parameters.setTimeseries(designedSet.getTimeseries());
-        parameters.setTimespan(designedSet.getTimespan());
-        return parameters;
-    }
 }

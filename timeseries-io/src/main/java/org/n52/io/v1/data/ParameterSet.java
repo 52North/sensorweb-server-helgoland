@@ -25,24 +25,30 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.v1.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+// TODO validate POST requests
+
 public abstract class ParameterSet {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterSet.class);
 
     private static final boolean DEFAULT_GENERALIZE = false;
@@ -51,7 +57,10 @@ public abstract class ParameterSet {
 
     private static final boolean DEFAULT_EXPANDED = false;
 
+    private static final String DEFAULT_TIMEZONE = "UTC";
+
     private static final String DEFAULT_LOCALE = "en";
+
     private final Map<String, JsonNode> parameters;
 
     protected ParameterSet() {
@@ -63,10 +72,22 @@ public abstract class ParameterSet {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
         String interval = lastWeek
-                .toString()
-                .concat("/")
-                .concat(now.toString());
+                                  .toString()
+                                  .concat("/")
+                                  .concat(now.toString());
         return new IntervalWithTimeZone(interval).toString();
+    }
+
+    public String getOutputTimezone() {
+        return getAsString("outputTimezone", DEFAULT_TIMEZONE);
+    }
+
+    public void setOutputTimezone(String timezone) {
+        DateTimeZone zone = DateTimeZone.getAvailableIDs()
+                                        .contains(timezone)
+                                                ? DateTimeZone.forID(timezone)
+                                                : DateTimeZone.UTC;
+        addParameter("outputTimezone", IoParameters.getJsonNodeFrom(zone.getID()));
     }
 
     /**

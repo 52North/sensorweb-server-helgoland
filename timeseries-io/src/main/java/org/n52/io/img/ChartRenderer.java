@@ -25,6 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.img;
 
 import static java.awt.Color.BLACK;
@@ -71,7 +72,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
-import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.MimeType;
@@ -145,7 +145,8 @@ public abstract class ChartRenderer implements IoHandler {
         chart.setTextAntiAlias(true);
         chart.setAntiAlias(true);
         if (chart.getLegend() != null) {
-            chart.getLegend().setFrame(BlockBorder.NONE);
+            chart.getLegend()
+                 .setFrame(BlockBorder.NONE);
         }
         chart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
@@ -179,23 +180,25 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        DateTime end = getTimespan() != null
-                ? DateTime.parse(getTimespan().split("/")[1])
-                : new DateTime();
-        //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
-        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
-        zoneName = "+00:00".equalsIgnoreCase(zoneName) ? "UTC" : zoneName;
-
+        String timespan = getTimespan();
+        DateTime end = timespan != null
+                    ? new DateTime(timespan.split("/")[1])
+                    : new DateTime();
+        
+        // String zoneName = getTimezone().getID();
+        String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
-        domainAxisLabel.append(" (").append(zoneName).append(")");
+        domainAxisLabel.append(" (")
+                       .append(zoneName)
+                       .append(")");
         boolean legend = getChartStyleDefinitions().isLegend();
         chart = createTimeSeriesChart(null,
-                domainAxisLabel.toString(),
-                i18n.get("value"),
-                null,
-                legend,
-                showTooltips,
-                true);
+                                      domainAxisLabel.toString(),
+                                      i18n.get("value"),
+                                      null,
+                                      legend,
+                                      showTooltips,
+                                      true);
         return createPlotArea(chart);
     }
 
@@ -267,7 +270,7 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private DateTimeZone getTimezone() {
-        return new IntervalWithTimeZone(getTimespan()).getTimezone();
+        return DateTimeZone.forID(getChartStyleDefinitions().getOutputTimezone());
     }
 
     public ValueAxis createRangeAxis(TimeseriesMetadataOutput metadata) {
@@ -286,7 +289,9 @@ public abstract class ChartRenderer implements IoHandler {
         uom.append(phenomenon.getLabel());
         String uomLabel = timeseriesMetadata.getUom();
         if (uomLabel != null && !uomLabel.isEmpty()) {
-            uom.append(" [").append(uomLabel).append("]");
+            uom.append(" [")
+               .append(uomLabel)
+               .append("]");
         }
         return uom.toString();
     }
@@ -327,15 +332,16 @@ public abstract class ChartRenderer implements IoHandler {
         FeatureOutput feature = parameters.getFeature();
         ServiceOutput service = parameters.getService();
         Object[] varargs = {
-                // index important to reference in config!
-                station.getProperties().get("label"), // {0}
-                phenomenon.getLabel(), // {1}
-                procedure.getLabel(), // {2}
-                category.getLabel(), // {3}
-                offering.getLabel(), // {4}
-                feature.getLabel(), // {5}
-                service.getLabel(), // {6}
-                metadata.getUom(), // {7}
+            // index important to reference in config!
+            station.getProperties()
+                   .get("label"), // {0}
+            phenomenon.getLabel(), // {1}
+            procedure.getLabel(), // {2}
+            category.getLabel(), // {3}
+            offering.getLabel(), // {4}
+            feature.getLabel(), // {5}
+            service.getLabel(), // {6}
+            metadata.getUom(), // {7}
         };
         try {
             return String.format(title, varargs);
@@ -348,7 +354,8 @@ public abstract class ChartRenderer implements IoHandler {
 
     private TimeseriesMetadataOutput getTimeseriesMetadataOutput(String timeseriesId) {
         for (TimeseriesMetadataOutput metadata : getTimeseriesMetadataOutputs()) {
-            if (metadata.getId().equals(timeseriesId)) {
+            if (metadata.getId()
+                        .equals(timeseriesId)) {
                 return metadata;
             }
         }
@@ -385,12 +392,14 @@ public abstract class ChartRenderer implements IoHandler {
 
     protected Date getStartTime(String timespan) {
         Interval interval = Interval.parse(timespan);
-        return interval.getStart().toDate();
+        return interval.getStart()
+                       .toDate();
     }
 
     protected Date getEndTime(String timespan) {
         Interval interval = Interval.parse(timespan);
-        return interval.getEnd().toDate();
+        return interval.getEnd()
+                       .toDate();
     }
 
     static class LabelConstants {
