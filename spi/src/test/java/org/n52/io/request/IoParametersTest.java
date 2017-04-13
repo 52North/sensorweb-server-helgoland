@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -64,7 +65,14 @@ public class IoParametersTest {
         Path root = Paths.get(getClass().getResource("/").toURI());
         return root.resolve("test-config.json").toFile();
     }
-
+    
+    @Test
+    public void when_defaultTimezone_then_timezoneIsUTC() {
+        IoParameters config = IoParameters.createDefaults();
+        String timezone = config.getOutputTimezone();
+        assertThat(DateTimeZone.forID(timezone), is(DateTimeZone.UTC));
+    }
+    
     @Test
     public void when_jsonBbox_then_parsingSpatialFilter() throws ParseException {
         Map<String, String> map = Collections.singletonMap("bbox", "{\"ll\":{\"type\":\"Point\",\"coordinates\":[6.7,51.7]},\"ur\":{\"type\":\"Point\",\"coordinates\":[7.9,51.9]}}");
@@ -180,7 +188,7 @@ public class IoParametersTest {
     @Test
     public void when_convertingToStyledRequestParameters_then_overridingParametersAllowed() {
         IoParameters defaults = createDefaults().extendWith("width", "200");
-        RequestStyledParameterSet parameters = defaults.toRequestStyledParameterSet();
+        RequestStyledParameterSet parameters = defaults.toStyledParameterSet();
         assertThat(parameters.getWidth(), is(200));
     }
 

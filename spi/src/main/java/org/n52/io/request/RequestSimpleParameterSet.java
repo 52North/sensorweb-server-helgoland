@@ -102,10 +102,4 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
         return parameterSet;
     }
 
-    public static RequestSimpleParameterSet createFromDesignedParameters(RequestStyledParameterSet designedSet) {
-        RequestSimpleParameterSet parameters = new RequestSimpleParameterSet();
-        parameters.setDatasets(designedSet.getDatasets());
-        parameters.setTimespan(designedSet.getTimespan());
-        return parameters;
-    }
 }

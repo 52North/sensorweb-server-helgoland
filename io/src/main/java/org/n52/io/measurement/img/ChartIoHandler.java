@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.measurement.img;
 
 import java.awt.Color;
@@ -93,8 +94,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     private JFreeChart jFreeChart;
 
     public ChartIoHandler(RequestParameterSet request,
-            IoProcessChain<MeasurementData> processChain,
-            IoStyleContext context) {
+                          IoProcessChain<MeasurementData> processChain,
+                          IoStyleContext context) {
         super(request, processChain);
         this.context = context;
         this.xyPlot = createChart(context);
@@ -105,7 +106,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     @Override
     public void encodeAndWriteTo(DataCollection<MeasurementData> data,
-            OutputStream stream) throws IoParseException {
+                                 OutputStream stream)
+            throws IoParseException {
         try {
             writeDataToChart(data);
             ImageIO.write(createImage(), mimeType.getFormatName(), stream);
@@ -125,7 +127,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         jFreeChart.setTextAntiAlias(true);
         jFreeChart.setAntiAlias(true);
         if (jFreeChart.getLegend() != null) {
-            jFreeChart.getLegend().setFrame(BlockBorder.NONE);
+            jFreeChart.getLegend()
+                      .setFrame(BlockBorder.NONE);
         }
         jFreeChart.draw(chartGraphics, new Rectangle2D.Float(0, 0, width, height));
         return chartImage;
@@ -144,26 +147,25 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     private XYPlot createChart(IoStyleContext styleContext) {
-        DateTime end = getTimespan() != null
-                ? DateTime.parse(getTimespan()
-                        .split("/")[1])
+        String timespan = getTimespan();
+        DateTime end = timespan != null
+                ? new DateTime(timespan.split("/")[1])
                 : new DateTime();
-        //DateTime end = DateTime.parse(getTimespan().split("/")[1]);
-        String zoneName = end.getZone().getShortName(end.getMillis(), i18n.getLocale());
-        zoneName = "+00:00".equalsIgnoreCase(zoneName) ? "UTC" : zoneName;
 
+        // String zoneName = getTimezone().getID();
+        String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
         domainAxisLabel.append(" (")
-                .append(zoneName)
-                .append(")");
+                       .append(zoneName)
+                       .append(")");
         boolean showLegend = getChartStyleDefinitions().isLegend();
         jFreeChart = ChartFactory.createTimeSeriesChart(null,
-                domainAxisLabel.toString(),
-                i18n.get("msg.io.chart.value"),
-                null,
-                showLegend,
-                false,
-                true);
+                                                        domainAxisLabel.toString(),
+                                                        i18n.get("msg.io.chart.value"),
+                                                        null,
+                                                        showLegend,
+                                                        false,
+                                                        true);
         return createPlotArea(jFreeChart);
     }
 
@@ -212,7 +214,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private void showGridlinesOnChart(XYPlot plot) {
         boolean showGrid = getChartStyleDefinitions()
-                .isGrid();
+                                                     .isGrid();
         plot.setDomainGridlinesVisible(showGrid);
         plot.setRangeGridlinesVisible(showGrid);
     }
@@ -233,12 +235,11 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     private String getTimespan() {
-        return getChartStyleDefinitions()
-                .getTimespan();
+        return getChartStyleDefinitions().getTimespan();
     }
 
     private DateTimeZone getTimezone() {
-        return new IntervalWithTimeZone(getTimespan()).getTimezone();
+        return DateTimeZone.forID(getChartStyleDefinitions().getOutputTimezone());
     }
 
     public ValueAxis createRangeAxis(DatasetOutput metadata) {
@@ -257,7 +258,9 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         uom.append(phenomenon.getLabel());
         String uomLabel = timeseriesMetadata.getUom();
         if (uomLabel != null && !uomLabel.isEmpty()) {
-            uom.append(" [").append(uomLabel).append("]");
+            uom.append(" [")
+               .append(uomLabel)
+               .append("]");
         }
         return uom.toString();
     }
@@ -277,7 +280,7 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     private String getTitleForSingle(RequestStyledParameterSet config,
-            String template) {
+                                     String template) {
         String[] timeseries = config.getDatasets();
         if (timeseries != null && timeseries.length > 0) {
             String timeseriesId = timeseries[0];
@@ -293,14 +296,22 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         SeriesParameters parameters = metadata.getSeriesParameters();
         Object[] varargs = {
             // index important to reference in config!
-            parameters.getPlatform().getLabel(),
-            parameters.getPhenomenon().getLabel(),
-            parameters.getProcedure().getLabel(),
-            parameters.getCategory().getLabel(),
-            parameters.getOffering().getLabel(),
-            parameters.getFeature().getLabel(),
-            parameters.getService().getLabel(),
-            metadata.getUom()};
+            parameters.getPlatform()
+                      .getLabel(),
+            parameters.getPhenomenon()
+                      .getLabel(),
+            parameters.getProcedure()
+                      .getLabel(),
+            parameters.getCategory()
+                      .getLabel(),
+            parameters.getOffering()
+                      .getLabel(),
+            parameters.getFeature()
+                      .getLabel(),
+            parameters.getService()
+                      .getLabel(),
+            metadata.getUom()
+        };
         try {
             return String.format(title, varargs);
         } catch (Exception e) {
@@ -313,14 +324,15 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     private DatasetOutput getTimeseriesMetadataOutput(String timeseriesId) {
         for (DatasetOutput metadata : getMetadataOutputs()) {
-            if (metadata.getId().equals(timeseriesId)) {
+            if (metadata.getId()
+                        .equals(timeseriesId)) {
                 return metadata;
             }
         }
         return null;
     }
 
-    protected List<? extends DatasetOutput> getMetadataOutputs() {
+    protected List< ? extends DatasetOutput> getMetadataOutputs() {
         return context.getSeriesMetadatas();
     }
 
@@ -329,10 +341,10 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     }
 
     protected StyleProperties getTimeseriesStyleFor(String timeseriesId,
-            String referenceValueSeriesId) {
+                                                    String referenceValueSeriesId) {
         return getChartStyleDefinitions()
-                .getReferenceSeriesStyleOptions(timeseriesId,
-                        referenceValueSeriesId);
+                                         .getReferenceSeriesStyleOptions(timeseriesId,
+                                                                         referenceValueSeriesId);
     }
 
     protected RequestStyledParameterSet getChartStyleDefinitions() {
@@ -355,12 +367,14 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
 
     protected Date getStartTime(String timespan) {
         Interval interval = Interval.parse(timespan);
-        return interval.getStart().toDate();
+        return interval.getStart()
+                       .toDate();
     }
 
     protected Date getEndTime(String timespan) {
         Interval interval = Interval.parse(timespan);
-        return interval.getEnd().toDate();
+        return interval.getEnd()
+                       .toDate();
     }
 
     static class LabelConstants {

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
@@ -79,7 +80,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Deprecated
 @RestController
-@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {"application/json"})
+@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
+    "application/json"
+})
 public class TimeseriesDataController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
@@ -93,35 +96,40 @@ public class TimeseriesDataController extends BaseController {
     private String requestIntervalRestriction;
 
     @RequestMapping(value = "/getData",
-            produces = {"application/json"},
-            method = RequestMethod.POST)
+        produces = {
+            "application/json"
+        },
+        method = RequestMethod.POST)
     public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
-            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+                                                    @RequestBody RequestSimpleParameterSet parameters)
+            throws Exception {
         checkIfUnknownTimeseries(parameters, parameters.getDatasets());
         if (parameters.isSetRawFormat()) {
             getRawTimeseriesCollectionData(response, parameters);
             return null;
         }
         DataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
-        DataCollection<?> formattedDataCollection = format(seriesData, parameters.getFormat());
+        DataCollection< ? > formattedDataCollection = format(seriesData, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            produces = {"application/json"},
-            method = RequestMethod.GET)
+        produces = {
+            "application/json"
+        },
+        method = RequestMethod.GET)
     public ModelAndView getTimeseriesData(HttpServletResponse response,
-            @PathVariable String timeseriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
+                                          @PathVariable String timeseriesId,
+                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createForSingleSeries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
         if (map.getResultTime() != null) {
-            parameters.setResultTime(map.getResultTime().toString());
+            parameters.setResultTime(map.getResultTime()
+                                        .toString());
         }
 
         parameters.setGeneralize(map.isGeneralize());
@@ -129,37 +137,43 @@ public class TimeseriesDataController extends BaseController {
 
         // TODO add paging
         DataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
-        DataCollection<?> formattedDataCollection = format(seriesData, map.getFormat());
+        DataCollection< ? > formattedDataCollection = format(seriesData, map.getFormat());
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
-        Object formattedTimeseries = formattedDataCollection.getAllSeries().get(timeseriesId);
+        Object formattedTimeseries = formattedDataCollection.getAllSeries()
+                                                            .get(timeseriesId);
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
     @RequestMapping(value = "/getData",
-            method = RequestMethod.POST,
-            params = {RawFormats.RAW_FORMAT})
+        method = RequestMethod.POST,
+        params = {
+            RawFormats.RAW_FORMAT
+        })
     public void getRawTimeseriesCollectionData(HttpServletResponse response,
-            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+                                               @RequestBody RequestSimpleParameterSet parameters)
+            throws Exception {
         checkIfUnknownTimeseries(parameters, parameters.getDatasets());
         processRawDataRequest(response, parameters);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            method = RequestMethod.GET,
-            params = {RawFormats.RAW_FORMAT})
+        method = RequestMethod.GET,
+        params = {
+            RawFormats.RAW_FORMAT
+        })
     public void getRawTimeseriesData(HttpServletResponse response,
-            @PathVariable String timeseriesId, @RequestParam MultiValueMap<String, String> query) {
+                                     @PathVariable String timeseriesId,
+                                     @RequestParam MultiValueMap<String, String> query) {
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createForSingleSeries(timeseriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
         processRawDataRequest(response, parameters);
     }
 
     private void processRawDataRequest(HttpServletResponse response,
-            RequestSimpleParameterSet parameters) {
+                                       RequestSimpleParameterSet parameters) {
         if (!timeseriesDataService.supportsRawData()) {
             throwNewRawDataQueryNotSupportedException();
         }
@@ -175,92 +189,109 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private DataCollection<?> format(DataCollection<MeasurementData> timeseriesData, String format) {
+    private DataCollection< ? > format(DataCollection<MeasurementData> timeseriesData, String format) {
         return FormatterFactory.createFormatterFactory(format)
-                .create()
-                .format(timeseriesData);
+                               .create()
+                               .format(timeseriesData);
     }
 
     @RequestMapping(value = "/getData",
-            produces = {"application/pdf"},
-            method = RequestMethod.POST)
+        produces = {
+            "application/pdf"
+        },
+        method = RequestMethod.POST)
     public void getTimeseriesCollectionReport(HttpServletResponse response,
-            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                              @RequestBody RequestStyledParameterSet requestParameters)
+            throws Exception {
 
         IoParameters map = QueryParameters.createFromQuery(requestParameters);
         checkIfUnknownTimeseries(map, requestParameters.getDatasets());
 
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createFromDesignedParameters(requestParameters);
+        RequestSimpleParameterSet parameters = map.mergeToSimpleParameterSet(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        createIoFactory(parameters)
-                .withStyledRequest(requestParameters)
-                .createHandler(MimeType.APPLICATION_PDF.getMimeType())
-                .writeBinary(response.getOutputStream());
+        createIoFactory(parameters).withStyledRequest(map.mergeToStyledParameterSet(requestParameters))
+                                   .createHandler(MimeType.APPLICATION_PDF.getMimeType())
+                                   .writeBinary(response.getOutputStream());
     }
 
-    private IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue>
-            createIoFactory(RequestSimpleParameterSet parameters)
-            throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+    private IoFactory<MeasurementData,
+                      MeasurementDatasetOutput,
+                      MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+                              throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return new DefaultIoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue>()
-                .create("measurement")
-                .withSimpleRequest(parameters)
-                .withBasePath(getRootResource())
-                .withDataService(timeseriesDataService)
-                .withDatasetService(timeseriesMetadataService);
+                                                                                                  .create("measurement")
+                                                                                                  .withSimpleRequest(parameters)
+                                                                                                  .withBasePath(getRootResource())
+                                                                                                  .withDataService(timeseriesDataService)
+                                                                                                  .withDatasetService(timeseriesMetadataService);
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext().getResource("/").toURI();
+        return getServletConfig().getServletContext()
+                                 .getResource("/")
+                                 .toURI();
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            produces = {"application/pdf"},
-            method = RequestMethod.GET)
-    public void getTimeseriesReport(HttpServletResponse response, @PathVariable String timeseriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        produces = {
+            "application/pdf"
+        },
+        method = RequestMethod.GET)
+    public void getTimeseriesReport(HttpServletResponse response,
+                                    @PathVariable String timeseriesId,
+                                    @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
 
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createForSingleSeries(timeseriesId, map);
+                                                                        .createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
         createIoFactory(parameters)
-                .createHandler(MimeType.APPLICATION_PDF.getMimeType())
-                .writeBinary(response.getOutputStream());
+                                   .createHandler(MimeType.APPLICATION_PDF.getMimeType())
+                                   .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            produces = {"application/zip"},
-            method = RequestMethod.GET)
+        produces = {
+            "application/zip"
+        },
+        method = RequestMethod.GET)
     public void getTimeseriesAsZippedCsv(HttpServletResponse response,
-            @PathVariable String timeseriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-        query.put(MimeType.APPLICATION_ZIP.name(), Arrays.asList(new String[] {Boolean.TRUE
-            .toString()}));
+                                         @PathVariable String timeseriesId,
+                                         @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        query.put(MimeType.APPLICATION_ZIP.name(), Arrays.asList(new String[] {
+            Boolean.TRUE
+                        .toString()
+        }));
         response.setContentType(MimeType.APPLICATION_ZIP.getMimeType());
         getTimeseriesAsCsv(response, timeseriesId, query);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            produces = {"text/csv"},
-            method = RequestMethod.GET)
-    public void getTimeseriesAsCsv(HttpServletResponse response, @PathVariable String timeseriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        produces = {
+            "text/csv"
+        },
+        method = RequestMethod.GET)
+    public void getTimeseriesAsCsv(HttpServletResponse response,
+                                   @PathVariable String timeseriesId,
+                                   @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createForSingleSeries(timeseriesId, map);
+                                                                        .createForSingleSeries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
@@ -272,43 +303,48 @@ public class TimeseriesDataController extends BaseController {
             response.setContentType(MimeType.TEXT_CSV.toString());
         }
         createIoFactory(parameters)
-                .createHandler("text/csv")
-                .writeBinary(response.getOutputStream());
+                                   .createHandler("text/csv")
+                                   .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/getData",
-            produces = {"image/png"},
-            method = RequestMethod.POST)
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.POST)
     public void getTimeseriesCollectionChart(HttpServletResponse response,
-            @RequestBody RequestStyledParameterSet requestParameters) throws Exception {
+                                             @RequestBody RequestStyledParameterSet requestParameters)
+            throws Exception {
         IoParameters map = QueryParameters.createFromQuery(requestParameters);
         checkIfUnknownTimeseries(map, requestParameters.getDatasets());
 
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createFromDesignedParameters(requestParameters);
+        RequestSimpleParameterSet parameters = map.mergeToSimpleParameterSet(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
         parameters.setBase64(map.isBase64());
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        createIoFactory(parameters)
-                .withStyledRequest(requestParameters)
-                .createHandler(MimeType.IMAGE_PNG.toString())
-                .writeBinary(response.getOutputStream());
+        createIoFactory(parameters).withStyledRequest(map.mergeToStyledParameterSet(requestParameters))
+                                   .createHandler(MimeType.IMAGE_PNG.toString())
+                                   .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
-            produces = {"image/png"},
-            method = RequestMethod.GET)
-    public void getTimeseriesChart(HttpServletResponse response, @PathVariable String timeseriesId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.GET)
+    public void getTimeseriesChart(HttpServletResponse response,
+                                   @PathVariable String timeseriesId,
+                                   @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet
-                .createForSingleSeries(timeseriesId, map);
-        RequestStyledParameterSet styledParameters = map.toRequestStyledParameterSet();
+                                                                        .createForSingleSeries(timeseriesId, map);
+        RequestStyledParameterSet styledParameters = map.toStyledParameterSet();
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         parameters.setGeneralize(map.isGeneralize());
@@ -317,34 +353,42 @@ public class TimeseriesDataController extends BaseController {
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         createIoFactory(parameters)
-                .withStyledRequest(styledParameters)
-                .createHandler(MimeType.IMAGE_PNG.toString())
-                .writeBinary(response.getOutputStream());
+                                   .withStyledRequest(styledParameters)
+                                   .createHandler(MimeType.IMAGE_PNG.toString())
+                                   .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/{chartQualifier}",
-            produces = {"image/png"},
-            method = RequestMethod.GET)
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.GET)
     public void getTimeseriesChartByInterval(HttpServletResponse response,
-            @PathVariable String seriesId, @PathVariable String chartQualifier,
-            @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
+                                             @PathVariable String seriesId,
+                                             @PathVariable String chartQualifier,
+                                             @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
         if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '"
-                    + seriesId + "'.");
+                    + seriesId
+                    + "'.");
         }
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response
-                .getOutputStream());
+                                                                                               .getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
-        Duration duration = Period.parse(requestIntervalRestriction).toDurationFrom(new DateTime());
-        if (duration.getMillis() < Interval.parse(timespan).toDurationMillis()) {
+        Duration duration = Period.parse(requestIntervalRestriction)
+                                  .toDurationFrom(new DateTime());
+        if (duration.getMillis() < Interval.parse(timespan)
+                                           .toDurationMillis()) {
             throw new BadRequestException(
-                    "Requested timespan is to long, please use a period shorter than '"
-                    + requestIntervalRestriction + "'");
+                                          "Requested timespan is to long, please use a period shorter than '"
+                                                  + requestIntervalRestriction
+                                                  + "'");
         }
     }
 
@@ -355,7 +399,8 @@ public class TimeseriesDataController extends BaseController {
     private void checkIfUnknownTimeseries(IoParameters parameters, String... timeseriesIds) {
         for (String timeseriesId : timeseriesIds) {
             if (!timeseriesMetadataService.exists(timeseriesId, parameters)) {
-                throw new ResourceNotFoundException("The timeseries with id '" + timeseriesId
+                throw new ResourceNotFoundException("The timeseries with id '"
+                        + timeseriesId
                         + "' was not found.");
             }
         }
@@ -375,7 +420,7 @@ public class TimeseriesDataController extends BaseController {
     }
 
     public void setTimeseriesMetadataService(
-            ParameterService<MeasurementDatasetOutput> timeseriesMetadataService) {
+                                             ParameterService<MeasurementDatasetOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 

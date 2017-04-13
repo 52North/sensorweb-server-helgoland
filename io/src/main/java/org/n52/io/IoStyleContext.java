@@ -30,6 +30,7 @@ package org.n52.io;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.n52.io.measurement.MeasurementIoFactory;
 import org.n52.io.measurement.img.ChartDimension;
 import org.n52.io.request.IoParameters;
@@ -57,8 +58,16 @@ public final class IoStyleContext {
     }
 
     public static IoStyleContext createEmpty() {
+        return create(IoParameters.createDefaults());
+    }
+
+    public static IoStyleContext create(IoParameters config) {
+        return create(config.toStyledParameterSet());
+    }
+
+    public static IoStyleContext create(RequestStyledParameterSet request) {
         List<? extends DatasetOutput> emptyList = Collections.emptyList();
-        return new IoStyleContext(new RequestStyledParameterSet(), emptyList);
+        return new IoStyleContext(request, emptyList);
     }
 
     /**
@@ -90,7 +99,7 @@ public final class IoStyleContext {
 
     public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
             IoParameters ioConfig) {
-        RequestStyledParameterSet parameters = ioConfig.toRequestStyledParameterSet();
+        RequestStyledParameterSet parameters = ioConfig.toStyledParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
     }

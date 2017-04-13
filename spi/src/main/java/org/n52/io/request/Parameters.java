@@ -123,7 +123,17 @@ public interface Parameters {
      * Determines the timespan parameter
      */
     String TIMESPAN = "timespan";
+    
+    /**
+     * Determines the timezone output parameter
+     */
+    String OUTPUT_TIMEZONE = "outputTimezone";
 
+    /**
+     * The default output timezone
+     */
+    String DEFAULT_OUTPUT_TIMEZONE = "UTC";
+    
     /**
      * Parameter to specify the timeseries data with a result time
      */
