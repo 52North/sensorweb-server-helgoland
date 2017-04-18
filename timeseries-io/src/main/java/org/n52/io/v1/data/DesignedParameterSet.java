@@ -49,8 +49,6 @@ public class DesignedParameterSet extends ParameterSet {
     
     private static final boolean DEFAULT_LEGEND = false;
     
-    private static final String DEFAULT_TIMEZONE = "UTC";
-    
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
 
     /**

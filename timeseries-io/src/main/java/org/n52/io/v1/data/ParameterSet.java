@@ -25,25 +25,41 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.v1.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+// TODO validate POST requests
+
 public abstract class ParameterSet {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterSet.class);
+
+    private static final boolean DEFAULT_GENERALIZE = false;
+
+    private static final boolean DEFAULT_BASE64 = false;
+
+    private static final boolean DEFAULT_EXPANDED = false;
+
+    private static final String DEFAULT_TIMEZONE = "UTC";
+
+    private static final String DEFAULT_LOCALE = "en";
 
     private final Map<String, JsonNode> parameters;
 
@@ -56,29 +72,43 @@ public abstract class ParameterSet {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
         String interval = lastWeek
-                .toString()
-                .concat("/")
-                .concat(now.toString());
+                                  .toString()
+                                  .concat("/")
+                                  .concat(now.toString());
         return new IntervalWithTimeZone(interval).toString();
+    }
+
+    public String getOutputTimezone() {
+        return getAsString("outputTimezone", DEFAULT_TIMEZONE);
+    }
+
+    public void setOutputTimezone(String timezone) {
+        DateTimeZone zone = DateTimeZone.getAvailableIDs()
+                                        .contains(timezone)
+                                                ? DateTimeZone.forID(timezone)
+                                                : DateTimeZone.UTC;
+        addParameter("outputTimezone", IoParameters.getJsonNodeFrom(zone.getID()));
     }
 
     /**
      * @return If timeseries data shall be generalized or not.
      */
     public boolean isGeneralize() {
-        return getAsBoolean("generalize", false);
+        return getAsBoolean("generalize", DEFAULT_GENERALIZE);
     }
 
     /**
-     * @param generalize if output shall be generalized
+     * @param generalize
+     *        if output shall be generalized
      */
     public void setGeneralize(boolean generalize) {
-        parameters.put("generalize", IoParameters.getJsonNodeFrom(generalize));
+        addParameter("generalize", IoParameters.getJsonNodeFrom(generalize));
     }
 
     /**
-     * Sets the timespan of interest (as <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601
-     * interval</a> excluding the Period only version).
+     * Sets the timespan of interest (as
+     * <a href="http://en.wikipedia.org/wiki/ISO_8601#Time_intervals">ISO8601 interval</a> excluding the
+     * Period only version).
      *
      * @return the timespan in ISO-8601
      */
@@ -88,13 +118,14 @@ public abstract class ParameterSet {
     }
 
     /**
-     * @param timespan the timespan to set.
+     * @param timespan
+     *        the timespan to set.
      */
     public void setTimespan(String timespan) {
         timespan = timespan != null
                 ? validateTimespan(timespan)
                 : createDefaultTimespan();
-        parameters.put("timespan", IoParameters.getJsonNodeFrom(timespan));
+        addParameter("timespan", IoParameters.getJsonNodeFrom(timespan));
     }
 
     /**
@@ -103,45 +134,70 @@ public abstract class ParameterSet {
      * @return if image shall be base64 encoded.
      */
     public boolean isBase64() {
-        return getAsBoolean("base64", false);
-	}
+        return getAsBoolean("base64", DEFAULT_BASE64);
+    }
 
     /**
-     * @param base64 If the image shall be base64 encoded.
+     * @param base64
+     *        If the image shall be base64 encoded.
      */
-	public void setBase64(boolean base64) {
-        parameters.put("base64", IoParameters.getJsonNodeFrom(base64));
-	}
+    public void setBase64(boolean base64) {
+        addParameter("base64", IoParameters.getJsonNodeFrom(base64));
+    }
 
     /**
      * @return If reference values shall be appended to the timeseries data.
      */
-	public boolean isExpanded() {
-        return getAsBoolean("expanded", false);
+    public boolean isExpanded() {
+        return getAsBoolean("expanded", DEFAULT_EXPANDED);
     }
 
     /**
-     * @param expanded verbose results.
+     * @param expanded
+     *        verbose results.
      */
     public void setExpanded(boolean expanded) {
-        parameters.put("expanded", IoParameters.getJsonNodeFrom(expanded));
+        addParameter("expanded", IoParameters.getJsonNodeFrom(expanded));
     }
 
     /**
      * @return A language code to determine the requested locale. "en" is the default.
+     * @deprecated use {@link #getLocale()}
      */
+    @Deprecated
     public String getLanguage() {
-        return getAsString("language");
+        return getAsString("language", DEFAULT_LOCALE);
     }
 
     /**
-     * @param language A language code to determine the requested locale.
+     * @param language
+     *        A language code to determine the requested locale.
+     * @deprecated use {@link #setLocale(String)}
      */
+    @Deprecated
     public void setLanguage(String language) {
         language = !(language == null || language.isEmpty())
-                 ? language
-                 : "en";
-        parameters.put("language", IoParameters.getJsonNodeFrom(language));
+                ? language
+                : "en";
+        addParameter("language", IoParameters.getJsonNodeFrom(language));
+    }
+
+    /**
+     * @return A locale code to determine the requested locale. "en" is the default.
+     */
+    public String getLocale() {
+        return getAsString("locale", DEFAULT_LOCALE);
+    }
+
+    /**
+     * @param locale
+     *        A locale code to determine the requested locale.
+     */
+    public void setLocale(String locale) {
+        locale = !(locale == null || locale.isEmpty())
+                ? locale
+                : "en";
+        addParameter("locale", IoParameters.getJsonNodeFrom(locale));
     }
 
     private String validateTimespan(String timespan) {
@@ -176,8 +232,10 @@ public abstract class ParameterSet {
     /**
      * Sets the value for the given parameter name. Overrides if already exists.
      *
-     * @param parameterName parameter name.
-     * @param value the parameter's value.
+     * @param parameterName
+     *        parameter name.
+     * @param value
+     *        the parameter's value.
      */
     public final void addParameter(String parameterName, JsonNode value) {
         this.parameters.put(parameterName.toLowerCase(), value);
@@ -185,7 +243,7 @@ public abstract class ParameterSet {
 
     public final <T> T getAs(Class<T> clazz, String parameterName, T defaultValue) {
         try {
-            if ( !parameters.containsKey(parameterName.toLowerCase())) {
+            if (!parameters.containsKey(parameterName.toLowerCase())) {
                 return defaultValue;
             }
             ObjectMapper om = new ObjectMapper();
@@ -209,13 +267,15 @@ public abstract class ParameterSet {
     }
 
     public final String[] getAsStringArray(String parameterName, String[] defaultValue) {
-        if ( !parameters.containsKey(parameterName.toLowerCase())) {
+        if (!parameters.containsKey(parameterName.toLowerCase())) {
             return defaultValue;
         }
         JsonNode parameterValue = getParameterValue(parameterName);
         return parameterValue.isArray()
                 ? getAs(String[].class, parameterName, defaultValue)
-                : new String[] { getAsString(parameterName) };
+                : new String[] {
+                    getAsString(parameterName)
+                };
     }
 
     public final String getAsString(String parameterName) {
@@ -247,7 +307,7 @@ public abstract class ParameterSet {
                 ? (Boolean) getParameterValue(parameterName).asBoolean()
                 : defaultValue;
     }
-    
+
     public abstract String[] getTimeseries();
 
 }

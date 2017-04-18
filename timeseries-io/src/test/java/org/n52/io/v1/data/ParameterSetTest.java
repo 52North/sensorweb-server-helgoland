@@ -25,6 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.v1.data;
 
 import org.hamcrest.Matchers;
@@ -33,7 +34,7 @@ import org.junit.Test;
 import org.n52.io.IoParameters;
 
 public class ParameterSetTest {
-    
+
     @Test
     public void testJsonObjectInGeneralConfig() {
         IoParameters parameters = IoParameters.createDefaults();
@@ -42,7 +43,7 @@ public class ParameterSetTest {
         Assert.assertNotNull(config);
         Assert.assertThat(config.getDefaultGeneralizer(), Matchers.is("lttb"));
     }
-    
+
     @Test
     public void testNotAvailableJsonObjectInGeneralConfig() {
         IoParameters parameters = IoParameters.createDefaults();
@@ -50,20 +51,23 @@ public class ParameterSetTest {
         GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "doesnotexist");
         Assert.assertNull(config);
     }
-    
-    private static class GeneralizerConfig {
+
+    static class GeneralizerConfig {
         private String defaultGeneralizer;
         private String noDataGapThreshold;
 
         public String getDefaultGeneralizer() {
             return defaultGeneralizer;
         }
+
         public void setDefaultGeneralizer(String defaultGeneralizer) {
             this.defaultGeneralizer = defaultGeneralizer;
         }
+
         public String getNoDataGapThreshold() {
             return noDataGapThreshold;
         }
+
         public void setNoDataGapThreshold(String noDataGapThreshold) {
             this.noDataGapThreshold = noDataGapThreshold;
         }

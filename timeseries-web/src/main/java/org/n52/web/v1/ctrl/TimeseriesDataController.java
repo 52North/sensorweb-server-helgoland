@@ -36,7 +36,6 @@ import static org.n52.io.format.FormatterFactory.createFormatterFactory;
 import static org.n52.io.img.RenderingContext.createContextForSingleTimeseries;
 import static org.n52.io.img.RenderingContext.createContextWith;
 import static org.n52.io.v1.data.UndesignedParameterSet.createForSingleTimeseries;
-import static org.n52.io.v1.data.UndesignedParameterSet.createFromDesignedParameters;
 import static org.n52.sensorweb.v1.spi.GeneralizingTimeseriesDataService.composeDataService;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
@@ -223,14 +222,14 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
         IoParameters map = createFromQuery(requestParameters);
-        UndesignedParameterSet parameters = createFromDesignedParameters(requestParameters);
+        UndesignedParameterSet parameters = map.mergeToUndesigned(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
+        RenderingContext context = createContextWith(map.mergeParameterSet(requestParameters), timeseriesMetadatas);
 
         IoHandler renderer = IoFactory.createWith(map).forMimeType(APPLICATION_PDF).createIOHandler(context);
 
@@ -301,7 +300,8 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
         IoParameters map = createFromQuery(requestParameters);
-        UndesignedParameterSet parameters = createFromDesignedParameters(requestParameters);
+        
+        UndesignedParameterSet parameters = map.mergeToUndesigned(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
@@ -309,7 +309,7 @@ public class TimeseriesDataController extends BaseController {
 
         String[] timeseriesIds = parameters.getTimeseries();
         TimeseriesMetadataOutput[] timeseriesMetadatas = timeseriesMetadataService.getParameters(timeseriesIds, map);
-        RenderingContext context = createContextWith(requestParameters, timeseriesMetadatas);
+        RenderingContext context = createContextWith(map.mergeParameterSet(requestParameters), timeseriesMetadatas);
         IoHandler renderer = IoFactory.createWith(map).createIOHandler(context);
 
         response.setContentType("image/png");

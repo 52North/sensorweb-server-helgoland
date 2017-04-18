@@ -375,6 +375,10 @@ public class IoParameters {
      * Determines the fields filter
      */
     static final String FILTER_FIELDS = "fields";
+    
+    private final String OUTPUT_TIMEZONE = "outputTimezone";
+    
+    private final String DEFAULT_OUTPUT_TIMEZONE = "UTC";
 
     private MultiValueMap<String, JsonNode> query;
 
@@ -388,13 +392,6 @@ public class IoParameters {
         } catch (URISyntaxException | IOException e) {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
-        }
-    }
-
-    protected IoParameters(IoParameters parameters) {
-        this((File) null);
-        if (parameters != null) {
-            query.putAll(parameters.query);
         }
     }
 
@@ -419,8 +416,9 @@ public class IoParameters {
     }
 
     private IoParameters(File defaultConfig) {
-        query = new LinkedMultiValueMap<>();
-        query.setAll(readDefaultConfig(defaultConfig));
+        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
+        config.setAll(readDefaultConfig(defaultConfig));
+        query = collapseEntriesToLowerCasedKeys(config);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
@@ -443,7 +441,7 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public int getOffset() {
-        if ( !query.containsKey(OFFSET)) {
+        if ( !containsParameter(OFFSET)) {
             return DEFAULT_OFFSET;
         }
         return getAsInteger(OFFSET);
@@ -456,7 +454,7 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public int getLimit() {
-        if ( !query.containsKey(LIMIT)) {
+        if ( !containsParameter(LIMIT)) {
             return DEFAULT_LIMIT;
         }
         return getAsInteger(LIMIT);
@@ -479,7 +477,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     private int getWidth() {
-        if ( !query.containsKey(WIDTH)) {
+        if ( !containsParameter(WIDTH)) {
             return DEFAULT_WIDTH;
         }
         return getAsInteger(WIDTH);
@@ -493,7 +491,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     private int getHeight() {
-        if ( !query.containsKey(HEIGHT)) {
+        if ( !containsParameter(HEIGHT)) {
             return DEFAULT_HEIGHT;
         }
         return getAsInteger(HEIGHT);
@@ -507,7 +505,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isBase64() {
-        if ( !query.containsKey(BASE_64)) {
+        if ( !containsParameter(BASE_64)) {
             return DEFAULT_BASE_64;
         }
         return getAsBoolean(BASE_64);
@@ -519,7 +517,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isGrid() {
-        if ( !query.containsKey(GRID)) {
+        if ( !containsParameter(GRID)) {
             return DEFAULT_GRID;
         }
         return getAsBoolean(GRID);
@@ -531,7 +529,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isGeneralize() throws IoParseException {
-        if ( !query.containsKey(GENERALIZE)) {
+        if ( !containsParameter(GENERALIZE)) {
             return DEFAULT_GENERALIZE;
         }
         return getAsBoolean(GENERALIZE);
@@ -544,7 +542,7 @@ public class IoParameters {
      *         if parsing parameter fails.
      */
     public boolean isLegend() {
-        if ( !query.containsKey(LEGEND)) {
+        if ( !containsParameter(LEGEND)) {
             return DEFAULT_LEGEND;
         }
         return getAsBoolean(LEGEND);
@@ -555,7 +553,7 @@ public class IoParameters {
      *         is returned.
      */
     public String getLocale() {
-        if ( !query.containsKey(LOCALE)) {
+        if ( !containsParameter(LOCALE)) {
             return DEFAULT_LOCALE;
         }
         return getAsString(LOCALE);
@@ -567,7 +565,7 @@ public class IoParameters {
      *         if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
-        if ( !query.containsKey(STYLE)) {
+        if ( !containsParameter(STYLE)) {
             return StyleProperties.createDefaults();
         }
         return parseStyleProperties(getAsString(STYLE));
@@ -601,25 +599,25 @@ public class IoParameters {
     }
 
     public String getFormat() {
-        if ( !query.containsKey(FORMAT)) {
+        if ( !containsParameter(FORMAT)) {
             return DEFAULT_FORMAT;
         }
         return getAsString(FORMAT);
     }
     
     public boolean isSetRawFormat() {
-        return query.containsKey(RAW_FORMAT);
+        return containsParameter(RAW_FORMAT);
     }
 
     public String getRenderingTrigger() {
-        if ( !query.containsKey(RENDERING_TRIGGER)) {
+        if ( !containsParameter(RENDERING_TRIGGER)) {
             return DEFAULT_RENDERING_TRIGGER;
         }
         return getAsString(RENDERING_TRIGGER);
     }
 
     public boolean isSetRenderingTrigger() {
-        return query.containsKey(RENDERING_TRIGGER);
+        return containsParameter(RENDERING_TRIGGER);
     }
 
     public String getRawFormat() {
@@ -638,7 +636,7 @@ public class IoParameters {
      *         if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
-        if ( !query.containsKey(TIMESPAN)) {
+        if ( !containsParameter(TIMESPAN)) {
             return createDefaultTimespan();
         }
         return validateTimespan(getAsString(TIMESPAN));
@@ -659,7 +657,7 @@ public class IoParameters {
     }
 
     public Instant getResultTime() {
-        if (!query.containsKey(RESULTTIME)) {
+        if (!containsParameter(RESULTTIME)) {
             return null;
         }
         return validateTimestamp(getAsString(RESULTTIME));
@@ -674,6 +672,13 @@ public class IoParameters {
         }
     }
 
+    public String getOutputTimezone() {
+        if ( !containsParameter(OUTPUT_TIMEZONE)) {
+            return DEFAULT_OUTPUT_TIMEZONE;
+        }
+        return getAsString(OUTPUT_TIMEZONE);
+    }
+    
     /**
      * @return the category filter
      * @deprecated use {@link #getCategories()}
@@ -813,7 +818,7 @@ public class IoParameters {
      *         if parsing parameters fails, or if a requested {@value #CRS} object could not be created.
      */
     public BoundingBox getSpatialFilter() {
-        if ( !query.containsKey(NEAR) && !query.containsKey(BBOX)) {
+        if ( !containsParameter(NEAR) && !containsParameter(BBOX)) {
             return null;
         }
 
@@ -850,7 +855,7 @@ public class IoParameters {
      *         if a requested {@value #CRS} object could not be created
      */
     private BBox createBbox() {
-        if ( !query.containsKey(BBOX)) {
+        if ( !containsParameter(BBOX)) {
             return null;
         }
         String bboxValue = getAsString(BBOX);
@@ -861,12 +866,12 @@ public class IoParameters {
     }
 
     private BoundingBox parseBoundsFromVicinity() {
-        if ( !query.containsKey(NEAR)) {
+        if ( !containsParameter(NEAR)) {
             return null;
         }
         String vicinityValue = getAsString(NEAR);
         Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
-        if (query.containsKey(CRS)) {
+        if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
         BoundingBox bounds = vicinity.calculateBounds();
@@ -933,14 +938,14 @@ public class IoParameters {
      *         interpreted as lon/lat ordered axes).
      */
     public String getCrs() {
-        if ( !query.containsKey(CRS)) {
+        if ( !containsParameter(CRS)) {
             return DEFAULT_CRS;
         }
         return getAsString(CRS);
     }
 
     public boolean isForceXY() {
-        if ( !query.containsKey(FORCE_XY)) {
+        if ( !containsParameter(FORCE_XY)) {
             return DEFAULT_FORCE_XY;
         }
         return getAsBoolean(FORCE_XY);
@@ -952,45 +957,56 @@ public class IoParameters {
      *         if parameter could not be parsed.
      */
     public boolean isExpanded() {
-        if ( !query.containsKey(EXPANDED)) {
+        if ( !containsParameter(EXPANDED)) {
             return DEFAULT_EXPANDED;
         }
         return getAsBoolean(EXPANDED);
     }
 
     public boolean isForceLatestValueRequests() {
-        if ( !query.containsKey(FORCE_LATEST_VALUE)) {
+        if ( !containsParameter(FORCE_LATEST_VALUE)) {
             return DEFAULT_FORCE_LATEST_VALUE;
         }
         return getAsBoolean(FORCE_LATEST_VALUE);
     }
 
     public boolean isStatusIntervalsRequests() {
-        if (!query.containsKey(STATUS_INTERVALS)) {
+        if (!containsParameter(STATUS_INTERVALS)) {
             return DEFAULT_STATUS_INTERVALS;
         }
         return getAsBoolean(STATUS_INTERVALS);
     }
 
     public boolean isRenderingHintsRequests() {
-        if (!query.containsKey(RENDERING_HINTS)) {
+        if (!containsParameter(RENDERING_HINTS)) {
             return DEFAULT_RENDERING_HINTS;
         }
         return getAsBoolean(RENDERING_HINTS);
     }
 
     public boolean containsParameter(String parameter) {
-        return query.containsKey(parameter.toLowerCase());
+        return query.containsKey(parameter.toLowerCase())
+                || query.containsKey(parameter);
     }
 
     public String getOther(String parameter) {
-        return getAsString(parameter.toLowerCase());
+        return getAsString(parameter);
     }
     
     public String getAsString(String parameter) {
-        return containsParameter(parameter)
-                ? asCsv(query.get(parameter.toLowerCase()))
-                : null;
+        if ( !containsParameter(parameter)) {
+            return null;
+        } 
+        List<JsonNode> value = query.get(parameter) == null
+                ? query.get(parameter.toLowerCase())
+                : query.get(parameter);
+        return asCsv(value);
+    }
+    
+    public JsonNode getAsJsonNode(String parameter) {
+        return !containsParameter(parameter)
+                ? query.getFirst(parameter.toLowerCase())
+                : query.getFirst(parameter);
     }
     
     private String asCsv(List<JsonNode> list) {
@@ -1014,8 +1030,8 @@ public class IoParameters {
     public int getAsInteger(String parameter) {
         try {
             String value = getAsString(parameter);
-            Integer.parseInt(value);
-            return query.getFirst(parameter.toLowerCase()).asInt();
+            return Integer.parseInt(value);
+//            return query.getFirst(parameter.toLowerCase()).asInt();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be an integer!", e);
@@ -1032,8 +1048,8 @@ public class IoParameters {
     public boolean getAsBoolean(String parameter) {
         try {
             String value = getAsString(parameter);
-            Boolean.parseBoolean(value);
-            return query.getFirst(parameter.toLowerCase()).asBoolean();
+            return Boolean.parseBoolean(value);
+//            return query.getFirst(parameter.toLowerCase()).asBoolean();
         }
         catch (NumberFormatException e) {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
@@ -1094,8 +1110,19 @@ public class IoParameters {
         return parameterSet;
     }
 
+    public UndesignedParameterSet mergeToUndesigned(DesignedParameterSet designedSet) {
+        UndesignedParameterSet parameters = toUndesignedParameterSet();
+        parameters.setOutputTimezone(designedSet.getOutputTimezone());
+        parameters.setTimeseries(designedSet.getTimeseries());
+        parameters.setTimespan(designedSet.getTimespan());
+        return parameters;
+    }
+
     public DesignedParameterSet toDesignedParameterSet() {
-        DesignedParameterSet parameterSet = new DesignedParameterSet();
+        return mergeParameterSet(new DesignedParameterSet());
+    }
+
+    public DesignedParameterSet mergeParameterSet(DesignedParameterSet parameterSet) {
         addValuesToParameterSet(parameterSet);
         return parameterSet;
     }
@@ -1111,7 +1138,7 @@ public class IoParameters {
             } else {
                 parameterSet.addParameter(lowercasedKey, getJsonNodeFrom(values));
             }
-}
+        }
         return parameterSet;
     }
 
@@ -1119,6 +1146,7 @@ public class IoParameters {
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
     }
+    
 
     /* ****************************************************************
      *                    FACTORY METHODS
@@ -1171,6 +1199,20 @@ public class IoParameters {
         for (String parameter : parameters.availableParameterNames()) {
             JsonNode value = parameters.getParameterValue(parameter);
             queryParameters.put(parameter.toLowerCase(), value);
+        }
+        return queryParameters;
+    }
+    
+    private static MultiValueMap<String, JsonNode> collapseEntriesToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
+        MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
+        for (String parameter : parameters.keySet()) {
+            String lowerCasedKey = parameter.toLowerCase();
+            List<JsonNode> values = parameters.get(parameter);
+            if (!queryParameters.containsKey(lowerCasedKey)) {
+                queryParameters.put(lowerCasedKey, values);
+            } else {
+                queryParameters.get(lowerCasedKey).addAll(values);
+            }
         }
         return queryParameters;
     }
