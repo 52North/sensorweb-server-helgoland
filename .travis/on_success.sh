@@ -5,6 +5,22 @@ stop() {
   exit 0
 }
 
+DOCUMENTATION_BRANCHES=(
+  "develop",
+  "master",
+  "versions/1.10.x"
+)
+
+deploy_on_ghpages() {
+  local e
+  for e in DOCUMENTATION_BRANCHES; do [[ "$e" == "$1" ]] return 0; done
+  return 1
+}
+
+[ ! deploy_on_ghpages "${TRAVIS_BRANCH}" ] \
+  || stop "do not deploy docs of ${TRAVIS_BRANCH}"
+
+
 [ "${TRAVIS_SECURE_ENV_VARS}" == "true" ] \
   || stop "no secure enviroment variables were provided"
 
