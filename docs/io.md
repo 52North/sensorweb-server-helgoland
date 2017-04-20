@@ -10,6 +10,9 @@ of raw data.
 
 The following sections list currently supported I/O operations.
 
+- TOC
+{:toc}
+
 ## Chart Rendering
 
 {:.n52-callout .n52-callout-info}
@@ -24,6 +27,7 @@ Styles can be used whereever a chart is rendered. It does not matter if you requ
 an image or a report (which embeds the chart).
 
 ### Line Charts
+
 The following style properties can be set.
 
 {:.table}
@@ -33,8 +37,7 @@ Property   | Description
 `width`    | The thickness of a line as integer, dash gap, point size (dependend on the chart type to be rendered)
 `color`    | A 6-digit hex color value, e.g. `#5f5f5f`
 
-#### Example
-
+**Example**
 <div class="clearfix">
 <div class="col-lg-5">
   <img alt="lineChart" src="{{base.url}}/images/io_chart_linestyle_example.png" title="Example for a line chart style.">
@@ -52,6 +55,7 @@ Property   | Description
  </div>
 
 ### Bar Charts
+
 The following style properties can be set.
 
 {:.table}
@@ -61,8 +65,7 @@ Property   | Description
 `width`    | Value between `0` and `1`, which defines the bar width in percent (`width=1` means maximum width, i.e. bar next to bar).
 `color`    | A 6-digit hex color value, e.g. `#5f5f5f`
 
-#### Example
-
+**Example**
 <div class="clearfix">
 <div class="col-lg-5">
   <img alt="lineChart" src="{{base.url}}/images/io_chart_barstyle_example.png" title="Example for a bar chart style.">
@@ -146,6 +149,7 @@ Generalization can be enabled by `generalize=true` query parameter. By default g
 is set to `false`. The API currently supports two generalization algorithms.
 
 ### Largest-Triangle-Three Bucket Downsampling (default)
+
 Downsamples to a fix amount of output values 
 ([Details](http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf)). This is the default
 algorithm chosen, when `generalizing_algorithm` parameter is missing.
@@ -156,6 +160,7 @@ Parameters
 * `threshold={int-value}` (default is `200`)
 
 ### Douglas-Peucker Downsampling
+
 Downsamples timeseries values by using a threshold value 
 ([Details](http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm)).
 
@@ -184,6 +189,7 @@ data differently within the used API. Please refer to the actual data output so 
 intended by the 3rd party API.
 
 ### TVP Format (default)
+
 The format returns timeseries data as time-value tuples.
 
 **Example (single dataset)**

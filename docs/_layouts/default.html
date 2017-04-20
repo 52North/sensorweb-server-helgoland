@@ -7,14 +7,16 @@
 <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
+
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/api/main.css" />
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/n52-style.css" />
 </head>
 
 <body>
-  <header>
-    <div class="navbar navbar-default navbar-fixed-top">
+
+  <div class="n52-container container-fluid">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
         <a href="{{site.baseurl}}"><img alt="52&deg;North logo"
           src="http://52north.org/templates/52n-2012/images/52n-logo.gif" /></a>
@@ -28,11 +30,8 @@
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
-  </header>
-
-  <div class="container-fluid">
     <nav class="affix col-lg-2 n52-sidebar">
       <p class="header">
         <a href="{{ site.baseurl }}/">Home</a>
@@ -50,7 +49,9 @@
         <a href="{{ site.baseurl }}/api/">API Reference</a>
       </p>
     </nav>
+
     <div role="main" class="col-lg-9 n52-content pull-right">{{ content | toc_generate}}</div>
+
   </div>
 
 
