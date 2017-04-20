@@ -1,8 +1,11 @@
 ---
 layout: page
 title: Platforms
-permalink: {{site.baseurl}}/platforms
+permalink: /platforms
 ---
+
+# Platforms
+
 Since `v2.0` the following sensor platforms are supported:
 
 * `stationary` sensor platforms

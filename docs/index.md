@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Series REST API Documentation
+permalink: /
 ---
 
 The Series REST API provides an access layer to sensor data via RESTful Web binding 

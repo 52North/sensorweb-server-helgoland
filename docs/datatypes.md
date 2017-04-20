@@ -1,8 +1,11 @@
 ---
 layout: page
 title: Data Types
-permalink: {{site.baseurl}}/datatypes
+permalink: /datatypes
 ---
+
+# Data Types
+
 A dataset has a particular type which indicates the type of data
 which is being, or has been observed by a specific platform. This 
 can be simple scalar types (`count`, `boolean`,`double`, `text`)
@@ -86,7 +89,36 @@ have different optionals set.
 }
 ```
 
-#### Mobile Example
+**Measurement example (`mobile` platform)**
+```
+{
+  "values": [
+    {
+      "timestamp": 1362610500000,
+      "value": 261.494,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.020595,
+          52.40741
+        ]
+      }
+    },
+    {
+      "timestamp": 1362610520000,
+      "value": 261.738,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.018087,
+          52.408466
+        ]
+      }
+    },
+  ]
+}
+```
+  
 
 ## Complex data types
 tbd

@@ -1,8 +1,11 @@
 ---
 layout: page
 title: Input/Output
-permalink: {{site.baseurl}}/io
+permalink: /io
 ---
+
+# Input/Output
+
 Depending on the requested data type the API offers some Input/Output processing.
 In case of `measurement` datasets a client might request a rendered chart instead 
 of raw data.
