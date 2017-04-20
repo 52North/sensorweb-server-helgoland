@@ -6,12 +6,15 @@ permalink: /datatypes
 
 A dataset has a particular type which indicates the type of data
 which is being, or has been observed by a specific platform. This 
-can be simple scalar types (`count`, `boolean`,`double`, `text`)
-or more complex types like `profile` or other `record` data being
-observed over time or along a track. The default dataset type is 
-`measurement` which actually is a numeric observation over time.
+can be simple scalar types or more complex types like `profile` or
+other `record` data being observed over time or along a track. 
 
-A resource can be filtered by dataset type(s).
+The default dataset type is `measurement` which actually is a 
+numeric observation over time. A resource can be filtered by 
+dataset type(s).
+
+- TOC
+{:toc}
 
 ## General
 A simplest data value has a `timestamp` and a corresponding `value`.
@@ -29,17 +32,20 @@ Member        | Optional      | Description
 `timestamp`   | no            | when value has been observed
 `timestart`   | no            | when observation started (mutual exclusive to `timestamp`)
 `timeend`     | no            | when observation ended (mutual exclusive to `timestamp`)
-`value`       | no            | the actual observation value
+`value`       | no            | the actual (typed) data value
 `geometry`    | yes           | relevant for `mobile` platforms
 `parameters`  | yes           | additional parameters
 `validTime`   | yes           | when the observation is being considered valid
 
-## Scalar data types
+Each data value might have different optionals set.
 
-### Measurement
-Depending on what data type members are available (see above table which are 
-optional) the following output would be valid. Note, that each data value might
-have different optionals set.
+## Scalar data types
+Scalar data types are single values (`double`, `count`, `boolean`, `double`, 
+`text`). Observations of type `double` are identified by `measurement`. Other 
+scalar types are denoted as is.
+
+Depending on what members are available (see above table) the following output 
+would be valid.
 
 **Measurement Example (`stationary` platform)**
 ```
@@ -119,10 +125,103 @@ have different optionals set.
   
 
 ## Complex data types
-tbd
+Complex data types are compound values.
+
+Depending on what members are available (see above table) the following output 
+would be valid.
 
 ### Record
-tbd
+A record's `value` member is a map of key-valued objects. 
+
+**GeoJson Example (`stationary` platform)**
+```
+{
+  "record_309510107": {
+    "values": [
+      {
+        "timestamp": 1437160475022,
+        "value": {
+          "east": {
+            "type": "Feature",
+            "id": "120644",
+            "properties": {
+              "id": "120644",
+              "href": "http://example.org/upload/201507/55a9541b20c50876106726.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27377,
+                48.30273
+              ]
+            }
+          },
+          "south": {
+            "type": "Feature",
+            "id": "120645",
+            "properties": {
+              "id": "120645",
+              "href": "http://example.org/upload/201507/55a9541b26583054767586.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27375,
+                48.30275
+              ]
+            }
+          },
+          "north": {
+            "type": "Feature",
+            "id": "120643",
+            "properties": {
+              "id": "120643",
+              "href": "http://example.org/upload/201507/55a9541b19209320230740.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27378,
+                48.30273
+              ]
+            }
+          },
+          "spot": {
+            "type": "Feature",
+            "id": "120647",
+            "properties": {
+              "id": "120647",
+              "href": "http://example.org/upload/201507/55a9541b3782c557670845.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27375,
+                48.30275
+              ]
+            }
+          },
+          "west": {
+            "type": "Feature",
+            "id": "120646",
+            "properties": {
+              "id": "120646",
+              "href": "http://example.org/upload/55a9541b30c2f165697520.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27374,
+                48.30275
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+```
 
 ### Profile
 tbd
