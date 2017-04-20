@@ -297,7 +297,7 @@
         "/datasets/{datasetId}/extras": {
             "get": {
                 "summary": "Gets extra infos for dataset",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of eacg dataset.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each dataset.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -431,6 +431,57 @@
                 }
             }
         },
+        "/timeseries/{timeseriesId}": {
+            "get": {
+                "summary": "Gets a particular timeseries",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "timeseriesId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded timeseries"
+                    }
+                }
+            }
+        },
+        "/timeseries/{timeseriesId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for timeseries",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each timeseries.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "timeseriesId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
         "/timeseries/{timeseriesId}/getData": {
             "get": {
                 "summary": "Gets data of a dataset",
@@ -479,6 +530,571 @@
                     },
                     "400": {
                         "description": "Given parameters are not valid"
+                    }
+                }
+            }
+        },
+        "/geometries": {
+            "get": {
+                "summary": "A collection of available geometries",
+                "description": "",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/crsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/bboxParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nearParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of geometries"
+                    }
+                }
+            }
+        },
+        "/services": {
+            "get": {
+                "summary": "Get available service instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of services"
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded service instance"
+                    }
+                }
+            }
+        },
+        "/services/{serviceId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a service",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each service.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "serviceId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "summary": "Get available category instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/servicesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/categoriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/phenomenaParam"
+                    },
+                    {
+                        "$ref": "#/parameters/proceduresParam"
+                    },
+                    {
+                        "$ref": "#/parameters/offeringsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/stationsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of categories"
+                    }
+                }
+            }
+        },
+        "/categories/{categoryId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded instance"
+                    }
+                }
+            }
+        },
+        "/categories/{categoryId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a category",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each category.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
+        "/phenomena": {
+            "get": {
+                "summary": "Get available phenomenon instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/servicesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/categoriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/phenomenaParam"
+                    },
+                    {
+                        "$ref": "#/parameters/proceduresParam"
+                    },
+                    {
+                        "$ref": "#/parameters/offeringsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/stationsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of phenomena"
+                    }
+                }
+            }
+        },
+        "/phenomena/{phenomenonId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "phenomenonId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded instance"
+                    }
+                }
+            }
+        },
+        "/phenomena/{phenomenonId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a phenomenon",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each phemomenon.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "phenomenonId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
+        "/procedure": {
+            "get": {
+                "summary": "Get available procedure instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/servicesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/categoriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/phenomenaParam"
+                    },
+                    {
+                        "$ref": "#/parameters/proceduresParam"
+                    },
+                    {
+                        "$ref": "#/parameters/offeringsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/stationsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of procedures"
+                    }
+                }
+            }
+        },
+        "/procedures/{procedureId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "procedureId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded instance"
+                    }
+                }
+            }
+        },
+        "/procedures/{procedureId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a procedure",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each procedure.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "procedureId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
+        "/offerings": {
+            "get": {
+                "summary": "Get available offerings instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/servicesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/categoriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/phenomenaParam"
+                    },
+                    {
+                        "$ref": "#/parameters/proceduresParam"
+                    },
+                    {
+                        "$ref": "#/parameters/offeringsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/stationsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of offerings"
+                    }
+                }
+            }
+        },
+        "/offerings/{offeringId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "offeringId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded instance"
+                    }
+                }
+            }
+        },
+        "/offerings/{offeringId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a phenomenon",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each offering.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "offeringId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
+                    }
+                }
+            }
+        },
+        "/features": {
+            "get": {
+                "summary": "Get available feature instances",
+                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/expandedParam"
+                    },
+                    {
+                        "$ref": "#/parameters/servicesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/categoriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/phenomenaParam"
+                    },
+                    {
+                        "$ref": "#/parameters/proceduresParam"
+                    },
+                    {
+                        "$ref": "#/parameters/offeringsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/stationsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/datasetTypesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A collection of features"
+                    }
+                }
+            }
+        },
+        "/features/{featureId}": {
+            "get": {
+                "summary": "Gets an instance",
+                "description": "Lorem Ipsum\n",
+                "parameters": [
+                    {
+                        "name": "featureId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded instance"
+                    }
+                }
+            }
+        },
+        "/features/{featureId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for a feature",
+                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each feature.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "featureId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of (selected) extra infos"
                     }
                 }
             }
