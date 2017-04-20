@@ -113,8 +113,113 @@
         </td>
                     </tr>
                     <tr>
+                        <td><a href="#operation--timeseries--timeseriesId--get">GET /timeseries/{timeseriesId}</a></td>
+                        <td><p>Gets a particular timeseries</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--timeseries--timeseriesId--extras-get">GET /timeseries/{timeseriesId}/extras</a></td>
+                        <td><p>Gets extra infos for timeseries</p>
+        </td>
+                    </tr>
+                    <tr>
                         <td><a href="#operation--timeseries--timeseriesId--getData-get">GET /timeseries/{timeseriesId}/getData</a></td>
                         <td><p>Gets data of a dataset</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--geometries-get">GET /geometries</a></td>
+                        <td><p>A collection of available geometries</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--services-get">GET /services</a></td>
+                        <td><p>Get available service instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--services--serviceId--get">GET /services/{serviceId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--services--serviceId--extras-get">GET /services/{serviceId}/extras</a></td>
+                        <td><p>Gets extra infos for a service</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--categories-get">GET /categories</a></td>
+                        <td><p>Get available category instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--categories--categoryId--get">GET /categories/{categoryId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--categories--categoryId--extras-get">GET /categories/{categoryId}/extras</a></td>
+                        <td><p>Gets extra infos for a category</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--phenomena-get">GET /phenomena</a></td>
+                        <td><p>Get available phenomenon instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--phenomena--phenomenonId--get">GET /phenomena/{phenomenonId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--phenomena--phenomenonId--extras-get">GET /phenomena/{phenomenonId}/extras</a></td>
+                        <td><p>Gets extra infos for a phenomenon</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--procedure-get">GET /procedure</a></td>
+                        <td><p>Get available procedure instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--procedures--procedureId--get">GET /procedures/{procedureId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--procedures--procedureId--extras-get">GET /procedures/{procedureId}/extras</a></td>
+                        <td><p>Gets extra infos for a procedure</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--offerings-get">GET /offerings</a></td>
+                        <td><p>Get available offerings instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--offerings--offeringId--get">GET /offerings/{offeringId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--offerings--offeringId--extras-get">GET /offerings/{offeringId}/extras</a></td>
+                        <td><p>Gets extra infos for a phenomenon</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--features-get">GET /features</a></td>
+                        <td><p>Get available feature instances</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--features--featureId--get">GET /features/{featureId}</a></td>
+                        <td><p>Gets an instance</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--features--featureId--extras-get">GET /features/{featureId}/extras</a></td>
+                        <td><p>Gets extra infos for a feature</p>
         </td>
                     </tr>
                 </tbody>
@@ -174,6 +279,425 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <p>A collection of API endpoints</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--categories"></span>
+            <div id="operation--categories-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available category instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                services
+                                            <td><p>All resources where the given service id does match. The single form (<code>service</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>services=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/servicesParam">#/parameters/servicesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                categories
+                                            <td><p>All resources where the given category id does match. The single form (<code>category</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>categories=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/categoriesParam">#/parameters/categoriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                phenomena
+                                            <td><p>All resources where the given phenomenon id does match. The single form (<code>phenomenon</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>phenomena=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/phenomenaParam">#/parameters/phenomenaParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                procedures
+                                            <td><p>All resources where the given procedure id does match. The single form (<code>procedure</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>procedures=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/proceduresParam">#/parameters/proceduresParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                offerings
+                                            <td><p>All resources where the given offering id does match. The single form (<code>offering</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>offerings=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/offeringsParam">#/parameters/offeringsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platforms
+                                            <td><p>All resources where the given platform id does match.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platforms=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformsParam">#/parameters/platformsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                stations
+                                            <td><p>All resources where the given station id does match. The single form (<code>station</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>stations=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/stationsParam">#/parameters/stationsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of categories</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--categories--categoryId-"></span>
+            <div id="operation--categories--categoryId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories/{categoryId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                categoryId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--categories--categoryId--extras"></span>
+            <div id="operation--categories--categoryId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a category</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories/{categoryId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each category.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                categoryId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
                                             
                                                 </div>
                                             </div>
@@ -729,7 +1253,7 @@
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Lists extra metadata which may vary from instance to instance. The available 
-            metadata fields are listed in the <code>extras</code> metadata field of eacg dataset.
+            metadata fields are listed in the <code>extras</code> metadata field of each dataset.
             You can query just the ones you are interested in by appending the <code>fields</code> 
             query parameter and passing a comma-separated value list to it. </p>
             
@@ -899,6 +1423,534 @@
                         </section>
                 </div>
             </div>    
+        <span id="path--features"></span>
+            <div id="operation--features-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available feature instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                services
+                                            <td><p>All resources where the given service id does match. The single form (<code>service</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>services=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/servicesParam">#/parameters/servicesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                categories
+                                            <td><p>All resources where the given category id does match. The single form (<code>category</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>categories=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/categoriesParam">#/parameters/categoriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                phenomena
+                                            <td><p>All resources where the given phenomenon id does match. The single form (<code>phenomenon</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>phenomena=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/phenomenaParam">#/parameters/phenomenaParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                procedures
+                                            <td><p>All resources where the given procedure id does match. The single form (<code>procedure</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>procedures=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/proceduresParam">#/parameters/proceduresParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                offerings
+                                            <td><p>All resources where the given offering id does match. The single form (<code>offering</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>offerings=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/offeringsParam">#/parameters/offeringsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platforms
+                                            <td><p>All resources where the given platform id does match.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platforms=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformsParam">#/parameters/platformsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                stations
+                                            <td><p>All resources where the given station id does match. The single form (<code>station</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>stations=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/stationsParam">#/parameters/stationsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of features</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--features--featureId-"></span>
+            <div id="operation--features--featureId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features/{featureId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                featureId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--features--featureId--extras"></span>
+            <div id="operation--features--featureId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a feature</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features/{featureId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each feature.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                featureId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--geometries"></span>
+            <div id="operation--geometries-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">A collection of available geometries</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/geometries</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                crs
+                                            <td><p>The client indicates that input geometries shall be interpreted as being referenced by the
+                                        given CRS (for example in case of <code>crs=EPSG:25832</code> to 
+                                        <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                                        <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs
+                                        value differs from default, all output geometries are transformed to match the asked CRS.</p>
+                                        <p>Please note that some CRS switch coordinate axes. Double check axes ordering before interpreting 
+                                        coordinates!</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/crsParam">#/parameters/crsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                bbox
+                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a 
+                                        non-default CRS shall be used.</p>
+                                        <pre><code>bbox={<br>  <span class="hljs-string">"ll"</span>: {<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,<br>    <span class="hljs-string">"coordinates"</span>: <span class="hljs-annotation">[&lt;x&gt;,&lt;y&gt;]</span><br>  },<br>  <span class="hljs-string">"ur"</span>: {<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,<br>    <span class="hljs-string">"coordinates"</span>: <span class="hljs-annotation">[&lt;x&gt;,&lt;y&gt;]</span><br>  }<br>}
+                                        </code></pre></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/bboxParam">#/parameters/bboxParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                near
+                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code>crs</code> parameter if a 
+                                        non-default CRS shall be used.</p>
+                                        <pre><code>near={<br>  <span class="hljs-string">"center"</span>: {<br>    <span class="hljs-string">"type"</span>: <span class="hljs-string">"Point"</span>,<br>    <span class="hljs-string">"coordinates"</span>: <span class="hljs-annotation">[&lt;x&gt;,&lt;y&gt;]</span><br>  },<br>  <span class="hljs-string">"radius"</span>:<span class="hljs-number">500</span><br>}
+                                        </code></pre></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/nearParam">#/parameters/nearParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of geometries</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
         <span id="path--history"></span>
             <div id="operation--history-get" class="swagger--panel-operation-get panel">
                 <div class="panel-heading">
@@ -1003,6 +2055,844 @@
                                                                 <a class="json-schema-ref" href="#/definitions/Error">Error</a>
                                                     </div>
                                                 </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--offerings"></span>
+            <div id="operation--offerings-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available offerings instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                services
+                                            <td><p>All resources where the given service id does match. The single form (<code>service</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>services=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/servicesParam">#/parameters/servicesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                categories
+                                            <td><p>All resources where the given category id does match. The single form (<code>category</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>categories=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/categoriesParam">#/parameters/categoriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                phenomena
+                                            <td><p>All resources where the given phenomenon id does match. The single form (<code>phenomenon</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>phenomena=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/phenomenaParam">#/parameters/phenomenaParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                procedures
+                                            <td><p>All resources where the given procedure id does match. The single form (<code>procedure</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>procedures=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/proceduresParam">#/parameters/proceduresParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                offerings
+                                            <td><p>All resources where the given offering id does match. The single form (<code>offering</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>offerings=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/offeringsParam">#/parameters/offeringsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platforms
+                                            <td><p>All resources where the given platform id does match.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platforms=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformsParam">#/parameters/platformsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                stations
+                                            <td><p>All resources where the given station id does match. The single form (<code>station</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>stations=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/stationsParam">#/parameters/stationsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of offerings</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--offerings--offeringId-"></span>
+            <div id="operation--offerings--offeringId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings/{offeringId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                offeringId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--offerings--offeringId--extras"></span>
+            <div id="operation--offerings--offeringId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a phenomenon</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings/{offeringId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each offering.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                offeringId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--phenomena"></span>
+            <div id="operation--phenomena-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available phenomenon instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                services
+                                            <td><p>All resources where the given service id does match. The single form (<code>service</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>services=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/servicesParam">#/parameters/servicesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                categories
+                                            <td><p>All resources where the given category id does match. The single form (<code>category</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>categories=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/categoriesParam">#/parameters/categoriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                phenomena
+                                            <td><p>All resources where the given phenomenon id does match. The single form (<code>phenomenon</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>phenomena=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/phenomenaParam">#/parameters/phenomenaParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                procedures
+                                            <td><p>All resources where the given procedure id does match. The single form (<code>procedure</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>procedures=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/proceduresParam">#/parameters/proceduresParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                offerings
+                                            <td><p>All resources where the given offering id does match. The single form (<code>offering</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>offerings=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/offeringsParam">#/parameters/offeringsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platforms
+                                            <td><p>All resources where the given platform id does match.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platforms=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformsParam">#/parameters/platformsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                stations
+                                            <td><p>All resources where the given station id does match. The single form (<code>station</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>stations=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/stationsParam">#/parameters/stationsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of phenomena</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--phenomena--phenomenonId-"></span>
+            <div id="operation--phenomena--phenomenonId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena/{phenomenonId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                phenomenonId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--phenomena--phenomenonId--extras"></span>
+            <div id="operation--phenomena--phenomenonId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a phenomenon</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena/{phenomenonId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each phemomenon.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                phenomenonId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -1416,6 +3306,425 @@
                         </section>
                 </div>
             </div>    
+        <span id="path--procedure"></span>
+            <div id="operation--procedure-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available procedure instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedure</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                services
+                                            <td><p>All resources where the given service id does match. The single form (<code>service</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>services=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/servicesParam">#/parameters/servicesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                categories
+                                            <td><p>All resources where the given category id does match. The single form (<code>category</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>categories=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/categoriesParam">#/parameters/categoriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                phenomena
+                                            <td><p>All resources where the given phenomenon id does match. The single form (<code>phenomenon</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>phenomena=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/phenomenaParam">#/parameters/phenomenaParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                procedures
+                                            <td><p>All resources where the given procedure id does match. The single form (<code>procedure</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>procedures=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/proceduresParam">#/parameters/proceduresParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                offerings
+                                            <td><p>All resources where the given offering id does match. The single form (<code>offering</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>offerings=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/offeringsParam">#/parameters/offeringsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platforms
+                                            <td><p>All resources where the given platform id does match.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platforms=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformsParam">#/parameters/platformsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                stations
+                                            <td><p>All resources where the given station id does match. The single form (<code>station</code>) is kept for backwards
+                                        compatibility. Please use the plural form to filter on multiple ids.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>stations=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/stationsParam">#/parameters/stationsParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of procedures</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--procedures--procedureId-"></span>
+            <div id="operation--procedures--procedureId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedures/{procedureId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                procedureId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--procedures--procedureId--extras"></span>
+            <div id="operation--procedures--procedureId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a procedure</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedures/{procedureId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each procedure.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                procedureId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
         <span id="path--search"></span>
             <div id="operation--search-get" class="swagger--panel-operation-get panel">
                 <div class="panel-heading">
@@ -1496,6 +3805,300 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <p>A collection of search results</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--services"></span>
+            <div id="operation--services-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Get available service instances</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>All available instances. For backwards compatibility reasons the output 
+            is filtered by default to list only those instances related to <code>stationary</code>, 
+            <code>insitu</code> platforms. To retrieve a full metadata view add <code>platformTypes=all</code>.</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                expanded
+                                            <td><p>If <code>true</code> a list of partially expanded resource items is returned. The expansion provides more 
+                                        detailed information up to a certain point. However, it does not necessarily provide all item 
+                                        information as one may get when request the resource item itself.</p>
+                                        <p>The expanded works almost only for resource collection. However, exceptions may exist (e.g. 
+                                        for getting raw data). Exceptions are explicitly documented.</p>
+                                        <p>The default is <code>false</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">boolean</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/expandedParam">#/parameters/expandedParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformTypes
+                                            <td><p>Filters the resources to get only those related to the platform type filter.</p>
+                                        <p>Allowed values are <code>stationary</code>, <code>mobile</code>, <code>insitu</code>, <code>remote</code>, <code>all</code></p>
+                                        <p>The default is <code>stationary,insitu</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformTypesParam">#/parameters/platformTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                datasetTypes
+                                            <td><p>Filters the resources to get only those related to the dataset type filter.</p>
+                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the 
+                                        implementing backend.</p>
+                                        <p>The default is <code>measurement</code>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>datasetTypes=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/datasetTypesParam">#/parameters/datasetTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A collection of services</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--services--serviceId-"></span>
+            <div id="operation--services--serviceId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets an instance</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services/{serviceId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                serviceId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded service instance</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--services--serviceId--extras"></span>
+            <div id="operation--services--serviceId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for a service</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services/{serviceId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each service.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                serviceId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
                                             
                                                 </div>
                                             </div>
@@ -2276,6 +4879,184 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <p>A collection of timeseries</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--timeseries--timeseriesId-"></span>
+            <div id="operation--timeseries--timeseriesId--get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets a particular timeseries</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries/{timeseriesId}</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lorem Ipsum</p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                timeseriesId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                locale
+                                            <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are 
+                                        respected by an <code>_</code> , e.g. <code>en_US</code> for American English.</p>
+                                        <p>The REST-API should consider the following order to detect a locale</p>
+                                        <ul>
+                                        <li>User-agent (e.g. header information)</li>
+                                        <li>locale parameter</li>
+                                        </ul>
+                                        <p>A fallback language cannot be specified as it depends on the data of the service provider.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/localeParam">#/parameters/localeParam</a></span>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded timeseries</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--timeseries--timeseriesId--extras"></span>
+            <div id="operation--timeseries--timeseriesId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for timeseries</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries/{timeseriesId}/extras</strong></h3>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available 
+            metadata fields are listed in the <code>extras</code> metadata field of each timeseries.
+            You can query just the ones you are interested in by appending the <code>fields</code> 
+            query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td>
+                                                timeseriesId
+                                            <td></td>
+                                            <td>path</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="json-property-required"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                fields
+                                            <td></td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A list of (selected) extra infos</p>
                                             
                                                 </div>
                                             </div>

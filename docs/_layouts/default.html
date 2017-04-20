@@ -36,19 +36,19 @@
   <div class="container-fluid">
     <nav class="affix col-lg-2 n52-sidebar">
       <p class="header">
-        <a href="{{site.url}}">Home</a>
+        <a href="{{ site.baseurl }}">Home</a>
       </p>
       <p class="header">
-        <a href="{{site.url}}/platforms/">Platform Types</a>
+        <a href="{{ site.baseurl }}/platforms/">Platform Types</a>
       </p>
       <p class="header">
-        <a href="{{site.url}}/datatypes/">Data Types</a>
+        <a href="{{ site.baseurl }}/datatypes/">Data Types</a>
       </p>
       <p class="header">
-        <a href="{{site.url}}/io/">Input/Output</a>
+        <a href="{{ site.baseurl }}/io/">Input/Output</a>
       </p>
       <p class="header">
-        <a href="{{site.url}}/api/">API Reference</a>
+        <a href="{{ site.baseurl }}/api/">API Reference</a>
       </p>
     </nav>
     <div role="main" class="col-lg-9 n52-content pull-right">{{ content | toc_generate}}</div>
