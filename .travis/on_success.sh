@@ -12,12 +12,14 @@ DOCUMENTATION_BRANCHES=(
 )
 
 deploy_on_ghpages() {
-  local e
-  for e in DOCUMENTATION_BRANCHES; do [[ "$e" == "$1" ]] return 0; done
+  var="$1"
+  for item in ${DOCUMENTATION_BRANCHES[@]} ; do
+      [[ $var == "$item" ]] && return 0
+  done
   return 1
 }
 
-[ ! deploy_on_ghpages "${TRAVIS_BRANCH}" ] \
+[ ! $(deploy_on_ghpages "${TRAVIS_BRANCH}") ] \
   || stop "do not deploy docs of ${TRAVIS_BRANCH}"
 
 [ "${TRAVIS_SECURE_ENV_VARS}" == "true" ] \
@@ -32,18 +34,24 @@ deploy_on_ghpages() {
 github_name="Travis CI"
 github_mail="travis@travis-ci.org"
 branch="gh-pages"
-docs_dir="docs"
-docs_deploy_dir="./${docs_dir}/_site"
 build_dir=$(mktemp -d)
+#docs_dir="${build_dir}/docs"
+docs_dir="./docs"
+docs_deploy_dir="${docs_dir}/_site"
 
 git config --global user.name "${github_name}"
 git config --global user.email "${github_mail}"
 git clone --quiet --depth 1 --branch "${branch}" https://github.com/${TRAVIS_REPO_SLUG}.git "${build_dir}"
 
-bundle exec jekyll build -s "${docs_dir}" 
-bundle exec htmlproofer "${docs_deploy_dir}"
-
 output_folder=$(echo $TRAVIS_BRANCH | \sed 's/\//_/')
+
+pushd "${docs_dir}"
+echo "Current directory `pwd`"
+bundle update
+bundle exec jekyll build --baseurl "/series-rest-api/${output_folder}"
+bundle exec htmlproofer "./site"
+popd
+
 rm -rf "${build_dir:?}/${output_folder}"
 cp -rv "${docs_deploy_dir}" "${build_dir}/${output_folder}"
 
