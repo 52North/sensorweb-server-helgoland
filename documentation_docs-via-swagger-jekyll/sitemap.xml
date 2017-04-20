@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>/datatypes</loc>
+<loc>/series-rest-api/datatypes</loc>
 </url>
 <url>
-<loc>/</loc>
+<loc>/series-rest-api/</loc>
 </url>
 <url>
-<loc>/platforms</loc>
+<loc>/series-rest-api/platforms</loc>
 </url>
 <url>
-<loc>/api/index.html</loc>
-<lastmod>2017-04-20T13:09:57+00:00</lastmod>
+<loc>/series-rest-api/api/index.html</loc>
+<lastmod>2017-04-20T13:19:17+00:00</lastmod>
 </url>
 </urlset>

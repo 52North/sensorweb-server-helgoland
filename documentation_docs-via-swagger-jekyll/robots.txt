@@ -1,1 +1,1 @@
-Sitemap: /sitemap.xml
+Sitemap: /series-rest-api/sitemap.xml
