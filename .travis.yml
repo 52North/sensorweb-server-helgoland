@@ -5,7 +5,7 @@ install: true
 script: mvn -fae -U -B clean install -P check
 env:
   global:
-    - secure: "IEyFpcRUmY/SU3rIHbGRvhK+UmWjGe24CBCFdjMp+YN7oFX5QJ0mdRsXCFucDHcwPvUPqhW2wTfXYmahR98hKfCDKSMNTn3Yuw5ny2Q/3erZJKlb7A1GeVKnsG0MJ11tEDn+qL8ueghcTo/kIPUWD2H16wUotxq7UhwiNMuIim0="
+    - secure: "Q7Ry1dyB/6+0TEJN3fyBiCC1HlEK2pTQzWxywRmMgIxnJVXHq33y1sU9i78v6Skb9KozyfD4Uyu8Y8k+6dRf4dqWrT5+bYJIMXrTt4MLnkCtri3sd6G/oEkIZfgPJKGZdPnxBS4LvSfpNnbnlppDBmYd3pXU1cNVZHR4Mn4uzaE="
 after_success: chmod +x .travis/on_success.sh && .travis/on_success.sh
 cache:
   directories:
