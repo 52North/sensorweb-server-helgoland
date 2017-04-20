@@ -20,7 +20,6 @@ deploy_on_ghpages() {
 [ ! deploy_on_ghpages "${TRAVIS_BRANCH}" ] \
   || stop "do not deploy docs of ${TRAVIS_BRANCH}"
 
-
 [ "${TRAVIS_SECURE_ENV_VARS}" == "true" ] \
   || stop "no secure enviroment variables were provided"
 
@@ -33,17 +32,22 @@ deploy_on_ghpages() {
 github_name="Travis CI"
 github_mail="travis@travis-ci.org"
 branch="gh-pages"
-deploy_dir=$(mktemp -d)
+docs_dir="docs"
+docs_deploy_dir="./${docs_dir}/_site"
+build_dir=$(mktemp -d)
 
 git config --global user.name "${github_name}"
 git config --global user.email "${github_mail}"
-git clone --quiet --depth 1 --branch "${branch}" https://github.com/${TRAVIS_REPO_SLUG}.git "${deploy_dir}"
+git clone --quiet --depth 1 --branch "${branch}" https://github.com/${TRAVIS_REPO_SLUG}.git "${build_dir}"
 
-folder=$(echo $TRAVIS_BRANCH | \sed 's/\//_/')
-rm -rf "${deploy_dir:?}/${folder}"
-cp -rv docs "${deploy_dir}/${folder}"
+bundle exec jekyll build -s "${docs_dir}" 
+bundle exec htmlproofer "${docs_deploy_dir}"
 
-pushd "${deploy_dir}"
+output_folder=$(echo $TRAVIS_BRANCH | \sed 's/\//_/')
+rm -rf "${build_dir:?}/${output_folder}"
+cp -rv "${docs_deploy_dir}" "${build_dir}/${output_folder}"
+
+pushd "${build_dir}"
 git add --ignore-removal .
 git add --update :/
 git commit -m "Updating ${TRAVIS_BRANCH} on ${branch} to ${TRAVIS_COMMIT}"
