@@ -39,15 +39,16 @@
 <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
+
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/main.css" />
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/n52-style.css" />
-<link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/toc.css" />
 </head>
 
 <body>
-  <header>
-    <div class="navbar navbar-default navbar-fixed-top">
+
+  <div class="n52-container container-fluid">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll"><img alt="52&deg;North logo"
           src="http://52north.org/templates/52n-2012/images/52n-logo.gif" /></a>
@@ -61,11 +62,8 @@
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
-  </header>
-
-  <div class="container-fluid">
     <nav class="affix col-lg-2 n52-sidebar">
       <p class="header">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/">Home</a>
@@ -83,17 +81,35 @@
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/">API Reference</a>
       </p>
     </nav>
+
     <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
   <h1>Input/Output</h1>
 
   <div class="entry">
-    <h1 id="inputoutput">Input/Output</h1>
-
-<p>Depending on the requested data type the API offers some Input/Output processing.
+    <p>Depending on the requested data type the API offers some Input/Output processing.
 In case of <code class="highlighter-rouge">measurement</code> datasets a client might request a rendered chart instead 
 of raw data.</p>
 
 <p>The following sections list currently supported I/O operations.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#chart-rendering" id="markdown-toc-chart-rendering">Chart Rendering</a>    <ul>
+      <li><a href="#line-charts" id="markdown-toc-line-charts">Line Charts</a></li>
+      <li><a href="#bar-charts" id="markdown-toc-bar-charts">Bar Charts</a></li>
+      <li><a href="#overlaying-datasets" id="markdown-toc-overlaying-datasets">Overlaying Datasets</a></li>
+    </ul>
+  </li>
+  <li><a href="#generalizing-raw-data" id="markdown-toc-generalizing-raw-data">Generalizing Raw Data</a>    <ul>
+      <li><a href="#largest-triangle-three-bucket-downsampling-default" id="markdown-toc-largest-triangle-three-bucket-downsampling-default">Largest-Triangle-Three Bucket Downsampling (default)</a></li>
+      <li><a href="#douglas-peucker-downsampling" id="markdown-toc-douglas-peucker-downsampling">Douglas-Peucker Downsampling</a></li>
+    </ul>
+  </li>
+  <li><a href="#formatting-raw-data" id="markdown-toc-formatting-raw-data">Formatting Raw Data</a>    <ul>
+      <li><a href="#tvp-format-default" id="markdown-toc-tvp-format-default">TVP Format (default)</a></li>
+      <li><a href="#highchart-format" id="markdown-toc-highchart-format">Highchart Format</a></li>
+    </ul>
+  </li>
+</ul>
 
 <h2 id="chart-rendering">Chart Rendering</h2>
 
@@ -110,6 +126,7 @@ of raw data.</p>
 an image or a report (which embeds the chart).</p>
 
 <h3 id="line-charts">Line Charts</h3>
+
 <p>The following style properties can be set.</p>
 
 <table class="table">
@@ -135,8 +152,7 @@ an image or a report (which embeds the chart).</p>
   </tbody>
 </table>
 
-<h4 id="example">Example</h4>
-
+<p><strong>Example</strong></p>
 <div class="clearfix">
 <div class="col-lg-5">
   <img alt="lineChart" src="/images/io_chart_linestyle_example.png" title="Example for a line chart style." />
@@ -154,6 +170,7 @@ an image or a report (which embeds the chart).</p>
  </div>
 
 <h3 id="bar-charts">Bar Charts</h3>
+
 <p>The following style properties can be set.</p>
 
 <table class="table">
@@ -179,8 +196,7 @@ an image or a report (which embeds the chart).</p>
   </tbody>
 </table>
 
-<h4 id="example-1">Example</h4>
-
+<p><strong>Example</strong></p>
 <div class="clearfix">
 <div class="col-lg-5">
   <img alt="lineChart" src="/images/io_chart_barstyle_example.png" title="Example for a bar chart style." />
@@ -261,6 +277,7 @@ sense in more than just a low bandwidth use case (e.g. smoothing the curve).</p>
 is set to <code class="highlighter-rouge">false</code>. The API currently supports two generalization algorithms.</p>
 
 <h3 id="largest-triangle-three-bucket-downsampling-default">Largest-Triangle-Three Bucket Downsampling (default)</h3>
+
 <p>Downsamples to a fix amount of output values 
 (<a href="http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf">Details</a>). This is the default
 algorithm chosen, when <code class="highlighter-rouge">generalizing_algorithm</code> parameter is missing.</p>
@@ -273,6 +290,7 @@ algorithm chosen, when <code class="highlighter-rouge">generalizing_algorithm</c
 </ul>
 
 <h3 id="douglas-peucker-downsampling">Douglas-Peucker Downsampling</h3>
+
 <p>Downsamples timeseries values by using a threshold value 
 (<a href="http://en.wikipedia.org/wiki/Ramer%E2%80%93Douglas%E2%80%93Peucker_algorithm">Details</a>).</p>
 
@@ -303,6 +321,7 @@ data differently within the used API. Please refer to the actual data output so 
 intended by the 3rd party API.</p>
 
 <h3 id="tvp-format-default">TVP Format (default)</h3>
+
 <p>The format returns timeseries data as time-value tuples.</p>
 
 <p><strong>Example (single dataset)</strong></p>
@@ -416,6 +435,7 @@ readable label taken from the Dataset metadata.</p>
 
   </div>
 </article></div>
+
   </div>
 
 

@@ -39,15 +39,16 @@
 <!--[if lt IE 9]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    
+
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/main.css" />
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/n52-style.css" />
-<link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/toc.css" />
 </head>
 
 <body>
-  <header>
-    <div class="navbar navbar-default navbar-fixed-top">
+
+  <div class="n52-container container-fluid">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll"><img alt="52&deg;North logo"
           src="http://52north.org/templates/52n-2012/images/52n-logo.gif" /></a>
@@ -61,11 +62,8 @@
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
 
-  </header>
-
-  <div class="container-fluid">
     <nav class="affix col-lg-2 n52-sidebar">
       <p class="header">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/">Home</a>
@@ -83,20 +81,29 @@
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/">API Reference</a>
       </p>
     </nav>
+
     <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
   <h1>Data Types</h1>
 
   <div class="entry">
-    <h1 id="data-types">Data Types</h1>
-
-<p>A dataset has a particular type which indicates the type of data
+    <p>A dataset has a particular type which indicates the type of data
 which is being, or has been observed by a specific platform. This 
-can be simple scalar types (<code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">boolean</code>,<code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">text</code>)
-or more complex types like <code class="highlighter-rouge">profile</code> or other <code class="highlighter-rouge">record</code> data being
-observed over time or along a track. The default dataset type is 
-<code class="highlighter-rouge">measurement</code> which actually is a numeric observation over time.</p>
+can be simple scalar types or more complex types like <code class="highlighter-rouge">profile</code> or
+other <code class="highlighter-rouge">record</code> data being observed over time or along a track.</p>
 
-<p>A resource can be filtered by dataset type(s).</p>
+<p>The default dataset type is <code class="highlighter-rouge">measurement</code> which actually is a 
+numeric observation over time. A resource can be filtered by 
+dataset type(s).</p>
+
+<ul id="markdown-toc">
+  <li><a href="#general" id="markdown-toc-general">General</a></li>
+  <li><a href="#scalar-data-types" id="markdown-toc-scalar-data-types">Scalar data types</a></li>
+  <li><a href="#complex-data-types" id="markdown-toc-complex-data-types">Complex data types</a>    <ul>
+      <li><a href="#record" id="markdown-toc-record">Record</a></li>
+      <li><a href="#profile" id="markdown-toc-profile">Profile</a></li>
+    </ul>
+  </li>
+</ul>
 
 <h2 id="general">General</h2>
 <p>A simplest data value has a <code class="highlighter-rouge">timestamp</code> and a corresponding <code class="highlighter-rouge">value</code>.
@@ -135,7 +142,7 @@ be encoded as well (if present).</p>
     <tr>
       <td><code class="highlighter-rouge">value</code></td>
       <td>no</td>
-      <td>the actual observation value</td>
+      <td>the actual (typed) data value</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">geometry</code></td>
@@ -155,12 +162,15 @@ be encoded as well (if present).</p>
   </tbody>
 </table>
 
-<h2 id="scalar-data-types">Scalar data types</h2>
+<p>Each data value might have different optionals set.</p>
 
-<h3 id="measurement">Measurement</h3>
-<p>Depending on what data type members are available (see above table which are 
-optional) the following output would be valid. Note, that each data value might
-have different optionals set.</p>
+<h2 id="scalar-data-types">Scalar data types</h2>
+<p>Scalar data types are single values (<code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">boolean</code>, <code class="highlighter-rouge">double</code>, 
+<code class="highlighter-rouge">text</code>). Observations of type <code class="highlighter-rouge">double</code> are identified by <code class="highlighter-rouge">measurement</code>. Other 
+scalar types are denoted as is.</p>
+
+<p>Depending on what members are available (see above table) the following output 
+would be valid.</p>
 
 <p><strong>Measurement Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -239,16 +249,110 @@ have different optionals set.</p>
 </div>
 
 <h2 id="complex-data-types">Complex data types</h2>
-<p>tbd</p>
+<p>Complex data types are compound values.</p>
+
+<p>Depending on what members are available (see above table) the following output 
+would be valid.</p>
 
 <h3 id="record">Record</h3>
-<p>tbd</p>
+<p>A record’s <code class="highlighter-rouge">value</code> member is a map of key-valued objects.</p>
+
+<p><strong>GeoJson Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"record_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1437160475022</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"east"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120644"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120644"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b20c50876106726.jpg"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="mf">14.27377</span><span class="p">,</span><span class="w">
+                </span><span class="mf">48.30273</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="nt">"south"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120645"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120645"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b26583054767586.jpg"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="mf">14.27375</span><span class="p">,</span><span class="w">
+                </span><span class="mf">48.30275</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="nt">"north"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120643"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120643"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b19209320230740.jpg"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="mf">14.27378</span><span class="p">,</span><span class="w">
+                </span><span class="mf">48.30273</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="nt">"spot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120647"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120647"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b3782c557670845.jpg"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="mf">14.27375</span><span class="p">,</span><span class="w">
+                </span><span class="mf">48.30275</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="nt">"west"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120646"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120646"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/55a9541b30c2f165697520.jpg"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="mf">14.27374</span><span class="p">,</span><span class="w">
+                </span><span class="mf">48.30275</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
 
 <h3 id="profile">Profile</h3>
 <p>tbd</p>
 
   </div>
 </article></div>
+
   </div>
 
 
