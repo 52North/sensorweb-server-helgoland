@@ -23,8 +23,9 @@ git config --global user.name "${github_name}"
 git config --global user.email "${github_mail}"
 git clone --quiet --depth 1 --branch "${branch}" https://github.com/${TRAVIS_REPO_SLUG}.git "${deploy_dir}"
 
-rm -rf "${deploy_dir:?}/${TRAVIS_BRANCH}"
-cp -rv docs "${deploy_dir}/${TRAVIS_BRANCH}"
+folder=$(echo $TRAVIS_BRANCH | \sed 's/\//_/')
+rm -rf "${deploy_dir:?}/${folder}"
+cp -rv docs "${deploy_dir}/${folder}"
 
 pushd "${deploy_dir}"
 git add --ignore-removal .
