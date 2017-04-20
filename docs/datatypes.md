@@ -4,8 +4,6 @@ title: Data Types
 permalink: /datatypes
 ---
 
-# Data Types
-
 A dataset has a particular type which indicates the type of data
 which is being, or has been observed by a specific platform. This 
 can be simple scalar types (`count`, `boolean`,`double`, `text`)
