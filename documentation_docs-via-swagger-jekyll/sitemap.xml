@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>/series-rest-api/datatypes</loc>
+<loc>/series-rest-api/documentation_docs-via-swagger-jekyll/datatypes</loc>
 </url>
 <url>
-<loc>/series-rest-api/</loc>
+<loc>/series-rest-api/documentation_docs-via-swagger-jekyll/</loc>
 </url>
 <url>
-<loc>/series-rest-api/platforms</loc>
+<loc>/series-rest-api/documentation_docs-via-swagger-jekyll/platforms</loc>
 </url>
 <url>
-<loc>/series-rest-api/api/index.html</loc>
-<lastmod>2017-04-20T13:19:17+00:00</lastmod>
+<loc>/series-rest-api/documentation_docs-via-swagger-jekyll/api/index.html</loc>
+<lastmod>2017-04-20T13:30:31+00:00</lastmod>
 </url>
 </urlset>
