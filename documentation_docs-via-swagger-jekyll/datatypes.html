@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Data Types – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -30,6 +30,9 @@
     
     <meta name="author" content="52°North GmbH" />
 
+    
+    <meta property="og:title" content="Data Types" />
+    <meta property="twitter:title" content="Data Types" />
     
 
 
@@ -65,7 +68,7 @@
   <div class="container-fluid">
     <nav class="affix col-lg-2 n52-sidebar">
       <p class="header">
-        <a href="/series-rest-api/documentation_docs-via-swagger-jekyll">Home</a>
+        <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/">Home</a>
       </p>
       <p class="header">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/platforms/">Platform Types</a>
@@ -81,10 +84,12 @@
       </p>
     </nav>
     <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
-  <h1></h1>
+  <h1>Data Types</h1>
 
   <div class="entry">
-    <p>A dataset has a particular type which indicates the type of data
+    <h1 id="data-types">Data Types</h1>
+
+<p>A dataset has a particular type which indicates the type of data
 which is being, or has been observed by a specific platform. This 
 can be simple scalar types (<code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">boolean</code>,<code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">text</code>)
 or more complex types like <code class="highlighter-rouge">profile</code> or other <code class="highlighter-rouge">record</code> data being
@@ -203,7 +208,35 @@ have different optionals set.</p>
 </span></code></pre>
 </div>
 
-<h4 id="mobile-example">Mobile Example</h4>
+<p><strong>Measurement example (<code class="highlighter-rouge">mobile</code> platform)</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1362610500000</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">261.494</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="mf">3.020595</span><span class="p">,</span><span class="w">
+          </span><span class="mf">52.40741</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1362610520000</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">261.738</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="mf">3.018087</span><span class="p">,</span><span class="w">
+          </span><span class="mf">52.408466</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
 
 <h2 id="complex-data-types">Complex data types</h2>
 <p>tbd</p>
