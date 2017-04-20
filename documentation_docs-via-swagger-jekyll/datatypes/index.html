@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Data Types – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,9 +31,6 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Data Types" />
-    <meta property="twitter:title" content="Data Types" />
-    
 
 
 <!--[if lt IE 9]>
@@ -49,7 +46,7 @@
   <header>
     <div class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
-        <a href=""><img alt="52&deg;North logo"
+        <a href="/series-rest-api/documentation_docs-via-swagger-jekyll"><img alt="52&deg;North logo"
           src="http://52north.org/templates/52n-2012/images/52n-logo.gif" /></a>
       </div>
       <div class="container">
@@ -84,7 +81,7 @@
       </p>
     </nav>
     <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
-  <h1>Data Types</h1>
+  <h1></h1>
 
   <div class="entry">
     <p>A dataset has a particular type which indicates the type of data
@@ -98,9 +95,12 @@ observed over time or along a track. The default dataset type is
 
 <h2 id="general">General</h2>
 <p>A simplest data value has a <code class="highlighter-rouge">timestamp</code> and a corresponding <code class="highlighter-rouge">value</code>.
+However, when data values provide an observation interval (<code class="highlighter-rouge">timestart</code>
+and <code class="highlighter-rouge">timeend</code>) <code class="highlighter-rouge">timestamp</code> is omitted.
 A <code class="highlighter-rouge">null</code> value means <code class="highlighter-rouge">no-data</code>.</p>
 
-<p>While <code class="highlighter-rouge">timestamp</code> and <code class="highlighter-rouge">value</code> are mandatory, other information can
+<p>While <code class="highlighter-rouge">timestamp</code> and <code class="highlighter-rouge">value</code> are mandatory (<code class="highlighter-rouge">timestamp</code> is mutually 
+exclusive to <code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code> though), other information can
 be encoded as well (if present).</p>
 
 <table class="table">
@@ -113,33 +113,38 @@ be encoded as well (if present).</p>
   </thead>
   <tbody>
     <tr>
+      <td><code class="highlighter-rouge">timestamp</code></td>
+      <td>no</td>
+      <td>when value has been observed</td>
+    </tr>
+    <tr>
       <td><code class="highlighter-rouge">timestart</code></td>
       <td>no</td>
-      <td>when observation started</td>
+      <td>when observation started (mutual exclusive to <code class="highlighter-rouge">timestamp</code>)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">timeend</code></td>
-      <td>yes</td>
-      <td>when observation ended</td>
+      <td>no</td>
+      <td>when observation ended (mutual exclusive to <code class="highlighter-rouge">timestamp</code>)</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">value</code></td>
-      <td>yes</td>
+      <td>no</td>
       <td>the actual observation value</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">geometry</code></td>
-      <td>no</td>
+      <td>yes</td>
       <td>relevant for <code class="highlighter-rouge">mobile</code> platforms</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">parameters</code></td>
-      <td>no</td>
+      <td>yes</td>
       <td>additional parameters</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">validTime</code></td>
-      <td>no</td>
+      <td>yes</td>
       <td>when the observation is being considered valid</td>
     </tr>
   </tbody>
@@ -152,7 +157,7 @@ be encoded as well (if present).</p>
 optional) the following output would be valid. Note, that each data value might
 have different optionals set.</p>
 
-<p><strong>Stationary Example</strong></p>
+<p><strong>Measurement Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"measurement_1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
@@ -178,16 +183,27 @@ have different optionals set.</p>
 </span></code></pre>
 </div>
 
+<p><strong>Text example (observation interval, <code class="highlighter-rouge">stationary</code> platform)</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"text_1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"timestart"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326400000</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"timesend"</span><span class="p">:</span><span class="w"> </span><span class="mi">135332605000</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo"</span><span class="p">,</span><span class="w">
+      </span><span class="err">}</span><span class="p">,</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"timestart"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326460000</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"timeend"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326465000</span><span class="w">
+        </span><span class="s2">"value"</span><span class="err">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+      </span><span class="err">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
 <h4 id="mobile-example">Mobile Example</h4>
-
-<h3 id="text">Text</h3>
-<p>tbd</p>
-
-<h3 id="count">Count</h3>
-<p>tbd</p>
-
-<h3 id="boolean">Boolean</h3>
-<p>tbd</p>
 
 <h2 id="complex-data-types">Complex data types</h2>
 <p>tbd</p>
