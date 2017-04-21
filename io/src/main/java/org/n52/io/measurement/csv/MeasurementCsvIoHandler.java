@@ -132,7 +132,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private void writeData(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            MeasurementData series = data.getSeries(DatasetType.extractId(metadata.getId()));
+            MeasurementData series = data.getSeries(metadata.getId());
             writeData(metadata, (MeasurementData) series, stream);
         }
     }
