@@ -20,7 +20,7 @@
         "/": {
             "get": {
                 "summary": "Available endpoints.",
-                "description": "A (static) collection of endpoints available from this API. Each includes\na relative path and a short description.\n",
+                "description": "A (static) collection of endpoints available from this API. Each includes a relative path and a short description.\n",
                 "tags": [
                     "general"
                 ],
@@ -34,7 +34,7 @@
         "/search": {
             "get": {
                 "summary": "A simple search.",
-                "description": "A simple search over all resource's labels over all available endpoints.\nNote that the searching respects the current locale being selected.\n",
+                "description": "A simple search over all resource's labels over all available endpoints. Note that the searching respects the current locale being selected.\n",
                 "parameters": [
                     {
                         "name": "q",
@@ -57,7 +57,7 @@
         "/platforms": {
             "get": {
                 "summary": "Available Platforms",
-                "description": "Lorem Ipsum\n",
+                "description": "A collection of available platforms. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -91,6 +91,15 @@
                     },
                     {
                         "$ref": "#/parameters/datasetTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/crsParam"
+                    },
+                    {
+                        "$ref": "#/parameters/bboxParam"
+                    },
+                    {
+                        "$ref": "#/parameters/nearParam"
                     }
                 ],
                 "responses": {
@@ -103,7 +112,7 @@
         "/platforms/{platformId}": {
             "get": {
                 "summary": "Gets a particular platform",
-                "description": "Lorem Ipsum\n",
+                "description": "Full view of a platform instance. A platform encodes a POINT geometry which is the actual location for `stationary` platforms and the last detected location for `mobile` platforms.\n",
                 "parameters": [
                     {
                         "name": "platformId",
@@ -134,7 +143,7 @@
         "/stations": {
             "get": {
                 "summary": "Available Stations",
-                "description": "Lorem Ipsum\n",
+                "description": "A collection of available stations. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -164,12 +173,6 @@
                         "$ref": "#/parameters/stationsParam"
                     },
                     {
-                        "$ref": "#/parameters/platformTypesParam"
-                    },
-                    {
-                        "$ref": "#/parameters/datasetTypesParam"
-                    },
-                    {
                         "$ref": "#/parameters/crsParam"
                     },
                     {
@@ -189,7 +192,7 @@
         "/stations/{stationId}": {
             "get": {
                 "summary": "Gets a particular station",
-                "description": "Lorem Ipsum\n",
+                "description": "Full data view of a station. A station is a [GeoJSON point geometry](https://www.rfc-editor.org/info/rfc7946) which encodes available metadata in its `properties` member.\n",
                 "parameters": [
                     {
                         "name": "stationId",
@@ -220,7 +223,7 @@
         "/datasets": {
             "get": {
                 "summary": "Gets available datasets",
-                "description": "Lorem Ipsum\n",
+                "description": "A collection of available datasets. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -274,8 +277,8 @@
         },
         "/datasets/{datasetId}": {
             "get": {
-                "summary": "Gets a particular datasets",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets a particular dataset",
+                "description": "Full view of a dataset instance. All relevant relations (parameters, unit, platform, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -297,7 +300,7 @@
         "/datasets/{datasetId}/extras": {
             "get": {
                 "summary": "Gets extra infos for dataset",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each dataset.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -326,7 +329,7 @@
         "/datasets/{datasetId}/{interval}": {
             "get": {
                 "summary": "Gets extra infos for dataset",
-                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering \nis enabled for a given datasets depends on the API provider as it is a configuration issue.\n\nIf a datasets has no pre-rendered chart a `404` (Resource not found) error is returned. In \nparticular cases this is also true when the chart is currently being re-rendered.\n",
+                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.\n\nIf a datasets has no pre-rendered chart a `404` (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -351,7 +354,7 @@
         "/datasets/{datasetId}/data": {
             "get": {
                 "summary": "Gets data of a dataset",
-                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of\ntime intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `measurement` \nobservations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`).\n\nSupported Mime-Types are listed for each `datasetType` when querying \n`/service/{serviceId}?datasetTypes=all`\n",
+                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `measurement` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all`\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -379,7 +382,7 @@
         "/timeseries": {
             "get": {
                 "summary": "Gets available timeseries",
-                "description": "A collection of timeseries (i.e. datasets of type `measurement` which\nhave been observed at `stationary`, `insitu` platforms having a \n0-dimensional (POINT) location geometry.\n",
+                "description": "A collection of timeseries (i.e. datasets of type `measurement` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -434,7 +437,7 @@
         "/timeseries/{timeseriesId}": {
             "get": {
                 "summary": "Gets a particular timeseries",
-                "description": "Lorem Ipsum\n",
+                "description": "Full view of a timeseries instance. All relevant relations (parameters, unit, station, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).\n\nFor backward compatibility reasons metadata about `renderingHints` and `statusIntervals` are inlined here as well. However, those are listed within `extra` infos to make it consistent.\n",
                 "parameters": [
                     {
                         "name": "timeseriesId",
@@ -456,7 +459,7 @@
         "/timeseries/{timeseriesId}/extras": {
             "get": {
                 "summary": "Gets extra infos for timeseries",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each timeseries.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each timeseries.\n\nYou can query just the ones you are interested in by appending the `fields`query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "timeseriesId",
@@ -485,7 +488,7 @@
         "/timeseries/{timeseriesId}/getData": {
             "get": {
                 "summary": "Gets data of a dataset",
-                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of\ntime intervals a client can query in one request. \n\nThis operation does only return data of `measurement` dataset types from `stationary`, \n`insitu` platforms having a 0-dimensional location geometry (`station`). Supported \nMime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.\n",
+                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nThis operation does only return data of `measurement` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.\n",
                 "parameters": [
                     {
                         "name": "timeseriesId",
@@ -537,7 +540,7 @@
         "/geometries": {
             "get": {
                 "summary": "A collection of available geometries",
-                "description": "",
+                "description": "All available geometries instances. Possible geometry types are \n\n* `site`, i.e. `stationary` platform locations (fixed) \n\n* `track`, i.e. trajectories made by a `mobile` platform\n\n* `static`, i.e. a fixed geometry observed by a `remote` platform\n\n* `dynamic`, i.e. geometry observed by a `remote` platform which changes over time\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/crsParam"
@@ -556,10 +559,35 @@
                 }
             }
         },
+        "/geometries/{geometryId}'": {
+            "get": {
+                "summary": "Gets a particular geometry",
+                "description": "Full view of a geometry instance. Encodes as full [GeoJSON geometry](https://www.rfc-editor.org/info/rfc7946).\n",
+                "parameters": [
+                    {
+                        "name": "geometryId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/localeParam"
+                    },
+                    {
+                        "$ref": "#/parameters/crsParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded geometry instance"
+                    }
+                }
+            }
+        },
         "/services": {
             "get": {
                 "summary": "Get available service instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "description": "All available service instances. For backwards compatibility reasons the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -584,7 +612,7 @@
         "/services/{serviceId}": {
             "get": {
                 "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "description": "Gets a service instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved via following endpoint.\n\n\nDepending on what dataset types are available, differing output formats are available. For example, `image/png` (render as chart) or `application/pdf` (generating a report).\n",
                 "parameters": [
                     {
                         "name": "serviceId",
@@ -603,7 +631,7 @@
         "/services/{serviceId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a service",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each service.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each service.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "serviceId",
@@ -631,8 +659,8 @@
         },
         "/categories": {
             "get": {
-                "summary": "Get available category instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "summary": "Gets available categories",
+                "description": "All available category instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -677,8 +705,8 @@
         },
         "/categories/{categoryId}": {
             "get": {
-                "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets a catefory instance",
+                "description": "Gets a category instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
                 "parameters": [
                     {
                         "name": "categoryId",
@@ -697,7 +725,7 @@
         "/categories/{categoryId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a category",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each category.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each category.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "categoryId",
@@ -726,7 +754,7 @@
         "/phenomena": {
             "get": {
                 "summary": "Get available phenomenon instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "description": "All available phenomenon instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -771,8 +799,8 @@
         },
         "/phenomena/{phenomenonId}": {
             "get": {
-                "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets a phenomenon instance",
+                "description": "Gets a phenomenon instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
                 "parameters": [
                     {
                         "name": "phenomenonId",
@@ -791,7 +819,7 @@
         "/phenomena/{phenomenonId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a phenomenon",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each phemomenon.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each phemomenon.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "phenomenonId",
@@ -820,7 +848,7 @@
         "/procedure": {
             "get": {
                 "summary": "Get available procedure instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "description": "All available procedure instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -865,8 +893,8 @@
         },
         "/procedures/{procedureId}": {
             "get": {
-                "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets a procedure instance",
+                "description": "Gets a procedure instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
                 "parameters": [
                     {
                         "name": "procedureId",
@@ -885,7 +913,7 @@
         "/procedures/{procedureId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a procedure",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each procedure.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each procedure.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "procedureId",
@@ -914,7 +942,7 @@
         "/offerings": {
             "get": {
                 "summary": "Get available offerings instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "description": "All available offering instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -959,8 +987,8 @@
         },
         "/offerings/{offeringId}": {
             "get": {
-                "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets an offering instance",
+                "description": "Gets an offering instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
                 "parameters": [
                     {
                         "name": "offeringId",
@@ -979,7 +1007,7 @@
         "/offerings/{offeringId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a phenomenon",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each offering.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each offering.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
                         "name": "offeringId",
@@ -1008,7 +1036,7 @@
         "/features": {
             "get": {
                 "summary": "Get available feature instances",
-                "description": "All available instances. For backwards compatibility reasons the output \nis filtered by default to list only those instances related to `stationary`, \n`insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
+                "description": "All available instances. For backwards compatibility reasons the output  is filtered by default to list only those instances related to `stationary`,  `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -1053,8 +1081,8 @@
         },
         "/features/{featureId}": {
             "get": {
-                "summary": "Gets an instance",
-                "description": "Lorem Ipsum\n",
+                "summary": "Gets an feature instance",
+                "description": "Gets a feature instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
                 "parameters": [
                     {
                         "name": "featureId",
@@ -1073,7 +1101,7 @@
         "/features/{featureId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a feature",
-                "description": "Lists extra metadata which may vary from instance to instance. The available \nmetadata fields are listed in the `extras` metadata field of each feature.\nYou can query just the ones you are interested in by appending the `fields` \nquery parameter and passing a comma-separated value list to it. \n",
+                "description": "All available feature instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "name": "featureId",
@@ -1095,39 +1123,6 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
-                    }
-                }
-            }
-        },
-        "/history": {
-            "get": {
-                "summary": "User Activity",
-                "description": "The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.",
-                "parameters": [
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "Offset the list of returned results by this amount. Default is zero."
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "type": "integer",
-                        "format": "int32",
-                        "description": "Number of items to retrieve. Default is 5, maximum is 100."
-                    }
-                ],
-                "tags": [
-                    "User"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "History information for the given user",
-                        "schema": {
-                            "$ref": "#/definitions/Activities"
-                        }
                     },
                     "default": {
                         "description": "Unexpected error",
@@ -1144,7 +1139,7 @@
             "name": "expanded",
             "in": "query",
             "type": "boolean",
-            "description": "If `true` a list of partially expanded resource items is returned. The expansion provides more \ndetailed information up to a certain point. However, it does not necessarily provide all item \ninformation as one may get when request the resource item itself.\n\nThe expanded works almost only for resource collection. However, exceptions may exist (e.g. \nfor getting raw data). Exceptions are explicitly documented.\n\nThe default is `false`.\n"
+            "description": "If `true` a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.\n\nThe expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is `false`.\n"
         },
         "platformTypesParam": {
             "name": "platformTypes",
@@ -1154,7 +1149,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "Filters the resources to get only those related to the platform type filter.\n\nAllowed values are `stationary`, `mobile`, `insitu`, `remote`, `all`\n\nThe default is `stationary,insitu`.\n"
+            "description": "Filters the resources to get only those related to the platform type filter.\n\nAllowed values are `stationary`, `mobile`, `insitu`, `remote`, `all`. \n\nThe default is `stationary,insitu`.\n"
         },
         "datasetTypesParam": {
             "name": "datasetTypes",
@@ -1164,7 +1159,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "Filters the resources to get only those related to the dataset type filter.\n\nAllowed values are `measurement`, `count`, `text`, `all` or any other custom types given by the \nimplementing backend.\n\nThe default is `measurement`.\n"
+            "description": "Filters the resources to get only those related to the dataset type filter.\n\nAllowed values are `measurement`, `count`, `text`, `all` or any other custom types given by the  implementing backend.\n\nThe default is `measurement`.\n"
         },
         "servicesParam": {
             "name": "services",
@@ -1174,7 +1169,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given service id does match. The single form (`service`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given service id does match. The single form (`service`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "categoriesParam": {
             "name": "categories",
@@ -1184,7 +1179,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given category id does match. The single form (`category`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given category id does match. The single form (`category`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "phenomenaParam": {
             "name": "phenomena",
@@ -1194,7 +1189,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given phenomenon id does match. The single form (`phenomenon`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given phenomenon id does match. The single form (`phenomenon`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "proceduresParam": {
             "name": "procedures",
@@ -1204,7 +1199,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given procedure id does match. The single form (`procedure`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given procedure id does match. The single form (`procedure`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "offeringsParam": {
             "name": "offerings",
@@ -1214,7 +1209,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given offering id does match. The single form (`offering`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given offering id does match. The single form (`offering`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "stationsParam": {
             "name": "stations",
@@ -1224,7 +1219,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "All resources where the given station id does match. The single form (`station`) is kept for backwards\ncompatibility. Please use the plural form to filter on multiple ids.\n"
+            "description": "All resources where the given station id does match. The single form (`station`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.\n"
         },
         "platformsParam": {
             "name": "platforms",
@@ -1240,37 +1235,37 @@
             "name": "locale",
             "in": "query",
             "type": "string",
-            "description": "Specifies the language as [ISO639](http://en.wikipedia.org/wiki/ISO_639) code. Subdivisions are \nrespected by an `_` , e.g. `en_US` for American English.\n\nThe REST-API should consider the following order to detect a locale\n\n* User-agent (e.g. header information)\n* locale parameter\n\nA fallback language cannot be specified as it depends on the data of the service provider.\n"
+            "description": "Specifies the language as [ISO639](http://en.wikipedia.org/wiki/ISO_639) code. Subdivisions are  respected by an `_` , e.g. `en_US` for American English.\n\nThe REST-API should consider the following order to detect a locale\n\n* User-agent (e.g. header information)\n* locale parameter\n\nA fallback language cannot be specified as it depends on the data of the service provider.\n"
         },
         "timespanParam": {
             "name": "timespan",
             "in": "query",
             "type": "string",
-            "description": "\"An [ISO8601](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals) formatted period. Only backslash formatted values are supported.\"\n"
+            "description": "An [ISO8601](http://en.wikipedia.org/wiki/ISO_8601#Time_intervals)  formatted period. Only backslash formatted values are supported.\n"
         },
         "crsParam": {
             "name": "crs",
             "in": "query",
             "type": "string",
-            "description": "The client indicates that input geometries shall be interpreted as being referenced by the\ngiven CRS (for example in case of `crs=EPSG:25832` to \n[ETRS89/UTM zone 32N](http://spatialreference.org/ref/epsg/25832/)).\n\nPer default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs\nvalue differs from default, all output geometries are transformed to match the asked CRS.\n\nPlease note that some CRS switch coordinate axes. Double check axes ordering before interpreting \ncoordinates!\n"
+            "description": "The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of `crs=EPSG:25832` to  [ETRS89/UTM zone 32N](http://spatialreference.org/ref/epsg/25832/)).\n\nPer default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.\n\nPlease note that some CRS switch coordinate axes. Double check axes ordering before interpreting coordinates!\n"
         },
         "bboxParam": {
             "name": "bbox",
             "in": "query",
             "type": "string",
-            "description": "Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a \nnon-default CRS shall be used.\n\n``` \nbbox={\n  \"ll\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  },\n  \"ur\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  }\n}\n```\n"
+            "description": "Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.\n\n```json  bbox={\n  \"ll\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  },\n  \"ur\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  }\n}\n```\n"
         },
         "nearParam": {
             "name": "near",
             "in": "query",
             "type": "string",
-            "description": "Stations within a given bounding box (in WGS84 by default). Refer to the `crs` parameter if a \nnon-default CRS shall be used.\n\n``` \nnear={\n  \"center\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  },\n  \"radius\":500\n}\n```\n"
+            "description": "Stations within a given bounding box (in WGS84 by default). Refer to the `crs` parameter if a  non-default CRS shall be used.\n\n```json near={\n  \"center\": {\n    \"type\": \"Point\",\n    \"coordinates\": [<x>,<y>]\n  },\n  \"radius\":500\n}\n```\n"
         },
         "legendParam": {
             "name": "legend",
             "in": "query",
             "type": "boolean",
-            "description": "Indicates if a legend shall be rendered directly on the image output (if `image/png` shall be \nthe output).\n"
+            "description": "Indicates if a legend shall be rendered directly on the image output (if `image/png` shall be  the output).\n"
         },
         "gridParam": {
             "name": "grid",
@@ -1302,19 +1297,19 @@
             "name": "force_latest_values",
             "in": "query",
             "type": "boolean",
-            "description": "Can be used to force last value requests on a collection of timeseries.\n\nPlease note that this enforcement (in combination with `expanded=true`) may result \nin long response times as the last value has to be requested for each timeseries of \nthe requested collection. Use this enforcement only on filtered queries.\n"
+            "description": "Can be used to force last value requests on a collection of timeseries.\n\nPlease note that this enforcement (in combination with `expanded=true`) may result  in long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.\n"
         },
         "formatParam": {
             "name": "format",
             "in": "query",
             "type": "string",
-            "description": "Controls the output format of raw timeseries data. This avoids converting between different \ndata formats on client side which uses a 3rd party chart rendering API. Currently, supported \nformats\n\n  * *tvp* Time value pairs (the default)\n  * *highcharts* [Highcharts](http://www.highcharts.com/) series data format.\n  \nRefer to the Format section for detailed information how the formats will look like.\n"
+            "description": "Controls the output format of raw timeseries data. This avoids converting between different  data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats\n\n  * *tvp* Time value pairs (the default)\n  \n  * *highcharts* [Highcharts](http://www.highcharts.com/) series data format.\n  \n  \nRefer to the Format section for detailed information how the formats will look like.\n"
         },
         "base64Param": {
             "name": "base64",
             "in": "query",
             "type": "boolean",
-            "description": "Indicates binary images shall be encoded to a base64 string on server side. This makes it\neasily possible to display images from JavaScript (you would need a byte parsing library \notherwise).\n\nHere is an example how to embed encoded base64 string\n```\n<img src='data:image/png;base64,\" + encodedString + \"' />\n```\n"
+            "description": "Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library  otherwise).\n\nHere is an example how to embed encoded base64 string\n```\n<img src='data:image/png;base64,\" + encodedString + \"' />\n```\n"
         }
     },
     "definitions": {
@@ -1373,135 +1368,17 @@
                 }
             }
         },
-        "Product": {
-            "type": "object",
-            "properties": {
-                "product_id": {
-                    "type": "string",
-                    "description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles."
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of product."
-                },
-                "display_name": {
-                    "type": "string",
-                    "description": "Display name of product."
-                },
-                "capacity": {
-                    "type": "string",
-                    "description": "Capacity of product. For example, 4 people."
-                },
-                "image": {
-                    "type": "string",
-                    "description": "Image URL representing the product."
-                }
-            }
-        },
-        "PriceEstimate": {
-            "type": "object",
-            "properties": {
-                "product_id": {
-                    "type": "string",
-                    "description": "Unique identifier representing a specific product for a given latitude & longitude. For example, uberX in San Francisco will have a different product_id than uberX in Los Angeles"
-                },
-                "currency_code": {
-                    "type": "string",
-                    "description": "[ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code."
-                },
-                "display_name": {
-                    "type": "string",
-                    "description": "Display name of product."
-                },
-                "estimate": {
-                    "type": "string",
-                    "description": "Formatted string of estimate in local currency of the start location. Estimate could be a range, a single number (flat rate) or \"Metered\" for TAXI."
-                },
-                "low_estimate": {
-                    "type": "number",
-                    "description": "Lower bound of the estimated price."
-                },
-                "high_estimate": {
-                    "type": "number",
-                    "description": "Upper bound of the estimated price."
-                },
-                "surge_multiplier": {
-                    "type": "number",
-                    "description": "Expected surge multiplier. Surge is active if surge_multiplier is greater than 1. Price estimate already factors in the surge multiplier."
-                }
-            }
-        },
-        "Profile": {
-            "type": "object",
-            "properties": {
-                "first_name": {
-                    "type": "string",
-                    "description": "First name of the Uber user."
-                },
-                "last_name": {
-                    "type": "string",
-                    "description": "Last name of the Uber user."
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address of the Uber user"
-                },
-                "picture": {
-                    "type": "string",
-                    "description": "Image URL of the Uber user."
-                },
-                "promo_code": {
-                    "type": "string",
-                    "description": "Promo code of the Uber user."
-                }
-            }
-        },
-        "Activity": {
-            "type": "object",
-            "properties": {
-                "uuid": {
-                    "type": "string",
-                    "description": "Unique identifier for the activity"
-                }
-            }
-        },
-        "Activities": {
-            "type": "object",
-            "properties": {
-                "offset": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Position in pagination."
-                },
-                "limit": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Number of items to retrieve (100 max)."
-                },
-                "count": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Total number of items available."
-                },
-                "history": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Activity"
-                    }
-                }
-            }
-        },
         "Error": {
             "type": "object",
             "properties": {
-                "code": {
+                "statusCode": {
                     "type": "integer",
                     "format": "int32"
                 },
-                "message": {
+                "reason": {
                     "type": "string"
                 },
-                "fields": {
+                "userMessage": {
                     "type": "string"
                 }
             }
