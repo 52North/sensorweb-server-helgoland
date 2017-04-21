@@ -72,7 +72,7 @@ public abstract class RequestParameterSet {
     }
 
     public String getOutputTimezone() {
-        return getAsString("outputTimezone", DEFAULT_TIMEZONE);
+        return getAsString(Parameters.OUTPUT_TIMEZONE, DEFAULT_TIMEZONE);
     }
 
     public void setOutputTimezone(String timezone) {
@@ -80,7 +80,7 @@ public abstract class RequestParameterSet {
         DateTimeZone zone = availableIDs.contains(timezone)
                 ? DateTimeZone.forID(timezone)
                 : DateTimeZone.UTC;
-        setParameter("outputTimezone", IoParameters.getJsonNodeFrom(zone.getID()));
+        setParameter(Parameters.OUTPUT_TIMEZONE, IoParameters.getJsonNodeFrom(zone.getID()));
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class RequestParameterSet {
      */
     @Deprecated
     public String getLanguage() {
-        return getAsString("language", DEFAULT_LOCALE);
+        return getAsString(Parameters.LANGUAGE, DEFAULT_LOCALE);
     }
 
     /**
@@ -161,10 +161,10 @@ public abstract class RequestParameterSet {
      */
     @Deprecated
     public void setLanguage(String language) {
-        language = !(language == null || language.isEmpty())
+        String nonNullLanguage = !(language == null || language.isEmpty())
                 ? language
-                : "en";
-        setParameter("language", IoParameters.getJsonNodeFrom(language));
+                : DEFAULT_LOCALE;
+        setParameter(Parameters.LANGUAGE, IoParameters.getJsonNodeFrom(nonNullLanguage));
     }
 
     /**

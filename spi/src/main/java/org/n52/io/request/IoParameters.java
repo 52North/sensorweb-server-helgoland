@@ -664,10 +664,20 @@ public class IoParameters implements Parameters {
         return getAsBoolean(FORCE_LATEST_VALUE, DEFAULT_FORCE_LATEST_VALUE);
     }
 
+    /**
+     * @return if status intervals shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isStatusIntervalsRequests() {
         return getAsBoolean(STATUS_INTERVALS, DEFAULT_STATUS_INTERVALS);
     }
 
+    /**
+     * @return if rendering hints shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isRenderingHintsRequests() {
         return getAsBoolean(RENDERING_HINTS, DEFAULT_RENDERING_HINTS);
     }
@@ -868,7 +878,8 @@ public class IoParameters implements Parameters {
 
     private static Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
-        for (String parameter : parameters.keySet()) {
+        for (Entry<String, JsonNode> entry : parameters.entrySet()) {
+            String parameter = entry.getKey();
             String lowerCasedKey = parameter.toLowerCase();
             queryParameters.put(lowerCasedKey, parameters.get(parameter));
         }
@@ -877,7 +888,8 @@ public class IoParameters implements Parameters {
 
     private static MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
         MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
-        for (String parameter : parameters.keySet()) {
+        for (Entry<String, List<JsonNode>> entry : parameters.entrySet()) {
+            String parameter = entry.getKey();
             String lowerCasedKey = parameter.toLowerCase();
             List<JsonNode> values = parameters.get(parameter);
             if (!queryParameters.containsKey(lowerCasedKey)) {

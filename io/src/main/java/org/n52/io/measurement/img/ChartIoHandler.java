@@ -41,7 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.imageio.ImageIO;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -57,7 +59,6 @@ import org.jfree.ui.VerticalAlignment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
-import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
@@ -151,7 +152,6 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         DateTime end = timespan != null
                 ? new DateTime(timespan.split("/")[1])
                 : new DateTime();
-
         // String zoneName = getTimezone().getID();
         String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
@@ -340,11 +340,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
         return getChartStyleDefinitions().getStyleOptions(timeseriesId);
     }
 
-    protected StyleProperties getTimeseriesStyleFor(String timeseriesId,
-                                                    String referenceValueSeriesId) {
-        return getChartStyleDefinitions()
-                                         .getReferenceSeriesStyleOptions(timeseriesId,
-                                                                         referenceValueSeriesId);
+    protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
+        return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
     }
 
     protected RequestStyledParameterSet getChartStyleDefinitions() {

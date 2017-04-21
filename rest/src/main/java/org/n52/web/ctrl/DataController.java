@@ -35,7 +35,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -115,26 +117,6 @@ public class DataController extends BaseController {
         return getSeriesCollectionData(response, parameters.toSimpleParameterSet());
     }
 
-    @RequestMapping(value = "/data", produces = {
-        "application/json"
-    }, method = RequestMethod.POST)
-    public ModelAndView getSeriesCollectionData(HttpServletResponse response,
-                                                @RequestBody RequestSimpleParameterSet parameters)
-            throws Exception {
-
-        LOGGER.debug("get data collection with parameter set: {}", parameters);
-
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
-        checkAgainstTimespanRestriction(parameters.getTimespan());
-
-        final String datasetType = parameters.getDatasetType();
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType).withSimpleRequest(parameters)
-                                                                  .createProcessChain();
-
-        DataCollection< ? > processed = ioChain.getData();
-        return new ModelAndView().addObject(processed.getAllSeries());
-    }
-
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
             "application/json"
@@ -163,6 +145,24 @@ public class DataController extends BaseController {
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
                 : new ModelAndView().addObject(processed.get(seriesId));
+    }
+
+    @RequestMapping(value = "/data", produces = {"application/json"}, method = RequestMethod.POST)
+    public ModelAndView getSeriesCollectionData(HttpServletResponse response,
+            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+
+        LOGGER.debug("get data collection with parameter set: {}", parameters);
+
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+
+        final String datasetType = parameters.getDatasetType();
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
+                .withSimpleRequest(parameters)
+                .createProcessChain();
+
+        DataCollection<?> processed = ioChain.getData();
+        return new ModelAndView().addObject(processed.getAllSeries());
     }
 
     @RequestMapping(value = "/data",
@@ -306,8 +306,7 @@ public class DataController extends BaseController {
         }
 
         final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                                    .withSimpleRequest(parameters)
+        createIoFactory(datasetType).withSimpleRequest(parameters)
                                     .createHandler(MimeType.TEXT_CSV.toString())
                                     .writeBinary(response.getOutputStream());
     }
@@ -411,8 +410,7 @@ public class DataController extends BaseController {
         if (!ioFactoryCreator.isKnown(datasetType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
-        return ioFactoryCreator
-                               .create(datasetType)
+        return ioFactoryCreator.create(datasetType)
                                // .withBasePath(getRootResource())
                                .withDataService(dataService)
                                .withDatasetService(datasetService);
