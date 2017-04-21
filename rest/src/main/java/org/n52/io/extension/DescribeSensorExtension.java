@@ -60,7 +60,7 @@ public class DescribeSensorExtension extends MetadataExtension<ParameterOutput> 
     private String createURL(ParameterOutput output, IoParameters parameters) {
         String procedureid = "";
         try {
-            procedureid =  ((DatasetOutput)output).getSeriesParameters().getProcedure().getId();
+            procedureid =  ((DatasetOutput) output).getSeriesParameters().getProcedure().getId();
             ProcedureOutput procedure = procedureRepository.getInstance(procedureid , DbQuery.createFrom(parameters));
             return parameterController.getExternalUrl()
                     + "service?service=SOS&version=2.0.0&request=DescribeSensor&procedure="
