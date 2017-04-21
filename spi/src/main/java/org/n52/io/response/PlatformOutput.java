@@ -46,6 +46,7 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class PlatformOutput extends OutputWithParameters {
 
+    // TODO use plain string in output and let repository assert correctness
     private final PlatformType platformType;
 
     private Collection<DatasetOutput> datasets;

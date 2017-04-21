@@ -37,6 +37,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import org.joda.time.DateTime;
 import org.n52.io.CsvIoHandler;
 import org.n52.io.IoParseException;
@@ -44,7 +45,6 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.DatasetType;
 import org.n52.io.response.dataset.measurement.MeasurementData;
 import org.n52.io.response.dataset.measurement.MeasurementValue;
 
@@ -132,7 +132,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private void writeData(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            MeasurementData series = data.getSeries(DatasetType.extractId(metadata.getId()));
+            MeasurementData series = data.getSeries(metadata.getId());
             writeData(metadata, (MeasurementData) series, stream);
         }
     }
