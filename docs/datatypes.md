@@ -224,4 +224,34 @@ A record's `value` member is a map of key-valued objects.
 ```
 
 ### Profile
-tbd
+
+**Depth Example (`stationary` platform)**
+
+{::options parse_block_html="true" /}
+{:n52-callout .n52-callout-todo}
+<div>
+Not final yet! Discuss following points:
+* unit in every value needed?
+  * one in root plus override option in each value
+  * assume unit from dataset metadata
+</div>
+
+```
+[
+  {
+    "timestamp": 1353330000000,
+    "value": [
+      {
+        "depth": 10,
+        "value": 100,
+        "unit": "m"
+      },
+      {
+        "depth": 20,
+        "value": 200,
+        "unit": "m"
+      }
+    ]
+  }
+]
+```
