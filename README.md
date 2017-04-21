@@ -70,7 +70,7 @@ information on this.
 #### Logging
 
 #### Generalizer
-In file `WEB-INF/spring/config-general.json` add 
+In file `WEB-INF/classes/config-general.json` add 
 
 ```
 "generalizer": {
