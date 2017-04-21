@@ -8,14 +8,17 @@
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/api/main.css" />
+<!-- <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/api/main.css" /> -->
+<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/bootstrap_3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/n52-style.css" />
 </head>
 
 <body>
 
+  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    
   <div class="n52-container container-fluid">
-
+  
     <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
         <a href="{{site.baseurl}}"><img alt="52&deg;North logo"
@@ -56,7 +59,15 @@
       </p>
     </nav>
 
-    <div role="main" class="col-lg-9 n52-content pull-right">{{ content | toc_generate}}</div>
+    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+      <div class="pull-right">
+        <p class="affix up-link n52-top">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        </p>
+      </div>
+
+      {{ content | toc_generate}}
+    </div>
 
   </div>
 

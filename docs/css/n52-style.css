@@ -8,6 +8,18 @@ body {
   vertical-align: middle;
 }
 
+.n52-top {
+    clear: both;
+    margin-top: 20px !important;
+}
+.n52-top a {
+    cursor: pointer;
+}
+.n52-top a:hover {
+    color: #fff;
+    background-color: #999;
+}
+
 .n52-sidebar {
   padding-top: 80px;
 }
