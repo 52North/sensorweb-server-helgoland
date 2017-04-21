@@ -28,12 +28,6 @@
  */
 package org.n52.io.request;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
@@ -68,6 +63,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
 
 public class IoParameters implements Parameters {
 
@@ -632,10 +634,20 @@ public class IoParameters implements Parameters {
         return getAsBoolean(FORCE_LATEST_VALUE, DEFAULT_FORCE_LATEST_VALUE);
     }
 
+    /**
+     * @return if status intervals shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isStatusIntervalsRequests() {
         return getAsBoolean(STATUS_INTERVALS, DEFAULT_STATUS_INTERVALS);
     }
 
+    /**
+     * @return if rendering hints shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isRenderingHintsRequests() {
         return getAsBoolean(RENDERING_HINTS, DEFAULT_RENDERING_HINTS);
     }

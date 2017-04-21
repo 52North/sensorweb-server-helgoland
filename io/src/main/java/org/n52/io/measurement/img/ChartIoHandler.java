@@ -300,7 +300,8 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
             parameters.getOffering().getLabel(),
             parameters.getFeature().getLabel(),
             parameters.getService().getLabel(),
-            metadata.getUom()};
+            metadata.getUom()
+        };
         try {
             return String.format(title, varargs);
         } catch (Exception e) {

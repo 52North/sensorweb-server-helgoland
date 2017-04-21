@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.measurement.img;
 
 import java.awt.BasicStroke;
@@ -87,9 +88,14 @@ final class LineRenderer implements Renderer {
         int width = lineStyle.getDashGapWidth();
         float[] dashSequence = new float[] {
             4.0f * width,
-            4.0f * width};
-        return new BasicStroke(width, BasicStroke.CAP_ROUND,
-                BasicStroke.JOIN_ROUND, 1.0f, dashSequence, 0.0f);
+            4.0f * width
+        };
+        return new BasicStroke(width,
+                               BasicStroke.CAP_ROUND,
+                               BasicStroke.JOIN_ROUND,
+                               1.0f,
+                               dashSequence,
+                               0.0f);
     }
 
     @Override
