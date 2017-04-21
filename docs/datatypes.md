@@ -18,12 +18,13 @@ dataset type(s).
 
 ## General
 A simplest data value has a `timestamp` and a corresponding `value`.
-However, when data values provide an observation interval (`timestart`
-and `timeend`) `timestamp` is omitted.
-A `null` value means `no-data`. 
+Showing time intervals (`timestart` and `timeend`) can be activated
+via query parameter `showTimeIntervals=true`.
+
+`NULL` values means `no-data`.
 
 While `timestamp` and `value` are mandatory (`timestamp` is mutually 
-exclusive to `timestart` and `timeend` though), other information can
+exclusive to `timestart` and `timeend`), other information can
 be encoded as well (if present).
 
 {:.table}
