@@ -78,6 +78,12 @@
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/io">Input/Output</a>
       </p>
       <p class="header">
+        <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/configuration">Configuration</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/extensions">Extensions</a>
+      </p>
+      <p class="header">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll/api">API Reference</a>
       </p>
     </nav>
@@ -107,12 +113,13 @@ dataset type(s).</p>
 
 <h2 id="general">General</h2>
 <p>A simplest data value has a <code class="highlighter-rouge">timestamp</code> and a corresponding <code class="highlighter-rouge">value</code>.
-However, when data values provide an observation interval (<code class="highlighter-rouge">timestart</code>
-and <code class="highlighter-rouge">timeend</code>) <code class="highlighter-rouge">timestamp</code> is omitted.
-A <code class="highlighter-rouge">null</code> value means <code class="highlighter-rouge">no-data</code>.</p>
+Showing time intervals (<code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code>) can be activated
+via query parameter <code class="highlighter-rouge">showTimeIntervals=true</code>.</p>
+
+<p><code class="highlighter-rouge">NULL</code> values means <code class="highlighter-rouge">no-data</code>.</p>
 
 <p>While <code class="highlighter-rouge">timestamp</code> and <code class="highlighter-rouge">value</code> are mandatory (<code class="highlighter-rouge">timestamp</code> is mutually 
-exclusive to <code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code> though), other information can
+exclusive to <code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code>), other information can
 be encoded as well (if present).</p>
 
 <table class="table">
@@ -348,7 +355,40 @@ would be valid.</p>
 </div>
 
 <h3 id="profile">Profile</h3>
-<p>tbd</p>
+
+<p><strong>Depth Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
+
+<div class="n52-callout-todo">
+  <p>Not final yet! Discuss following points:</p>
+  <ul>
+    <li>unit in every value needed?
+      <ul>
+        <li>one in root plus override option in each value</li>
+        <li>assume unit from dataset metadata</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[
+  {
+    "timestamp": 1353330000000,
+    "value": [
+      {
+        "depth": 10,
+        "value": 100,
+        "unit": "m"
+      },
+      {
+        "depth": 20,
+        "value": 200,
+        "unit": "m"
+      }
+    ]
+  }
+]
+</code></pre>
+</div>
 
   </div>
 </article></div>
@@ -364,7 +404,7 @@ would be valid.</p>
     </div>
     <div class="col-lg-5 pull-right">
       <small>Current Version: <a
-        href="http://github.com/ridoo/series-rest-api/tree/acc288580fc7657946f6d94d1d401f79b75389b7">acc288580fc7657946f6d94d1d401f79b75389b7</a>
+        href="http://github.com/ridoo/series-rest-api/tree/993348f3e0baffa98313f0a792acb08840b6fac8">993348f3e0baffa98313f0a792acb08840b6fac8</a>
       </small>
     </div>
   </footer>

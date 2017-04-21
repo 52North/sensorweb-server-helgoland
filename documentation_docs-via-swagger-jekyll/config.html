@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Platforms – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Configuration – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Platforms" />
-    <meta property="twitter:title" content="Platforms" />
+    <meta property="og:title" content="Configuration" />
+    <meta property="twitter:title" content="Configuration" />
     
 
 
@@ -89,27 +89,29 @@
     </nav>
 
     <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
-  <h1>Platforms</h1>
+  <h1>Configuration</h1>
 
   <div class="entry">
-    <p>Since <code class="highlighter-rouge">v2.0</code> the following sensor platforms are supported:</p>
+    <p class="n52-callout n52-callout-todo">section under revision/update</p>
 
+<h2 id="application-configuration-locations">Application Configuration Locations</h2>
 <ul>
-  <li><code class="highlighter-rouge">stationary</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">mobile</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">insitu</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">remote</code> sensor platforms</li>
+  <li><code class="highlighter-rouge">WEB-INF/classes/application.properties</code></li>
+  <li><code class="highlighter-rouge">WEB-INF/classes/config-general.properties</code></li>
+  <li><code class="highlighter-rouge">WEB-INF/spring/</code></li>
+  <li><code class="highlighter-rouge">WEB-INF/web.xml</code></li>
 </ul>
 
-<p>The former Stations resource collection relates to the combination 
-of <code class="highlighter-rouge">stationary</code> and <code class="highlighter-rouge">insitu</code> platforms (located at a 0-dimensional
-location geometry) which do observe <code class="highlighter-rouge">measurement</code> datasets.</p>
-
-<p>So retrieving getting the former output under <code class="highlighter-rouge">/platforms</code> endpoint one 
-can filter via<code class="highlighter-rouge">/platforms?platformTypes=stationary,insitu</code> or get the 
-collection via <code class="highlighter-rouge">/stations</code>. The query parameter <code class="highlighter-rouge">platformTypes</code> can be 
-used to filter on all resources which ensures to only get those resources 
-related to the given filter.</p>
+<ul class="n52-callout n52-callout-todo">
+  <li>Extension configurations
+    <ul>
+      <li>renderingHints</li>
+      <li>prerendering</li>
+      <li>status intervals</li>
+      <li>etc.</li>
+    </ul>
+  </li>
+</ul>
 
   </div>
 </article></div>
