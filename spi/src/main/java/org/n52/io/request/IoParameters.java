@@ -26,14 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
@@ -69,6 +65,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.vividsolutions.jts.geom.Point;
+
 public class IoParameters implements Parameters {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
@@ -81,21 +84,15 @@ public class IoParameters implements Parameters {
     private final MultiValueMap<String, JsonNode> query;
 
     private IoParameters(File defaultConfig) {
-        query = new LinkedMultiValueMap<>();
-        query.setAll(readDefaultConfig(defaultConfig));
-    }
-
-    protected IoParameters(IoParameters parameters) {
-        this((File) null);
-        if (parameters != null) {
-            query.putAll(parameters.query);
-        }
+        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
+        config.setAll(readDefaultConfig(defaultConfig));
+        query = mergeToLowerCasedKeys(config);
     }
 
     protected IoParameters(MultiValueMap<String, JsonNode> queryParameters, File defaults) {
         this(defaults);
         if (queryParameters != null) {
-            query.putAll(queryParameters);
+            query.putAll(mergeToLowerCasedKeys(queryParameters));
         }
     }
 
@@ -105,7 +102,7 @@ public class IoParameters implements Parameters {
 
     protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
         this(defaults);
-        query.setAll(queryParameters);
+        query.setAll(mergeToLowerCasedKeys(queryParameters));
     }
 
     protected IoParameters(Map<String, JsonNode> queryParameters) {
@@ -117,7 +114,9 @@ public class IoParameters implements Parameters {
                 ? getDefaultConfigFile()
                 : new FileInputStream(config)) {
             return OBJECT_MAPPER.readValue(stream, TypeFactory.defaultInstance()
-                    .constructMapLikeType(HashMap.class, String.class, JsonNode.class));
+                                                              .constructMapLikeType(HashMap.class,
+                                                                                    String.class,
+                                                                                    JsonNode.class));
         } catch (IOException e) {
             LOGGER.info("Could not load '{}'. Using empty config.", DEFAULT_CONFIG_FILE, e);
             return new HashMap<>();
@@ -126,12 +125,15 @@ public class IoParameters implements Parameters {
 
     private static InputStream getDefaultConfigFile() {
         try {
-            Path path = Paths.get(IoParameters.class.getResource("/").toURI());
-            File config = path.resolve(DEFAULT_CONFIG_FILE).toFile();
+            Path path = Paths.get(IoParameters.class.getResource("/")
+                                                    .toURI());
+            File config = path.resolve(DEFAULT_CONFIG_FILE)
+                              .toFile();
             final String fallbackPath = "/" + DEFAULT_CONFIG_FILE;
             return config.exists()
                     ? new FileInputStream(config)
-                    : IoParameters.class.getClassLoader().getResourceAsStream(fallbackPath);
+                    : IoParameters.class.getClassLoader()
+                                        .getResourceAsStream(fallbackPath);
         } catch (URISyntaxException | IOException e) {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
@@ -139,18 +141,20 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #OFFSET} parameter. If not present, the default
-     * {@value #DEFAULT_OFFSET} is returned.
-     * @throws IoParseException if parameter could not be parsed.
+     * @return the value of {@value #OFFSET} parameter. If not present, the default {@value #DEFAULT_OFFSET}
+     *         is returned.
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      */
     public int getOffset() {
         return getAsInteger(OFFSET, DEFAULT_OFFSET);
     }
 
     /**
-     * @return the value of {@value #LIMIT} parameter. If not present, the default
-     * {@value #DEFAULT_LIMIT} is returned.
-     * @throws IoParseException if parameter could not be parsed.
+     * @return the value of {@value #LIMIT} parameter. If not present, the default {@value #DEFAULT_LIMIT} is
+     *         returned.
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      */
     public int getLimit() {
         return getAsInteger(LIMIT, DEFAULT_LIMIT);
@@ -158,7 +162,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return the requested chart width in pixels or the default {@value #DEFAULT_WIDTH}.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public int getWidth() {
         return getAsInteger(WIDTH, DEFAULT_WIDTH);
@@ -168,7 +173,8 @@ public class IoParameters implements Parameters {
      * Returns the requested chart height in pixels.
      *
      * @return the requested chart height in pixels or the default {@value #DEFAULT_HEIGHT}.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public int getHeight() {
         return getAsInteger(HEIGHT, DEFAULT_HEIGHT);
@@ -178,7 +184,8 @@ public class IoParameters implements Parameters {
      * Indicates if rendered chart shall be returned as Base64 encoded string.
      *
      * @return the value of parameter {@value #BASE_64} or the default {@value #DEFAULT_BASE_64}.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public boolean isBase64() {
         return getAsBoolean(BASE_64, DEFAULT_BASE_64);
@@ -186,7 +193,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return <code>true</code> if timeseries chart shall include a background grid.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public boolean isGrid() {
         return getAsBoolean(GRID, DEFAULT_GRID);
@@ -194,33 +202,35 @@ public class IoParameters implements Parameters {
 
     /**
      * @return <code>true</code> if timeseries data shall be generalized.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public boolean isGeneralize() throws IoParseException {
         return getAsBoolean(GENERALIZE, DEFAULT_GENERALIZE);
     }
 
     /**
-     * @return <code>true</code> if a legend shall be included when rendering a chart,
-     * <code>false</code> otherwise.
-     * @throws IoParseException if parsing parameter fails.
+     * @return <code>true</code> if a legend shall be included when rendering a chart, <code>false</code>
+     *         otherwise.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public boolean isLegend() {
         return getAsBoolean(LEGEND, DEFAULT_LEGEND);
     }
 
     /**
-     * @return the value of {@value #LOCALE} parameter. If not present, the default
-     * {@value #DEFAULT_LOCALE} is returned.
+     * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
+     *         is returned.
      */
     public String getLocale() {
         return getAsString(LOCALE, DEFAULT_LOCALE);
     }
 
     /**
-     * @return the value of {@value #STYLE} parameter. If not present, the default styles are
-     * returned.
-     * @throws IoParseException if parsing style parameter failed.
+     * @return the value of {@value #STYLE} parameter. If not present, the default styles are returned.
+     * @throws IoParseException
+     *         if parsing style parameter failed.
      */
     public StyleProperties getStyle() {
         return containsParameter(STYLE)
@@ -230,12 +240,14 @@ public class IoParameters implements Parameters {
 
     /**
      * Creates a generic {@link StyleProperties} instance which can be used to create more concrete
-     * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which
-     * gives you a style view which can be used for lines.
+     * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
+     * style view which can be used for lines.
      *
-     * @param style the JSON style parameter to parse.
+     * @param style
+     *        the JSON style parameter to parse.
      * @return a parsed {@link StyleProperties} instance.
-     * @throws IoParseException if parsing parameter fails.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     private StyleProperties parseStyleProperties(String style) {
         try {
@@ -274,9 +286,9 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #TIMESPAN} parameter. If not present, the default timespan is
-     * returned.
-     * @throws IoParseException if timespan could not be parsed.
+     * @return the value of {@value #TIMESPAN} parameter. If not present, the default timespan is returned.
+     * @throws IoParseException
+     *         if timespan could not be parsed.
      */
     public IntervalWithTimeZone getTimespan() {
         return containsParameter(TIMESPAN)
@@ -300,14 +312,21 @@ public class IoParameters implements Parameters {
         DateTime now = new DateTime();
         DateTime lastWeek = now.minusWeeks(1);
         String interval = lastWeek
-                .toString()
-                .concat("/")
-                .concat(now.toString());
+                                  .toString()
+                                  .concat("/")
+                                  .concat(now.toString());
         return new IntervalWithTimeZone(interval);
     }
 
     private IntervalWithTimeZone validateTimespan(String timespan) {
         return new IntervalWithTimeZone(timespan);
+    }
+
+    public String getOutputTimezone() {
+        if (!containsParameter(OUTPUT_TIMEZONE)) {
+            return DEFAULT_OUTPUT_TIMEZONE;
+        }
+        return getAsString(OUTPUT_TIMEZONE);
     }
 
     public Instant getResultTime() {
@@ -452,7 +471,7 @@ public class IoParameters implements Parameters {
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : Collections.<String>emptySet();
+                : Collections.<String> emptySet();
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
@@ -468,13 +487,13 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting
-     * bounding box is the merged extent of all spatial filters given. For example if {@value #NEAR}
-     * and {@value #BBOX} exist, the returned bounding box includes both extents.
+     * Creates a {@link BoundingBox} instance from given spatial request parameters. The resulting bounding
+     * box is the merged extent of all spatial filters given. For example if {@value #NEAR} and {@value #BBOX}
+     * exist, the returned bounding box includes both extents.
      *
      * @return a spatial filter created from given spatial parameters.
-     * @throws IoParseException if parsing parameters fails, or if a requested {@value #CRS} object
-     * could not be created.
+     * @throws IoParseException
+     *         if parsing parameters fails, or if a requested {@value #CRS} object could not be created.
      */
     public BoundingBox getSpatialFilter() {
         if (!containsParameter(NEAR) && !containsParameter(BBOX)) {
@@ -507,19 +526,24 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * Extends the bounding box with the given point. If point is contained by this instance nothing
-     * is changed.
+     * Extends the bounding box with the given point. If point is contained by this instance nothing is
+     * changed.
      *
-     * @param point the point in CRS:84 which shall extend the bounding box.
+     * @param point
+     *        the point in CRS:84 which shall extend the bounding box.
      */
     private void extendBy(Point point, BoundingBox bbox) {
         if (bbox.contains(point)) {
             return;
         }
-        double llX = Math.min(point.getX(), bbox.getLowerLeft().getX());
-        double llY = Math.max(point.getX(), bbox.getUpperRight().getX());
-        double urX = Math.min(point.getY(), bbox.getLowerLeft().getY());
-        double urY = Math.max(point.getY(), bbox.getUpperRight().getY());
+        double llX = Math.min(point.getX(), bbox.getLowerLeft()
+                                                .getX());
+        double llY = Math.max(point.getX(), bbox.getUpperRight()
+                                                .getX());
+        double urX = Math.min(point.getY(), bbox.getLowerLeft()
+                                                .getY());
+        double urY = Math.max(point.getY(), bbox.getUpperRight()
+                                                .getY());
 
         CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
         bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
@@ -527,10 +551,11 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX} parameter is
-     * present.
-     * @throws IoParseException if parsing parameter fails.
-     * @throws IoParseException if a requested {@value #CRS} object could not be created
+     * @return a {@link BBox} instance or <code>null</code> if no {@link #BBOX} parameter is present.
+     * @throws IoParseException
+     *         if parsing parameter fails.
+     * @throws IoParseException
+     *         if a requested {@value #CRS} object could not be created
      */
     private BBox createBbox() {
         if (!containsParameter(BBOX)) {
@@ -558,10 +583,13 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @param jsonString the JSON string to parse.
-     * @param clazz the type to serialize given JSON string to.
+     * @param jsonString
+     *        the JSON string to parse.
+     * @param clazz
+     *        the type to serialize given JSON string to.
      * @return a mapped instance parsed from JSON.
-     * @throws IoParseException if JSON is invalid or does not map to given type.
+     * @throws IoParseException
+     *         if JSON is invalid or does not map to given type.
      */
     private <T> T parseJson(String jsonString, Class<T> clazz) {
         try {
@@ -584,14 +612,16 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @param point a GeoJSON point to be transformed to internally used CRS:84.
-     * @param crsUtils a reference helper.
+     * @param point
+     *        a GeoJSON point to be transformed to internally used CRS:84.
+     * @param crsUtils
+     *        a reference helper.
      * @return a transformed GeoJSON instance.
-     * @throws IoParseException if point could not be transformed, or if requested CRS object could
-     * not be created.
+     * @throws IoParseException
+     *         if point could not be transformed, or if requested CRS object could not be created.
      */
     private GeojsonPoint transformToInnerCrs(GeojsonPoint point,
-            CRSUtils crsUtils) {
+                                             CRSUtils crsUtils) {
         try {
             Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
             Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
@@ -600,13 +630,14 @@ public class IoParameters implements Parameters {
             throw new IoParseException("Could not transform to internally used CRS:84.", e);
         } catch (FactoryException e) {
             throw new IoParseException("Check if 'crs' parameter is a valid EPSG CRS. Was: '"
-                    + getCrs() + "'.", e);
+                    + getCrs()
+                    + "'.", e);
         }
     }
 
     /**
-     * @return the requested reference context, or the default ({@value CRSUtils#DEFAULT_CRS}) which
-     * will be interpreted as lon/lat ordered axes).
+     * @return the requested reference context, or the default ({@value CRSUtils#DEFAULT_CRS}) which will be
+     *         interpreted as lon/lat ordered axes).
      */
     public String getCrs() {
         return getAsString(CRS, CRSUtils.DEFAULT_CRS);
@@ -622,7 +653,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return the value of {@value #EXPANDED} parameter.
-     * @throws IoParseException if parameter could not be parsed.
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      */
     public boolean isExpanded() {
         return getAsBoolean(EXPANDED, DEFAULT_EXPANDED);
@@ -632,10 +664,20 @@ public class IoParameters implements Parameters {
         return getAsBoolean(FORCE_LATEST_VALUE, DEFAULT_FORCE_LATEST_VALUE);
     }
 
+    /**
+     * @return if status intervals shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isStatusIntervalsRequests() {
         return getAsBoolean(STATUS_INTERVALS, DEFAULT_STATUS_INTERVALS);
     }
 
+    /**
+     * @return if rendering hints shall be serialized with (timeseries) output
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
     public boolean isRenderingHintsRequests() {
         return getAsBoolean(RENDERING_HINTS, DEFAULT_RENDERING_HINTS);
     }
@@ -649,7 +691,8 @@ public class IoParameters implements Parameters {
     }
 
     public boolean containsParameter(String parameter) {
-        return query.containsKey(parameter.toLowerCase());
+        return query.containsKey(parameter.toLowerCase())
+                || query.containsKey(parameter);
     }
 
     public String getOther(String parameter) {
@@ -663,9 +706,13 @@ public class IoParameters implements Parameters {
     }
 
     public String getAsString(String parameter) {
-        return containsParameter(parameter)
-                ? asCsv(query.get(parameter.toLowerCase()))
-                : null;
+        if (!containsParameter(parameter)) {
+            return null;
+        }
+        List<JsonNode> value = query.get(parameter) == null
+                ? query.get(parameter.toLowerCase())
+                : query.get(parameter);
+        return asCsv(value);
     }
 
     private String asCsv(List<JsonNode> list) {
@@ -686,16 +733,16 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @param parameter the parameter to parse to an <code>int</code> value.
+     * @param parameter
+     *        the parameter to parse to an <code>int</code> value.
      * @return an integer value.
-     * @throws IoParseException if parsing to <code>int</code> fails.
+     * @throws IoParseException
+     *         if parsing to <code>int</code> fails.
      */
     public int getAsInteger(String parameter) {
         try {
             String value = getAsString(parameter);
-            Integer.parseInt(value);
-            return query.getFirst(parameter.toLowerCase())
-                    .asInt();
+            return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             throwIoParseException(parameter, "Must be an integer!", e);
             return -1;
@@ -709,16 +756,16 @@ public class IoParameters implements Parameters {
     }
 
     /**
-     * @param parameter the parameter to parse to <code>boolean</code>.
+     * @param parameter
+     *        the parameter to parse to <code>boolean</code>.
      * @return <code>true</code> or <code>false</code> as <code>boolean</code>.
-     * @throws IoParseException if parsing to <code>boolean</code> fails.
+     * @throws IoParseException
+     *         if parsing to <code>boolean</code> fails.
      */
     public boolean getAsBoolean(String parameter) {
         try {
             String value = getAsString(parameter);
-            Boolean.parseBoolean(value);
-            return query.getFirst(parameter.toLowerCase())
-                    .asBoolean();
+            return Boolean.parseBoolean(value);
         } catch (NumberFormatException e) {
             throwIoParseException(parameter, "Must be 'false' or 'true'!", e);
             return false;
@@ -737,8 +784,19 @@ public class IoParameters implements Parameters {
         return parameterSet;
     }
 
-    public RequestStyledParameterSet toRequestStyledParameterSet() {
-        RequestStyledParameterSet parameterSet = new RequestStyledParameterSet();
+    public RequestSimpleParameterSet mergeToSimpleParameterSet(RequestStyledParameterSet designedSet) {
+        RequestSimpleParameterSet parameters = toSimpleParameterSet();
+        parameters.setOutputTimezone(designedSet.getOutputTimezone());
+        parameters.setDatasets(designedSet.getDatasets());
+        parameters.setTimespan(designedSet.getTimespan());
+        return parameters;
+    }
+
+    public RequestStyledParameterSet toStyledParameterSet() {
+        return mergeToStyledParameterSet(new RequestStyledParameterSet());
+    }
+
+    public RequestStyledParameterSet mergeToStyledParameterSet(RequestStyledParameterSet parameterSet) {
         addValuesToParameterSet(parameterSet);
         return parameterSet;
     }
@@ -749,7 +807,7 @@ public class IoParameters implements Parameters {
         for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
             List<JsonNode> values = entry.getValue();
             String lowercasedKey = entry.getKey()
-                    .toLowerCase();
+                                        .toLowerCase();
             if (values.size() == 1) {
                 parameterSet.setParameter(lowercasedKey, values.get(0));
             } else {
@@ -782,29 +840,31 @@ public class IoParameters implements Parameters {
         newValues.put(key.toLowerCase(), Arrays.asList(values));
 
         MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(
-                query);
+                                                                                 query);
         mergedValues.putAll(convertValuesToJsonNodes(newValues));
         return new IoParameters(mergedValues);
     }
 
     protected static Map<String, JsonNode> convertValuesToJsonNodes(
-            Map<String, String> queryParameters) {
+                                                                    Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
             String key = entry.getKey()
-                    .toLowerCase();
+                              .toLowerCase();
             parameters.put(key, getJsonNodeFrom(entry.getValue()));
         }
         return parameters;
     }
 
     protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(
-            MultiValueMap<String, String> queryParameters) {
+                                                                              MultiValueMap<String,
+                                                                                            String> queryParameters) {
         MultiValueMap<String, JsonNode> parameters = new LinkedMultiValueMap<>();
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
             for (String value : entry.getValue()) {
-                final String key = entry.getKey().toLowerCase();
+                final String key = entry.getKey()
+                                        .toLowerCase();
                 parameters.add(key, getJsonNodeFrom(value));
             }
         }
@@ -816,24 +876,50 @@ public class IoParameters implements Parameters {
         return "IoParameters{" + "query=" + query + '}';
     }
 
-    /* ****************************************************************
-     *                    FACTORY METHODS
-     * ************************************************************** */
+    private static Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
+        Map<String, JsonNode> queryParameters = new HashMap<>();
+        for (Entry<String, JsonNode> entry : parameters.entrySet()) {
+            String parameter = entry.getKey();
+            String lowerCasedKey = parameter.toLowerCase();
+            queryParameters.put(lowerCasedKey, parameters.get(parameter));
+        }
+        return queryParameters;
+    }
+
+    private static MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
+        MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
+        for (Entry<String, List<JsonNode>> entry : parameters.entrySet()) {
+            String parameter = entry.getKey();
+            String lowerCasedKey = parameter.toLowerCase();
+            List<JsonNode> values = parameters.get(parameter);
+            if (!queryParameters.containsKey(lowerCasedKey)) {
+                queryParameters.put(lowerCasedKey, values);
+            } else {
+                queryParameters.get(lowerCasedKey)
+                               .addAll(values);
+            }
+        }
+        return queryParameters;
+    }
+
+    /*
+     * ********************* FACTORY METHODS ***************************
+     */
     public static IoParameters createDefaults() {
         return createDefaults(null);
     }
 
     static IoParameters createDefaults(File defaultConfig) {
-        return new IoParameters(Collections.<String, JsonNode>emptyMap(), defaultConfig);
+        return new IoParameters(Collections.<String, JsonNode> emptyMap(), defaultConfig);
     }
 
     static IoParameters createFromMultiValueMap(
-            MultiValueMap<String, String> query) {
+                                                MultiValueMap<String, String> query) {
         return createFromMultiValueMap(query, null);
     }
 
     static IoParameters createFromMultiValueMap(
-            MultiValueMap<String, String> query, File defaultConfig) {
+                                                MultiValueMap<String, String> query, File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
@@ -842,12 +928,13 @@ public class IoParameters implements Parameters {
     }
 
     static IoParameters createFromSingleValueMap(Map<String, String> query,
-            File defaultConfig) {
+                                                 File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
     /**
-     * @param parameters the parameters sent via POST payload.
+     * @param parameters
+     *        the parameters sent via POST payload.
      * @return a query map for convenient parameter access plus validation.
      */
     public static IoParameters createFromQuery(RequestParameterSet parameters) {
@@ -855,7 +942,7 @@ public class IoParameters implements Parameters {
     }
 
     public static IoParameters createFromQuery(RequestParameterSet parameters,
-            File defaultConfig) {
+                                               File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameterNames()) {
             JsonNode value = parameters.getParameterValue(parameter);
@@ -865,19 +952,20 @@ public class IoParameters implements Parameters {
     }
 
     public static IoParameters ensureBackwardsCompatibility(
-            IoParameters parameters) {
+                                                            IoParameters parameters) {
         String[] platformTypes = {
             PlatformType.PLATFORM_TYPE_STATIONARY,
-            PlatformType.PLATFORM_TYPE_INSITU};
+            PlatformType.PLATFORM_TYPE_INSITU
+        };
         return isBackwardsCompatibilityRequest(parameters)
                 ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DEFAULT_DATASET_TYPE)
-                .removeAllOf(Parameters.HREF_BASE)
+                            .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DEFAULT_DATASET_TYPE)
+                            .removeAllOf(Parameters.HREF_BASE)
                 : parameters;
     }
 
     private static boolean isBackwardsCompatibilityRequest(
-            IoParameters parameters) {
+                                                           IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
     }
