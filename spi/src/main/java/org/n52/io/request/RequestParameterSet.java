@@ -335,9 +335,7 @@ public abstract class RequestParameterSet {
     }
 
     public String getValueType() {
-        String handleAs = containsParameter(Parameters.HANDLE_AS_VALUE_TYPE)
-                ? getAsString(Parameters.HANDLE_AS_VALUE_TYPE)
-                : getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String[] datasetIds = getDatasets();
         return datasetIds.length > 0
                 ? ValueType.extractType(datasetIds[0], handleAs)
