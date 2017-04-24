@@ -28,9 +28,9 @@
  */
 package org.n52.io.response.dataset;
 
-public class DatasetType {
+public class ValueType {
 
-    public static final String DEFAULT_DATASET_TYPE = "measurement";
+    public static final String DEFAULT_VALUE_TYPE = "measurement";
 
     private static final String SEPERATOR = "_";
 
@@ -40,7 +40,7 @@ public class DatasetType {
 
     public static String extractType(String id, String defaultValue) {
         String fallback = defaultValue == null || defaultValue.isEmpty()
-                ? DEFAULT_DATASET_TYPE
+                ? DEFAULT_VALUE_TYPE
                 : defaultValue;
         if (id == null || id.isEmpty()) {
             return fallback;

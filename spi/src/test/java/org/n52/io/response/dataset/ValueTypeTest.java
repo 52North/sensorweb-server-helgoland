@@ -36,88 +36,88 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.ValueType;
 
-public class DatasetTypeTest {
+public class ValueTypeTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void when_extractingIdWithoutUnderscore_then_extractIdentity() {
-        assertThat(DatasetType.extractId("1"), is("1"));
+        assertThat(ValueType.extractId("1"), is("1"));
     }
 
     @Test
     public void when_nullDatasetId_then_extractDefaultFallback() {
-        Assert.assertThat(DatasetType.extractType(null), Matchers.is("measurement"));
+        Assert.assertThat(ValueType.extractType(null), Matchers.is(ValueType.DEFAULT_VALUE_TYPE));
     }
 
     @Test
     public void when_emptyDatasetIdAndEmptyFallback_then_extractDefaultFallback() {
-        Assert.assertThat(DatasetType.extractType("", ""), Matchers.is("measurement"));
+        Assert.assertThat(ValueType.extractType("", ""), Matchers.is(ValueType.DEFAULT_VALUE_TYPE));
     }
 
     @Test
     public void when_datasetIdWithoutTypePrefix_then_extractDefaultFallback() {
-        Assert.assertThat(DatasetType.extractType("text234"), Matchers.is("measurement"));
+        Assert.assertThat(ValueType.extractType("text234"), Matchers.is(ValueType.DEFAULT_VALUE_TYPE));
     }
 
     @Test
     public void when_datasetIdAndFallback_then_extractDatasetType() {
-        Assert.assertThat(DatasetType.extractType("text_234", "count"), Matchers.is("text"));
+        Assert.assertThat(ValueType.extractType("text_234", "count"), Matchers.is("text"));
     }
 
     @Test
     public void when_datasetIdWithoutTypePrefixAndFallback_then_extractFallback() {
-        Assert.assertThat(DatasetType.extractType("http://foobar/234", "count"), Matchers.is("count"));
+        Assert.assertThat(ValueType.extractType("http://foobar/234", "count"), Matchers.is("count"));
     }
 
     @Test
     public void when_datasetId_then_extractDatasetType() {
-        Assert.assertThat(DatasetType.extractType("text_234"), Matchers.is("text"));
+        Assert.assertThat(ValueType.extractType("text_234"), Matchers.is("text"));
     }
 
     @Test
     public void when_datasetId_then_extractId() {
-        Assert.assertThat(DatasetType.extractId("text_234"), Matchers.is("234"));
+        Assert.assertThat(ValueType.extractId("text_234"), Matchers.is("234"));
     }
 
     @Test
     public void when_createIdDatasetId_then_typeAndIdGetsConcatenated() {
-        Assert.assertThat(DatasetType.createId("mytype", "123"), Matchers.is("mytype_123"));
+        Assert.assertThat(ValueType.createId("mytype", "123"), Matchers.is("mytype_123"));
     }
 
     @Test
     public void when_createIdWithCamelCasedType_then_typeGetsLowercased() {
-        Assert.assertThat(DatasetType.createId("myType", "123"), Matchers.is("mytype_123"));
+        Assert.assertThat(ValueType.createId("myType", "123"), Matchers.is("mytype_123"));
     }
 
     @Test
     public void when_createIdWithCamelCasedId_then_idKeepsCamelCased() {
-        Assert.assertThat(DatasetType.createId("mytype", "camelCasedId"), Matchers.is("mytype_camelCasedId"));
+        Assert.assertThat(ValueType.createId("mytype", "camelCasedId"), Matchers.is("mytype_camelCasedId"));
     }
 
     @Test
     public void when_createWithNullType_then_returnIdentity() {
-        Assert.assertThat(DatasetType.createId(null, "123"), Matchers.is("123"));
+        Assert.assertThat(ValueType.createId(null, "123"), Matchers.is("123"));
     }
 
     @Test
     public void when_createWithEmptyType_then_returnIdentity() {
-        Assert.assertThat(DatasetType.createId("", "123"), Matchers.is("123"));
+        Assert.assertThat(ValueType.createId("", "123"), Matchers.is("123"));
     }
 
     @Test
     public void when_createWithEmptyId_then_throwException() {
         thrown.expect(IllegalArgumentException.class);
-        DatasetType.createId("myType", "");
+        ValueType.createId("myType", "");
     }
 
     @Test
     public void when_createWithNullId_then_throwException() {
         thrown.expect(NullPointerException.class);
-        DatasetType.createId("myType", null);
+        ValueType.createId("myType", null);
     }
 
 }

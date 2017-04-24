@@ -242,7 +242,7 @@ public interface Parameters {
 
     String DATASETS = "datasets";
 
-    String HANDLE_AS_DATASET_TYPE = "handleAs";
+    String HANDLE_AS_VALUE_TYPE = "handleAs";
 
     /**
      * Determines the categories filter
@@ -291,7 +291,7 @@ public interface Parameters {
 
     String FILTER_PLATFORM_TYPES = "platformTypes";
 
-    String FILTER_DATASET_TYPES = "datasetTypes";
+    String FILTER_VALUE_TYPES = "valueTypes";
 
     String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
 
@@ -416,4 +416,5 @@ public interface Parameters {
      */
     @Deprecated
     String LANGUAGE = "language";
+
 }

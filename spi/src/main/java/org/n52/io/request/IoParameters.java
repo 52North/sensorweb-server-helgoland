@@ -55,7 +55,7 @@ import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.response.BBox;
 import org.n52.io.response.PlatformType;
-import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.opengis.referencing.FactoryException;
@@ -457,7 +457,7 @@ public class IoParameters implements Parameters {
     }
 
     public Set<String> getDatasetTypes() {
-        return getValuesOf(FILTER_DATASET_TYPES);
+        return getValuesOf(FILTER_VALUE_TYPES);
     }
 
     public Set<String> getSearchTerms() {
@@ -959,7 +959,7 @@ public class IoParameters implements Parameters {
         };
         return isBackwardsCompatibilityRequest(parameters)
                 ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                            .extendWith(Parameters.FILTER_DATASET_TYPES, DatasetType.DEFAULT_DATASET_TYPE)
+                            .extendWith(Parameters.FILTER_VALUE_TYPES, ValueType.DEFAULT_VALUE_TYPE)
                             .removeAllOf(Parameters.HREF_BASE)
                 : parameters;
     }
@@ -967,14 +967,14 @@ public class IoParameters implements Parameters {
     private static boolean isBackwardsCompatibilityRequest(
                                                            IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
-                || parameters.containsParameter(Parameters.FILTER_DATASET_TYPES));
+                || parameters.containsParameter(Parameters.FILTER_VALUE_TYPES));
     }
 
     public boolean isPureStationaryInsituQuery() {
         Set<String> platformTypes = getPlatformTypes();
         Set<String> datasetTypes = getDatasetTypes();
         return isStationaryInsituOnly(platformTypes)
-                && isMeasurementOnly(datasetTypes);
+                && isQuantityOnly(datasetTypes);
     }
 
     private boolean isStationaryInsituOnly(Set<String> platformTypes) {
@@ -983,9 +983,9 @@ public class IoParameters implements Parameters {
                 && platformTypes.contains(PlatformType.PLATFORM_TYPE_INSITU);
     }
 
-    private boolean isMeasurementOnly(Set<String> datasetTypes) {
-        return datasetTypes.size() == 1
-                && datasetTypes.contains(DatasetType.DEFAULT_DATASET_TYPE);
+    private boolean isQuantityOnly(Set<String> valueTypes) {
+        return valueTypes.size() == 1
+                && valueTypes.contains(ValueType.DEFAULT_VALUE_TYPE);
     }
 
 }

@@ -40,7 +40,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.ValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -334,12 +334,14 @@ public abstract class RequestParameterSet {
         return getDatasets();
     }
 
-    public String getDatasetType() {
-        String handleAs = getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
+    public String getValueType() {
+        String handleAs = containsParameter(Parameters.HANDLE_AS_VALUE_TYPE)
+                ? getAsString(Parameters.HANDLE_AS_VALUE_TYPE)
+                : getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String[] datasetIds = getDatasets();
         return datasetIds.length > 0
-                ? DatasetType.extractType(datasetIds[0], handleAs)
-                : "measurement";
+                ? ValueType.extractType(datasetIds[0], handleAs)
+                : ValueType.DEFAULT_VALUE_TYPE;
     }
 
     @Override

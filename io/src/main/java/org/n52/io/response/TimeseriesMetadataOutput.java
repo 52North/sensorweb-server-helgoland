@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.ValueType;
 import org.n52.io.response.dataset.SeriesParameters;
 import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
@@ -59,13 +59,13 @@ public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
 
     @Override
     @JsonIgnore
-    public String getDatasetType() {
-        return super.getDatasetType();
+    public String getValueType() {
+        return super.getValueType();
     }
 
     @Override
     public String getId() {
-        return DatasetType.extractId(super.getId());
+        return ValueType.extractId(super.getId());
     }
 
     public StationOutput getStation() {
