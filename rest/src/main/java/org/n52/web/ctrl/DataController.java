@@ -60,7 +60,7 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.DatasetType;
+import org.n52.io.response.dataset.ValueType;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -132,12 +132,12 @@ public class DataController extends BaseController {
 
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
-        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
-        String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType).withSimpleRequest(parameters)
+        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
+        IoProcessChain< ? > ioChain = createIoFactory(valueType).withSimpleRequest(parameters)
                                                                   .createProcessChain();
 
         DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
@@ -156,7 +156,7 @@ public class DataController extends BaseController {
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
                 .withSimpleRequest(parameters)
                 .createProcessChain();
@@ -187,7 +187,7 @@ public class DataController extends BaseController {
                                  @PathVariable String seriesId,
                                  @RequestParam MultiValueMap<String, String> query) {
         IoParameters map = QueryParameters.createFromQuery(query);
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
         LOGGER.debug("getSeriesCollection() with query: {}", map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
         writeRawData(parameters, response);
@@ -224,7 +224,7 @@ public class DataController extends BaseController {
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withStyledRequest(map.mergeToStyledParameterSet(parameters))
                                     .withSimpleRequest(map.mergeToSimpleParameterSet(parameters))
                                     .createHandler(MimeType.APPLICATION_PDF.toString())
@@ -247,9 +247,9 @@ public class DataController extends BaseController {
                                                                         .createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withSimpleRequest(parameters)
                                     .createHandler(MimeType.APPLICATION_PDF.toString())
                                     .writeBinary(response.getOutputStream());
@@ -269,12 +269,12 @@ public class DataController extends BaseController {
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(MimeType.APPLICATION_ZIP.toString());
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         createIoFactory(datasetType)
                                     .withSimpleRequest(parameters)
                                     .createHandler(MimeType.APPLICATION_ZIP.toString())
@@ -296,7 +296,7 @@ public class DataController extends BaseController {
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         if (Boolean.parseBoolean(map.getOther("zip"))) {
@@ -305,7 +305,7 @@ public class DataController extends BaseController {
             response.setContentType(MimeType.TEXT_CSV.toString());
         }
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withSimpleRequest(parameters)
                                     .createHandler(MimeType.TEXT_CSV.toString())
                                     .writeBinary(response.getOutputStream());
@@ -321,11 +321,11 @@ public class DataController extends BaseController {
             throws Exception {
 
         IoParameters map = QueryParameters.createFromQuery(parameters);
-        checkForUnknownSeriesIds(map, parameters.getDatasets());
+        checkForUnknownDatasetIds(map, parameters.getDatasets());
 
         LOGGER.debug("get data collection chart with query: {}", map);
 
-        final String datasetType = parameters.getDatasetType();
+        final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withStyledRequest(parameters)
                                     .createHandler(MimeType.IMAGE_PNG.toString())
                                     .writeBinary(response.getOutputStream());
@@ -337,20 +337,20 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
-                               @PathVariable String seriesId,
+                               @PathVariable String datasetId,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
 
         IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
+        LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan()
                                            .toString());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, datasetId);
 
-        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
-        String observationType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
+        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
-        createIoFactory(observationType).withSimpleRequest(parameters)
+        createIoFactory(valueType).withSimpleRequest(parameters)
                                         .createHandler(MimeType.IMAGE_PNG.toString())
                                         .writeBinary(response.getOutputStream());
     }
@@ -390,10 +390,10 @@ public class DataController extends BaseController {
     }
 
     private void checkForUnknownSeriesIds(RequestParameterSet parameters, String... seriesIds) {
-        checkForUnknownSeriesIds(IoParameters.createFromQuery(parameters), seriesIds);
+        checkForUnknownDatasetIds(IoParameters.createFromQuery(parameters), seriesIds);
     }
 
-    private void checkForUnknownSeriesIds(IoParameters parameters, String... seriesIds) {
+    private void checkForUnknownDatasetIds(IoParameters parameters, String... seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
                 if (!datasetService.exists(id, parameters)) {

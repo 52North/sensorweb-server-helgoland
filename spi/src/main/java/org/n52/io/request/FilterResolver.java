@@ -183,19 +183,19 @@ public class FilterResolver {
     }
 
     public boolean shallIncludeAllDatasetTypes() {
-        Set<String> datasetTypes = parameters.getDatasetTypes();
+        Set<String> datasetTypes = parameters.getValueTypes();
         return !isSetDatasetTypeFilter()
                 || datasetTypes.contains(PlatformType.PLATFORM_TYPE_ALL);
     }
 
     public boolean shallIncludeDatasetType(String datasetType) {
-        Set<String> datasetTypes = parameters.getDatasetTypes();
+        Set<String> datasetTypes = parameters.getValueTypes();
         return datasetTypes.contains(datasetType)
                 || datasetTypes.contains(PlatformType.PLATFORM_TYPE_ALL);
     }
 
     private boolean isSetDatasetTypeFilter() {
-        return !parameters.getDatasetTypes().isEmpty();
+        return !parameters.getValueTypes().isEmpty();
     }
 
 }

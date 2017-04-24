@@ -28,8 +28,6 @@
  */
 package org.n52.io;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,19 +41,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
-import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.quantity.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -73,6 +74,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
@@ -95,7 +99,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Autowired
     @Qualifier("timeseriesService")
-    private DataService<MeasurementData> timeseriesDataService;
+    private DataService<QuantityData> timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
 
@@ -148,9 +152,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                         .getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
                 String timeseriesId = metadata.getId();
-//                RenderingConfig style = timeseriesStyles.containsKey(timeseriesId)
-//                    ? timeseriesStyles.get(timeseriesId)
-//                    : phenomenonStyles.get(phenomenonId);
                 renderConfiguredIntervals(timeseriesId, config);
 
                 if (interrupted) {
@@ -160,7 +161,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
 
         for (RenderingConfig config : timeseriesStyles) {
-//            RenderingConfig style = timeseriesStyles.get(timeseriesId);
             renderConfiguredIntervals(config.getId(), config);
 
             if (interrupted) {
@@ -208,11 +208,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>
+    private IoFactory<QuantityData, TimeseriesMetadataOutput, QuantityValue>
             createIoFactory(RequestSimpleParameterSet parameters)
             throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return new DefaultIoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>()
-                .create("measurement")
+        return new DefaultIoFactory<QuantityData, TimeseriesMetadataOutput, QuantityValue>()
+                .create(QuantityDatasetOutput.VALUE_TYPE)
                 .withSimpleRequest(parameters)
                 .withDataService(timeseriesDataService)
                 .withDatasetService(timeseriesMetadataService);
@@ -245,11 +245,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public DataService<MeasurementData> getTimeseriesDataService() {
+    public DataService<QuantityData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(DataService<MeasurementData> timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<QuantityData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 

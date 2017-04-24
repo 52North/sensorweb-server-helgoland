@@ -9,7 +9,7 @@ which is being, or has been observed by a specific platform. This
 can be simple scalar types or more complex types like `profile` or
 other `record` data being observed over time or along a track. 
 
-The default dataset type is `measurement` which actually is a 
+The default dataset type is `quantity` which actually is a 
 numeric observation over time. A resource can be filtered by 
 dataset type(s).
 
@@ -42,16 +42,16 @@ Each data value might have different optionals set.
 
 ## Scalar data types
 Scalar data types are single values (`double`, `count`, `boolean`, `double`, 
-`text`). Observations of type `double` are identified by `measurement`. Other 
+`text`). Observations of type `double` are identified by `quantity`. Other 
 scalar types are denoted as is.
 
 Depending on what members are available (see above table) the following output 
 would be valid.
 
-**Measurement Example (`stationary` platform)**
+**Quantity Example (`stationary` platform)**
 ```
 {
-  "measurement_1": {
+  "quantity_1": {
     "values": [
       {
         "timestamp": 1353326400000,
@@ -94,7 +94,7 @@ would be valid.
 }
 ```
 
-**Measurement example (`mobile` platform)**
+**Quantity example (`mobile` platform)**
 ```
 {
   "values": [

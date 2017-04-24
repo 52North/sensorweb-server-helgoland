@@ -5,7 +5,7 @@ permalink: /io
 ---
 
 Depending on the requested data type the API offers some Input/Output processing.
-In case of `measurement` datasets a client might request a rendered chart instead 
+In case of `quantity` datasets a client might request a rendered chart instead 
 of raw data.
 
 The following sections list currently supported I/O operations.
@@ -16,7 +16,7 @@ The following sections list currently supported I/O operations.
 ## Chart Rendering
 
 {:.n52-callout .n52-callout-info}
-Chart rendering is only supported for `measurement` dataset types.
+Chart rendering is only supported for `quantity` types.
 
 The following diagram types are available and can be set via style options:
 
@@ -140,7 +140,7 @@ http://localhost:8080/api/v1/timeseries/getData &gt; img.png
 ## Generalizing Raw Data
 
 {: .n52-callout .n52-callout-info}
-Chart rendering is only supported for `measurement` dataset types.
+Chart rendering is only supported for `quantity` types.
 
 Depending on sampling resolution and timespan timeseries data can be huge. Generalizing data can make 
 sense in more than just a low bandwidth use case (e.g. smoothing the curve).
@@ -172,7 +172,7 @@ Parameters
 ## Formatting Raw Data
 
 {:.n52-callout .n52-callout-info}
-Chart rendering is only supported for `measurement` dataset types.
+Chart rendering is only supported for `quantity` types.
 
 Raw data can be requested in a specific format. This can be useful if you work with a specific chart API 
 and want to avoid to convert data outout from one format to another. Possible formats are:

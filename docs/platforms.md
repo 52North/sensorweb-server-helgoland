@@ -13,7 +13,7 @@ Since `v2.0` the following sensor platforms are supported:
 
 The former Stations resource collection relates to the combination 
 of `stationary` and `insitu` platforms (located at a 0-dimensional
-location geometry) which do observe `measurement` datasets. 
+location geometry) which do observe `quantity` datasets. 
 
 So retrieving getting the former output under `/platforms` endpoint one 
 can filter via`/platforms?platformTypes=stationary,insitu` or get the 

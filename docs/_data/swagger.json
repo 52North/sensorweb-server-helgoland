@@ -544,7 +544,7 @@
                     "dataset",
                     "v2.0"
                 ],
-                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.\n",
+                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `quantity` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -576,7 +576,7 @@
                     "dataset",
                     "v2.0"
                 ],
-                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `measurement` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all` produces: - application/json - image/png - text/csv - application/pdf - application/zip\n",
+                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `quantity` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all` produces: - application/json - image/png - text/csv - application/pdf - application/zip\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -622,7 +622,7 @@
                 "tags": [
                     "timeseries"
                 ],
-                "description": "A collection of timeseries (i.e. datasets of type `measurement` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
+                "description": "A collection of timeseries (i.e. datasets of type `quantity` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
                         "$ref": "#/parameters/localeParam"
@@ -767,7 +767,7 @@
                 "tags": [
                     "timeseries"
                 ],
-                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nThis operation does only return data of `measurement` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.\n",
+                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nThis operation does only return data of `quantity` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.\n",
                 "produces": [
                     "application/json",
                     "image/png",
@@ -870,7 +870,7 @@
                 }
             }
         },
-        "/geometries/{geometryId}'": {
+        "/geometries/{geometryId}": {
             "get": {
                 "summary": "Gets a particular geometry",
                 "tags": [
@@ -1684,7 +1684,7 @@
                 "type": "string"
             },
             "collectionFormat": "csv",
-            "description": "Filters the resources to get only those related to the dataset type filter.\n\nAllowed values are `measurement`, `count`, `text`, `all` or any other custom types given by the  implementing backend.\n\nThe default is `measurement`.\n"
+            "description": "Filters the resources to get only those related to the dataset type filter.\n\nAllowed values are `quantity`, `count`, `text`, `all` or any other custom types given by the  implementing backend.\n\nThe default is `quantity`.\n"
         },
         "servicesParam": {
             "name": "services",

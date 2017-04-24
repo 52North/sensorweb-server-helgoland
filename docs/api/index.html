@@ -136,7 +136,7 @@
         </td>
                     </tr>
                     <tr>
-                        <td><a href="#operation--geometries--geometryId---get">GET /geometries/{geometryId}&#x27;</a></td>
+                        <td><a href="#operation--geometries--geometryId--get">GET /geometries/{geometryId}</a></td>
                         <td><p>Gets a particular geometry</p>
         </td>
                     </tr>
@@ -258,7 +258,7 @@
         </td>
                     </tr>
                     <tr>
-                        <td><a href="#operation--geometries--geometryId---get">GET /geometries/{geometryId}&#x27;</a></td>
+                        <td><a href="#operation--geometries--geometryId--get">GET /geometries/{geometryId}</a></td>
                         <td><p>Gets a particular geometry</p>
         </td>
                     </tr>
@@ -622,8 +622,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -1174,8 +1174,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -1469,7 +1469,7 @@
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets data for a given <code>timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request. </p>
-            <p>What Mime-Types are supported depends on the <code>datasetType</code>. For example <code>measurement</code> observations can be drawn as a timeseries chart (i.e. either <code>image/png</code> or <code>application/pdf</code>). Supported Mime-Types are listed for each <code>datasetType</code> when querying  <code>/service/{serviceId}?datasetTypes=all</code> produces: - application/json - image/png - text/csv - application/pdf - application/zip</p>
+            <p>What Mime-Types are supported depends on the <code>datasetType</code>. For example <code>quantity</code> observations can be drawn as a timeseries chart (i.e. either <code>image/png</code> or <code>application/pdf</code>). Supported Mime-Types are listed for each <code>datasetType</code> when querying  <code>/service/{serviceId}?datasetTypes=all</code> produces: - application/json - image/png - text/csv - application/pdf - application/zip</p>
             
                     </section>
                     
@@ -1771,7 +1771,7 @@
             <li><code>lastWeek.png</code></li>
             <li><code>lastMonth.png</code></li>
             </ul>
-            <p>Datasets of type <code>measurement</code> can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.</p>
+            <p>Datasets of type <code>quantity</code> can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.</p>
             
                     </section>
                     
@@ -2068,8 +2068,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -2545,11 +2545,11 @@
                         </section>
                 </div>
             </div>    
-        <span id="path--geometries--geometryId--"></span>
-            <div id="operation--geometries--geometryId---get" class="swagger--panel-operation-get panel">
+        <span id="path--geometries--geometryId-"></span>
+            <div id="operation--geometries--geometryId--get" class="swagger--panel-operation-get panel">
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular geometry</div>
-                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/geometries/{geometryId}&#x27;</strong></h3>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/geometries/{geometryId}</strong></h3>
                         Tags:
                             <a href="#tag-geometry">geometry</a>, 
                             <a href="#tag-v2.0">v2.0</a>
@@ -2924,8 +2924,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -3418,8 +3418,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -3970,8 +3970,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -4627,8 +4627,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -5094,8 +5094,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -6010,7 +6010,7 @@
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
-                        <p>A collection of timeseries (i.e. datasets of type <code>measurement</code> which have been observed at <code>stationary</code>, <code>insitu</code> platforms having a 0-dimensional (POINT) location geometry. Depending on the <code>expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                        <p>A collection of timeseries (i.e. datasets of type <code>quantity</code> which have been observed at <code>stationary</code>, <code>insitu</code> platforms having a 0-dimensional (POINT) location geometry. Depending on the <code>expanded</code> parameter the collections items are compact or do inline full metadata.</p>
             <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
             
                     </section>
@@ -6206,8 +6206,8 @@
                                             <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                                        <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                                        <p>The default is <code>measurement</code>.</p>
+                                        <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                                        <p>The default is <code>quantity</code>.</p>
                                         </td>
                                             <td>query</td>
                                             <td>
@@ -6612,7 +6612,7 @@
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets data for a given <code>timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request. </p>
-            <p>This operation does only return data of <code>measurement</code> dataset types from<code>stationary</code>, <code>insitu</code> platforms having a 0-dimensional location geometry (<code>station</code>). Supported Mime-Types are <code>application/json</code>, <code>image/png</code>, <code>application/pdf</code>, and <code>text/csv</code>.</p>
+            <p>This operation does only return data of <code>quantity</code> dataset types from<code>stationary</code>, <code>insitu</code> platforms having a 0-dimensional location geometry (<code>station</code>). Supported Mime-Types are <code>application/json</code>, <code>image/png</code>, <code>application/pdf</code>, and <code>text/csv</code>.</p>
             
                     </section>
                     
@@ -6932,8 +6932,8 @@
                     <td>
                         datasetTypes
                     <td><p>Filters the resources to get only those related to the dataset type filter.</p>
-                <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
-                <p>The default is <code>measurement</code>.</p>
+                <p>Allowed values are <code>quantity</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
+                <p>The default is <code>quantity</code>.</p>
                 </td>
                     <td>query</td>
                     <td>

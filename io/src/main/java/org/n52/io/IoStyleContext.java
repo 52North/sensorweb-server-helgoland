@@ -31,8 +31,8 @@ package org.n52.io;
 import java.util.Collections;
 import java.util.List;
 
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.quantity.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -76,7 +76,7 @@ public final class IoStyleContext {
      * @throws NullPointerException if any of the given arguments is <code>null</code>.
      * @throws IllegalStateException if amount of timeseries described by the given arguments is not
      * in sync.
-     * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
+     * @return a rendering context to be used by {@link QuantityIoFactory} to create an
      * {@link IoHandler}.
      */
     public static IoStyleContext createContextWith(RequestStyledParameterSet styles,

@@ -49,17 +49,17 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandlerException;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.measurement.format.FormatterFactory;
-import org.n52.io.measurement.generalize.GeneralizingMeasurementService;
+import org.n52.io.quantity.format.FormatterFactory;
+import org.n52.io.quantity.generalize.GeneralizingQuantityService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.measurement.MeasurementData;
-import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
-import org.n52.io.response.dataset.measurement.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -89,9 +89,9 @@ public class TimeseriesDataController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
 
-    private ParameterService<MeasurementDatasetOutput> timeseriesMetadataService;
+    private ParameterService<QuantityDatasetOutput> timeseriesMetadataService;
 
-    private DataService<MeasurementData> timeseriesDataService;
+    private DataService<QuantityData> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -110,7 +110,7 @@ public class TimeseriesDataController extends BaseController {
             getRawTimeseriesCollectionData(response, parameters);
             return null;
         }
-        DataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
+        DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
@@ -138,7 +138,7 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(map.isExpanded());
 
         // TODO add paging
-        DataCollection<MeasurementData> seriesData = getTimeseriesData(parameters);
+        DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, map.getFormat());
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
@@ -148,10 +148,10 @@ public class TimeseriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
-    private DataCollection<MeasurementData> getTimeseriesData(RequestSimpleParameterSet parameters) {
+    private DataCollection<QuantityData> getTimeseriesData(RequestSimpleParameterSet parameters) {
         Stopwatch stopwatch = Stopwatch.startStopwatch();
-        DataCollection<MeasurementData> timeseriesData = parameters.isGeneralize()
-                ? new GeneralizingMeasurementService(timeseriesDataService).getData(parameters)
+        DataCollection<QuantityData> timeseriesData = parameters.isGeneralize()
+                ? new GeneralizingQuantityService(timeseriesDataService).getData(parameters)
                 : timeseriesDataService.getData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         return timeseriesData;
@@ -200,7 +200,7 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private DataCollection< ? > format(DataCollection<MeasurementData> timeseriesData, String format) {
+    private DataCollection< ? > format(DataCollection<QuantityData> timeseriesData, String format) {
         return FormatterFactory.createFormatterFactory(format)
                                .create()
                                .format(timeseriesData);
@@ -229,19 +229,19 @@ public class TimeseriesDataController extends BaseController {
                                      .writeBinary(response.getOutputStream());
     }
 
-    private IoFactory<MeasurementData,
-                      MeasurementDatasetOutput,
-                      MeasurementValue> createIoFactory(RequestSimpleParameterSet parameters)
+    private IoFactory<QuantityData,
+                      QuantityDatasetOutput,
+                      QuantityValue> createIoFactory(RequestSimpleParameterSet parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create("measurement")
+        return createDefaultIoFactory().create(QuantityDatasetOutput.VALUE_TYPE)
                                        .withSimpleRequest(parameters)
                                        .withBasePath(getRootResource())
                                        .withDataService(timeseriesDataService)
                                        .withDatasetService(timeseriesMetadataService);
     }
 
-    private DefaultIoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> createDefaultIoFactory() {
-        return new DefaultIoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue>();
+    private DefaultIoFactory<QuantityData, QuantityDatasetOutput, QuantityValue> createDefaultIoFactory() {
+        return new DefaultIoFactory<QuantityData, QuantityDatasetOutput, QuantityValue>();
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
@@ -416,19 +416,19 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    public ParameterService<MeasurementDatasetOutput> getTimeseriesMetadataService() {
+    public ParameterService<QuantityDatasetOutput> getTimeseriesMetadataService() {
         return timeseriesMetadataService;
     }
 
-    public void setTimeseriesMetadataService(ParameterService<MeasurementDatasetOutput> timeseriesMetadataService) {
+    public void setTimeseriesMetadataService(ParameterService<QuantityDatasetOutput> timeseriesMetadataService) {
         this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 
-    public DataService<MeasurementData> getTimeseriesDataService() {
+    public DataService<QuantityData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(DataService<MeasurementData> timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<QuantityData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 

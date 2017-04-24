@@ -357,7 +357,7 @@ paths:
         * `lastMonth.png`
         
         
-        Datasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.
+        Datasets of type `quantity` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.
       parameters:
         - name: datasetId
           in: path
@@ -383,7 +383,7 @@ paths:
         Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
 
 
-        What Mime-Types are supported depends on the `datasetType`. For example `measurement` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all`
+        What Mime-Types are supported depends on the `datasetType`. For example `quantity` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all`
         produces:
         - application/json
         - image/png
@@ -419,7 +419,7 @@ paths:
       tags:
         - timeseries
       description: |
-        A collection of timeseries (i.e. datasets of type `measurement` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        A collection of timeseries (i.e. datasets of type `quantity` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
         
         Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
@@ -513,7 +513,7 @@ paths:
         Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
 
 
-        This operation does only return data of `measurement` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.
+        This operation does only return data of `quantity` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.
       produces:
         - application/json
         - image/png
@@ -576,7 +576,7 @@ paths:
       responses:
         '200':
           description: A collection of geometries
-  /geometries/{geometryId}':
+  /geometries/{geometryId}:
     get:
       summary: Gets a particular geometry
       tags:
@@ -1123,10 +1123,10 @@ parameters:
       Filters the resources to get only those related to the dataset type filter.
 
 
-      Allowed values are `measurement`, `count`, `text`, `all` or any other custom types given by the  implementing backend.
+      Allowed values are `quantity`, `count`, `text`, `all` or any other custom types given by the  implementing backend.
 
 
-      The default is `measurement`.
+      The default is `quantity`.
   servicesParam:
     name: services
     in: query
