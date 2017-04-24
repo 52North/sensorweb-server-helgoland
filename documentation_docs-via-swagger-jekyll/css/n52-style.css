@@ -8,6 +8,18 @@ body {
   vertical-align: middle;
 }
 
+.n52-top {
+    clear: both;
+    margin-top: 20px !important;
+}
+.n52-top a {
+    cursor: pointer;
+}
+.n52-top a:hover {
+    color: #fff;
+    background-color: #999;
+}
+
 .n52-sidebar {
   padding-top: 80px;
 }
@@ -147,21 +159,23 @@ body {
  * The Footer
  */
 
-.footer {
+footer {
+  font-size: small;
   padding: 30px 0;
   margin: 10px 0;
   margin-top: 70px;
   border-top: 1px solid #e5e5e5;
   background-color: #f5f5f5;
+  height: 100px;
 }
-.footer div {
+
+footer ul {
+  list-style: none;
+}
+
+footer div {
   margin-left: 10px;
   margin-right: 10px;
-}
-.footer p {
-  margin-left: 10px;
-  margin-bottom: 0;
-  color: #777;
 }
 .footer-links {
   margin: 10px 0;

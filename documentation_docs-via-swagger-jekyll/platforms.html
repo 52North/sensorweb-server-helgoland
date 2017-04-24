@@ -40,14 +40,17 @@
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/main.css" />
+<!-- <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/api/main.css" /> -->
+<link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/bootstrap_3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_docs-via-swagger-jekyll/css/n52-style.css" />
 </head>
 
 <body>
 
+  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    
   <div class="n52-container container-fluid">
-
+  
     <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
         <a href="/series-rest-api/documentation_docs-via-swagger-jekyll"><img alt="52&deg;North logo"
@@ -56,7 +59,7 @@
       <div class="container">
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="http://52north.org/communities/sensorweb/">Sensor Web</a></li>
+            <li><a href="http://52north.org">52°North</a></li>
             <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
@@ -88,7 +91,14 @@
       </p>
     </nav>
 
-    <div role="main" class="col-lg-9 n52-content pull-right"><article class="page">
+    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+      <div class="pull-right">
+        <p class="affix up-link n52-top">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        </p>
+      </div>
+
+      <article class="page">
   <h1>Platforms</h1>
 
   <div class="entry">
@@ -112,21 +122,29 @@ used to filter on all resources which ensures to only get those resources
 related to the given filter.</p>
 
   </div>
-</article></div>
-
+</article>
+    </div>
   </div>
 
 
   <footer class="footer">
+    
     <div class="col-lg-5">
-      <small>This project is maintained by the 52°North <a
-        href="https://52north/communities/SensorWeb">Sensor Web</a> community
-      </small>
+      <ul>
+        <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
+        <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+        <li><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
+                        href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+      </ul>
     </div>
     <div class="col-lg-5 pull-right">
-      <small>Current Version: <a
-        href="http://github.com/ridoo/series-rest-api/tree/993348f3e0baffa98313f0a792acb08840b6fac8">993348f3e0baffa98313f0a792acb08840b6fac8</a>
-      </small>
+      <ul class="footer-links">
+          <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+      </ul>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/f010a6243fd32af93df8da51137a88b10a176455">f010a6243fd32af93df8da51137a88b10a176455</a></p>
+      
     </div>
   </footer>
 

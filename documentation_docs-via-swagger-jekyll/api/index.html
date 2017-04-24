@@ -44,9 +44,14 @@
                         <td><p>Available endpoints.</p>
         </td>
                     </tr>
+                    <tr>
+                        <td><a href="#operation--search-get">GET /search</a></td>
+                        <td><p>A simple search.</p>
+        </td>
+                    </tr>
                 </tbody>
             </table>
-            <h3 id="tag-default" class="swagger-summary-tag">Tag: default</h3>
+            <h3 id="tag-platform" class="swagger-summary-tag">Tag: platform</h3>
             
         
             <table class="table table-bordered table-condensed swagger--summary">
@@ -58,10 +63,33 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><a href="#operation--search-get">GET /search</a></td>
-                        <td><p>A simple search.</p>
+                        <td><a href="#operation--platforms-get">GET /platforms</a></td>
+                        <td><p>Available Platforms</p>
         </td>
                     </tr>
+                    <tr>
+                        <td><a href="#operation--platforms--platformId--get">GET /platforms/{platformId}</a></td>
+                        <td><p>Gets a particular platform</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--platforms--platformId--extras-get">GET /platforms/{platformId}/extras</a></td>
+                        <td><p>Gets extra infos for platform</p>
+        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-v2.0" class="swagger-summary-tag">Tag: v2.0</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <td><a href="#operation--platforms-get">GET /platforms</a></td>
                         <td><p>Available Platforms</p>
@@ -73,13 +101,8 @@
         </td>
                     </tr>
                     <tr>
-                        <td><a href="#operation--stations-get">GET /stations</a></td>
-                        <td><p>Available Stations</p>
-        </td>
-                    </tr>
-                    <tr>
-                        <td><a href="#operation--stations--stationId--get">GET /stations/{stationId}</a></td>
-                        <td><p>Gets a particular station</p>
+                        <td><a href="#operation--platforms--platformId--extras-get">GET /platforms/{platformId}/extras</a></td>
+                        <td><p>Gets extra infos for platform</p>
         </td>
                     </tr>
                     <tr>
@@ -108,6 +131,95 @@
         </td>
                     </tr>
                     <tr>
+                        <td><a href="#operation--geometries-get">GET /geometries</a></td>
+                        <td><p>A collection of available geometries</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--geometries--geometryId---get">GET /geometries/{geometryId}&#x27;</a></td>
+                        <td><p>Gets a particular geometry</p>
+        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-station" class="swagger-summary-tag">Tag: station</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="#operation--stations-get">GET /stations</a></td>
+                        <td><p>Available Stations</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--stations--stationId--get">GET /stations/{stationId}</a></td>
+                        <td><p>Gets a particular station</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--stations--stationId--extras-get">GET /stations/{stationId}/extras</a></td>
+                        <td><p>Gets extra infos for station</p>
+        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-dataset" class="swagger-summary-tag">Tag: dataset</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="#operation--datasets-get">GET /datasets</a></td>
+                        <td><p>Gets available datasets</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--datasets--datasetId--get">GET /datasets/{datasetId}</a></td>
+                        <td><p>Gets a particular dataset</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--datasets--datasetId--extras-get">GET /datasets/{datasetId}/extras</a></td>
+                        <td><p>Gets extra infos for dataset</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--datasets--datasetId---interval--get">GET /datasets/{datasetId}/{interval}</a></td>
+                        <td><p>Gets extra infos for dataset</p>
+        </td>
+                    </tr>
+                    <tr>
+                        <td><a href="#operation--datasets--datasetId--data-get">GET /datasets/{datasetId}/data</a></td>
+                        <td><p>Gets data of a dataset</p>
+        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-timeseries" class="swagger-summary-tag">Tag: timeseries</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
                         <td><a href="#operation--timeseries-get">GET /timeseries</a></td>
                         <td><p>Gets available timeseries</p>
         </td>
@@ -124,9 +236,22 @@
                     </tr>
                     <tr>
                         <td><a href="#operation--timeseries--timeseriesId--getData-get">GET /timeseries/{timeseriesId}/getData</a></td>
-                        <td><p>Gets data of a dataset</p>
+                        <td><p>Gets data of a timeseries</p>
         </td>
                     </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-geometry" class="swagger-summary-tag">Tag: geometry</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <td><a href="#operation--geometries-get">GET /geometries</a></td>
                         <td><p>A collection of available geometries</p>
@@ -137,6 +262,19 @@
                         <td><p>Gets a particular geometry</p>
         </td>
                     </tr>
+                </tbody>
+            </table>
+            <h3 id="tag-parameter" class="swagger-summary-tag">Tag: parameter</h3>
+            
+        
+            <table class="table table-bordered table-condensed swagger--summary">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <td><a href="#operation--services-get">GET /services</a></td>
                         <td><p>Get available service instances</p>
@@ -283,6 +421,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets available categories</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -533,11 +673,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a catefory instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories/{categoryId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets a category instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved following endpoint.</p>
             
                     </section>
                     
@@ -584,7 +725,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -592,6 +733,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -603,6 +786,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a category</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/categories/{categoryId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -679,6 +864,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -688,6 +915,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets available datasets</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/datasets</strong></h3>
+                        Tags:
+                            <a href="#tag-dataset">dataset</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -885,6 +1115,63 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                geometryTypes
+                                            <td><p>The type of geometry based on <a href="https://en.wikipedia.org/wiki/Well-known_text">WKT types</a>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">point</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">linestring</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">polygon</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/geometryTypesParam">#/parameters/geometryTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformGeometries
+                                            <td><p>The platform&#39;s geometry, either <code>site</code> for <code>stationary</code> platforms (or <code>station</code>s) or <code>track</code> for <code>mobile</code> platforms.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformGeometriesParam">#/parameters/platformGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                observedGeometries
+                                            <td><p>The platform&#39;s observed geometry, either <code>static</code> for <code>remote</code> platforms observing fixed geometries or <code>dynamic</code> otherwise.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>observedGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/observedGeometriesParam">#/parameters/observedGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
                                         <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
@@ -993,6 +1280,44 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -1002,6 +1327,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular dataset</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/datasets/{datasetId}</strong></h3>
+                        Tags:
+                            <a href="#tag-dataset">dataset</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1073,7 +1401,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded dataset</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -1081,6 +1409,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -1092,11 +1462,14 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets data of a dataset</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/datasets/{datasetId}/data</strong></h3>
+                        Tags:
+                            <a href="#tag-dataset">dataset</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets data for a given <code>timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request. </p>
-            <p>What Mime-Types are supported depends on the <code>datasetType</code>. For example <code>measurement</code> observations can be drawn as a timeseries chart (i.e. either <code>image/png</code> or <code>application/pdf</code>). Supported Mime-Types are listed for each <code>datasetType</code> when querying  <code>/service/{serviceId}?datasetTypes=all</code></p>
+            <p>What Mime-Types are supported depends on the <code>datasetType</code>. For example <code>measurement</code> observations can be drawn as a timeseries chart (i.e. either <code>image/png</code> or <code>application/pdf</code>). Supported Mime-Types are listed for each <code>datasetType</code> when querying  <code>/service/{serviceId}?datasetTypes=all</code> produces: - application/json - image/png - text/csv - application/pdf - application/zip</p>
             
                     </section>
                     
@@ -1191,14 +1564,60 @@
                                     <dd class="sw-response-400">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>Given parameters are not valid</p>
+                                                    <p>A query parameter does not match expected format</p>
                                             
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 
                                                 <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
                                             </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -1210,6 +1629,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for dataset</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/datasets/{datasetId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-dataset">dataset</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1276,7 +1698,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>A list of (selected) extra infos</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -1284,6 +1706,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -1295,6 +1759,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for dataset</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/datasets/{datasetId}/{interval}</strong></h3>
+                        Tags:
+                            <a href="#tag-dataset">dataset</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1305,7 +1772,6 @@
             <li><code>lastMonth.png</code></li>
             </ul>
             <p>Datasets of type <code>measurement</code> can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.</p>
-            <p>If a datasets has no pre-rendered chart a <code>404</code> (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.</p>
             
                     </section>
                     
@@ -1376,6 +1842,23 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>In case no prerendered image available (or is currently being rendered)</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -1385,6 +1868,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Get available feature instances</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1634,11 +2119,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets an feature instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features/{featureId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets a feature instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved following endpoint.</p>
             
                     </section>
                     
@@ -1685,7 +2171,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -1693,6 +2179,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -1704,6 +2232,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a feature</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/features/{featureId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1780,14 +2310,35 @@
                                             </div>
                                             
                                             </div>                </dd>
-                                    <dt class="sw-response-default">
-                                        default 
+                                    <dt class="sw-response-404">
+                                        404 Not Found
                                     
                                     </dt>
-                                    <dd class="sw-response-default">
+                                    <dd class="sw-response-404">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>Unexpected error</p>
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
                                             
                                                 </div>
                                             </div>
@@ -1810,6 +2361,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">A collection of available geometries</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/geometries</strong></h3>
+                        Tags:
+                            <a href="#tag-geometry">geometry</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -1839,6 +2393,63 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                        <tr>
+                                            <td>
+                                                geometryTypes
+                                            <td><p>The type of geometry based on <a href="https://en.wikipedia.org/wiki/Well-known_text">WKT types</a>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">point</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">linestring</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">polygon</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/geometryTypesParam">#/parameters/geometryTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformGeometries
+                                            <td><p>The platform&#39;s geometry, either <code>site</code> for <code>stationary</code> platforms (or <code>station</code>s) or <code>track</code> for <code>mobile</code> platforms.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformGeometriesParam">#/parameters/platformGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                observedGeometries
+                                            <td><p>The platform&#39;s observed geometry, either <code>static</code> for <code>remote</code> platforms observing fixed geometries or <code>dynamic</code> otherwise.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>observedGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/observedGeometriesParam">#/parameters/observedGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td>
                                                 crs
@@ -1939,6 +2550,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular geometry</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/geometries/{geometryId}&#x27;</strong></h3>
+                        Tags:
+                            <a href="#tag-geometry">geometry</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -2027,7 +2641,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded geometry instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -2035,6 +2649,69 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -2046,6 +2723,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Get available offerings instances</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -2296,11 +2975,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets an offering instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings/{offeringId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets an offering instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved following endpoint.</p>
             
                     </section>
                     
@@ -2347,7 +3027,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -2355,6 +3035,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -2366,6 +3088,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a phenomenon</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/offerings/{offeringId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -2442,6 +3166,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -2451,6 +3217,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Get available phenomenon instances</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -2701,11 +3469,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a phenomenon instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena/{phenomenonId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
-                        <p>Gets a phenomenon instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved following endpoint.</p>
+                        <p>Gets a phenomenon instance</p>
             
                     </section>
                     
@@ -2752,7 +3521,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -2760,6 +3529,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -2771,6 +3582,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a phenomenon</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/phenomena/{phenomenonId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -2847,6 +3660,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -2856,6 +3711,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Available Platforms</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/platforms</strong></h3>
+                        Tags:
+                            <a href="#tag-platform">platform</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3053,6 +3911,63 @@
                                         </tr>
                                         <tr>
                                             <td>
+                                                geometryTypes
+                                            <td><p>The type of geometry based on <a href="https://en.wikipedia.org/wiki/Well-known_text">WKT types</a>.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                                        <span class="json-property-enum-item">point</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">linestring</span>
+                                                    ,
+                                                        <span class="json-property-enum-item">polygon</span>
+                                                    
+                                                }
+                                                </span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                            </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/geometryTypesParam">#/parameters/geometryTypesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                platformGeometries
+                                            <td><p>The platform&#39;s geometry, either <code>site</code> for <code>stationary</code> platforms (or <code>station</code>s) or <code>track</code> for <code>mobile</code> platforms.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>platformGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/platformGeometriesParam">#/parameters/platformGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                observedGeometries
+                                            <td><p>The platform&#39;s observed geometry, either <code>static</code> for <code>remote</code> platforms observing fixed geometries or <code>dynamic</code> otherwise.</p>
+                                        </td>
+                                            <td>query</td>
+                                            <td>
+                                        <span class="json-property-type">string[]</span>
+                                        <span class="json-property-range" title="Value limits"></span>
+                                        
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>observedGeometries=aaa,bbb</code>)
+                                                    </span>    </td>
+                                            <td>
+                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/observedGeometriesParam">#/parameters/observedGeometriesParam</a></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 datasetTypes
                                             <td><p>Filters the resources to get only those related to the dataset type filter.</p>
                                         <p>Allowed values are <code>measurement</code>, <code>count</code>, <code>text</code>, <code>all</code> or any other custom types given by the  implementing backend.</p>
@@ -3161,6 +4076,44 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -3170,6 +4123,9 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular platform</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/platforms/{platformId}</strong></h3>
+                        Tags:
+                            <a href="#tag-platform">platform</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3241,51 +4197,155 @@
                                                     <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/crsParam">#/parameters/crsParam</a></span>
                                             </td>
                                         </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded item</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--platforms--platformId--extras"></span>
+            <div id="operation--platforms--platformId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for platform</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/platforms/{platformId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-platform">platform</a>, 
+                            <a href="#tag-v2.0">v2.0</a>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code>extras</code> metadata field of each dataset.</p>
+            <p>You can query just the ones you are interested in by appending the <code>fields</code> query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                         <tr>
                                             <td>
-                                                bbox
-                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
-                                        <p><code>json  bbox={
-                                          &quot;ll&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          },
-                                          &quot;ur&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          }
-                                        }</code></p>
-                                        </td>
-                                            <td>query</td>
+                                                platformId
+                                            <td></td>
+                                            <td>path</td>
                                             <td>
                                         <span class="json-property-type">string</span>
                                         <span class="json-property-range" title="Value limits"></span>
                                         
                                             </td>
                                             <td>
-                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/bboxParam">#/parameters/bboxParam</a></span>
+                                                    <span class="json-property-required"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                near
-                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code>crs</code> parameter if a  non-default CRS shall be used.</p>
-                                        <p><code>json near={
-                                          &quot;center&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          },
-                                          &quot;radius&quot;:500
-                                        }</code></p>
-                                        </td>
+                                                fields
+                                            <td></td>
                                             <td>query</td>
                                             <td>
-                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-type">string[]</span>
                                         <span class="json-property-range" title="Value limits"></span>
                                         
-                                            </td>
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
                                             <td>
-                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/nearParam">#/parameters/nearParam</a></span>
                                             </td>
                                         </tr>
                                 </tbody>
@@ -3305,7 +4365,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded platform</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -3313,6 +4373,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -3324,6 +4426,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Get available procedure instances</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedure</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3574,11 +4678,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a procedure instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedures/{procedureId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets a procedure instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved following endpoint.</p>
             
                     </section>
                     
@@ -3625,7 +4730,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -3633,6 +4738,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -3644,6 +4791,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a procedure</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/procedures/{procedureId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3720,6 +4869,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -3729,6 +4920,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">A simple search.</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/search</strong></h3>
+                        Tags:
+                            <a href="#tag-general">general</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3820,6 +5013,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Get available service instances</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -3950,11 +5145,12 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets an instance</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services/{serviceId}</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
                         <p>Gets a service instance.</p>
-            <p>The <code>extras</code> array tells if extra information is available which can be retrieved via following endpoint.</p>
             <p>Depending on what dataset types are available, differing output formats are available. For example, <code>image/png</code> (render as chart) or <code>application/pdf</code> (generating a report).</p>
             
                     </section>
@@ -4002,7 +5198,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded service instance</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -4010,6 +5206,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -4021,6 +5259,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for a service</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/services/{serviceId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-parameter">parameter</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -4097,6 +5337,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -4106,6 +5388,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Available Stations</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/stations</strong></h3>
+                        Tags:
+                            <a href="#tag-station">station</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -4373,6 +5657,44 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -4382,6 +5704,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular station</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/stations/{stationId}</strong></h3>
+                        Tags:
+                            <a href="#tag-station">station</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -4453,51 +5777,154 @@
                                                     <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/crsParam">#/parameters/crsParam</a></span>
                                             </td>
                                         </tr>
+                                </tbody>
+                            </table>
+                        </section>
+                    
+                        <section class="sw-responses">
+                                <p><a href="#sw-default-produces">Uses default content-types: </a>
+                                    <span class="label label-default">application/json</span> 
+                                </p>
+                            
+                            <dl>
+                                    <dt class="sw-response-200">
+                                        200 OK
+                                    
+                                    </dt>
+                                    <dd class="sw-response-200">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>An expanded item</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                            </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                            </dl>
+                        </section>
+                </div>
+            </div>    
+        <span id="path--stations--stationId--extras"></span>
+            <div id="operation--stations--stationId--extras-get" class="swagger--panel-operation-get panel">
+                <div class="panel-heading">
+                    <div class="operation-summary">Gets extra infos for station</div>
+                    <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/stations/{stationId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-station">station</a>
+                </div>
+                <div class="panel-body">
+                    <section class="sw-operation-description">
+                        <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code>extras</code> metadata field of each dataset.</p>
+            <p>You can query just the ones you are interested in by appending the <code>fields</code> query parameter and passing a comma-separated value list to it. </p>
+            
+                    </section>
+                    
+                        <section class="sw-request-params">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="sw-param-name"></th>
+                                    <th class="sw-param-description"></th>
+                                    <th class="sw-param-type"></th>
+                                    <th class="sw-param-data-type"></th>
+                                    <th class="sw-param-annotation"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
                                         <tr>
                                             <td>
-                                                bbox
-                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
-                                        <p><code>json  bbox={
-                                          &quot;ll&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          },
-                                          &quot;ur&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          }
-                                        }</code></p>
-                                        </td>
-                                            <td>query</td>
+                                                stationId
+                                            <td></td>
+                                            <td>path</td>
                                             <td>
                                         <span class="json-property-type">string</span>
                                         <span class="json-property-range" title="Value limits"></span>
                                         
                                             </td>
                                             <td>
-                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/bboxParam">#/parameters/bboxParam</a></span>
+                                                    <span class="json-property-required"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                near
-                                            <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code>crs</code> parameter if a  non-default CRS shall be used.</p>
-                                        <p><code>json near={
-                                          &quot;center&quot;: {
-                                            &quot;type&quot;: &quot;Point&quot;,
-                                            &quot;coordinates&quot;: [&lt;x&gt;,&lt;y&gt;]
-                                          },
-                                          &quot;radius&quot;:500
-                                        }</code></p>
-                                        </td>
+                                                fields
+                                            <td></td>
                                             <td>query</td>
                                             <td>
-                                        <span class="json-property-type">string</span>
+                                        <span class="json-property-type">string[]</span>
                                         <span class="json-property-range" title="Value limits"></span>
                                         
-                                            </td>
+                                        <span class="sw-param-collection-format">, 
+                                                        comma separated (<code>fields=aaa,bbb</code>)
+                                                    </span>    </td>
                                             <td>
-                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/nearParam">#/parameters/nearParam</a></span>
                                             </td>
                                         </tr>
                                 </tbody>
@@ -4517,7 +5944,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded station</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -4525,6 +5952,48 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -4536,6 +6005,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets available timeseries</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries</strong></h3>
+                        Tags:
+                            <a href="#tag-timeseries">timeseries</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -4850,6 +6321,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets a particular timeseries</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries/{timeseriesId}</strong></h3>
+                        Tags:
+                            <a href="#tag-timeseries">timeseries</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -4922,7 +6395,7 @@
                                     <dd class="sw-response-200">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>An expanded timeseries</p>
+                                                    <p>An expanded item</p>
                                             
                                                 </div>
                                             </div>
@@ -4930,6 +6403,69 @@
                                                 
                                                 <div class="col-md-6 sw-response-model">
                                             </div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-400">
+                                        400 Bad Request
+                                    
+                                    </dt>
+                                    <dd class="sw-response-400">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>A query parameter does not match expected format</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -4941,6 +6477,8 @@
                 <div class="panel-heading">
                     <div class="operation-summary">Gets extra infos for timeseries</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries/{timeseriesId}/extras</strong></h3>
+                        Tags:
+                            <a href="#tag-timeseries">timeseries</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -5017,6 +6555,48 @@
                                             </div>
                                             
                                             </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
                             </dl>
                         </section>
                 </div>
@@ -5024,8 +6604,10 @@
         <span id="path--timeseries--timeseriesId--getData"></span>
             <div id="operation--timeseries--timeseriesId--getData-get" class="swagger--panel-operation-get panel">
                 <div class="panel-heading">
-                    <div class="operation-summary">Gets data of a dataset</div>
+                    <div class="operation-summary">Gets data of a timeseries</div>
                     <h3 class="panel-title"><span class="operation-name">GET</span> <strong>/timeseries/{timeseriesId}/getData</strong></h3>
+                        Tags:
+                            <a href="#tag-timeseries">timeseries</a>
                 </div>
                 <div class="panel-body">
                     <section class="sw-operation-description">
@@ -5167,22 +6749,6 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                force_latest_values
-                                            <td><p>Can be used to force last value requests on a collection of timeseries.</p>
-                                        <p>Please note that this enforcement (in combination with <code>expanded=true</code>) may result  in long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
-                                        </td>
-                                            <td>query</td>
-                                            <td>
-                                        <span class="json-property-type">boolean</span>
-                                        <span class="json-property-range" title="Value limits"></span>
-                                        
-                                            </td>
-                                            <td>
-                                                    <span class="swagger--global"></span> <span class="json-schema--reference"><a href="#/parameters/force_latest_valuesParam">#/parameters/force_latest_valuesParam</a></span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
                                                 format
                                             <td><p>Controls the output format of raw timeseries data. This avoids converting between different  data formats on client side which uses a 3rd party chart rendering API. Currently, supported formats</p>
                                         <ul>
@@ -5225,10 +6791,9 @@
                         </section>
                     
                         <section class="sw-responses">
-                                <p><a href="#sw-default-produces">Uses default content-types: </a>
-                                    <span class="label label-default">application/json</span> 
-                                </p>
-                            
+                                <p><span class="label label-default">application/json</span> <span class="label label-default">image/png</span> <span class="label label-default">text/csv</span> <span class="label label-default">application/pdf</span> <span class="label label-default">application/zip</span> 
+                    </p>
+                    
                             <dl>
                                     <dt class="sw-response-200">
                                         200 OK
@@ -5254,14 +6819,60 @@
                                     <dd class="sw-response-400">
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <p>Given parameters are not valid</p>
+                                                    <p>A query parameter does not match expected format</p>
                                             
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 
                                                 <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-404">
+                                        404 Not Found
+                                    
+                                    </dt>
+                                    <dd class="sw-response-404">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Item not found</p>
+                                            
+                                                </div>
                                             </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
+                                            
+                                            </div>                </dd>
+                                    <dt class="sw-response-415">
+                                        415 Unsupported Media Type
+                                    
+                                    </dt>
+                                    <dd class="sw-response-415">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p>Media Item not supported</p>
+                                            
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 sw-response-model">
+                                                <div  class="panel panel-definition">
+                                                    <div class="panel-body">
+                                                                <a class="json-schema-ref" href="#/definitions/Error">Error</a>
+                                                    </div>
+                                                </div></div>
                                             
                                             </div>                </dd>
                             </dl>
@@ -5629,22 +7240,6 @@
                     </td>
                 </tr>
                 <tr>
-                        <td><a name="/parameters/force_latest_valuesParam"></a>force_latest_valuesParam</td>
-                    <td>
-                        force_latest_values
-                    <td><p>Can be used to force last value requests on a collection of timeseries.</p>
-                <p>Please note that this enforcement (in combination with <code>expanded=true</code>) may result  in long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.</p>
-                </td>
-                    <td>query</td>
-                    <td>
-                <span class="json-property-type">boolean</span>
-                <span class="json-property-range" title="Value limits"></span>
-                
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                <tr>
                         <td><a name="/parameters/formatParam"></a>formatParam</td>
                     <td>
                         format
@@ -5680,6 +7275,63 @@
                 <span class="json-property-range" title="Value limits"></span>
                 
                     </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                        <td><a name="/parameters/geometryTypesParam"></a>geometryTypesParam</td>
+                    <td>
+                        geometryTypes
+                    <td><p>The type of geometry based on <a href="https://en.wikipedia.org/wiki/Well-known_text">WKT types</a>.</p>
+                </td>
+                    <td>query</td>
+                    <td>
+                <span class="json-property-type">string</span>    <span class="json-property-enum" title="Possible values">, x &isin; {
+                                <span class="json-property-enum-item">point</span>
+                            ,
+                                <span class="json-property-enum-item">linestring</span>
+                            ,
+                                <span class="json-property-enum-item">polygon</span>
+                            
+                        }
+                        </span>
+                <span class="json-property-range" title="Value limits"></span>
+                
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                        <td><a name="/parameters/platformGeometriesParam"></a>platformGeometriesParam</td>
+                    <td>
+                        platformGeometries
+                    <td><p>The platform&#39;s geometry, either <code>site</code> for <code>stationary</code> platforms (or <code>station</code>s) or <code>track</code> for <code>mobile</code> platforms.</p>
+                </td>
+                    <td>query</td>
+                    <td>
+                <span class="json-property-type">string[]</span>
+                <span class="json-property-range" title="Value limits"></span>
+                
+                <span class="sw-param-collection-format">, 
+                                comma separated (<code>platformGeometries=aaa,bbb</code>)
+                            </span>    </td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                        <td><a name="/parameters/observedGeometriesParam"></a>observedGeometriesParam</td>
+                    <td>
+                        observedGeometries
+                    <td><p>The platform&#39;s observed geometry, either <code>static</code> for <code>remote</code> platforms observing fixed geometries or <code>dynamic</code> otherwise.</p>
+                </td>
+                    <td>query</td>
+                    <td>
+                <span class="json-property-type">string[]</span>
+                <span class="json-property-range" title="Value limits"></span>
+                
+                <span class="sw-param-collection-format">, 
+                                comma separated (<code>observedGeometries=aaa,bbb</code>)
+                            </span>    </td>
                     <td>
                     </td>
                 </tr>
