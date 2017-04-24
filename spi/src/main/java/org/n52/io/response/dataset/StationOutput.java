@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.dataset;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +34,7 @@ import java.util.Map;
 import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

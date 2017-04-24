@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.io.response.dataset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,6 +37,8 @@ import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.SeriesParameters;
 
 /**
