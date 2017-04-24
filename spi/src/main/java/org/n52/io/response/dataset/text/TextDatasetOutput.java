@@ -32,10 +32,10 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 public class TextDatasetOutput extends DatasetOutput<TextValue, TextObservationReferenceValueOutput> {
 
-    public static final String DATASET_TYPE = "text";
+    public static final String VALUE_TYPE = "text";
 
     public TextDatasetOutput() {
-        super(DATASET_TYPE);
+        super(VALUE_TYPE);
     }
 
 }

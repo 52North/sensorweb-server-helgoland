@@ -37,10 +37,10 @@ import org.n52.io.response.dataset.DatasetOutput;
  */
 public class QuantityDatasetOutput extends DatasetOutput<QuantityValue, QuantityReferenceValueOutput> {
 
-    public static final String DATASET_TYPE = "quantity";
+    public static final String VALUE_TYPE = "quantity";
 
     public QuantityDatasetOutput() {
-        super(DATASET_TYPE);
+        super(VALUE_TYPE);
     }
 
 }

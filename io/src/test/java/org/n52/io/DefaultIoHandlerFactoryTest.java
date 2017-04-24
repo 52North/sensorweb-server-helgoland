@@ -60,7 +60,7 @@ public class DefaultIoHandlerFactoryTest {
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
         ConfigTypedFactory<IoFactory> m = new DefaultIoFactory();
         assertTrue(m.isKnown("text"));
-        assertTrue(m.create(QuantityDatasetOutput.DATASET_TYPE).getClass() == QuantityIoFactory.class);
+        assertTrue(m.create(QuantityDatasetOutput.VALUE_TYPE).getClass() == QuantityIoFactory.class);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DefaultIoHandlerFactoryTest {
 
     @Test
     public void when_mapToText_then_returnMeasurementDataRepository() throws DatasetFactoryException {
-        assertTrue(factory.create(QuantityDatasetOutput.DATASET_TYPE).getClass() == QuantityIoFactory.class);
+        assertTrue(factory.create(QuantityDatasetOutput.VALUE_TYPE).getClass() == QuantityIoFactory.class);
     }
 
     private File getConfigFile(String name) throws URISyntaxException {

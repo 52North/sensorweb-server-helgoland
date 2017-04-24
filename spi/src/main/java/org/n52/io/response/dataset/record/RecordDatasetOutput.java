@@ -32,10 +32,10 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 public class RecordDatasetOutput extends DatasetOutput<RecordValue, RecordObservationReferenceValueOutput> {
 
-    public static final String DATASET_TYPE = "record";
+    public static final String VALUE_TYPE = "record";
 
     public RecordDatasetOutput() {
-        super(DATASET_TYPE);
+        super(VALUE_TYPE);
     }
 
 }

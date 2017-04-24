@@ -456,7 +456,7 @@ public class IoParameters implements Parameters {
         return getValuesOf(FILTER_OBSERVED_GEOMETRIES);
     }
 
-    public Set<String> getDatasetTypes() {
+    public Set<String> getValueTypes() {
         return getValuesOf(FILTER_VALUE_TYPES);
     }
 
@@ -972,7 +972,7 @@ public class IoParameters implements Parameters {
 
     public boolean isPureStationaryInsituQuery() {
         Set<String> platformTypes = getPlatformTypes();
-        Set<String> datasetTypes = getDatasetTypes();
+        Set<String> datasetTypes = getValueTypes();
         return isStationaryInsituOnly(platformTypes)
                 && isQuantityOnly(datasetTypes);
     }
