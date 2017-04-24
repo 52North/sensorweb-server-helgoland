@@ -159,7 +159,7 @@ body {
  * The Footer
  */
 
-.footer {
+footer {
   font-size: small;
   padding: 30px 0;
   margin: 10px 0;
@@ -169,18 +169,13 @@ body {
   height: 100px;
 }
 
-.footer ul {
+footer ul {
   list-style: none;
 }
 
-.footer div {
+footer div {
   margin-left: 10px;
   margin-right: 10px;
-}
-.footer p {
-  margin-left: 10px;
-  margin-bottom: 0;
-  color: #777;
 }
 .footer-links {
   margin: 10px 0;
