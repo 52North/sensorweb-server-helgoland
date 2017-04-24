@@ -28,8 +28,6 @@
  */
 package org.n52.io;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,8 +41,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
@@ -74,6 +74,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
@@ -149,9 +152,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                         .getCondensedParameters(query);
             for (TimeseriesMetadataOutput metadata : metadatas) {
                 String timeseriesId = metadata.getId();
-//                RenderingConfig style = timeseriesStyles.containsKey(timeseriesId)
-//                    ? timeseriesStyles.get(timeseriesId)
-//                    : phenomenonStyles.get(phenomenonId);
                 renderConfiguredIntervals(timeseriesId, config);
 
                 if (interrupted) {
@@ -161,7 +161,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
 
         for (RenderingConfig config : timeseriesStyles) {
-//            RenderingConfig style = timeseriesStyles.get(timeseriesId);
             renderConfiguredIntervals(config.getId(), config);
 
             if (interrupted) {
