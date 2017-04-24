@@ -29,7 +29,7 @@
 package org.n52.io.quantity.format;
 
 import org.n52.io.DataFormatter;
-import org.n52.io.response.dataset.quantity.MeasurementData;
+import org.n52.io.response.dataset.quantity.QuantityData;
 
 public final class FormatterFactory {
 
@@ -41,7 +41,7 @@ public final class FormatterFactory {
 
     // TODO align with config typed factory
 
-    public DataFormatter<MeasurementData, ?> create() {
+    public DataFormatter<QuantityData, ?> create() {
         if ("highcharts".equalsIgnoreCase(format)) {
             return new HighchartFormatter();
         } else if ("flotcharts".equalsIgnoreCase(format)

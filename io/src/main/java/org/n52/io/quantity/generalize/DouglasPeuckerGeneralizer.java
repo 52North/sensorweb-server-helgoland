@@ -33,8 +33,8 @@ import java.awt.geom.Point2D;
 import java.util.Arrays;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +42,11 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of a generalizer using the Douglas-Peucker Algorithm
  *
- * Characteristic measurement values are picked depending on a given tolerance value. Values that
+ * Characteristic quantity values are picked depending on a given tolerance value. Values that
  * differ less than this tolerance value from an ideal line between some minima and maxima will be
  * dropped.
  */
-public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData> {
+public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
@@ -118,19 +118,19 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
     }
 
     @Override
-    public DataCollection<MeasurementData> generalize(DataCollection<MeasurementData> data)
+    public DataCollection<QuantityData> generalize(DataCollection<QuantityData> data)
             throws GeneralizerException {
-        TvpDataCollection<MeasurementData> generalizedDataCollection = new TvpDataCollection<>();
+        TvpDataCollection<QuantityData> generalizedDataCollection = new TvpDataCollection<>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
-            MeasurementData timeseries = data.getSeries(timeseriesId);
+            QuantityData timeseries = data.getSeries(timeseriesId);
             generalizedDataCollection.addNewSeries(timeseriesId, generalize(timeseries));
         }
         return generalizedDataCollection;
     }
 
-    private MeasurementData generalize(MeasurementData timeseries) throws
+    private QuantityData generalize(QuantityData timeseries) throws
             GeneralizerException {
-        MeasurementValue[] originalValues = getValueArray(timeseries);
+        QuantityValue[] originalValues = getValueArray(timeseries);
         if (originalValues.length < 3 || toleranceValue <= 0) {
             return timeseries;
         }
@@ -142,8 +142,8 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
                     + maxEntries + ")!");
         }
 
-        MeasurementData generalizedTimeseries = new MeasurementData();
-        MeasurementValue[] generalizedValues = recursiveGeneralize(timeseries);
+        QuantityData generalizedTimeseries = new QuantityData();
+        QuantityValue[] generalizedValues = recursiveGeneralize(timeseries);
         generalizedTimeseries.addValues(generalizedValues);
 
         // add first element if new list is empty
@@ -153,8 +153,8 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
 
         // add the last one if not already contained!
         if (generalizedValues.length > 0/* && originalValues.length > 0*/) {
-            MeasurementValue lastOriginialValue = originalValues[originalValues.length - 1];
-            MeasurementValue lastGeneralizedValue = generalizedValues[generalizedValues.length - 1];
+            QuantityValue lastOriginialValue = originalValues[originalValues.length - 1];
+            QuantityValue lastGeneralizedValue = generalizedValues[generalizedValues.length - 1];
             if (!lastGeneralizedValue.getTimestamp().equals(lastOriginialValue.getTimestamp())) {
                 generalizedTimeseries.addValues(lastOriginialValue);
             }
@@ -162,15 +162,15 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         return generalizedTimeseries;
     }
 
-    private MeasurementValue[] getValueArray(MeasurementData timeseries) {
+    private QuantityValue[] getValueArray(QuantityData timeseries) {
         return timeseries.getValues()
-                .toArray(new MeasurementValue[0]);
+                .toArray(new QuantityValue[0]);
     }
 
-    private MeasurementValue[] recursiveGeneralize(MeasurementData timeseries) {
-        MeasurementValue[] values = getValueArray(timeseries);
-        MeasurementValue startValue = getFirstValue(timeseries);
-        MeasurementValue endValue = getLastValue(timeseries);
+    private QuantityValue[] recursiveGeneralize(QuantityData timeseries) {
+        QuantityValue[] values = getValueArray(timeseries);
+        QuantityValue startValue = getFirstValue(timeseries);
+        QuantityValue endValue = getLastValue(timeseries);
         Line2D.Double line = createTendencyLine(startValue, endValue);
 
         // find the point of maximum distance to the line
@@ -180,7 +180,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
 
         // start and end value are not mentioned
         for (int i = 1; i < values.length - 1; i++) {
-            MeasurementValue timeseriesValue = values[i];
+            QuantityValue timeseriesValue = values[i];
             distance = calculateDistance(line, timeseriesValue);
             if (distance > maxDist) {
                 index = i;
@@ -192,9 +192,9 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
             return getValueArray(timeseries);
         } else {
             // split and handle both parts separately
-            MeasurementData generalizedData = new MeasurementData();
-            MeasurementData firstPartToBeGeneralized = new MeasurementData();
-            MeasurementData restPartToBeGeneralized = new MeasurementData();
+            QuantityData generalizedData = new QuantityData();
+            QuantityData firstPartToBeGeneralized = new QuantityData();
+            QuantityData restPartToBeGeneralized = new QuantityData();
             firstPartToBeGeneralized.addValues(Arrays.copyOfRange(values, 0, index));
             restPartToBeGeneralized.addValues(Arrays.copyOfRange(values, index + 1, values.length));
             generalizedData.addValues(recursiveGeneralize(firstPartToBeGeneralized));
@@ -204,11 +204,11 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
 
     }
 
-    private double calculateDistance(Line2D.Double line, MeasurementValue timeseriesValue) {
+    private double calculateDistance(Line2D.Double line, QuantityValue timeseriesValue) {
         return line.ptLineDist(createPoint(timeseriesValue));
     }
 
-    private Point2D.Double createPoint(MeasurementValue timeseriesValue) {
+    private Point2D.Double createPoint(QuantityValue timeseriesValue) {
         Long timestamp = timeseriesValue.getTimestamp();
         double value = timeseriesValue.getValue();
 
@@ -217,7 +217,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         return p;
     }
 
-    private Line2D.Double createTendencyLine(MeasurementValue start, MeasurementValue end) {
+    private Line2D.Double createTendencyLine(QuantityValue start, QuantityValue end) {
         Long startTime = start.getTimestamp();
         double startValue = start.getValue();
         Long endTime = end.getTimestamp();
@@ -225,16 +225,16 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<MeasurementData
         return new Line2D.Double(startTime, startValue, endTime, endValue);
     }
 
-    private MeasurementValue getFirstValue(MeasurementData timeseries) {
-        MeasurementValue[] values = getValueArray(timeseries);
+    private QuantityValue getFirstValue(QuantityData timeseries) {
+        QuantityValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();
         }
         return values[0];
     }
 
-    private MeasurementValue getLastValue(MeasurementData timeseries) {
-        MeasurementValue[] values = getValueArray(timeseries);
+    private QuantityValue getLastValue(QuantityData timeseries) {
+        QuantityValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();
             return null;

@@ -61,8 +61,8 @@ import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.series.TvpDataCollection;
 import org.n52.oxf.DocumentStructureDocument;
 import org.n52.oxf.DocumentStructureType;
@@ -74,7 +74,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
+public class PDFReportGenerator extends ReportGenerator<QuantityData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PDFReportGenerator.class);
 
@@ -91,7 +91,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
     private URI baseURI;
 
     public PDFReportGenerator(RequestParameterSet simpleRequest,
-            IoProcessChain<MeasurementData> processChain,
+            IoProcessChain<QuantityData> processChain,
             ChartIoHandler renderer) {
         super(simpleRequest, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
@@ -104,7 +104,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
         this.baseURI = baseURI;
     }
 
-    public void generateOutput(DataCollection<MeasurementData> data) throws IoParseException {
+    public void generateOutput(DataCollection<QuantityData> data) throws IoParseException {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
@@ -113,7 +113,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
         }
     }
 
-    private void generateTimeseriesChart(DataCollection<MeasurementData> data) throws IOException {
+    private void generateTimeseriesChart(DataCollection<QuantityData> data) throws IOException {
         renderer.writeDataToChart(data);
         File tmpFile = File.createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
@@ -138,7 +138,7 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<QuantityData> data, OutputStream stream) throws IoParseException {
         try {
             generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
@@ -227,15 +227,15 @@ public class PDFReportGenerator extends ReportGenerator<MeasurementData> {
 
     private void addDataTable(TimeSeries timeseries,
             TimeseriesMetadataOutput metadata,
-            TvpDataCollection<MeasurementData> dataCollection) {
+            TvpDataCollection<QuantityData> dataCollection) {
         TableType dataTable = timeseries.addNewTable();
 
         // TODO add language context
         dataTable.setLeftColHeader("Date");
         dataTable.setRightColHeader(createValueTableHeader(metadata));
 
-        MeasurementData data = dataCollection.getSeries(metadata.getId());
-        for (MeasurementValue valueEntry : data.getValues()) {
+        QuantityData data = dataCollection.getSeries(metadata.getId());
+        for (QuantityValue valueEntry : data.getValues()) {
             Entry entry = dataTable.addNewEntry();
             // TODO update TableType schema to allow start/end time
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());

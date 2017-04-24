@@ -30,7 +30,7 @@ package org.n52.io.response.dataset;
 
 public class ValueType {
 
-    public static final String DEFAULT_VALUE_TYPE = "measurement";
+    public static final String DEFAULT_VALUE_TYPE = "quantity";
 
     private static final String SEPERATOR = "_";
 

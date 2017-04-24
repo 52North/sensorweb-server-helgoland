@@ -53,8 +53,8 @@ import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 
 public class ChartRendererTest {
 
@@ -137,7 +137,7 @@ public class ChartRendererTest {
     @Test
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
-        MeasurementDatasetOutput metadata = new MeasurementDatasetOutput();
+        QuantityDatasetOutput metadata = new QuantityDatasetOutput();
         SeriesParameters parameters = new SeriesParameters();
         parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
         parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
@@ -210,7 +210,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void writeDataToChart(DataCollection<MeasurementData> data) {
+        public void writeDataToChart(DataCollection<QuantityData> data) {
             throw new UnsupportedOperationException();
         }
 

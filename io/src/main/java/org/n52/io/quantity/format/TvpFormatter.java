@@ -30,15 +30,15 @@ package org.n52.io.quantity.format;
 
 import org.n52.io.DataFormatter;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.MeasurementData;
+import org.n52.io.response.dataset.quantity.QuantityData;
 
 /**
  * Represents the identity transformation. Input is equal to output.
  */
-public class TvpFormatter implements DataFormatter<MeasurementData, MeasurementData> {
+public class TvpFormatter implements DataFormatter<QuantityData, QuantityData> {
 
     @Override
-    public DataCollection<MeasurementData> format(DataCollection<MeasurementData> toFormat) {
+    public DataCollection<QuantityData> format(DataCollection<QuantityData> toFormat) {
         return toFormat;
     }
 

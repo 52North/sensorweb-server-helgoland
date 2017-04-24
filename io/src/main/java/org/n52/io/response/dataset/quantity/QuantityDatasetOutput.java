@@ -28,22 +28,19 @@
  */
 package org.n52.io.response.dataset.quantity;
 
-import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.DatasetOutput;
 
-public class MeasurementValue extends AbstractValue<Double> {
+/**
+ * TODO: JavaDoc
+ *
+ * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
+ */
+public class QuantityDatasetOutput extends DatasetOutput<QuantityValue, QuantityReferenceValueOutput> {
 
-    private static final long serialVersionUID = -7292181682632614697L;
+    public static final String DATASET_TYPE = "quantity";
 
-    public MeasurementValue() {
-        // for serialization
-    }
-
-    public MeasurementValue(Long timestart, Long timeend, Double value) {
-        super(timestart, timeend, value);
-    }
-
-    public MeasurementValue(Long timestamp, Double value) {
-        super(timestamp, value);
+    public QuantityDatasetOutput() {
+        super(DATASET_TYPE);
     }
 
 }

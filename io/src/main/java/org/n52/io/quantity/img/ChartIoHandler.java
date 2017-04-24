@@ -72,11 +72,11 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.quantity.MeasurementData;
+import org.n52.io.response.dataset.quantity.QuantityData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
+public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
@@ -95,18 +95,18 @@ public abstract class ChartIoHandler extends IoHandler<MeasurementData> {
     private JFreeChart jFreeChart;
 
     public ChartIoHandler(RequestParameterSet request,
-                          IoProcessChain<MeasurementData> processChain,
+                          IoProcessChain<QuantityData> processChain,
                           IoStyleContext context) {
         super(request, processChain);
         this.context = context;
         this.xyPlot = createChart(context);
     }
 
-    public abstract void writeDataToChart(DataCollection<MeasurementData> data)
+    public abstract void writeDataToChart(DataCollection<QuantityData> data)
             throws IoParseException;
 
     @Override
-    public void encodeAndWriteTo(DataCollection<MeasurementData> data,
+    public void encodeAndWriteTo(DataCollection<QuantityData> data,
                                  OutputStream stream)
             throws IoParseException {
         try {

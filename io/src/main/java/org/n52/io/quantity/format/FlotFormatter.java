@@ -34,40 +34,40 @@ import java.util.List;
 import java.util.Map;
 import org.n52.io.DataFormatter;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementDatasetMetadata;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetMetadata;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
-public class FlotFormatter implements DataFormatter<MeasurementData, FlotData> {
+public class FlotFormatter implements DataFormatter<QuantityData, FlotData> {
 
     @Override
-    public FlotDataCollection format(DataCollection<MeasurementData> toFormat) {
+    public FlotDataCollection format(DataCollection<QuantityData> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            MeasurementData seriesToFormat = toFormat.getSeries(timeseriesId);
+            QuantityData seriesToFormat = toFormat.getSeries(timeseriesId);
             FlotData series = createFlotSeries(seriesToFormat);
             flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotData createFlotSeries(MeasurementData seriesToFormat) {
+    private FlotData createFlotSeries(QuantityData seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
-        MeasurementDatasetMetadata metadata = seriesToFormat.getMetadata();
+        QuantityDatasetMetadata metadata = seriesToFormat.getMetadata();
         if (metadata != null) {
-            Map<String, MeasurementData> referenceValues = metadata.getReferenceValues();
+            Map<String, QuantityData> referenceValues = metadata.getReferenceValues();
             for (String referenceValueId : referenceValues.keySet()) {
-                MeasurementData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
+                QuantityData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
                 flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
             }
         }
         return flotSeries;
     }
 
-    private List<Number[]> formatSeries(MeasurementData timeseries) {
+    private List<Number[]> formatSeries(QuantityData timeseries) {
         List<Number[]> series = new ArrayList<>();
-        for (MeasurementValue currentValue : timeseries.getValues()) {
+        for (QuantityValue currentValue : timeseries.getValues()) {
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());

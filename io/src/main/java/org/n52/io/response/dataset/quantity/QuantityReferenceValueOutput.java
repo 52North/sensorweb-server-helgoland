@@ -30,13 +30,13 @@ package org.n52.io.response.dataset.quantity;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class MeasurementReferenceValueOutput implements ReferenceValueOutput<MeasurementValue> {
+public class QuantityReferenceValueOutput implements ReferenceValueOutput<QuantityValue> {
 
     private String referenceValueId;
 
     private String label;
 
-    private MeasurementValue lastValue;
+    private QuantityValue lastValue;
 
     @Override
     public String getReferenceValueId() {
@@ -59,12 +59,12 @@ public class MeasurementReferenceValueOutput implements ReferenceValueOutput<Mea
     }
 
     @Override
-    public MeasurementValue getLastValue() {
+    public QuantityValue getLastValue() {
         return lastValue;
     }
 
     @Override
-    public void setLastValue(MeasurementValue lastValue) {
+    public void setLastValue(QuantityValue lastValue) {
         this.lastValue = lastValue;
     }
 

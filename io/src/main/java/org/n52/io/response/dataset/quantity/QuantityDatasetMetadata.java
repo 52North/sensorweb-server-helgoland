@@ -28,29 +28,26 @@
  */
 package org.n52.io.response.dataset.quantity;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DatasetMetadata;
 
-public class MeasurementData extends Data<MeasurementValue> {
+public class QuantityDatasetMetadata implements DatasetMetadata<Map<String, QuantityData>>, Serializable {
 
-    private static final long serialVersionUID = 4717558247670336015L;
+    private static final long serialVersionUID = 7422416308386483575L;
 
-    private MeasurementDatasetMetadata metadata;
+    private Map<String, QuantityData> referenceValues = new HashMap<>();
 
-    public static MeasurementData newMeasurementData(MeasurementValue... values) {
-        MeasurementData timeseries = new MeasurementData();
-        timeseries.addValues(values);
-        return timeseries;
+    @Override
+    public Map<String, QuantityData> getReferenceValues() {
+        return referenceValues;
     }
 
     @Override
-    public MeasurementDatasetMetadata getMetadata() {
-        return metadata;
+    public void setReferenceValues(Map<String, QuantityData> referenceValues) {
+        this.referenceValues = referenceValues;
     }
-
-    public void setMetadata(MeasurementDatasetMetadata metadata) {
-        this.metadata = metadata;
-    }
-
 
 }

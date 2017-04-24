@@ -28,19 +28,29 @@
  */
 package org.n52.io.response.dataset.quantity;
 
-import org.n52.io.response.dataset.DatasetOutput;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
-public class MeasurementDatasetOutput extends DatasetOutput<MeasurementValue, MeasurementReferenceValueOutput> {
+import org.n52.io.response.dataset.Data;
 
-    public static final String DATASET_TYPE = "measurement";
+public class QuantityData extends Data<QuantityValue> {
 
-    public MeasurementDatasetOutput() {
-        super(DATASET_TYPE);
+    private static final long serialVersionUID = 4717558247670336015L;
+
+    private QuantityDatasetMetadata metadata;
+
+    public static QuantityData newMeasurementData(QuantityValue... values) {
+        QuantityData timeseries = new QuantityData();
+        timeseries.addValues(values);
+        return timeseries;
     }
+
+    @Override
+    public QuantityDatasetMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(QuantityDatasetMetadata metadata) {
+        this.metadata = metadata;
+    }
+
 
 }

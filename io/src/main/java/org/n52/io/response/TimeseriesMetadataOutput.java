@@ -36,16 +36,16 @@ import java.util.Set;
 import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.ValueType;
-import org.n52.io.response.dataset.quantity.MeasurementDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
 
 /**
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- * @deprecated since 2.0.0. use {@link MeasurementDatasetOutput} instead.
+ * @deprecated since 2.0.0. use {@link QuantityDatasetOutput} instead.
  */
 @Deprecated
-public class TimeseriesMetadataOutput extends MeasurementDatasetOutput {
+public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
 
     @Deprecated
     private StyleProperties renderingHints;

@@ -30,9 +30,9 @@ package org.n52.io.quantity.generalize;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.MeasurementData;
+import org.n52.io.response.dataset.quantity.QuantityData;
 
-public class NoActionGeneralizer extends Generalizer<MeasurementData> {
+public class NoActionGeneralizer extends Generalizer<QuantityData> {
 
     public NoActionGeneralizer(IoParameters parameters) {
         super(parameters);
@@ -44,8 +44,8 @@ public class NoActionGeneralizer extends Generalizer<MeasurementData> {
     }
 
     @Override
-    public DataCollection<MeasurementData> generalize(
-            DataCollection<MeasurementData> data) throws GeneralizerException {
+    public DataCollection<QuantityData> generalize(
+            DataCollection<QuantityData> data) throws GeneralizerException {
         return data;
     }
 

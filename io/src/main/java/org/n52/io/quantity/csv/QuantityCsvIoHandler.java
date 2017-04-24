@@ -45,12 +45,12 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
-// TODO extract non measurement specifics to csvhandler
+// TODO extract non quantity specifics to csvhandler
 
-public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
+public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -67,8 +67,8 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
 
     private boolean zipOutput;
 
-    public MeasurementCsvIoHandler(RequestParameterSet simpleRequest,
-            IoProcessChain<MeasurementData> processChain,
+    public QuantityCsvIoHandler(RequestParameterSet simpleRequest,
+            IoProcessChain<QuantityData> processChain,
             List<? extends DatasetOutput> seriesMetadatas) {
         super(simpleRequest, processChain);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
@@ -95,7 +95,7 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<MeasurementData> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<QuantityData> data, OutputStream stream) throws IoParseException {
         try {
             if (zipOutput) {
                 writeAsZipStream(data, stream);
@@ -107,14 +107,14 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
         }
     }
 
-    private void writeAsPlainCsv(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
+    private void writeAsPlainCsv(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         BufferedOutputStream bos = new BufferedOutputStream(stream);
         writeHeader(bos);
         writeData(data, bos);
         bos.flush();
     }
 
-    private void writeAsZipStream(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
+    private void writeAsZipStream(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         ZipOutputStream zipStream = new ZipOutputStream(stream);
         zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
         writeHeader(zipStream);
@@ -130,18 +130,18 @@ public class MeasurementCsvIoHandler extends CsvIoHandler<MeasurementData> {
         writeCsvLine(csvLine, stream);
     }
 
-    private void writeData(DataCollection<MeasurementData> data, OutputStream stream) throws IOException {
+    private void writeData(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            MeasurementData series = data.getSeries(metadata.getId());
-            writeData(metadata, (MeasurementData) series, stream);
+            QuantityData series = data.getSeries(metadata.getId());
+            writeData(metadata, (QuantityData) series, stream);
         }
     }
 
-    private void writeData(DatasetOutput metadata, MeasurementData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
         String station = metadata.getSeriesParameters().getPlatform().getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
-        for (MeasurementValue timeseriesValue : series.getValues()) {
+        for (QuantityValue timeseriesValue : series.getValues()) {
             String[] values = new String[getHeader().length];
             values[0] = station;
             values[1] = phenomenon;

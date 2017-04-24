@@ -36,20 +36,20 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
-import org.n52.io.quantity.csv.MeasurementCsvIoHandler;
+import org.n52.io.quantity.csv.QuantityCsvIoHandler;
 import org.n52.io.quantity.format.FormatterFactory;
-import org.n52.io.quantity.generalize.GeneralizingMeasurementService;
+import org.n52.io.quantity.generalize.GeneralizingQuantityService;
 import org.n52.io.quantity.img.ChartIoHandler;
 import org.n52.io.quantity.img.MultipleChartsRenderer;
 import org.n52.io.quantity.report.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementDatasetOutput;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
 
-public final class MeasurementIoFactory extends IoFactory<MeasurementData, MeasurementDatasetOutput, MeasurementValue> {
+public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDatasetOutput, QuantityValue> {
 
     private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
             new MimeType[] {
@@ -60,13 +60,13 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
             });
 
     @Override
-    public IoProcessChain<MeasurementData> createProcessChain() {
-        return new IoProcessChain<MeasurementData>() {
+    public IoProcessChain<QuantityData> createProcessChain() {
+        return new IoProcessChain<QuantityData>() {
             @Override
-            public DataCollection<MeasurementData> getData() {
+            public DataCollection<QuantityData> getData() {
                 final boolean generalize = getParameters().isGeneralize();
-                DataService<MeasurementData> dataService = generalize
-                        ? new GeneralizingMeasurementService(getDataService())
+                DataService<QuantityData> dataService = generalize
+                        ? new GeneralizingQuantityService(getDataService())
                         : getDataService();
                 return dataService.getData(getRequestParameters());
             }
@@ -99,7 +99,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
     }
 
     @Override
-    public IoHandler<MeasurementData> createHandler(String outputMimeType) {
+    public IoHandler<QuantityData> createHandler(String outputMimeType) {
         IoParameters parameters = getParameters();
         MimeType mimeType = MimeType.toInstance(outputMimeType);
         if (mimeType == MimeType.IMAGE_PNG) {
@@ -113,7 +113,7 @@ public final class MeasurementIoFactory extends IoFactory<MeasurementData, Measu
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
         } else if (mimeType == MimeType.TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
-            MeasurementCsvIoHandler handler = new MeasurementCsvIoHandler(
+            QuantityCsvIoHandler handler = new QuantityCsvIoHandler(
                     getRequestParameters(),
                     createProcessChain(),
                     getMetadatas());

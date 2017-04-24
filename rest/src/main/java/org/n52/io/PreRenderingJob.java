@@ -54,8 +54,9 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.quantity.MeasurementData;
-import org.n52.io.response.dataset.quantity.MeasurementValue;
+import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -95,7 +96,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Autowired
     @Qualifier("timeseriesService")
-    private DataService<MeasurementData> timeseriesDataService;
+    private DataService<QuantityData> timeseriesDataService;
 
     private PrerenderingJobConfig taskConfigPrerendering;
 
@@ -208,11 +209,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>
+    private IoFactory<QuantityData, TimeseriesMetadataOutput, QuantityValue>
             createIoFactory(RequestSimpleParameterSet parameters)
             throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return new DefaultIoFactory<MeasurementData, TimeseriesMetadataOutput, MeasurementValue>()
-                .create("measurement")
+        return new DefaultIoFactory<QuantityData, TimeseriesMetadataOutput, QuantityValue>()
+                .create(QuantityDatasetOutput.DATASET_TYPE)
                 .withSimpleRequest(parameters)
                 .withDataService(timeseriesDataService)
                 .withDatasetService(timeseriesMetadataService);
@@ -245,11 +246,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.timeseriesMetadataService = timeseriesMetadataService;
     }
 
-    public DataService<MeasurementData> getTimeseriesDataService() {
+    public DataService<QuantityData> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(DataService<MeasurementData> timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<QuantityData> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 
