@@ -20,10 +20,10 @@
         "/": {
             "get": {
                 "summary": "Available endpoints.",
-                "description": "A (static) collection of endpoints available from this API. Each includes a relative path and a short description.\n",
                 "tags": [
                     "general"
                 ],
+                "description": "A (static) collection of endpoints available from this API. Each includes a relative path and a short description.\n",
                 "responses": {
                     "200": {
                         "description": "A collection of API endpoints"
@@ -34,6 +34,9 @@
         "/search": {
             "get": {
                 "summary": "A simple search.",
+                "tags": [
+                    "general"
+                ],
                 "description": "A simple search over all resource's labels over all available endpoints. Note that the searching respects the current locale being selected.\n",
                 "parameters": [
                     {
@@ -57,6 +60,10 @@
         "/platforms": {
             "get": {
                 "summary": "Available Platforms",
+                "tags": [
+                    "platform",
+                    "v2.0"
+                ],
                 "description": "A collection of available platforms. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -90,6 +97,15 @@
                         "$ref": "#/parameters/platformTypesParam"
                     },
                     {
+                        "$ref": "#/parameters/geometryTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformGeometriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/observedGeometriesParam"
+                    },
+                    {
                         "$ref": "#/parameters/datasetTypesParam"
                     },
                     {
@@ -105,6 +121,15 @@
                 "responses": {
                     "200": {
                         "description": "A collection of platforms"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format"
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -112,6 +137,10 @@
         "/platforms/{platformId}": {
             "get": {
                 "summary": "Gets a particular platform",
+                "tags": [
+                    "platform",
+                    "v2.0"
+                ],
                 "description": "Full view of a platform instance. A platform encodes a POINT geometry which is the actual location for `stationary` platforms and the last detected location for `mobile` platforms.\n",
                 "parameters": [
                     {
@@ -125,17 +154,74 @@
                     },
                     {
                         "$ref": "#/parameters/crsParam"
-                    },
-                    {
-                        "$ref": "#/parameters/bboxParam"
-                    },
-                    {
-                        "$ref": "#/parameters/nearParam"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded platform"
+                        "description": "An expanded item"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/platforms/{platformId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for platform",
+                "tags": [
+                    "platform",
+                    "v2.0"
+                ],
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "platformId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -143,6 +229,9 @@
         "/stations": {
             "get": {
                 "summary": "Available Stations",
+                "tags": [
+                    "station"
+                ],
                 "description": "A collection of available stations. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -185,6 +274,15 @@
                 "responses": {
                     "200": {
                         "description": "A collection of stations"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format"
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -192,6 +290,9 @@
         "/stations/{stationId}": {
             "get": {
                 "summary": "Gets a particular station",
+                "tags": [
+                    "station"
+                ],
                 "description": "Full data view of a station. A station is a [GeoJSON point geometry](https://www.rfc-editor.org/info/rfc7946) which encodes available metadata in its `properties` member.\n",
                 "parameters": [
                     {
@@ -205,17 +306,73 @@
                     },
                     {
                         "$ref": "#/parameters/crsParam"
-                    },
-                    {
-                        "$ref": "#/parameters/bboxParam"
-                    },
-                    {
-                        "$ref": "#/parameters/nearParam"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded station"
+                        "description": "An expanded item"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/stations/{stationId}/extras": {
+            "get": {
+                "summary": "Gets extra infos for station",
+                "tags": [
+                    "station"
+                ],
+                "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
+                "parameters": [
+                    {
+                        "name": "stationId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -223,6 +380,10 @@
         "/datasets": {
             "get": {
                 "summary": "Gets available datasets",
+                "tags": [
+                    "dataset",
+                    "v2.0"
+                ],
                 "description": "A collection of available datasets. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -256,6 +417,15 @@
                         "$ref": "#/parameters/platformTypesParam"
                     },
                     {
+                        "$ref": "#/parameters/geometryTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformGeometriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/observedGeometriesParam"
+                    },
+                    {
                         "$ref": "#/parameters/datasetTypesParam"
                     },
                     {
@@ -271,6 +441,15 @@
                 "responses": {
                     "200": {
                         "description": "A collection of datasets"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format"
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -278,6 +457,10 @@
         "/datasets/{datasetId}": {
             "get": {
                 "summary": "Gets a particular dataset",
+                "tags": [
+                    "dataset",
+                    "v2.0"
+                ],
                 "description": "Full view of a dataset instance. All relevant relations (parameters, unit, platform, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).\n",
                 "parameters": [
                     {
@@ -292,7 +475,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded dataset"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -300,6 +495,10 @@
         "/datasets/{datasetId}/extras": {
             "get": {
                 "summary": "Gets extra infos for dataset",
+                "tags": [
+                    "dataset",
+                    "v2.0"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -321,7 +520,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of (selected) extra infos"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -329,7 +540,11 @@
         "/datasets/{datasetId}/{interval}": {
             "get": {
                 "summary": "Gets extra infos for dataset",
-                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.\n\nIf a datasets has no pre-rendered chart a `404` (Resource not found) error is returned. In particular cases this is also true when the chart is currently being re-rendered.\n",
+                "tags": [
+                    "dataset",
+                    "v2.0"
+                ],
+                "description": "Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are\n* `lastDay.png`\n* `lastWeek.png`\n* `lastMonth.png`\n\nDatasets of type `measurement` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -347,6 +562,9 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "In case no prerendered image available (or is currently being rendered)"
                     }
                 }
             }
@@ -354,7 +572,11 @@
         "/datasets/{datasetId}/data": {
             "get": {
                 "summary": "Gets data of a dataset",
-                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `measurement` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all`\n",
+                "tags": [
+                    "dataset",
+                    "v2.0"
+                ],
+                "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nWhat Mime-Types are supported depends on the `datasetType`. For example `measurement` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all` produces: - application/json - image/png - text/csv - application/pdf - application/zip\n",
                 "parameters": [
                     {
                         "name": "datasetId",
@@ -374,7 +596,22 @@
                         "description": "Data for a given `timespan` in a requested output format"
                     },
                     "400": {
-                        "description": "Given parameters are not valid"
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -382,6 +619,9 @@
         "/timeseries": {
             "get": {
                 "summary": "Gets available timeseries",
+                "tags": [
+                    "timeseries"
+                ],
                 "description": "A collection of timeseries (i.e. datasets of type `measurement` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -437,6 +677,9 @@
         "/timeseries/{timeseriesId}": {
             "get": {
                 "summary": "Gets a particular timeseries",
+                "tags": [
+                    "timeseries"
+                ],
                 "description": "Full view of a timeseries instance. All relevant relations (parameters, unit, station, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).\n\nFor backward compatibility reasons metadata about `renderingHints` and `statusIntervals` are inlined here as well. However, those are listed within `extra` infos to make it consistent.\n",
                 "parameters": [
                     {
@@ -451,7 +694,25 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded timeseries"
+                        "description": "An expanded item"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -459,6 +720,9 @@
         "/timeseries/{timeseriesId}/extras": {
             "get": {
                 "summary": "Gets extra infos for timeseries",
+                "tags": [
+                    "timeseries"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each timeseries.\n\nYou can query just the ones you are interested in by appending the `fields`query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -481,14 +745,36 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
         },
         "/timeseries/{timeseriesId}/getData": {
             "get": {
-                "summary": "Gets data of a dataset",
+                "summary": "Gets data of a timeseries",
+                "tags": [
+                    "timeseries"
+                ],
                 "description": "Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. \n\nThis operation does only return data of `measurement` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.\n",
+                "produces": [
+                    "application/json",
+                    "image/png",
+                    "text/csv",
+                    "application/pdf",
+                    "application/zip"
+                ],
                 "parameters": [
                     {
                         "name": "timeseriesId",
@@ -518,9 +804,6 @@
                         "$ref": "#/parameters/generalizeParam"
                     },
                     {
-                        "$ref": "#/parameters/force_latest_valuesParam"
-                    },
-                    {
                         "$ref": "#/parameters/formatParam"
                     },
                     {
@@ -532,7 +815,22 @@
                         "description": "Data for a given `timespan` in a requested output format"
                     },
                     "400": {
-                        "description": "Given parameters are not valid"
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -540,8 +838,21 @@
         "/geometries": {
             "get": {
                 "summary": "A collection of available geometries",
+                "tags": [
+                    "geometry",
+                    "v2.0"
+                ],
                 "description": "All available geometries instances. Possible geometry types are \n\n* `site`, i.e. `stationary` platform locations (fixed) \n\n* `track`, i.e. trajectories made by a `mobile` platform\n\n* `static`, i.e. a fixed geometry observed by a `remote` platform\n\n* `dynamic`, i.e. geometry observed by a `remote` platform which changes over time\n",
                 "parameters": [
+                    {
+                        "$ref": "#/parameters/geometryTypesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/platformGeometriesParam"
+                    },
+                    {
+                        "$ref": "#/parameters/observedGeometriesParam"
+                    },
                     {
                         "$ref": "#/parameters/crsParam"
                     },
@@ -562,6 +873,10 @@
         "/geometries/{geometryId}'": {
             "get": {
                 "summary": "Gets a particular geometry",
+                "tags": [
+                    "geometry",
+                    "v2.0"
+                ],
                 "description": "Full view of a geometry instance. Encodes as full [GeoJSON geometry](https://www.rfc-editor.org/info/rfc7946).\n",
                 "parameters": [
                     {
@@ -579,7 +894,25 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded geometry instance"
+                        "description": "An expanded item"
+                    },
+                    "400": {
+                        "description": "A query parameter does not match expected format",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -587,6 +920,9 @@
         "/services": {
             "get": {
                 "summary": "Get available service instances",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available service instances. For backwards compatibility reasons the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
                 "parameters": [
                     {
@@ -612,7 +948,10 @@
         "/services/{serviceId}": {
             "get": {
                 "summary": "Gets an instance",
-                "description": "Gets a service instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved via following endpoint.\n\n\nDepending on what dataset types are available, differing output formats are available. For example, `image/png` (render as chart) or `application/pdf` (generating a report).\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets a service instance.\n\n\nDepending on what dataset types are available, differing output formats are available. For example, `image/png` (render as chart) or `application/pdf` (generating a report).\n",
                 "parameters": [
                     {
                         "name": "serviceId",
@@ -623,7 +962,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded service instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -631,6 +982,9 @@
         "/services/{serviceId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a service",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each service.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -653,6 +1007,18 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -660,6 +1026,9 @@
         "/categories": {
             "get": {
                 "summary": "Gets available categories",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available category instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -706,7 +1075,10 @@
         "/categories/{categoryId}": {
             "get": {
                 "summary": "Gets a catefory instance",
-                "description": "Gets a category instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets a category instance.\n",
                 "parameters": [
                     {
                         "name": "categoryId",
@@ -717,7 +1089,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -725,6 +1109,9 @@
         "/categories/{categoryId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a category",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each category.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -747,6 +1134,18 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -754,6 +1153,9 @@
         "/phenomena": {
             "get": {
                 "summary": "Get available phenomenon instances",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available phenomenon instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -800,7 +1202,10 @@
         "/phenomena/{phenomenonId}": {
             "get": {
                 "summary": "Gets a phenomenon instance",
-                "description": "Gets a phenomenon instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets a phenomenon instance\n",
                 "parameters": [
                     {
                         "name": "phenomenonId",
@@ -811,7 +1216,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -819,6 +1236,9 @@
         "/phenomena/{phenomenonId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a phenomenon",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each phemomenon.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -841,6 +1261,18 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -848,6 +1280,9 @@
         "/procedure": {
             "get": {
                 "summary": "Get available procedure instances",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available procedure instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -894,7 +1329,10 @@
         "/procedures/{procedureId}": {
             "get": {
                 "summary": "Gets a procedure instance",
-                "description": "Gets a procedure instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets a procedure instance.\n",
                 "parameters": [
                     {
                         "name": "procedureId",
@@ -905,7 +1343,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -913,6 +1363,9 @@
         "/procedures/{procedureId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a procedure",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each procedure.\n\nYou can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -935,6 +1388,18 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -942,6 +1407,9 @@
         "/offerings": {
             "get": {
                 "summary": "Get available offerings instances",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available offering instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -988,7 +1456,10 @@
         "/offerings/{offeringId}": {
             "get": {
                 "summary": "Gets an offering instance",
-                "description": "Gets an offering instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets an offering instance.\n",
                 "parameters": [
                     {
                         "name": "offeringId",
@@ -999,7 +1470,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -1007,6 +1490,9 @@
         "/offerings/{offeringId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a phenomenon",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each offering.\n\nYou can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. \n",
                 "parameters": [
                     {
@@ -1029,6 +1515,18 @@
                 "responses": {
                     "200": {
                         "description": "A list of (selected) extra infos"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -1036,6 +1534,9 @@
         "/features": {
             "get": {
                 "summary": "Get available feature instances",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available instances. For backwards compatibility reasons the output  is filtered by default to list only those instances related to `stationary`,  `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.\n",
                 "parameters": [
                     {
@@ -1082,7 +1583,10 @@
         "/features/{featureId}": {
             "get": {
                 "summary": "Gets an feature instance",
-                "description": "Gets a feature instance.\n\n\nThe `extras` array tells if extra information is available which can be retrieved following endpoint.\n",
+                "tags": [
+                    "parameter"
+                ],
+                "description": "Gets a feature instance.\n",
                 "parameters": [
                     {
                         "name": "featureId",
@@ -1093,7 +1597,19 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An expanded instance"
+                        "description": "An expanded item"
+                    },
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -1101,6 +1617,9 @@
         "/features/{featureId}/extras": {
             "get": {
                 "summary": "Gets extra infos for a feature",
+                "tags": [
+                    "parameter"
+                ],
                 "description": "All available feature instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.\n\nFilter options help to focus on a particular set of items. Filter either by parameters or spatially.\n",
                 "parameters": [
                     {
@@ -1124,8 +1643,14 @@
                     "200": {
                         "description": "A list of (selected) extra infos"
                     },
-                    "default": {
-                        "description": "Unexpected error",
+                    "404": {
+                        "description": "Item not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "415": {
+                        "description": "Media Item not supported",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -1293,12 +1818,6 @@
             "type": "boolean",
             "description": "Indicates that timeseries data shall be generalized. See generalization section for details.\n"
         },
-        "force_latest_valuesParam": {
-            "name": "force_latest_values",
-            "in": "query",
-            "type": "boolean",
-            "description": "Can be used to force last value requests on a collection of timeseries.\n\nPlease note that this enforcement (in combination with `expanded=true`) may result  in long response times as the last value has to be requested for each timeseries of the requested collection. Use this enforcement only on filtered queries.\n"
-        },
         "formatParam": {
             "name": "format",
             "in": "query",
@@ -1310,6 +1829,45 @@
             "in": "query",
             "type": "boolean",
             "description": "Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library  otherwise).\n\nHere is an example how to embed encoded base64 string\n```\n<img src='data:image/png;base64,\" + encodedString + \"' />\n```\n"
+        },
+        "geometryTypesParam": {
+            "name": "geometryTypes",
+            "in": "query",
+            "type": "string",
+            "enum": [
+                "point",
+                "linestring",
+                "polygon"
+            ],
+            "description": "The type of geometry based on [WKT types](https://en.wikipedia.org/wiki/Well-known_text).\n"
+        },
+        "platformGeometriesParam": {
+            "name": "platformGeometries",
+            "in": "query",
+            "type": "array",
+            "collectionFormat": "csv",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "site",
+                    "track"
+                ]
+            },
+            "description": "The platform's geometry, either `site` for `stationary` platforms (or `station`s) or `track` for `mobile` platforms.\n"
+        },
+        "observedGeometriesParam": {
+            "name": "observedGeometries",
+            "in": "query",
+            "type": "array",
+            "collectionFormat": "csv",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "static",
+                    "dynamic"
+                ]
+            },
+            "description": "The platform's observed geometry, either `static` for `remote` platforms observing fixed geometries or `dynamic` otherwise.\n"
         }
     },
     "definitions": {
