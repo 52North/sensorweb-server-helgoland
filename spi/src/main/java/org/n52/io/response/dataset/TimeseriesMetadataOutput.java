@@ -28,18 +28,18 @@
  */
 package org.n52.io.response.dataset;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.dataset.ValueType;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.StatusInterval;
-import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *

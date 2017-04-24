@@ -38,9 +38,9 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
         extends ParameterOutput {
 
     private final String valueType;
-    
+
     private String platformType;
-    
+
     private SeriesParameters seriesParameters;
 
     private Set<String> rawFormats;

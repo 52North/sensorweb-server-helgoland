@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.util.HashMap;
@@ -35,13 +36,11 @@ import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
-import org.n52.io.response.dataset.SeriesParameters;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  * @deprecated since 2.0.0
  */
