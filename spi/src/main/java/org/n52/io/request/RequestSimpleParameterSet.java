@@ -54,6 +54,11 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     void setTimeseriesIds(String[] timeseriesIds) {
         setDatasets(timeseriesIds);
     }
+    
+    @Deprecated
+    void setSeriesIds(String[] seriesIds) {
+        setDatasets(seriesIds);
+    }
 
     /**
      * @return the output format the raw data shall have.

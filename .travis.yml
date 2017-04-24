@@ -1,14 +1,17 @@
 language: java
 jdk:
   - oraclejdk8
-# https://github.com/travis-ci/travis-ci/issues/5227#issuecomment-165131913
-before_install:
-  - cat ~/.m2/settings.xml # check before
-  # https://github.com/travis-ci/travis-ci/issues/4629
-  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
-  - cat ~/.m2/settings.xml # check after
-install: true
-script: mvn clean install
+before_install: gem install bundler jekyll html-proofer
+#script: mvn -fae -U -B clean install -P check
+script: mvn process-resources 
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # gh-pages: speeds up installation of html-proofer
+    - secure: "Q7Ry1dyB/6+0TEJN3fyBiCC1HlEK2pTQzWxywRmMgIxnJVXHq33y1sU9i78v6Skb9KozyfD4Uyu8Y8k+6dRf4dqWrT5+bYJIMXrTt4MLnkCtri3sd6G/oEkIZfgPJKGZdPnxBS4LvSfpNnbnlppDBmYd3pXU1cNVZHR4Mn4uzaE="
+after_success: chmod +x .travis/on_success.sh && .travis/on_success.sh
+cache:
+  directories
+    - $HOME/.m2
 notifications:
   irc:
     channels:
