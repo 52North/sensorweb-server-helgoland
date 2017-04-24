@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.io.measurement.MeasurementIoFactory;
+import org.n52.io.quantity.MeasurementIoFactory;
 import org.n52.io.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {

@@ -36,8 +36,8 @@ import java.util.Set;
 import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.ValueType;
+import org.n52.io.response.dataset.quantity.MeasurementDatasetOutput;
 import org.n52.io.response.dataset.SeriesParameters;
-import org.n52.io.response.dataset.measurement.MeasurementDatasetOutput;
 
 /**
  *

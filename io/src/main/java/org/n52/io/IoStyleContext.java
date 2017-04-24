@@ -31,8 +31,8 @@ package org.n52.io;
 import java.util.Collections;
 import java.util.List;
 
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.quantity.MeasurementIoFactory;
+import org.n52.io.quantity.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DatasetOutput;
