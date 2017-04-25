@@ -139,7 +139,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
          * querying UBA views (which merge stations and timeseries)
          */
         SeriesDao seriesDao = new SeriesDao(session);
-        List<SeriesEntity> allSeries = seriesDao.getAllInstances();
+        List<SeriesEntity> allSeries = seriesDao.getAllInstances(parameters);
         for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
             StationOutput station = createExpanded(featureEntity, parameters, session);
             addTimeseries(station, allSeries, parameters);

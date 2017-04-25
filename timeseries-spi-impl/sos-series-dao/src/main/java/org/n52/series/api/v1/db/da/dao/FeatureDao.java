@@ -83,7 +83,7 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
             parameters.addLocaleTo(criteria, I18nFeatureEntity.class);
         }
 
-        criteria = parameters.addDetachedFilters("feature", criteria);
+        parameters.addDetachedFilters("feature", criteria);
         parameters.addSpatialFilterTo(criteria, parameters);
         parameters.addPagingTo(criteria);
         return (List<FeatureEntity>) criteria.list();
