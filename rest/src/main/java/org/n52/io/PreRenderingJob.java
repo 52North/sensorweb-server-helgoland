@@ -262,7 +262,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                     return name.startsWith(datasetId);
                 }
             };
-            files.addAll(Arrays.asList(outputDir.list(startsWithIdFilter)));
+            String[] filtered = outputDir.list(startsWithIdFilter);
+            if (filtered != null) {
+                files.addAll(Arrays.asList(filtered));
+            }
         }
         return files;
     }
@@ -337,9 +340,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
         Path outputDirectory = getOutputFolder();
         String filename = qualifier != null
-                ? datasetId + "_" + qualifier + ".png"
-                : datasetId + ".png";
-        return outputDirectory.resolve(filename)
+                ? datasetId + "_" + qualifier
+                : datasetId;
+        return outputDirectory.resolve(filename + ".png")
                               .toFile();
     }
 

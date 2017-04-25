@@ -375,7 +375,7 @@ public class DataController extends BaseController {
             throws Exception {
         assertPrerenderingIsEnabled();
         assertPrerenderedImageIsAvailable(fileName, null);
-        
+
         response.setContentType(MimeType.IMAGE_PNG.toString());
         LOGGER.debug("get prerendered chart for '{}'", fileName);
         preRenderingTask.writePrerenderedGraphToOutputStream(fileName, response.getOutputStream());
