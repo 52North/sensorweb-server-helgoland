@@ -109,8 +109,8 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public List<StationOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
         parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
-        List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
         List<StationOutput> results = new ArrayList<StationOutput>();
+        List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
         for (FeatureEntity featureEntity : allFeatures) {
             results.add(createCondensed(featureEntity, parameters));
         }
@@ -132,10 +132,18 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public List<StationOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
         parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
-        List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
         List<StationOutput> results = new ArrayList<StationOutput>();
-        for (FeatureEntity featureEntity : allFeatures) {
-            results.add(createExpanded(featureEntity, parameters, session));
+        
+        /*
+         * Get all series and match via code is much faster than 
+         * querying UBA views (which merge stations and timeseries)
+         */
+        SeriesDao seriesDao = new SeriesDao(session);
+        List<SeriesEntity> allSeries = seriesDao.getAllInstances(parameters);
+        for (FeatureEntity featureEntity : featureDao.getAllInstances(parameters)) {
+            StationOutput station = createExpanded(featureEntity, parameters, session);
+            addTimeseries(station, allSeries, parameters);
+            results.add(station);
         }
         return results;
     }
@@ -161,7 +169,10 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         if (result == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
         }
-        return createExpanded(result, parameters, session);
+        List<SeriesEntity> allSeries = new SeriesDao(session).getAllInstances();
+        StationOutput station = createExpanded(result, parameters, session);
+        addTimeseries(station, allSeries, parameters);
+        return station;
     }
 
     StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
@@ -172,22 +183,31 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         FeatureEntity result = featureDao.getInstance(parseId(id), query);
         return createCondensed(result, parameters);
 }
-
-    private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
-        SeriesDao seriesDao = new SeriesDao(session);
-        List<SeriesEntity> series = seriesDao.getInstancesWith(feature, parameters);
-        StationOutput stationOutput = createCondensed(feature, parameters);
-        stationOutput.addProperty("timeseries", createTimeseriesList(series, parameters));
-        stationOutput.addProperty("domainId", feature.getDomainId());
-        return stationOutput;
-    }
-
+    
     private StationOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
         stationOutput.addProperty("id", entity.getPkid());
         stationOutput.addProperty("label", getLabelFrom(entity, parameters.getLocale()));
         return stationOutput;
+    }
+
+    private StationOutput createExpanded(FeatureEntity feature, DbQuery parameters, Session session) throws DataAccessException {
+        StationOutput stationOutput = createCondensed(feature, parameters);
+        stationOutput.addProperty("domainId", feature.getDomainId());
+        return stationOutput;
+    }
+
+    private void addTimeseries(StationOutput station, List<SeriesEntity> allSeries, DbQuery parameters) throws DataAccessException {
+        List<SeriesEntity> relatedSeries = new ArrayList<>();
+        String stationId = station.getProperties().get("id").toString();
+        for (SeriesEntity seriesEntity : allSeries) {
+            Long featureId = seriesEntity.getFeature().getPkid();
+            if (Long.toString(featureId).equals(stationId)) {
+                relatedSeries.add(seriesEntity);
+            }
+        }
+        station.addProperty("timeseries", createTimeseriesList(relatedSeries, parameters));
     }
 
     private GeojsonPoint createPoint(FeatureEntity featureEntity) {

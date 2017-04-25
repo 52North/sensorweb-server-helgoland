@@ -155,7 +155,7 @@ public abstract class SessionAwareRepository {
         }
     }
 
-    protected Map<String, TimeseriesOutput> createTimeseriesList(List<SeriesEntity> series, DbQuery parameters) throws DataAccessException {
+    protected Map<String, TimeseriesOutput> createTimeseriesList(Collection<SeriesEntity> series, DbQuery parameters) throws DataAccessException {
         Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<String, TimeseriesOutput>();
         for (SeriesEntity timeseries : series) {
             if ( !timeseries.getProcedure().isReference()) {
