@@ -138,7 +138,7 @@ public class DataController extends BaseController {
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
         IoProcessChain< ? > ioChain = createIoFactory(valueType).withSimpleRequest(parameters)
-                                                                  .createProcessChain();
+                                                                .createProcessChain();
 
         DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
         final Map<String, ? > processed = formattedDataCollection.getAllSeries();
@@ -147,9 +147,12 @@ public class DataController extends BaseController {
                 : new ModelAndView().addObject(processed.get(seriesId));
     }
 
-    @RequestMapping(value = "/data", produces = {"application/json"}, method = RequestMethod.POST)
+    @RequestMapping(value = "/data", produces = {
+        "application/json"
+    }, method = RequestMethod.POST)
     public ModelAndView getSeriesCollectionData(HttpServletResponse response,
-            @RequestBody RequestSimpleParameterSet parameters) throws Exception {
+                                                @RequestBody RequestSimpleParameterSet parameters)
+            throws Exception {
 
         LOGGER.debug("get data collection with parameter set: {}", parameters);
 
@@ -158,10 +161,10 @@ public class DataController extends BaseController {
 
         final String datasetType = parameters.getValueType();
         IoProcessChain< ? > ioChain = createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createProcessChain();
+                                                                  .withSimpleRequest(parameters)
+                                                                  .createProcessChain();
 
-        DataCollection<?> processed = ioChain.getData();
+        DataCollection< ? > processed = ioChain.getData();
         return new ModelAndView().addObject(processed.getAllSeries());
     }
 
@@ -351,8 +354,32 @@ public class DataController extends BaseController {
         String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
         createIoFactory(valueType).withSimpleRequest(parameters)
-                                        .createHandler(MimeType.IMAGE_PNG.toString())
-                                        .writeBinary(response.getOutputStream());
+                                  .createHandler(MimeType.IMAGE_PNG.toString())
+                                  .writeBinary(response.getOutputStream());
+    }
+
+    @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
+    public ModelAndView getSeriesChartByInterval(@PathVariable String datasetId) {
+        assertPrerenderingIsEnabled();
+        ModelAndView response = new ModelAndView();
+        return response.addObject(preRenderingTask.getPrerenderedImages(datasetId));
+    }
+
+    @RequestMapping(value = "/{datasetId}/images/{fileName}",
+        produces = {
+            "image/png"
+        }, method = RequestMethod.GET)
+    public void getSeriesChartByFilename(HttpServletResponse response,
+                                         @PathVariable String datasetId,
+                                         @PathVariable String fileName)
+            throws Exception {
+        assertPrerenderingIsEnabled();
+        assertPrerenderedImageIsAvailable(fileName, null);
+        
+        response.setContentType(MimeType.IMAGE_PNG.toString());
+        LOGGER.debug("get prerendered chart for '{}'", fileName);
+        preRenderingTask.writePrerenderedGraphToOutputStream(fileName, response.getOutputStream());
+
     }
 
     @RequestMapping(value = "/{seriesId}/{chartQualifier}",
@@ -362,16 +389,12 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
                                          @PathVariable String seriesId,
-                                         @PathVariable String chartQualifier,
-                                         @RequestParam(required = false) MultiValueMap<String, String> query)
+                                         @PathVariable String chartQualifier)
             throws Exception {
-        if (preRenderingTask == null) {
-            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
-        }
-        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
-            throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
-        }
+        assertPrerenderingIsEnabled();
+        assertPrerenderedImageIsAvailable(seriesId, chartQualifier);
 
+        response.setContentType(MimeType.IMAGE_PNG.toString());
         LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
     }
@@ -458,4 +481,21 @@ public class DataController extends BaseController {
     public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService) {
         this.datasetService = datasetService;
     }
+
+    private void assertPrerenderingIsEnabled() {
+        if (preRenderingTask == null) {
+            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
+        }
+    }
+
+    private void assertPrerenderedImageIsAvailable(String seriesId, String chartQualifier) {
+        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
+            throw new ResourceNotFoundException("No pre-rendered chart found for datasetId '"
+                    + seriesId
+                    + " (qualifier: "
+                    + chartQualifier
+                    + ")'.");
+        }
+    }
+
 }

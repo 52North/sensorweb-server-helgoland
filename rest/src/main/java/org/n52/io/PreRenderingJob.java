@@ -248,12 +248,35 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         this.configFile = configFile;
     }
 
+    public List<String> getPrerenderedImages(final String datasetId) {
+        if (taskConfigPrerendering == null) {
+            taskConfigPrerendering = readJobConfig(configFile);
+        }
+        Path outputPath = getOutputFolder();
+        ArrayList<String> files = new ArrayList<>();
+        File outputDir = outputPath.toFile();
+        if (outputDir.isDirectory()) {
+            FilenameFilter startsWithIdFilter = new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.startsWith(datasetId);
+                }
+            };
+            files.addAll(Arrays.asList(outputDir.list(startsWithIdFilter)));
+        }
+        return files;
     }
 
+    public boolean hasPrerenderedImage(String fileName) {
+        return hasPrerenderedImage(fileName, null);
     }
 
+    public boolean hasPrerenderedImage(String datasetId, String chartQualifier) {
+        return createFileName(datasetId, chartQualifier).exists();
     }
 
+    public void writePrerenderedGraphToOutputStream(String filename, OutputStream outputStream) {
+        writePrerenderedGraphToOutputStream(filename, null, outputStream);
     }
 
     public void writePrerenderedGraphToOutputStream(String datasetId, String qualifier, OutputStream outputStream) {
