@@ -298,8 +298,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         String chartQualifier = postfix != null
                 ? interval + "_" + postfix
                 : interval;
-        File file = createFileName(timeseriesId, chartQualifier);
-        if (file.exists() && !file.setLastModified(new Date().getTime())) {
+        File file = createFileName(datasetId, chartQualifier);
+        if (!file.exists() && !file.createNewFile()) {
+            LOGGER.warn("Can't create file '{}'", file.getAbsolutePath());
+        }
+        if (!file.setLastModified(new Date().getTime())) {
             LOGGER.debug("Can't set last modified date at '{}'", file.getAbsolutePath());
         }
         return new FileOutputStream(file);
