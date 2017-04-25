@@ -38,6 +38,8 @@ import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeojsonPoint;
 import org.n52.io.v1.data.StationOutput;
+import org.n52.sensorweb.v1.spi.search.SearchResult;
+import org.n52.sensorweb.v1.spi.search.StationSearchResult;
 import org.n52.series.api.v1.db.da.beans.DescribableEntity;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nEntity;
@@ -45,9 +47,6 @@ import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 import org.n52.series.api.v1.db.da.beans.ServiceInfo;
 import org.n52.series.api.v1.db.da.dao.FeatureDao;
 import org.n52.series.api.v1.db.da.dao.SeriesDao;
-import org.n52.web.ResourceNotFoundException;
-import org.n52.sensorweb.v1.spi.search.SearchResult;
-import org.n52.sensorweb.v1.spi.search.StationSearchResult;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
@@ -156,10 +155,9 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
         FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
-        if (result == null) {
-            throw new ResourceNotFoundException("Resource with id '" + id + "' could not be found.");
-        }
-        return createExpanded(result, parameters, session);
+        return result != null
+                ? createExpanded(result, parameters, session)
+                : null;
     }
 
     StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
