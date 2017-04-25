@@ -136,7 +136,9 @@ public class PrerenderingJobConfig {
         }
 
         public Map<String, String> getConfig() {
-            return Collections.unmodifiableMap(config);
+            return config != null
+                    ? Collections.unmodifiableMap(config)
+                    : config;
         }
 
         public void setConfig(Map<String, String> config) {
