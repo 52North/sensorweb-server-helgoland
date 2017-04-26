@@ -27,8 +27,6 @@
  */
 package org.n52.series.api.v1.db.da.dao;
 
-import static org.hibernate.criterion.Restrictions.eq;
-
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -80,8 +78,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
     @Override
     @SuppressWarnings("unchecked")
     public List<ProcedureEntity> getAllInstances(DbQuery parameters) throws DataAccessException {
-        Criteria criteria = getDefaultCriteria("procedure")
-                .add(eq(COLUMN_REFERENCE, Boolean.FALSE));
+        Criteria criteria = getDefaultCriteria("procedure");
         if (hasTranslation(parameters, I18nProcedureEntity.class)) {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
@@ -96,6 +93,17 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
         Criteria criteria = getDefaultCriteria("procedure")
                 .setProjection(Projections.rowCount());
         return criteria != null ? ((Long) criteria.uniqueResult()).intValue() : 0;
+    }
+
+    @Override
+    protected Criteria getDefaultCriteria(String alias) {
+        return getDefaultCriteria(alias, true);
+    }
+
+    private Criteria getDefaultCriteria(String alias, boolean ignoreReferenceProcedures) {
+        return ignoreReferenceProcedures
+                ? super.getDefaultCriteria(alias).add(Restrictions.eq(COLUMN_REFERENCE, Boolean.FALSE))
+                : super.getDefaultCriteria(alias);
     }
 
     @Override
