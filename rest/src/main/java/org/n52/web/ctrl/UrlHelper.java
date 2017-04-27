@@ -66,35 +66,15 @@ public class UrlHelper {
         return constructHref(hrefBase, UrlSettings.COLLECTION_GEOMETRIES);
     }
 
-    public String getRootHrefBaseURl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.API_VERSION_PATH);
-    }
-
     public String constructHref(String hrefBase, String path) {
         if (hrefBase == null || hrefBase.isEmpty()) {
             // backwards compatible relative link
-            return ".".concat(stripVersionFromPath(path));
+            return ".".concat(path);
         }
         String href = hrefBase.endsWith("/")
                 ? hrefBase.substring(0, hrefBase.length() - 1)
                 : hrefBase;
-        return href.contains(UrlSettings.API_VERSION_PATH)
-                ? stripVersionFromHrefBase(href).concat(path)
-                : href.concat(path);
-    }
-
-    protected String stripVersionFromHrefBase(String hrefBase) {
-        int versionIndex = hrefBase.lastIndexOf(UrlSettings.API_VERSION_PATH);
-        return versionIndex >= 0
-                ? hrefBase.substring(0, versionIndex)
-                : hrefBase;
-    }
-
-    protected String stripVersionFromPath(String path) {
-        int versionIndex = path.indexOf(UrlSettings.API_VERSION_PATH);
-        return versionIndex >= 0
-                ? path.substring(UrlSettings.API_VERSION_PATH.length())
-                : path;
+        return href.concat(path);
     }
 
 }

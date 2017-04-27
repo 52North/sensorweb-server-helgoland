@@ -28,6 +28,8 @@ The following main frameworks are used to provide this API:
 
 - SOS Proxy: Allows to aggregate multiple OGC SOS instances under one API
 - Direct database access: Allows to define Hibernate mappings to serve data directly from a database
+- Fotoquest Data: tbd
+- DWD Weather Alerts: tbd
 
 ## References
 * The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
@@ -68,7 +70,7 @@ information on this.
 #### Logging
 
 #### Generalizer
-In file `WEB-INF/spring/config-general.json` add 
+In file `WEB-INF/classes/config-general.json` add 
 
 ```
 "generalizer": {

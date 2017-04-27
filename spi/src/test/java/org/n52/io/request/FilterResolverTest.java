@@ -55,7 +55,7 @@ public class FilterResolverTest {
     @Test
     public void when_setDatasetTypeFiltre_then_dontBehaveBackwardsCompatible() {
         FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_DATASET_TYPES, "blah"));
+                 .extendWith(Parameters.FILTER_VALUE_TYPES, "blah"));
         Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
     }
 
@@ -320,14 +320,14 @@ public class FilterResolverTest {
     @Test
     public void when_setAllDatasetTypes_then_noFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_DATASET_TYPES, "all"));
+                 .extendWith(Parameters.FILTER_VALUE_TYPES, "all"));
         Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
     }
 
     @Test
     public void when_setDatasetTypeFilter_then_filterActive() {
         FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_DATASET_TYPES, "foobar"));
+                 .extendWith(Parameters.FILTER_VALUE_TYPES, "foobar"));
         Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
         Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
     }

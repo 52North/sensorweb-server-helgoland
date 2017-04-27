@@ -30,6 +30,7 @@ package org.n52.web.ctrl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.n52.io.I18N;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = UrlSettings.API_VERSION_PATH, produces = {"application/json"})
+@RequestMapping(value = "/", produces = {"application/json"})
 public class ResourcesController {
 
     private CountingMetadataService metadataService;

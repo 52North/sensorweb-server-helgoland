@@ -37,6 +37,8 @@ import org.n52.series.spi.srv.RawFormats;
  */
 public interface Parameters {
 
+    // TODO separate public parameters from internal parameters (e.g. HREF_BASE)
+
     String SEARCH_TERM = "q";
 
     /**
@@ -45,9 +47,7 @@ public interface Parameters {
     String EXPANDED = "expanded";
 
     /**
-     * The default expansion of collection items.
-     *
-     * @see #EXPANDED
+     * The default expansion of collection items. Refer to {@link #EXPANDED}
      */
     boolean DEFAULT_EXPANDED = false;
 
@@ -63,35 +63,13 @@ public interface Parameters {
     boolean DEFAULT_FORCE_LATEST_VALUE = false;
 
     /**
-     * If status intervals section is requested.
-     */
-    String STATUS_INTERVALS = "status_intervals";
-
-    /**
-     * The default behaviour for status intervals.
-     */
-    boolean DEFAULT_STATUS_INTERVALS = false;
-
-    /**
-     * If rendering hints are requested for a timeseries
-     */
-    String RENDERING_HINTS = "rendering_hints";
-
-    /**
-     * The default behaviour for rendering hints.
-     */
-    boolean DEFAULT_RENDERING_HINTS = false;
-
-    /**
      * Determines the index of the first member of the response page (a.k.a.
      * page offset).
      */
     String OFFSET = "offset";
 
     /**
-     * The default page offset.
-     *
-     * @see #OFFSET
+     * The default page offset. Refer to {@link #OFFSET}
      */
     int DEFAULT_OFFSET = -1;
 
@@ -101,9 +79,7 @@ public interface Parameters {
     String LIMIT = "limit";
 
     /**
-     * The default page size limit.
-     *
-     * @see #LIMIT
+     * The default page size limit. Refer to {@link #LIMIT}
      */
     int DEFAULT_LIMIT = -1;
 
@@ -113,9 +89,7 @@ public interface Parameters {
     String LOCALE = "locale";
 
     /**
-     * The default locale.
-     *
-     * @see #LOCALE
+     * The default locale. Refer to {@link #LOCALE}
      */
     String DEFAULT_LOCALE = "en";
 
@@ -123,6 +97,16 @@ public interface Parameters {
      * Determines the timespan parameter
      */
     String TIMESPAN = "timespan";
+
+    /**
+     * Determines the timezone output parameter
+     */
+    String OUTPUT_TIMEZONE = "outputTimezone";
+
+    /**
+     * The default output timezone
+     */
+    String DEFAULT_OUTPUT_TIMEZONE = "UTC";
 
     /**
      * Parameter to specify the timeseries data with a result time
@@ -230,23 +214,9 @@ public interface Parameters {
     String STYLE = "style";
 
     /**
-     * Determines the service filter
-     * @deprecated use {@link #SERVICES}
-     */
-    @Deprecated
-    String SERVICE = "service";
-
-    /**
      * Determines the services filter
      */
     String SERVICES = "services";
-
-    /**
-     * Determines the feature filter
-     * @deprecated use {@link #FEATURES}
-     */
-    @Deprecated
-    String FEATURE = "feature";
 
     /**
      * Determines the features filter
@@ -254,23 +224,9 @@ public interface Parameters {
     String FEATURES = "features";
 
     /**
-     * Determines the service filter
-     * @deprecated use {@link #OFFERINGS}
-     */
-    @Deprecated
-    String OFFERING = "offering";
-
-    /**
      * Determines the offerings filter
      */
     String OFFERINGS = "offerings";
-
-    /**
-     * Determines the procedure filter
-     * @deprecated use {@link #PROCEDURES}
-     */
-    @Deprecated
-    String PROCEDURE = "procedure";
 
     /**
      * Determines the procedures filter
@@ -278,42 +234,15 @@ public interface Parameters {
     String PROCEDURES = "procedures";
 
     /**
-     * Determines the phenomenon filter
-     * @deprecated use {@link #PHENOMENA}
-     */
-    @Deprecated
-    String PHENOMENON = "phenomenon";
-
-    /**
      * Determines the phenomena filter
      */
     String PHENOMENA = "phenomena";
 
-    /**
-     * Determines the station filter
-     * @deprecated since 2.0.0
-     */
-    @Deprecated
-    String STATION = "station";
-
     String PLATFORMS = "platforms";
-
-    /**
-     * @deprecated since 2.0.0
-     */
-    @Deprecated
-    String SERIES = "series";
 
     String DATASETS = "datasets";
 
-    String HANDLE_AS_DATASET_TYPE = "handleAs";
-
-    /**
-     * Determines the category filter
-     * @deprecated use {@link #CATEGORIES}
-     */
-    @Deprecated
-    String CATEGORY = "category";
+    String HANDLE_AS_VALUE_TYPE = "handleAs";
 
     /**
      * Determines the categories filter
@@ -362,7 +291,7 @@ public interface Parameters {
 
     String FILTER_PLATFORM_TYPES = "platformTypes";
 
-    String FILTER_DATASET_TYPES = "datasetTypes";
+    String FILTER_VALUE_TYPES = "valueTypes";
 
     String FILTER_PLATFORM_GEOMETRIES = "platformGeometries";
 
@@ -374,12 +303,6 @@ public interface Parameters {
     String GEOMETRY_TYPES = "geometryTypes";
 
     /**
-     * Internally set via 2.x interface to create href links.
-     * Will be overridden, if it has been set externally.
-     */
-    String HREF_BASE = "internal.href.base";
-
-    /**
      * If observation time shall be shown within intervals.
      */
     String SHOW_TIME_INTERVALS = "showTimeIntervals";
@@ -388,4 +311,110 @@ public interface Parameters {
      * Default for {@link #SHOW_TIME_INTERVALS}
      */
     boolean DEFAULT_SHOW_TIME_INTERVALS = false;
+
+    /*
+     *############### INTERNAL CONSTANTS
+     */
+
+    /**
+     * Internally set via 2.x interface to create href links.
+     * Will be overridden, if it has been set externally.
+     */
+    String HREF_BASE = "internal.href.base";
+
+    /*
+     *############### DEPRECATED CONSTANTS
+     */
+
+    /**
+     * Determines the service filter
+     * @deprecated use {@link #SERVICES}
+     */
+    @Deprecated
+    String SERVICE = "service";
+
+    /**
+     * Determines the feature filter
+     * @deprecated use {@link #FEATURES}
+     */
+    @Deprecated
+    String FEATURE = "feature";
+
+    /**
+     * Determines the service filter
+     * @deprecated use {@link #OFFERINGS}
+     */
+    @Deprecated
+    String OFFERING = "offering";
+
+    /**
+     * Determines the procedure filter
+     * @deprecated use {@link #PROCEDURES}
+     */
+    @Deprecated
+    String PROCEDURE = "procedure";
+
+    /**
+     * Determines the phenomenon filter
+     * @deprecated use {@link #PHENOMENA}
+     */
+    @Deprecated
+    String PHENOMENON = "phenomenon";
+
+    /**
+     * Determines the station filter
+     * @deprecated since 2.0.0
+     */
+    @Deprecated
+    String STATION = "station";
+
+    /**
+     * @deprecated since 2.0.0
+     */
+    @Deprecated
+    String SERIES = "series";
+
+    /**
+     * Determines the category filter
+     * @deprecated use {@link #CATEGORIES}
+     */
+    @Deprecated
+    String CATEGORY = "category";
+
+    /**
+     * If status intervals section is requested.
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
+    String STATUS_INTERVALS = "status_intervals";
+
+    /**
+     * The default behaviour for status intervals.
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
+    boolean DEFAULT_STATUS_INTERVALS = false;
+
+    /**
+     * If rendering hints are requested for a timeseries
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
+    String RENDERING_HINTS = "rendering_hints";
+
+    /**
+     * The default behaviour for rendering hints.
+     * @deprecated since v2.0 covered by extras endpoint
+     */
+    @Deprecated
+    boolean DEFAULT_RENDERING_HINTS = false;
+
+
+    /**
+     * Determines the language the output shall have.
+     * @deprecated since v2.0 covered by {@link #LOCALE}}
+     */
+    @Deprecated
+    String LANGUAGE = "language";
+
 }

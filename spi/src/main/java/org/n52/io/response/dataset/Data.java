@@ -57,7 +57,7 @@ public abstract class Data<T extends AbstractValue<?>> implements Serializable {
     }
 
     /**
-     * @return a sorted list of measurement values.
+     * @return a sorted list of quantity values.
      */
     public List<T> getValues() {
         return Collections.unmodifiableList(values);
