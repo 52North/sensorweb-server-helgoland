@@ -652,25 +652,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>boundless</id>
-            <name>Boundless, formerly OpenGeo</name>
-            <url>http://repo.boundlessgeo.com/main/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-central</id>
-            <name>spring-release-remote</name>
-            <url>http://repo.springsource.org/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>java</id>
             <url>http://java.net/projects/maven-repository/</url>
             <releases>
