@@ -124,7 +124,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public StationOutput[] getExpandedParameters(IoParameters query) {
         try {
-            if (!(cachingEnabled || cacheUpdateTask.isCacheRunSuccessful())) {
+            if (!cachingEnabled || !cacheUpdateTask.isCacheRunSuccessful()) {
                 return toArray(getExpandedStations(query));
             }
             List<StationOutput> cachedResults = expandedCache;
