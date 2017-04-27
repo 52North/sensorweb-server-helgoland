@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.joda.time.DateTime;
 import org.n52.io.IoParameters;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
@@ -79,7 +80,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     public void initCache() {
         if (cachingEnabled) {
             Timer timer = new Timer("Caching expanded stations output.");
-            timer.schedule(cacheUpdateTask, 0, cacheUpdateIntervalInMinutes);
+            timer.schedule(cacheUpdateTask, 0, cacheUpdateIntervalInMinutes * 60 * 1000);
         }
     }
     
@@ -87,9 +88,22 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
 
         private boolean cacheRunSuccessful;
         
+        private boolean running;
+        
         @Override
         public void run() {
-            cacheRunSuccessful = updateCache();
+            if (!running) {
+                LOGGER.debug("Start cache update for expanded stations.");
+                running = true;
+                cacheRunSuccessful = updateCache();
+                running = false;
+                LOGGER.debug("Cache successfully updated.");
+            } else {
+                LOGGER.debug("Skip already running cache update.");
+            }
+            long currentExecutionTime = this.scheduledExecutionTime();
+            long nextExecutionTime = currentExecutionTime + getCacheUpdateIntervalInMinutes() * 60 * 1000;
+            LOGGER.debug("Next run: " + new DateTime(nextExecutionTime));
         }
 
         private boolean updateCache() {
@@ -222,12 +236,19 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
         return results.toArray(new StationOutput[0]);
     }
 
-    public int getPeriodInMinutes() {
+    public boolean isCachingEnabled() {
+        return cachingEnabled;
+    }
+
+    public void setCachingEnabled(boolean cachingEnabled) {
+        this.cachingEnabled = cachingEnabled;
+    }
+
+    public int getCacheUpdateIntervalInMinutes() {
         return cacheUpdateIntervalInMinutes;
     }
 
-    public void setPeriodInMinutes(int period) {
-        this.cacheUpdateIntervalInMinutes = period;
+    public void setCacheUpdateIntervalInMinutes(int cacheUpdateIntervalInMinutes) {
+        this.cacheUpdateIntervalInMinutes = cacheUpdateIntervalInMinutes;
     }
-
 }
