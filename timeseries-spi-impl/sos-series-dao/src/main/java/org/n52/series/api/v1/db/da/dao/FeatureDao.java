@@ -66,7 +66,6 @@ public class FeatureDao extends AbstractDao<FeatureEntity> {
         return (FeatureEntity) getDefaultCriteria("feature")
                 .add(Restrictions.eq("feature.pkid", key))
                 .uniqueResult();
-//        return (FeatureEntity) session.get(FeatureEntity.class, key);
     }
     
     @Override
