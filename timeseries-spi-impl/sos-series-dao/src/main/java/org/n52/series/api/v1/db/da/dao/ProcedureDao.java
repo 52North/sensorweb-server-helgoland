@@ -83,7 +83,7 @@ public class ProcedureDao extends AbstractDao<ProcedureEntity> {
             parameters.addLocaleTo(criteria, I18nProcedureEntity.class);
         }
 
-        criteria = parameters.addDetachedFilters("procedure", criteria);
+        parameters.addDetachedFilters("procedure", criteria);
         parameters.addPagingTo(criteria);
         return (List<ProcedureEntity>) criteria.list();
     }
