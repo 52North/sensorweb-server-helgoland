@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.n52.io.IoParameters;
 import org.n52.io.crs.BoundingBox;
@@ -50,44 +52,76 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsAccessService.class);
     
-//    private Map<IoParameters, List<StationOutput>> expandedCache;
-    
     private List<StationOutput> expandedCache;
+    
+    private CacheUpdateTask cacheUpdateTask;
+
+    private int cacheUpdateIntervalInMinutes;
+    
+    private boolean cachingEnabled;
 
     public StationsAccessService(String dbSrid) {
+        this.cacheUpdateTask = new CacheUpdateTask();
         if (dbSrid != null) {
             StationRepository repository = createStationRepository();
             repository.setDatabaseSrid(dbSrid);
         }
     }
     
-    public boolean updateCache() {
-        try {
-            expandedCache = getExpandedStations(IoParameters.createDefaults());
-            return true;
-        } catch (DataAccessException e) {
-            LOGGER.error("could not update station cache!", e);
-            return false;
+    public void shutdownCache() {
+        if (cacheUpdateTask != null) {
+            cacheUpdateTask.cancel();
         }
     }
+    
+    public void initCache() {
+        if (cachingEnabled) {
+            Timer timer = new Timer("Caching expanded stations output.");
+            timer.schedule(cacheUpdateTask, 0, cacheUpdateIntervalInMinutes);
+        }
+    }
+    
+    private class CacheUpdateTask extends TimerTask {
 
+        private boolean cacheRunSuccessful;
+        
+        @Override
+        public void run() {
+            cacheRunSuccessful = updateCache();
+        }
+
+        private boolean updateCache() {
+            try {
+                expandedCache = getExpandedStations(IoParameters.createDefaults());
+                return true;
+            } catch (DataAccessException e) {
+                LOGGER.error("could not update station cache!", e);
+                return false;
+            }
+        }
+        
+        boolean isCacheRunSuccessful() {
+            return cacheRunSuccessful;
+        }
+    }
+    
     @Override
     public StationOutput[] getExpandedParameters(IoParameters query) {
         try {
-            if (expandedCache != null/* && expandedCache.containsKey(query) */) {
-                List<StationOutput> cachedResults = expandedCache; //expandedCache.get(query);
-                List<StationOutput> filteredResults = new ArrayList<>();
-                for (StationOutput cachedStation : cachedResults) {
-                    // apply possible query filters on each station
-                    Object properties = cachedStation.getProperties().get("timeseries");
-                    Map<String, TimeseriesOutput> series = (Map<String, TimeseriesOutput>) properties;
-                    if (appliesFilter(series, query) && appliesFilter(cachedStation.getGeometry(), query)) {
-                        filteredResults.add(cachedStation);
-                    }
-                }
-                return toArray(filteredResults);
+            if (!(cachingEnabled || cacheUpdateTask.isCacheRunSuccessful())) {
+                return toArray(getExpandedStations(query));
             }
-            return toArray(getExpandedStations(query));
+            List<StationOutput> cachedResults = expandedCache;
+            List<StationOutput> filteredResults = new ArrayList<>();
+            for (StationOutput cachedStation : cachedResults) {
+                // apply possible query filters on each station
+                Object properties = cachedStation.getProperties().get("timeseries");
+                Map<String, TimeseriesOutput> series = (Map<String, TimeseriesOutput>) properties;
+                if (appliesFilter(series, query) && appliesFilter(cachedStation.getGeometry(), query)) {
+                    filteredResults.add(cachedStation);
+                }
+            }
+            return toArray(filteredResults);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get station data.");
@@ -180,6 +214,14 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
 
     private StationOutput[] toArray(List<StationOutput> results) {
         return results.toArray(new StationOutput[0]);
+    }
+
+    public int getPeriodInMinutes() {
+        return cacheUpdateIntervalInMinutes;
+    }
+
+    public void setPeriodInMinutes(int period) {
+        this.cacheUpdateIntervalInMinutes = period;
     }
 
 }
