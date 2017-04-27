@@ -34,6 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
+import org.n52.web.BaseController;
 import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
@@ -50,7 +51,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
-public class StationsParameterController {
+public class StationsParameterController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
