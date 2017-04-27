@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/feature_update-maven-version/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/datatypes</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/platforms</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_update-maven-version/api/index.html</loc>
+<lastmod>2017-04-27T12:04:58+00:00</lastmod>
+</url>
+</urlset>
