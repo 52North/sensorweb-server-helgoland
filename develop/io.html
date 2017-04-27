@@ -103,7 +103,7 @@
 
   <div class="entry">
     <p>Depending on the requested data type the API offers some Input/Output processing.
-In case of <code class="highlighter-rouge">measurement</code> datasets a client might request a rendered chart instead 
+In case of <code class="highlighter-rouge">quantity</code> datasets a client might request a rendered chart instead 
 of raw data.</p>
 
 <p>The following sections list currently supported I/O operations.</p>
@@ -129,7 +129,7 @@ of raw data.</p>
 
 <h2 id="chart-rendering">Chart Rendering</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">measurement</code> dataset types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
 
 <p>The following diagram types are available and can be set via style options:</p>
 
@@ -284,7 +284,7 @@ http://localhost:8080/api/v1/timeseries/getData &amp;gt; img.png
 
 <h2 id="generalizing-raw-data">Generalizing Raw Data</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">measurement</code> dataset types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
 
 <p>Depending on sampling resolution and timespan timeseries data can be huge. Generalizing data can make 
 sense in more than just a low bandwidth use case (e.g. smoothing the curve).</p>
@@ -319,7 +319,7 @@ algorithm chosen, when <code class="highlighter-rouge">generalizing_algorithm</c
 
 <h2 id="formatting-raw-data">Formatting Raw Data</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">measurement</code> dataset types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
 
 <p>Raw data can be requested in a specific format. This can be useful if you work with a specific chart API 
 and want to avoid to convert data outout from one format to another. Possible formats are:</p>
@@ -471,7 +471,7 @@ readable label taken from the Dataset metadata.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/8818aeb9de8ba15e58a8436720f460ba6e030350">8818aeb9de8ba15e58a8436720f460ba6e030350</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/cd2dd2b502ce54ea3c9dc6e29093b066ed461b13">cd2dd2b502ce54ea3c9dc6e29093b066ed461b13</a></p>
       
     </div>
   </footer>
