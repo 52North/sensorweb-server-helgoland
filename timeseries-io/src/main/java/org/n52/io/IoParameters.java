@@ -734,31 +734,45 @@ public class IoParameters {
     }
 
     public Set<String> getCategories() {
-        return getValuesOf(CATEGORIES);
+        Set<String> values = getValuesOf(CATEGORIES);
+        values.addAll(getValuesOf(CATEGORY));
+        return values;
     }
 
     public Set<String> getServices() {
-        return getValuesOf(SERVICES);
+        Set<String> values = getValuesOf(SERVICES);
+        values.addAll(getValuesOf(SERVICE));
+        return values;
     }
 
     public Set<String> getOfferings() {
-        return getValuesOf(OFFERINGS);
+        Set<String> values = getValuesOf(OFFERINGS);
+        values.addAll(getValuesOf(OFFERING));
+        return values;
     }
 
     public Set<String> getFeatures() {
-        return getValuesOf(FEATURES);
+        Set<String> values = getValuesOf(FEATURES);
+        values.addAll(getValuesOf(FEATURE));
+        return values;
     }
 
     public Set<String> getProcedures() {
-        return getValuesOf(PROCEDURES);
+        Set<String> values = getValuesOf(PROCEDURES);
+        values.addAll(getValuesOf(PROCEDURE));
+        return values;
     }
 
     public Set<String> getPhenomena() {
-        return getValuesOf(PHENOMENA);
+        Set<String> values = getValuesOf(PHENOMENA);
+        values.addAll(getValuesOf(PHENOMENON));
+        return values;
     }
 
     public Set<String> getStations() {
-        return getValuesOf(STATIONS);
+        Set<String> values = getValuesOf(STATIONS);
+        values.addAll(getValuesOf(STATION));
+        return values;
     }
     
     public Set<String> getTimeseries() {
@@ -791,8 +805,8 @@ public class IoParameters {
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : Collections.<String>emptySet();
+                ? new HashSet<String>(csvToLowerCasedSet(getAsString(parameterName)))
+                : new HashSet<String>();
     }
 
     private Set<String> csvToLowerCasedSet(String csv){
