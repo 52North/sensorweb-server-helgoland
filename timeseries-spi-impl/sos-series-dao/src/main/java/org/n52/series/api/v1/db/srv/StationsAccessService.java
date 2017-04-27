@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,6 +39,7 @@ import org.n52.io.IoParameters;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.v1.data.ParameterOutput;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.io.v1.data.TimeseriesOutput;
 import org.n52.sensorweb.v1.spi.ParameterService;
@@ -131,16 +133,20 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     private boolean appliesFilter(Map<String, TimeseriesOutput> series, IoParameters query) {
         for (Entry<String, TimeseriesOutput> entry : series.entrySet()) {
             TimeseriesOutput value = entry.getValue();
-            if (query.getServices().contains(value.getService().getId())
-                    || query.getCategories().contains(value.getCategory().getId())
-                    || query.getProcedures().contains(value.getProcedure().getId())
-                    || query.getPhenomena().contains(value.getPhenomenon().getId())
-                    || query.getOfferings().contains(value.getOffering().getId())
-                    || query.getFeatures().contains(value.getFeature().getId())) {
+            if (appliesFilterValue(query.getServices(), value.getService())
+                    && appliesFilterValue(query.getCategories(), value.getCategory())
+                    && appliesFilterValue(query.getProcedures(), value.getProcedure())
+                    && appliesFilterValue(query.getPhenomena(), value.getPhenomenon())
+                    && appliesFilterValue(query.getOfferings(), value.getOffering())
+                    && appliesFilterValue(query.getFeatures(), value.getFeature())) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean appliesFilterValue(Set<String> filter, ParameterOutput value) {
+        return filter.isEmpty() || filter.contains(value.getId());
     }
 
     private boolean appliesFilter(GeojsonPoint point, IoParameters query) {
@@ -148,7 +154,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
                 ? CRSUtils.createEpsgForcedXYAxisOrder()
                 : CRSUtils.createEpsgStrictAxisOrder();
         BoundingBox spatialFilter = query.getSpatialFilter();
-        return spatialFilter.contains(crsUtils.convertToPointFrom(point));
+        return spatialFilter == null || spatialFilter.contains(crsUtils.convertToPointFrom(point));
     }
 
     private List<StationOutput> getExpandedStations(IoParameters query) throws DataAccessException {
