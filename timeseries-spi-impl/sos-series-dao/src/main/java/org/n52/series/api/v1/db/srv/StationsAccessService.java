@@ -29,16 +29,30 @@ package org.n52.series.api.v1.db.srv;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.n52.io.IoParameters;
+import org.n52.io.crs.BoundingBox;
+import org.n52.io.crs.CRSUtils;
+import org.n52.io.geojson.GeojsonPoint;
 import org.n52.io.v1.data.StationOutput;
+import org.n52.io.v1.data.TimeseriesOutput;
+import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
 import org.n52.series.api.v1.db.da.StationRepository;
 import org.n52.web.InternalServerException;
-import org.n52.sensorweb.v1.spi.ParameterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StationsAccessService extends ServiceInfoAccess implements ParameterService<StationOutput> {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(StationsAccessService.class);
+    
+//    private Map<IoParameters, List<StationOutput>> expandedCache;
+    
+    private List<StationOutput> expandedCache;
 
     public StationsAccessService(String dbSrid) {
         if (dbSrid != null) {
@@ -46,18 +60,67 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
             repository.setDatabaseSrid(dbSrid);
         }
     }
+    
+    public boolean updateCache() {
+        try {
+            expandedCache = getExpandedStations(IoParameters.createDefaults());
+            return true;
+        } catch (DataAccessException e) {
+            LOGGER.error("could not update station cache!", e);
+            return false;
+        }
+    }
 
     @Override
     public StationOutput[] getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
-            StationRepository repository = createStationRepository();
-            List<StationOutput> results = repository.getAllExpanded(dbQuery);
-            return results.toArray(new StationOutput[0]);
+            if (expandedCache != null/* && expandedCache.containsKey(query) */) {
+                List<StationOutput> cachedResults = expandedCache; //expandedCache.get(query);
+                List<StationOutput> filteredResults = new ArrayList<>();
+                for (StationOutput cachedStation : cachedResults) {
+                    // apply possible query filters on each station
+                    Object properties = cachedStation.getProperties().get("timeseries");
+                    Map<String, TimeseriesOutput> series = (Map<String, TimeseriesOutput>) properties;
+                    if (appliesFilter(series, query) && appliesFilter(cachedStation.getGeometry(), query)) {
+                        filteredResults.add(cachedStation);
+                    }
+                }
+                return toArray(filteredResults);
+            }
+            return toArray(getExpandedStations(query));
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get station data.");
         }
+    }
+
+    private boolean appliesFilter(Map<String, TimeseriesOutput> series, IoParameters query) {
+        for (Entry<String, TimeseriesOutput> entry : series.entrySet()) {
+            TimeseriesOutput value = entry.getValue();
+            if (query.getServices().contains(value.getService().getId())
+                    || query.getCategories().contains(value.getCategory().getId())
+                    || query.getProcedures().contains(value.getProcedure().getId())
+                    || query.getPhenomena().contains(value.getPhenomenon().getId())
+                    || query.getOfferings().contains(value.getOffering().getId())
+                    || query.getFeatures().contains(value.getFeature().getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean appliesFilter(GeojsonPoint point, IoParameters query) {
+        CRSUtils crsUtils = query.isForceXY()
+                ? CRSUtils.createEpsgForcedXYAxisOrder()
+                : CRSUtils.createEpsgStrictAxisOrder();
+        BoundingBox spatialFilter = query.getSpatialFilter();
+        return spatialFilter.contains(crsUtils.convertToPointFrom(point));
+    }
+
+    private List<StationOutput> getExpandedStations(IoParameters query) throws DataAccessException {
+        DbQuery dbQuery = DbQuery.createFrom(query);
+        StationRepository repository = createStationRepository();
+        return repository.getAllExpanded(dbQuery);
     }
 
     @Override
@@ -66,7 +129,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
             DbQuery dbQuery = DbQuery.createFrom(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllCondensed(dbQuery);
-            return results.toArray(new StationOutput[0]);
+            return toArray(results);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get station data.");
@@ -87,7 +150,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
             for (String stationId : stationIds) {
                 results.add(repository.getInstance(stationId, dbQuery));
             }
-            return results.toArray(new StationOutput[0]);
+            return toArray(results);
         }
         catch (DataAccessException e) {
             throw new InternalServerException("Could not get station data.");
@@ -113,6 +176,10 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
 
     private StationRepository createStationRepository() {
         return new StationRepository(getServiceInfo());
+    }
+
+    private StationOutput[] toArray(List<StationOutput> results) {
+        return results.toArray(new StationOutput[0]);
     }
 
 }
