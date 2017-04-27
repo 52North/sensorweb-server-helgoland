@@ -143,7 +143,6 @@ public class DbQuery {
         DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
                 .setProjection(Property.forName(projectionProperty));
 
-        filterWithSingularParameters(filter); // stay backwards compatible
         addFilterRestriction(parameters.getPhenomena(), "phenomenon", filter);
         addFilterRestriction(parameters.getProcedures(), "procedure", filter);
         addFilterRestriction(parameters.getOfferings(), "offering", filter);
@@ -201,36 +200,6 @@ public class DbQuery {
             parsedIds.add(parseToId(id));
         }
         return parsedIds;
-    }
-    
-    @Deprecated
-    public void filterWithSingularParameters(DetachedCriteria filter) {
-        // old query parameter to stay backward compatible
-        if (parameters.getPhenomenon() != null) {
-            filter.createCriteria("phenomenon")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getPhenomenon())));
-        }
-        if (parameters.getProcedure() != null) {
-            filter.createCriteria("procedure")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getProcedure())));
-        }
-        if (parameters.getOffering() != null) {
-            filter.createCriteria("offering")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getOffering())));
-        }
-        if (parameters.getFeature() != null) {
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getFeature())));
-        }
-        if (parameters.getStation() != null) {
-            // here feature == station
-            filter.createCriteria("feature")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getStation())));
-        }
-        if (parameters.getCategory() != null) {
-            filter.createCriteria("category")
-                    .add(Restrictions.eq(COLUMN_KEY, parseToId(parameters.getCategory())));
-        }
     }
 
     /**
