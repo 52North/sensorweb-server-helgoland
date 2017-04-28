@@ -299,6 +299,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return referenceSeries;
     }
 
+    private TimeseriesData getReferenceDataValues(SeriesEntity referenceSeries, DbQuery query, Session session)
+            throws DataAccessException {
+        TimeseriesData referenceSeriesData = createTimeseriesData(referenceSeries, query, session);
+        return haveToExpandReferenceData(referenceSeriesData)
+                ? expandReferenceDataIfNecessary(referenceSeries, query, session)
+                : createTimeseriesData(referenceSeries, query, session);
+    }
+
     private boolean haveToExpandReferenceData(TimeseriesData referenceSeriesData) {
         return referenceSeriesData.getValues().length <= 1;
     }
@@ -336,6 +344,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 result.addValues(createTimeseriesValueFor(observation, seriesEntity));
             }
         }
+        if (isReferenceSeries(seriesEntity) && result.size() <= 1) {
+            TimeseriesValue value = result.size() == 0
+                    ? createTimeseriesValueFor(seriesEntity.getFirstValue(), seriesEntity)  
+                    : result.getValues()[0];
+            result.addValues(value); // set or override
+            result.addValues(new TimeseriesValue(query.getTimespan().getEndMillis(), value.getValue()));
+        }
         return result;
     }
 
@@ -348,7 +363,6 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         referenceEnd.setValue(entity.getValue());
         return new TimeseriesValue[] {createTimeseriesValueFor(referenceStart, series),
                                       createTimeseriesValueFor(referenceEnd, series)};
-
     }
 
     private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, SeriesEntity series) {
