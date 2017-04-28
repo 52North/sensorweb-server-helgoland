@@ -220,9 +220,23 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         TimeseriesMetadataOutput output = createCondensed(series, query, session);
         output.setParameters(createTimeseriesOutput(series, query));
         output.setReferenceValues(createReferenceValueOutputs(series, query));
-        output.setFirstValue(createTimeseriesValueFor(series.getFirstValue(), series));
-        output.setLastValue(createTimeseriesValueFor(series.getLastValue(), series));
+        TimeseriesValue firstValue = createTimeseriesValueFor(series.getFirstValue(), series);
+        TimeseriesValue lastValue = createTimeseriesValueFor(series.getLastValue(), series);
+        lastValue = isReferenceSeries(series) && isCongruentValues(firstValue, lastValue)
+                // expand first value to current time extent in case of congruent timestamp
+                ? new TimeseriesValue(System.currentTimeMillis(), firstValue.getValue())
+                : lastValue;
+        output.setFirstValue(firstValue);
+        output.setLastValue(lastValue);
         return output;
+    }
+
+    private boolean isCongruentValues(TimeseriesValue firstValue, TimeseriesValue lastValue) {
+        return firstValue.getTimestamp().equals(lastValue.getTimestamp());
+    }
+
+    private boolean isReferenceSeries(SeriesEntity series) {
+        return series.getProcedure().isReference();
     }
 
     private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntity series,
