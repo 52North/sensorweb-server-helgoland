@@ -39,18 +39,19 @@ import org.n52.web.InternalServerException;
 import org.n52.sensorweb.v1.spi.ParameterService;
 
 public class StationsAccessService extends ServiceInfoAccess implements ParameterService<StationOutput> {
+    
+    private String dbSrid = "EPSG:4326";
 
     public StationsAccessService(String dbSrid) {
         if (dbSrid != null) {
-            StationRepository repository = createStationRepository();
-            repository.setDatabaseSrid(dbSrid);
+            this.dbSrid = dbSrid;
         }
     }
 
     @Override
     public StationOutput[] getExpandedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = createDbQuery(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllExpanded(dbQuery);
             return results.toArray(new StationOutput[0]);
@@ -63,7 +64,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public StationOutput[] getCondensedParameters(IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = createDbQuery(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = repository.getAllCondensed(dbQuery);
             return results.toArray(new StationOutput[0]);
@@ -81,7 +82,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public StationOutput[] getParameters(String[] stationIds, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = createDbQuery(query);
             StationRepository repository = createStationRepository();
             List<StationOutput> results = new ArrayList<StationOutput>();
             for (String stationId : stationIds) {
@@ -102,7 +103,7 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
     @Override
     public StationOutput getParameter(String stationId, IoParameters query) {
         try {
-            DbQuery dbQuery = DbQuery.createFrom(query);
+            DbQuery dbQuery = createDbQuery(query);
             StationRepository repository = createStationRepository();
             return repository.getInstance(stationId, dbQuery);
         }
@@ -113,6 +114,12 @@ public class StationsAccessService extends ServiceInfoAccess implements Paramete
 
     private StationRepository createStationRepository() {
         return new StationRepository(getServiceInfo());
+    }
+
+    private DbQuery createDbQuery(IoParameters parameters) {
+        DbQuery query = DbQuery.createFrom(parameters);
+        query.setDatabaseAuthorityCode(dbSrid);
+        return query;
     }
 
 }
