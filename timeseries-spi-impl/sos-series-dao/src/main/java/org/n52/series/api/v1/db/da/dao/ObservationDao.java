@@ -120,7 +120,6 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
-        parameters.addPagingTo(criteria);
         return (List<ObservationEntity>) criteria.list();
     }
 
