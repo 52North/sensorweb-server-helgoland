@@ -101,7 +101,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     @Override
     public SeriesEntity getInstance(Long key, DbQuery query) throws DataAccessException {
-        return (SeriesEntity) getDefaultCriteria("series", query)
+        return (SeriesEntity) getDefaultCriteria("series", false, query)
                 .add(eq(COLUMN_PKID, key))
                 .uniqueResult();
     }
@@ -145,13 +145,19 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     protected Class<?> getEntityClass() {
         return SeriesEntity.class;
     }
-
+    
     @Override
     protected Criteria getDefaultCriteria(String alias, DbQuery query) {
+        return getDefaultCriteria(alias, true, query);
+    }
+
+    private Criteria getDefaultCriteria(String alias, boolean ignoreReferenceSeries, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
         Criteria criteria = session.createCriteria(getEntityClass(), alias)
-                .createAlias("procedure", "p")
-                .add(eq("p.reference", Boolean.FALSE));
+                .createAlias("procedure", "p");
+        if (ignoreReferenceSeries) {
+            criteria.add(eq("p.reference", Boolean.FALSE));
+        }
         addIgnoreNonPublishedSeriesTo(criteria, alias);
         return criteria;
     }
