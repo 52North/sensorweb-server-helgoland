@@ -61,8 +61,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     private CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
 
-    private String dbSrid = "EPSG:4326";
-
     public StationRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
     }
@@ -106,7 +104,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public List<StationOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
-        parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
         List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
         List<StationOutput> results = new ArrayList<StationOutput>();
@@ -129,7 +126,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public List<StationOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
-        parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
         List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
         List<StationOutput> results = new ArrayList<StationOutput>();
@@ -152,7 +148,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
 
     @Override
     public StationOutput getInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
-        parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
         FeatureEntity result = featureDao.getInstance(parseId(id), parameters);
         return result != null
@@ -161,7 +156,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     }
 
     StationOutput getCondensedInstance(String id, DbQuery parameters, Session session) throws DataAccessException {
-        parameters.setDatabaseAuthorityCode(dbSrid);
         FeatureDao featureDao = new FeatureDao(session);
         FeatureEntity result = featureDao.getInstance(parseId(id));
         return createCondensed(result, parameters);
@@ -199,10 +193,6 @@ public class StationRepository extends SessionAwareRepository implements OutputA
             LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
         }
         return null;
-    }
-
-    public void setDatabaseSrid(String dbSrid) {
-        this.dbSrid = dbSrid;
     }
 
 }
