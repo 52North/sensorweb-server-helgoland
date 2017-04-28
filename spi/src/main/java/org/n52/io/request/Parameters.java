@@ -238,8 +238,15 @@ public interface Parameters {
      */
     String PHENOMENA = "phenomena";
 
+    /**
+     * Determines the stations filter
+     */
+    String STATIONS = "stations";
+
     String PLATFORMS = "platforms";
 
+    String TIMESERIES = "timeseries";
+    
     String DATASETS = "datasets";
 
     String HANDLE_AS_VALUE_TYPE = "handleAs";

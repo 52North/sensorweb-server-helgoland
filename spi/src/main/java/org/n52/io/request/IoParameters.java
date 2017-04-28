@@ -405,35 +405,59 @@ public class IoParameters implements Parameters {
     }
 
     public Set<String> getCategories() {
-        return getValuesOf(CATEGORIES);
+        Set<String> values = getValuesOf(CATEGORIES);
+        values.addAll(getValuesOf(CATEGORY));
+        return values;
     }
 
     public Set<String> getServices() {
-        return getValuesOf(SERVICES);
+        Set<String> values = getValuesOf(SERVICES);
+        values.addAll(getValuesOf(SERVICE));
+        return values;
     }
 
     public Set<String> getOfferings() {
-        return getValuesOf(OFFERINGS);
+        Set<String> values = getValuesOf(OFFERINGS);
+        values.addAll(getValuesOf(OFFERING));
+        return values;
     }
 
     public Set<String> getFeatures() {
-        return getValuesOf(FEATURES);
+        Set<String> values = getValuesOf(FEATURES);
+        values.addAll(getValuesOf(FEATURE));
+        return values;
     }
 
     public Set<String> getProcedures() {
-        return getValuesOf(PROCEDURES);
+        Set<String> values = getValuesOf(PROCEDURES);
+        values.addAll(getValuesOf(PROCEDURE));
+        return values;
     }
 
     public Set<String> getPhenomena() {
-        return getValuesOf(PHENOMENA);
+        Set<String> values = getValuesOf(PHENOMENA);
+        values.addAll(getValuesOf(PHENOMENON));
+        return values;
+    }
+
+    public Set<String> getStations() {
+        Set<String> values = getValuesOf(STATIONS);
+        values.addAll(getValuesOf(STATION));
+        return values;
     }
 
     public Set<String> getPlatforms() {
         return getValuesOf(PLATFORMS);
     }
+    
+    public Set<String> getTimeseries() {
+        return getSeries();
+    }
 
     public Set<String> getSeries() {
-        return getValuesOf(SERIES);
+        Set<String> values = getValuesOf(SERIES);
+        values.addAll(getValuesOf(TIMESERIES));
+        return values;
     }
 
     public Set<String> getDatasets() {
