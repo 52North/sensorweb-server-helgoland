@@ -230,16 +230,14 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         Set<SeriesEntity> referenceValues = series.getReferenceValues();
         List<ReferenceValueOutput> outputs = new ArrayList<ReferenceValueOutput>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
-            if (referenceSeriesEntity.isPublished()) {
-                ReferenceValueOutput refenceValueOutput = new ReferenceValueOutput();
-                ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
-                refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
-                refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
+            ReferenceValueOutput refenceValueOutput = new ReferenceValueOutput();
+            ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
+            refenceValueOutput.setLabel(procedure.getNameI18n(query.getLocale()));
+            refenceValueOutput.setReferenceValueId(referenceSeriesEntity.getPkid().toString());
 
-                ObservationEntity lastValue = referenceSeriesEntity.getLastValue();
-                refenceValueOutput.setLastValue(createTimeseriesValueFor(lastValue, referenceSeriesEntity));
-                outputs.add(refenceValueOutput);
-            }
+            ObservationEntity lastValue = referenceSeriesEntity.getLastValue();
+            refenceValueOutput.setLastValue(createTimeseriesValueFor(lastValue, referenceSeriesEntity));
+            outputs.add(refenceValueOutput);
         }
         return outputs.toArray(new ReferenceValueOutput[0]);
     }
@@ -281,13 +279,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                                                                 Session session) throws DataAccessException {
         Map<String, TimeseriesData> referenceSeries = new HashMap<String, TimeseriesData>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
-            if (referenceSeriesEntity.isPublished()) {
-                TimeseriesData referenceSeriesData = createTimeseriesData(referenceSeriesEntity, query, session);
-                if (haveToExpandReferenceData(referenceSeriesData)) {
-                    referenceSeriesData = expandReferenceDataIfNecessary(referenceSeriesEntity, query, session);
-                }
-                referenceSeries.put(referenceSeriesEntity.getPkid().toString(), referenceSeriesData);
-            }
+            TimeseriesData referenceSeriesData = getReferenceDataValues(referenceSeriesEntity, query, session);
+            referenceSeries.put(referenceSeriesEntity.getPkid().toString(), referenceSeriesData);
         }
         return referenceSeries;
     }
