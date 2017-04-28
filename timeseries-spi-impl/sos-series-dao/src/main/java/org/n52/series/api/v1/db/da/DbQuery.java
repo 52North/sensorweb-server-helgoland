@@ -141,6 +141,7 @@ public class DbQuery {
                         ? propertyName
                         : "pkid";
         DetachedCriteria filter = DetachedCriteria.forClass(SeriesEntity.class)
+                .add(Restrictions.eq("published", Boolean.TRUE))
                 .setProjection(Property.forName(projectionProperty));
 
         filterWithSingularParameters(filter); // stay backwards compatible
