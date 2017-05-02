@@ -449,7 +449,7 @@ public class IoParameters implements Parameters {
     public Set<String> getPlatforms() {
         return getValuesOf(PLATFORMS);
     }
-    
+
     public Set<String> getTimeseries() {
         return getSeries();
     }

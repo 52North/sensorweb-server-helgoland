@@ -246,7 +246,7 @@ public interface Parameters {
     String PLATFORMS = "platforms";
 
     String TIMESERIES = "timeseries";
-    
+
     String DATASETS = "datasets";
 
     String HANDLE_AS_VALUE_TYPE = "handleAs";
