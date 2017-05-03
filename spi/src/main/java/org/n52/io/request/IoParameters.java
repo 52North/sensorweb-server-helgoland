@@ -495,7 +495,7 @@ public class IoParameters implements Parameters {
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : Collections.<String> emptySet();
+                : new HashSet<String>();
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
