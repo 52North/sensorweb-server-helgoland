@@ -185,7 +185,7 @@ public abstract class ChartRenderer implements IoHandler {
                     ? new DateTime(timespan.split("/")[1])
                     : new DateTime();
         
-        // String zoneName = getTimezone().getID();
+//         String zoneName = getTimezone().getID();
         String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (")
