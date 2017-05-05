@@ -68,6 +68,7 @@ import org.jfree.ui.HorizontalAlignment;
 import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.VerticalAlignment;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.I18N;
@@ -179,7 +180,13 @@ public abstract class ChartRenderer implements IoHandler {
     }
 
     private XYPlot createChart(RenderingContext context) {
-        String zoneName = getTimezone().getID();
+        String timespan = getTimespan();
+        DateTime end = timespan != null
+                    ? new DateTime(timespan.split("/")[1])
+                    : new DateTime();
+        
+//         String zoneName = getTimezone().getID();
+        String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("time"));
         domainAxisLabel.append(" (")
                        .append(zoneName)
