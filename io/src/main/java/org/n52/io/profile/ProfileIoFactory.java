@@ -35,9 +35,9 @@ import java.util.Set;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.MimeType;
-import org.n52.io.response.profile.ProfileData;
-import org.n52.io.response.profile.ProfileDatasetOutput;
-import org.n52.io.response.profile.ProfileValue;
+import org.n52.io.response.dataset.profile.ProfileData;
+import org.n52.io.response.dataset.profile.ProfileDatasetOutput;
+import org.n52.io.response.dataset.profile.ProfileValue;
 
 public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutput, ProfileValue> {
 
