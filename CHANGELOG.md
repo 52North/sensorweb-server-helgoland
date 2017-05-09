@@ -19,6 +19,8 @@
 
 ### Issues 
 - #286 prerendering config does not allow overriding general settings
+- #334 csv-export for endpoint datasets
+- #366 single filters do not work anymore
 
 ## 1.x
 

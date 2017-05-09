@@ -30,7 +30,9 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.RawFormats;

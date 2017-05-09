@@ -31,7 +31,7 @@ package org.n52.web.ctrl;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.StationOutput;
+import org.n52.io.response.dataset.StationOutput;
 import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;

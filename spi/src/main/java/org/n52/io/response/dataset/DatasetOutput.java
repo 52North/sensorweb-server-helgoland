@@ -37,7 +37,9 @@ import org.n52.io.response.ParameterOutput;
 public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
         extends ParameterOutput {
 
-    private final String datasetType;
+    private final String valueType;
+
+    private String platformType;
 
     private SeriesParameters seriesParameters;
 
@@ -51,17 +53,25 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
 
     private String uom;
 
-    public DatasetOutput(String datasetType) {
-        this.datasetType = datasetType;
+    public DatasetOutput(String valueType) {
+        this.valueType = valueType;
     }
 
     @Override
     public void setId(String id) {
-        super.setId(DatasetType.createId(datasetType, id));
+        super.setId(ValueType.createId(valueType, id));
     }
 
-    public String getDatasetType() {
-        return datasetType;
+    public String getValueType() {
+        return valueType;
+    }
+
+    public String getPlatformType() {
+        return platformType;
+    }
+
+    public void setPlatformType(String platformType) {
+        this.platformType = platformType;
     }
 
     public SeriesParameters getSeriesParameters() {

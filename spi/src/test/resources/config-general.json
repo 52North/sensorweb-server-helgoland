@@ -5,5 +5,6 @@
         "defaultGeneralizer": "lttb",
         "noDataGapThreshold": 5
     },
-    "generalize": true
+    "generalize": true,
+    "outputTimezone" : "UTC"
 }

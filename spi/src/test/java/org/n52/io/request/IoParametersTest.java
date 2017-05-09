@@ -40,9 +40,11 @@ import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import org.junit.Assert;
 import static org.junit.Assert.assertThat;
@@ -63,6 +65,13 @@ public class IoParametersTest {
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/").toURI());
         return root.resolve("test-config.json").toFile();
+    }
+
+    @Test
+    public void when_defaultTimezone_then_timezoneIsUTC() {
+        IoParameters config = IoParameters.createDefaults();
+        String timezone = config.getOutputTimezone();
+        assertThat(DateTimeZone.forID(timezone), is(DateTimeZone.UTC));
     }
 
     @Test
@@ -180,7 +189,7 @@ public class IoParametersTest {
     @Test
     public void when_convertingToStyledRequestParameters_then_overridingParametersAllowed() {
         IoParameters defaults = createDefaults().extendWith("width", "200");
-        RequestStyledParameterSet parameters = defaults.toRequestStyledParameterSet();
+        RequestStyledParameterSet parameters = defaults.toStyledParameterSet();
         assertThat(parameters.getWidth(), is(200));
     }
 
@@ -194,5 +203,19 @@ public class IoParametersTest {
         assertThat(parameters.getNormalizedTimespan(dateFormat), is(expected.toString()));
     }
 
+    @Test
+    public void when_singleFilter_then_filterPresentViaMultipleGetter() {
+        IoParameters parameters = createDefaults()
+                .extendWith(Parameters.PROCEDURE, "foo");
+        assertThat(parameters.getProcedures(), containsInAnyOrder("foo"));
+    }
+
+    @Test
+    public void when_singleAndMultipleFilter_then_filterGetsMerged() {
+        IoParameters parameters = createDefaults()
+                .extendWith(Parameters.PROCEDURE, "foo")
+                .extendWith(Parameters.PROCEDURES, "foo", "bar");
+        assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
+    }
 
 }

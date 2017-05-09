@@ -30,8 +30,9 @@ package org.n52.io;
 
 import java.util.Collections;
 import java.util.List;
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.ChartDimension;
+
+import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.quantity.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -57,8 +58,16 @@ public final class IoStyleContext {
     }
 
     public static IoStyleContext createEmpty() {
+        return create(IoParameters.createDefaults());
+    }
+
+    public static IoStyleContext create(IoParameters config) {
+        return create(config.toStyledParameterSet());
+    }
+
+    public static IoStyleContext create(RequestStyledParameterSet request) {
         List<? extends DatasetOutput> emptyList = Collections.emptyList();
-        return new IoStyleContext(new RequestStyledParameterSet(), emptyList);
+        return new IoStyleContext(request, emptyList);
     }
 
     /**
@@ -67,7 +76,7 @@ public final class IoStyleContext {
      * @throws NullPointerException if any of the given arguments is <code>null</code>.
      * @throws IllegalStateException if amount of timeseries described by the given arguments is not
      * in sync.
-     * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
+     * @return a rendering context to be used by {@link QuantityIoFactory} to create an
      * {@link IoHandler}.
      */
     public static IoStyleContext createContextWith(RequestStyledParameterSet styles,
@@ -90,7 +99,7 @@ public final class IoStyleContext {
 
     public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
             IoParameters ioConfig) {
-        RequestStyledParameterSet parameters = ioConfig.toRequestStyledParameterSet();
+        RequestStyledParameterSet parameters = ioConfig.toStyledParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
     }
