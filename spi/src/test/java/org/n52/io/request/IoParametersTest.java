@@ -202,7 +202,7 @@ public class IoParametersTest {
         IntervalWithTimeZone expected = new IntervalWithTimeZone("PT4h/" + now);
         assertThat(parameters.getNormalizedTimespan(dateFormat), is(expected.toString()));
     }
-    
+
     @Test
     public void when_singleFilter_then_filterPresentViaMultipleGetter() {
         IoParameters parameters = createDefaults()
