@@ -33,6 +33,8 @@ import org.n52.io.response.dataset.AbstractValue;
 public class ProfileValue extends AbstractValue<Object> {
 
     private static final long serialVersionUID = -7292181682632614697L;
+    
+    private String verticalUnit;
 
     public ProfileValue() {
         // for serialization
@@ -44,6 +46,14 @@ public class ProfileValue extends AbstractValue<Object> {
 
     public ProfileValue(Long timestamp, Object value) {
         super(timestamp, value);
+    }
+
+    public String getVerticalUnit() {
+        return verticalUnit;
+    }
+
+    public void setVerticalUnit(String verticalUnit) {
+        this.verticalUnit = verticalUnit;
     }
 
 }
