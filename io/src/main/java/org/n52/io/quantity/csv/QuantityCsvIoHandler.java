@@ -46,7 +46,9 @@ import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 // TODO extract non quantity specifics to csvhandler
@@ -146,9 +148,10 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
         ParameterOutput platform = metadata.getSeriesParameters().getPlatform();
-
-        // XXX timeseries has null platform
-
+        if (platform == null && metadata.getValueType().equals(QuantityDatasetOutput.VALUE_TYPE)) {
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
+            platform = output.getStation();
+        }
         String station = platform.getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
