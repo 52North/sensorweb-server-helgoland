@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.quantity.csv;
 
 import java.io.BufferedOutputStream;
@@ -48,7 +49,6 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 // TODO extract non quantity specifics to csvhandler
@@ -60,7 +60,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     // needed by some clients to detect UTF-8 encoding (e.g. excel)
     private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
 
-    private final List<? extends DatasetOutput> seriesMetadatas;
+    private final List< ? extends DatasetOutput> seriesMetadatas;
 
     private NumberFormat numberformat = DecimalFormat.getInstance();
 
@@ -71,8 +71,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     private boolean zipOutput;
 
     public QuantityCsvIoHandler(RequestParameterSet simpleRequest,
-            IoProcessChain<QuantityData> processChain,
-            List<? extends DatasetOutput> seriesMetadatas) {
+                                IoProcessChain<QuantityData> processChain,
+                                List< ? extends DatasetOutput> seriesMetadatas) {
         super(simpleRequest, processChain);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
         this.seriesMetadatas = seriesMetadatas;
@@ -80,7 +80,14 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     @Override
     protected String[] getHeader() {
-        return new String[] {"station", "phenomenon", "uom", "timestart", "timeend", "value"};
+        return new String[] {
+            "station",
+            "phenomenon",
+            "uom",
+            "timestart",
+            "timeend",
+            "value"
+        };
     }
 
     public void setTokenSeparator(String tokenSeparator) {
@@ -118,7 +125,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     }
 
     private void writeAsZipStream(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
-        try(ZipOutputStream zipStream = new ZipOutputStream(stream)) {
+        try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
             zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
             writeHeader(zipStream);
             writeData(data, zipStream);
@@ -143,13 +150,19 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     }
 
     private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
-        ParameterOutput platform = metadata.getSeriesParameters().getPlatform();
-        if (platform == null && metadata.getValueType().equals(QuantityDatasetOutput.VALUE_TYPE)) {
+        String station = null;
+        ParameterOutput platform = metadata.getSeriesParameters()
+                                           .getPlatform();
+        if (platform == null) {
             TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
-            platform = output.getStation();
+            station = output.getStation()
+                            .getLabel();
+        } else {
+            station = platform.getLabel();
         }
-        String station = platform.getLabel();
-        String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
+        String phenomenon = metadata.getSeriesParameters()
+                                    .getPhenomenon()
+                                    .getLabel();
         String uom = metadata.getUom();
         for (QuantityValue timeseriesValue : series.getValues()) {
             String[] values = new String[getHeader().length];
@@ -179,7 +192,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
             sb.append(tokenSeparator);
         }
         sb.deleteCharAt(sb.lastIndexOf(tokenSeparator));
-        return sb.append("\n").toString();
+        return sb.append("\n")
+                 .toString();
     }
 
 }
