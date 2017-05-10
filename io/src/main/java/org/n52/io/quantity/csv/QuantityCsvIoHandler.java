@@ -116,11 +116,13 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     }
 
     private void writeAsZipStream(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
-        ZipOutputStream zipStream = new ZipOutputStream(stream);
-        zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
-        writeHeader(zipStream);
-        writeData(data, zipStream);
-        zipStream.flush();
+        try(ZipOutputStream zipStream = new ZipOutputStream(stream)) {
+            zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
+            writeHeader(zipStream);
+            writeData(data, zipStream);
+            zipStream.closeEntry();
+            zipStream.flush();
+        }
     }
 
     private void writeHeader(OutputStream stream) throws IOException {

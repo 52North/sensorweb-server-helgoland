@@ -278,8 +278,7 @@ public class DataController extends BaseController {
         response.setContentType(MimeType.APPLICATION_ZIP.toString());
 
         final String datasetType = parameters.getValueType();
-        createIoFactory(datasetType)
-                                    .withSimpleRequest(parameters)
+        createIoFactory(datasetType).withSimpleRequest(parameters)
                                     .createHandler(MimeType.APPLICATION_ZIP.toString())
                                     .writeBinary(response.getOutputStream());
     }
