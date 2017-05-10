@@ -317,7 +317,7 @@ public class TimeseriesDataController extends BaseController {
         } else {
             response.setContentType(MimeType.TEXT_CSV.toString());
         }
-        createIoFactory(parameters).createHandler("text/csv")
+        createIoFactory(parameters).createHandler(MimeType.TEXT_CSV.toString())
                                    .writeBinary(response.getOutputStream());
     }
 
