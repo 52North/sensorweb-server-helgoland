@@ -137,11 +137,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private void writeData(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            String id = metadata.getId();
-
-            // XXX id not the same in timeseries vs datasets
-
-            QuantityData series = data.getSeries(id);
+            QuantityData series = data.getSeries(metadata.getId());
             writeData(metadata, (QuantityData) series, stream);
         }
     }
