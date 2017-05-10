@@ -329,6 +329,11 @@ public interface Parameters {
      */
     String HREF_BASE = "internal.href.base";
 
+    /**
+     * Internally set to refer to parents in complex observations.
+     */
+    String COMPLEX_PARENT = "internal.complex.parent";
+
     /*
      *############### DEPRECATED CONSTANTS
      */

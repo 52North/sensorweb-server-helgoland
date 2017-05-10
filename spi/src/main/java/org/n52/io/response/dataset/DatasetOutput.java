@@ -37,7 +37,7 @@ import org.n52.io.response.ParameterOutput;
 public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
         extends ParameterOutput {
 
-    private final String valueType;
+    private String valueType;
 
     private String platformType;
 
@@ -64,6 +64,10 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
 
     public String getValueType() {
         return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public String getPlatformType() {
