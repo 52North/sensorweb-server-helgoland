@@ -43,6 +43,7 @@ import org.n52.io.CsvIoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.request.RequestParameterSet;
+import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityData;
@@ -132,13 +133,21 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private void writeData(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            QuantityData series = data.getSeries(metadata.getId());
+            String id = metadata.getId();
+
+            // XXX id not the same in timeseries vs datasets
+
+            QuantityData series = data.getSeries(id);
             writeData(metadata, (QuantityData) series, stream);
         }
     }
 
     private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
-        String station = metadata.getSeriesParameters().getPlatform().getLabel();
+        ParameterOutput platform = metadata.getSeriesParameters().getPlatform();
+
+        // XXX timeseries has null platform
+
+        String station = platform.getLabel();
         String phenomenon = metadata.getSeriesParameters().getPhenomenon().getLabel();
         String uom = metadata.getUom();
         for (QuantityValue timeseriesValue : series.getValues()) {
