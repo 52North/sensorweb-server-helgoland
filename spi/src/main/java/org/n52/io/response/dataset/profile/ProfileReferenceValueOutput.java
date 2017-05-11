@@ -60,12 +60,12 @@ public class ProfileReferenceValueOutput implements ReferenceValueOutput<Profile
     }
 
     @Override
-    public ProfileValue getLastValue() {
+    public ProfileValue< ? > getLastValue() {
         return lastValue;
     }
 
     @Override
-    public void setLastValue(ProfileValue lastValue) {
+    public void setLastValue(ProfileValue< ? > lastValue) {
         this.lastValue = lastValue;
     }
 
