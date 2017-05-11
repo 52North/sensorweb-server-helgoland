@@ -26,10 +26,10 @@ The following main frameworks are used to provide this API:
 
 ### Existing SPI implementations:
 
-- SOS Proxy: Allows to aggregate multiple OGC SOS instances under one API
-- Direct database access: Allows to define Hibernate mappings to serve data directly from a database
-- Fotoquest Data: tbd
-- DWD Weather Alerts: tbd
+- [SOS Proxy](https://github.com/52North/series-sos-proxy): Allows to aggregate multiple OGC SOS instances under one API
+- [Direct database access](https://github.com/52North/dao-series-api): Allows to define Hibernate mappings to serve data directly from a database
+- [Fotoquest database access](https://github.com/52North/fotoquest-series-api): tbd
+- [DWD Weather Alerts](https://github.com/52North/dwd-series-api): tbd
 
 ## References
 * The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
@@ -41,7 +41,8 @@ The following main frameworks are used to provide this API:
 The client is published under the [GNU General Public License v2 (GPLv2)](http://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Changelog
-TBD, for now refer to https://github.com/52North/series-rest-api/pulls?q=is%3Apr+is%3Aclosed
+- https://github.com/52North/series-rest-api/blob/develop/CHANGELOG.md
+- for detailed infos check https://github.com/52North/series-rest-api/pulls?q=is%3Apr+is%3Aclosed
 
 ## Contributing
 We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 

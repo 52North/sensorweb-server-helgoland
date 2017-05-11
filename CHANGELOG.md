@@ -14,13 +14,15 @@
 ### Features
 - #232 possibility to use `domainId` instead of database id
 - #266 `AbstractValue` can have time intervals
-- #312 support for using `now`, e.g. `timespan=PT4H/now`
 - #304 flexible prerendering title config via placeholders
+- #312 support for using `now`, e.g. `timespan=PT4H/now`
+- #370 support for profile observation
 
 ### Issues 
 - #286 prerendering config does not allow overriding general settings
 - #334 csv-export for endpoint datasets
 - #366 single filters do not work anymore
+- #371 csv export errors
 
 ## 1.x
 
