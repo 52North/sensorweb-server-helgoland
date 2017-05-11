@@ -26,17 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class ProfileReferenceValueOutput implements ReferenceValueOutput<ProfileValue> {
+public class ProfileReferenceValueOutput implements ReferenceValueOutput<ProfileValue< ? >> {
 
     private String referenceValueId;
 
     private String label;
 
-    private ProfileValue lastValue;
+    private ProfileValue< ? > lastValue;
 
     @Override
     public String getReferenceValueId() {
