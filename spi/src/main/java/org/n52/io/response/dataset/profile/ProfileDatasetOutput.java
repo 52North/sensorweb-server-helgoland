@@ -35,7 +35,7 @@ import org.n52.io.response.dataset.DatasetOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class ProfileDatasetOutput extends DatasetOutput<ProfileValue, ProfileReferenceValueOutput> {
+public class ProfileDatasetOutput extends DatasetOutput<ProfileValue< ? >, ProfileReferenceValueOutput> {
 
     public static final String VALUE_TYPE = "profile";
 

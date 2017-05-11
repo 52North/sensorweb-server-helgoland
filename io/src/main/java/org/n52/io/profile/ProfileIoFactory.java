@@ -39,7 +39,7 @@ import org.n52.io.response.dataset.profile.ProfileData;
 import org.n52.io.response.dataset.profile.ProfileDatasetOutput;
 import org.n52.io.response.dataset.profile.ProfileValue;
 
-public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutput, ProfileValue> {
+public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutput, ProfileValue< ? >> {
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {

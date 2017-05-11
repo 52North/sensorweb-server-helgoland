@@ -31,13 +31,13 @@ package org.n52.io.response.dataset.profile;
 
 import org.n52.io.response.dataset.Data;
 
-public class ProfileData extends Data<ProfileValue> {
+public class ProfileData extends Data<ProfileValue< ? >> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
     private ProfileDatasetMetadata metadata;
 
-    public static ProfileData newMeasurementData(ProfileValue... values) {
+    public static ProfileData newMeasurementData(ProfileValue< ? >... values) {
         ProfileData timeseries = new ProfileData();
         timeseries.addValues(values);
         return timeseries;

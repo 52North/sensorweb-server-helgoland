@@ -26,11 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
+
+import java.util.List;
 
 import org.n52.io.response.dataset.AbstractValue;
 
-public class ProfileValue extends AbstractValue<Object> {
+public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
 
     private static final long serialVersionUID = -7292181682632614697L;
 
@@ -40,11 +43,11 @@ public class ProfileValue extends AbstractValue<Object> {
         // for serialization
     }
 
-    public ProfileValue(Long timestart, Long timeend, Object value) {
+    public ProfileValue(Long timestart, Long timeend, List<ProfileDataItem<T>> value) {
         super(timestart, timeend, value);
     }
 
-    public ProfileValue(Long timestamp, Object value) {
+    public ProfileValue(Long timestamp, List<ProfileDataItem<T>> value) {
         super(timestamp, value);
     }
 
