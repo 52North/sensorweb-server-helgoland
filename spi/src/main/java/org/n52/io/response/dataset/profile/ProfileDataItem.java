@@ -29,27 +29,13 @@
 
 package org.n52.io.response.dataset.profile;
 
-import java.util.List;
-
-import org.n52.io.response.dataset.AbstractValue;
-
-public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
-
-    private static final long serialVersionUID = -7292181682632614697L;
+public class ProfileDataItem<T> {
 
     private String verticalUnit;
 
-    public ProfileValue() {
-        // for serialization
-    }
+    private Double vertical;
 
-    public ProfileValue(Long timestart, Long timeend, List<ProfileDataItem<T>> value) {
-        super(timestart, timeend, value);
-    }
-
-    public ProfileValue(Long timestamp, List<ProfileDataItem<T>> value) {
-        super(timestamp, value);
-    }
+    private T value;
 
     public String getVerticalUnit() {
         return verticalUnit;
@@ -57,6 +43,22 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
 
     public void setVerticalUnit(String verticalUnit) {
         this.verticalUnit = verticalUnit;
+    }
+
+    public Double getVertical() {
+        return vertical;
+    }
+
+    public void setVertical(Double vertical) {
+        this.vertical = vertical;
+    }
+
+    public T getValue() {
+        return value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
     }
 
 }
