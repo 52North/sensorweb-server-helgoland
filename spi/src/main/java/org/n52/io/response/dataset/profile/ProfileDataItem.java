@@ -29,7 +29,7 @@
 
 package org.n52.io.response.dataset.profile;
 
-public class ProfileDataItem<T> {
+public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private String verticalUnit;
 
@@ -59,6 +59,11 @@ public class ProfileDataItem<T> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @Override
+    public int compareTo(ProfileDataItem<T> o) {
+        return Double.compare(getVertical(), o.getVertical());
     }
 
 }

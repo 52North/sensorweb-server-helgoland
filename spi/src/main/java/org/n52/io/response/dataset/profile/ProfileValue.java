@@ -29,6 +29,8 @@
 
 package org.n52.io.response.dataset.profile;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.n52.io.response.dataset.AbstractValue;
@@ -49,6 +51,13 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
 
     public ProfileValue(Long timestamp, List<ProfileDataItem<T>> value) {
         super(timestamp, value);
+    }
+    
+    @Override
+    public List<ProfileDataItem<T>> getValue() {
+        List<ProfileDataItem<T>> profileValue = new ArrayList<>(super.getValue());
+        Collections.sort(profileValue);
+        return profileValue;
     }
 
     public String getVerticalUnit() {
