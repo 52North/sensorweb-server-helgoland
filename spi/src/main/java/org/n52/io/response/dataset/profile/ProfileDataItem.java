@@ -66,4 +66,56 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return Double.compare(getVertical(), o.getVertical());
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((value == null)
+                ? 0
+                : value.hashCode());
+        result = prime * result + ((vertical == null)
+                ? 0
+                : vertical.hashCode());
+        result = prime * result + ((verticalUnit == null)
+                ? 0
+                : verticalUnit.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        ProfileDataItem other = (ProfileDataItem) obj;
+        if (value == null) {
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
+        }
+        if (vertical == null) {
+            if (other.vertical != null) {
+                return false;
+            }
+        } else if (!vertical.equals(other.vertical)) {
+            return false;
+        }
+        if (verticalUnit == null) {
+            if (other.verticalUnit != null) {
+                return false;
+            }
+        } else if (!verticalUnit.equals(other.verticalUnit)) {
+            return false;
+        }
+        return true;
+    }
+
 }

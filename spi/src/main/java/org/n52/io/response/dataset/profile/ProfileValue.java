@@ -52,7 +52,7 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
     public ProfileValue(Long timestamp, List<ProfileDataItem<T>> value) {
         super(timestamp, value);
     }
-    
+
     @Override
     public List<ProfileDataItem<T>> getValue() {
         List<ProfileDataItem<T>> profileValue = new ArrayList<>(super.getValue());
