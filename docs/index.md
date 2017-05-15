@@ -23,6 +23,9 @@ approaches, e.g. to filter all series by phenomena first or by a special procedu
 Next to the Web API, a Service Provider Interface (SPI) defines the underlying interface for 
 data providing backends. With this, the API is flexible enough to be put ontop of arbitrary 
 data stores. Its modular design enables a seamless integration into existing Web applications.
+## Backwards Compatibility
+The [Web API]({{base.url}}/api) is backwards compatible to older implementation versions. Client 
+developers are safe to start development while API providers upgrade to newer versions of the API.
 
 ## Overview
 
