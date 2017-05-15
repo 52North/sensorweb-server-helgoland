@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>/series-rest-api/develop/compatibility</loc>
+</url>
+<url>
 <loc>/series-rest-api/develop/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/develop/development</loc>
 </url>
 <url>
 <loc>/series-rest-api/develop/extensions</loc>
@@ -13,13 +19,10 @@
 <loc>/series-rest-api/develop/io</loc>
 </url>
 <url>
-<loc>/series-rest-api/develop/platforms</loc>
-</url>
-<url>
 <loc>/series-rest-api/develop/valuetypes</loc>
 </url>
 <url>
 <loc>/series-rest-api/develop/api/index.html</loc>
-<lastmod>2017-05-15T09:19:46+00:00</lastmod>
+<lastmod>2017-05-15T11:09:58+00:00</lastmod>
 </url>
 </urlset>

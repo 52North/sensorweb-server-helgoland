@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Series REST API Documentation – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Introduction – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Series REST API Documentation" />
-    <meta property="twitter:title" content="Series REST API Documentation" />
+    <meta property="og:title" content="Introduction" />
+    <meta property="twitter:title" content="Introduction" />
     
 
 
@@ -72,10 +72,10 @@
         <a href="/series-rest-api/develop/">Home</a>
       </p>
       <p class="header">
-        <a href="/series-rest-api/develop/platforms">Platform Types</a>
+        <a href="/series-rest-api/develop/compatibility">Compatibility</a>
       </p>
       <p class="header">
-        <a href="/series-rest-api/develop/valuetypes">Data Types</a>
+        <a href="/series-rest-api/develop/valuetypes">Value Types</a>
       </p>
       <p class="header">
         <a href="/series-rest-api/develop/io">Input/Output</a>
@@ -89,6 +89,9 @@
       <p class="header">
         <a href="/series-rest-api/develop/api">API Reference</a>
       </p>
+      <p class="header">
+        <a href="/series-rest-api/develop/development">API Development</a>
+      </p>
     </nav>
 
     <div role="main" id="content" class="col-lg-9 n52-content pull-right">
@@ -99,7 +102,7 @@
       </div>
 
       <article class="page">
-  <h1>Series REST API Documentation</h1>
+  <h1>Introduction</h1>
 
   <div class="entry">
     <p>The Series REST API provides an access layer to sensor data via RESTful Web binding 
@@ -120,13 +123,17 @@ RESTful Web binding. In addition, it offers several IO functionalities e.g.</p>
 each filterable by metadata parameters. This enables clients to access the data via different 
 approaches, e.g. to filter all series by phenomena first or by a special procedure.</p>
 
-<p>Next to the Web API, a Service Provider Interface (SPI) defines the underlying interface for 
-data providing backends. With this, the API is flexible enough to be put ontop of arbitrary 
-data stores. Its modular design enables a seamless integration into existing Web applications.</p>
+<h2 id="backwards-compatibility">Backwards Compatibility</h2>
+<p>The <a href="/api">Web API</a> is backwards compatible to older implementation versions. Client 
+developers are safe to start development while API providers upgrade to newer versions of the API.</p>
 
-<h2 id="overview">Overview</h2>
+<p>However, <a href="/development">SPI implementors</a> should take care of changes, though changes 
+to the SPI interface will be kept to a minimum and communicated properly.</p>
 
-<p><img src="images/big-picture.png" alt="Big Picture" /></p>
+<h2 id="development">Development</h2>
+<p>If you want to develop clients to consume series data refer to the <a href="/api">Web API reference</a>.
+In case of being interested in how the API works and/or want to contribute check the 
+<a href="/development">development section</a>.</p>
 
 
   </div>
@@ -151,7 +158,7 @@ data stores. Its modular design enables a seamless integration into existing Web
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/39864702af38a5bd993c1944be77bcdc850c7019">39864702af38a5bd993c1944be77bcdc850c7019</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/3c367f7df00a187f2196e3ab982184d62fb0451f">3c367f7df00a187f2196e3ab982184d62fb0451f</a></p>
       
     </div>
   </footer>

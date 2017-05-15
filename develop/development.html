@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Platforms – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>API Development – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Platforms" />
-    <meta property="twitter:title" content="Platforms" />
+    <meta property="og:title" content="API Development" />
+    <meta property="twitter:title" content="API Development" />
     
 
 
@@ -72,10 +72,10 @@
         <a href="/series-rest-api/develop/">Home</a>
       </p>
       <p class="header">
-        <a href="/series-rest-api/develop/platforms">Platform Types</a>
+        <a href="/series-rest-api/develop/compatibility">Compatibility</a>
       </p>
       <p class="header">
-        <a href="/series-rest-api/develop/valuetypes">Data Types</a>
+        <a href="/series-rest-api/develop/valuetypes">Value Types</a>
       </p>
       <p class="header">
         <a href="/series-rest-api/develop/io">Input/Output</a>
@@ -89,6 +89,9 @@
       <p class="header">
         <a href="/series-rest-api/develop/api">API Reference</a>
       </p>
+      <p class="header">
+        <a href="/series-rest-api/develop/development">API Development</a>
+      </p>
     </nav>
 
     <div role="main" id="content" class="col-lg-9 n52-content pull-right">
@@ -99,27 +102,19 @@
       </div>
 
       <article class="page">
-  <h1>Platforms</h1>
+  <h1>API Development</h1>
 
   <div class="entry">
-    <p>Since <code class="highlighter-rouge">v2.0</code> the following sensor platforms are supported:</p>
+    <h2 id="overview">Overview</h2>
 
-<ul>
-  <li><code class="highlighter-rouge">stationary</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">mobile</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">insitu</code> sensor platforms</li>
-  <li><code class="highlighter-rouge">remote</code> sensor platforms</li>
-</ul>
+<p>Next to the <a href="images/">Web API</a>, a Service Provider Interface (SPI) defines the 
+underlying interface for data providing backends. With this, the API is flexible enough to
+be put ontop of arbitrary data stores. Its modular design enables a seamless integration into 
+existing Web applications.</p>
 
-<p>The former Stations resource collection relates to the combination 
-of <code class="highlighter-rouge">stationary</code> and <code class="highlighter-rouge">insitu</code> platforms (located at a 0-dimensional
-location geometry) which do observe <code class="highlighter-rouge">quantity</code> datasets.</p>
+<p><img src="images/big-picture.png" alt="Big Picture" /></p>
 
-<p>So retrieving getting the former output under <code class="highlighter-rouge">/platforms</code> endpoint one 
-can filter via<code class="highlighter-rouge">/platforms?platformTypes=stationary,insitu</code> or get the 
-collection via <code class="highlighter-rouge">/stations</code>. The query parameter <code class="highlighter-rouge">platformTypes</code> can be 
-used to filter on all resources which ensures to only get those resources 
-related to the given filter.</p>
+<p>tbd</p>
 
   </div>
 </article>
@@ -143,7 +138,7 @@ related to the given filter.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/39864702af38a5bd993c1944be77bcdc850c7019">39864702af38a5bd993c1944be77bcdc850c7019</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/3c367f7df00a187f2196e3ab982184d62fb0451f">3c367f7df00a187f2196e3ab982184d62fb0451f</a></p>
       
     </div>
   </footer>
