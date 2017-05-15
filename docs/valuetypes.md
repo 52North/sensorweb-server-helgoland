@@ -1,11 +1,11 @@
 ---
 layout: page
-title: Data Types
-permalink: /datatypes
+title: Value Types
+permalink: /valuetypes
 ---
 
-A dataset has a particular type which indicates the type of data
-which is being, or has been observed by a specific platform. This 
+A dataset has a particular type which indicates the type of data values
+which are being, or have been observed by a specific platform. This 
 can be simple scalar types or more complex types like `profile` or
 other `record` data being observed over time or along a track. 
 
