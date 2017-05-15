@@ -7,10 +7,8 @@ permalink: /extensions
 {:.n52-callout .n52-callout-todo}
 section under revision/update
 
-## Prerendering
-
-### Configuration Location
-  
+{% capture extensions_include %}{% include extensions/prerendering.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
 
 ## Status Intervals
 
@@ -18,6 +16,11 @@ section under revision/update
 
 
 ## Rendering Hints
+
+### Configuration Location
+
+
+## Result Time
 
 ### Configuration Location
 
