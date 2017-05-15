@@ -269,17 +269,50 @@ would be valid.</p>
 </div>
 
 <h2 id="complex-data-types">Complex data types</h2>
-<p>Complex data types are compound values.</p>
+<p>Complex data types are compound values. Each compound value shall be seen as abstract
+value type which has to be made concrete by data providers. In case of providing 
+record data, the dataset should provide a concrete value type like <code class="highlighter-rouge">record+quantity</code> in 
+case of <code class="highlighter-rouge">quantity</code> values. Other, completely customized, value types (like <code class="highlighter-rouge">my-type</code>) 
+are also possible, but lead to less compatibility towards client (it has to know how to 
+deal with that specific type).</p>
+
+<p>Please note that combining complex types with a complex type (e.g. `record+record) is not
+supported by the API, just one subtype level.</p>
 
 <p>Depending on what members are available (see above table) the following output 
 would be valid.</p>
 
 <h3 id="record">Record</h3>
-<p>A record’s <code class="highlighter-rouge">value</code> member is a map of key-valued objects.</p>
+<p>A record’s <code class="highlighter-rouge">value</code> member is a map of key-valued objects. However, a <code class="highlighter-rouge">record</code> is abstract
+and each implementation have to provide its own <code class="highlighter-rouge">valueType</code> within the <code class="highlighter-rouge">dataset</code> metadata.</p>
 
-<p><strong>GeoJson Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
+<p><strong>Typed Record Example: <code class="highlighter-rouge">text</code> (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"record_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nt">"record+text_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1437160475022</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"east"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b20c50876106726.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"south"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b26583054767586.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"north"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b19209320230740.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"spot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b3782c557670845.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"west"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/55a9541b30c2f165697520.jpg"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><strong>Customized Example: <code class="highlighter-rouge">fotoquest</code> (<code class="highlighter-rouge">stationary</code> platform)</strong>
+<a href="https://github.com/52North/fotoquest-series-api">Fotoquest</a> value types describe some 
+kind of (referenced) media taken at a given location. It could also be described more 
+generally as <code class="highlighter-rouge">record+geojson</code>. Background infos about the project can be found at <a href="http://fotoquest-go.org/">the
+Fotoquest Homepage</a>.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"fotoquest_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
       </span><span class="p">{</span><span class="w">
         </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1437160475022</span><span class="p">,</span><span class="w">
@@ -368,39 +401,43 @@ would be valid.</p>
 </div>
 
 <h3 id="profile">Profile</h3>
+<p>A value type which contain observations along a vertical axis (e.g. observations made on
+different depth levels). The vertical unit is overridable within each vertical item.</p>
 
-<p><strong>Depth Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
-
-<div class="n52-callout-todo">
-  <p>Not final yet! Discuss following points:</p>
-  <ul>
-    <li>unit in every value needed?
-      <ul>
-        <li>one in root plus override option in each value</li>
-        <li>assume unit from dataset metadata</li>
-      </ul>
-    </li>
-  </ul>
-</div>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>[
-  {
-    "timestamp": 1353330000000,
-    "value": [
-      {
-        "depth": 10,
-        "value": 100,
-        "unit": "m"
-      },
-      {
-        "depth": 20,
-        "value": 200,
-        "unit": "m"
-      }
-    ]
-  }
-]
-</code></pre>
+<p><strong>Vertical Example (<code class="highlighter-rouge">stationary</code> platform)</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353330000000</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nt">"verticalUnit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test_unit_4"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353330540000</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nt">"verticalUnit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test_unit_4"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 </div>
 
   </div>
@@ -425,7 +462,7 @@ would be valid.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/3c367f7df00a187f2196e3ab982184d62fb0451f">3c367f7df00a187f2196e3ab982184d62fb0451f</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/80d6a9b657760c5344c077b2c649d4f507e3878f">80d6a9b657760c5344c077b2c649d4f507e3878f</a></p>
       
     </div>
   </footer>
