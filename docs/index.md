@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Series REST API Documentation
+title: Introduction
 permalink: /
 ---
 
