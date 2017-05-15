@@ -58,7 +58,7 @@ type of data (e.g. different scalar values or even aggregate types).
 
 Check out in more detail under the [Value Types section]({{base.url}}/valuetypes).
 
-### `data` vs. `getData`
+### data vs. getData
 Naming of `getData` was a bit confusing within a RESTful API. That's the reason why `GET`ting
 data for a dataset has been renamed to `data` (`/datasets/<id>/data`). To stay backwards 
 compatible the old `getData` still exist under the old endpoint (`/timeseries/<id>/getData`).
