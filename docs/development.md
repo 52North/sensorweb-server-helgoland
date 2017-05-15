@@ -4,6 +4,8 @@ title: API Development
 permalink: /development
 ---
 
+tbd
+
 ## Overview
 
 Next to the [Web API]({{base_url}}images/), a Service Provider Interface (SPI) defines the 
@@ -12,5 +14,3 @@ be put ontop of arbitrary data stores. Its modular design enables a seamless int
 existing Web applications.
 
 ![Big Picture]({{base_url}}images/big-picture.png)
-
-tbd
