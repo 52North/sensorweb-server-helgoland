@@ -4,9 +4,6 @@
 <loc>/series-rest-api/develop/config</loc>
 </url>
 <url>
-<loc>/series-rest-api/develop/datatypes</loc>
-</url>
-<url>
 <loc>/series-rest-api/develop/extensions</loc>
 </url>
 <url>
@@ -19,7 +16,10 @@
 <loc>/series-rest-api/develop/platforms</loc>
 </url>
 <url>
+<loc>/series-rest-api/develop/valuetypes</loc>
+</url>
+<url>
 <loc>/series-rest-api/develop/api/index.html</loc>
-<lastmod>2017-05-11T08:45:43+00:00</lastmod>
+<lastmod>2017-05-15T09:19:46+00:00</lastmod>
 </url>
 </urlset>
