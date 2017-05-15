@@ -40,7 +40,7 @@ public interface ResourceController {
     ModelAndView getCollection(String locale, MultiValueMap<String, String> query);
 
     ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
-    
+
     void getRawData(HttpServletResponse response, String id, String locale, MultiValueMap<String, String> query);
 
     Map<String, Object> getExtras(String id, String locale, MultiValueMap<String, String> query);

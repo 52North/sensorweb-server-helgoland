@@ -36,10 +36,6 @@ import org.n52.series.spi.srv.RawFormats;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 public interface Parameters {
-    
-    interface HttpHeader {
-        String ACCEPT_LANGUAGE = "accept-language";
-    }
 
     // TODO separate public parameters from internal parameters (e.g. HREF_BASE)
 
@@ -432,5 +428,9 @@ public interface Parameters {
      */
     @Deprecated
     String LANGUAGE = "language";
+
+    interface HttpHeader {
+        String ACCEPT_LANGUAGE = "accept-language";
+    }
 
 }

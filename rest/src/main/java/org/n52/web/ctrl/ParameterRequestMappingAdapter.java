@@ -57,7 +57,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestParam MultiValueMap<String, String> query) {
         return super.getCollection(locale, query);
     }
-    
+
     @Override
     @RequestMapping(value = "/{item}")
     public ModelAndView getItem(@PathVariable("item") String id,

@@ -60,7 +60,7 @@ public class RequestUtils {
             query.add(Parameters.LOCALE, locale);
         }
     }
-    
+
     public static void overrideQueryLocaleWhenSet(String locale, RequestParameterSet query) {
         if (locale != null) {
             // override query parameter
