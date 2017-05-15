@@ -29,18 +29,19 @@
 package org.n52.web.ctrl;
 
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
 public interface ResourceController {
 
-    ModelAndView getCollection(MultiValueMap<String, String> query);
+    ModelAndView getCollection(String locale, MultiValueMap<String, String> query);
 
-    ModelAndView getItem(String id, MultiValueMap<String, String> query);
+    ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
+    
+    void getRawData(HttpServletResponse response, String id, String locale, MultiValueMap<String, String> query);
 
-    void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query);
-
-    Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query);
-
+    Map<String, Object> getExtras(String id, String locale, MultiValueMap<String, String> query);
 }
