@@ -20,7 +20,8 @@ section under revision/update
 
 ## Rendering Hints
 
-### Configuration Location
+{% capture extensions_include %}{% include extensions/rendering_hints.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
 
 
 ## Result Time
