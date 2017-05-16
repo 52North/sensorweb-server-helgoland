@@ -63,7 +63,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @return the styles
-     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()
+     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
      */
     @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
@@ -71,8 +71,8 @@ public class PrerenderingJobConfig {
     }
 
     /**
-     * @param styles
-     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)
+     * @param styles the styles to set
+     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
      */
     @Deprecated
     public void setTimeseriesStyles(List<RenderingConfig> styles) {
@@ -81,7 +81,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @return the styles
-     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()
+     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
      */
     @Deprecated
     public List<RenderingConfig> getSeriesStyles() {
@@ -89,8 +89,8 @@ public class PrerenderingJobConfig {
     }
 
     /**
-     * @param styles
-     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)
+     * @param the styles to set
+     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
      */
     @Deprecated
     public void setSeriesStyles(List<RenderingConfig> styles) {

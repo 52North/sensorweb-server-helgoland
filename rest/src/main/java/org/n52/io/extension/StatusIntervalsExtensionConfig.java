@@ -73,7 +73,7 @@ public class StatusIntervalsExtensionConfig {
      */
     @Deprecated
     public Map<String, ConfigInterval> getSeriesIntervals() {
-        return datasetIntervals;
+        return getDatasetIntervals();
     }
 
     /**
@@ -87,7 +87,7 @@ public class StatusIntervalsExtensionConfig {
     }
 
     public Map<String, ConfigInterval> getDatasetIntervals() {
-        return getDatasetIntervals();
+        return datasetIntervals;
     }
 
     public void setDatasetIntervals(Map<String, ConfigInterval> datasetIntervals) {
