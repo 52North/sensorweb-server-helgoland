@@ -429,4 +429,8 @@ public interface Parameters {
     @Deprecated
     String LANGUAGE = "language";
 
+    interface HttpHeader {
+        String ACCEPT_LANGUAGE = "accept-language";
+    }
+
 }

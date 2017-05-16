@@ -1201,7 +1201,7 @@ parameters:
       The REST-API should consider the following order to detect a locale
 
 
-      * User-agent (e.g. header information)
+      * Accept-Language (e.g. header information)
 
       * locale parameter
 

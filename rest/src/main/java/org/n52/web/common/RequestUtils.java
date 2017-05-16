@@ -33,9 +33,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -47,6 +52,21 @@ public class RequestUtils {
 
     private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
+
+    public static void overrideQueryLocaleWhenSet(String locale, MultiValueMap<String, String> query) {
+        if (locale != null) {
+            // override query parameter
+            query.remove(Parameters.LOCALE);
+            query.add(Parameters.LOCALE, locale);
+        }
+    }
+
+    public static void overrideQueryLocaleWhenSet(String locale, RequestParameterSet query) {
+        if (locale != null) {
+            // override query parameter
+            query.setLocale(locale);
+        }
+    }
 
     /**
      * Get the request {@link URL} without the query parameter
