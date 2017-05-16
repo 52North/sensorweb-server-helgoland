@@ -93,19 +93,12 @@
   }
 }
 
-.swagger-parameters-table {
-  border-spacing: 0px;
-  border-collapse: collapse;
-  margin-bottom: $spacing-unit;
-  width: 100%;
-
-  th, td {
-    border: 1px solid darken($grey-color-light, 5%);
-    padding: 4px 10px;
-  }
-
-  th {
-    background: lighten($grey-color-light, 6%);
+.swagger-parameters {
+  .table {
+    border-spacing: 0px;
+    border-collapse: collapse;
+    margin-bottom: $spacing-unit;
+    width: 100%;
   }
 }
 
