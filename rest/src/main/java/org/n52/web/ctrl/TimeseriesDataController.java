@@ -52,6 +52,7 @@ import org.n52.io.PreRenderingJob;
 import org.n52.io.quantity.format.FormatterFactory;
 import org.n52.io.quantity.generalize.GeneralizingQuantityService;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -64,6 +65,7 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawFormats;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -74,6 +76,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -102,16 +105,18 @@ public class TimeseriesDataController extends BaseController {
             "application/json"
         },
         method = RequestMethod.POST)
-    public ModelAndView getTimeseriesCollectionData(HttpServletResponse response,
-                                                    @RequestBody RequestSimpleParameterSet parameters)
+    public ModelAndView getCollectionData(HttpServletResponse response,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                          @RequestBody RequestSimpleParameterSet query)
             throws Exception {
-        checkIfUnknownTimeseries(parameters, parameters.getDatasets());
-        if (parameters.isSetRawFormat()) {
-            getRawTimeseriesCollectionData(response, parameters);
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        checkIfUnknownTimeseries(query, query.getDatasets());
+        if (query.isSetRawFormat()) {
+            getRawCollectionData(response, locale, query);
             return null;
         }
-        DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
-        DataCollection< ? > formattedDataCollection = format(seriesData, parameters.getFormat());
+        DataCollection<QuantityData> seriesData = getTimeseriesData(query);
+        DataCollection< ? > formattedDataCollection = format(seriesData, query.getFormat());
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
@@ -120,9 +125,11 @@ public class TimeseriesDataController extends BaseController {
             "application/json"
         },
         method = RequestMethod.GET)
-    public ModelAndView getTimeseriesData(HttpServletResponse response,
-                                          @PathVariable String timeseriesId,
-                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
+    public ModelAndView getData(HttpServletResponse response,
+                                @PathVariable String timeseriesId,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
@@ -162,11 +169,13 @@ public class TimeseriesDataController extends BaseController {
         params = {
             RawFormats.RAW_FORMAT
         })
-    public void getRawTimeseriesCollectionData(HttpServletResponse response,
-                                               @RequestBody RequestSimpleParameterSet parameters)
+    public void getRawCollectionData(HttpServletResponse response,
+                                     @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                     @RequestBody RequestSimpleParameterSet query)
             throws Exception {
-        checkIfUnknownTimeseries(parameters, parameters.getDatasets());
-        processRawDataRequest(response, parameters);
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        checkIfUnknownTimeseries(query, query.getDatasets());
+        processRawDataRequest(response, query);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
@@ -174,9 +183,11 @@ public class TimeseriesDataController extends BaseController {
         params = {
             RawFormats.RAW_FORMAT
         })
-    public void getRawTimeseriesData(HttpServletResponse response,
-                                     @PathVariable String timeseriesId,
-                                     @RequestParam MultiValueMap<String, String> query) {
+    public void getRawData(HttpServletResponse response,
+                           @PathVariable String timeseriesId,
+                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                           @RequestParam MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
@@ -184,16 +195,16 @@ public class TimeseriesDataController extends BaseController {
     }
 
     private void processRawDataRequest(HttpServletResponse response,
-                                       RequestSimpleParameterSet parameters) {
+                                       RequestSimpleParameterSet query) {
         if (!timeseriesDataService.supportsRawData()) {
             throwNewRawDataQueryNotSupportedException();
         }
         final RawDataService rawDataService = timeseriesDataService.getRawDataService();
-        try (InputStream inputStream = rawDataService.getRawData(parameters)) {
+        try (InputStream inputStream = rawDataService.getRawData(query)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found.");
             }
-            response.setContentType(parameters.getFormat());
+            response.setContentType(query.getFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
@@ -211,20 +222,21 @@ public class TimeseriesDataController extends BaseController {
             "application/pdf"
         },
         method = RequestMethod.POST)
-    public void getTimeseriesCollectionReport(HttpServletResponse response,
-                                              @RequestBody RequestStyledParameterSet parameters)
+    public void getCollectionReport(HttpServletResponse response,
+                                    @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                    @RequestBody RequestStyledParameterSet query)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        checkIfUnknownTimeseries(map, query.getDatasets());
 
-        IoParameters query = QueryParameters.createFromQuery(parameters);
-        checkIfUnknownTimeseries(query, parameters.getDatasets());
-
-        RequestSimpleParameterSet parameterSet = query.mergeToSimpleParameterSet(parameters);
+        RequestSimpleParameterSet parameterSet = map.mergeToSimpleParameterSet(query);
         checkAgainstTimespanRestriction(parameterSet.getTimespan());
-        parameterSet.setGeneralize(query.isGeneralize());
-        parameterSet.setExpanded(query.isExpanded());
+        parameterSet.setGeneralize(map.isGeneralize());
+        parameterSet.setExpanded(map.isExpanded());
 
         response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        createIoFactory(parameterSet).withStyledRequest(query.mergeToStyledParameterSet(parameters))
+        createIoFactory(parameterSet).withStyledRequest(map.mergeToStyledParameterSet(query))
                                      .createHandler(MimeType.APPLICATION_PDF.getMimeType())
                                      .writeBinary(response.getOutputStream());
     }
@@ -255,11 +267,12 @@ public class TimeseriesDataController extends BaseController {
             "application/pdf"
         },
         method = RequestMethod.GET)
-    public void getTimeseriesReport(HttpServletResponse response,
-                                    @PathVariable String timeseriesId,
-                                    @RequestParam(required = false) MultiValueMap<String, String> query)
+    public void getReport(HttpServletResponse response,
+                          @PathVariable String timeseriesId,
+                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         checkIfUnknownTimeseries(map, timeseriesId);
 
@@ -278,15 +291,16 @@ public class TimeseriesDataController extends BaseController {
             "application/zip"
         },
         method = RequestMethod.GET)
-    public void getTimeseriesAsZippedCsv(HttpServletResponse response,
-                                         @PathVariable String timeseriesId,
-                                         @RequestParam(required = false) MultiValueMap<String, String> parameters)
+    public void getAsZippedCsv(HttpServletResponse response,
+                               @PathVariable String timeseriesId,
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                               @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
-        IoParameters query = QueryParameters.createFromQuery(parameters)
-                                            .extendWith(MimeType.APPLICATION_ZIP.name(), Boolean.TRUE.toString());
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query)
+                                          .extendWith(MimeType.APPLICATION_ZIP.name(), Boolean.TRUE.toString());
         response.setContentType(MimeType.APPLICATION_ZIP.getMimeType());
-        getTimeseriesAsCsv(timeseriesId, query, response);
+        getTimeseriesAsCsv(timeseriesId, map, response);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
@@ -294,10 +308,12 @@ public class TimeseriesDataController extends BaseController {
             "text/csv"
         },
         method = RequestMethod.GET)
-    public void getTimeseriesAsCsv(HttpServletResponse response,
-                                   @PathVariable String timeseriesId,
-                                   @RequestParam(required = false) MultiValueMap<String, String> query)
+    public void getAsCsv(HttpServletResponse response,
+                         @PathVariable String timeseriesId,
+                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                         @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         getTimeseriesAsCsv(timeseriesId, map, response);
     }
@@ -326,20 +342,22 @@ public class TimeseriesDataController extends BaseController {
             "image/png"
         },
         method = RequestMethod.POST)
-    public void getTimeseriesCollectionChart(HttpServletResponse response,
-                                             @RequestBody RequestStyledParameterSet parameters)
+    public void getCollectionChart(HttpServletResponse response,
+                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                   @RequestBody RequestStyledParameterSet query)
             throws Exception {
-        IoParameters query = QueryParameters.createFromQuery(parameters);
-        checkIfUnknownTimeseries(query, parameters.getDatasets());
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        checkIfUnknownTimeseries(map, query.getDatasets());
 
-        RequestSimpleParameterSet parameterSet = query.mergeToSimpleParameterSet(parameters);
+        RequestSimpleParameterSet parameterSet = map.mergeToSimpleParameterSet(query);
         checkAgainstTimespanRestriction(parameterSet.getTimespan());
-        parameterSet.setGeneralize(query.isGeneralize());
-        parameterSet.setExpanded(query.isExpanded());
-        parameterSet.setBase64(query.isBase64());
+        parameterSet.setGeneralize(map.isGeneralize());
+        parameterSet.setExpanded(map.isExpanded());
+        parameterSet.setBase64(map.isBase64());
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
-        createIoFactory(parameterSet).withStyledRequest(parameters)
+        createIoFactory(parameterSet).withStyledRequest(query)
                                      .createHandler(MimeType.IMAGE_PNG.toString())
                                      .writeBinary(response.getOutputStream());
     }
@@ -349,20 +367,22 @@ public class TimeseriesDataController extends BaseController {
             "image/png"
         },
         method = RequestMethod.GET)
-    public void getTimeseriesChart(HttpServletResponse response,
-                                   @PathVariable String timeseriesId,
-                                   @RequestParam(required = false) MultiValueMap<String, String> parameters)
+    public void getChart(HttpServletResponse response,
+                         @PathVariable String timeseriesId,
+                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                         @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters query = QueryParameters.createFromQuery(parameters);
-        checkIfUnknownTimeseries(query, timeseriesId);
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        checkIfUnknownTimeseries(map, timeseriesId);
 
-        RequestSimpleParameterSet parameterSet = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, query);
-        RequestStyledParameterSet styledParameters = query.toStyledParameterSet();
+        RequestSimpleParameterSet parameterSet = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
+        RequestStyledParameterSet styledParameters = map.toStyledParameterSet();
         checkAgainstTimespanRestriction(parameterSet.getTimespan());
 
-        parameterSet.setGeneralize(query.isGeneralize());
-        parameterSet.setBase64(query.isBase64());
-        parameterSet.setExpanded(query.isExpanded());
+        parameterSet.setGeneralize(map.isGeneralize());
+        parameterSet.setBase64(map.isBase64());
+        parameterSet.setExpanded(map.isExpanded());
 
         response.setContentType(MimeType.IMAGE_PNG.getMimeType());
         createIoFactory(parameterSet).withStyledRequest(styledParameters)
@@ -375,11 +395,13 @@ public class TimeseriesDataController extends BaseController {
             "image/png"
         },
         method = RequestMethod.GET)
-    public void getTimeseriesChartByInterval(HttpServletResponse response,
-                                             @PathVariable String seriesId,
-                                             @PathVariable String chartQualifier,
-                                             @RequestParam(required = false) MultiValueMap<String, String> query)
+    public void getChartByInterval(HttpServletResponse response,
+                                   @PathVariable String seriesId,
+                                   @PathVariable String chartQualifier,
+                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                   @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }

@@ -1760,7 +1760,7 @@
             "name": "locale",
             "in": "query",
             "type": "string",
-            "description": "Specifies the language as [ISO639](http://en.wikipedia.org/wiki/ISO_639) code. Subdivisions are  respected by an `_` , e.g. `en_US` for American English.\n\nThe REST-API should consider the following order to detect a locale\n\n* User-agent (e.g. header information)\n* locale parameter\n\nA fallback language cannot be specified as it depends on the data of the service provider.\n"
+            "description": "Specifies the language as [ISO639](http://en.wikipedia.org/wiki/ISO_639) code. Subdivisions are  respected by an `_` , e.g. `en_US` for American English.\n\nThe REST-API should consider the following order to detect a locale\n\n* Accept-Language (e.g. header information)\n* locale parameter\n\nA fallback language cannot be specified as it depends on the data of the service provider.\n"
         },
         "timespanParam": {
             "name": "timespan",

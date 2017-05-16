@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.Collections;
@@ -37,47 +38,53 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(method = RequestMethod.GET, produces = {"application/json"})
-public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T>  {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParameterRequestMappingAdapter.class);
+@RequestMapping(method = RequestMethod.GET, produces = {
+    "application/json"
+})
+public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
     @Override
     @RequestMapping(path = "")
-    public ModelAndView getCollection(
-            @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(addHrefBase(query));
+    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                      @RequestParam MultiValueMap<String, String> query) {
+        return super.getCollection(locale, query);
     }
 
     @Override
     @RequestMapping(value = "/{item}")
     public ModelAndView getItem(@PathVariable("item") String id,
-            @RequestParam MultiValueMap<String, String> query) {
-        return super.getItem(id, addHrefBase(query));
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestParam MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        return super.getItem(id, locale, addHrefBase(query));
     }
 
     @Override
-    @RequestMapping(value = "/{item}", params = {RawFormats.RAW_FORMAT})
+    @RequestMapping(value = "/{item}", params = {
+        RawFormats.RAW_FORMAT
+    })
     public void getRawData(HttpServletResponse response,
-            @PathVariable("item") String id,
-            @RequestParam MultiValueMap<String, String> query) {
-        super.getRawData(response, id, addHrefBase(query));
+                           @PathVariable("item") String id,
+                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                           @RequestParam MultiValueMap<String, String> query) {
+        super.getRawData(response, id, locale, addHrefBase(query));
     }
 
     @Override
     @RequestMapping(value = "/{item}/extras")
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        return super.getExtras(resourceId, addHrefBase(query));
+                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                         @RequestParam(required = false) MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        return super.getExtras(resourceId, locale, addHrefBase(query));
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
@@ -86,5 +93,4 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
         return query;
     }
-
 }

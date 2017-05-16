@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
@@ -37,7 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.QueryParameters;
@@ -46,6 +49,7 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -57,7 +61,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
 public abstract class ParameterController<T extends ParameterOutput>
-            extends BaseController implements ResourceController {
+        extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -77,7 +81,11 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
+    public void getRawData(HttpServletResponse response,
+                           String id,
+                           String locale,
+                           MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
@@ -85,7 +93,8 @@ public abstract class ParameterController<T extends ParameterOutput>
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
-        try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
+        try (InputStream inputStream = getParameterService().getRawDataService()
+                                                            .getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
             }
@@ -96,15 +105,15 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
-
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
-        LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, queryMap);
+    public Map<String, Object> getExtras(String resourceId, String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<T> extension : metadataExtensions) {
-            T from = parameterService.getParameter(resourceId, queryMap);
-            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
+            T from = parameterService.getParameter(resourceId, map);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, map);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if (!overridableKeys.isEmpty()) {
                 String[] keys = overridableKeys.toArray(new String[0]);
@@ -123,8 +132,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getCollection(MultiValueMap<String, String> query) {
-
+    public ModelAndView getCollection(String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
 
@@ -140,12 +149,12 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        LOGGER.debug("getItem() with id '{}' and query '{}'", id, map);
 
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
-        LOGGER.debug("getItem() with id '{}' and query '{}'", id, queryMap);
-
-        T item = parameterService.getParameter(id, queryMap);
+        T item = parameterService.getParameter(id, map);
 
         if (item == null) {
             throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");

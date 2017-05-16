@@ -65,6 +65,7 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawFormats;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -74,6 +75,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -110,11 +112,13 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters parameters = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data with query: {}", parameters);
-        return getSeriesCollectionData(response, parameters.toSimpleParameterSet());
+        return getCollectionData(response, locale, parameters.toSimpleParameterSet());
     }
 
     @RequestMapping(value = "/{seriesId}/data",
@@ -124,9 +128,10 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
                                       @PathVariable String seriesId,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
 
@@ -150,10 +155,11 @@ public class DataController extends BaseController {
     @RequestMapping(value = "/data", produces = {
         "application/json"
     }, method = RequestMethod.POST)
-    public ModelAndView getSeriesCollectionData(HttpServletResponse response,
-                                                @RequestBody RequestSimpleParameterSet parameters)
+    public ModelAndView getCollectionData(HttpServletResponse response,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                          @RequestBody RequestSimpleParameterSet parameters)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
         LOGGER.debug("get data collection with parameter set: {}", parameters);
 
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
@@ -173,8 +179,10 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.POST)
     public void getRawSeriesCollectionData(HttpServletResponse response,
+                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                            @RequestBody RequestSimpleParameterSet parameters)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
@@ -187,7 +195,9 @@ public class DataController extends BaseController {
         })
     public void getRawSeriesData(HttpServletResponse response,
                                  @PathVariable String seriesId,
+                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         checkForUnknownDatasetIds(map, seriesId);
         LOGGER.debug("getSeriesCollection() with query: {}", map);
@@ -219,8 +229,10 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                           @RequestBody RequestStyledParameterSet parameters)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
         IoParameters map = QueryParameters.createFromQuery(parameters);
         LOGGER.debug("get data collection report with query: {}", map);
 
@@ -243,9 +255,10 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesReport(HttpServletResponse response,
                                 @PathVariable String seriesId,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
@@ -268,8 +281,10 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
                                      @PathVariable String seriesId,
+                                     @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
@@ -293,9 +308,10 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesAsCsv(HttpServletResponse response,
                                @PathVariable String seriesId,
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
@@ -322,9 +338,10 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.POST)
     public void getSeriesCollectionChart(HttpServletResponse response,
+                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                          @RequestBody RequestStyledParameterSet parameters)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
         IoParameters map = QueryParameters.createFromQuery(parameters);
         checkForUnknownDatasetIds(map, parameters.getDatasets());
 
@@ -345,9 +362,10 @@ public class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
                                @PathVariable String seriesId,
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan()
