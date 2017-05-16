@@ -25,11 +25,7 @@ markdown: kramdown
 # Use the following plug-ins
 gems:
   - jekyll-sitemap
-  - jekyll-bootstrap-sass
   
-bootstrap:
-  assets: true
-
 # Exclude these files from your production _site
 exclude:
   - Gemfile
