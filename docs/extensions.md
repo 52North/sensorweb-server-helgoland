@@ -26,7 +26,8 @@ section under revision/update
 
 ## Result Time
 
-### Configuration Location
+{% capture extensions_include %}{% include extensions/result_time.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
 
 
 ## Database metadata
