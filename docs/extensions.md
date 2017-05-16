@@ -32,4 +32,5 @@ section under revision/update
 
 ## Database metadata
 
-### Configuration Location
+{% capture extensions_include %}{% include extensions/database_metadata.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
