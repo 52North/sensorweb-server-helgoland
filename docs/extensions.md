@@ -7,6 +7,9 @@ permalink: /extensions
 {:.n52-callout .n52-callout-todo}
 section under revision/update
 
+
+## Prerendering
+
 {% capture extensions_include %}{% include extensions/prerendering.md %}{% endcapture %}
 {{ extensions_include | markdownify }}
 
