@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.extension;
 
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public class StatusIntervalsExtensionConfig {
 
     private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
 
-    private Map<String, ConfigInterval> timeseriesIntervals = new HashMap<>();
+    private Map<String, ConfigInterval> datasetIntervals = new HashMap<>();
 
     public Map<String, ConfigInterval> getPhenomenonIntervals() {
         return phenomenonIntervals;
@@ -47,12 +48,50 @@ public class StatusIntervalsExtensionConfig {
         this.phenomenonIntervals = phenomenonIntervals;
     }
 
+    /**
+     * @return the intervals
+     * @deprecated use {@link StatusIntervalsExtensionConfig#getDatasetIntervals()}
+     */
+    @Deprecated
     public Map<String, ConfigInterval> getTimeseriesIntervals() {
-        return timeseriesIntervals;
+        return getSeriesIntervals();
     }
 
+    /**
+     * @param timeseriesIntervals
+     *        the intervals
+     * @deprecated use {@link StatusIntervalsExtensionConfig#setDatasetIntervals(Map)}
+     */
+    @Deprecated
     public void setTimeseriesIntervals(Map<String, ConfigInterval> timeseriesIntervals) {
-        this.timeseriesIntervals = timeseriesIntervals;
+        setSeriesIntervals(timeseriesIntervals);
+    }
+
+    /**
+     * @return the intervals
+     * @deprecated use {@link StatusIntervalsExtensionConfig#getDatasetIntervals()}
+     */
+    @Deprecated
+    public Map<String, ConfigInterval> getSeriesIntervals() {
+        return datasetIntervals;
+    }
+
+    /**
+     * @param seriesIntervals
+     *        the intervals
+     * @deprecated use {@link StatusIntervalsExtensionConfig#setDatasetIntervals(Map)}
+     */
+    @Deprecated
+    public void setSeriesIntervals(Map<String, ConfigInterval> seriesIntervals) {
+        setDatasetIntervals(seriesIntervals);
+    }
+
+    public Map<String, ConfigInterval> getDatasetIntervals() {
+        return getDatasetIntervals();
+    }
+
+    public void setDatasetIntervals(Map<String, ConfigInterval> datasetIntervals) {
+        this.datasetIntervals = datasetIntervals;
     }
 
     public static class ConfigInterval {
