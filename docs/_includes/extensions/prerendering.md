@@ -48,7 +48,7 @@ For example:
             }
         }
     ],
-    "seriesStyles": [
+    "datasetStyles": [
         {
             "id" : "16",
             "interval": [
@@ -67,6 +67,10 @@ For example:
     ]
 }
 ```
+
+{:.n52-callout .n52-callout-info}
+`timeseriesStyles` and `seriesStyles` mean the same as `datasetStyles` and is kept 
+for backwards compatibility reasons.
 
 ### Placeholders
 
