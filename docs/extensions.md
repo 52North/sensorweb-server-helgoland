@@ -15,8 +15,8 @@ section under revision/update
 
 ## Status Intervals
 
-### Configuration Location
-
+{% capture extensions_include %}{% include extensions/status_intervals.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
 
 ## Rendering Hints
 
