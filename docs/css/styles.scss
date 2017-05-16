@@ -1,9 +1,12 @@
 ---
 ---
 
+// override bootstrap variables
+$icon-font-path: "{{ site.baseurl }}/assets/fonts/bootstrap/";
+
 @import "reset";
-//@import "bootstrap";
 @import "variables";
+@import "bootstrap";
 
 html {
   display: table;
