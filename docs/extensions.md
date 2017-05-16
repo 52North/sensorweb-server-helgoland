@@ -7,6 +7,9 @@ permalink: /extensions
 {:.n52-callout .n52-callout-todo}
 section under revision/update
 
+{:.n52-callout .n52-callout-todo}
+Spring configuration
+
 
 ## Prerendering
 
