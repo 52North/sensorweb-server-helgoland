@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'github-pages', group: :jekyll_plugins
-gem "jekyll"
-gem "netrc"
-gem "html-proofer"
+gem 'jekyll'
+gem 'netrc'
+gem 'html-proofer'
+gem 'bootstrap-sass', '~>3.3.7'
+gem 'jekyll-bootstrap-sass'
