@@ -216,6 +216,7 @@ public class DataController extends BaseController {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found.");
             }
+            response.setContentType(parameters.getRawFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
@@ -239,9 +240,11 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        response.setContentType(outputFormat);
         createIoFactory(datasetType).withStyledRequest(map.mergeToStyledParameterSet(parameters))
                                     .withSimpleRequest(map.mergeToSimpleParameterSet(parameters))
-                                    .createHandler(MimeType.APPLICATION_PDF.toString())
+                                    .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
@@ -264,8 +267,10 @@ public class DataController extends BaseController {
         checkForUnknownDatasetIds(map, seriesId);
 
         final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        response.setContentType(outputFormat);
         createIoFactory(datasetType).withSimpleRequest(parameters)
-                                    .createHandler(MimeType.APPLICATION_PDF.toString())
+                                    .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
@@ -343,8 +348,10 @@ public class DataController extends BaseController {
         LOGGER.debug("get data collection chart with query: {}", map);
 
         final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.IMAGE_PNG.toString();
+        response.setContentType(outputFormat);
         createIoFactory(datasetType).withStyledRequest(parameters)
-                                    .createHandler(MimeType.IMAGE_PNG.toString())
+                                    .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
@@ -354,22 +361,24 @@ public class DataController extends BaseController {
         },
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
-                               @PathVariable String datasetId,
+                               @PathVariable String seriesId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, map);
+        LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan()
                                            .toString());
-        checkForUnknownDatasetIds(map, datasetId);
+        checkForUnknownDatasetIds(map, seriesId);
 
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
+        String outputFormat = MimeType.IMAGE_PNG.toString();
+        response.setContentType(outputFormat);
         createIoFactory(valueType).withSimpleRequest(parameters)
-                                  .createHandler(MimeType.IMAGE_PNG.toString())
+                                  .createHandler(outputFormat)
                                   .writeBinary(response.getOutputStream());
     }
 
