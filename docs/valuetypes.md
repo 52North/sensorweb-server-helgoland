@@ -1,11 +1,11 @@
 ---
 layout: page
-title: Data Types
-permalink: /datatypes
+title: Value Types
+permalink: /valuetypes
 ---
 
-A dataset has a particular type which indicates the type of data
-which is being, or has been observed by a specific platform. This 
+A dataset has a particular type which indicates the type of data values
+which are being, or have been observed by a specific platform. This 
 can be simple scalar types or more complex types like `profile` or
 other `record` data being observed over time or along a track. 
 
@@ -126,18 +126,51 @@ would be valid.
   
 
 ## Complex data types
-Complex data types are compound values.
+Complex data types are compound values. Each compound value shall be seen as abstract
+value type which has to be made concrete by data providers. In case of providing 
+record data, the dataset should provide a concrete value type like `record+quantity` in 
+case of `quantity` values. Other, completely customized, value types (like `my-type`) 
+are also possible, but lead to less compatibility towards client (it has to know how to 
+deal with that specific type). 
+
+Please note that combining complex types with a complex type (e.g. `record+record) is not
+supported by the API, just one subtype level.
 
 Depending on what members are available (see above table) the following output 
 would be valid.
 
 ### Record
-A record's `value` member is a map of key-valued objects. 
+A record's `value` member is a map of key-valued objects. However, a `record` is abstract
+and each implementation have to provide its own `valueType` within the `dataset` metadata.
 
-**GeoJson Example (`stationary` platform)**
+**Typed Record Example: `text` (`stationary` platform)**
 ```
 {
-  "record_309510107": {
+  "record+text_309510107": {
+    "values": [
+      {
+        "timestamp": 1437160475022,
+        "value": {
+          "east": "http://example.org/upload/201507/55a9541b20c50876106726.jpg",
+          "south": "http://example.org/upload/201507/55a9541b26583054767586.jpg",
+          "north": "http://example.org/upload/201507/55a9541b19209320230740.jpg",
+          "spot": "http://example.org/upload/201507/55a9541b3782c557670845.jpg",
+          "west": "http://example.org/upload/55a9541b30c2f165697520.jpg"
+        }
+      }
+    ]
+  }
+}
+```
+
+**Customized Example: `fotoquest` (`stationary` platform)**
+[Fotoquest](https://github.com/52North/fotoquest-series-api) value types describe some 
+kind of (referenced) media taken at a given location. It could also be described more 
+generally as `record+geojson`. Background infos about the project can be found at [the
+Fotoquest Homepage](http://fotoquest-go.org/). 
+```
+{
+  "fotoquest_309510107": {
     "values": [
       {
         "timestamp": 1437160475022,
@@ -225,34 +258,41 @@ A record's `value` member is a map of key-valued objects.
 ```
 
 ### Profile
+A value type which contain observations along a vertical axis (e.g. observations made on
+different depth levels). The vertical unit is overridable within each vertical item.
 
-**Depth Example (`stationary` platform)**
-
-{::options parse_block_html="true" /}
-{:n52-callout .n52-callout-todo}
-<div>
-Not final yet! Discuss following points:
-* unit in every value needed?
-  * one in root plus override option in each value
-  * assume unit from dataset metadata
-</div>
-
+**Vertical Example (`stationary` platform)**
 ```
-[
-  {
-    "timestamp": 1353330000000,
-    "value": [
-      {
-        "depth": 10,
-        "value": 100,
-        "unit": "m"
-      },
-      {
-        "depth": 20,
-        "value": 200,
-        "unit": "m"
-      }
-    ]
-  }
-]
+{
+  "values": [
+    {
+      "timestamp": 1353330000000,
+      "value": [
+        {
+          "vertical": 10,
+          "value": 100
+        },
+        {
+          "vertical": 20,
+          "value": 200
+        }
+      ],
+      "verticalUnit": "test_unit_4"
+    },
+    {
+      "timestamp": 1353330540000,
+      "value": [
+        {
+          "vertical": 12,
+          "value": 400
+        },
+        {
+          "vertical": 15,
+          "value": 300
+        }
+      ],
+      "verticalUnit": "test_unit_4"
+    }
+  ]
+}
 ```
