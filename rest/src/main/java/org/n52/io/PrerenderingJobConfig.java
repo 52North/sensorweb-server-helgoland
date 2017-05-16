@@ -89,7 +89,7 @@ public class PrerenderingJobConfig {
     }
 
     /**
-     * @param the styles to set
+     * @param styles the styles to set
      * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
      */
     @Deprecated
