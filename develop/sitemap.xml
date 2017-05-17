@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>/series-rest-api/develop/api/</loc>
+</url>
+<url>
 <loc>/series-rest-api/develop/compatibility</loc>
 </url>
 <url>
@@ -20,9 +23,5 @@
 </url>
 <url>
 <loc>/series-rest-api/develop/valuetypes</loc>
-</url>
-<url>
-<loc>/series-rest-api/develop/api/index.html</loc>
-<lastmod>2017-05-16T09:28:31+00:00</lastmod>
 </url>
 </urlset>
