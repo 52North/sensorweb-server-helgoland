@@ -40,7 +40,7 @@ Property   | Description
 **Example**
 <div class="clearfix">
 <div class="col-lg-5">
-  <img alt="lineChart" src="{{base.url}}/images/io_chart_linestyle_example.png" title="Example for a line chart style.">
+  <img alt="lineChart" src="{{base.url}}/assets/images/io_chart_linestyle_example.png" title="Example for a line chart style.">
 </div>
 <div class="col-lg-5 pull-right">
 <pre>{
@@ -68,7 +68,7 @@ Property   | Description
 **Example**
 <div class="clearfix">
 <div class="col-lg-5">
-  <img alt="lineChart" src="{{base.url}}/images/io_chart_barstyle_example.png" title="Example for a bar chart style.">
+  <img alt="lineChart" src="{{base.url}}/assets/images/io_chart_barstyle_example.png" title="Example for a bar chart style.">
 </div>
 <div class="col-lg-5 pull-right">
 <pre>{
@@ -86,7 +86,7 @@ Property   | Description
 
 <div class="clearfix">
 <div class="col-lg-6">
-    <img alt="combinedCharts" src="{{base.url}}/images/io_chart_overlay_example.png" title="Example of combined charts.">
+    <img alt="combinedCharts" src="{{base.url}}/assets/images/io_chart_overlay_example.png" title="Example of combined charts.">
 </div>
 <div class="col-lg-5 pull-right">
 <pre>POST /api/v1/datasets/data HTTP/1.1

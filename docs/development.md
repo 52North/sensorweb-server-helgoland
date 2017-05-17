@@ -13,4 +13,4 @@ underlying interface for data providing backends. With this, the API is flexible
 be put ontop of arbitrary data stores. Its modular design enables a seamless integration into 
 existing Web applications.
 
-![Big Picture]({{base_url}}images/big-picture.png)
+![Big Picture]({{base_url}}/assets/images/big-picture.png)
