@@ -76,9 +76,21 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, 
      * @return the timestamp/timeend when {@link #value} has been observed.
      */
     public Long getTimestamp() {
-        return this.timestamp;
+        return !isSetTimestart()
+                ? this.timestamp
+                : null;
     }
 
+    public Long getTimeend() {
+        return isSetTimestart()
+                ? this.timestamp
+                : null;
+    }
+
+    private boolean isSetTimestart() {
+        return this.timestart != null;
+    }
+    
     /**
      * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
      */
