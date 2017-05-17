@@ -26,36 +26,38 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
-import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 import static org.n52.io.request.IoParameters.createDefaults;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class FilterResolverTest {
 
-	private FilterResolver createResolver(IoParameters resolver) {
-		return new FilterResolver(resolver);
-	}
+    private FilterResolver createResolver(IoParameters resolver) {
+        return new FilterResolver(resolver);
+    }
 
-	@Test
-	public void when_defaults_then_behaveBackwardsCompatible() {
-	    FilterResolver resolver = createResolver(createDefaults());
-	    assertTrue(resolver.shallBehaveBackwardsCompatible());
-	}
+    @Test
+    public void when_defaults_then_behaveBackwardsCompatible() {
+        FilterResolver resolver = createResolver(createDefaults());
+        assertTrue(resolver.shallBehaveBackwardsCompatible());
+    }
 
-	@Test
+    @Test
     public void when_setPlatformTypeFilter_then_dontBehaveBackwardsCompatible() {
-        FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_PLATFORM_TYPES, "blah"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "blah");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
     }
 
     @Test
     public void when_setDatasetTypeFiltre_then_dontBehaveBackwardsCompatible() {
-        FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_VALUE_TYPES, "blah"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "blah");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
     }
 
@@ -75,8 +77,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_stationaryPlatformsFilter_then_sitesAndAndRemoteFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
@@ -85,8 +87,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_mobilePlatformsFilter_then_tracksAndRemoteFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesTrack());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
@@ -95,8 +97,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_insituPlatformsFilter_then_sitesAndtracksFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "insitu"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "insitu");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesTrack());
         Assert.assertFalse(resolver.shallIncludeObservedGeometriesStatic());
@@ -105,8 +107,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_remotePlatformsFilter_then_allGeometriesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesTrack());
@@ -115,25 +117,25 @@ public class FilterResolverTest {
 
     @Test
     public void when_allObservedGeometries_then_allObservedGeometryFiltersActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
     }
 
     @Test
     public void when_allPlatformGeometries_then_allPlatformGeometryFiltersActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesTrack());
     }
 
     @Test
     public void when_allPlatformsRemoteGeometries_then_allGeometriesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote")
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote")
+                                                  .extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesTrack());
@@ -142,9 +144,9 @@ public class FilterResolverTest {
 
     @Test
     public void when_allGeometriesStationaryPlatforms_then_allSitesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all")
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all")
+                                                  .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesSite());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
@@ -153,9 +155,9 @@ public class FilterResolverTest {
 
     @Test
     public void when_allGeometriesMobilePlatforms_then_allTracksFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile")
+                                                  .extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesTrack());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
@@ -164,30 +166,30 @@ public class FilterResolverTest {
 
     @Test
     public void when_sitePlatformGeometries_then_siteFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "site"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "site");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesSite());
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesTrack());
     }
 
     @Test
     public void when_trackPlatformGeometries_then_trackFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "track"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "track");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludePlatformGeometriesTrack());
     }
 
     @Test
     public void when_trackPlatformGeometries_then_siteFilterInactive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "track"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_GEOMETRIES, "track");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesSite());
     }
 
     @Test
     public void when_staticObservedGeometries_then_staticFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "static"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "static");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertFalse(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesTrack());
@@ -196,8 +198,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_dynamicObservedGeometries_then_dynamicFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-        		.extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "dynamic"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVED_GEOMETRIES, "dynamic");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeObservedGeometriesDynamic());
         Assert.assertFalse(resolver.shallIncludeObservedGeometriesStatic());
         Assert.assertFalse(resolver.shallIncludePlatformGeometriesTrack());
@@ -230,8 +232,9 @@ public class FilterResolverTest {
 
     @Test
     public void when_setMobile_then_allMobilesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES,
+                                                              "mobile");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
@@ -241,7 +244,8 @@ public class FilterResolverTest {
     @Test
     public void when_setRemote_then_allRemotesFilterActive() {
         FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "remote"));
+                                                                 .extendWith(Parameters.FILTER_PLATFORM_TYPES,
+                                                                             "remote"));
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
@@ -250,8 +254,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_setMobileRemote_then_allMobileRemotesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "remote");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
         Assert.assertFalse(resolver.shallIncludeInsituPlatformTypes());
@@ -260,8 +264,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_setMobileInsitu_then_allMobileInsitusFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "mobile", "insitu");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
         Assert.assertFalse(resolver.shallIncludeStationaryPlatformTypes());
@@ -270,8 +274,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_setStationaryInsitu_then_allStationaryInsitusFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "insitu");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
         Assert.assertFalse(resolver.shallIncludeMobilePlatformTypes());
@@ -280,8 +284,8 @@ public class FilterResolverTest {
 
     @Test
     public void when_setStationaryRemote_then_allStationaryRemotesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "stationary", "remote");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
         Assert.assertFalse(resolver.shallIncludeInsituPlatformTypes());
@@ -290,44 +294,43 @@ public class FilterResolverTest {
 
     @Test
     public void when_setAllPlatformTypes_then_insituFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeInsituPlatformTypes());
     }
 
     @Test
     public void when_setAllPlatformTypes_then_stationaryFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeStationaryPlatformTypes());
     }
 
     @Test
     public void when_setAllPlatformTypes_then_remoteFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
     }
 
-
     @Test
     public void when_setAllPlatformTypes_then_mobileFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                .extendWith(Parameters.FILTER_PLATFORM_TYPES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());
     }
 
     @Test
     public void when_setAllDatasetTypes_then_noFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_VALUE_TYPES, "all"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "all");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
     }
 
     @Test
     public void when_setDatasetTypeFilter_then_filterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                 .extendWith(Parameters.FILTER_VALUE_TYPES, "foobar"));
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "foobar");
+        FilterResolver resolver = createResolver(parameters);
         Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
         Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
     }
