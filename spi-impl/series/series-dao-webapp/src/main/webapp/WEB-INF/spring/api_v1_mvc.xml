@@ -20,6 +20,8 @@
         by bean descriptions using the ref-ids associated below.
     -->
 
+    <bean class="org.n52.web.ctrl.LandingPageController" />
+
     <bean class="org.n52.web.ctrl.ResourcesController">
         <property name="metadataService" ref="metadataService" />
     </bean>
