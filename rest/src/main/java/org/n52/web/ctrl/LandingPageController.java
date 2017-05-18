@@ -42,6 +42,6 @@ public class LandingPageController {
 
     @RequestMapping("/")
     public String showLandingPage() {
-        return "about";
+        return "landing";
     }
 }
