@@ -75,7 +75,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>about.html</welcome-file>
+        <welcome-file>landing.html</welcome-file>
     </welcome-file-list>
 
 </web-app>
