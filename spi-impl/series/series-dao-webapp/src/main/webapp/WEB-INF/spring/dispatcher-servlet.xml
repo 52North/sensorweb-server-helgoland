@@ -48,11 +48,11 @@
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="viewResolvers">
             <list>
-<!--                 <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" /> -->
-<!--                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
-<!--                     <property name="prefix" value="/WEB-INF/jsp/" /> -->
-<!--                     <property name="suffix" value=".jsp" /> -->
-<!--                 </bean> -->
+                 <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                     <property name="prefix" value="/" />
+                     <property name="suffix" value=".html" />
+                 </bean>
             </list>
         </property>
         <property name="defaultViews">

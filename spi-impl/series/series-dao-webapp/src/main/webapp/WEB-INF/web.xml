@@ -73,7 +73,7 @@
         <servlet-name>api-dispatcher</servlet-name>
         <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
-    
+
     <welcome-file-list>
         <welcome-file>about.html</welcome-file>
     </welcome-file-list>
