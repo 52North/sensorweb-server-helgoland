@@ -198,8 +198,6 @@ put both configuration files, and relate it to some context path like so:</p>
 </div>
 
 <h3 id="managing-configuration">Managing Configuration</h3>
-
-<h4 id="separate-properties">Separate Properties</h4>
 <p>It is helpful to separate all properties values from XML configuration for several
 reasons. First, it may be tedious to find all single properties within verbose XML. 
 However, more it also very important to keep sensitive information (like database
@@ -221,12 +219,6 @@ will first take parameters</p>
     <span class="na">ignore-resource-not-found=</span><span class="s">"false"</span> <span class="na">ignore-unresolvable=</span><span class="s">"false"</span> <span class="na">order=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
 </code></pre>
 </div>
-
-<p>A placeholder can now be declared within Spring XML files via <code class="highlighter-rouge">${placeholder:default}</code>.
-If present in the application properties file (your one or the default) it will be 
-replaced, otherwise the given default will be used.</p>
-
-<h4 id="separate-configuration-sections">Separate Configuration Sections</h4>
 
 <p>To keep overview we can separate parts of the configuration files and include them
 via file import, e.g. <code class="highlighter-rouge">&lt;import resource="mvc.xml" /&gt;</code>.</p>
@@ -416,7 +408,7 @@ backend service is called.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/662a98ff530a118e0744b84dc85487859c9b1159">662a98ff530a118e0744b84dc85487859c9b1159</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/b86703f4467c65dc9483121d37395c809466cafd">b86703f4467c65dc9483121d37395c809466cafd</a></p>
       
     </div>
   </footer>
