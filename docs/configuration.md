@@ -111,11 +111,14 @@ will first take parameters
 
 ```xml
 <!-- these properties do override default settings -->
-<ctx:property-placeholder location="${local.configFile:${user.home}/application.properties}"
+<ctx:property-placeholder 
+    <!-- ${user.home}/application.properties} when -Dlocal.configFile not defined -->
+    location="${local.configFile:${user.home}/application.properties}"
     ignore-resource-not-found="true" ignore-unresolvable="true" order="0" />
 
 <!-- default settings -->
-<ctx:property-placeholder location="classpath:/application.properties"
+<ctx:property-placeholder 
+    location="classpath:/application.properties"
     ignore-resource-not-found="false" ignore-unresolvable="false" order="1" />
 ```
 
