@@ -100,6 +100,8 @@ put both configuration files, and relate it to some context path like so:
 ```
 
 ### Managing Configuration
+
+#### Separate Properties
 It is helpful to separate all properties values from XML configuration for several
 reasons. First, it may be tedious to find all single properties within verbose XML. 
 However, more it also very important to keep sensitive information (like database
@@ -122,10 +124,16 @@ will first take parameters
     ignore-resource-not-found="false" ignore-unresolvable="false" order="1" />
 ```
 
+A placeholder can now be declared within Spring XML files via `${placeholder:default}`.
+If present in the application properties file (your one or the default) it will be 
+replaced, otherwise the given default will be used.
+
+#### Separate Configuration Sections
+
 To keep overview we can separate parts of the configuration files and include them
 via file import, e.g. `<import resource="mvc.xml" />`.
 
- 
+
 
 
 ### Dispatcher Configuration
