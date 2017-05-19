@@ -208,11 +208,14 @@ values. Another may be located under your home directory. Configure the followin
 will first take parameters</p>
 
 <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- these properties do override default settings --&gt;</span>
-<span class="nt">&lt;ctx:property-placeholder</span> <span class="na">location=</span><span class="s">"${local.configFile:${user.home}/application.properties}"</span>
-    <span class="na">ignore-resource-not-found=</span><span class="s">"true"</span> <span class="na">ignore-unresolvable=</span><span class="s">"true"</span> <span class="na">order=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;ctx:property-placeholder</span> 
+    <span class="err">&lt;!--</span> <span class="err">${user.home}/application.properties}</span> <span class="err">when</span> <span class="err">-Dlocal.configFile</span> <span class="err">not</span> <span class="err">defined</span> <span class="err">--</span><span class="nt">&gt;</span>
+    location="${local.configFile:${user.home}/application.properties}"
+    ignore-resource-not-found="true" ignore-unresolvable="true" order="0" /&gt;
 
 <span class="c">&lt;!-- default settings --&gt;</span>
-<span class="nt">&lt;ctx:property-placeholder</span> <span class="na">location=</span><span class="s">"classpath:/application.properties"</span>
+<span class="nt">&lt;ctx:property-placeholder</span> 
+    <span class="na">location=</span><span class="s">"classpath:/application.properties"</span>
     <span class="na">ignore-resource-not-found=</span><span class="s">"false"</span> <span class="na">ignore-unresolvable=</span><span class="s">"false"</span> <span class="na">order=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
 </code></pre>
 </div>
@@ -405,7 +408,7 @@ backend service is called.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/c7d9a475a0451ca9e3c10516a3628daffd2cf0d9">c7d9a475a0451ca9e3c10516a3628daffd2cf0d9</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/b86703f4467c65dc9483121d37395c809466cafd">b86703f4467c65dc9483121d37395c809466cafd</a></p>
       
     </div>
   </footer>
