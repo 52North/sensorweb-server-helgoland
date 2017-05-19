@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/api/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/compatibility</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/development</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_missing-href-in-parameter-collection/valuetypes</loc>
+</url>
+</urlset>
