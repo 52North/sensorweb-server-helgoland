@@ -383,13 +383,16 @@ paths:
         Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
 
 
-        What Mime-Types are supported depends on the `datasetType`. For example `quantity` observations can be drawn as a timeseries chart (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying  `/service/{serviceId}?datasetTypes=all`
-        produces:
-        - application/json
-        - image/png
-        - text/csv
-        - application/pdf
-        - application/zip
+        What Mime-Types are supported depends on the `datasetType`. For example `quantity` observations can be drawn as a timeseries chart 
+        (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying 
+        `/service/{serviceId}?datasetTypes=all` produces:
+        
+          - `application/json`
+          - `image/png`
+          - `text/csv`
+          - `application/pdf`
+          - `application/zip`
+
       parameters:
         - name: datasetId
           in: path
