@@ -28,14 +28,12 @@
  */
 package org.n52.web.exception;
 
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = UNSUPPORTED_MEDIA_TYPE)
+@ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
 public class UnsupportedMediaTypeException extends RuntimeException implements WebException {
 
     private static final long serialVersionUID = -299285770822168789L;
@@ -51,14 +49,14 @@ public class UnsupportedMediaTypeException extends RuntimeException implements W
     }
 
     @Override
-    public void addHint(String details) {
-        if (details == null) {
+    public void addHint(String hint) {
+        if (hint == null) {
             return;
         }
         if (getHints() == null) {
-            this.details = new ArrayList<String>();
+            this.details = new ArrayList<>();
         }
-        this.details.add(details);
+        this.details.add(hint);
     }
 
     @Override

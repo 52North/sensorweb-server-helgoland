@@ -28,20 +28,18 @@
  */
 package org.n52.io.extension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class RenderingHintsExtension extends MetadataExtension<DatasetOutput> {
 
@@ -96,11 +94,11 @@ public class RenderingHintsExtension extends MetadataExtension<DatasetOutput> {
 
         if (hasSeriesConfiguration(output)) {
             final StyleProperties style = createStyle(getSeriesStyle(output));
-            checkForBackwardCompatiblity(output, style);// stay backward compatible
+            checkForBackwardCompatiblity(output, style);
             return wrapSingleIntoMap(style);
         } else if (hasPhenomenonConfiguration(output)) {
             final StyleProperties style = createStyle(getPhenomenonStyle(output));
-            checkForBackwardCompatiblity(output, style);// stay backward compatible
+            checkForBackwardCompatiblity(output, style);
             return wrapSingleIntoMap(style);
         }
 

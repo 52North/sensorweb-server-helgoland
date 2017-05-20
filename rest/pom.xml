@@ -9,11 +9,14 @@
     <artifactId>rest</artifactId>
     <packaging>jar</packaging>
     <name>Series REST API - REST module</name>
-    <url>http://52north.org/communities/sensorweb/</url>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>spi</artifactId>
         </dependency>
 
         <dependency>
@@ -54,10 +57,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
@@ -95,6 +94,10 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>

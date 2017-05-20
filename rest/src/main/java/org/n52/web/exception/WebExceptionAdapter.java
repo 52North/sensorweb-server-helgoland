@@ -29,7 +29,6 @@
 package org.n52.web.exception;
 
 import java.io.InputStream;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
@@ -53,27 +52,21 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     @Override
     public OutputCollection<T> getExpandedParameters(IoParameters query) {
         OutputCollection<T> parameters = composedService.getExpandedParameters(query);
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
+        assertValidSpiImplementation(parameters);
         return parameters;
     }
 
     @Override
     public OutputCollection<T> getCondensedParameters(IoParameters query) {
         OutputCollection<T> parameters = composedService.getCondensedParameters(query);
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
+        assertValidSpiImplementation(parameters);
         return parameters;
     }
 
     @Override
     public OutputCollection<T> getParameters(String[] items, IoParameters query) {
         OutputCollection<T> parameters = composedService.getParameters(items, query);
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
+        assertValidSpiImplementation(parameters);
         return parameters;
     }
 
@@ -84,7 +77,7 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     }
 
     private void assertItemExists(String item, IoParameters parameters) {
-        if ( !exists(item, parameters)) {
+        if (!exists(item, parameters)) {
             throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
         }
     }
@@ -118,6 +111,12 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     @Override
     public boolean supportsRawData() {
         return composedService.supportsRawData();
+    }
+
+    private void assertValidSpiImplementation(OutputCollection<T> parameters) throws InternalServerException {
+        if (parameters == null) {
+            throw new InternalServerException("SPI implementation did return null value!");
+        }
     }
 
 }

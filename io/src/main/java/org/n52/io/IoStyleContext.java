@@ -31,8 +31,8 @@ package org.n52.io;
 import java.util.Collections;
 import java.util.List;
 
-import org.n52.io.measurement.MeasurementIoFactory;
-import org.n52.io.measurement.img.ChartDimension;
+import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.quantity.img.ChartDimension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -49,7 +49,8 @@ public final class IoStyleContext {
     }
 
     // use static constructors
-    private IoStyleContext(RequestStyledParameterSet timeseriesStyles, List<? extends DatasetOutput> metadatas) {
+    private IoStyleContext(RequestStyledParameterSet timeseriesStyles,
+            List<? extends DatasetOutput> metadatas) {
         this.seriesMetadatas = metadatas.isEmpty()
                 ? Collections.<DatasetOutput>emptyList()
                 : metadatas;
@@ -57,21 +58,29 @@ public final class IoStyleContext {
     }
 
     public static IoStyleContext createEmpty() {
+        return create(IoParameters.createDefaults());
+    }
+
+    public static IoStyleContext create(IoParameters config) {
+        return create(config.toStyledParameterSet());
+    }
+
+    public static IoStyleContext create(RequestStyledParameterSet request) {
         List<? extends DatasetOutput> emptyList = Collections.emptyList();
-        return new IoStyleContext(new RequestStyledParameterSet(), emptyList);
+        return new IoStyleContext(request, emptyList);
     }
 
     /**
      * @param styles the style definitions.
      * @param metadatas the metadata for each timeseries.
-     * @throws NullPointerException if any of the given arguments is
-     * <code>null</code>.
-     * @throws IllegalStateException if amount of timeseries described by the
-     * given arguments is not in sync.
-     * @return a rendering context to be used by {@link MeasurementIoFactory} to create an
+     * @throws NullPointerException if any of the given arguments is <code>null</code>.
+     * @throws IllegalStateException if amount of timeseries described by the given arguments is not
+     * in sync.
+     * @return a rendering context to be used by {@link QuantityIoFactory} to create an
      * {@link IoHandler}.
      */
-    public static IoStyleContext createContextWith(RequestStyledParameterSet styles, List<? extends DatasetOutput> metadatas) {
+    public static IoStyleContext createContextWith(RequestStyledParameterSet styles,
+            List<? extends DatasetOutput> metadatas) {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
@@ -88,8 +97,9 @@ public final class IoStyleContext {
         return new IoStyleContext(styles, metadatas);
     }
 
-    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata, IoParameters ioConfig) {
-        RequestStyledParameterSet parameters = ioConfig.toRequestStyledParameterSet();
+    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
+            IoParameters ioConfig) {
+        RequestStyledParameterSet parameters = ioConfig.toStyledParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
     }
@@ -105,14 +115,6 @@ public final class IoStyleContext {
 
     public List<? extends DatasetOutput> getSeriesMetadatas() {
         return seriesMetadatas;
-    }
-
-    public String getTimeAxisFormat() {
-        if (chartStyleDefinitions.containsParameter("timeaxis.format")) {
-            return chartStyleDefinitions.getAsString("timeaxis.format");
-        } else {
-            return "yyyy-MM-dd, HH:mm";
-        }
     }
 
 }

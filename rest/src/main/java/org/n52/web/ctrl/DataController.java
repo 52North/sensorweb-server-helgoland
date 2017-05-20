@@ -26,17 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
 
-import static org.n52.io.MimeType.APPLICATION_ZIP;
-import static org.n52.io.MimeType.TEXT_CSV;
-import static org.n52.io.request.IoParameters.createFromQuery;
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
-import static org.n52.io.request.RequestSimpleParameterSet.createFromDesignedParameters;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_DATASETS;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,9 +48,11 @@ import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoProcessChain;
+import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -67,11 +60,12 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.DatasetType;
-import org.n52.io.v1.data.RawFormats;
+import org.n52.io.response.dataset.ValueType;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
+import org.n52.series.spi.srv.RawFormats;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -81,291 +75,398 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = COLLECTION_DATASETS, produces = {"application/json"})
+@RequestMapping(value = UrlSettings.COLLECTION_DATASETS, produces = {
+    "application/json"
+})
 public class DataController extends BaseController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataController.class);
+
+    private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
 
     @Autowired
-    private DefaultIoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> ioFactoryCreator;
+    private DefaultIoFactory<Data<AbstractValue< ? >>,
+                             DatasetOutput<AbstractValue< ? >, ? >,
+                             AbstractValue< ? >> ioFactoryCreator;
 
-    private DataService<Data<AbstractValue<?>>> dataService;
+    private DataService<Data<AbstractValue< ? >>> dataService;
 
-    private ParameterService<DatasetOutput<AbstractValue<?>, ?>> datasetService;
+    private ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
-    private String requestIntervalRestriction; // optional
+    // optional
+    private String requestIntervalRestriction;
 
-    @RequestMapping(value = "/data", produces = {"application/json"}, method = GET)
+    @RequestMapping(value = "/data",
+        produces = {
+            "application/json"
+        },
+        method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
-                                      @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-        IoParameters parameters = createFromQuery(query);
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters parameters = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data with query: {}", parameters);
-        return getSeriesCollectionData(response, parameters.toSimpleParameterSet());
+        return getCollectionData(response, locale, parameters.toSimpleParameterSet());
     }
 
-    @RequestMapping(value = "/data", produces = {"application/json"}, method = POST)
-    public ModelAndView getSeriesCollectionData(HttpServletResponse response,
-                                                @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-
-        LOGGER.debug("get data collection with parameter set: {}", parameters);
-
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
-        checkAgainstTimespanRestriction(parameters.getTimespan());
-
-        final String datasetType = parameters.getDatasetType();
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createProcessChain();
-
-        DataCollection<?> processed = ioChain.getData();
-        return new ModelAndView().addObject(processed.getAllSeries());
-    }
-
-    @RequestMapping(value = "/{seriesId}/data", produces = {"application/json"}, method = GET)
+    @RequestMapping(value = "/{seriesId}/data",
+        produces = {
+            "application/json"
+        },
+        method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
                                       @PathVariable String seriesId,
-                                      @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-
-        IoParameters map = createFromQuery(query);
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
 
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
-        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
-        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
-        String datasetType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createProcessChain();
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
+        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
+        IoProcessChain< ? > ioChain = createIoFactory(valueType).withSimpleRequest(parameters)
+                                                                .createProcessChain();
 
-        DataCollection<?> formattedDataCollection = ioChain.getProcessedData();
-        final Map<String, ?> processed = formattedDataCollection.getAllSeries();
+        DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
+        final Map<String, ? > processed = formattedDataCollection.getAllSeries();
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
                 : new ModelAndView().addObject(processed.get(seriesId));
     }
 
-    @RequestMapping(value = "/data", method = POST, params = {RawFormats.RAW_FORMAT})
-    public void getRawSeriesCollectionData(HttpServletResponse response,
-                                           @RequestBody RequestSimpleParameterSet parameters) throws Exception {
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+    @RequestMapping(value = "/data", produces = {
+        "application/json"
+    }, method = RequestMethod.POST)
+    public ModelAndView getCollectionData(HttpServletResponse response,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                          @RequestBody RequestSimpleParameterSet parameters)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
+        LOGGER.debug("get data collection with parameter set: {}", parameters);
 
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+
+        final String datasetType = parameters.getValueType();
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType).withSimpleRequest(parameters)
+                                                                  .createProcessChain();
+
+        DataCollection< ? > processed = ioChain.getData();
+        return new ModelAndView().addObject(processed.getAllSeries());
+    }
+
+    @RequestMapping(value = "/data",
+        params = {
+            RawFormats.RAW_FORMAT
+        },
+        method = RequestMethod.POST)
+    public void getRawSeriesCollectionData(HttpServletResponse response,
+                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                           @RequestBody RequestSimpleParameterSet parameters)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
+        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
     }
 
-    @RequestMapping(value = "/{seriesId}/data", method = GET, params = {RawFormats.RAW_FORMAT})
+    @RequestMapping(value = "/{seriesId}/data",
+        method = RequestMethod.GET,
+        params = {
+            RawFormats.RAW_FORMAT
+        })
     public void getRawSeriesData(HttpServletResponse response,
                                  @PathVariable String seriesId,
+                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
-        checkForUnknownSeriesIds(map, seriesId);
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        checkForUnknownDatasetIds(map, seriesId);
         LOGGER.debug("getSeriesCollection() with query: {}", map);
-        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
         writeRawData(parameters, response);
     }
 
-    private void writeRawData(RequestSimpleParameterSet parameters, HttpServletResponse response) throws InternalServerException, ResourceNotFoundException, BadRequestException {
+    private void writeRawData(RequestSimpleParameterSet parameters, HttpServletResponse response)
+            throws InternalServerException, ResourceNotFoundException, BadRequestException {
         if (!dataService.supportsRawData()) {
-            throw new BadRequestException("Querying of raw timeseries data is not supported by the underlying service!");
+            throw new BadRequestException("Querying of raw timeseries data is not supported "
+                    + "by the underlying service!");
         }
         final RawDataService rawDataService = dataService.getRawDataService();
-        try (final InputStream inputStream = rawDataService.getRawData(parameters)) {
+        try (InputStream inputStream = rawDataService.getRawData(parameters)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found.");
             }
+            response.setContentType(parameters.getRawFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
         }
     }
 
-    @RequestMapping(value = "/data", produces = {"application/pdf"}, method = POST)
+    @RequestMapping(value = "/data",
+        produces = {
+            "application/pdf"
+        },
+        method = RequestMethod.POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
-                                          @RequestBody RequestStyledParameterSet parameters) throws Exception {
-
-        IoParameters map = createFromQuery(parameters);
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                          @RequestBody RequestStyledParameterSet parameters)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
+        IoParameters map = QueryParameters.createFromQuery(parameters);
         LOGGER.debug("get data collection report with query: {}", map);
 
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                .withSimpleRequest(createFromDesignedParameters(parameters))
-                .withStyledRequest(parameters)
-                .createHandler("application/pdf")
-                .writeBinary(response.getOutputStream());
-
+        final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        response.setContentType(outputFormat);
+        createIoFactory(datasetType).withStyledRequest(map.mergeToStyledParameterSet(parameters))
+                                    .withSimpleRequest(map.mergeToSimpleParameterSet(parameters))
+                                    .createHandler(outputFormat)
+                                    .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"application/pdf"}, method = GET)
+    @RequestMapping(value = "/{seriesId}/data",
+        produces = {
+            "application/pdf"
+        },
+        method = RequestMethod.GET)
     public void getSeriesReport(HttpServletResponse response,
                                 @PathVariable String seriesId,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-
-        IoParameters map = createFromQuery(query);
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
-        final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createHandler("application/pdf")
-                .writeBinary(response.getOutputStream());
+        final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        response.setContentType(outputFormat);
+        createIoFactory(datasetType).withSimpleRequest(parameters)
+                                    .createHandler(outputFormat)
+                                    .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"application/zip"}, method = GET)
+    @RequestMapping(value = "/{seriesId}/data",
+        produces = {
+            "application/zip"
+        },
+        method = RequestMethod.GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
                                      @PathVariable String seriesId,
+                                     @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
-                                             throws Exception {
-        IoParameters map = createFromQuery(query);
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType(APPLICATION_ZIP.toString());
+        response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
+        response.setContentType(MimeType.APPLICATION_ZIP.toString());
 
-        final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createHandler(APPLICATION_ZIP.toString())
-                .writeBinary(response.getOutputStream());
+        final String datasetType = parameters.getValueType();
+        createIoFactory(datasetType).withSimpleRequest(parameters)
+                                    .createHandler(MimeType.APPLICATION_ZIP.toString())
+                                    .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"text/csv"}, method = GET)
+    @RequestMapping(value = "/{seriesId}/data",
+        produces = {
+            "text/csv"
+        },
+        method = RequestMethod.GET)
     public void getSeriesAsCsv(HttpServletResponse response,
-                              @PathVariable String seriesId,
-                              @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-
-        IoParameters map = createFromQuery(query);
+                               @PathVariable String seriesId,
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                               @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = createForSingleSeries(seriesId, map);
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkForUnknownDatasetIds(map, seriesId);
 
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         if (Boolean.parseBoolean(map.getOther("zip"))) {
-            response.setContentType(APPLICATION_ZIP.toString());
-        }
-        else {
-            response.setContentType(TEXT_CSV.toString());
+            response.setContentType(MimeType.APPLICATION_ZIP.toString());
+        } else {
+            response.setContentType(MimeType.TEXT_CSV.toString());
         }
 
-        final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                .withSimpleRequest(parameters)
-                .createHandler(TEXT_CSV.toString())
-                .writeBinary(response.getOutputStream());
+        final String datasetType = parameters.getValueType();
+        createIoFactory(datasetType).withSimpleRequest(parameters)
+                                    .createHandler(MimeType.TEXT_CSV.toString())
+                                    .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/data", produces = {"image/png"}, method = POST)
+    @RequestMapping(value = "/data",
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.POST)
     public void getSeriesCollectionChart(HttpServletResponse response,
-                                         @RequestBody RequestStyledParameterSet parameters) throws Exception {
-
-        IoParameters map = createFromQuery(parameters);
-        checkForUnknownSeriesIds(map, parameters.getDatasets());
+                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                         @RequestBody RequestStyledParameterSet parameters)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
+        IoParameters map = QueryParameters.createFromQuery(parameters);
+        checkForUnknownDatasetIds(map, parameters.getDatasets());
 
         LOGGER.debug("get data collection chart with query: {}", map);
 
-        final String datasetType = parameters.getDatasetType();
-        createIoFactory(datasetType)
-                .withStyledRequest(parameters)
-                .createHandler("image/png")
-                .writeBinary(response.getOutputStream());
+        final String datasetType = parameters.getValueType();
+        String outputFormat = MimeType.IMAGE_PNG.toString();
+        response.setContentType(outputFormat);
+        createIoFactory(datasetType).withStyledRequest(parameters)
+                                    .createHandler(outputFormat)
+                                    .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{seriesId}/data",
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
                                @PathVariable String seriesId,
-                               @RequestParam(required = false) MultiValueMap<String, String> query) throws Exception {
-
-        IoParameters map = createFromQuery(query);
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                               @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
-        checkAgainstTimespanRestriction(map.getTimespan().toString());
-        checkForUnknownSeriesIds(map, seriesId);
+        checkAgainstTimespanRestriction(map.getTimespan()
+                                           .toString());
+        checkForUnknownDatasetIds(map, seriesId);
 
-        String handleAsDatasetFallback = map.getAsString(Parameters.HANDLE_AS_DATASET_TYPE);
-        String observationType = DatasetType.extractType(seriesId, handleAsDatasetFallback);
+        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
-        createIoFactory(observationType)
-                .withSimpleRequest(parameters)
-                .createHandler("image/png")
-                .writeBinary(response.getOutputStream());
+        String outputFormat = MimeType.IMAGE_PNG.toString();
+        response.setContentType(outputFormat);
+        createIoFactory(valueType).withSimpleRequest(parameters)
+                                  .createHandler(outputFormat)
+                                  .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/{chartQualifier}", produces = {"image/png"}, method = GET)
+    @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
+    public ModelAndView getSeriesChartByInterval(@PathVariable String datasetId) {
+        assertPrerenderingIsEnabled();
+        ModelAndView response = new ModelAndView();
+        return response.addObject(preRenderingTask.getPrerenderedImages(datasetId));
+    }
+
+    @RequestMapping(value = "/{datasetId}/images/{fileName}",
+        produces = {
+            "image/png"
+        }, method = RequestMethod.GET)
+    public void getSeriesChartByFilename(HttpServletResponse response,
+                                         @PathVariable String datasetId,
+                                         @PathVariable String fileName)
+            throws Exception {
+        assertPrerenderingIsEnabled();
+        assertPrerenderedImageIsAvailable(fileName, null);
+
+        response.setContentType(MimeType.IMAGE_PNG.toString());
+        LOGGER.debug("get prerendered chart for '{}'", fileName);
+        preRenderingTask.writePrerenderedGraphToOutputStream(fileName, response.getOutputStream());
+
+    }
+
+    @RequestMapping(value = "/{seriesId}/{chartQualifier}",
+        produces = {
+            "image/png"
+        },
+        method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
                                          @PathVariable String seriesId,
-                                         @PathVariable String chartQualifier,
-                                         @RequestParam(required = false) MultiValueMap<String, String> query)
-                                                 throws Exception {
-        if (preRenderingTask == null) {
-            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
-        }
-        if ( !preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
-            throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + seriesId + "'.");
-        }
+                                         @PathVariable String chartQualifier)
+            throws Exception {
+        assertPrerenderingIsEnabled();
+        assertPrerenderedImageIsAvailable(seriesId, chartQualifier);
 
+        response.setContentType(MimeType.IMAGE_PNG.toString());
         LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(String timespan) {
         if (requestIntervalRestriction != null) {
-            Duration duration = Period.parse(requestIntervalRestriction).toDurationFrom(new DateTime());
-            if (duration.getMillis() < Interval.parse(timespan).toDurationMillis()) {
-                throw new BadRequestException("Requested timespan is to long, please use a period shorter than '"
-                        + requestIntervalRestriction + "'");
+            Duration duration = Period.parse(requestIntervalRestriction)
+                                      .toDurationFrom(new DateTime());
+            if (duration.getMillis() < Interval.parse(timespan)
+                                               .toDurationMillis()) {
+                throw new BadRequestException("Timespan too long, please use a period shorter than '"
+                        + requestIntervalRestriction
+                        + "'");
             }
         }
     }
 
     private void checkForUnknownSeriesIds(RequestParameterSet parameters, String... seriesIds) {
-        checkForUnknownSeriesIds(IoParameters.createFromQuery(parameters), seriesIds);
+        checkForUnknownDatasetIds(IoParameters.createFromQuery(parameters), seriesIds);
     }
 
-    private void checkForUnknownSeriesIds(IoParameters parameters, String... seriesIds) {
+    private void checkForUnknownDatasetIds(IoParameters parameters, String... seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
-                if ( !datasetService.exists(id, parameters)) {
-                    throw new ResourceNotFoundException("The series with id '" + id + "' was not found.");
+                if (!datasetService.exists(id, parameters)) {
+                    throw new ResourceNotFoundException("Series with id '" + id + "' wasn't found.");
                 }
             }
         }
     }
 
-    private IoFactory<Data<AbstractValue< ? >>, DatasetOutput<AbstractValue< ? >, ? >, AbstractValue< ? >> createIoFactory(final String datasetType) throws DatasetFactoryException {
-        if ( !ioFactoryCreator.isKnown(datasetType)) {
+    private IoFactory<Data<AbstractValue< ? >>,
+                      DatasetOutput<AbstractValue< ? >, ? >,
+                      AbstractValue< ? >> createIoFactory(final String datasetType)
+                              throws DatasetFactoryException {
+        if (!ioFactoryCreator.isKnown(datasetType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
         }
-        return ioFactoryCreator
-                .create(datasetType)
-//                .withBasePath(getRootResource())
-                .withDataService(dataService)
-                .withDatasetService(datasetService);
+        return ioFactoryCreator.create(datasetType)
+                               // .withBasePath(getRootResource())
+                               .withDataService(dataService)
+                               .withDatasetService(datasetService);
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext().getResource("/").toURI();
+        return getServletConfig().getServletContext()
+                                 .getResource("/")
+                                 .toURI();
     }
 
     // TODO set preredering config instead of task
@@ -389,21 +490,36 @@ public class DataController extends BaseController {
         this.requestIntervalRestriction = requestIntervalRestriction;
     }
 
-    public DataService<Data<AbstractValue<?>>> getDataService() {
+    public DataService<Data<AbstractValue< ? >>> getDataService() {
         return dataService;
     }
 
-    public void setDataService(DataService<Data<AbstractValue<?>>> dataService) {
+    public void setDataService(DataService<Data<AbstractValue< ? >>> dataService) {
         this.dataService = dataService;
     }
 
-    public ParameterService<DatasetOutput<AbstractValue<?>, ?>> getDatasetService() {
+    public ParameterService<DatasetOutput<AbstractValue< ? >, ? >> getDatasetService() {
         return datasetService;
     }
 
-    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue<?>, ?>> datasetService) {
+    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService) {
         this.datasetService = datasetService;
     }
 
+    private void assertPrerenderingIsEnabled() {
+        if (preRenderingTask == null) {
+            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
+        }
+    }
+
+    private void assertPrerenderedImageIsAvailable(String seriesId, String chartQualifier) {
+        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
+            throw new ResourceNotFoundException("No pre-rendered chart found for datasetId '"
+                    + seriesId
+                    + " (qualifier: "
+                    + chartQualifier
+                    + ")'.");
+        }
+    }
 
 }

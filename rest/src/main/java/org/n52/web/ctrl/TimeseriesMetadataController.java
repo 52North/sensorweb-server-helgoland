@@ -28,15 +28,13 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_TIMESERIES;
-
-import org.n52.io.response.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Deprecated
 @RestController
-@RequestMapping(value = COLLECTION_TIMESERIES)
+@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
 
     // resource controller for timeseries metadata

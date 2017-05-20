@@ -33,7 +33,7 @@ import org.n52.io.response.dataset.DataCollection;
 
 /**
  * Represents a time value pair data format.
- * @param <T>
+ * @param <T> the data type.
  */
 public final class TvpDataCollection<T extends Data> extends DataCollection<T> {
 

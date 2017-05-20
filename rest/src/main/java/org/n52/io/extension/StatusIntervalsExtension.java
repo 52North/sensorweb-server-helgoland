@@ -28,25 +28,23 @@
  */
 package org.n52.io.extension;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.n52.io.extension.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StatusInterval;
-import org.n52.io.response.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 
     private static final String CONFIG_FILE = "/config-status-intervals.json";
 
@@ -98,11 +96,11 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput> {
 
         if (hasSeriesConfiguration(output)) {
             final StatusInterval[] intervals = createIntervals(getSeriesIntervals(output));
-            checkForBackwardCompatiblity(output, intervals); // stay backwards compatible
+            checkForBackwardCompatiblity(output, intervals);
             return wrapSingleIntoMap(intervals);
         } else if (hasPhenomenonConfiguration(output)) {
             final StatusInterval[] intervals = createIntervals(getPhenomenonIntervals(output));
-            checkForBackwardCompatiblity(output, intervals); // stay backwards compatible
+            checkForBackwardCompatiblity(output, intervals);
             return wrapSingleIntoMap(intervals);
         }
         LOGGER.error("No status intervals found for {} (id={})", output, output.getId());

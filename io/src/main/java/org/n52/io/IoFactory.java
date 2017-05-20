@@ -42,11 +42,11 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?>, V extends AbstractValue<?>> {
+public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ?>, V extends AbstractValue<?>> {
 
     private DataService<D> dataService;
 
-    private ParameterService<DS> datasetService;
+    private ParameterService<P> datasetService;
 
     private RequestSimpleParameterSet simpleRequest;
 
@@ -54,33 +54,33 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
 
     private URI basePath;
 
-    public IoFactory<D, DS, V> withSimpleRequest(RequestSimpleParameterSet request) {
+    public IoFactory<D, P, V> withSimpleRequest(RequestSimpleParameterSet request) {
         this.simpleRequest = request;
         return this;
     }
 
-    public IoFactory<D, DS, V> withStyledRequest(RequestStyledParameterSet request) {
+    public IoFactory<D, P, V> withStyledRequest(RequestStyledParameterSet request) {
         this.styledRequest = request;
         return this;
     }
 
-    public IoFactory<D, DS, V> withServletContextRoot(URI servletContextRoot) {
-        this.basePath = servletContextRoot;
+    public IoFactory<D, P, V> withServletContextRoot(URI contextRoot) {
+        this.basePath = contextRoot;
         return this;
     }
 
-    public IoFactory<D, DS, V> withDataService(DataService<D> dataService) {
-        this.dataService = dataService;
+    public IoFactory<D, P, V> withDataService(DataService<D> service) {
+        this.dataService = service;
         return this;
     }
 
-    public IoFactory<D, DS, V> withDatasetService(ParameterService<DS> datasetService) {
-        this.datasetService = datasetService;
+    public IoFactory<D, P, V> withDatasetService(ParameterService<P> service) {
+        this.datasetService = service;
         return this;
     }
 
-    public IoFactory<D, DS, V> withBasePath(URI basePath) {
-        this.basePath = basePath;
+    public IoFactory<D, P, V> withBasePath(URI path) {
+        this.basePath = path;
         return this;
     }
 
@@ -92,13 +92,16 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
 
     public IoProcessChain<D> createProcessChain() {
         return new IoProcessChain<D>() {
+
             @Override
             public DataCollection<D> getData() {
                 return getDataService().getData(getRequestParameters());
             }
+
             @Override
             public DataCollection<?> getProcessedData() {
-                return getData(); // empty chain
+                // empty chain
+                return getData();
             }
         };
     }
@@ -114,7 +117,7 @@ public abstract class IoFactory<D extends Data<V>, DS extends DatasetOutput<V, ?
         return IoStyleContext.createContextWith(styledRequest, getMetadatas());
     }
 
-    protected List<DS> getMetadatas() {
+    protected List<P> getMetadatas() {
         String[] seriesIds = simpleRequest != null
                 ? simpleRequest.getDatasets()
                 : styledRequest.getDatasets();

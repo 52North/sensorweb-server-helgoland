@@ -26,19 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.common.Stopwatch.startStopwatch;
-import static org.n52.web.ctrl.UrlSettings.COLLECTION_STATIONS;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.StationOutput;
+import org.n52.io.response.dataset.StationOutput;
 import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
@@ -46,52 +45,60 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @Deprecated
 @RestController
-@RequestMapping(value = COLLECTION_STATIONS, produces = {"application/json"})
+@RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
+    "application/json"
+})
 public class StationsParameterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
     private ParameterService<StationOutput> parameterService;
 
-    @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                      @RequestParam(required = false) MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         map = IoParameters.ensureBackwardsCompatibility(map);
 
         if (map.isExpanded()) {
-            Stopwatch stopwatch = startStopwatch();
-            OutputCollection<?> result = parameterService.getExpandedParameters(map);
-            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
+            Stopwatch stopwatch = Stopwatch.startStopwatch();
+            OutputCollection< ? > result = parameterService.getExpandedParameters(map);
+            logRequestTime(stopwatch);
 
             // TODO add paging
             return new ModelAndView().addObject(result.getItems());
         } else {
-            Stopwatch stopwatch = startStopwatch();
-            OutputCollection<?> result = parameterService.getCondensedParameters(map);
-            LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
+            Stopwatch stopwatch = Stopwatch.startStopwatch();
+            OutputCollection< ? > result = parameterService.getCondensedParameters(map);
+            logRequestTime(stopwatch);
 
             // TODO add paging
             return new ModelAndView().addObject(result.getItems());
         }
     }
 
-    @RequestMapping(value = "/{item}", method = GET)
+    @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestParam(required = false) MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
         map = IoParameters.ensureBackwardsCompatibility(map);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
-        Stopwatch stopwatch = startStopwatch();
+        Stopwatch stopwatch = Stopwatch.startStopwatch();
         Object result = parameterService.getParameter(procedureId, map);
-        LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
+        logRequestTime(stopwatch);
 
         if (result == null) {
             throw new ResourceNotFoundException("Found no station with given id.");
@@ -107,6 +114,10 @@ public class StationsParameterController {
     public void setParameterService(ParameterService<StationOutput> stationParameterService) {
         ParameterService<StationOutput> service = new TransformingStationOutputService(stationParameterService);
         this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
+    }
+
+    private void logRequestTime(Stopwatch stopwatch) {
+        LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
     }
 
 }

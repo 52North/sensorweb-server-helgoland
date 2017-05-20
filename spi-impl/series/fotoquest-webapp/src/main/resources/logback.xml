@@ -1,5 +1,0 @@
-<configuration scan="true">
-
-    <include resource="logback-${env}.xml"/>
-
-</configuration>

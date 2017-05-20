@@ -28,6 +28,7 @@
  */
 package org.n52.web.exception;
 
+import org.n52.io.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -53,18 +54,14 @@ public final class ExceptionResponse {
 
     private String[] hints;
 
-    public static ExceptionResponse createExceptionResponse(WebException e, HttpStatus statusCode) {
-        return new ExceptionResponse(e.getThrowable(), statusCode, e.getHints());
-    }
-
-    private ExceptionResponse(Throwable e, HttpStatus statusCode) {
-        this(e, statusCode, null);
-    }
-
     private ExceptionResponse(Throwable e, HttpStatus statusCode, String[] hints) {
         this.hints = hints != null ? hints.clone() : null;
         this.statusCode = statusCode;
         this.exception = e;
+    }
+
+    private ExceptionResponse(Throwable e, HttpStatus statusCode) {
+        this(e, statusCode, null);
     }
 
     public int getStatusCode() {
@@ -92,7 +89,11 @@ public final class ExceptionResponse {
     }
 
     public String[] getHints() {
-        return hints;
+        return Utils.copy(hints);
+    }
+
+    public static ExceptionResponse createExceptionResponse(WebException e, HttpStatus statusCode) {
+        return new ExceptionResponse(e.getThrowable(), statusCode, e.getHints());
     }
 
 }

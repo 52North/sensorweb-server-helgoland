@@ -46,26 +46,26 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
 
     @Override
     public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters query) {
-        query = ensureBackwardsCompatibility(query);
-        return service.getExpandedParameters(query);
+        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
+        return service.getExpandedParameters(backwardsCompatibleQuery);
     }
 
     @Override
     public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters query) {
-        query = ensureBackwardsCompatibility(query);
-        return service.getCondensedParameters(query);
+        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
+        return service.getCondensedParameters(backwardsCompatibleQuery);
     }
 
     @Override
     public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters query) {
-        query = ensureBackwardsCompatibility(query);
-        return service.getParameters(items, query);
+        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
+        return service.getParameters(items, backwardsCompatibleQuery);
     }
 
     @Override
     public ParameterOutput getParameter(String item, IoParameters query) {
-        query = ensureBackwardsCompatibility(query);
-        return service.getParameter(item, query);
+        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
+        return service.getParameter(item, backwardsCompatibleQuery);
     }
 
     @Override

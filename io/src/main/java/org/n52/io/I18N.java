@@ -28,11 +28,10 @@
  */
 package org.n52.io;
 
-import static java.util.ResourceBundle.getBundle;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -44,6 +43,8 @@ import java.util.ResourceBundle.Control;
 public final class I18N {
 
     private static final String MESSAGES = "locales/messages";
+
+    private static final String DEFAULT_LOCALE = "en";
 
     private final ResourceBundle bundle;
 
@@ -82,17 +83,17 @@ public final class I18N {
     }
 
     public static I18N getDefaultLocalizer() {
-        return getMessageLocalizer("en");
+        return getMessageLocalizer(DEFAULT_LOCALE);
     }
 
     public static I18N getMessageLocalizer(String languageCode) {
         Locale locale = createLocate(languageCode);
-        return new I18N(getBundle(MESSAGES, locale, new UTF8Control()), locale);
+        return new I18N(ResourceBundle.getBundle(MESSAGES, locale, new UTF8Control()), locale);
     }
 
     private static Locale createLocate(String language) {
         if (language == null) {
-            return new Locale("en");
+            return new Locale(DEFAULT_LOCALE);
         }
         String[] localeParts;
         if (language.contains("_")) {
@@ -102,7 +103,8 @@ public final class I18N {
         }
 
         if (localeParts.length == 0 || localeParts.length > 3) {
-            throw new IllegalArgumentException("Unparsable language parameter: " + language);
+            throw new IllegalArgumentException("Unparsable language parameter: "
+                    + language);
         }
         if (localeParts.length == 1) {
             return new Locale(localeParts[0]);
@@ -114,10 +116,8 @@ public final class I18N {
     }
 
     /**
-     * Overrides
-     * {@link Control#newBundle(String, Locale, String, ClassLoader, boolean)}
-     * as given in {@link Control}'s JavaDoc example to handle UTF-8
-     * localization bundles.
+     * Overrides {@link Control#newBundle(String, Locale, String, ClassLoader, boolean)} as given in
+     * {@link Control}'s JavaDoc example to handle UTF-8 localization bundles.
      */
     private static class UTF8Control extends Control {
 
@@ -134,10 +134,14 @@ public final class I18N {
          * @see java.util.ResourceBundle.Control#newBundle(java.lang.String, java.util.Locale,
          * java.lang.String, java.lang.ClassLoader, boolean)
          */
+        @Override
         public ResourceBundle newBundle(String baseName, Locale locale, String format,
                 ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
-            if (baseName == null || locale == null || format == null || loader == null) {
+            if (baseName == null
+                    || locale == null
+                    || format == null
+                    || loader == null) {
                 throw new NullPointerException();
             }
             ResourceBundle bundle = null;
@@ -162,15 +166,13 @@ public final class I18N {
                     stream = classLoader.getResourceAsStream(resourceName);
                 }
                 if (stream != null) {
-                    try {
-                        InputStreamReader utf8StreamReader = new InputStreamReader(stream, "UTF-8");
+                    try (Reader utf8StreamReader = new InputStreamReader(stream, "UTF-8")) {
                         bundle = new PropertyResourceBundle(utf8StreamReader);
-                    } finally {
-                        stream.close();
                     }
                 }
             } else {
-                throw new IllegalArgumentException("Only java.properties format allowed! Was: " + format);
+                throw new IllegalArgumentException(
+                        "Only java.properties format allowed! Was: " + format);
             }
             return bundle;
         }

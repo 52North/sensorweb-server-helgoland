@@ -28,22 +28,15 @@
  */
 package org.n52.web.ctrl;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static org.n52.io.MimeType.APPLICATION_JSON;
-import static org.n52.io.MimeType.APPLICATION_PDF;
-import static org.n52.io.MimeType.IMAGE_PNG;
-import static org.n52.web.exception.ExceptionResponse.createExceptionResponse;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.n52.io.MimeType;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -57,9 +50,6 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletConfigAware;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * <p>
@@ -78,6 +68,8 @@ public abstract class BaseController implements ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
+    private static final String HEADER_ACCEPT = "Accept";
+
     private ServletConfig servletConfig;
 
     @Override
@@ -90,30 +82,34 @@ public abstract class BaseController implements ServletConfigAware {
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {
-        return APPLICATION_JSON.getMimeType().equals(request.getHeader("Accept"));
+        return MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPdfData(HttpServletRequest request) {
-        return APPLICATION_PDF.getMimeType().equals(request.getHeader("Accept"));
+        return MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPngData(HttpServletRequest request) {
-        return IMAGE_PNG.getMimeType().equals(request.getHeader("Accept"));
+        return MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
+    }
+
+    private static String getAcceptHeader(HttpServletRequest request) {
+        return request.getHeader(HEADER_ACCEPT);
     }
 
     @ExceptionHandler(value = {BadRequestException.class, BadQueryParameterException.class})
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
-        writeExceptionResponse((WebException) e, response, BAD_REQUEST);
+        writeExceptionResponse((WebException) e, response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = ResourceNotFoundException.class)
     public void handle404(Exception e, HttpServletRequest request, HttpServletResponse response) {
-        writeExceptionResponse((WebException) e, response, NOT_FOUND);
+        writeExceptionResponse((WebException) e, response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = InternalServerException.class)
     public void handle500(Exception e, HttpServletRequest request, HttpServletResponse response) {
-        writeExceptionResponse((WebException) e, response, INTERNAL_SERVER_ERROR);
+        writeExceptionResponse((WebException) e, response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(value = {RuntimeException.class, Exception.class, Throwable.class})
@@ -121,27 +117,28 @@ public abstract class BaseController implements ServletConfigAware {
         if (e instanceof HttpMessageNotReadableException) {
             WebException wrappedException = new BadRequestException("The request could not been read.", e);
             wrappedException.addHint("Check the message which has been sent to the server. Probably it is not valid.");
-            writeExceptionResponse(wrappedException, response, BAD_REQUEST);
+            writeExceptionResponse(wrappedException, response, HttpStatus.BAD_REQUEST);
         } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
-            writeExceptionResponse(wrappedException, response, INTERNAL_SERVER_ERROR);
+            writeExceptionResponse(wrappedException, response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     private void writeExceptionResponse(WebException e, HttpServletResponse response, HttpStatus status) {
 
-        if (status == INTERNAL_SERVER_ERROR) {
-            LOGGER.error("An exception occured.", e);
+        final String logMessage = "An exception occured.";
+        if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
+            LOGGER.error(logMessage, e);
         } else {
-            LOGGER.debug("An exception occured.", e);
+            LOGGER.debug(logMessage, e);
         }
 
         // TODO consider using a 'suppress_response_codes=true' parameter and always return 200 OK
         response.setStatus(status.value());
-        response.setContentType(APPLICATION_JSON.getMimeType());
+        response.setContentType(MimeType.APPLICATION_JSON.getMimeType());
         ObjectMapper objectMapper = createObjectMapper();
         ObjectWriter writer = objectMapper.writerFor(ExceptionResponse.class);
-        ExceptionResponse exceptionResponse = createExceptionResponse(e, status);
+        ExceptionResponse exceptionResponse = ExceptionResponse.createExceptionResponse(e, status);
         try (OutputStream outputStream = response.getOutputStream()) {
             writer.writeValue(outputStream, exceptionResponse);
         } catch (IOException ioe) {
@@ -150,7 +147,7 @@ public abstract class BaseController implements ServletConfigAware {
     }
 
     protected ObjectMapper createObjectMapper() {
-        return new ObjectMapper().setSerializationInclusion(NON_NULL);
+        return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
 }

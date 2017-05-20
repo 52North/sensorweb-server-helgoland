@@ -26,10 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
 
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.common.Stopwatch.startStopwatch;
+package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,11 +43,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -60,7 +60,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
-public abstract class ParameterController<T extends ParameterOutput> extends BaseController implements ResourceController {
+public abstract class ParameterController<T extends ParameterOutput>
+        extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
@@ -80,15 +81,20 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     @Override
-    public void getRawData(HttpServletResponse response, String id, MultiValueMap<String, String> query) {
+    public void getRawData(HttpServletResponse response,
+                           String id,
+                           String locale,
+                           MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         if (!getParameterService().supportsRawData()) {
-            throw new BadRequestException("Querying of raw procedure data is not supported by the underlying service!");
+            throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
-        IoParameters queryMap = createFromQuery(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
-        try (InputStream inputStream = getParameterService().getRawDataService().getRawData(id, queryMap)) {
+        try (InputStream inputStream = getParameterService().getRawDataService()
+                                                            .getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
             }
@@ -99,15 +105,15 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     @Override
-    public Map<String, Object> getExtras(String resourceId, MultiValueMap<String, String> query) {
-
-        IoParameters queryMap = createFromQuery(query);
-        LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, queryMap);
+    public Map<String, Object> getExtras(String resourceId, String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<T> extension : metadataExtensions) {
-            T from = parameterService.getParameter(resourceId, queryMap);
-            final Map<String, Object> furtherExtras = extension.getExtras(from, queryMap);
+            T from = parameterService.getParameter(resourceId, map);
+            final Map<String, Object> furtherExtras = extension.getExtras(from, map);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if (!overridableKeys.isEmpty()) {
                 String[] keys = overridableKeys.toArray(new String[0]);
@@ -126,13 +132,13 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     @Override
-    public ModelAndView getCollection(MultiValueMap<String, String> query) {
-
-        IoParameters queryMap = createFromQuery(query);
+    public ModelAndView getCollection(String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
 
         if (queryMap.isExpanded()) {
-            Stopwatch stopwatch = startStopwatch();
+            Stopwatch stopwatch = Stopwatch.startStopwatch();
             OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
             return createModelAndView(result);
@@ -143,15 +149,15 @@ public abstract class ParameterController<T extends ParameterOutput> extends Bas
     }
 
     @Override
-    public ModelAndView getItem(String id, MultiValueMap<String, String> query) {
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
+        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
+        IoParameters map = QueryParameters.createFromQuery(query);
+        LOGGER.debug("getItem() with id '{}' and query '{}'", id, map);
 
-        IoParameters queryMap = createFromQuery(query);
-        LOGGER.debug("getItem() with id '{}' and query '{}'", id, queryMap);
-
-        T item = parameterService.getParameter(id, queryMap);
+        T item = parameterService.getParameter(id, map);
 
         if (item == null) {
-            throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
         }
 
         T parameter = addExtensionInfos(item);

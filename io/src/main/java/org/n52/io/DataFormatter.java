@@ -32,7 +32,7 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
-public interface DataFormatter<IN extends Data<? extends AbstractValue<?>>, OUT> {
+public interface DataFormatter<I extends Data<? extends AbstractValue<?>>, O> {
 
-    public DataCollection<OUT> format(DataCollection<IN> toFormat);
+    DataCollection<O> format(DataCollection<I> toFormat);
 }

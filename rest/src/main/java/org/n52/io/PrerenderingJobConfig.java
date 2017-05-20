@@ -26,9 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class PrerenderingJobConfig {
 
     private List<RenderingConfig> phenomenonStyles = new ArrayList<>();
 
-    private List<RenderingConfig> seriesStyles = new ArrayList<>();
+    private List<RenderingConfig> datasetStyles = new ArrayList<>();
 
     public Map<String, String> getGeneralConfig() {
         return generalConfig;
@@ -59,22 +61,48 @@ public class PrerenderingJobConfig {
         this.phenomenonStyles = phenomenonStyles;
     }
 
+    /**
+     * @return the styles
+     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
+     */
     @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
-        return seriesStyles;
+        return datasetStyles;
     }
 
+    /**
+     * @param styles the styles to set
+     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
+     */
     @Deprecated
-    public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
-        this.seriesStyles = timeseriesStyles;
+    public void setTimeseriesStyles(List<RenderingConfig> styles) {
+        this.datasetStyles = styles;
     }
 
+    /**
+     * @return the styles
+     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
+     */
+    @Deprecated
     public List<RenderingConfig> getSeriesStyles() {
-        return seriesStyles;
+        return getDatasetStyles();
     }
 
-    public void setSeriesStyles(List<RenderingConfig> timeseriesStyles) {
-        this.seriesStyles = timeseriesStyles;
+    /**
+     * @param styles the styles to set
+     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
+     */
+    @Deprecated
+    public void setSeriesStyles(List<RenderingConfig> styles) {
+        this.datasetStyles = styles;
+    }
+
+    public List<RenderingConfig> getDatasetStyles() {
+        return datasetStyles;
+    }
+
+    public void setDatasetStyles(List<RenderingConfig> datasetStyles) {
+        this.datasetStyles = datasetStyles;
     }
 
     public static class RenderingConfig {
@@ -118,7 +146,7 @@ public class PrerenderingJobConfig {
         }
 
         public String[] getInterval() {
-            return interval;
+            return Utils.copy(interval);
         }
 
         public void setInterval(String[] interval) {
@@ -134,7 +162,9 @@ public class PrerenderingJobConfig {
         }
 
         public Map<String, String> getConfig() {
-            return config;
+            return config != null
+                    ? Collections.unmodifiableMap(config)
+                    : config;
         }
 
         public void setConfig(Map<String, String> config) {
@@ -142,7 +172,7 @@ public class PrerenderingJobConfig {
         }
 
         public Map<String, StyleProperties> getReferenceValueStyleProperties() {
-            return referenceValueStyleProperties;
+            return Collections.unmodifiableMap(referenceValueStyleProperties);
         }
 
         public void setReferenceValueStyleProperties(Map<String, StyleProperties> referenceValueStyleProperties) {

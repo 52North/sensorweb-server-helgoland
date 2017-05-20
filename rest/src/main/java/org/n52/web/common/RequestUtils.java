@@ -28,7 +28,6 @@
  */
 package org.n52.web.common;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,8 +36,11 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -51,31 +53,45 @@ public class RequestUtils {
     private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
+    public static void overrideQueryLocaleWhenSet(String locale, MultiValueMap<String, String> query) {
+        if (locale != null) {
+            // override query parameter
+            query.remove(Parameters.LOCALE);
+            query.add(Parameters.LOCALE, locale);
+        }
+    }
+
+    public static void overrideQueryLocaleWhenSet(String locale, RequestParameterSet query) {
+        if (locale != null) {
+            // override query parameter
+            query.setLocale(locale);
+        }
+    }
+
     /**
      * Get the request {@link URL} without the query parameter
      *
+     * @param externalUrl the external URL.
      * @return Request {@link URL} without query parameter
-     * @throws IOException
-     * @throws URISyntaxException
      */
-    public static String resolveQueryLessRequestUrl(String externalUrl) throws IOException, URISyntaxException {
+    public static String resolveQueryLessRequestUrl(String externalUrl) {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
         if (LOGGER.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
             Enumeration<?> headerNames = request.getHeaderNames();
-            while(headerNames.hasMoreElements()) {
-              String headerName = (String)headerNames.nextElement();
-              sb.append(headerName + ": " + request.getHeader(headerName));
-              sb.append("\n");
+            while (headerNames.hasMoreElements()) {
+                String headerName = (String) headerNames.nextElement();
+                sb.append(headerName + ": " + request.getHeader(headerName));
+                sb.append("\n");
             }
             sb.append("----- END of HTTP Header -----");
             LOGGER.debug(sb.toString());
         }
 
         return externalUrl == null || externalUrl.isEmpty()
-            ? createRequestUrl(request)
-            : createRequestUrl(externalUrl);
+                ? createRequestUrl(request)
+                : createRequestUrl(externalUrl);
     }
 
     private static String createRequestUrl(String externalUrl) {

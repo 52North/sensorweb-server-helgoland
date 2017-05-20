@@ -28,16 +28,13 @@
  */
 package org.n52.web.ctrl;
 
-import static org.n52.io.request.QueryParameters.createFromQuery;
-import static org.n52.web.ctrl.ResourcesController.ResourceCollection.createResource;
-import static org.n52.web.ctrl.UrlSettings.API_VERSION_PATH;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.n52.io.I18N;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,30 +43,37 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = API_VERSION_PATH, produces = {"application/json"})
+@RequestMapping(value = "/", produces = {"application/json"})
 public class ResourcesController {
 
     private CountingMetadataService metadataService;
 
     @RequestMapping("/")
     public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> parameters) {
-        IoParameters query = createFromQuery(parameters);
+        IoParameters query = QueryParameters.createFromQuery(parameters);
         query = IoParameters.ensureBackwardsCompatibility(query);
         return new ModelAndView().addObject(createResources(query));
     }
 
-    protected List<ResourceCollection> createResources(IoParameters parameters) {
-        parameters = IoParameters.ensureBackwardsCompatibility(parameters);
+    private ResourceCollection add(String resource, String label, String description) {
+        return ResourceCollection
+                .createResource(resource)
+                .withDescription(description)
+                .withLabel(label);
+    }
+
+    protected List<ResourceCollection> createResources(IoParameters params) {
+        IoParameters parameters = IoParameters.ensureBackwardsCompatibility(params);
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
 
-        ResourceCollection services = createResource("services").withLabel("Service Provider").withDescription(i18n.get("msg.web.resources.services"));
-        ResourceCollection stations = createResource("stations").withLabel("Station").withDescription(i18n.get("msg.web.resources.stations"));
-        ResourceCollection timeseries = createResource("timeseries").withLabel("Timeseries").withDescription(i18n.get("msg.web.resources.timeseries"));
-        ResourceCollection categories = createResource("categories").withLabel("Category").withDescription(i18n.get("msg.web.resources.categories"));
-        ResourceCollection offerings = createResource("offerings").withLabel("Offering").withDescription(i18n.get("msg.web.resources.offerings"));
-        ResourceCollection features = createResource("features").withLabel("Feature").withDescription(i18n.get("msg.web.resources.features"));
-        ResourceCollection procedures = createResource("procedures").withLabel("Procedure").withDescription(i18n.get("msg.web.resources.procedures"));
-        ResourceCollection phenomena = createResource("phenomena").withLabel("Phenomenon").withDescription(i18n.get("msg.web.resources.phenomena"));
+        ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));
+        ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
+        ResourceCollection timeseries = add("timeseries", "Timeseries", i18n.get("msg.web.resources.timeseries"));
+        ResourceCollection categories = add("categories", "Category", i18n.get("msg.web.resources.categories"));
+        ResourceCollection offerings = add("offerings", "Offering", i18n.get("msg.web.resources.offerings"));
+        ResourceCollection features = add("features", "Feature", i18n.get("msg.web.resources.features"));
+        ResourceCollection procedures = add("procedures", "Procedure", i18n.get("msg.web.resources.procedures"));
+        ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
             services.setSize(getMetadataService().getServiceCount(parameters));
             if (new FilterResolver(parameters).shallBehaveBackwardsCompatible()) {
@@ -95,9 +99,9 @@ public class ResourcesController {
         resources.add(phenomena);
 
         // since 2.0.0
-        ResourceCollection platforms = createResource("platforms").withLabel("Platforms").withDescription(i18n.get("msg.web.resources.platforms"));
-        ResourceCollection datasets = createResource("datasets").withLabel("Datasets").withDescription(i18n.get("msg.web.resources.datasets"));
-        ResourceCollection geometries = createResource("geometries").withLabel("Geometries").withDescription(i18n.get("msg.web.resources.geometries"));
+        ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
+        ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
+        ResourceCollection geometries = add("geometries", "Geometries", i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
         resources.add(geometries);
@@ -117,7 +121,7 @@ public class ResourcesController {
         this.metadataService = metadataService;
     }
 
-    public static class ResourceCollection {
+    public static final class ResourceCollection {
 
         private String id;
         private String label;
@@ -160,13 +164,13 @@ public class ResourcesController {
             this.size = size;
         }
 
-        public ResourceCollection withLabel(String label) {
-            this.label = label;
+        public ResourceCollection withLabel(String name) {
+            this.label = name;
             return this;
         }
 
-        public ResourceCollection withDescription(String description) {
-            this.description = description;
+        public ResourceCollection withDescription(String details) {
+            this.description = details;
             return this;
         }
 

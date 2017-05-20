@@ -28,14 +28,12 @@
  */
 package org.n52.web.exception;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = BAD_REQUEST)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class BadRequestException extends RuntimeException implements WebException {
 
     private static final long serialVersionUID = -299285770822168789L;
@@ -51,14 +49,14 @@ public class BadRequestException extends RuntimeException implements WebExceptio
     }
 
     @Override
-    public void addHint(String details) {
-        if (details == null) {
+    public void addHint(String hint) {
+        if (hint == null) {
             return;
         }
         if (getHints() == null) {
-            this.details = new ArrayList<String>();
+            this.details = new ArrayList<>();
         }
-        this.details.add(details);
+        this.details.add(hint);
     }
 
     @Override

@@ -39,69 +39,62 @@ package org.n52.web.ctrl;
 public interface UrlSettings {
 
     /**
-     * The base URL to be used as RESTful entry point.
-     */
-    static final String API_VERSION_PATH = "/v1";
-
-    /**
      * Subpath identifying the search.
      */
-    static final String SEARCH = API_VERSION_PATH + "/search";
+    String SEARCH = "/search";
 
     /**
      * Subpath identifying a collection of services availabe.
      */
-    static final String COLLECTION_SERVICES = API_VERSION_PATH + "/services";
+    String COLLECTION_SERVICES = "/services";
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    static final String COLLECTION_CATEGORIES = API_VERSION_PATH + "/categories";
+    String COLLECTION_CATEGORIES = "/categories";
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    static final String COLLECTION_OFFERINGS = API_VERSION_PATH + "/offerings";
+    String COLLECTION_OFFERINGS = "/offerings";
 
     /**
      * Subpath identifying a collection of features available.
      */
-    static final String COLLECTION_FEATURES = API_VERSION_PATH + "/features";
+    String COLLECTION_FEATURES = "/features";
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    static final String COLLECTION_PROCEDURES = API_VERSION_PATH + "/procedures";
+    String COLLECTION_PROCEDURES = "/procedures";
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    static final String COLLECTION_PHENOMENA = API_VERSION_PATH + "/phenomena";
+    String COLLECTION_PHENOMENA = "/phenomena";
 
     /**
      * Subpath identifying a collection of stations available.
      */
-    @Deprecated
-    static final String COLLECTION_STATIONS = API_VERSION_PATH + "/stations";
+    String COLLECTION_STATIONS = "/stations";
 
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
-    @Deprecated
-    static final String COLLECTION_TIMESERIES = API_VERSION_PATH + "/timeseries";
+    String COLLECTION_TIMESERIES = "/timeseries";
 
     /**
      * Subpaths identifying platforms collections available.
      */
-    static final String COLLECTION_PLATFORMS = API_VERSION_PATH + "/platforms";
+    String COLLECTION_PLATFORMS = "/platforms";
 
     /**
      * Subpaths identifying datasets collections available.
      */
-    static final String COLLECTION_DATASETS = API_VERSION_PATH + "/datasets";
+    String COLLECTION_DATASETS = "/datasets";
 
     /**
      * Subpaths identifying geometries collections available.
      */
-    static final String COLLECTION_GEOMETRIES = API_VERSION_PATH + "/geometries";
+    String COLLECTION_GEOMETRIES = "/geometries";
 }
