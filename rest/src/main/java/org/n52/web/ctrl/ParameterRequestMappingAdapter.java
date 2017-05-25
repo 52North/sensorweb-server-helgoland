@@ -32,6 +32,7 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.Parameters;
@@ -53,9 +54,11 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(path = "")
-    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+    public ModelAndView getCollection(HttpServletRequest request,
+                                      HttpServletResponse response,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(locale, addHrefBase(query));
+        return super.getCollection(request, response, locale, addHrefBase(query));
     }
 
     @Override

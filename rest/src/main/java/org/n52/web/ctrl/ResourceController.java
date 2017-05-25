@@ -29,6 +29,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 public interface ResourceController {
 
-    ModelAndView getCollection(String locale, MultiValueMap<String, String> query);
+    ModelAndView getCollection(HttpServletRequest request, HttpServletResponse response, String locale, MultiValueMap<String, String> query);
 
     ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
 

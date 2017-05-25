@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -47,6 +48,8 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
+import org.n52.io.response.pagination.OffsetBasedPagination;
+import org.n52.io.response.pagination.Paginated;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
@@ -132,22 +135,48 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getCollection(String locale, MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(HttpServletRequest request, HttpServletResponse response, String locale, MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
-
+        OutputCollection<T> result;
+        
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
-            OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-            return createModelAndView(result);
         } else {
-            OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
-            return createModelAndView(results);
+            result = parameterService.getCondensedParameters(queryMap);
         }
+        
+        // Add Paging if requested
+        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
+            Paginated<T> paginated = new Paginated(new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit()), result.size());
+            this.addPagingHeaders(request.getRequestURI(), response, paginated);
+        }
+        return createModelAndView(result);
     }
 
+    private void addPagingHeaders(String id, HttpServletResponse response, Paginated paginated ){
+
+        if (paginated.getCurrent().isPresent()) {
+            response.addHeader("Link:","<" + id + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
+        }
+        if (paginated.getFirst().isPresent()) {
+            response.addHeader("Link:","<" + id + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
+        }
+        if (paginated.getLast().isPresent()) {
+            response.addHeader("Link:","<" + id + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
+        }
+        if (paginated.getNext().isPresent()) {
+            response.addHeader("Link:","<" + id + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
+        }
+        if (paginated.getPrevious().isPresent()) {
+            response.addHeader("Link:","<" + id + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
+        }
+
+    }
+    
     @Override
     public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
