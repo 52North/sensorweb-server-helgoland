@@ -30,6 +30,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,15 +73,15 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestParam MultiValueMap<String, String> query) {
         query = addHrefBase(query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
+        
         if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
             try {
-                OffsetBasedPagination impl = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                Paginated<T> paginated = new Paginated(impl, this.getElementCount(queryMap));
+                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated<T> paginated = new Paginated(obp, this.getElementCount(queryMap.removeAllOf("offset")));
                 this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
             } catch (DataAccessException ex) {
                 //TODO(specki): Better Solution?
                 // Stop Paging
-
             }
         }
     return super.getCollection(null, locale, query);
@@ -133,18 +134,19 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         if (paginated.getCurrent().isPresent()) {
             response.addHeader("Link:","<" + href + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
         }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
-        }
         if (paginated.getNext().isPresent()) {
             response.addHeader("Link:","<" + href + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
         }
         if (paginated.getPrevious().isPresent()) {
             response.addHeader("Link:","<" + href + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
         }
+        if (paginated.getFirst().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
+        }
+        if (paginated.getLast().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
+        }
+        
         return response;
     }
 }
