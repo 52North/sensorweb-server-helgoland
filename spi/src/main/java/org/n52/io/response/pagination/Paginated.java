@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@ package org.n52.io.response.pagination;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.StringJoiner;
 import org.n52.io.response.OutputCollection;
 
 
@@ -110,20 +111,21 @@ public class Paginated<T> extends OutputCollection<T> {
     }
 
     // TODO(specki):
-    /*
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("first", getFirst().orNull())
-                .add("previous", getPrevious().orNull())
-                .add("current", getCurrent().orNull())
-                .add("next", getNext().orNull())
-                .add("last", getLast().orNull())
-                .toString();
-    }*/
+        return new StringJoiner(", ", Paginated.class.getSimpleName() + "[", "]")
+            .add("first=" + getFirst().orElse(null))
+            .add("previous=" + getPrevious().orElse(null))
+            .add("current=" + getCurrent().orElse(null))
+            .add("next=" + getNext().orElse(null))
+            .add("last=" + getLast().orElse(null))
+            .toString();
+    }
 
     @Override
     protected Comparator<T> getComparator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO(specki): Implementation
+        return null;
     }
+
 }
