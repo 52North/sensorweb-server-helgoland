@@ -29,7 +29,10 @@
 package org.n52.web.ctrl;
 
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.dao.DbQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,4 +40,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = UrlSettings.COLLECTION_FEATURES)
 public class FeaturesParameterController extends ParameterRequestMappingAdapter<FeatureOutput> {
 
+    @Override
+    public String getCollectionPath(String hrefBase) {
+        UrlHelper urlhelper = new UrlHelper();
+        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
+    }
+    @Override
+    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
+        return super.getEntityCounter().countFeatures(new DbQuery(queryMap));
+    }
 }

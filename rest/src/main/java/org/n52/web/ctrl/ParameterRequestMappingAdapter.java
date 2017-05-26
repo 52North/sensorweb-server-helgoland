@@ -31,14 +31,24 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.n52.io.request.IoParameters;
 
 import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.pagination.OffsetBasedPagination;
+import org.n52.io.response.pagination.Paginated;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.da.EntityCounter;
+import org.n52.series.db.dao.DbQuery;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -52,13 +62,28 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
+    @Autowired
+    private EntityCounter counter;
+
     @Override
     @RequestMapping(path = "")
-    public ModelAndView getCollection(HttpServletRequest request,
-                                      HttpServletResponse response,
+    public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(request, response, locale, addHrefBase(query));
+        query = addHrefBase(query);
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
+            try {
+                OffsetBasedPagination impl = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated<T> paginated = new Paginated(impl, this.getElementCount(queryMap));
+                this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
+            } catch (DataAccessException ex) {
+                //TODO(specki): Better Solution?
+                // Stop Paging
+
+            }
+        }
+    return super.getCollection(null, locale, query);
     }
 
     @Override
@@ -95,5 +120,31 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
         query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
         return query;
+    }
+
+    protected abstract int getElementCount(IoParameters queryMap) throws DataAccessException;
+
+    protected EntityCounter getEntityCounter(){
+        return counter;
+    }
+
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated ){
+
+        if (paginated.getCurrent().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
+        }
+        if (paginated.getFirst().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
+        }
+        if (paginated.getLast().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
+        }
+        if (paginated.getNext().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
+        }
+        if (paginated.getPrevious().isPresent()) {
+            response.addHeader("Link:","<" + href + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
+        }
+        return response;
     }
 }

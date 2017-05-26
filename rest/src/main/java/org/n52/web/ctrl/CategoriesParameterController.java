@@ -29,7 +29,11 @@
 package org.n52.web.ctrl;
 
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
+import org.n52.series.db.DataAccessException;
+import org.n52.series.db.da.EntityCounter;
+import org.n52.series.db.dao.DbQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,4 +41,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(UrlSettings.COLLECTION_CATEGORIES)
 public class CategoriesParameterController extends ParameterRequestMappingAdapter<CategoryOutput> {
 
+    @Override
+    public String getCollectionPath(String hrefBase) {
+        UrlHelper urlhelper = new UrlHelper();
+        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_CATEGORIES);
+    }
+
+    @Override
+    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
+        return super.getEntityCounter().countCategories(new DbQuery(queryMap));
+    }
 }

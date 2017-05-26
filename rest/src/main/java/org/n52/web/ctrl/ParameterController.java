@@ -135,12 +135,12 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getCollection(HttpServletRequest request, HttpServletResponse response, String locale, MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(HttpServletResponse response, String locale, MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
         OutputCollection<T> result;
-        
+
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
             result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
@@ -148,35 +148,9 @@ public abstract class ParameterController<T extends ParameterOutput>
         } else {
             result = parameterService.getCondensedParameters(queryMap);
         }
-        
-        // Add Paging if requested
-        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
-            Paginated<T> paginated = new Paginated(new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit()), result.size());
-            this.addPagingHeaders(request.getRequestURI(), response, paginated);
-        }
         return createModelAndView(result);
     }
 
-    private void addPagingHeaders(String id, HttpServletResponse response, Paginated paginated ){
-
-        if (paginated.getCurrent().isPresent()) {
-            response.addHeader("Link:","<" + id + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
-        }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader("Link:","<" + id + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader("Link:","<" + id + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
-        }
-        if (paginated.getNext().isPresent()) {
-            response.addHeader("Link:","<" + id + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
-        }
-        if (paginated.getPrevious().isPresent()) {
-            response.addHeader("Link:","<" + id + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
-        }
-
-    }
-    
     @Override
     public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);

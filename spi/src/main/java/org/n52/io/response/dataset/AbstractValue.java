@@ -90,7 +90,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, 
     private boolean isSetTimestart() {
         return this.timestart != null;
     }
-    
+
     /**
      * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
      */
