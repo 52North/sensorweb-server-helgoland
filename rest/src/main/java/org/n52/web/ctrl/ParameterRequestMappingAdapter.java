@@ -73,11 +73,12 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestParam MultiValueMap<String, String> query) {
         query = addHrefBase(query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
-        
+
         if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
             try {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                Paginated<T> paginated = new Paginated(obp, this.getElementCount(queryMap.removeAllOf("offset")));
+                queryMap = queryMap.removeAllOf("limit").removeAllOf("offset");
+                Paginated<T> paginated = new Paginated(obp, this.getElementCount(queryMap));
                 this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
             } catch (DataAccessException ex) {
                 //TODO(specki): Better Solution?
@@ -146,7 +147,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         if (paginated.getLast().isPresent()) {
             response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
         }
-        
+
         return response;
     }
 }
