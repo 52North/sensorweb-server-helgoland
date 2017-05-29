@@ -32,7 +32,6 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.db.DataAccessException;
 import org.n52.series.db.dao.DbQuery;
-import org.n52.series.db.dao.ServiceDao;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,8 +47,6 @@ public class ServicesParameterController extends ParameterRequestMappingAdapter<
 
     @Override
     protected int getElementCount(IoParameters queryMap) throws DataAccessException {
-    //TODO(specki): Fix #21
-    // return super.getEntityCounter().getCount(new ServiceDao() , new DbQuery(queryMap));
-        throw new DataAccessException("TODO(specki): Fix #21");
+        return super.getEntityCounter().countServices(new DbQuery(queryMap));
     }
 }
