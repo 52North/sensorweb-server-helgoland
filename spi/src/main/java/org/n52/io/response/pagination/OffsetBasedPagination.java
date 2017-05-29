@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -78,7 +78,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public Optional<Pagination> first(long elements) {
-        if (offset <= limit || offset >= elements) {
+        if (offset >= elements) {
             return Optional.empty();
         } else {
             return Optional.<Pagination>of(new OffsetBasedPagination(0, limit));
@@ -87,7 +87,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public Optional<Pagination> previous(long elements) {
-        if (offset == 0 || offset >= elements) {
+        if (offset >= elements || offset == 0 || offset >= elements) {
             return Optional.empty();
         } else {
             return Optional.<Pagination>of(new OffsetBasedPagination(offset - limit, limit));
@@ -96,7 +96,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public Optional<Pagination> next(long elements) {
-        if (offset + limit  > elements) {
+        if (offset >= elements || offset + limit  >= elements) {
             return Optional.empty();
         } else {
             return Optional.<Pagination>of(new OffsetBasedPagination(offset + limit, limit));
@@ -105,8 +105,8 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public Optional<Pagination> last(long elements) {
-        long maxOffset = elements - (elements % limit);
-        if (offset >= maxOffset) {
+        long maxOffset = elements - ((elements % limit == 0) ? limit : (elements % limit));
+        if (offset >= elements) {
             return Optional.empty();
         } else {
             return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset, limit));
