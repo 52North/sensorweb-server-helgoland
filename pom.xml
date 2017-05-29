@@ -19,6 +19,7 @@
         <module>io</module>
         <module>rest</module>
         <module>spi</module>
+        <module>static-resources</module>
     </modules>
 
     <organization>

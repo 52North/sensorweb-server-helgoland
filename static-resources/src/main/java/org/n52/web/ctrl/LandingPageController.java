@@ -31,13 +31,20 @@ package org.n52.web.ctrl;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UrlPathHelper;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
 public class LandingPageController {
-    @RequestMapping
-    public String redirectToLandingPage() {
-        return "redirect:/api/";
+    private UrlPathHelper pathHelper = new UrlPathHelper();
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String redirectToLandingPage(HttpServletRequest request) {
+        String path = pathHelper.getPathWithinApplication(request);
+        return "redirect:" + path + "/";
     }
 
     @RequestMapping("/")
