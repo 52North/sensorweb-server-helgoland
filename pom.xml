@@ -19,7 +19,7 @@
         <module>io</module>
         <module>rest</module>
         <module>spi</module>
-        <module>static-resources</module>
+        <module>web-resources</module>
     </modules>
 
     <organization>
