@@ -30,8 +30,6 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.dao.DbQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,8 +45,8 @@ public class DatasetController extends ParameterRequestMappingAdapter<DatasetOut
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
-        return super.getEntityCounter().countDatasets(new DbQuery(queryMap));
+    protected Integer getElementCount(IoParameters queryMap){
+        return super.getEntityCounter().countDatasets(queryMap);
     }
 
 }

@@ -46,7 +46,7 @@ public class ProceduresParameterController extends ParameterRequestMappingAdapte
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
-        return super.getEntityCounter().countProcedures(new DbQuery(queryMap));
+    protected Integer getElementCount(IoParameters queryMap){
+        return super.getEntityCounter().countProcedures(queryMap);
     }
 }

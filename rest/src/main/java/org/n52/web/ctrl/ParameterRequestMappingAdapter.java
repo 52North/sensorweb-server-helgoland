@@ -30,12 +30,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.n52.io.request.IoParameters;
 
@@ -44,9 +39,7 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
 import org.n52.io.response.pagination.Paginated;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.da.EntityCounter;
-import org.n52.series.db.dao.DbQuery;
+import org.n52.series.db.da.EntityCounterWrapper;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
     @Autowired
-    private EntityCounter counter;
+    private EntityCounterWrapper counter;
 
     @Override
     @RequestMapping(path = "")
@@ -75,14 +68,12 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         IoParameters queryMap = QueryParameters.createFromQuery(query);
 
         if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
-            try {
+            Integer elementcount = this.getElementCount(queryMap);
+            if (elementcount != null){
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
                 queryMap = queryMap.removeAllOf("limit").removeAllOf("offset");
-                Paginated<T> paginated = new Paginated(obp, this.getElementCount(queryMap));
+                Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
-            } catch (DataAccessException ex) {
-                //TODO(specki): Better Solution?
-                // Stop Paging
             }
         }
     return super.getCollection(null, locale, query);
@@ -124,9 +115,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return query;
     }
 
-    protected abstract int getElementCount(IoParameters queryMap) throws DataAccessException;
+    protected abstract Integer getElementCount(IoParameters queryMap);
 
-    protected EntityCounter getEntityCounter(){
+    protected EntityCounterWrapper getEntityCounter(){
         return counter;
     }
 

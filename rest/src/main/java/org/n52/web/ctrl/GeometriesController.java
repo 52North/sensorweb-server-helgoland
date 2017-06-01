@@ -30,7 +30,6 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.GeometryInfo;
-import org.n52.series.db.DataAccessException;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,9 +51,9 @@ public class GeometriesController extends ParameterRequestMappingAdapter<Geometr
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
+    protected Integer getElementCount(IoParameters queryMap){
         //TODO(specki): Implementation of getCount  for Geometries in EntityCounter
-        throw new DataAccessException("Currently not implemented!");
+        return null;
     }
 
 }

@@ -31,8 +31,6 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.dao.DbQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,7 +44,7 @@ public class FeaturesParameterController extends ParameterRequestMappingAdapter<
         return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
     }
     @Override
-    protected int getElementCount(IoParameters queryMap) throws DataAccessException {
-        return super.getEntityCounter().countFeatures(new DbQuery(queryMap));
+    protected Integer getElementCount(IoParameters queryMap){
+        return super.getEntityCounter().countFeatures(queryMap);
     }
 }
