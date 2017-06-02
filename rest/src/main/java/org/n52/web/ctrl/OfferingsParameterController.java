@@ -45,6 +45,6 @@ public class OfferingsParameterController extends ParameterRequestMappingAdapter
 
     @Override
     protected Integer getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().countOfferings(queryMap);
+        return super.getEntityCounter().getOfferingCount(queryMap);
     }
 }

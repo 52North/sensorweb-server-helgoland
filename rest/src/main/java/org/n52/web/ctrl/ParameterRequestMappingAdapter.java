@@ -39,10 +39,11 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
 import org.n52.io.response.pagination.Paginated;
-import org.n52.series.db.da.EntityCounterWrapper;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -56,8 +57,8 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
-    @Autowired
-    private EntityCounterWrapper counter;
+    @Autowired @Qualifier("metadataService")
+    private CountingMetadataService counter;
 
     @Override
     @RequestMapping(path = "")
@@ -68,10 +69,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         String off = "offset";
         IoParameters queryMap = QueryParameters.createFromQuery(addHrefBase(query));
         if (queryMap.containsParameter(lim) || queryMap.containsParameter(off)) {
-            Integer elementcount = this.getElementCount(queryMap);
-            if (elementcount != null) {
+            Integer elementcount = this.getElementCount(queryMap.removeAllOf(lim).removeAllOf(off));
+            if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                queryMap = queryMap.removeAllOf(lim).removeAllOf(off);
                 Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
             }
@@ -117,7 +117,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     protected abstract Integer getElementCount(IoParameters queryMap);
 
-    protected EntityCounterWrapper getEntityCounter() {
+    protected CountingMetadataService getEntityCounter() {
         return counter;
     }
 
