@@ -57,7 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
-    @Autowired 
+    @Autowired
     @Qualifier("metadataService")
     private CountingMetadataService counter;
 
@@ -68,16 +68,17 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestParam MultiValueMap<String, String> query) {
         String lim = "limit";
         String off = "offset";
-        IoParameters queryMap = QueryParameters.createFromQuery(addHrefBase(query));
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        queryMap = IoParameters.ensureBackwardsCompatibility(queryMap);
         if (queryMap.containsParameter(lim) || queryMap.containsParameter(off)) {
             Integer elementcount = this.getElementCount(queryMap.removeAllOf(lim).removeAllOf(off));
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
                 Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
-                this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
+                this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
         }
-    return super.getCollection(null, locale, query);
+        return super.getCollection(null, locale, addHrefBase(query));
     }
 
     @Override
@@ -110,10 +111,12 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        String externalUrl = getExternalUrl();
-        String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
-        query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
+        query.put(Parameters.HREF_BASE, Collections.singletonList(getHrefBase()));
         return query;
+    }
+
+    private String getHrefBase() {
+        return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
     }
 
     protected abstract Integer getElementCount(IoParameters queryMap);
