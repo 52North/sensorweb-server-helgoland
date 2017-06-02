@@ -57,7 +57,8 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
-    @Autowired @Qualifier("metadataService")
+    @Autowired 
+    @Qualifier("metadataService")
     private CountingMetadataService counter;
 
     @Override
