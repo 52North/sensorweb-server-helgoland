@@ -64,14 +64,14 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        query = addHrefBase(query);
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
-
-        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")){
+        String lim = "limit";
+        String off = "offset";
+        IoParameters queryMap = QueryParameters.createFromQuery(addHrefBase(query));
+        if (queryMap.containsParameter(lim) || queryMap.containsParameter(off)) {
             Integer elementcount = this.getElementCount(queryMap);
-            if (elementcount != null){
+            if (elementcount != null) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                queryMap = queryMap.removeAllOf("limit").removeAllOf("offset");
+                queryMap = queryMap.removeAllOf(lim).removeAllOf(off);
                 Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(queryMap.getHrefBase()), response, paginated);
             }
@@ -117,26 +117,26 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     protected abstract Integer getElementCount(IoParameters queryMap);
 
-    protected EntityCounterWrapper getEntityCounter(){
+    protected EntityCounterWrapper getEntityCounter() {
         return counter;
     }
 
-    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated ){
-
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated) {
+        String l = "Link:";
         if (paginated.getCurrent().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
         }
         if (paginated.getNext().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
         }
         if (paginated.getPrevious().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
         }
         if (paginated.getFirst().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
         }
         if (paginated.getLast().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
         }
 
         return response;

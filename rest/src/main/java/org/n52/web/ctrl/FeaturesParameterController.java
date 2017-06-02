@@ -43,8 +43,9 @@ public class FeaturesParameterController extends ParameterRequestMappingAdapter<
         UrlHelper urlhelper = new UrlHelper();
         return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
     }
+    
     @Override
-    protected Integer getElementCount(IoParameters queryMap){
+    protected Integer getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().countFeatures(queryMap);
     }
 }

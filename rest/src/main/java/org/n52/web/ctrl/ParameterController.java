@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -48,8 +47,6 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.io.response.pagination.OffsetBasedPagination;
-import org.n52.io.response.pagination.Paginated;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
@@ -135,7 +132,9 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getCollection(HttpServletResponse response, String locale, MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(HttpServletResponse response,
+                                      String locale,
+                                      MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);

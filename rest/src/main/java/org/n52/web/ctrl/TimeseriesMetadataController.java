@@ -45,7 +45,7 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    protected Integer getElementCount(IoParameters queryMap){
+    protected Integer getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().countTimeseries();
     }
     // resource controller for timeseries metadata

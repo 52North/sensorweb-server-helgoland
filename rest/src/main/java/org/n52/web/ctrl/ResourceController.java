@@ -29,7 +29,6 @@
 package org.n52.web.ctrl;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
 

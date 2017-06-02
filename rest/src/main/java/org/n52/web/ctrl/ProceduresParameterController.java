@@ -30,8 +30,6 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ProcedureOutput;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.dao.DbQuery;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,7 +44,7 @@ public class ProceduresParameterController extends ParameterRequestMappingAdapte
     }
 
     @Override
-    protected Integer getElementCount(IoParameters queryMap){
+    protected Integer getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().countProcedures(queryMap);
     }
 }
