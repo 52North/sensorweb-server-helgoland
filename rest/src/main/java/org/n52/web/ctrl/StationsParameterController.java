@@ -38,9 +38,8 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
 import org.n52.io.response.pagination.Paginated;
-import org.n52.series.db.DataAccessException;
-import org.n52.series.db.da.EntityCounter;
 import org.n52.series.spi.geo.TransformingStationOutputService;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
@@ -50,6 +49,7 @@ import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -69,9 +69,13 @@ public class StationsParameterController {
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
     private ParameterService<StationOutput> parameterService;
-    
+
     @Autowired
-    private EntityCounter counter;
+    private ProceduresParameterController parameterControllerWithHref;
+
+    @Autowired
+    @Qualifier("metadataService")
+    private CountingMetadataService counter;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
@@ -81,7 +85,7 @@ public class StationsParameterController {
         IoParameters map = QueryParameters.createFromQuery(query);
         map = IoParameters.ensureBackwardsCompatibility(map);
         OutputCollection< ? > result;
-        
+
         if (map.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
             result = parameterService.getExpandedParameters(map);
@@ -92,29 +96,27 @@ public class StationsParameterController {
             logRequestTime(stopwatch);
         }
 
-       /* if (map.containsParameter("limit") || map.containsParameter("offset")){
-            try {
-                OffsetBasedPagination obp = new OffsetBasedPagination(map.getOffset(), map.getLimit());
-                Paginated<T> paginated = new Paginated(obp, counter.countStations());
-                UrlHelper urlhelper = new UrlHelper();
-                urlhelper.constructHref(map.getHrefBase(), UrlSettings.COLLECTION_PHENOMENA);
-                
-                this.addPagingHeaders(this.getCollectionPath(map.getHrefBase()), response, paginated);
-            } catch (DataAccessException ex) {
-                //TODO(specki): Better Solution?
-                // Stop Paging
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        queryMap = IoParameters.ensureBackwardsCompatibility(queryMap);
+        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")) {
+            Integer elementcount = this.counter.getStationCount();
+            if (elementcount != -1) {
+                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated paginated = new Paginated(obp, elementcount.longValue());
+                this.addPagingHeaders(response, paginated);
             }
-        }*/
-        
-            return new ModelAndView().addObject(result.getItems());
         }
-    /*
+        return new ModelAndView().addObject(result.getItems());
+    }
+
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        String externalUrl = getExternalUrl();
-        String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
-        query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
+        query.put(Parameters.HREF_BASE, Collections.singletonList(this.getHrefBase()));
         return query;
-    }*/
+    }
+
+    private String getHrefBase() {
+        return RequestUtils.resolveQueryLessRequestUrl(parameterControllerWithHref.getExternalUrl());
+    }
 
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
@@ -148,23 +150,25 @@ public class StationsParameterController {
     private void logRequestTime(Stopwatch stopwatch) {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
     }
-    
-    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated ){
+
+    private HttpServletResponse addPagingHeaders(HttpServletResponse response, Paginated paginated) {
+        String l = "Link:";
+        String href = (new UrlHelper()).constructHref(this.getHrefBase(), UrlSettings.COLLECTION_STATIONS);
 
         if (paginated.getCurrent().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getCurrent().get().toString() +"> rel=\"self\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
         }
         if (paginated.getNext().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getNext().get().toString() +"> rel=\"next\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
         }
         if (paginated.getPrevious().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getPrevious().get().toString() +"> rel=\"previous\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
         }
         if (paginated.getFirst().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getFirst().get().toString() +"> rel=\"first\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
         }
         if (paginated.getLast().isPresent()) {
-            response.addHeader("Link:","<" + href + "?" + paginated.getLast().get().toString() +"> rel=\"last\"");
+            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
         }
 
         return response;
