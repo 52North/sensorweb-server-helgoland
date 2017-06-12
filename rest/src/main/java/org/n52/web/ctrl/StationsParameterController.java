@@ -64,7 +64,7 @@ public class StationsParameterController {
     private ParameterService<StationOutput> parameterService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required=false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
@@ -89,7 +89,7 @@ public class StationsParameterController {
 
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
-                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required=false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
