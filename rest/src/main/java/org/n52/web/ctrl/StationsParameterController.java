@@ -79,7 +79,8 @@ public class StationsParameterController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
-                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                          required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
@@ -90,6 +91,7 @@ public class StationsParameterController {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
             result = parameterService.getExpandedParameters(map);
             logRequestTime(stopwatch);
+
         } else {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
             result = parameterService.getCondensedParameters(map);
@@ -120,7 +122,8 @@ public class StationsParameterController {
 
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
-                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                    required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
