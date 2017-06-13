@@ -217,7 +217,11 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
                         <configuration>
-                            <skip>true</skip>
+                            <requireNoRepositories>
+                                <allowedRepositories>
+                                    <id>rubygems-proxy</id>
+                                </allowedRepositories>
+                            </requireNoRepositories>
                         </configuration>
                     </plugin>
                     <plugin>
