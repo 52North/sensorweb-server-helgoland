@@ -39,9 +39,9 @@ layout: page
                     </thead>
                     <tbody>
                         {% for parameter in method[1].parameters %}
+                          
                           {% if parameter.name == null %}
                             {% assign ref = parameter['$ref'] | split:"/" | last %}
-                            
                             <tr>
                               <td>
                                   {% if swagger.parameters[ref].required %}
@@ -65,10 +65,7 @@ layout: page
                                   {% endif %}
                               </td>
                             </tr>
-                            
-                          {% else % }
-                          
-                            <!-- parameter: {{% parameter.name %}} -->
+                          {% else %}
                             <tr>
                                 <td>
                                     {% if parameter.required %}
@@ -92,7 +89,6 @@ layout: page
                                     {% endif %}
                                 </td>
                             </tr>
-                            
                           {% endif %}
                         {% endfor %}
                     </tbody>

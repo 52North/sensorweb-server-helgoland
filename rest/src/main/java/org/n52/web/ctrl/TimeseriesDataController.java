@@ -106,7 +106,8 @@ public class TimeseriesDataController extends BaseController {
         },
         method = RequestMethod.POST)
     public ModelAndView getCollectionData(HttpServletResponse response,
-                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                              required = false) String locale,
                                           @RequestBody RequestSimpleParameterSet query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -127,7 +128,8 @@ public class TimeseriesDataController extends BaseController {
         method = RequestMethod.GET)
     public ModelAndView getData(HttpServletResponse response,
                                 @PathVariable String timeseriesId,
-                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                    required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
@@ -170,7 +172,8 @@ public class TimeseriesDataController extends BaseController {
             RawFormats.RAW_FORMAT
         })
     public void getRawCollectionData(HttpServletResponse response,
-                                     @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                     @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                         required = false) String locale,
                                      @RequestBody RequestSimpleParameterSet query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -185,7 +188,8 @@ public class TimeseriesDataController extends BaseController {
         })
     public void getRawData(HttpServletResponse response,
                            @PathVariable String timeseriesId,
-                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                               required = false) String locale,
                            @RequestParam MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
@@ -223,7 +227,8 @@ public class TimeseriesDataController extends BaseController {
         },
         method = RequestMethod.POST)
     public void getCollectionReport(HttpServletResponse response,
-                                    @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                    @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                        required = false) String locale,
                                     @RequestBody RequestStyledParameterSet query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -269,7 +274,7 @@ public class TimeseriesDataController extends BaseController {
         method = RequestMethod.GET)
     public void getReport(HttpServletResponse response,
                           @PathVariable String timeseriesId,
-                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                           @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -293,7 +298,8 @@ public class TimeseriesDataController extends BaseController {
         method = RequestMethod.GET)
     public void getAsZippedCsv(HttpServletResponse response,
                                @PathVariable String timeseriesId,
-                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                   required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -310,7 +316,7 @@ public class TimeseriesDataController extends BaseController {
         method = RequestMethod.GET)
     public void getAsCsv(HttpServletResponse response,
                          @PathVariable String timeseriesId,
-                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -343,7 +349,8 @@ public class TimeseriesDataController extends BaseController {
         },
         method = RequestMethod.POST)
     public void getCollectionChart(HttpServletResponse response,
-                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                       required = false) String locale,
                                    @RequestBody RequestStyledParameterSet query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -369,7 +376,7 @@ public class TimeseriesDataController extends BaseController {
         method = RequestMethod.GET)
     public void getChart(HttpServletResponse response,
                          @PathVariable String timeseriesId,
-                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
@@ -398,7 +405,8 @@ public class TimeseriesDataController extends BaseController {
     public void getChartByInterval(HttpServletResponse response,
                                    @PathVariable String seriesId,
                                    @PathVariable String chartQualifier,
-                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                   @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                       required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
