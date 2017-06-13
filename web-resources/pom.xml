@@ -8,7 +8,7 @@
         <groupId>org.n52.series-api</groupId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>Series REST API - Web Resources</name>
     <artifactId>web-resources</artifactId>
 
@@ -228,7 +228,7 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>build --trace --source ${project.basedir}/docs --destination ${project.build.outputDirectory}/docs</execArgs>
+                                    <execArgs>build --trace --source ${project.basedir}/docs --destination ${project.basedir}/src/main/webapp/docs</execArgs>
                                 </configuration>
                             </execution>
                             <execution>
@@ -239,7 +239,7 @@
                                 </goals>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>serve --trace --source ${project.basedir}/docs --destination ${project.build.outputDirectory}/docs</execArgs>
+                                    <execArgs>serve --trace --source ${project.basedir}/docs --destination ${project.basedir}/src/main/webapp/docs</execArgs>
                                 </configuration>
                                 <phase>none</phase>
                             </execution>
