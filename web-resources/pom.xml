@@ -12,6 +12,11 @@
     <name>Series REST API - Web Resources</name>
     <artifactId>web-resources</artifactId>
 
+    <properties>
+        <finalName>${project.artifactId}</finalName>
+        <webappDirectory>${project.build.directory}/${finalName}</webappDirectory>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -228,7 +233,7 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>build --trace --source ${project.basedir}/docs --destination ${project.basedir}/src/main/webapp/docs</execArgs>
+                                    <execArgs>build --trace --source ../docs --destination ${webappDirectory}/docs</execArgs>
                                 </configuration>
                             </execution>
                             <execution>
@@ -239,7 +244,7 @@
                                 </goals>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>serve --trace --source ${project.basedir}/docs --destination ${project.basedir}/src/main/webapp/docs</execArgs>
+                                    <execArgs>serve --trace --source ../docs --destination ${webappDirectory}/docs</execArgs>
                                 </configuration>
                                 <phase>none</phase>
                             </execution>
