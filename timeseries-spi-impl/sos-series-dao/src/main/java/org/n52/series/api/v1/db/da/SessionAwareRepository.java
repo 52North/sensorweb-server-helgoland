@@ -27,6 +27,8 @@
  */
 package org.n52.series.api.v1.db.da;
 
+import static org.n52.io.IoParameters.createFromQuery;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.n52.io.IoParameters;
-import static org.n52.io.IoParameters.createFromQuery;
 import org.n52.io.v1.data.CategoryOutput;
 import org.n52.io.v1.data.FeatureOutput;
 import org.n52.io.v1.data.OfferingOutput;
