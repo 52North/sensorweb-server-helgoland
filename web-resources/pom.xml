@@ -237,7 +237,7 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>build --trace --source ../docs --destination ${webappDirectory}/static/docs</execArgs>
+                                    <execArgs>build --trace --baseurl /docs --source ../docs --destination ${webappDirectory}/static/docs</execArgs>
                                 </configuration>
                             </execution>
                             <execution>
@@ -248,7 +248,7 @@
                                 </goals>
                                 <configuration>
                                     <file>${project.build.directory}/rubygems/bin/jekyll</file>
-                                    <execArgs>serve --trace --source ../docs --destination ${webappDirectory}/static/docs</execArgs>
+                                    <execArgs>serve --trace --baseurl /docs --source ../docs --destination ${webappDirectory}/static/docs</execArgs>
                                 </configuration>
                                 <phase>none</phase>
                             </execution>
