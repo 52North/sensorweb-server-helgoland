@@ -965,8 +965,7 @@ public class IoParameters implements Parameters {
         return createFromQuery(parameters, null);
     }
 
-    public static IoParameters createFromQuery(RequestParameterSet parameters,
-                                               File defaultConfig) {
+    public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameterNames()) {
             JsonNode value = parameters.getParameterValue(parameter);
@@ -975,8 +974,7 @@ public class IoParameters implements Parameters {
         return new IoParameters(queryParameters, defaultConfig);
     }
 
-    public static IoParameters ensureBackwardsCompatibility(
-                                                            IoParameters parameters) {
+    public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
         String[] platformTypes = {
             PlatformType.PLATFORM_TYPE_STATIONARY,
             PlatformType.PLATFORM_TYPE_INSITU
@@ -988,8 +986,7 @@ public class IoParameters implements Parameters {
                 : parameters;
     }
 
-    private static boolean isBackwardsCompatibilityRequest(
-                                                           IoParameters parameters) {
+    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
         return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
                 || parameters.containsParameter(Parameters.FILTER_VALUE_TYPES));
     }

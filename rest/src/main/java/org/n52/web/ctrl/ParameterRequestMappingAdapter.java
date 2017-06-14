@@ -53,15 +53,17 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(path = "")
-    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+        required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(locale, query);
+        return super.getCollection(locale, addHrefBase(query));
     }
 
     @Override
     @RequestMapping(value = "/{item}")
     public ModelAndView getItem(@PathVariable("item") String id,
-                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                    required = false) String locale,
                                 @RequestParam MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         return super.getItem(id, locale, addHrefBase(query));
@@ -73,7 +75,8 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     })
     public void getRawData(HttpServletResponse response,
                            @PathVariable("item") String id,
-                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                               required = false) String locale,
                            @RequestParam MultiValueMap<String, String> query) {
         super.getRawData(response, id, locale, addHrefBase(query));
     }
@@ -81,7 +84,8 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     @Override
     @RequestMapping(value = "/{item}/extras")
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
-                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE) String locale,
+                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                             required = false) String locale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         return super.getExtras(resourceId, locale, addHrefBase(query));

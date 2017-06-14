@@ -173,8 +173,8 @@ added to the `/WEB-INF/spring/dispatcher-servlet.xml`:
 ```
 
 #### Web Controller injections
-A Web controller behaves like described in the [Web API]({{base.url}}/api) and performs 
-[I/O operations]({{base.url}}/io) if needed. 
+A Web controller behaves like described in the [Web API]({{site.baseurl}}/api.html) and performs 
+[I/O operations]({{site.baseurl}}/io.html) if needed. 
 
 
 {:.n52-callout .n52-callout-info}
