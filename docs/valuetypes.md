@@ -48,7 +48,8 @@ scalar types are denoted as is.
 Depending on what members are available (see above table) the following output 
 would be valid.
 
-**Quantity Example (`stationary` platform)**
+#### Quantity Example (`stationary` platform)
+{:.no_toc}
 ```
 {
   "quantity_1": {
@@ -74,7 +75,8 @@ would be valid.
 }
 ```
 
-**Text example (observation interval, `stationary` platform)**
+#### Text example (observation interval, `stationary` platform)
+{:.no_toc}
 ```
 {
   "text_1": {
@@ -94,7 +96,8 @@ would be valid.
 }
 ```
 
-**Quantity example (`mobile` platform)**
+#### Quantity example (`mobile` platform)
+{:.no_toc}
 ```
 {
   "values": [
@@ -143,7 +146,8 @@ would be valid.
 A record's `value` member is a map of key-valued objects. However, a `record` is abstract
 and each implementation have to provide its own `valueType` within the `dataset` metadata.
 
-**Typed Record Example: `text` (`stationary` platform)**
+#### Typed Record Example: `text` (`stationary` platform)
+{:.no_toc}
 ```
 {
   "record+text_309510107": {
@@ -163,11 +167,13 @@ and each implementation have to provide its own `valueType` within the `dataset`
 }
 ```
 
-**Customized Example: `fotoquest` (`stationary` platform)**
+#### Customized Example: `fotoquest` (`stationary` platform)
+{:.no_toc}
 [Fotoquest](https://github.com/52North/fotoquest-series-api) value types describe some 
 kind of (referenced) media taken at a given location. It could also be described more 
 generally as `record+geojson`. Background infos about the project can be found at [the
-Fotoquest Homepage](http://fotoquest-go.org/). 
+Fotoquest Homepage](http://fotoquest-go.org/).
+
 ```
 {
   "fotoquest_309510107": {
@@ -261,7 +267,8 @@ Fotoquest Homepage](http://fotoquest-go.org/).
 A value type which contain observations along a vertical axis (e.g. observations made on
 different depth levels). The vertical unit is overridable within each vertical item.
 
-**Vertical Example (`stationary` platform)**
+#### Vertical Example (`stationary` platform)
+{:.no_toc}
 ```
 {
   "values": [
