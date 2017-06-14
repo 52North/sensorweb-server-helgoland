@@ -27,7 +27,10 @@
  */
 package org.n52.series.api.v1.db.da;
 
+import static org.n52.io.IoParameters.createFromQuery;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +41,6 @@ import java.util.Set;
 
 import org.hibernate.Session;
 import org.n52.io.IoParameters;
-import static org.n52.io.IoParameters.createFromQuery;
 import org.n52.io.v1.data.CategoryOutput;
 import org.n52.io.v1.data.FeatureOutput;
 import org.n52.io.v1.data.OfferingOutput;
@@ -84,11 +86,16 @@ public abstract class SessionAwareRepository {
     protected abstract List<SearchResult> convertToSearchResults(List<? extends DescribableEntity<? extends I18nEntity>> found, String locale);
 
     private static HibernateSessionHolder createSessionHolderIfNeccessary() {
-        try {
+        try(InputStream datasource = SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES)) {
             if (Configurator.getInstance() == null) {
-                Properties connectionProviderConfig = new Properties();
-                connectionProviderConfig.load(SessionAwareRepository.class.getResourceAsStream(DATASOURCE_PROPERTIES));
+                if (datasource == null) {
+                    LOGGER.error("{} is missing! Cannot configure database access.", DATASOURCE_PROPERTIES);
+                    // stay unconfigured!
+                    return null;
+                }
                 SessionFactoryProvider provider = new SessionFactoryProvider();
+                Properties connectionProviderConfig = new Properties();
+                connectionProviderConfig.load(datasource);
                 provider.initialize(connectionProviderConfig);
 
                 // TODO configure hbm.xml mapping path
@@ -142,6 +149,12 @@ public abstract class SessionAwareRepository {
     protected Session getSession() {
         if (sessionHolder == null) {
             createSessionHolderIfNeccessary();
+        }
+        if (sessionHolder == null) {
+            throw new IllegalStateException("SessionHolder unconfigured. Check if file "
+                                            + DATASOURCE_PROPERTIES
+                                            + " is available and restart the service!");
+            
         }
         try {
             return sessionHolder.getSession();
