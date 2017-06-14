@@ -66,7 +66,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     @RequestMapping(path = "")
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                          required = false) String locale,  
+                                          required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
         String lim = "limit";
         String off = "offset";
