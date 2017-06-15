@@ -50,8 +50,8 @@ public class OffsetBasedPagination implements Pagination {
     }
 
     public OffsetBasedPagination(long offset, long limit) {
-        this.limit = limit <= 0 ? 100 : Math.min(limit, MAX_LIMIT);
-        this.offset = offset <= 0 ? 0 : offset;
+        this.limit = limit <= 0 ? DEFAULT_LIMIT : Math.min(limit, MAX_LIMIT);
+        this.offset = offset <= 0 ? 0 : offset * limit;
         this.start = this.offset;
         this.end = this.offset + this.limit;
     }
@@ -90,7 +90,7 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements || offset == 0 || offset >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset - limit, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(offset/limit - 1, limit));
         }
     }
 
@@ -99,7 +99,7 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements || offset + limit  >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset + limit, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(offset/limit + 1, limit));
         }
     }
 
@@ -109,13 +109,13 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset/limit, limit));
         }
     }
 
         @Override
     public int hashCode() {
-        return Objects.hash(this.offset, this.limit);
+        return Objects.hash(this.offset/limit, this.limit);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public String toString() {
-        return "offset=" + this.offset + "&limit=" + this.limit;
+        return "offset=" + this.offset/limit + "&limit=" + this.limit;
     }
 
 }
