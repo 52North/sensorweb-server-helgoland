@@ -67,12 +67,10 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        String lim = "limit";
-        String off = "offset";
         IoParameters queryMap = QueryParameters.createFromQuery(query);
-        queryMap = IoParameters.ensureBackwardsCompatibility(queryMap);
-        if (queryMap.containsParameter(lim) || queryMap.containsParameter(off)) {
-            Integer elementcount = this.getElementCount(queryMap.removeAllOf(lim).removeAllOf(off));
+        if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
+            Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
+                                                                .removeAllOf(Parameters.OFFSET));
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
                 Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
@@ -123,7 +121,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
     }
 
-    protected abstract Integer getElementCount(IoParameters queryMap);
+    protected abstract int getElementCount(IoParameters queryMap);
 
     protected CountingMetadataService getEntityCounter() {
         return counter;

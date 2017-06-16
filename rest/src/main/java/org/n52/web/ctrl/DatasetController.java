@@ -45,7 +45,7 @@ public class DatasetController extends ParameterRequestMappingAdapter<DatasetOut
     }
 
     @Override
-    protected Integer getElementCount(IoParameters queryMap) {
+    protected int getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().getDatasetCount(queryMap);
     }
 

@@ -45,7 +45,7 @@ public class FeaturesParameterController extends ParameterRequestMappingAdapter<
     }
 
     @Override
-    protected Integer getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getFeatureCount(queryMap);
+    protected int getElementCount(IoParameters queryMap) {
+        return super.getEntityCounter().getFeatureCount(IoParameters.ensureBackwardsCompatibility(queryMap));
     }
 }
