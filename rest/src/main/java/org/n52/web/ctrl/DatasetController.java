@@ -28,6 +28,7 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,5 +37,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
 public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput> {
+
+    @Override
+    public String getCollectionPath(String hrefBase) {
+        UrlHelper urlhelper = new UrlHelper();
+        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_DATASETS);
+    }
+
+    @Override
+    protected int getElementCount(IoParameters queryMap) {
+        return super.getEntityCounter().getDatasetCount(queryMap);
+    }
 
 }
