@@ -71,7 +71,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
                                                                 .removeAllOf(Parameters.OFFSET));
-            if (elementcount != -1) {
+            if (elementcount != null && elementcount > -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
                 Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
