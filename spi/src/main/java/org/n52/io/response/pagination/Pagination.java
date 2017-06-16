@@ -39,8 +39,8 @@ import java.util.Optional;
 
 
 public interface Pagination {
-    int MAX_LIMIT = 100000;
-    int DEFAULT_LIMIT = 1000;
+    int MAX_LIMIT = 1000000;
+    int DEFAULT_LIMIT = 10000;
 
     long getStart();
 
