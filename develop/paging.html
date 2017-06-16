@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Introduction – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Paging – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Introduction" />
-    <meta property="twitter:title" content="Introduction" />
+    <meta property="og:title" content="Paging" />
+    <meta property="twitter:title" content="Paging" />
     
 
 
@@ -103,39 +103,83 @@
       </div>
 
       <article class="page">
-  <h1>Introduction</h1>
+  <h1>Paging</h1>
 
   <div class="entry">
-    <p>The Series REST API provides an access layer to sensor data via RESTful Web binding 
-with different output formats like json, pdf or png. It provides a well defined Sevice 
-Provider Interface (SPI) which can be implemented by arbitrary backend services to make 
-series data available via the API</p>
+    <h2 id="overview">Overview</h2>
 
-<p>The Series REST API provides a thin access layer to sensor and observation data via 
-RESTful Web binding. In addition, it offers several IO functionalities e.g.</p>
+<p class="n52-callout n52-callout-info">Paging is currently not supported for the Endpoint <code class="highlighter-rouge">/geometries</code>. All other Endpoints are supported.</p>
+
+<p>The API offers basic Paging support using the Query Parameters <code class="highlighter-rouge">offset</code> and <code class="highlighter-rouge">limit</code>. Paging is automatically enabled if at least one of the parameters is present in the query. If only one parameter is provided, the missing parameters default value will be used.</p>
+
+<h3 id="parameter-semantics">Parameter Semantics</h3>
+
+<p><code class="highlighter-rouge">limit</code> describes the maximum amount of Elements in one Page. Except for the last Page, all Pages will always be filled to this maximum capacity.</p>
+
+<p><code class="highlighter-rouge">offset</code> describes the Page Number, starting from zero.</p>
+
+<p class="n52-callout n52-callout-info">It is <strong>strongly advised</strong> to only specify the <code class="highlighter-rouge">limit</code> Parameter in the client, and get the <code class="highlighter-rouge">offset</code> from the Response Headers returned by the API (see examples below).</p>
+
+<h3 id="parameter-values">Parameter Values</h3>
+<p>The Parameter Values are subject to the following restrictions:</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>parameter</th>
+      <th>MIN_VALUE</th>
+      <th>MAX_VALUE</th>
+      <th>default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">limit</code></td>
+      <td>1</td>
+      <td>1000000</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">offset</code></td>
+      <td>0</td>
+      <td>2147483647</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="n52-callout n52-callout-info">Both <code class="highlighter-rouge">limit</code> and <code class="highlighter-rouge">offset</code> are integers and are programmatically limited to not exceed the value of 2147483647. If higher Numbers are provided the Request will fail and the API will throw an Error.</p>
+
+<p>If an invalid <code class="highlighter-rouge">limit</code> (i.e. exceeding MAX_VALUE) is supplied, <code class="highlighter-rouge">limit</code> will default to the closest valid value (e.g. MIN_VALUE or MAX_VALUE). 
+If no <code class="highlighter-rouge">limit</code> is supplied the default value will be used.</p>
+
+<p>If no offset or an invalid <code class="highlighter-rouge">offset</code> is supplied, <code class="highlighter-rouge">offset</code> will default to its default value.</p>
+
+<h3 id="response-headers">Response Headers</h3>
+<p>Paging Information is returned by the API in the Response Header. An Example of the returned Headers can be found below:</p>
+
+<p><strong>Example Request URL</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>http://example.com/api/stations?offset=2&amp;limit=10
+</code></pre>
+</div>
+
+<p><strong>Example Response Header [partial]:</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>[...]
+Link : &lt;http://example.com/api/stations?offset=2&amp;limit=10&gt; rel="self"
+Link : &lt;http://example.com/api/stations?offset=3&amp;limit=10&gt; rel="next"
+Link : &lt;http://example.com/api/stations?offset=1&amp;limit=10&gt; rel="previous"
+Link : &lt;http://example.com/api/stations?offset=0&amp;limit=10&gt; rel="first"
+Link : &lt;http://example.com/api/stations?offset=7&amp;limit=10&gt; rel="last"
+[...]
+</code></pre>
+</div>
+<p>The Presence of the Links in the Response Header varies on the specific circumstances:</p>
+
 <ul>
-  <li>prerendering of series data,</li>
-  <li>generalization,</li>
-  <li>overlaying of data from multiple series</li>
-  <li>conversion of raw data to other formats like pdf and png</li>
+  <li>The Link to <code class="highlighter-rouge">self</code> is always present.</li>
+  <li>The Links to <code class="highlighter-rouge">first</code> and <code class="highlighter-rouge">last</code> are present if a valid offset was provided.</li>
+  <li>The Links to <code class="highlighter-rouge">next</code> and <code class="highlighter-rouge">previous</code> are present if the pages exist and a valid offset was provided.</li>
 </ul>
-
-<p>Output formats for <em>stationary</em>, <em>mobile</em>, <em>insitu</em> and <em>remote</em> sensors are available, 
-each filterable by metadata parameters. This enables clients to access the data via different 
-approaches, e.g. to filter all series by phenomena first or by a special procedure.</p>
-
-<h2 id="backwards-compatibility">Backwards Compatibility</h2>
-<p>The <a href="/series-rest-api/develop/api.html">Web API</a> is backwards compatible to older implementation versions. Client 
-developers are safe to start development while API providers upgrade to newer versions of the API.</p>
-
-<p>However, <a href="/series-rest-api/develop/development.html">SPI implementors</a> should take care of changes, though changes 
-to the SPI interface will be kept to a minimum and communicated properly.</p>
-
-<h2 id="development">Development</h2>
-<p>If you want to develop clients to consume series data refer to the <a href="/series-rest-api/develop/api.html">Web API reference</a>.
-In case of being interested in how the API works and/or want to contribute check the 
-<a href="/series-rest-api/develop/development.html">development section</a>.</p>
-
 
   </div>
 </article>
