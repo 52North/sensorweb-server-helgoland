@@ -131,15 +131,15 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
-        addPaginationHeader("self", href, paginated.getCurrent(), response);
-        addPaginationHeader("previous", href, paginated.getPrevious(), response);
-        addPaginationHeader("next", href, paginated.getNext(), response);
-        addPaginationHeader("first", href, paginated.getFirst(), response);
-        addPaginationHeader("last", href, paginated.getLast(), response);
+        addLinkHeader("self", href, paginated.getCurrent(), response);
+        addLinkHeader("previous", href, paginated.getPrevious(), response);
+        addLinkHeader("next", href, paginated.getNext(), response);
+        addLinkHeader("first", href, paginated.getFirst(), response);
+        addLinkHeader("last", href, paginated.getLast(), response);
         return response;
     }
 
-    private void addPaginationHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
+    private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
         if (pagination.isPresent()) {
             String header = "Link";
             String value = "<" + href + "?" + pagination.get().toString() + "> rel=\"" + rel + "\"";
