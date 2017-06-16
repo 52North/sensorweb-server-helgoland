@@ -74,7 +74,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
                                                                 .removeAllOf(Parameters.OFFSET));
-            if (elementcount != -1) {
+            if (0 >= elementcount) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
                 Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
@@ -124,6 +124,11 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
     }
 
+    /**
+     * @param queryMap
+     *        the query map
+     * @return the number of elements available, or negative number if paging is not supported.
+     */
     protected abstract int getElementCount(IoParameters queryMap);
 
     protected CountingMetadataService getEntityCounter() {
@@ -142,7 +147,14 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
         if (pagination.isPresent()) {
             String header = "Link";
-            String value = "<" + href + "?" + pagination.get().toString() + "> rel=\"" + rel + "\"";
+            String value = "<"
+                    + href
+                    + "?"
+                    + pagination.get()
+                                .toString()
+                    + "> rel=\""
+                    + rel
+                    + "\"";
             response.addHeader(header, value);
         }
     }
