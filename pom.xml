@@ -638,6 +638,7 @@
         </pluginManagement>
         <extensions>
             <extension>
+                <!-- used to deploy to 52n repo via webdav -->
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav-jackrabbit</artifactId>
                 <version>2.12</version>
