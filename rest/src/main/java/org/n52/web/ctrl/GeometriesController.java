@@ -51,9 +51,9 @@ public class GeometriesController extends ParameterRequestMappingAdapter<Geometr
     }
 
     @Override
-    protected Integer getElementCount(IoParameters queryMap) {
+    protected int getElementCount(IoParameters queryMap) {
         //TODO(specki): Implementation of getCount  for Geometries in EntityCounter
-        return null;
+        return -1;
     }
 
 }

@@ -13,13 +13,22 @@ Paging is currently not supported for the Endpoint `/geometries`. All other Endp
 
 The API offers basic Paging support using the Query Parameters `offset` and `limit`. Paging is automatically enabled if at least one of the parameters is present in the query. If only one parameter is provided, the missing parameters default value will be used.
 
+### Parameter Semantics
+
+`limit` describes the maximum amount of Elements in one Page. Except for the last Page, all Pages will always be filled to this maximum capacity.
+
+`offset` describes the Page Number, starting from zero.
+
+{:.n52-callout .n52-callout-info}
+It is **strongly advised** to only specify the `limit` Parameter in the client, and get the `offset` from the Response Headers returned by the API (see examples below). 
+
 ### Parameter Values
 The Parameter Values are subject to the following restrictions:
 
 {:.table}
 parameter     | MIN_VALUE  | MAX_VALUE  | default      |
 --------------|------------|---------------------------|
-`limit`       | 1          | 1000       | 100          | 
+`limit`       | 1          | 1000000    | 10000        | 
 `offset`      | 0          | 2147483647 | 0            | 
 
 {:.n52-callout .n52-callout-info}
@@ -35,17 +44,17 @@ Paging Information is returned by the API in the Response Header. An Example of 
 
 **Example Request URL**
 ```
-http://example.com/api/stations?offset=20&limit=10
+http://example.com/api/stations?offset=2&limit=10
 ```
 
 **Example Response Header [partial]:**
 ```
 [...]
-Link : <http://example.com/api/stations?offset=20&limit=10> rel="self"
-Link : <http://example.com/api/stations?offset=30&limit=10> rel="next"
-Link : <http://example.com/api/stations?offset=10&limit=10> rel="previous"
+Link : <http://example.com/api/stations?offset=2&limit=10> rel="self"
+Link : <http://example.com/api/stations?offset=3&limit=10> rel="next"
+Link : <http://example.com/api/stations?offset=1&limit=10> rel="previous"
 Link : <http://example.com/api/stations?offset=0&limit=10> rel="first"
-Link : <http://example.com/api/stations?offset=70&limit=10> rel="last"
+Link : <http://example.com/api/stations?offset=7&limit=10> rel="last"
 [...]
 ```
 The Presence of the Links in the Response Header varies on the specific circumstances:

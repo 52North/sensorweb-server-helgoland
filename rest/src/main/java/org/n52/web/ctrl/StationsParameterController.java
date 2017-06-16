@@ -84,7 +84,6 @@ public class StationsParameterController {
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
-        map = IoParameters.ensureBackwardsCompatibility(map);
         OutputCollection< ? > result;
 
         if (map.isExpanded()) {

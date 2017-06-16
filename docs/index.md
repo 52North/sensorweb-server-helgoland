@@ -21,17 +21,17 @@ each filterable by metadata parameters. This enables clients to access the data 
 approaches, e.g. to filter all series by phenomena first or by a special procedure.
 
 ## Backwards Compatibility
-The [Web API]({{base.url}}/api) is backwards compatible to older implementation versions. Client 
+The [Web API]({{site.baseurl}}/api.html) is backwards compatible to older implementation versions. Client 
 developers are safe to start development while API providers upgrade to newer versions of the API.
 
-However, [SPI implementors]({{base.url}}/development) should take care of changes, though changes 
+However, [SPI implementors]({{site.baseurl}}/development.html) should take care of changes, though changes 
 to the SPI interface will be kept to a minimum and communicated properly.
 
 
 ## Development
-If you want to develop clients to consume series data refer to the [Web API reference]({{base.url}}/api).
+If you want to develop clients to consume series data refer to the [Web API reference]({{site.baseurl}}/api.html).
 In case of being interested in how the API works and/or want to contribute check the 
-[development section]({{base.url}}/development).
+[development section]({{site.baseurl}}/development.html).
 
 {% comment %}
 TODO 
