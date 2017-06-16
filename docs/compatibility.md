@@ -56,7 +56,7 @@ Shorthand: a `dataset` is more flexible. While `timeseries` only support `quanti
 (which are implicit) a `dataset` contains the `valueType` member which indicates the actual
 type of data (e.g. different scalar values or even aggregate types).
 
-Check out in more detail under the [Value Types section]({{base.url}}/valuetypes).
+Check out in more detail under the [Value Types section]({{site.baseurl}}/valuetypes.html).
 
 ### data vs. getData
 Naming of `getData` was a bit confusing within a RESTful API. That's the reason why `GET`ting

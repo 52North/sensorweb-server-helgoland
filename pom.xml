@@ -19,6 +19,7 @@
         <module>io</module>
         <module>rest</module>
         <module>spi</module>
+        <module>web-resources</module>
     </modules>
 
     <organization>
@@ -646,20 +647,6 @@
 
     <profiles>
         <profile>
-            <id>env-dev</id>
-            <properties>
-                <env>dev</env>
-                <!-- externalize build parameters for productive environment -->
-                <local.configfile>${custom.properties.directory}/${project.build.finalName}-${env}.properties</local.configfile>
-            </properties>
-            <build>
-                <filters>
-                    <filter>${local.configfile}</filter>
-                </filters>
-            </build>
-        </profile>
-
-        <profile>
             <id>create-license-list</id>
             <build>
                 <plugins>
@@ -682,18 +669,13 @@
 
         <profile>
             <id>snapshot-dist</id>
-            <distributionManagement>
-                <repository>
-                    <id>n52-releases-dist</id>
-                    <name>repository for 52North releases</name>
-                    <url>dav:https://52north.org/maven/repo/releases</url>
-                </repository>
-                <snapshotRepository>
-                    <id>n52-snapshots-dist</id>
-                    <name>repository for 52North snapshots</name>
-                    <url>dav:https://52north.org/maven/repo/snapshots</url>
-                </snapshotRepository>
-            </distributionManagement>
+<!--             <distributionManagement> -->
+<!--                 <snapshotRepository> -->
+<!--                     <id>n52-snapshots-dist</id> -->
+<!--                     <name>repository for 52North snapshots</name> -->
+<!--                     <url>dav:https://52north.org/maven/repo/snapshots</url> -->
+<!--                 </snapshotRepository> -->
+<!--             </distributionManagement> -->
             
             <build>
                 <pluginManagement>
