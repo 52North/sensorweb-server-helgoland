@@ -90,7 +90,7 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements || offset == 0 || offset >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset/limit - 1, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(offset / limit - 1, limit));
         }
     }
 
@@ -99,7 +99,7 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements || offset + limit  >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset/limit + 1, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(offset / limit + 1, limit));
         }
     }
 
@@ -109,13 +109,13 @@ public class OffsetBasedPagination implements Pagination {
         if (offset >= elements) {
             return Optional.empty();
         } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset/limit, limit));
+            return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset / limit, limit));
         }
     }
 
         @Override
     public int hashCode() {
-        return Objects.hash(this.offset/limit, this.limit);
+        return Objects.hash(this.offset / this.limit, this.limit);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public String toString() {
-        return "offset=" + this.offset/limit + "&limit=" + this.limit;
+        return "offset=" + this.offset / this.limit + "&limit=" + this.limit;
     }
 
 }
