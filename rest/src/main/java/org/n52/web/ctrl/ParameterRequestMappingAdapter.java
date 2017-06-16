@@ -31,15 +31,17 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
-import org.n52.io.request.IoParameters;
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
 import org.n52.io.response.pagination.Paginated;
+import org.n52.io.response.pagination.Pagination;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
@@ -74,7 +76,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                                                 .removeAllOf(Parameters.OFFSET));
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
+                Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
         }
@@ -128,24 +130,20 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return counter;
     }
 
-    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated) {
-        String l = "Link:";
-        if (paginated.getCurrent().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
-        }
-        if (paginated.getNext().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
-        }
-        if (paginated.getPrevious().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
-        }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
-        }
-
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
+        addPaginationHeader("self", href, paginated.getCurrent(), response);
+        addPaginationHeader("previous", href, paginated.getPrevious(), response);
+        addPaginationHeader("next", href, paginated.getNext(), response);
+        addPaginationHeader("first", href, paginated.getFirst(), response);
+        addPaginationHeader("last", href, paginated.getLast(), response);
         return response;
+    }
+
+    private void addPaginationHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
+        if (pagination.isPresent()) {
+            String header = "Link";
+            String value = "<" + href + "?" + pagination.get().toString() + "> rel=\"" + rel + "\"";
+            response.addHeader(header, value);
+        }
     }
 }
