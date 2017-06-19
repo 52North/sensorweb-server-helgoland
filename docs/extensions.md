@@ -10,6 +10,10 @@ section under revision/update
 {:.n52-callout .n52-callout-todo}
 Spring configuration
 
+## License
+
+{% capture extensions_include %}{% include extensions/license.md %}{% endcapture %}
+{{ extensions_include | markdownify }}
 
 ## Prerendering
 
