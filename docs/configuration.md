@@ -4,6 +4,9 @@ title: Configuration
 permalink: /configuration
 ---
 
+- TOC
+{:toc}
+
 {:.n52-callout .n52-callout-todo}
 section under revision/update
 
@@ -56,7 +59,7 @@ CORS can be enabled via a third party filter (to stay independend from a concret
 Servlet container which may not ship such filter) within a Web application's `web.xml`
 file. A simple example (which allows all requests) may look like this:
 
-```
+```xml
 <filter>
     <filter-name>CORS</filter-name>
     <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
@@ -146,11 +149,11 @@ A placeholder can now be declared within Spring XML files via `${placeholder:def
 If present in the application properties file (your one or the default) it will be 
 replaced, otherwise the given default will be used.
 
+
 #### Separate Configuration Sections
 
 To keep overview we can separate parts of the configuration files and include them
 via file import, e.g. `<import resource="mvc.xml" />`.
-
 
 
 
