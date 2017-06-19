@@ -17,54 +17,54 @@ configuration section applies to all further config unless overridden (within a 
 
 For example:
 
-```
+```json
 {
-    "generalConfig" : {
-        "width": "800",
-        "height": "500",
-        "locale" : "de",
-        "grid" : true,
-        "generalize" : false
-    },
-    "phenomenonStyles": [
-        {
-            "id" : "3",
-            "title" : "Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)",
-            "chartQualifier" : "with_legend",
-            "interval": [
-                "lastWeek",
-                "lastMonth"
-            ],
-            "config" : {
-                "legend" : true
-            },
-            "style": {
-                "chartType": "line",
-                "properties": {
-                    "color": "#00ffff",
-                    "lineType": "solid",
-                    "width": 2
-                }
-            }
+  "generalConfig" : {
+    "width": "800",
+    "height": "500",
+    "locale" : "de",
+    "grid" : true,
+    "generalize" : false
+  },
+  "phenomenonStyles": [
+    {
+     "id" : "3",
+      "title" : "Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)",
+      "chartQualifier" : "with_legend",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "config" : {
+        "legend" : true
+      },
+      "style": {
+        "chartType": "line",
+        "properties": {
+          "color": "#00ffff",
+          "lineType": "solid",
+          "width": 2
         }
-    ],
-    "datasetStyles": [
-        {
-            "id" : "16",
-            "interval": [
-                "lastWeek",
-                "lastMonth"
-            ],
-            "style": {
-                "chartType": "bar",
-                "properties": {
-                    "interval": "byDay",
-                    "width": 0.8,
-                    "color": "#0000ff"
-                }
-            }
+      }
+    }
+  ],
+  "datasetStyles": [
+    {
+      "id" : "16",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "style": {
+        "chartType": "bar",
+        "properties": {
+          "interval": "byDay",
+          "width": 0.8,
+          "color": "#0000ff"
         }
-    ]
+      }
+    }
+  ]
 }
 ```
 
