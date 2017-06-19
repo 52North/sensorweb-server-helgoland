@@ -30,6 +30,24 @@ be changed/extended by Web application implementors.
 
 ## General Configuration
 
+### Query Parameter Defaults
+Query parameter defaults can be changed under `WEB-INF/classes/config-general.json`. For example
+
+```json
+{
+  "timeformat": "YYYY-MM-dd, HH:mm",
+  "generalizer": {
+    "defaultGeneralizer": "lttb",
+    "noDataGapThreshold": 5
+  },
+  "grid": false
+}
+```
+
+{:.n52-callout .n52-callout-info}
+Changing API defaults may lead to unexpected results to Web clients. Only change defaults 
+if you know what you are doing.
+
 ### Enabling CORS
 {:.n52-callout .n52-callout-todo}
 link to CORS testing page
