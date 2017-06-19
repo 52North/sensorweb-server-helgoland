@@ -586,7 +586,13 @@ public class IoParameters implements Parameters {
             return null;
         }
         String bboxValue = getAsString(BBOX);
-        BBox bbox = parseJson(bboxValue, BBox.class);
+        BBox bbox;
+        // Check if supplied in minx,miny,maxx,maxy format - else assume json
+        if(bboxValue.matches("^(\\d*\\.?\\d*\\,){3}(\\d*\\.?\\d*)$")){
+            bbox = new BBox(bboxValue);
+        } else {
+            bbox = parseJson(bboxValue, BBox.class);
+        }
         bbox.setLl(convertToCrs84(bbox.getLl()));
         bbox.setUr(convertToCrs84(bbox.getUr()));
         return bbox;
