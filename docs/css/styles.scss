@@ -4,7 +4,7 @@
 // override bootstrap variables
 $icon-font-path: "{{ site.baseurl }}/assets/fonts/bootstrap/";
 
-@import "reset";
+//@import "reset";
 @import "variables";
 @import "bootstrap";
 
