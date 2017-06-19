@@ -50,6 +50,25 @@
                 </configuration>
             </plugin>
         </plugins>
+        
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- assemble licenses -->
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>maven-notice-plugin</artifactId>
+                    <configuration>
+                        <noticeTemplate>etc/NOTICE.template</noticeTemplate>
+                        <licenseMapping>
+                            <param>etc/license-mappings.xml</param>
+                            <param>../etc/license-mappings.xml</param>
+                            <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
+                        </licenseMapping>
+                        <generateChildNotices>false</generateChildNotices>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <profiles>

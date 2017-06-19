@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<license-lookup xmlns="https://source.jasig.org/schemas/maven-notice-plugin/license-lookup" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://source.jasig.org/schemas/maven-notice-plugin/license-lookup https://source.jasig.org/schemas/maven-notice-plugin/license-lookup/license-lookup-v1.0.xsd">
+    <artifact>
+        <!-- https://github.com/bundler/bundler/blob/v1.11.2/LICENSE.md -->
+        <groupId>rubygems</groupId>
+        <artifactId>bundler</artifactId>
+        <version>1.11.2</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/celluloid/celluloid-essentials/blob/v0.20.5/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>celluloid-essentials</artifactId>
+        <version>0.20.5</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/celluloid/celluloid-supervision/blob/v0.20.5/LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>celluloid-supervision</artifactId>
+        <version>0.20.5</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- http://www.rubydoc.info/gems/colorator/0.1#License -->
+        <groupId>rubygems</groupId>
+        <artifactId>colorator</artifactId>
+        <version>0.1</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- http://www.rubydoc.info/gems/ffi/1.9.10#License -->
+        <groupId>rubygems</groupId>
+        <artifactId>ffi</artifactId>
+        <version>1.9.10</version>
+        <license>BSD License</license>
+    </artifact>
+    <artifact>
+        <!-- http://www.rubydoc.info/gems/hitimes/1.2.5#License -->
+        <!-- https://opensource.org/licenses/ISC -->
+        <groupId>rubygems</groupId>
+        <artifactId>hitimes</artifactId>
+        <version>1.2.5</version>
+        <license>ISC License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jekyll/jekyll/blob/v3.4.3/LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>jekyll</artifactId>
+        <version>3.4.3</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jekyll/jekyll-sass-converter/blob/v1.4.0/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>jekyll-sass-converter</artifactId>
+        <version>1.4.0</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jekyll/jekyll-sitemap/blob/v1.1.1/LICENSE.md -->
+        <groupId>rubygems</groupId>
+        <artifactId>jekyll-sitemap</artifactId>
+        <version>1.1.1</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jekyll/jekyll-watch/blob/v1.3.1/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>jekyll-watch</artifactId>
+        <version>1.3.1</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- http://www.rubydoc.info/gems/kramdown -->
+        <groupId>rubygems</groupId>
+        <artifactId>kramdown</artifactId>
+        <version>1.10.0</version>
+        <!-- until v1.0.0: GPL! .. Starting from v1.0.1: MIT! -->
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/Shopify/liquid/blob/3-0-stable/MIT-LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>liquid</artifactId>
+        <version>3.0.6</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/guard/listen/blob/v3.0.6/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>listen</artifactId>
+        <version>3.0.6</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jekyll/mercenary/blob/v0.3.5/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>mercenary</artifactId>
+        <version>0.3.5</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/thibaudgg/rb-fsevent/blob/v0.9.7/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>rb-fsevent</artifactId>
+        <version>0.9.7</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/guard/rb-inotify/blob/v0.9.7/MIT-LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>rb-inotify</artifactId>
+        <version>0.9.7</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/jneen/rouge/blob/v1.10.1/LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>rouge</artifactId>
+        <version>1.10.1</version>
+        <license>MIT License (with copyright/author notice of pygments)</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/dtao/safe_yaml/blob/1.0.4/LICENSE.txt -->
+        <groupId>rubygems</groupId>
+        <artifactId>safe_yaml</artifactId>
+        <version>1.0.4</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- https://github.com/sass/sass/blob/3.4.22/MIT-LICENSE -->
+        <groupId>rubygems</groupId>
+        <artifactId>sass</artifactId>
+        <version>3.4.22</version>
+        <license>MIT License</license>
+    </artifact>
+    <artifact>
+        <!-- http://www.rubydoc.info/gems/timers#License -->
+        <groupId>rubygems</groupId>
+        <artifactId>timers</artifactId>
+        <version>4.1.2</version>
+        <license>MIT License</license>
+    </artifact>
+</license-lookup>
