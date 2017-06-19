@@ -37,7 +37,7 @@ github_mail="travis@travis-ci.org"
 branch="gh-pages"
 build_dir=$(mktemp -d)
 #docs_dir="${build_dir}/docs"
-docs_dir="./docs"
+docs_dir="./web-resources/src/main/docs"
 docs_deploy_dir="${docs_dir}/_site"
 
 git config --global user.name "${github_name}"
