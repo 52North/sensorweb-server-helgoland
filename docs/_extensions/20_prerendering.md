@@ -1,3 +1,10 @@
+---
+layout: page
+title: Prerendering Extension
+permalink: /extensions/prerendering
+---
+
+## Prerendering
 
 A data provider can configure datasets being pre-/rerendered regularly for given time intervals
 (`lastMonth`, `lastWeek`, or `lastDay`). A client experience may be instant access rather than

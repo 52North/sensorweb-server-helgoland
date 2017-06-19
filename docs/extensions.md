@@ -4,40 +4,18 @@ title: Extensions
 permalink: /extensions
 ---
 
+- TOC
+{:toc}
+
 {:.n52-callout .n52-callout-todo}
 section under revision/update
 
-{:.n52-callout .n52-callout-todo}
-Spring configuration
+{:.n52-callout .n52-callout-info}
+Extensions are configured for a controller instance via `metadataExtensions` property list. For
+details have a look at [Configuration section]({{site.baseurl}}/configuration.html) section.
 
-## License
-
-{% capture extensions_include %}{% include extensions/license.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
-
-## Prerendering
-
-{% capture extensions_include %}{% include extensions/prerendering.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
-
-## Status Intervals
-
-{% capture extensions_include %}{% include extensions/status_intervals.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
-
-## Rendering Hints
-
-{% capture extensions_include %}{% include extensions/rendering_hints.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
-
-
-## Result Time
-
-{% capture extensions_include %}{% include extensions/result_time.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
-
-
-## Database metadata
-
-{% capture extensions_include %}{% include extensions/database_metadata.md %}{% endcapture %}
-{{ extensions_include | markdownify }}
+<div>
+{% for extension in site.extensions %}
+    {{extension.content | markdownify}}
+{% endfor %}
+</div>
