@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Backwards Compatibility – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Paging – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Backwards Compatibility" />
-    <meta property="twitter:title" content="Backwards Compatibility" />
+    <meta property="og:title" content="Paging" />
+    <meta property="twitter:title" content="Paging" />
     
 
 
@@ -103,72 +103,83 @@
       </div>
 
       <article class="page">
-  <h1>Backwards Compatibility</h1>
+  <h1>Paging</h1>
 
   <div class="entry">
-    <p>The API strives to be backwards compatible, i.e. features and datastructure once introduced 
-to the core will stay available. However, to add new features and functions will require to 
-add new content to existing data structures (which won’t break backwards compability, though).</p>
+    <h2 id="overview">Overview</h2>
 
-<p>Also new endpoints may be introduced over time like we did in <code class="highlighter-rouge">v2.0.0</code>.</p>
+<p class="n52-callout n52-callout-info">Paging is currently not supported for the Endpoint <code class="highlighter-rouge">/geometries</code>. All other Endpoints are supported.</p>
 
-<h2 id="version-200">Version 2.0.0</h2>
+<p>The API offers basic Paging support using the Query Parameters <code class="highlighter-rouge">offset</code> and <code class="highlighter-rouge">limit</code>. Paging is automatically enabled if at least one of the parameters is present in the query. If only one parameter is provided, the missing parameters default value will be used.</p>
 
-<h3 id="new-endpoints">New Endpoints</h3>
+<h3 id="parameter-semantics">Parameter Semantics</h3>
+
+<p><code class="highlighter-rouge">limit</code> describes the maximum amount of Elements in one Page. Except for the last Page, all Pages will always be filled to this maximum capacity.</p>
+
+<p><code class="highlighter-rouge">offset</code> describes the Page Number, starting from zero.</p>
+
+<p class="n52-callout n52-callout-info">It is <strong>strongly advised</strong> to only specify the <code class="highlighter-rouge">limit</code> Parameter in the client, and get the <code class="highlighter-rouge">offset</code> from the Response Headers returned by the API (see examples below).</p>
+
+<h3 id="parameter-values">Parameter Values</h3>
+<p>The Parameter Values are subject to the following restrictions:</p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>parameter</th>
+      <th>MIN_VALUE</th>
+      <th>MAX_VALUE</th>
+      <th>default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">limit</code></td>
+      <td>1</td>
+      <td>1000000</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">offset</code></td>
+      <td>0</td>
+      <td>2147483647</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="n52-callout n52-callout-info">Both <code class="highlighter-rouge">limit</code> and <code class="highlighter-rouge">offset</code> are integers and are programmatically limited to not exceed the value of 2147483647. If higher Numbers are provided the Request will fail and the API will throw an Error.</p>
+
+<p>If an invalid <code class="highlighter-rouge">limit</code> (i.e. exceeding MAX_VALUE) is supplied, <code class="highlighter-rouge">limit</code> will default to the closest valid value (e.g. MIN_VALUE or MAX_VALUE). 
+If no <code class="highlighter-rouge">limit</code> is supplied the default value will be used.</p>
+
+<p>If no offset or an invalid <code class="highlighter-rouge">offset</code> is supplied, <code class="highlighter-rouge">offset</code> will default to its default value.</p>
+
+<h3 id="response-headers">Response Headers</h3>
+<p>Paging Information is returned by the API in the Response Header. An Example of the returned Headers can be found below:</p>
+
+<p><strong>Example Request URL</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>http://example.com/api/stations?offset=2&amp;limit=10
+</code></pre>
+</div>
+
+<p><strong>Example Response Header [partial]:</strong></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>[...]
+Link : &lt;http://example.com/api/stations?offset=2&amp;limit=10&gt; rel="self"
+Link : &lt;http://example.com/api/stations?offset=3&amp;limit=10&gt; rel="next"
+Link : &lt;http://example.com/api/stations?offset=1&amp;limit=10&gt; rel="previous"
+Link : &lt;http://example.com/api/stations?offset=0&amp;limit=10&gt; rel="first"
+Link : &lt;http://example.com/api/stations?offset=7&amp;limit=10&gt; rel="last"
+[...]
+</code></pre>
+</div>
+<p>The Presence of the Links in the Response Header varies on the specific circumstances:</p>
+
 <ul>
-  <li><code class="highlighter-rouge">/datasets</code>: More generic series metadata which can have different value types</li>
-  <li><code class="highlighter-rouge">/platforms</code>: More generic metadata from where observations are made</li>
-  <li><code class="highlighter-rouge">/geometries</code>: Separated endpoint to query different types of geometries</li>
+  <li>The Link to <code class="highlighter-rouge">self</code> is always present.</li>
+  <li>The Links to <code class="highlighter-rouge">first</code> and <code class="highlighter-rouge">last</code> are present if a valid offset was provided.</li>
+  <li>The Links to <code class="highlighter-rouge">next</code> and <code class="highlighter-rouge">previous</code> are present if the pages exist and a valid offset was provided.</li>
 </ul>
-
-<h3 id="platforms-vs-stations">Platforms vs. Stations</h3>
-
-<p>Since <code class="highlighter-rouge">v2.0</code> the following sensor platforms are supported:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">stationary</code> sensor platforms are fixed at a given <code class="highlighter-rouge">site</code></li>
-  <li><code class="highlighter-rouge">mobile</code> sensor platforms do observe data along a <code class="highlighter-rouge">track</code></li>
-  <li><code class="highlighter-rouge">insitu</code> sensor platforms do observe data at the location the platform is currently at</li>
-  <li><code class="highlighter-rouge">remote</code> sensor platforms do observe data from distance (like cameras or satellites)</li>
-</ul>
-
-<p>There are four possbile types of a platform can have: <code class="highlighter-rouge">stationary_insitu</code>, <code class="highlighter-rouge">mobile_insitu</code>, 
-<code class="highlighter-rouge">stationary_remote</code> and <code class="highlighter-rouge">mobile_remote</code>. <code class="highlighter-rouge">insitu</code> platforms are associated with a <code class="highlighter-rouge">platformLocation</code> 
-which can be either <code class="highlighter-rouge">site</code> or <code class="highlighter-rouge">track</code>. Additionally, <code class="highlighter-rouge">remote</code> platforms can reference observations to 
-<code class="highlighter-rouge">observedGeometries</code>: Either a fix geometry (<code class="highlighter-rouge">static</code> or an observed geometry (<code class="highlighter-rouge">dynamic</code>) on its own 
-(which may or may not vary over time e.g. sea water level via satellite).</p>
-
-<p>By having more types filtering gets more important for clients to get the right data out from the API.
-So, the <code class="highlighter-rouge">platform</code>’s geometries can now grow and get very huge (e.g. moving platforms with long tracks). 
-To make them better to handle from clients geometries can be filtered under <code class="highlighter-rouge">/geometries</code> endpoint. 
-Therefore additional query parameters now exist:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">platformTypes</code> can be used to filter on all resources which ensures to only get those resources
- related to the given filter.</li>
-  <li><code class="highlighter-rouge">platformLocations</code> to filter insitu geometries (<code class="highlighter-rouge">site</code> or <code class="highlighter-rouge">track</code>)</li>
-  <li><code class="highlighter-rouge">observedGeometries</code> to filter remote geometries (<code class="highlighter-rouge">static</code> or <code class="highlighter-rouge">dynamic</code>)</li>
-  <li><code class="highlighter-rouge">geometryTypes</code> cto filter on different geometries (like <code class="highlighter-rouge">POINT</code> or <code class="highlighter-rouge">POLYGON</code>)</li>
-</ul>
-
-<p>The former <code class="highlighter-rouge">Station</code> resource relates to the combination of a <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> 
-platform (located at a 0-dimensional location geometry) where <code class="highlighter-rouge">quantity</code> datasets
-are made. Retrieving the former output under <code class="highlighter-rouge">/platforms</code> endpoint, one can now filter via
-<code class="highlighter-rouge">/platforms?platformTypes=stationary,insitu</code> or still can get the collection via 
-<code class="highlighter-rouge">/stations</code>.</p>
-
-<h3 id="timeseries-vs-datasets">Timeseries vs. Datasets</h3>
-
-<p>Shorthand: a <code class="highlighter-rouge">dataset</code> is more flexible. While <code class="highlighter-rouge">timeseries</code> only support <code class="highlighter-rouge">quantity</code> values
-(which are implicit) a <code class="highlighter-rouge">dataset</code> contains the <code class="highlighter-rouge">valueType</code> member which indicates the actual
-type of data (e.g. different scalar values or even aggregate types).</p>
-
-<p>Check out in more detail under the <a href="/series-rest-api/documentation_move-to-web-resource/valuetypes.html">Value Types section</a>.</p>
-
-<h3 id="data-vs-getdata">data vs. getData</h3>
-<p>Naming of <code class="highlighter-rouge">getData</code> was a bit confusing within a RESTful API. That’s the reason why <code class="highlighter-rouge">GET</code>ting
-data for a dataset has been renamed to <code class="highlighter-rouge">data</code> (<code class="highlighter-rouge">/datasets/&lt;id&gt;/data</code>). To stay backwards 
-compatible the old <code class="highlighter-rouge">getData</code> still exist under the old endpoint (<code class="highlighter-rouge">/timeseries/&lt;id&gt;/getData</code>).</p>
 
   </div>
 </article>
