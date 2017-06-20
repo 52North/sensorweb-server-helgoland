@@ -132,20 +132,22 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getCollection(String locale, MultiValueMap<String, String> query) {
+    public ModelAndView getCollection(HttpServletResponse response,
+                                      String locale,
+                                      MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
+        OutputCollection<T> result;
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
-            OutputCollection<T> result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-            return createModelAndView(result);
         } else {
-            OutputCollection<T> results = parameterService.getCondensedParameters(queryMap);
-            return createModelAndView(results);
+            result = parameterService.getCondensedParameters(queryMap);
         }
+        return createModelAndView(result);
     }
 
     @Override

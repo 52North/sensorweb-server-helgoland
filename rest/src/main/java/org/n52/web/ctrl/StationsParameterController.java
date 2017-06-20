@@ -29,12 +29,17 @@
 
 package org.n52.web.ctrl;
 
+import java.util.Collections;
+import javax.servlet.http.HttpServletResponse;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
+import org.n52.io.response.pagination.OffsetBasedPagination;
+import org.n52.io.response.pagination.Paginated;
 import org.n52.series.spi.geo.TransformingStationOutputService;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
@@ -43,6 +48,8 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,29 +70,52 @@ public class StationsParameterController {
 
     private ParameterService<StationOutput> parameterService;
 
+    @Autowired
+    private ProceduresParameterController parameterControllerWithHref;
+
+    @Autowired
+    @Qualifier("metadataService")
+    private CountingMetadataService counter;
+
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-        required = false) String locale,
+    public ModelAndView getCollection(HttpServletResponse response,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                        required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query);
-        map = IoParameters.ensureBackwardsCompatibility(map);
+        OutputCollection< ? > result;
 
         if (map.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
-            OutputCollection< ? > result = parameterService.getExpandedParameters(map);
+            result = parameterService.getExpandedParameters(map);
             logRequestTime(stopwatch);
-
-            // TODO add paging
-            return new ModelAndView().addObject(result.getItems());
         } else {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
-            OutputCollection< ? > result = parameterService.getCondensedParameters(map);
+            result = parameterService.getCondensedParameters(map);
             logRequestTime(stopwatch);
-
-            // TODO add paging
-            return new ModelAndView().addObject(result.getItems());
         }
+
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        queryMap = IoParameters.ensureBackwardsCompatibility(queryMap);
+        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")) {
+            Integer elementcount = this.counter.getStationCount();
+            if (elementcount != -1) {
+                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated paginated = new Paginated(obp, elementcount.longValue());
+                this.addPagingHeaders(response, paginated);
+            }
+        }
+        return new ModelAndView().addObject(result.getItems());
+    }
+
+    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
+        query.put(Parameters.HREF_BASE, Collections.singletonList(this.getHrefBase()));
+        return query;
+    }
+
+    private String getHrefBase() {
+        return RequestUtils.resolveQueryLessRequestUrl(parameterControllerWithHref.getExternalUrl());
     }
 
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
@@ -122,4 +152,26 @@ public class StationsParameterController {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
     }
 
+    private HttpServletResponse addPagingHeaders(HttpServletResponse response, Paginated paginated) {
+        String l = "Link:";
+        String href = (new UrlHelper()).constructHref(this.getHrefBase(), UrlSettings.COLLECTION_STATIONS);
+
+        if (paginated.getCurrent().isPresent()) {
+            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
+        }
+        if (paginated.getNext().isPresent()) {
+            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
+        }
+        if (paginated.getPrevious().isPresent()) {
+            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
+        }
+        if (paginated.getFirst().isPresent()) {
+            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
+        }
+        if (paginated.getLast().isPresent()) {
+            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
+        }
+
+        return response;
+    }
 }

@@ -31,13 +31,23 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.request.IoParameters;
+
 import org.n52.io.request.Parameters;
+import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.pagination.OffsetBasedPagination;
+import org.n52.io.response.pagination.Paginated;
+import org.n52.io.response.pagination.Pagination;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -51,12 +61,27 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
+    @Autowired
+    @Qualifier("metadataService")
+    private CountingMetadataService counter;
+
     @Override
     @RequestMapping(path = "")
-    public ModelAndView getCollection(@RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-        required = false) String locale,
+    public ModelAndView getCollection(HttpServletResponse response,
+                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                          required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(locale, addHrefBase(query));
+        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
+            Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
+                                                                .removeAllOf(Parameters.OFFSET));
+            if (0 >= elementcount) {
+                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
+                this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
+            }
+        }
+        return super.getCollection(null, locale, addHrefBase(query));
     }
 
     @Override
@@ -92,9 +117,46 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        String externalUrl = getExternalUrl();
-        String hrefBase = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
-        query.put(Parameters.HREF_BASE, Collections.singletonList(hrefBase));
+        query.put(Parameters.HREF_BASE, Collections.singletonList(getHrefBase()));
         return query;
+    }
+
+    private String getHrefBase() {
+        return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
+    }
+
+    /**
+     * @param queryMap
+     *        the query map
+     * @return the number of elements available, or negative number if paging is not supported.
+     */
+    protected abstract int getElementCount(IoParameters queryMap);
+
+    protected CountingMetadataService getEntityCounter() {
+        return counter;
+    }
+
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
+        addLinkHeader("self", href, paginated.getCurrent(), response);
+        addLinkHeader("previous", href, paginated.getPrevious(), response);
+        addLinkHeader("next", href, paginated.getNext(), response);
+        addLinkHeader("first", href, paginated.getFirst(), response);
+        addLinkHeader("last", href, paginated.getLast(), response);
+        return response;
+    }
+
+    private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
+        if (pagination.isPresent()) {
+            String header = "Link";
+            String value = "<"
+                    + href
+                    + "?"
+                    + pagination.get()
+                                .toString()
+                    + "> rel=\""
+                    + rel
+                    + "\"";
+            response.addHeader(header, value);
+        }
     }
 }

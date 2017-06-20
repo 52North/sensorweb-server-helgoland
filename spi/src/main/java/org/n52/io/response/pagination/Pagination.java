@@ -26,25 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.io.response.pagination;
 
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ProcedureOutput;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Optional;
 
-@RestController
-@RequestMapping(path = UrlSettings.COLLECTION_PROCEDURES)
-public class ProceduresParameterController extends ParameterRequestMappingAdapter<ProcedureOutput> {
 
-    @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_PROCEDURES);
-    }
+/**
+ *
+ * @author Christian Autermann
+ * @author Jan Speckamp
+ */
 
-    @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getProcedureCount(IoParameters.ensureBackwardsCompatibility(queryMap));
-    }
+
+public interface Pagination {
+    int MAX_LIMIT = 1000000;
+    int DEFAULT_LIMIT = 10000;
+
+    long getStart();
+
+    long getEnd();
+
+    long getOffset();
+
+    long getLimit();
+
+    Optional<Pagination> first(long elements);
+
+    Optional<Pagination> previous(long elements);
+
+    Optional<Pagination> next(long elements);
+
+    Optional<Pagination> last(long elements);
 }

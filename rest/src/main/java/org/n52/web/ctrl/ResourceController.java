@@ -37,7 +37,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 public interface ResourceController {
 
-    ModelAndView getCollection(String locale, MultiValueMap<String, String> query);
+    ModelAndView getCollection(HttpServletResponse response, String locale, MultiValueMap<String, String> query);
+
+    String getCollectionPath(String hrefBase);
 
     ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
 

@@ -12,6 +12,7 @@
 - output includes href property
 
 ### Features
+- #129 provides paging headers if backend supports counting
 - #232 possibility to use `domainId` instead of database id
 - #266 `AbstractValue` can have time intervals
 - #304 flexible prerendering title config via placeholders
