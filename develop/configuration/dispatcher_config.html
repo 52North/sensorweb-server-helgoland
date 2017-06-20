@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Configuration – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Dispatcher Configuration – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -25,14 +25,24 @@
     <meta name="theme-color" content="#ffffff">
 
     
-    <meta name="description" content="Initiative for Geospatial Open Source Software">
-    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    <meta name="description" content="Configuring Web Layer
+The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
+(configured in web.xml). Configuration includes content negotiation, serialization config, 
+and Web controller injections.
+
+" />
+    <meta property="og:description" content="Configuring Web Layer
+The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
+(configured in web.xml). Configuration includes content negotiation, serialization config, 
+and Web controller injections.
+
+" />
     
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Configuration" />
-    <meta property="twitter:title" content="Configuration" />
+    <meta property="og:title" content="Dispatcher Configuration" />
+    <meta property="twitter:title" content="Dispatcher Configuration" />
     
 
 
@@ -103,129 +113,9 @@
       </div>
 
       <article class="page">
-  <h1>Configuration</h1>
+  <h1>Dispatcher Configuration</h1>
 
   <div class="entry">
-    <p class="n52-callout n52-callout-todo">section under revision/update</p>
-
-<p>The Web interface is intended and prepared for straight integration with Spring MVC. 
-However, using Spring as Web framework is not required but leaves open the last 
-meters of integrating the endpoint controllers.</p>
-
-<p class="n52-callout n52-callout-todo">make links to Spring MVC and to endpoint controllers.</p>
-
-<p>All endpoints are annotated with Spring’s annotations <code class="highlighter-rouge">Connector</code>, <code class="highlighter-rouge">RequestMethod</code>, 
-<code class="highlighter-rouge">RequestMapping</code>, etc. What is needed is a configured <code class="highlighter-rouge">DispatcherServlet</code> 
-in the <code class="highlighter-rouge">web.xml</code> and proper beans injections.</p>
-
-<p class="n52-callout n52-callout-todo">Check if/how we can provide a pre-configured <code class="highlighter-rouge">Configuration</code> lib or class which can
-be changed/extended by Web application implementors.</p>
-
-<h2 id="configuration-locations">Configuration Locations</h2>
-<ul>
-  <li><code class="highlighter-rouge">WEB-INF/classes/config-general.properties</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/spring/</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/classes/application.properties</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/web.xml</code> (cors etc.)</li>
-</ul>
-
-<div>
-
-    <h2 id="general-configuration">General Configuration</h2>
-
-<h3 id="query-parameter-defaults">Query Parameter Defaults</h3>
-<p>Query parameter defaults can be changed under <code class="highlighter-rouge">WEB-INF/classes/config-general.json</code>. For example</p>
-
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"timeformat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YYYY-MM-dd, HH:mm"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"generalizer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"defaultGeneralizer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lttb"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"noDataGapThreshold"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"grid"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
-
-<p class="n52-callout n52-callout-info">Changing API defaults may lead to unexpected results to Web clients. Only change defaults 
-if you know what you are doing.</p>
-
-<h3 id="enabling-cors">Enabling CORS</h3>
-<p><a href="https://enable-cors.org/index.html">CORS</a> can be enabled via a third party filter (to stay 
-independend from a concrete Servlet container which may not ship such filter) within a Web 
-application’s <code class="highlighter-rouge">web.xml</code> file. A simple example (which allows all requests) may look like this:</p>
-
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
-    <span class="nt">&lt;filter-name&gt;</span>CORS<span class="nt">&lt;/filter-name&gt;</span>
-    <span class="nt">&lt;filter-class&gt;</span>com.thetransactioncompany.cors.CORSFilter<span class="nt">&lt;/filter-class&gt;</span>
-    <span class="nt">&lt;init-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>cors.allowOrigin<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>*<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/init-param&gt;</span>
-    <span class="nt">&lt;init-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>cors.allowGenericHttpRequests<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>true<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/init-param&gt;</span>
-    <span class="nt">&lt;init-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>cors.supportedMethods<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>GET, POST, HEAD, PUT, DELETE, OPTIONS<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/init-param&gt;</span>
-    <span class="nt">&lt;init-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>cors.supportedHeaders<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>Content-Type, Content-Encoding, Accept<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/init-param&gt;</span>
-    <span class="nt">&lt;init-param&gt;</span>
-        <span class="nt">&lt;param-name&gt;</span>cors.exposedHeaders<span class="nt">&lt;/param-name&gt;</span>
-        <span class="nt">&lt;param-value&gt;</span>Content-Type, Content-Encoding<span class="nt">&lt;/param-value&gt;</span>
-    <span class="nt">&lt;/init-param&gt;</span>
-<span class="nt">&lt;/filter&gt;</span>
-<span class="nt">&lt;filter-mapping&gt;</span>
-    <span class="nt">&lt;filter-name&gt;</span>CORS<span class="nt">&lt;/filter-name&gt;</span>
-    <span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
-<span class="nt">&lt;/filter-mapping&gt;</span>
-</code></pre>
-</div>
-
-<p class="n52-callout n52-callout-info">You can <a href="http://www.test-cors.org/">test your CORS config</a> if configured correctly.</p>
-
-
-
-    <h2 id="managing-configuration">Managing Configuration</h2>
-
-<h3 id="separate-properties">Separate Properties</h3>
-<p>It is helpful to separate all properties values from XML configuration for several
-reasons. First, it may be tedious to find all single properties within verbose XML. 
-However, more it also very important to keep sensitive information (like database
-configuration) from the project itself.</p>
-
-<p>Create a <code class="highlighter-rouge">WEB-INF/classes/application.properties</code> file which will keep all the default 
-values. Another may be located under your home directory. Configure the following which
-will first take parameters</p>
-
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- these properties do override default settings --&gt;</span>
-<span class="nt">&lt;ctx:property-placeholder</span> 
-    <span class="err">&lt;!--</span> <span class="err">${user.home}/application.properties}</span> <span class="err">when</span> <span class="err">-Dlocal.configFile</span> <span class="err">not</span> <span class="err">defined</span> <span class="err">--</span><span class="nt">&gt;</span>
-    location="${local.configFile:${user.home}/application.properties}"
-    ignore-resource-not-found="true" ignore-unresolvable="true" order="0" /&gt;
-
-<span class="c">&lt;!-- default settings --&gt;</span>
-<span class="nt">&lt;ctx:property-placeholder</span> 
-    <span class="na">location=</span><span class="s">"classpath:/application.properties"</span>
-    <span class="na">ignore-resource-not-found=</span><span class="s">"false"</span> <span class="na">ignore-unresolvable=</span><span class="s">"false"</span> <span class="na">order=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
-</code></pre>
-</div>
-
-<p>A placeholder can now be declared within Spring XML files via <code class="highlighter-rouge">${placeholder:default}</code>.
-If present in the application properties file (your one or the default) it will be 
-replaced, otherwise the given default will be used.</p>
-
-<h3 id="separate-configuration-sections">Separate Configuration Sections</h3>
-
-<p>To keep overview we can separate parts of the configuration files and include them
-via file import, e.g. <code class="highlighter-rouge">&lt;import resource="mvc.xml" /&gt;</code>.</p>
-
-
-
     <h2 id="configuring-web-layer">Configuring Web Layer</h2>
 <p>The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
 (configured in <code class="highlighter-rouge">web.xml</code>). Configuration includes content negotiation, serialization config, 
@@ -440,37 +330,6 @@ an extra application properties file</li>
 <h2 id="extensions">Extensions</h2>
 <p>See <a href="/series-rest-api/develop/extensions.html">Extension section</a> for how to configure extensions in detail.</p>
 
-
-
-    <h2 id="common-utils">Common Utils</h2>
-
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.dao.DefaultDbQueryFactory"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"databaseSrid"</span> <span class="na">value=</span><span class="s">"${database.srid}"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.da.EntityCounter"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"metadataService"</span> <span class="na">class=</span><span class="s">"org.n52.series.srv.CountingMetadataAccessService"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"searchService"</span> <span class="na">class=</span><span class="s">"org.n52.series.srv.Search"</span> <span class="nt">/&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.da.DefaultDataRepositoryFactory"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.DefaultIoFactory"</span> <span class="nt">/&gt;</span>
-</code></pre>
-</div>
-
-<h3 id="static-service-entity">Static Service Entity</h3>
-<p>In case of a unique data backend a static service entity can be defined via Spring bean. Here’s an example</p>
-
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.beans.ServiceEntity"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"pkid"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"version"</span> <span class="na">value=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"My Dataset Service"</span> <span class="nt">/&gt;</span>
-  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"noDataValues"</span> <span class="na">value=</span><span class="s">"-9999.0,99999,NO_DATA"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
-
-
-</div>
 
   </div>
 </article>

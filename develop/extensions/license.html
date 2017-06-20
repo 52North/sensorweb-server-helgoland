@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>API Development – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>License Extension – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -25,14 +25,18 @@
     <meta name="theme-color" content="#ffffff">
 
     
-    <meta name="description" content="Initiative for Geospatial Open Source Software">
-    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    <meta name="description" content="License Extension
+
+" />
+    <meta property="og:description" content="License Extension
+
+" />
     
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="API Development" />
-    <meta property="twitter:title" content="API Development" />
+    <meta property="og:title" content="License Extension" />
+    <meta property="twitter:title" content="License Extension" />
     
 
 
@@ -103,19 +107,28 @@
       </div>
 
       <article class="page">
-  <h1>API Development</h1>
+  <h1>License Extension</h1>
 
   <div class="entry">
-    <p>tbd</p>
+    <h2 id="license-extension">License Extension</h2>
 
-<h2 id="overview">Overview</h2>
+<p>This simple extension which reads a license file and makes the content available to clients
+via <code class="highlighter-rouge">/&lt;endpoint&gt;/extras?fields=license</code> URL. This may be a full license text or a plain link.</p>
 
-<p>Next to the <a href="/series-rest-api/develop/api.html">Web API</a>, a Service Provider Interface (SPI) defines the 
-underlying interface for data providing backends. With this, the API is flexible enough to
-be put ontop of arbitrary data stores. Its modular design enables a seamless integration into 
-existing Web applications.</p>
+<h3 id="configuration-location">Configuration Location</h3>
 
-<p><img src="/series-rest-api/develop/assets/images/big-picture.png" alt="Big Picture" /></p>
+<p>Place a text file calling <code class="highlighter-rouge">config-license.txt</code> under <code class="highlighter-rouge">WEB-INF/classes</code> and enable license by 
+placing it under the <code class="highlighter-rouge">ParameterController</code>:</p>
+
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterController"</span> <span class="na">id=</span><span class="s">"parameterController"</span> <span class="na">abstract=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataExtensions"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;list&gt;</span>
+            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.response.extension.LicenseExtension"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/list&gt;</span>
+    <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre>
+</div>
 
   </div>
 </article>
