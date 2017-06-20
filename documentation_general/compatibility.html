@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Backwards Compatibility – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/series-rest-api/documentation_general/assets/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/series-rest-api/documentation_general/assets/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/series-rest-api/documentation_general/assets/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/series-rest-api/documentation_general/assets/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/series-rest-api/documentation_general/assets/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/series-rest-api/documentation_general/assets/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/series-rest-api/documentation_general/assets/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/series-rest-api/documentation_general/assets/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/series-rest-api/documentation_general/assets/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/series-rest-api/documentation_general/assets/images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/series-rest-api/documentation_general/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/series-rest-api/documentation_general/assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/series-rest-api/documentation_general/assets/images/favicon-16x16.png">
+    <link rel="manifest" href="/series-rest-api/documentation_general/assets/images/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/series-rest-api/documentation_general/assets/images/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    
+    <meta name="description" content="Initiative for Geospatial Open Source Software">
+    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    
+    <meta name="author" content="52°North GmbH" />
+
+    
+    <meta property="og:title" content="Backwards Compatibility" />
+    <meta property="twitter:title" content="Backwards Compatibility" />
+    
+
+
+<!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_general/css/styles.css" />
+</head>
+
+<body>
+
+  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    
+  <div class="n52-container container-fluid">
+  
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
+        <a href="/series-rest-api/documentation_general"><img alt="52&deg;North logo"
+          src="/series-rest-api/documentation_general/assets/images/52n_logo_full.png" /></a>
+      </div>
+      <div class="container">
+        <div class="pull-right navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://52north.org">52°North</a></li>
+            <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
+            <li><a href="http://blog.52north.org">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <nav class="affix col-lg-2 n52-sidebar">
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/index.html">Home</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/compatibility.html">Compatibility</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/valuetypes.html">Value Types</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/io.html">Input/Output</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/configuration.html">Configuration</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/paging.html">Paging</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/extensions.html">Extensions</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/api.html">API Reference</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/documentation_general/development.html">API Development</a>
+      </p>
+    </nav>
+
+    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+      <div class="pull-right">
+        <p class="affix up-link n52-top">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        </p>
+      </div>
+
+      <article class="page">
+  <h1>Backwards Compatibility</h1>
+
+  <div class="entry">
+    <p>The API strives to be backwards compatible, i.e. features and datastructure once introduced 
+to the core will stay available. However, to add new features and functions will require to 
+add new content to existing data structures (which won’t break backwards compability, though).</p>
+
+<p>Also new endpoints may be introduced over time like we did in <code class="highlighter-rouge">v2.0.0</code>.</p>
+
+<h2 id="version-200">Version 2.0.0</h2>
+
+<h3 id="new-endpoints">New Endpoints</h3>
+<ul>
+  <li><code class="highlighter-rouge">/datasets</code>: More generic series metadata which can have different value types</li>
+  <li><code class="highlighter-rouge">/platforms</code>: More generic metadata from where observations are made</li>
+  <li><code class="highlighter-rouge">/geometries</code>: Separated endpoint to query different types of geometries</li>
+</ul>
+
+<h3 id="platforms-vs-stations">Platforms vs. Stations</h3>
+
+<p>Since <code class="highlighter-rouge">v2.0</code> the following sensor platforms are supported:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">stationary</code> sensor platforms are fixed at a given <code class="highlighter-rouge">site</code></li>
+  <li><code class="highlighter-rouge">mobile</code> sensor platforms do observe data along a <code class="highlighter-rouge">track</code></li>
+  <li><code class="highlighter-rouge">insitu</code> sensor platforms do observe data at the location the platform is currently at</li>
+  <li><code class="highlighter-rouge">remote</code> sensor platforms do observe data from distance (like cameras or satellites)</li>
+</ul>
+
+<p>There are four possbile types of a platform can have: <code class="highlighter-rouge">stationary_insitu</code>, <code class="highlighter-rouge">mobile_insitu</code>, 
+<code class="highlighter-rouge">stationary_remote</code> and <code class="highlighter-rouge">mobile_remote</code>. <code class="highlighter-rouge">insitu</code> platforms are associated with a <code class="highlighter-rouge">platformLocation</code> 
+which can be either <code class="highlighter-rouge">site</code> or <code class="highlighter-rouge">track</code>. Additionally, <code class="highlighter-rouge">remote</code> platforms can reference observations to 
+<code class="highlighter-rouge">observedGeometries</code>: Either a fix geometry (<code class="highlighter-rouge">static</code> or an observed geometry (<code class="highlighter-rouge">dynamic</code>) on its own 
+(which may or may not vary over time e.g. sea water level via satellite).</p>
+
+<p>By having more types filtering gets more important for clients to get the right data out from the API.
+So, the <code class="highlighter-rouge">platform</code>’s geometries can now grow and get very huge (e.g. moving platforms with long tracks). 
+To make them better to handle from clients geometries can be filtered under <code class="highlighter-rouge">/geometries</code> endpoint. 
+Therefore additional query parameters now exist:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">platformTypes</code> can be used to filter on all resources which ensures to only get those resources
+ related to the given filter.</li>
+  <li><code class="highlighter-rouge">platformLocations</code> to filter insitu geometries (<code class="highlighter-rouge">site</code> or <code class="highlighter-rouge">track</code>)</li>
+  <li><code class="highlighter-rouge">observedGeometries</code> to filter remote geometries (<code class="highlighter-rouge">static</code> or <code class="highlighter-rouge">dynamic</code>)</li>
+  <li><code class="highlighter-rouge">geometryTypes</code> cto filter on different geometries (like <code class="highlighter-rouge">POINT</code> or <code class="highlighter-rouge">POLYGON</code>)</li>
+</ul>
+
+<p>The former <code class="highlighter-rouge">Station</code> resource relates to the combination of a <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> 
+platform (located at a 0-dimensional location geometry) where <code class="highlighter-rouge">quantity</code> datasets
+are made. Retrieving the former output under <code class="highlighter-rouge">/platforms</code> endpoint, one can now filter via
+<code class="highlighter-rouge">/platforms?platformTypes=stationary,insitu</code> or still can get the collection via 
+<code class="highlighter-rouge">/stations</code>.</p>
+
+<h3 id="timeseries-vs-datasets">Timeseries vs. Datasets</h3>
+
+<p>Shorthand: a <code class="highlighter-rouge">dataset</code> is more flexible. While <code class="highlighter-rouge">timeseries</code> only support <code class="highlighter-rouge">quantity</code> values
+(which are implicit) a <code class="highlighter-rouge">dataset</code> contains the <code class="highlighter-rouge">valueType</code> member which indicates the actual
+type of data (e.g. different scalar values or even aggregate types).</p>
+
+<p>Check out in more detail under the <a href="/series-rest-api/documentation_general/valuetypes.html">Value Types section</a>.</p>
+
+<h3 id="data-vs-getdata">data vs. getData</h3>
+<p>Naming of <code class="highlighter-rouge">getData</code> was a bit confusing within a RESTful API. That’s the reason why <code class="highlighter-rouge">GET</code>ting
+data for a dataset has been renamed to <code class="highlighter-rouge">data</code> (<code class="highlighter-rouge">/datasets/&lt;id&gt;/data</code>). To stay backwards 
+compatible the old <code class="highlighter-rouge">getData</code> still exist under the old endpoint (<code class="highlighter-rouge">/timeseries/&lt;id&gt;/getData</code>).</p>
+
+  </div>
+</article>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    
+    <div class="col-lg-5">
+      <ul>
+        <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
+        <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+        <li><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
+                        href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+      </ul>
+    </div>
+    <div class="col-lg-5 pull-right">
+      <ul class="footer-links">
+          <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+      </ul>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/9decc2003397265cdf3374f49745f62b9435a997">9decc2003397265cdf3374f49745f62b9435a997</a></p>
+      
+    </div>
+  </footer>
+
+</body>
+</html>
