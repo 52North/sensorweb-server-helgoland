@@ -55,26 +55,6 @@ This project includes:
   Open GIS Interfaces under GNU Lesser General Public License (LGPL) version 2.1
   quartz under The Apache Software License, Version 2.0
   Referencing services under GNU Lesser General Public License (LGPL) version 2.1
-  rubygems:bundler under MIT License
-  rubygems:celluloid-essentials under MIT License
-  rubygems:celluloid-supervision under MIT License
-  rubygems:colorator under MIT License
-  rubygems:ffi under BSD License
-  rubygems:hitimes under ISC License
-  rubygems:jekyll under MIT License
-  rubygems:jekyll-sass-converter under MIT License
-  rubygems:jekyll-sitemap under MIT License
-  rubygems:jekyll-watch under MIT License
-  rubygems:kramdown under MIT License
-  rubygems:liquid under MIT License
-  rubygems:listen under MIT License
-  rubygems:mercenary under MIT License
-  rubygems:rb-fsevent under MIT License
-  rubygems:rb-inotify under MIT License
-  rubygems:rouge under MIT License (with copyright/author notice of pygments)
-  rubygems:safe_yaml under MIT License
-  rubygems:sass under MIT License
-  rubygems:timers under MIT License
   Series REST API under GNU General Public License, Version 2.0
   Series REST API - IO module under GNU General Public License, Version 2.0
   Series REST API - REST module under GNU General Public License, Version 2.0

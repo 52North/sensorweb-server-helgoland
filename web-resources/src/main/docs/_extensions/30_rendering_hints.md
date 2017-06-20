@@ -1,3 +1,10 @@
+---
+layout: page
+title: Rendering Hints Extension
+permalink: /extensions/rendering_hints
+---
+
+## Rendering Hints
 
 The Series API provides I/O mechanisms to render charts so that clients may directly request
 data via `accept=image/png` HTTP header. However, styles are chosen either randomly or by 
@@ -15,7 +22,7 @@ limit and some color hint a client may use to render properly.
 
 For example:
 
-```
+```json
 {
   "phenomenonStyles": {
     "3": {

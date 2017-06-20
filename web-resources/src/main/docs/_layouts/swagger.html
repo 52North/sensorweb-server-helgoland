@@ -12,7 +12,7 @@ layout: page
 
 {% for route in swagger.paths %}
 <div class="swagger-paths">
-    <h2 class="swagger-path">{{ route[0] }}</h>
+    <h2 class="swagger-path">{{ route[0] }}</h2>
     {% for method in route[1] %}
     <div class="swagger-method swagger-method-{{ method[0] }}">
         <h3 class="swagger-method-title">

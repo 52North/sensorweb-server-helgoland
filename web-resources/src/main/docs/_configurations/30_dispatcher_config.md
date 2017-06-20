@@ -1,76 +1,15 @@
 ---
 layout: page
-title: Configuration
-permalink: /configuration
+title: Dispatcher Configuration
+permalink: /configuration/dispatcher_config
 ---
 
-{:.n52-callout .n52-callout-todo}
-section under revision/update
+## Configuring Web Layer
+The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
+(configured in `web.xml`). Configuration includes content negotiation, serialization config, 
+and Web controller injections.
 
-The Web interface is intended and prepared for straight integration with Spring MVC. 
-However, using Spring as Web framework is not required but leaves open the last 
-meters of integrating the endpoint controllers.
-
-{:.n52-callout .n52-callout-todo}
-make links to Spring MVC and to endpoint controllers.
-
-All endpoints are annotated with Spring's annotations `Connector`, `RequestMethod`, 
-`RequestMapping`, etc. What is needed is a configured `DispatcherServlet` 
-in the `web.xml` and proper beans injections.
-
-{:.n52-callout .n52-callout-todo}
-Check if/how we can provide a pre-configured `Configuration` lib or class which can
-be changed/extended by Web application implementors.
-
-## Application Configuration Locations
-* `WEB-INF/classes/config-general.properties`
-* `WEB-INF/spring/`
-* `WEB-INF/classes/application.properties`
-* `WEB-INF/web.xml` (cors etc.)
-
-## General Configuration
-
-### Enabling CORS
-{:.n52-callout .n52-callout-todo}
-link to CORS testing page
-
-CORS can be enabled via a third party filter (to stay independend from a concrete
-Servlet container which may not ship such filter) within a Web application's `web.xml`
-file. A simple example (which allows all requests) may look like this:
-
-```
-<filter>
-    <filter-name>CORS</filter-name>
-    <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-    <init-param>
-        <param-name>cors.allowOrigin</param-name>
-        <param-value>*</param-value>
-    </init-param>
-    <init-param>
-        <param-name>cors.allowGenericHttpRequests</param-name>
-        <param-value>true</param-value>
-    </init-param>
-    <init-param>
-        <param-name>cors.supportedMethods</param-name>
-        <param-value>GET, POST, HEAD, PUT, DELETE, OPTIONS</param-value>
-    </init-param>
-    <init-param>
-        <param-name>cors.supportedHeaders</param-name>
-        <param-value>Content-Type, Content-Encoding, Accept</param-value>
-    </init-param>
-    <init-param>
-        <param-name>cors.exposedHeaders</param-name>
-        <param-value>Content-Type, Content-Encoding</param-value>
-    </init-param>
-</filter>
-<filter-mapping>
-    <filter-name>CORS</filter-name>
-    <url-pattern>/*</url-pattern>
-</filter-mapping>
-```
-
-
-## Spring
+### Dispatcher Servlet
 
 This describes an example configuration via Spring. There are lots of variants and 
 alternatives which may end in the same result. This example splits Spring configuration 
@@ -84,55 +23,22 @@ put both configuration files, and relate it to some context path like so:
 
 ```xml
 <servlet>
-    <servlet-name>api-dispatcher</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/spring/dispatcher-servlet.xml,/WEB-INF/spring/application-context.xml</param-value>
-    </init-param>
-    <load-on-startup>1</load-on-startup>
+  <servlet-name>api-dispatcher</servlet-name>
+  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  <init-param>
+     <param-name>contextConfigLocation</param-name>
+     <param-value>/WEB-INF/spring/dispatcher-servlet.xml,/WEB-INF/spring/application-context.xml</param-value>
+  </init-param>
+  <load-on-startup>1</load-on-startup>
 </servlet>
 
 <servlet-mapping>
-    <servlet-name>api-dispatcher</servlet-name>
-    <url-pattern>/api/*</url-pattern>
+  <servlet-name>api-dispatcher</servlet-name>
+  <url-pattern>/api/*</url-pattern>
 </servlet-mapping>
 ```
 
-### Managing Configuration
-It is helpful to separate all properties values from XML configuration for several
-reasons. First, it may be tedious to find all single properties within verbose XML. 
-However, more it also very important to keep sensitive information (like database
-configuration) from the project itself.
-
-Create a `WEB-INF/classes/application.properties` file which will keep all the default 
-values. Another may be located under your home directory. Configure the following which
-will first take parameters 
-
-```xml
-<!-- these properties do override default settings -->
-<ctx:property-placeholder 
-    <!-- ${user.home}/application.properties} when -Dlocal.configFile not defined -->
-    location="${local.configFile:${user.home}/application.properties}"
-    ignore-resource-not-found="true" ignore-unresolvable="true" order="0" />
-
-<!-- default settings -->
-<ctx:property-placeholder 
-    location="classpath:/application.properties"
-    ignore-resource-not-found="false" ignore-unresolvable="false" order="1" />
-```
-
-To keep overview we can separate parts of the configuration files and include them
-via file import, e.g. `<import resource="mvc.xml" />`.
-
- 
-
-
-### Dispatcher Configuration
-Dispatcher configuration includes content negotiation and default serialization config
-and Web controller injections.
-
-#### Content Negotiation
+### Content Negotiation
 To support proper content negotiation and JSON serialization the following should be 
 added to the `/WEB-INF/spring/dispatcher-servlet.xml`:
 
@@ -164,9 +70,9 @@ added to the `/WEB-INF/spring/dispatcher-servlet.xml`:
 </bean>
 ```
 
-#### Web Controller injections
-A Web controller behaves like described in the [Web API]({{site.baseurl}}/api.html) and performs 
-[I/O operations]({{site.baseurl}}/io.html) if needed. 
+### Web Controller injections
+A Web controller serves an endpoint and behaves like described in the [Web API]({{site.baseurl}}/api.html). It 
+performs [I/O operations]({{site.baseurl}}/io.html) (graph rendering, generalization, etc.) if neccessary.
 
 
 {:.n52-callout .n52-callout-info}
@@ -191,7 +97,9 @@ backend service is called.
     <property name="searchService" ref="searchService"/>
 </bean>
 
+<!-- a parent controller configuration -->
 <bean class="org.n52.web.ctrl.ParameterController" id="parameterController" abstract="true">
+    <!-- ${external.url} property is configured in an external properties file (see above) -->
     <property name="externalUrl" value="${external.url}" />
     <property name="metadataExtensions">
         <list>
@@ -273,7 +181,6 @@ backend service is called.
                 <property name="service" ref="resultTimeService" />
             </bean>
             <!-- Using DatabaseMetadataExtension requires some preparation work. -->
-            <!-- Have a look at the README.md at TBD -->
             <!--<bean class="org.n52.io.extension.metadata.DatabaseMetadataExtension" />-->
         </list>
     </property>
@@ -288,10 +195,26 @@ backend service is called.
 ```
 
 
-### Application Properties
+{::options parse_block_html="true" /}
+{:.n52-callout .n52-callout-info}
+<div>
+Known application properties are 
+Some things to note:
+
+* `${external.url}` and `${request.interval.restriction}` are property placeholders defined in 
+an extra application properties file
+* `org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter` is a backwards compatibility wrapper
+* `metadataExtensions` list contains extensions which adds further metadata to `/<endpoint>/extras`
+
+</div>
+
+### General Properties
+Configurable properties are 
+
+* `requestIntervalRestriction`: sets the maximum time period a clients can query data for, e.g. `P380D`
+* `externalUrl`: sets the external URL under which the API can be accessed by clients, e.g. (`https://example.com/my-api/`)
 
 
+## Extensions
+See [Extension section]({{site.baseurl}}/extensions.html) for how to configure extensions in detail.
 
-### Extensions
-
-### Static Service Entity
