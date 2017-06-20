@@ -28,7 +28,8 @@ collections:
 
 markdown: kramdown
 
-# Use the following plug-ins
+# starting from 3.5.0
+#plugins:
 gems:
   - jekyll-sitemap
   
