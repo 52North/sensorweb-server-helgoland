@@ -61,7 +61,7 @@
         <logback.version>1.2.1</logback.version>
         <jackson.version>2.7.3</jackson.version>
         <geotools.version>14.0</geotools.version>
-        <slf4j.version>1.7.24</slf4j.version>
+        <slf4j.version>1.7.22</slf4j.version>
         <hamcrest.version>1.3</hamcrest.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -358,6 +358,12 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -670,14 +676,6 @@
 
         <profile>
             <id>snapshot-dist</id>
-<!--             <distributionManagement> -->
-<!--                 <snapshotRepository> -->
-<!--                     <id>n52-snapshots-dist</id> -->
-<!--                     <name>repository for 52North snapshots</name> -->
-<!--                     <url>dav:https://52north.org/maven/repo/snapshots</url> -->
-<!--                 </snapshotRepository> -->
-<!--             </distributionManagement> -->
-            
             <build>
                 <pluginManagement>
                     <plugins>
