@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: section
 title: Value Types
 permalink: /valuetypes
 ---
@@ -13,10 +13,7 @@ The default dataset type is `quantity` which actually is a
 numeric observation over time. A resource can be filtered by 
 dataset type(s).
 
-- TOC
-{:toc}
-
-## General
+### General
 A simplest data value has a `timestamp` and a corresponding `value`.
 Showing time intervals (`timestart` and `timeend`) can be activated
 via query parameter `showTimeIntervals=true`.
@@ -40,7 +37,7 @@ Member        | Optional      | Description
 
 Each data value might have different optionals set.
 
-## Scalar data types
+### Scalar data types
 Scalar data types are single values (`double`, `count`, `boolean`, `double`, 
 `text`). Observations of type `double` are identified by `quantity`. Other 
 scalar types are denoted as is.
@@ -48,8 +45,13 @@ scalar types are denoted as is.
 Depending on what members are available (see above table) the following output 
 would be valid.
 
-#### Quantity Example (`stationary` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Quantity Example (`stationary` platform)
+</div>
 ```
 {
   "quantity_1": {
@@ -74,9 +76,15 @@ would be valid.
   }
 }
 ```
+</div>
 
-#### Text example (observation interval, `stationary` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Text example (observation interval, `stationary` platform)
+</div>
 ```
 {
   "text_1": {
@@ -95,9 +103,15 @@ would be valid.
   }
 }
 ```
+</div>
 
-#### Quantity example (`mobile` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Quantity example (`mobile` platform)
+</div>
 ```
 {
   "values": [
@@ -126,9 +140,9 @@ would be valid.
   ]
 }
 ```
-  
+</div>
 
-## Complex data types
+### Complex data types
 Complex data types are compound values. Each compound value shall be seen as abstract
 value type which has to be made concrete by data providers. In case of providing 
 record data, the dataset should provide a concrete value type like `record+quantity` in 
@@ -142,12 +156,17 @@ supported by the API, just one subtype level.
 Depending on what members are available (see above table) the following output 
 would be valid.
 
-### Record
+#### Record
 A record's `value` member is a map of key-valued objects. However, a `record` is abstract
 and each implementation have to provide its own `valueType` within the `dataset` metadata.
 
-#### Typed Record Example: `text` (`stationary` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Typed Record Example: `text` (`stationary` platform)
+</div>
 ```
 {
   "record+text_309510107": {
@@ -166,9 +185,15 @@ and each implementation have to provide its own `valueType` within the `dataset`
   }
 }
 ```
+</div>
 
-#### Customized Example: `fotoquest` (`stationary` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Customized Example: `fotoquest` (`stationary` platform)
+</div>
 [Fotoquest](https://github.com/52North/fotoquest-series-api) value types describe some 
 kind of (referenced) media taken at a given location. It could also be described more 
 generally as `record+geojson`. Background infos about the project can be found at [the
@@ -262,13 +287,19 @@ Fotoquest Homepage](http://fotoquest-go.org/).
   }
 }
 ```
+</div>
 
-### Profile
+#### Profile
 A value type which contain observations along a vertical axis (e.g. observations made on
 different depth levels). The vertical unit is overridable within each vertical item.
 
-#### Vertical Example (`stationary` platform)
-{:.no_toc}
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Vertical Example (`stationary` platform)
+</div>
 ```
 {
   "values": [
@@ -303,3 +334,4 @@ different depth levels). The vertical unit is overridable within each vertical i
   ]
 }
 ```
+</div>

@@ -1,13 +1,10 @@
----
-layout: page
----
 
-{{ content }}
 
-{% if page.data %}
-{% assign swagger = site.data[page.data] %}
+{% if section.data %}
+{% assign swagger = site.data[section.data] %}
+foo
 {% else %}
-{% assign swagger = page %}
+{% assign swagger = section %}
 {% endif %}
 
 {% for route in swagger.paths %}
@@ -39,7 +36,6 @@ layout: page
                     </thead>
                     <tbody>
                         {% for parameter in method[1].parameters %}
-                          
                           {% if parameter.name == null %}
                             {% assign ref = parameter['$ref'] | split:"/" | last %}
                             <tr>

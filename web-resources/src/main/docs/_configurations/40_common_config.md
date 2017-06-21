@@ -1,11 +1,17 @@
 ---
-layout: page
+layout: section
 title: Common Configuration
-permalink: /configuration/common_config
 ---
 
-## Common Utils
+#### Common Utils
 
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Configuration of common utility helpers
+</div>
 ```xml
 <bean class="org.n52.series.db.dao.DefaultDbQueryFactory">
   <property name="databaseSrid" value="${database.srid}" />
@@ -18,10 +24,17 @@ permalink: /configuration/common_config
 <bean class="org.n52.series.db.da.DefaultDataRepositoryFactory" />
 <bean class="org.n52.io.DefaultIoFactory" />
 ```
+</div>
 
-### Static Service Entity
+##### Static Service Entity
 In case of a unique data backend a static service entity can be defined via Spring bean. Here's an example
 
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+A static service configuration
+</div>
 ```xml
 <bean class="org.n52.series.db.beans.ServiceEntity">
   <property name="pkid" value="1" />
@@ -30,3 +43,4 @@ In case of a unique data backend a static service entity can be defined via Spri
   <property name="noDataValues" value="-9999.0,99999,NO_DATA" />
 </bean>
 ```
+</div>

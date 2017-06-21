@@ -1,15 +1,14 @@
 ---
-layout: page
+layout: section
 title: Dispatcher Configuration
-permalink: /configuration/dispatcher_config
 ---
 
-## Configuring Web Layer
+#### Configuring Web Layer
 The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
 (configured in `web.xml`). Configuration includes content negotiation, serialization config, 
 and Web controller injections.
 
-### Dispatcher Servlet
+##### Dispatcher Servlet
 
 This describes an example configuration via Spring. There are lots of variants and 
 alternatives which may end in the same result. This example splits Spring configuration 
@@ -21,6 +20,12 @@ files into two main files:
 However, everything starts by adding Spring's `DispatcherServlet` within the `web.xml`, 
 put both configuration files, and relate it to some context path like so:
 
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Example configuration of the dispatcher servlet.
+</div>
 ```xml
 <servlet>
   <servlet-name>api-dispatcher</servlet-name>
@@ -37,11 +42,18 @@ put both configuration files, and relate it to some context path like so:
   <url-pattern>/api/*</url-pattern>
 </servlet-mapping>
 ```
+</div>
 
-### Content Negotiation
+##### Content Negotiation
 To support proper content negotiation and JSON serialization the following should be 
 added to the `/WEB-INF/spring/dispatcher-servlet.xml`:
 
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Content negotiation example
+</div>
 ```xml
 <mvc:annotation-driven />
 <ctx:annotation-config />
@@ -69,8 +81,9 @@ added to the `/WEB-INF/spring/dispatcher-servlet.xml`:
     </property>
 </bean>
 ```
+</div>
 
-### Web Controller injections
+##### Web Controller injections
 A Web controller serves an endpoint and behaves like described in the [Web API]({{site.baseurl}}/api.html). It 
 performs [I/O operations]({{site.baseurl}}/io.html) (graph rendering, generalization, etc.) if neccessary.
 
@@ -80,6 +93,12 @@ A Web controller delegates data request to the actual SPI implementation so it h
 referenced here. SPI implementors have to use these references to make sure the right
 backend service is called.
 
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Example how to configure Web MVC controllers
+</div>
 ```xml
 <mvc:annotation-driven />
 <ctx:annotation-config />
@@ -193,7 +212,7 @@ backend service is called.
     <property name="requestIntervalRestriction" value="${request.interval.restriction}" />
 </bean>
 ```
-
+</div>
 
 {::options parse_block_html="true" /}
 {:.n52-callout .n52-callout-info}
@@ -208,13 +227,13 @@ an extra application properties file
 
 </div>
 
-### General Properties
+##### General Properties
 Configurable properties are 
 
 * `requestIntervalRestriction`: sets the maximum time period a clients can query data for, e.g. `P380D`
 * `externalUrl`: sets the external URL under which the API can be accessed by clients, e.g. (`https://example.com/my-api/`)
 
 
-## Extensions
+#### Extensions
 See [Extension section]({{site.baseurl}}/extensions.html) for how to configure extensions in detail.
 

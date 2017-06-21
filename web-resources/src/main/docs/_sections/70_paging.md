@@ -1,10 +1,8 @@
 ---
-layout: page
+layout: section
 title: Paging
 permalink: /paging
 ---
-
-## Overview
 
 {:.n52-callout .n52-callout-info}
 Paging is currently not supported for the Endpoint `/geometries`. All other Endpoints are supported.
@@ -26,8 +24,8 @@ The Parameter Values are subject to the following restrictions:
 {:.table}
 parameter     | MIN_VALUE  | MAX_VALUE  | default      |
 --------------|------------|---------------------------|
-`limit`       | 1          | 1000000    | 10000        | 
-`offset`      | 0          | 2147483647 | 0            | 
+`limit`       | 1          | 1000000    | 10000        |
+`offset`      | 0          | 2147483647 | 0            |
 
 {:.n52-callout .n52-callout-info}
 Both `limit` and `offset` are integers and are programmatically limited to not exceed the value of 2147483647. If higher Numbers are provided the Request will fail and the API will throw an Error.
@@ -40,12 +38,20 @@ If no offset or an invalid `offset` is supplied, `offset` will default to its de
 ### Response Headers
 Paging Information is returned by the API in the Response Header. An Example of the returned Headers can be found below:
 
-**Example Request URL**
+
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Example Request
+</div>
 ```
 http://example.com/api/stations?offset=2&limit=10
 ```
 
-**Example Response Header [partial]:**
+<div class="n52-example-caption">
+Response Header [partial]:
+</div>
 ```
 [...]
 Link : <http://example.com/api/stations?offset=2&limit=10> rel="self"
@@ -55,6 +61,8 @@ Link : <http://example.com/api/stations?offset=0&limit=10> rel="first"
 Link : <http://example.com/api/stations?offset=7&limit=10> rel="last"
 [...]
 ```
+</div>
+
 The Presence of the Links in the Response Header varies on the specific circumstances:
 
  - The Link to `self` is always present.

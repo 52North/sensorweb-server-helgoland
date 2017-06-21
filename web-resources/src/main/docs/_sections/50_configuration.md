@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: section
 title: Configuration
 permalink: /configuration
 ---
@@ -22,7 +22,7 @@ in the `web.xml` and proper beans injections.
 Check if/how we can provide a pre-configured `Configuration` lib or class which can
 be changed/extended by Web application implementors.
 
-## Configuration Locations
+### Configuration Locations
 * `WEB-INF/classes/config-general.properties`
 * `WEB-INF/spring/`
 * `WEB-INF/classes/application.properties`

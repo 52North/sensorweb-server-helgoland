@@ -11,10 +11,13 @@
 <link rel="stylesheet" type="text/css" href="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.css">
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css" />
 
+
 <script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-<script rel="stylesheet" href="{{ site.baseurl }}/assets/javascripts/bootstrap.min.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/bootstrap.min.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/swagger-toggle-details.js"></script>
 <!-- <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script>-->
 <script src="//cdn.rawgit.com/afeld/bootstrap-toc/gh-pages/dist/bootstrap-toc.js"></script>
+
 </head>
 
 <body data-spy="scroll" data-target="#toc">
@@ -27,6 +30,7 @@
         <a href="{{site.baseurl}}"><img alt="52&deg;North logo"
           src="{{site.baseurl}}/assets/images/52n_logo_full.png" /></a>
       </div>
+      
       <div class="pull-right navbar-collapse ">
         <ul class="nav navbar-nav">
           <li><a href="http://52north.org">52°North</a></li>
@@ -39,28 +43,20 @@
     
   <div class="container container-fluid n52-container">
     <div class="row">
-      <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix col-mg-2 col-sm-2 pull-left n52-sidebar">
-        <ul class="nav">
-          <li><a href="{{ site.baseurl }}/index.html">Home</a></li>
-          <li><a href="{{ site.baseurl }}/compatibility.html">Compatibility</a></li>
-          <li><a href="{{ site.baseurl }}/valuetypes.html">Value Types</a></li>
-          <li><a href="{{ site.baseurl }}/io.html">Input/Output</a></li>
-          <li><a href="{{ site.baseurl }}/configuration.html">Configuration</a></li>
-          <li><a href="{{ site.baseurl }}/paging.html">Paging</a></li>
-          <li><a href="{{ site.baseurl }}/extensions.html">Extensions</a></li>
-          <li><a href="{{ site.baseurl }}/api.html">API Reference</a></li>
-          <li><a href="{{ site.baseurl }}/development.html">API Development</a></li>
-        </ul>
-      </nav>
+      <div class="col-mg-offset-1 col-mg-3 col-sm-offset-1 col-sm-3 pull-left">
+        <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix n52-sidebar">
+          <!-- automatically included by bootstrap-toc -->
+        </nav>
+      </div>
   
-      <div  class="col-mg-10 col-sm-10 n52-content pull-right">
+      <div  class="col-mg-8 col-sm-8 n52-content pull-right">
         <div class="pull-right">
           <p class="affix up-link n52-toplink">
             <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
           </p>
         </div>
   
-        {{ content | toc_generate}}
+        {{ content }}
       </div>
     </div>
   </div>

@@ -1,24 +1,26 @@
 ---
-layout: page
+layout: section
 title: Backwards Compatibility
 permalink: /compatibility
 ---
 
-The API strives to be backwards compatible, i.e. features and datastructure once introduced 
-to the core will stay available. However, to add new features and functions will require to 
-add new content to existing data structures (which won't break backwards compability, though).
+The Web API strives to be backwards compatible to older implementation versions. This includes
+features and datastructure once they become officially introduced. Client developers are safe 
+to start development although API providers may upgrade to newer versions in the meantime.
 
-Also new endpoints may be introduced over time like we did in `v2.0.0`.
+However, to add new features and functions will require to add new content to existing data 
+structures (which won't break backwards compability, though). Also new endpoints may be introduced
+over time like we did in `v2.0.0`.
 
-## Version 2.0.0
+### Version 2.0.0
 
-### New Endpoints
+#### New Endpoints
 * `/datasets`: More generic series metadata which can have different value types
 * `/platforms`: More generic metadata from where observations are made
 * `/geometries`: Separated endpoint to query different types of geometries
 
 
-### Platforms vs. Stations
+#### Platforms vs. Stations
 
 Since `v2.0` the following sensor platforms are supported:
 
@@ -50,7 +52,7 @@ are made. Retrieving the former output under `/platforms` endpoint, one can now 
 `/platforms?platformTypes=stationary,insitu` or still can get the collection via 
 `/stations`.
 
-### Timeseries vs. Datasets
+#### Timeseries vs. Datasets
 
 Shorthand: a `dataset` is more flexible. While `timeseries` only support `quantity` values
 (which are implicit) a `dataset` contains the `valueType` member which indicates the actual
@@ -58,7 +60,7 @@ type of data (e.g. different scalar values or even aggregate types).
 
 Check out in more detail under the [Value Types section]({{site.baseurl}}/valuetypes.html).
 
-### data vs. getData
+#### data vs. getData
 Naming of `getData` was a bit confusing within a RESTful API. That's the reason why `GET`ting
 data for a dataset has been renamed to `data` (`/datasets/<id>/data`). To stay backwards 
 compatible the old `getData` still exist under the old endpoint (`/timeseries/<id>/getData`).

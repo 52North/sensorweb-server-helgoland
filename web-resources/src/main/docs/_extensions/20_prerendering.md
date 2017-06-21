@@ -1,10 +1,9 @@
 ---
-layout: page
+layout: section
 title: Prerendering Extension
-permalink: /extensions/prerendering
 ---
 
-## Prerendering
+#### Prerendering
 
 A data provider can configure datasets being pre-/rerendered regularly for given time intervals
 (`lastMonth`, `lastWeek`, or `lastDay`). A client experience may be instant access rather than
@@ -13,7 +12,7 @@ html tags without making requests to render charts dynamically.
 
 On prerendering mode only single series charts are rendered (no chart overlay).
 
-### Configuration Location
+##### Configuration Location
 
 {:.n52-callout .n52-callout-todo}
 reference to JobScheduler configuration
@@ -22,8 +21,13 @@ Prerendering (styles, intervals, legend, etc.) can be configured for datasets ha
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
 configuration section applies to all further config unless overridden (within a `config` entry). 
 
-For example:
 
+{::options parse_block_html="true" /}
+{: .n52-example-code}
+<div>
+<div class="n52-example-caption">
+Example of a prerendering configuration
+</div>
 ```json
 {
   "generalConfig" : {
@@ -74,12 +78,13 @@ For example:
   ]
 }
 ```
+</div>
 
 {:.n52-callout .n52-callout-info}
 `timeseriesStyles` and `seriesStyles` mean the same as `datasetStyles` and is kept 
 for backwards compatibility reasons.
 
-### Placeholders
+##### Placeholders
 
 To add fine grained title configuration on a phenomenona group a 
 [`String.format` template](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax) 
@@ -98,7 +103,7 @@ Choose one of the following
 
 Use the template for the title config within config file config-task-prerendering, e.g. `Platform: %1$s, Phenomenon: %2$s [{ %8$s}]`.
 
-### Accessing prerendered charts
+##### Accessing prerendered charts
 
 {:.n52-callout .n52-callout-todo}
 `datasets/<id>/images/<img_id>`

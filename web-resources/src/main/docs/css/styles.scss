@@ -39,6 +39,14 @@ nav[data-toggle=toc] .nav > li > a:hover {
 
 
 /*================================================
+  =                  Swagger API                 =
+  ================================================*/
+
+.swagger-paths h5 {
+  font-weight: bold;
+}
+
+/*================================================
   =                  52n Styling                 =
   ================================================*/
 
@@ -122,6 +130,13 @@ body {
 
 .n52-description-list dd {
     text-indent: 1em;
+}
+.n52-example-code pre {
+    margin-top: 0;
+}
+.n52-example-caption p {
+    font-weight: bold;
+    margin-bottom: 0.25em;
 }
 
 footer {

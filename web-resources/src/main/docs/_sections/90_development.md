@@ -1,12 +1,10 @@
 ---
-layout: page
+layout: section
 title: API Development
 permalink: /development
 ---
 
-tbd
-
-## Overview
+### Overview
 
 Next to the [Web API]({{site.baseurl}}/api.html), a Service Provider Interface (SPI) defines the 
 underlying interface for data providing backends. With this, the API is flexible enough to
