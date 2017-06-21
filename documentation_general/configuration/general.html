@@ -51,25 +51,25 @@
 
   <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
     
-  <div class="n52-container container-fluid">
-  
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
+  <div class="container navbar navbar-default navbar-fixed-top n52-navbar-top">
+    <nav class="center-block col-mg-11 col-sm-11">
+      <div class="pull-left">
         <a href="/series-rest-api/documentation_general"><img alt="52&deg;North logo"
           src="/series-rest-api/documentation_general/assets/images/52n_logo_full.png" /></a>
       </div>
-      <div class="container">
-        <div class="pull-right navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
-            <li><a href="http://blog.52north.org">Blog</a></li>
-          </ul>
-        </div>
+      <div class="pull-right navbar-collapse ">
+        <ul class="nav navbar-nav">
+          <li><a href="http://52north.org">52°North</a></li>
+          <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
+          <li><a href="http://blog.52north.org">Blog</a></li>
+        </ul>
       </div>
     </nav>
-
-    <nav class="affix col-lg-2 n52-sidebar">
+  </div>
+    
+  <div class="container container-fluid n52-container">
+    
+    <nav class="navbar affix col-mg-2 col-sm-2 pull-left n52-sidebar">
       <p class="header">
         <a href="/series-rest-api/documentation_general/index.html">Home</a>
       </p>
@@ -99,10 +99,10 @@
       </p>
     </nav>
 
-    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+    <div  class="col-mg-10 col-sm-10 n52-content pull-right">
       <div class="pull-right">
-        <p class="affix up-link n52-top">
-          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        <p class="affix up-link n52-toplink">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
         </p>
       </div>
 
@@ -173,10 +173,9 @@ application’s <code class="highlighter-rouge">web.xml</code> file. A simple ex
     </div>
   </div>
 
-
   <footer class="footer">
     
-    <div class="col-lg-5">
+    <div class="col-md-5 col-sm-5">
       <ul>
         <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
         <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
@@ -184,14 +183,12 @@ application’s <code class="highlighter-rouge">web.xml</code> file. A simple ex
                         href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
       </ul>
     </div>
-    <div class="col-lg-5 pull-right">
+    <div class="col-md-5 col-sm-5 pull-right">
       <ul class="footer-links">
           <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
-          <li class="muted">&middot;</li>
-          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a>
+          <li><a href="http://github.com/ridoo/series-rest-api/tree/3fd021e6c589ca3541aca40810c55a1e10ae9a21">Revision</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/9decc2003397265cdf3374f49745f62b9435a997">9decc2003397265cdf3374f49745f62b9435a997</a></p>
-      
     </div>
   </footer>
 
