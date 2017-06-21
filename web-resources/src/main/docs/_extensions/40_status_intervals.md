@@ -1,3 +1,10 @@
+---
+layout: page
+title: License Extension
+permalink: /extensions/status_intervals
+---
+
+## Status Intervals
 
 The data provider knows best how to interpret available data and can add domain specific information 
 which may help to interpret data values of a particular dataset.Clients are then able to render data 
@@ -14,7 +21,7 @@ limit and some color hint a client may use to render properly.
 
 For example:
 
-```
+```json
 {
   "phenomenonIntervals": {
     "1": {

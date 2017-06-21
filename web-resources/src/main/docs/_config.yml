@@ -20,9 +20,16 @@ baseurl: ""
 
 permalink: /:title/
 
+collections:
+  configurations:
+    output: true
+  extensions:
+    output: true
+
 markdown: kramdown
 
-# Use the following plug-ins
+# starting from 3.5.0
+#plugins:
 gems:
   - jekyll-sitemap
   

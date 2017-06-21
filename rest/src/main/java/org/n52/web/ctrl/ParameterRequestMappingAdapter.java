@@ -31,7 +31,10 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.request.IoParameters;
 
 import org.n52.io.request.Parameters;
@@ -39,6 +42,7 @@ import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
 import org.n52.io.response.pagination.Paginated;
+import org.n52.io.response.pagination.Pagination;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.RawFormats;
 import org.n52.web.common.RequestUtils;
@@ -71,9 +75,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
                                                                 .removeAllOf(Parameters.OFFSET));
-            if (elementcount != null && elementcount > -1) {
+            if (0 >= elementcount) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
-                Paginated<T> paginated = new Paginated(obp, elementcount.longValue());
+                Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
         }
@@ -121,30 +125,38 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
     }
 
+    /**
+     * @param queryMap
+     *        the query map
+     * @return the number of elements available, or negative number if paging is not supported.
+     */
     protected abstract int getElementCount(IoParameters queryMap);
 
     protected CountingMetadataService getEntityCounter() {
         return counter;
     }
 
-    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated paginated) {
-        String l = "Link:";
-        if (paginated.getCurrent().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
-        }
-        if (paginated.getNext().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
-        }
-        if (paginated.getPrevious().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
-        }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
-        }
-
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
+        addLinkHeader("self", href, paginated.getCurrent(), response);
+        addLinkHeader("previous", href, paginated.getPrevious(), response);
+        addLinkHeader("next", href, paginated.getNext(), response);
+        addLinkHeader("first", href, paginated.getFirst(), response);
+        addLinkHeader("last", href, paginated.getLast(), response);
         return response;
+    }
+
+    private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
+        if (pagination.isPresent()) {
+            String header = "Link";
+            String value = "<"
+                    + href
+                    + "?"
+                    + pagination.get()
+                                .toString()
+                    + "> rel=\""
+                    + rel
+                    + "\"";
+            response.addHeader(header, value);
+        }
     }
 }
