@@ -13,6 +13,6 @@
           details.addClass('open');
           e.preventDefault();
         }
-      })
+      });
   });
 })(jQuery);

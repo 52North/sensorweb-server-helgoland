@@ -34,9 +34,19 @@ nav[data-toggle=toc] .nav > li > a:hover {
   text-decoration: none; 
   background-color: transparent; 
   border-right: 1px solid #563d7c; 
-  border-left: 0; 
+  border-left: 0;
 }
 
+nav[data-toggle='toc'] .nav > .active > a,
+nav[data-toggle='toc'] .nav > .active:hover > a,
+nav[data-toggle='toc'] .nav > .active:focus > a {
+  padding-left: 18px;
+  font-weight: bold;
+  color: #563d7c;
+  background-color: transparent;
+  border-right: 2px solid #563d7c; 
+  border-left: 0;
+}
 
 /*================================================
   =                  Swagger API                 =
