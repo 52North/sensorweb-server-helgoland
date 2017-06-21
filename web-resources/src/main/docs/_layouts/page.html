@@ -3,9 +3,11 @@ layout: default
 ---
 
 <article class="page">
-  <h1>{{ page.title }}</h1>
-
-  <div class="entry">
-    {{ content }}
-  </div>
+{% if page.title %}
+  <h1 id="{{ page.title | downcase | replace: ' ', '-' }}" class="page-header">{{page.title}}</h1>
+  {% else %}
+  <h1 class="page-header">{{ page.title }}</h1>
+  {% endif %}
+  
+  {{ content }}
 </article>

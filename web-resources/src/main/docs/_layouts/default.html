@@ -8,10 +8,16 @@
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
+<link rel="stylesheet" type="text/css" href="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.css">
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css" />
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script rel="stylesheet" href="{{ site.baseurl }}/assets/javascripts/bootstrap.min.js"></script>
+<!-- <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script>-->
+<script src="//cdn.rawgit.com/afeld/bootstrap-toc/gh-pages/dist/bootstrap-toc.js"></script>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#toc">
 
   <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
     
@@ -32,45 +38,30 @@
   </div>
     
   <div class="container container-fluid n52-container">
-    
-    <nav class="navbar affix col-mg-2 col-sm-2 pull-left n52-sidebar">
-      <p class="header">
-        <a href="{{ site.baseurl }}/index.html">Home</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/compatibility.html">Compatibility</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/valuetypes.html">Value Types</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/io.html">Input/Output</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/configuration.html">Configuration</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/paging.html">Paging</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/extensions.html">Extensions</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/api.html">API Reference</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/development.html">API Development</a>
-      </p>
-    </nav>
-
-    <div  class="col-mg-10 col-sm-10 n52-content pull-right">
-      <div class="pull-right">
-        <p class="affix up-link n52-toplink">
-          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
-        </p>
+    <div class="row">
+      <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix col-mg-2 col-sm-2 pull-left n52-sidebar">
+        <ul class="nav">
+          <li><a href="{{ site.baseurl }}/index.html">Home</a></li>
+          <li><a href="{{ site.baseurl }}/compatibility.html">Compatibility</a></li>
+          <li><a href="{{ site.baseurl }}/valuetypes.html">Value Types</a></li>
+          <li><a href="{{ site.baseurl }}/io.html">Input/Output</a></li>
+          <li><a href="{{ site.baseurl }}/configuration.html">Configuration</a></li>
+          <li><a href="{{ site.baseurl }}/paging.html">Paging</a></li>
+          <li><a href="{{ site.baseurl }}/extensions.html">Extensions</a></li>
+          <li><a href="{{ site.baseurl }}/api.html">API Reference</a></li>
+          <li><a href="{{ site.baseurl }}/development.html">API Development</a></li>
+        </ul>
+      </nav>
+  
+      <div  class="col-mg-10 col-sm-10 n52-content pull-right">
+        <div class="pull-right">
+          <p class="affix up-link n52-toplink">
+            <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
+          </p>
+        </div>
+  
+        {{ content | toc_generate}}
       </div>
-
-      {{ content | toc_generate}}
     </div>
   </div>
 

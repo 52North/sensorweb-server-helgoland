@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Input/Output
+title: Input and Output
 permalink: /io
 ---
 

@@ -4,10 +4,43 @@
 // override bootstrap variables
 $icon-font-path: "{{ site.baseurl }}/assets/fonts/bootstrap/";
 
-//@import "reset";
 @import "variables";
 @import "bootstrap";
+@import "bootstrap-toc";
+@import "highlights";
+@import "swagger";
 
+/*================================================
+  =                 Media Queries                =
+  ================================================*/
+
+@media (max-width: 767px) {
+    .container {
+        max-width: 500px;
+    }
+    .affix {
+        position: static;
+    }
+}
+
+/*================================================
+  =                 Bootstrap TOC                =
+  ================================================*/
+
+nav[data-toggle=toc] .nav > li > a:focus, 
+nav[data-toggle=toc] .nav > li > a:hover { 
+  padding-left: 19px; 
+  color: #563d7c; 
+  text-decoration: none; 
+  background-color: transparent; 
+  border-right: 1px solid #563d7c; 
+  border-left: 0; 
+}
+
+
+/*================================================
+  =                  52n Styling                 =
+  ================================================*/
 
 html {
   display: table;
@@ -17,12 +50,6 @@ html {
 body {
   display: table-cell;
   vertical-align: middle;
-}
-
-.n52-vbottom {
-    position: relative;
-    top: 100%;
-    transform: translateY(-100%); 
 }
 
 .n52-navbar-top.navbar-default {
@@ -123,21 +150,3 @@ footer div {
   display: inline;
   margin: 0;
 }
-
-/*================================================
-  =                 Media Queries                =
-  ================================================*/
-
-@media (max-width: 767px) {
-    .container {
-        max-width: 500px;
-    }
-    .affix {
-        position: static;
-    }
-}
-
-// Settled on moving the import of syntax highlighting to the bottom of the CSS
-// ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
-@import "highlights",
-        "swagger";

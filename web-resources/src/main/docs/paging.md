@@ -4,8 +4,6 @@ title: Paging
 permalink: /paging
 ---
 
-
-
 ## Overview
 
 {:.n52-callout .n52-callout-info}

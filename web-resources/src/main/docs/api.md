@@ -1,8 +1,8 @@
 ---
 layout: swagger
 title: Series API Documentation
-data: swagger
 permalink: /api
+data: swagger
 ---
 
 foo bar foo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo 
