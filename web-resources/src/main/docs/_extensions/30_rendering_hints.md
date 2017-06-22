@@ -21,7 +21,7 @@ limit and some color hint a client may use to render properly.
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Example of a rendering hints configuration

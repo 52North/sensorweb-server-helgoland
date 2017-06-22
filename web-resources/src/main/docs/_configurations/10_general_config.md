@@ -3,13 +3,13 @@ layout: section
 title: General Configuration
 ---
 
-#### General Configuration
+#### General
 
 #### Default Query Parameters
 Default query parameters can be adjusted under `WEB-INF/classes/config-general.json`. For example
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Example for a general configuration
@@ -37,7 +37,7 @@ independend from a concrete Servlet container which may not ship/support such fi
 application's `web.xml` file. A simple example (which allows all requests) may look like this:
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Example for "allowing all" CORS configuration

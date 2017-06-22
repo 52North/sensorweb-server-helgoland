@@ -47,7 +47,7 @@ would be valid.
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Quantity Example (`stationary` platform)
@@ -80,7 +80,7 @@ Quantity Example (`stationary` platform)
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Text example (observation interval, `stationary` platform)
@@ -107,7 +107,7 @@ Text example (observation interval, `stationary` platform)
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Quantity example (`mobile` platform)
@@ -162,7 +162,7 @@ and each implementation have to provide its own `valueType` within the `dataset`
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Typed Record Example: `text` (`stationary` platform)
@@ -189,7 +189,7 @@ Typed Record Example: `text` (`stationary` platform)
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Customized Example: `fotoquest` (`stationary` platform)
@@ -295,7 +295,7 @@ different depth levels). The vertical unit is overridable within each vertical i
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Vertical Example (`stationary` platform)

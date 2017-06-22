@@ -40,7 +40,7 @@ Paging Information is returned by the API in the Response Header. An Example of 
 
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Example Request

@@ -14,7 +14,7 @@ Place a text file calling `config-license.txt` under `WEB-INF/classes` and enabl
 placing it under the `ParameterController`:
 
 {::options parse_block_html="true" /}
-{: .n52-example-code}
+{: .n52-example-block}
 <div>
 <div class="n52-example-caption">
 Configuration Example
