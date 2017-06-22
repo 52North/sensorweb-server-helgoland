@@ -212,11 +212,11 @@ body {
 }
 .n52-example-block .n52-example-caption.btn p:AFTER {
   // https://brajeshwar.github.io/entities/
-  content: " \25bc ";
+  content: " (Show \25bc)";
 }
 .n52-example-block .n52-example-toggler.btn.active p:AFTER {
   // https://brajeshwar.github.io/entities/
-  content: " \25b2 ";
+  content: " (Hide \25b2)";
 }
 
 footer {
