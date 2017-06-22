@@ -28,8 +28,8 @@ configuration section applies to all further config unless overridden (within a 
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
-Example of a prerendering configuration
+<div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
+Example of a prerendering configuration 
 </div>
 ```json
 {

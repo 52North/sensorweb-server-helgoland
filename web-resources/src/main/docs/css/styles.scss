@@ -192,6 +192,32 @@ body {
     font-weight: bold;
     margin-bottom: 0.25em;
 }
+.n52-example-block .n52-example-toggler.btn:hover,
+.n52-example-block .n52-example-toggler.btn:focus, .btn.focus {
+    color: #333;
+    text-decoration: none;
+}
+.n52-example-block .n52-example-toggler.btn {
+  border: none;
+  padding: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.n52-example-block .n52-example-toggler.btn {
+  background-image: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.n52-example-block .n52-example-caption.btn p:AFTER {
+  // https://brajeshwar.github.io/entities/
+  content: " \25bc ";
+}
+.n52-example-block .n52-example-toggler.btn.active p:AFTER {
+  // https://brajeshwar.github.io/entities/
+  content: " \25b2 ";
+}
 
 footer {
   font-size: small;
