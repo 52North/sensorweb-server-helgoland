@@ -3,7 +3,7 @@ layout: section
 title: License Extension
 ---
 
-#### Status Intervals
+### Status Intervals
 
 The data provider knows best how to interpret available data and can add domain specific information 
 which may help to interpret data values of a particular dataset.Clients are then able to render data 
@@ -12,7 +12,7 @@ user hints what data values actually mean and helps to avoid misunderstandings.
 
 The status intervals are available to a client as `extra` data for a given dataset. 
 
-##### Configuration Location
+#### Configuration Location
 
 Status intervals can be configured for datasets having a particular phenomenon or each individually 
 (overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower

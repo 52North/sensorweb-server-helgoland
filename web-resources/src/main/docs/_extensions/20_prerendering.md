@@ -3,7 +3,7 @@ layout: section
 title: Prerendering Extension
 ---
 
-#### Prerendering
+### Prerendering
 
 A data provider can configure datasets being pre-/rerendered regularly for given time intervals
 (`lastMonth`, `lastWeek`, or `lastDay`). A client experience may be instant access rather than
@@ -12,10 +12,13 @@ html tags without making requests to render charts dynamically.
 
 On prerendering mode only single series charts are rendered (no chart overlay).
 
-##### Configuration Location
+#### Enable Extension
 
 {:.n52-callout .n52-callout-todo}
 reference to JobScheduler configuration
+
+
+#### Configuration File
 
 Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 

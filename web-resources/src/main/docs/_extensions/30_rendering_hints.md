@@ -3,7 +3,7 @@ layout: section
 title: Rendering Hints Extension
 ---
 
-#### Rendering Hints
+### Rendering Hints
 
 The Series API provides I/O mechanisms to render charts so that clients may directly request
 data via `accept=image/png` HTTP header. However, styles are chosen either randomly or by 
@@ -13,7 +13,7 @@ to a particular dataset, it can be configured as rendering hints.
 
 The rendering hints are available to a client as `extra` data for a given dataset. 
 
-##### Configuration Location
+#### Configuration Location
 
 Status intervals can be configured for datasets having a particular phenomenon or each individually 
 (overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
