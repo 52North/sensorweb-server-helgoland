@@ -11,7 +11,7 @@ via `/<endpoint>/extras?fields=license` URL. This may be a full license text or 
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
+<div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
 Configuration Example
 </div>
 ```xml

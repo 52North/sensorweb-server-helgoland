@@ -11,7 +11,7 @@ Default query parameters can be adjusted under `WEB-INF/classes/config-general.j
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
+<div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
 Example for a general configuration
 </div>
 ```json
@@ -39,7 +39,7 @@ application's `web.xml` file. A simple example (which allows all requests) may l
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
+<div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
 Example for "allowing all" CORS configuration
 </div>
 ```xml
