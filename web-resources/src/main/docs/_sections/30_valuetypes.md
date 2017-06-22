@@ -191,7 +191,7 @@ Typed Record Example: `text` (`stationary` platform)
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
+<div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
 Customized Example: `fotoquest` (`stationary` platform)
 </div>
 [Fotoquest](https://github.com/52North/fotoquest-series-api) value types describe some 

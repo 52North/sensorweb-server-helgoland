@@ -23,7 +23,7 @@ limit and some color hint a client may use to render properly.
 {::options parse_block_html="true" /}
 {: .n52-example-block}
 <div>
-<div class="n52-example-caption">
+<div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
 Example of a rendering hints configuration
 </div>
 ```json
