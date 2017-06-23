@@ -22,7 +22,7 @@
             N52ContentToggler.hideContent(toggle_block, button);
         }
     });
-    $('.n52-example-toggler.btn').bind('click', function (event) {
+    $('.n52-example-toggler.btn').on('click', function (event) {
         var button = event.currentTarget;
         var toggle_block = $(button).nextAll('div')
         if (toggle_block.hasClass('hide')) {
