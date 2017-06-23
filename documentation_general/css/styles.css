@@ -2481,13 +2481,28 @@ code { font-family: 'Bitstream Vera Sans Mono','Courier', monospace; }
 
 .swagger-parameter-required:after { content: ' *'; color: red; }
 
-/*================================================ =                 Media Queries                = ================================================*/
-@media (max-width: 767px) { .container { max-width: 500px; }
-  .affix { position: static; } }
-/*================================================ =                 Bootstrap TOC                = ================================================*/
-nav[data-toggle=toc] .nav > li > a:focus, nav[data-toggle=toc] .nav > li > a:hover { padding-left: 19px; color: #563d7c; text-decoration: none; background-color: transparent; border-right: 1px solid #563d7c; border-left: 0; }
+/*================================================ =             BOOTSTRAP OVERRIDES              = ================================================*/
+.page-header { margin-top: 20px; }
 
-nav[data-toggle='toc'] .nav > .active > a, nav[data-toggle='toc'] .nav > .active:hover > a, nav[data-toggle='toc'] .nav > .active:focus > a { padding-left: 18px; font-weight: bold; color: #563d7c; background-color: transparent; border-right: 2px solid #563d7c; border-left: 0; }
+/* Media Queries */
+@media (max-width: 767px) { .content { max-width: 500px; }
+  .affix { position: static; }
+  .affix.n52-toplink { position: fixed; } }
+@media (min-width: 1200px) { .n52-sidebar { width: 400px; } }
+/*================================================ =                 Bootstrap TOC                = ================================================*/
+/* All levels of nav */
+nav[data-toggle='toc'] .nav > li > a { padding: 4px 6px; margin-right: 6px; }
+
+nav[data-toggle='toc'] .nav > li > a:hover, nav[data-toggle='toc'] .nav > li > a:focus { padding-left: 0px; padding-right: 5px; border-left: 0px; border-right: 1px solid #563d7c; }
+
+nav[data-toggle='toc'] .nav > .active > a, nav[data-toggle='toc'] .nav > .active:hover > a, nav[data-toggle='toc'] .nav > .active:focus > a { padding-left: 0px; padding-right: 4px; border-left: 0; border-right: 2px solid #563d7c; border-bottom: 1px solid #563d7c; }
+
+/* Nav: second level (shown on .active) */
+nav[data-toggle='toc'] .nav .nav > li > a, nav[data-toggle='toc'] .nav .nav > li > a:AFTER { padding-left: 0; padding-right: 6px; content: " \21B5"; }
+
+nav[data-toggle='toc'] .nav .nav > li > a:hover, nav[data-toggle='toc'] .nav .nav > li > a:focus { padding-left: 0; padding-right: 5px; }
+
+nav[data-toggle='toc'] .nav .nav > .active > a, nav[data-toggle='toc'] .nav .nav > .active:hover > a, nav[data-toggle='toc'] .nav .nav > .active:focus > a { padding-left: 0; font-weight: bold; border-bottom: none; }
 
 /*================================================ =                  Swagger API                 = ================================================*/
 .swagger-paths h5 { font-weight: bold; }
@@ -2497,19 +2512,17 @@ html { display: table; margin: auto; }
 
 body { display: table-cell; vertical-align: middle; }
 
-.n52-navbar-top.navbar-default { background-color: #eee; }
+.n52-navbar-top.navbar-default { background-color: #eee; position: static; }
 
-.n52-toplink { clear: both; margin-top: 20px !important; }
+.n52-logo { margin-left: 2em; }
+
+.n52-toplink { clear: both; }
 
 .n52-toplink a { cursor: pointer; }
 
 .n52-toplink a:hover { color: #fff; background-color: #999; }
 
-.n52-sidebar { padding-top: 20px; border-right: 1px solid #eee; text-align: right; }
-
-.n52-container { padding-top: 60px; }
-
-.n52-content { padding-left: 60px; }
+.n52-sidebar { border-right: 1px solid #eee; text-align: right; width: inherit; }
 
 /* Base styles (regardless of theme) */
 .n52-callout { margin: 20px 0; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; }
@@ -2528,16 +2541,24 @@ body { display: table-cell; vertical-align: middle; }
 
 .n52-description-list dd { text-indent: 1em; }
 
-.n52-example-code pre { margin-top: 0; }
+.n52-example-block pre { margin-top: 0; }
 
 .n52-example-caption p { font-weight: bold; margin-bottom: 0.25em; }
 
-footer { font-size: small; padding: 30px 0; margin: 10px 0; margin-top: 70px; border-top: 1px solid #e5e5e5; background-color: #eee; height: 100px; }
+.n52-example-block .n52-example-toggler.btn:hover, .n52-example-block .n52-example-toggler.btn:focus, .btn.focus { color: #333; text-decoration: none; }
+
+.n52-example-block .n52-example-toggler.btn { border: none; padding: 0; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+.n52-example-block .n52-example-toggler.btn { background-image: none; -webkit-box-shadow: none; box-shadow: none; }
+
+.n52-example-block .n52-example-caption.btn p:AFTER { content: " (Show \25bc)"; }
+
+.n52-example-block .n52-example-toggler.btn.active p:AFTER { content: " (Hide \25b2)"; }
+
+footer { font-size: small; padding: 30px 0; margin-top: 70px; border-top: 1px solid #e5e5e5; background-color: #eee; height: 100px; }
 
 footer ul { list-style: none; }
 
-footer div { margin-left: 10px; margin-right: 10px; }
+.n52-footer-links li { display: inline; margin: 0; }
 
-.footer-links li:not(:first-child):before { content: " \00b7 \00a0"; }
-
-.footer-links li { display: inline; margin: 0; }
+.n52-footer-links li:not(:first-child):before { content: " \00b7 \00a0"; }

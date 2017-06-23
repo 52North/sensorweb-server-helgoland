@@ -37,42 +37,35 @@
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-<link rel="stylesheet" type="text/css" href="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.css">
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_general/css/styles.css" />
 
-
-<script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="/series-rest-api/documentation_general/assets/javascripts/jquery/jquery-3.2.1.min.js"></script>
 <script src="/series-rest-api/documentation_general/assets/javascripts/bootstrap.min.js"></script>
-<!-- <script src="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script> -->
-<!-- <script src="//cdn.rawgit.com/afeld/bootstrap-toc/gh-pages/dist/bootstrap-toc.js"></script> -->
 <script src="/series-rest-api/documentation_general/assets/javascripts/bootstrap-toc.js"></script>
-<script src="/series-rest-api/documentation_general/assets/javascripts/swagger-toggle-details.js"></script>
+<script src="/series-rest-api/documentation_general/assets/javascripts/52n/swagger-toggle-details.js"></script>
+<script src="/series-rest-api/documentation_general/assets/javascripts/52n/example-toggle-details.js"></script>
 </head>
 
 <body data-spy="scroll" data-target="#toc">
 
-  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+  <nav class="center-block navbar navbar-default navbar-fixed-top n52-navbar-top">
+    <div class="pull-left n52-logo">
+      <a href="/series-rest-api/documentation_general"><img alt="52&deg;North logo"
+        src="/series-rest-api/documentation_general/assets/images/52n_logo_full.png" /></a>
+    </div>
     
-  <div class="container navbar navbar-default navbar-fixed-top n52-navbar-top">
-    <nav class="center-block col-mg-11 col-sm-11">
-      <div class="pull-left">
-        <a href="/series-rest-api/documentation_general"><img alt="52&deg;North logo"
-          src="/series-rest-api/documentation_general/assets/images/52n_logo_full.png" /></a>
-      </div>
-      
-      <div class="pull-right navbar-collapse ">
-        <ul class="nav navbar-nav">
-          <li><a href="http://52north.org">52°North</a></li>
-          <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
-          <li><a href="http://blog.52north.org">Blog</a></li>
-        </ul>
-      </div>
-    </nav>
-  </div>
+    <div class="pull-right navbar-collapse ">
+      <ul class="nav navbar-nav">
+        <li><a href="http://52north.org">52°North</a></li>
+        <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
+        <li><a href="http://blog.52north.org">Blog</a></li>
+      </ul>
+    </div>
+  </nav>
     
   <div class="container container-fluid n52-container">
     <div class="row">
-      <div class="col-mg-offset-1 col-mg-3 col-sm-offset-1 col-sm-3 pull-left">
+      <div class="col-mg-3 col-sm-3 pull-left">
         <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix n52-sidebar">
           <!-- automatically included by bootstrap-toc -->
         </nav>
@@ -270,8 +263,8 @@ scalar types are denoted as is.</p>
 <p>Depending on what members are available (see above table) the following output 
 would be valid.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Quantity Example (<code class="highlighter-rouge">stationary</code> platform)</p>
   </div>
   <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -300,8 +293,8 @@ would be valid.</p>
   </div>
 </div>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Text example (observation interval, <code class="highlighter-rouge">stationary</code> platform)</p>
   </div>
   <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -324,8 +317,8 @@ would be valid.</p>
   </div>
 </div>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Quantity example (<code class="highlighter-rouge">mobile</code> platform)</p>
   </div>
   <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -376,8 +369,8 @@ would be valid.</p>
 <p>A record’s <code class="highlighter-rouge">value</code> member is a map of key-valued objects. However, a <code class="highlighter-rouge">record</code> is abstract
 and each implementation have to provide its own <code class="highlighter-rouge">valueType</code> within the <code class="highlighter-rouge">dataset</code> metadata.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Typed Record Example: <code class="highlighter-rouge">text</code> (<code class="highlighter-rouge">stationary</code> platform)</p>
   </div>
   <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -400,8 +393,8 @@ and each implementation have to provide its own <code class="highlighter-rouge">
   </div>
 </div>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
     <p>Customized Example: <code class="highlighter-rouge">fotoquest</code> (<code class="highlighter-rouge">stationary</code> platform)</p>
   </div>
   <p><a href="https://github.com/52North/fotoquest-series-api">Fotoquest</a> value types describe some 
@@ -503,8 +496,8 @@ Fotoquest Homepage</a>.</p>
 <p>A value type which contain observations along a vertical axis (e.g. observations made on
 different depth levels). The vertical unit is overridable within each vertical item.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Vertical Example (<code class="highlighter-rouge">stationary</code> platform)</p>
   </div>
   <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -595,22 +588,28 @@ an image or a report (which embeds the chart).</p>
   </tbody>
 </table>
 
-<p><strong>Example</strong></p>
-<div class="clearfix">
-<div class="col-lg-5">
-  <img alt="lineChart" src="/series-rest-api/documentation_general/assets/images/io_chart_linestyle_example.png" title="Example for a line chart style." />
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
+    <p>Example Line Chart Styling</p>
+  </div>
+  <div class="clearfix">
+    <div class="col-lg-5">
+      <p><img alt="lineChart" src="/series-rest-api/documentation_general/assets/images/io_chart_linestyle_example.png" title="Example for a line chart style." /></p>
+    </div>
+    <div class="col-lg-5 pull-right">
+      <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dashed"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="col-lg-5 pull-right">
-<pre>{
-  "chartType": "line",
-  "properties": {
-    "type": "dashed",
-    "width": 4,
-    "color": "#0000ff"
-  }
-}</pre>
-</div>
- </div>
 
 <h4 id="bar-charts">Bar Charts</h4>
 
@@ -639,31 +638,40 @@ an image or a report (which embeds the chart).</p>
   </tbody>
 </table>
 
-<p><strong>Example</strong></p>
-<div class="clearfix">
-<div class="col-lg-5">
-  <img alt="lineChart" src="/series-rest-api/documentation_general/assets/images/io_chart_barstyle_example.png" title="Example for a bar chart style." />
-</div>
-<div class="col-lg-5 pull-right">
-<pre>{
-  "chartType": "bar",
-  "properties": {
-    "interval": "byDay",
-    "width": 0.8,
-    "color": "#0000ff"
-  }
-}</pre>
-</div>
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
+    <p>Example Bar Chart Styling</p>
+  </div>
+  <div class="clearfix">
+    <div class="col-lg-5">
+      <p><img alt="lineChart" src="/series-rest-api/documentation_general/assets/images/io_chart_barstyle_example.png" title="Example for a bar chart style." /></p>
+    </div>
+    <div class="col-lg-5 pull-right">
+      <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+      </div>
+    </div>
+  </div>
 </div>
 
-<h4 id="overlaying-datasets">Overlaying Datasets</h4>
-
-<div class="clearfix">
-<div class="col-lg-6">
-    <img alt="combinedCharts" src="/series-rest-api/documentation_general/assets/images/io_chart_overlay_example.png" title="Example of combined charts." />
-</div>
-<div class="col-lg-5 pull-right">
-<pre>POST /api/v1/datasets/data HTTP/1.1
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
+    <p>Overlaying Datasets Example</p>
+  </div>
+  <div>
+    <div class="clearfix">
+      <div class="col-lg-6">
+        <p><img alt="combinedCharts" src="/series-rest-api/documentation_general/assets/images/io_chart_overlay_example.png" title="Example of combined charts." /></p>
+      </div>
+      <div class="col-lg-5 pull-right">
+        <div class="highlighter-rouge"><pre class="highlight"><code>POST /api/v1/datasets/data HTTP/1.1
 Host: example.org
 Content-Type: application/json
 Accept: image/png
@@ -693,8 +701,12 @@ Accept: image/png
       }
     }
   }
-}</pre>
-</div>
+}
+</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="n52-callout n52-callout-info">
@@ -767,11 +779,11 @@ intended by the 3rd party API.</p>
 
 <p>The format returns timeseries data as time-value tuples.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example (single dataset)</p>
   </div>
-  <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
       </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376524800000</span><span class="p">,</span><span class="w">
@@ -795,11 +807,11 @@ intended by the 3rd party API.</p>
   </div>
 </div>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example (multiple datasets)</p>
   </div>
-  <div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"ts_ad3edeff973ab62e39f76c14f95d1e82"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
   </span><span class="p">},</span><span class="w">
@@ -834,61 +846,63 @@ available from the dataset metadata.</p>
 To add metadata or a readable dataset name you will have to replace the <code class="highlighter-rouge">datasetId</code> with a 
 readable label taken from the Dataset metadata.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example (single dataset)</p>
   </div>
-  <pre><code class="language-{">  "name": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
-  "data": [
-    [
-      1376524800000,
-      433.3
-    ],
-    [
-      1376524860000,
-      432.4
-    ],
-    [
-      1376524920000,
-      432.1
-    ]
-  ]
-}
-</code></pre>
+  <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ts_c8ed5ddbb89c19b2e385de23eecbde98"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="mi">1376524800000</span><span class="p">,</span><span class="w">
+      </span><span class="mf">433.3</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="mi">1376524860000</span><span class="p">,</span><span class="w">
+      </span><span class="mf">432.4</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="mi">1376524920000</span><span class="p">,</span><span class="w">
+      </span><span class="mf">432.1</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+  </div>
 </div>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example (multiple datasets)</p>
   </div>
-  <div class="highlighter-rouge"><pre class="highlight"><code>[
-  {
-    "name": "ts_ad3edeff973ab62e39f76c14f95d1e82",
-    "data": []
-  },
-  {
-    "name": "ts_c8ed5ddbb89c19b2e385de23eecbde98",
-    "data": [
-      [
-        1376589600000,
-        546
-      ],
-      [
-        1376589660000,
-        546.6
-      ],
-      [
-        1376589720000,
-        547
-      ],
-      [
-        1376589780000,
-        548
-      ]
-    ]
-  }
-]
-</code></pre>
+  <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ts_ad3edeff973ab62e39f76c14f95d1e82"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ts_c8ed5ddbb89c19b2e385de23eecbde98"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">[</span><span class="w">
+        </span><span class="mi">1376589600000</span><span class="p">,</span><span class="w">
+        </span><span class="mi">546</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="w">
+        </span><span class="mi">1376589660000</span><span class="p">,</span><span class="w">
+        </span><span class="mf">546.6</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="w">
+        </span><span class="mi">1376589720000</span><span class="p">,</span><span class="w">
+        </span><span class="mi">547</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="p">[</span><span class="w">
+        </span><span class="mi">1376589780000</span><span class="p">,</span><span class="w">
+        </span><span class="mi">548</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
   </div>
 </div>
 
@@ -901,36 +915,31 @@ readable label taken from the Dataset metadata.</p>
       
       <p class="n52-callout n52-callout-todo">section under revision/update</p>
 
-<p>The Web interface is intended and prepared for straight integration with Spring MVC. 
+<p>The Web interface is intended and prepared for straight integration with 
+<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html">Spring MVC</a>. 
 However, using Spring as Web framework is not required but leaves open the last 
 meters of integrating the endpoint controllers.</p>
-
-<p class="n52-callout n52-callout-todo">make links to Spring MVC and to endpoint controllers.</p>
 
 <p>All endpoints are annotated with Spring’s annotations <code class="highlighter-rouge">Connector</code>, <code class="highlighter-rouge">RequestMethod</code>, 
 <code class="highlighter-rouge">RequestMapping</code>, etc. What is needed is a configured <code class="highlighter-rouge">DispatcherServlet</code> 
 in the <code class="highlighter-rouge">web.xml</code> and proper beans injections.</p>
 
-<p class="n52-callout n52-callout-todo">Check if/how we can provide a pre-configured <code class="highlighter-rouge">Configuration</code> lib or class which can
-be changed/extended by Web application implementors.</p>
-
-<h3 id="configuration-locations">Configuration Locations</h3>
+<h3 id="locations">Locations</h3>
 <ul>
   <li><code class="highlighter-rouge">WEB-INF/classes/config-general.properties</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/spring/</code></li>
   <li><code class="highlighter-rouge">WEB-INF/classes/application.properties</code></li>
   <li><code class="highlighter-rouge">WEB-INF/web.xml</code> (cors etc.)</li>
 </ul>
 
 <div>
 
-    <h4 id="general-configuration">General Configuration</h4>
+    <h4 id="general">General</h4>
 
-<h4 id="query-parameter-defaults">Query Parameter Defaults</h4>
-<p>Query parameter defaults can be changed under <code class="highlighter-rouge">WEB-INF/classes/config-general.json</code>. For example</p>
+<h4 id="default-query-parameters">Default Query Parameters</h4>
+<p>Default query parameters can be adjusted under <code class="highlighter-rouge">WEB-INF/classes/config-general.json</code>. For example</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example for a general configuration</p>
   </div>
   <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -946,16 +955,16 @@ be changed/extended by Web application implementors.</p>
 </div>
 
 <p class="n52-callout n52-callout-info">Changing API defaults may lead to unexpected results to Web clients. Only change defaults 
-if you know what you are doing. Commonly overriding defaults are usable for those parameters
-which control chart output, e.g. <code class="highlighter-rouge">grid</code>, <code class="highlighter-rouge">legend</code>, etc.</p>
+if you know what you are doing! A use case when to override defaults may be usable for those
+parameters which has impact on chart output, e.g. <code class="highlighter-rouge">grid</code>, <code class="highlighter-rouge">legend</code>, etc.</p>
 
 <h5 id="enabling-cors">Enabling CORS</h5>
-<p><a href="https://enable-cors.org/index.html">CORS</a> can be enabled via a third party filter (to stay 
-independend from a concrete Servlet container which may not ship such filter) within a Web 
+<p><a href="https://enable-cors.org/index.html">CORS</a> can be enabled via third party filter (to stay 
+independend from a concrete Servlet container which may not ship/support such filter) within a Web 
 application’s <code class="highlighter-rouge">web.xml</code> file. A simple example (which allows all requests) may look like this:</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Example for “allowing all” CORS configuration</p>
   </div>
   <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
@@ -994,275 +1003,10 @@ application’s <code class="highlighter-rouge">web.xml</code> file. A simple ex
 
 
 
-    <h4 id="managing-configuration">Managing Configuration</h4>
-
-<h5 id="separate-properties">Separate Properties</h5>
-<p>It is helpful to separate all properties values from XML configuration for several
-reasons. First, it may be tedious to find all single properties within verbose XML. 
-However, more it also very important to keep sensitive information (like database
-configuration) from the project itself.</p>
-
-<p>If <code class="highlighter-rouge">local.configFile</code> parameter is present at startup-/build-time properties are read
-from there, otherwise properties are read from default <code class="highlighter-rouge">WEB-INF/classes/application.properties</code>.</p>
-
-<div class="n52-example-code">
-  <div class="n52-example-caption">
-    <p>A property replacement config example</p>
-  </div>
-  <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;ctx:property-placeholder</span> 
-    <span class="err">&lt;!--</span> <span class="err">${user.home}/application.properties}</span> <span class="err">when</span> <span class="err">-Dlocal.configFile</span> <span class="err">not</span> <span class="err">defined</span> <span class="err">--</span><span class="nt">&gt;</span>
-    location="${local.configFile:classpath:/application.properties}"
-    ignore-resource-not-found="true" ignore-unresolvable="true" /&gt;
-</code></pre>
-  </div>
-</div>
-
-<p>A placeholder can now be declared within Spring XML files via <code class="highlighter-rouge">${placeholder:default}</code>.
-If present in the application properties file (your one or the default) it will be 
-replaced, otherwise the given default will be used.</p>
-
-<h5 id="separate-configuration-sections">Separate Configuration Sections</h5>
-
-<p>To keep overview we can separate parts of the configuration files and include them
-via file import, e.g. <code class="highlighter-rouge">&lt;import resource="mvc.xml" /&gt;</code>.</p>
-
-
-
-    <h4 id="configuring-web-layer">Configuring Web Layer</h4>
-<p>The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
-(configured in <code class="highlighter-rouge">web.xml</code>). Configuration includes content negotiation, serialization config, 
-and Web controller injections.</p>
-
-<h5 id="dispatcher-servlet">Dispatcher Servlet</h5>
-
-<p>This describes an example configuration via Spring. There are lots of variants and 
-alternatives which may end in the same result. This example splits Spring configuration 
-files into two main files:</p>
-
-<ul>
-  <li><code class="highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code> contains Web controllers and views</li>
-  <li><code class="highlighter-rouge">/WEB-INF/spring/application-context.xml</code> contains SPI implementations</li>
-</ul>
-
-<p>However, everything starts by adding Spring’s <code class="highlighter-rouge">DispatcherServlet</code> within the <code class="highlighter-rouge">web.xml</code>, 
-put both configuration files, and relate it to some context path like so:</p>
-
-<div class="n52-example-code">
-  <div class="n52-example-caption">
-    <p>Example configuration of the dispatcher servlet.</p>
-  </div>
-  <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
-  <span class="nt">&lt;servlet-name&gt;</span>api-dispatcher<span class="nt">&lt;/servlet-name&gt;</span>
-  <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
-  <span class="nt">&lt;init-param&gt;</span>
-     <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
-     <span class="nt">&lt;param-value&gt;</span>/WEB-INF/spring/dispatcher-servlet.xml,/WEB-INF/spring/application-context.xml<span class="nt">&lt;/param-value&gt;</span>
-  <span class="nt">&lt;/init-param&gt;</span>
-  <span class="nt">&lt;load-on-startup&gt;</span>1<span class="nt">&lt;/load-on-startup&gt;</span>
-<span class="nt">&lt;/servlet&gt;</span>
-
-<span class="nt">&lt;servlet-mapping&gt;</span>
-  <span class="nt">&lt;servlet-name&gt;</span>api-dispatcher<span class="nt">&lt;/servlet-name&gt;</span>
-  <span class="nt">&lt;url-pattern&gt;</span>/api/*<span class="nt">&lt;/url-pattern&gt;</span>
-<span class="nt">&lt;/servlet-mapping&gt;</span>
-</code></pre>
-  </div>
-</div>
-
-<h5 id="content-negotiation">Content Negotiation</h5>
-<p>To support proper content negotiation and JSON serialization the following should be 
-added to the <code class="highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code>:</p>
-
-<div class="n52-example-code">
-  <div class="n52-example-caption">
-    <p>Content negotiation example</p>
-  </div>
-  <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;ctx:annotation-config</span> <span class="nt">/&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"objectMapper"</span> <span class="na">class=</span><span class="s">"com.fasterxml.jackson.databind.ObjectMapper"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"serializationInclusion"</span> <span class="na">value=</span><span class="s">"NON_NULL"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jsonViewResolver"</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.json.MappingJackson2JsonView"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"extractValueFromSingleKeyModel"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"objectMapper"</span> <span class="na">ref=</span><span class="s">"objectMapper"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;mvc:annotation-driven</span> <span class="na">content-negotiation-manager=</span><span class="s">"contentNegotiationManager"</span> <span class="nt">/&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"contentNegotiationManager"</span> <span class="na">class=</span><span class="s">"org.springframework.web.accept.ContentNegotiationManagerFactoryBean"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"defaultContentType"</span> <span class="na">value=</span><span class="s">"application/json"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.ContentNegotiatingViewResolver"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"defaultViews"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;util:list&gt;</span>
-            <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"jsonViewResolver"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/util:list&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-  </div>
-</div>
-
-<h5 id="web-controller-injections">Web Controller injections</h5>
-<p>A Web controller serves an endpoint and behaves like described in the <a href="{{site.baseurl}}/api.html">Web API</a>. It 
-performs <a href="{{site.baseurl}}/io.html">I/O operations</a> (graph rendering, generalization, etc.) if neccessary.</p>
-
-<p class="n52-callout n52-callout-info">A Web controller delegates data request to the actual SPI implementation so it has to be 
-referenced here. SPI implementors have to use these references to make sure the right
-backend service is called.</p>
-
-<div class="n52-example-code">
-  <div class="n52-example-caption">
-    <p>Example how to configure Web MVC controllers</p>
-  </div>
-  <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;ctx:annotation-config</span> <span class="nt">/&gt;</span>
-
-<span class="c">&lt;!--
-    This bean description file injects the Web binding layer. SPI implementation 
-    beans have to match the ref-ids associated below.
---&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ResourcesController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataService"</span> <span class="na">ref=</span><span class="s">"metadataService"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.SearchController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"searchService"</span> <span class="na">ref=</span><span class="s">"searchService"</span><span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="c">&lt;!-- a parent controller configuration --&gt;</span>
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterController"</span> <span class="na">id=</span><span class="s">"parameterController"</span> <span class="na">abstract=</span><span class="s">"true"</span><span class="nt">&gt;</span>
-    <span class="c">&lt;!-- ${external.url} property is configured in an external properties file (see above) --&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"externalUrl"</span> <span class="na">value=</span><span class="s">"${external.url}"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataExtensions"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;list&gt;</span>
-            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.response.extension.LicenseExtension"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/list&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.OfferingsParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"offeringParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ServicesParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"serviceParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.CategoriesParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"categoryParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.FeaturesParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"featureParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ProceduresParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"procedureParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.PhenomenaParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;constructor-arg</span> <span class="na">index=</span><span class="s">"0"</span> <span class="na">ref=</span><span class="s">"phenomenonParameterService"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;/bean&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.PlatformsParameterController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span> <span class="na">ref=</span><span class="s">"platformParameterService"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataExtensions"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;list</span> <span class="na">merge=</span><span class="s">"true"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.extension.parents.HierarchicalParameterExtension"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"service"</span> <span class="na">ref=</span><span class="s">"hierarchicalParameterService"</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;/bean&gt;</span>
-        <span class="nt">&lt;/list&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.GeometriesController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span> <span class="na">ref=</span><span class="s">"geometriesService"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.DatasetController"</span> <span class="na">parent=</span><span class="s">"parameterController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"parameterService"</span> <span class="na">ref=</span><span class="s">"datasetService"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataExtensions"</span><span class="nt">&gt;</span>
-        <span class="nt">&lt;list</span> <span class="na">merge=</span><span class="s">"true"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.extension.RenderingHintsExtension"</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.extension.StatusIntervalsExtension"</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.extension.resulttime.ResultTimeExtension"</span><span class="nt">&gt;</span>
-                <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"service"</span> <span class="na">ref=</span><span class="s">"resultTimeService"</span> <span class="nt">/&gt;</span>
-            <span class="nt">&lt;/bean&gt;</span>
-            <span class="c">&lt;!-- Using DatabaseMetadataExtension requires some preparation work. --&gt;</span>
-            <span class="c">&lt;!--&lt;bean class="org.n52.io.extension.metadata.DatabaseMetadataExtension" /&gt;--&gt;</span>
-        <span class="nt">&lt;/list&gt;</span>
-    <span class="nt">&lt;/property&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-
-<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.DataController"</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"dataService"</span> <span class="na">ref=</span><span class="s">"datasetService"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"datasetService"</span> <span class="na">ref=</span><span class="s">"datasetService"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"preRenderingTask"</span> <span class="na">ref=</span><span class="s">"preRenderingJob"</span> <span class="nt">/&gt;</span>
-    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"requestIntervalRestriction"</span> <span class="na">value=</span><span class="s">"${request.interval.restriction}"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-  </div>
-</div>
-
-<div class="n52-callout n52-callout-info">
-  <p>Known application properties are 
-Some things to note:</p>
-
-  <ul>
-    <li><code class="highlighter-rouge">${external.url}</code> and <code class="highlighter-rouge">${request.interval.restriction}</code> are property placeholders defined in 
-an extra application properties file</li>
-    <li><code class="highlighter-rouge">org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter</code> is a backwards compatibility wrapper</li>
-    <li><code class="highlighter-rouge">metadataExtensions</code> list contains extensions which adds further metadata to <code class="highlighter-rouge">/&lt;endpoint&gt;/extras</code></li>
-  </ul>
-
-</div>
-
-<h5 id="general-properties">General Properties</h5>
-<p>Configurable properties are</p>
-
-<ul>
-  <li><code class="highlighter-rouge">requestIntervalRestriction</code>: sets the maximum time period a clients can query data for, e.g. <code class="highlighter-rouge">P380D</code></li>
-  <li><code class="highlighter-rouge">externalUrl</code>: sets the external URL under which the API can be accessed by clients, e.g. (<code class="highlighter-rouge">https://example.com/my-api/</code>)</li>
-</ul>
-
-<h4 id="extensions">Extensions</h4>
-<p>See <a href="{{site.baseurl}}/extensions.html">Extension section</a> for how to configure extensions in detail.</p>
-
-
-
     <h4 id="common-utils">Common Utils</h4>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Configuration of common utility helpers</p>
   </div>
   <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.dao.DefaultDbQueryFactory"</span><span class="nt">&gt;</span>
@@ -1282,8 +1026,8 @@ an extra application properties file</li>
 <h5 id="static-service-entity">Static Service Entity</h5>
 <p>In case of a unique data backend a static service entity can be defined via Spring bean. Here’s an example</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>A static service configuration</p>
   </div>
   <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.beans.ServiceEntity"</span><span class="nt">&gt;</span>
@@ -1313,18 +1057,13 @@ details have a look at <a href="/series-rest-api/documentation_general/configura
 
 <div>
 
-    <h4 id="license-extension">License Extension</h4>
+    <h3 id="license">License</h3>
 
 <p>This simple extension which reads a license file and makes the content available to clients
 via <code class="highlighter-rouge">/&lt;endpoint&gt;/extras?fields=license</code> URL. This may be a full license text or a plain link.</p>
 
-<h5 id="configuration-location">Configuration Location</h5>
-
-<p>Place a text file calling <code class="highlighter-rouge">config-license.txt</code> under <code class="highlighter-rouge">WEB-INF/classes</code> and enable license by 
-placing it under the <code class="highlighter-rouge">ParameterController</code>:</p>
-
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler active" type="button" data-toggle="button">
     <p>Configuration Example</p>
   </div>
   <div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterController"</span> <span class="na">id=</span><span class="s">"parameterController"</span> <span class="na">abstract=</span><span class="s">"true"</span><span class="nt">&gt;</span>
@@ -1338,8 +1077,13 @@ placing it under the <code class="highlighter-rouge">ParameterController</code>:
   </div>
 </div>
 
+<h4 id="configuration-file">Configuration File</h4>
 
-    <h4 id="prerendering">Prerendering</h4>
+<p>Place a text file calling <code class="highlighter-rouge">config-license.txt</code> under <code class="highlighter-rouge">WEB-INF/classes</code> and enable license by 
+placing it under the <code class="highlighter-rouge">ParameterController</code>:</p>
+
+
+    <h3 id="prerendering">Prerendering</h3>
 
 <p>A data provider can configure datasets being pre-/rerendered regularly for given time intervals
 (<code class="highlighter-rouge">lastMonth</code>, <code class="highlighter-rouge">lastWeek</code>, or <code class="highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
@@ -1348,16 +1092,18 @@ html tags without making requests to render charts dynamically.</p>
 
 <p>On prerendering mode only single series charts are rendered (no chart overlay).</p>
 
-<h5 id="configuration-location">Configuration Location</h5>
+<h4 id="enable-extension">Enable Extension</h4>
 
 <p class="n52-callout n52-callout-todo">reference to JobScheduler configuration</p>
+
+<h4 id="configuration-file">Configuration File</h4>
 
 <p>Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
 configuration section applies to all further config unless overridden (within a <code class="highlighter-rouge">config</code> entry).</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
     <p>Example of a prerendering configuration</p>
   </div>
   <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -1441,7 +1187,7 @@ can be used.</p>
 <p class="n52-callout n52-callout-todo"><code class="highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
 
 
-    <h4 id="rendering-hints">Rendering Hints</h4>
+    <h3 id="rendering-hints">Rendering Hints</h3>
 
 <p>The Series API provides I/O mechanisms to render charts so that clients may directly request
 data via <code class="highlighter-rouge">accept=image/png</code> HTTP header. However, styles are chosen either randomly or by 
@@ -1450,14 +1196,14 @@ to a particular dataset, it can be configured as rendering hints.</p>
 
 <p>The rendering hints are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
 
-<h5 id="configuration-location">Configuration Location</h5>
+<h4 id="configuration-location">Configuration Location</h4>
 
 <p>Status intervals can be configured for datasets having a particular phenomenon or each individually 
 (overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
 limit and some color hint a client may use to render properly.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
     <p>Example of a rendering hints configuration</p>
   </div>
   <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -1504,7 +1250,7 @@ limit and some color hint a client may use to render properly.</p>
 for backwards compatibility reasons.</p>
 
 
-    <h4 id="status-intervals">Status Intervals</h4>
+    <h3 id="status-intervals">Status Intervals</h3>
 
 <p>The data provider knows best how to interpret available data and can add domain specific information 
 which may help to interpret data values of a particular dataset.Clients are then able to render data 
@@ -1513,14 +1259,14 @@ user hints what data values actually mean and helps to avoid misunderstandings.<
 
 <p>The status intervals are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
 
-<h5 id="configuration-location">Configuration Location</h5>
+<h4 id="configuration-location">Configuration Location</h4>
 
 <p>Status intervals can be configured for datasets having a particular phenomenon or each individually 
 (overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
 limit and some color hint a client may use to render properly.</p>
 
-<div class="n52-example-code">
-  <div class="n52-example-caption">
+<div class="n52-example-block">
+  <div class="btn n52-example-caption n52-example-toggler" type="button" data-toggle="button">
     <p>Example of a status intervals configuration</p>
   </div>
   <div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
@@ -1678,7 +1424,7 @@ If no <code class="highlighter-rouge">limit</code> is supplied the default value
 <h3 id="response-headers">Response Headers</h3>
 <p>Paging Information is returned by the API in the Response Header. An Example of the returned Headers can be found below:</p>
 
-<div class="n52-example-code">
+<div class="n52-example-block">
   <div class="n52-example-caption">
     <p>Example Request</p>
   </div>
@@ -8467,9 +8213,8 @@ existing Web applications.</p>
     </div>
   </div>
 
-  <footer class="footer">
-    
-    <div class="col-md-5 col-sm-5">
+  <footer class="footer col-md-12 col-sm-12">
+    <div class="col-md-5 col-sm-5 pull-left">
       <ul>
         <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
         <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
@@ -8478,10 +8223,10 @@ existing Web applications.</p>
       </ul>
     </div>
     <div class="col-md-5 col-sm-5 pull-right">
-      <ul class="footer-links">
+      <ul class="n52-footer-links">
           <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a>
-          <li><a href="http://github.com/ridoo/series-rest-api/tree/f814d750a2c154173c96f67520819e5e67383795">Revision</a></li>
+          <li><a href="http://github.com/ridoo/series-rest-api/tree/b7666639c0994e6d4a53bba9176a2b46aa9aea9f">Revision</a></li>
       </ul>
     </div>
   </footer>
