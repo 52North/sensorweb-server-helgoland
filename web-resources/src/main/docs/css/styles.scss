@@ -84,7 +84,8 @@ nav[data-toggle='toc'] .nav .nav > .active > a,
 nav[data-toggle='toc'] .nav .nav > .active:hover > a,
 nav[data-toggle='toc'] .nav .nav > .active:focus > a {
   padding-left: 0;
-//  padding-right: 28px;
+  font-weight: bold;
+  border-bottom: none;
 }
 
 
