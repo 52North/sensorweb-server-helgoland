@@ -21,6 +21,8 @@ baseurl: ""
 permalink: /:title/
 
 collections:
+  sections:
+    output: false
   configurations:
     output: true
   extensions:

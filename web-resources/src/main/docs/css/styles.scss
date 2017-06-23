@@ -4,9 +4,102 @@
 // override bootstrap variables
 $icon-font-path: "{{ site.baseurl }}/assets/fonts/bootstrap/";
 
-//@import "reset";
 @import "variables";
 @import "bootstrap";
+@import "bootstrap-toc";
+@import "highlights";
+@import "swagger";
+
+/*================================================
+  =             BOOTSTRAP OVERRIDES              =
+  ================================================*/
+
+.page-header {
+  margin-top: 20px;
+}
+
+
+/* Media Queries */
+@media (max-width: 767px) {
+  .content {
+    max-width: 500px;
+  }
+  .affix {
+    position: static;
+  }
+  .affix.n52-toplink {
+    position: fixed;
+  }
+}
+@media (min-width: 1200px) {
+  .n52-sidebar {
+      width: 400px;
+  }
+}
+
+
+/*================================================
+  =                 Bootstrap TOC                =
+  ================================================*/
+
+/* All levels of nav */
+nav[data-toggle='toc'] .nav > li > a {
+    padding: 4px 6px;
+    margin-right: 6px;
+}
+
+nav[data-toggle='toc'] .nav > li > a:hover,
+nav[data-toggle='toc'] .nav > li > a:focus {
+  padding-left: 0px;
+  padding-right: 5px;
+  border-left: 0px;
+  border-right: 1px solid #563d7c;
+}
+
+nav[data-toggle='toc'] .nav > .active > a,
+nav[data-toggle='toc'] .nav > .active:hover > a,
+nav[data-toggle='toc'] .nav > .active:focus > a {
+  padding-left: 0px;
+  padding-right: 4px;
+  border-left: 0;
+  border-right: 2px solid #563d7c;
+  border-bottom: 1px solid #563d7c;
+}
+
+/* Nav: second level (shown on .active) */
+nav[data-toggle='toc'] .nav .nav > li > a,
+nav[data-toggle='toc'] .nav .nav > li > a:AFTER {
+  padding-left: 0;
+  padding-right: 6px;
+  content: " \21B5";
+}
+
+nav[data-toggle='toc'] .nav .nav > li > a:hover,
+nav[data-toggle='toc'] .nav .nav > li > a:focus {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+nav[data-toggle='toc'] .nav .nav > .active > a,
+nav[data-toggle='toc'] .nav .nav > .active:hover > a,
+nav[data-toggle='toc'] .nav .nav > .active:focus > a {
+  padding-left: 0;
+  font-weight: bold;
+  border-bottom: none;
+}
+
+
+/*================================================
+  =                  Swagger API                 =
+  ================================================*/
+
+.swagger-paths h5 {
+  font-weight: bold;
+}
+
+/*================================================
+  =                  52n Styling                 =
+  ================================================*/
 
 html {
   display: table;
@@ -18,27 +111,40 @@ body {
   vertical-align: middle;
 }
 
-.n52-top {
-    clear: both;
-    margin-top: 20px !important;
+.n52-navbar-top.navbar-default {
+  background-color: #eee;
+  position: static;
 }
-.n52-top a {
+
+.n52-logo {
+  margin-left: 2em;
+}
+
+.n52-toplink {
+    clear: both;
+//    margin-top: 20px !important;
+}
+.n52-toplink a {
     cursor: pointer;
 }
-.n52-top a:hover {
+.n52-toplink a:hover {
     color: #fff;
     background-color: #999;
 }
 
 .n52-sidebar {
-  padding-top: 80px;
+//  padding-top: 20px;
+  border-right: 1px solid #eee;
+  text-align: right;
+  width: inherit;
+}
+
+.n52-container {
+//  padding-top: 60px;
 }
 
 .n52-content {
-  padding-top: 60px;
-  padding-left: 60px;
-  min-width: 800px;
-  max-width: 1000px;
+//  padding-left: 2em;
 }
 
 /* Base styles (regardless of theme) */
@@ -65,7 +171,9 @@ body {
   border-color: #dFb5b4;
 }
 
-.n52-callout-info {
+.n52-callout-info,
+.n52-callout-info:before {
+  content: "Note: ";
   background-color: #f0f7fd;
   border-color: #d0e3f0;
 }
@@ -78,127 +186,57 @@ body {
 .n52-description-list dd {
     text-indent: 1em;
 }
-
-/*
- * Side navigation
- *
- * Scrollspy and affixed enhanced navigation to highlight sections and secondary
- * sections of docs content.
- */
-
-/* By default it's not affixed in mobile views, so undo that */
-.bs-sidebar.affix {
-  position: static;
-}
-
-/* First level of nav */
-.bs-sidenav {
-  margin-top: 70px;
-  margin-bottom: 30px;
-  padding-top:    10px;
-  padding-bottom: 10px;
-  text-shadow: 0 1px 0 #fff;
-  background-color: #f7f5fa;
-  border-radius: 5px;
-  width:200px;
-}
-
-/* All levels of nav */
-.bs-sidebar .nav > li > a {
-  display: block;
-  color: #716b7a;
-  padding: 5px 20px;
-}
-.bs-sidebar .nav > li > a:hover,
-.bs-sidebar .nav > li > a:focus {
-  text-decoration: none;
-  background-color: #e5e3e9;
-  border-right: 1px solid #dbd8e0;
-}
-.bs-sidebar .nav > .active > a,
-.bs-sidebar .nav > .active:hover > a,
-.bs-sidebar .nav > .active:focus > a {
-  font-weight: bold;
-  color: #563d7c;
-  background-color: transparent;
-  border-right: 1px solid #563d7c;
-}
-
-.bs-sidebar .nav .nav > li > a {
-  padding-top:    3px;
-  padding-bottom: 3px;
-  padding-left: 30px;
-  font-size: 90%;
-}
-
-/* Show and affix the side nav when space allows it */
-@media screen and (min-width: 992px) {
-  .bs-sidebar .nav > .active > ul {
-    display: block;
-  }
-  /* Widen the fixed sidebar */
-  .bs-sidebar.affix,
-  .bs-sidebar.affix-bottom {
-    width: 213px;
-  }
-  .bs-sidebar.affix {
-    position: fixed; /* Undo the static from mobile first approach */
-    top: 80px;
-  }
-  .bs-sidebar.affix-bottom {
-    position: absolute; /* Undo the static from mobile first approach */
-  }
-  .bs-sidebar.affix-bottom .bs-sidenav,
-  .bs-sidebar.affix .bs-sidenav {
+.n52-example-block pre {
     margin-top: 0;
-    margin-bottom: 0;
-  }
 }
-@media screen and (min-width: 1000px) {
-  /* Widen the fixed sidebar again */
-  .bs-sidebar.affix-bottom,
-  .bs-sidebar.affix {
-    width: 213px;
-  }
+.n52-example-caption p {
+    font-weight: bold;
+    margin-bottom: 0.25em;
 }
-
-
-
-
-/*
- * The Footer
- */
+.n52-example-block .n52-example-toggler.btn:hover,
+.n52-example-block .n52-example-toggler.btn:focus, .btn.focus {
+    color: #333;
+    text-decoration: none;
+}
+.n52-example-block .n52-example-toggler.btn {
+  border: none;
+  padding: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.n52-example-block .n52-example-toggler.btn {
+  background-image: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.n52-example-block .n52-example-caption.btn p:AFTER {
+  // https://brajeshwar.github.io/entities/
+  content: " (Show \25bc)";
+}
+.n52-example-block .n52-example-toggler.btn.active p:AFTER {
+  // https://brajeshwar.github.io/entities/
+  content: " (Hide \25b2)";
+}
 
 footer {
   font-size: small;
   padding: 30px 0;
-  margin: 10px 0;
   margin-top: 70px;
   border-top: 1px solid #e5e5e5;
-  background-color: #f5f5f5;
+  background-color: #eee;
   height: 100px;
 }
-
 footer ul {
   list-style: none;
 }
 
-footer div {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-.footer-links {
-  margin: 10px 0;
-}
-.footer-links li {
+.n52-footer-links li {
   display: inline;
-  padding: 0 2px;
+  margin: 0;
 }
-.footer-links li:first-child {
-  padding-left: 0;
+.n52-footer-links li:not(:first-child):before {
+    // https://brajeshwar.github.io/entities/
+    content: " \00b7 \00a0";
 }
-
-// Settled on moving the import of syntax highlighting to the bottom of the CSS
-// ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
-@import "highlights",
-        "swagger";

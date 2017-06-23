@@ -1,11 +1,8 @@
 ---
-layout: page
+layout: section
 title: Extensions
 permalink: /extensions
 ---
-
-- TOC
-{:toc}
 
 {:.n52-callout .n52-callout-todo}
 section under revision/update

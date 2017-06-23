@@ -9,75 +9,53 @@
     <![endif]-->
 
 <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css" />
+
+<script src="{{ site.baseurl }}/assets/javascripts/jquery/jquery-3.2.1.min.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/bootstrap.min.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/bootstrap-toc.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/52n/swagger-toggle-details.js"></script>
+<script src="{{ site.baseurl }}/assets/javascripts/52n/example-toggle-details.js"></script>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#toc">
 
-  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+  <nav class="center-block navbar navbar-default navbar-fixed-top n52-navbar-top">
+    <div class="pull-left n52-logo">
+      <a href="{{site.baseurl}}"><img alt="52&deg;North logo"
+        src="{{site.baseurl}}/assets/images/52n_logo_full.png" /></a>
+    </div>
     
-  <div class="n52-container container-fluid">
+    <div class="pull-right navbar-collapse ">
+      <ul class="nav navbar-nav">
+        <li><a href="http://52north.org">52°North</a></li>
+        <li><a href="{{ site.github.repository_url }}">Sources</a></li>
+        <li><a href="http://blog.52north.org">Blog</a></li>
+      </ul>
+    </div>
+  </nav>
+    
+  <div class="container container-fluid n52-container">
+    <div class="row">
+      <div class="col-mg-3 col-sm-3 pull-left">
+        <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix n52-sidebar">
+          <!-- automatically included by bootstrap-toc -->
+        </nav>
+      </div>
   
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
-        <a href="{{site.baseurl}}"><img alt="52&deg;North logo"
-          src="{{site.baseurl}}/assets/images/52n_logo_full.png" /></a>
-      </div>
-      <div class="container">
-        <div class="pull-right navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="{{ site.github.repository_url }}">Sources</a></li>
-            <li><a href="http://blog.52north.org">Blog</a></li>
-          </ul>
+      <div  class="col-mg-8 col-sm-8 n52-content pull-right">
+        <div class="pull-right">
+          <p class="affix up-link n52-toplink">
+            <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
+          </p>
         </div>
+  
+        {{ content }}
       </div>
-    </nav>
-
-    <nav class="affix col-lg-2 n52-sidebar">
-      <p class="header">
-        <a href="{{ site.baseurl }}/index.html">Home</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/compatibility.html">Compatibility</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/valuetypes.html">Value Types</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/io.html">Input/Output</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/configuration.html">Configuration</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/paging.html">Paging</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/extensions.html">Extensions</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/api.html">API Reference</a>
-      </p>
-      <p class="header">
-        <a href="{{ site.baseurl }}/development.html">API Development</a>
-      </p>
-    </nav>
-
-    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
-      <div class="pull-right">
-        <p class="affix up-link n52-top">
-          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
-        </p>
-      </div>
-
-      {{ content | toc_generate}}
     </div>
   </div>
 
-
-  <footer class="footer">
-    
-    <div class="col-lg-5">
+  <footer class="footer col-md-12 col-sm-12">
+    <div class="col-md-5 col-sm-5 pull-left">
       <ul>
         <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
         <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
@@ -85,14 +63,12 @@
                         href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
       </ul>
     </div>
-    <div class="col-lg-5 pull-right">
-      <ul class="footer-links">
+    <div class="col-md-5 col-sm-5 pull-right">
+      <ul class="n52-footer-links">
           <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
-          <li class="muted">&middot;</li>
-          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a>
+          <li><a href="{{site.github.repository_url}}/tree/{{site.github.build_revision}}">Revision</a></li>
       </ul>
-      <p>Last Rev.: <a href="{{site.github.repository_url}}/tree/{{site.github.build_revision}}">{{site.github.build_revision}}</a></p>
-      
     </div>
   </footer>
 
