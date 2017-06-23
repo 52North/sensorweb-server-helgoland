@@ -2201,56 +2201,30 @@ button.close { padding: 0; cursor: pointer; background: transparent; border: 0; 
 @media print { .visible-print-inline-block { display: inline-block !important; } }
 
 @media print { .hidden-print { display: none !important; } }
-html { display: table; margin: auto; }
+/*!
+ * Bootstrap Table of Contents v0.4.1 (http://afeld.github.io/bootstrap-toc/)
+ * Copyright 2015 Aidan Feldman
+ * Licensed under MIT (https://github.com/afeld/bootstrap-toc/blob/gh-pages/LICENSE.md) */
+/* modified from https://github.com/twbs/bootstrap/blob/94b4076dd2efba9af71f0b18d4ee4b163aa9e0dd/docs/assets/css/src/docs.css#L548-L601 */
+/* All levels of nav */
+nav[data-toggle='toc'] .nav > li > a { display: block; padding: 4px 20px; font-size: 13px; font-weight: 500; color: #767676; }
 
-body { display: table-cell; vertical-align: middle; }
+nav[data-toggle='toc'] .nav > li > a:hover, nav[data-toggle='toc'] .nav > li > a:focus { padding-left: 19px; color: #563d7c; text-decoration: none; background-color: transparent; border-left: 1px solid #563d7c; }
 
-.n52-vbottom { position: relative; top: 100%; transform: translateY(-100%); }
+nav[data-toggle='toc'] .nav > .active > a, nav[data-toggle='toc'] .nav > .active:hover > a, nav[data-toggle='toc'] .nav > .active:focus > a { padding-left: 18px; font-weight: bold; color: #563d7c; background-color: transparent; border-left: 2px solid #563d7c; }
 
-.n52-navbar-top.navbar-default { background-color: #eee; }
+/* Nav: second level (shown on .active) */
+nav[data-toggle='toc'] .nav .nav { display: none; /* Hide by default, but at >768px, show it */ padding-bottom: 10px; }
 
-.n52-toplink { clear: both; margin-top: 20px !important; }
+nav[data-toggle='toc'] .nav .nav > li > a { padding-top: 1px; padding-bottom: 1px; padding-left: 30px; font-size: 12px; font-weight: normal; }
 
-.n52-toplink a { cursor: pointer; }
+nav[data-toggle='toc'] .nav .nav > li > a:hover, nav[data-toggle='toc'] .nav .nav > li > a:focus { padding-left: 29px; }
 
-.n52-toplink a:hover { color: #fff; background-color: #999; }
+nav[data-toggle='toc'] .nav .nav > .active > a, nav[data-toggle='toc'] .nav .nav > .active:hover > a, nav[data-toggle='toc'] .nav .nav > .active:focus > a { padding-left: 28px; font-weight: 500; }
 
-.n52-sidebar { padding-top: 20px; border-right: 1px solid #eee; text-align: right; }
+/* from https://github.com/twbs/bootstrap/blob/e38f066d8c203c3e032da0ff23cd2d6098ee2dd6/docs/assets/css/src/docs.css#L631-L634 */
+nav[data-toggle='toc'] .nav > .active > ul { display: block; }
 
-.n52-container { padding-top: 60px; }
-
-.n52-content { padding-left: 60px; }
-
-/* Base styles (regardless of theme) */
-.n52-callout { margin: 20px 0; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; }
-
-.n52-callout h4 { margin-top: 0; }
-
-.n52-callout p:last-child { margin-bottom: 0; }
-
-.n52-callout code, .n52-callout .highlight { background-color: #fff; }
-
-.n52-callout-todo, .n52-callout-todo:before { content: "TODO: "; background-color: #fcf2f2; border-color: #dFb5b4; }
-
-.n52-callout-info, .n52-callout-info:before { content: "Note: "; background-color: #f0f7fd; border-color: #d0e3f0; }
-
-.n52-description-list dt { font-weight: bold; font-size: larger; }
-
-.n52-description-list dd { text-indent: 1em; }
-
-footer { font-size: small; padding: 30px 0; margin: 10px 0; margin-top: 70px; border-top: 1px solid #e5e5e5; background-color: #eee; height: 100px; }
-
-footer ul { list-style: none; }
-
-footer div { margin-left: 10px; margin-right: 10px; }
-
-.footer-links li:not(:first-child):before { content: " \00b7 \00a0"; }
-
-.footer-links li { display: inline; margin: 0; }
-
-/*================================================ =                 Media Queries                = ================================================*/
-@media (max-width: 767px) { .container { max-width: 500px; }
-  .affix { position: static; } }
 .highlight { background-color: #efefef; padding: 7px 7px 7px 10px; border: 1px solid #ddd; -moz-box-shadow: 3px 3px rgba(0, 0, 0, 0.1); -webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1); box-shadow: 3px 3px rgba(0, 0, 0, 0.1); margin: 20px 0 20px 0; overflow: scroll; }
 
 code { font-family: 'Bitstream Vera Sans Mono','Courier', monospace; }
@@ -2506,3 +2480,64 @@ code { font-family: 'Bitstream Vera Sans Mono','Courier', monospace; }
 .swagger-parameters .table { border-spacing: 0px; border-collapse: collapse; margin-bottom: 0.5em; width: 100%; }
 
 .swagger-parameter-required:after { content: ' *'; color: red; }
+
+/*================================================ =                 Media Queries                = ================================================*/
+@media (max-width: 767px) { .container { max-width: 500px; }
+  .affix { position: static; } }
+/*================================================ =                 Bootstrap TOC                = ================================================*/
+nav[data-toggle=toc] .nav > li > a:focus, nav[data-toggle=toc] .nav > li > a:hover { padding-left: 19px; color: #563d7c; text-decoration: none; background-color: transparent; border-right: 1px solid #563d7c; border-left: 0; }
+
+nav[data-toggle='toc'] .nav > .active > a, nav[data-toggle='toc'] .nav > .active:hover > a, nav[data-toggle='toc'] .nav > .active:focus > a { padding-left: 18px; font-weight: bold; color: #563d7c; background-color: transparent; border-right: 2px solid #563d7c; border-left: 0; }
+
+/*================================================ =                  Swagger API                 = ================================================*/
+.swagger-paths h5 { font-weight: bold; }
+
+/*================================================ =                  52n Styling                 = ================================================*/
+html { display: table; margin: auto; }
+
+body { display: table-cell; vertical-align: middle; }
+
+.n52-navbar-top.navbar-default { background-color: #eee; }
+
+.n52-toplink { clear: both; margin-top: 20px !important; }
+
+.n52-toplink a { cursor: pointer; }
+
+.n52-toplink a:hover { color: #fff; background-color: #999; }
+
+.n52-sidebar { padding-top: 20px; border-right: 1px solid #eee; text-align: right; }
+
+.n52-container { padding-top: 60px; }
+
+.n52-content { padding-left: 60px; }
+
+/* Base styles (regardless of theme) */
+.n52-callout { margin: 20px 0; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; }
+
+.n52-callout h4 { margin-top: 0; }
+
+.n52-callout p:last-child { margin-bottom: 0; }
+
+.n52-callout code, .n52-callout .highlight { background-color: #fff; }
+
+.n52-callout-todo, .n52-callout-todo:before { content: "TODO: "; background-color: #fcf2f2; border-color: #dFb5b4; }
+
+.n52-callout-info, .n52-callout-info:before { content: "Note: "; background-color: #f0f7fd; border-color: #d0e3f0; }
+
+.n52-description-list dt { font-weight: bold; font-size: larger; }
+
+.n52-description-list dd { text-indent: 1em; }
+
+.n52-example-code pre { margin-top: 0; }
+
+.n52-example-caption p { font-weight: bold; margin-bottom: 0.25em; }
+
+footer { font-size: small; padding: 30px 0; margin: 10px 0; margin-top: 70px; border-top: 1px solid #e5e5e5; background-color: #eee; height: 100px; }
+
+footer ul { list-style: none; }
+
+footer div { margin-left: 10px; margin-right: 10px; }
+
+.footer-links li:not(:first-child):before { content: " \00b7 \00a0"; }
+
+.footer-links li { display: inline; margin: 0; }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>API Development – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>License Extension – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -25,14 +25,18 @@
     <meta name="theme-color" content="#ffffff">
 
     
-    <meta name="description" content="Initiative for Geospatial Open Source Software">
-    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    <meta name="description" content="License Extension
+
+" />
+    <meta property="og:description" content="License Extension
+
+" />
     
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="API Development" />
-    <meta property="twitter:title" content="API Development" />
+    <meta property="og:title" content="License Extension" />
+    <meta property="twitter:title" content="License Extension" />
     
 
 
@@ -40,10 +44,19 @@
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
+<link rel="stylesheet" type="text/css" href="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.css">
 <link rel="stylesheet" type="text/css" href="/series-rest-api/documentation_general/css/styles.css" />
+
+
+<script src="//code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="/series-rest-api/documentation_general/assets/javascripts/bootstrap.min.js"></script>
+<!-- <script src="//cdn.rawgit.com/afeld/bootstrap-toc/v0.4.1/dist/bootstrap-toc.min.js"></script> -->
+<!-- <script src="//cdn.rawgit.com/afeld/bootstrap-toc/gh-pages/dist/bootstrap-toc.js"></script> -->
+<script src="/series-rest-api/documentation_general/assets/javascripts/bootstrap-toc.js"></script>
+<script src="/series-rest-api/documentation_general/assets/javascripts/swagger-toggle-details.js"></script>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#toc">
 
   <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
     
@@ -53,6 +66,7 @@
         <a href="/series-rest-api/documentation_general"><img alt="52&deg;North logo"
           src="/series-rest-api/documentation_general/assets/images/52n_logo_full.png" /></a>
       </div>
+      
       <div class="pull-right navbar-collapse ">
         <ul class="nav navbar-nav">
           <li><a href="http://52north.org">52°North</a></li>
@@ -64,61 +78,22 @@
   </div>
     
   <div class="container container-fluid n52-container">
-    
-    <nav class="navbar affix col-mg-2 col-sm-2 pull-left n52-sidebar">
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/index.html">Home</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/compatibility.html">Compatibility</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/valuetypes.html">Value Types</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/io.html">Input/Output</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/configuration.html">Configuration</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/paging.html">Paging</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/extensions.html">Extensions</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/api.html">API Reference</a>
-      </p>
-      <p class="header">
-        <a href="/series-rest-api/documentation_general/development.html">API Development</a>
-      </p>
-    </nav>
-
-    <div  class="col-mg-10 col-sm-10 n52-content pull-right">
-      <div class="pull-right">
-        <p class="affix up-link n52-toplink">
-          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
-        </p>
+    <div class="row">
+      <div class="col-mg-offset-1 col-mg-3 col-sm-offset-1 col-sm-3 pull-left">
+        <nav id="toc" data-spy="affix" data-toggle="toc" class="navbar affix n52-sidebar">
+          <!-- automatically included by bootstrap-toc -->
+        </nav>
       </div>
-
-      <article class="page">
-  <h1>API Development</h1>
-
-  <div class="entry">
-    <p>tbd</p>
-
-<h2 id="overview">Overview</h2>
-
-<p>Next to the <a href="/series-rest-api/documentation_general/api.html">Web API</a>, a Service Provider Interface (SPI) defines the 
-underlying interface for data providing backends. With this, the API is flexible enough to
-be put ontop of arbitrary data stores. Its modular design enables a seamless integration into 
-existing Web applications.</p>
-
-<p><img src="/series-rest-api/documentation_general/assets/images/big-picture.png" alt="Big Picture" /></p>
-
-  </div>
-</article>
+  
+      <div  class="col-mg-8 col-sm-8 n52-content pull-right">
+        <div class="pull-right">
+          <p class="affix up-link n52-toplink">
+            <a href="#"><i class="glyphicon glyphicon-chevron-up" title="go to top"></i></a>
+          </p>
+        </div>
+  
+        
+      </div>
     </div>
   </div>
 
@@ -136,7 +111,7 @@ existing Web applications.</p>
       <ul class="footer-links">
           <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a>
-          <li><a href="http://github.com/ridoo/series-rest-api/tree/3fd021e6c589ca3541aca40810c55a1e10ae9a21">Revision</a></li>
+          <li><a href="http://github.com/ridoo/series-rest-api/tree/f814d750a2c154173c96f67520819e5e67383795">Revision</a></li>
       </ul>
     </div>
   </footer>
