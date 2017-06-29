@@ -116,7 +116,7 @@ public class ResourcesController {
         return resources;
     }
 
-    private void addVersionHeader(HttpServletResponse response){
+    private void addVersionHeader(HttpServletResponse response) {
         response.addHeader("API-Version", this.getClass().getPackage().getImplementationVersion());
     }
 
