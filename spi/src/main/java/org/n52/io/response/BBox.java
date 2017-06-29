@@ -45,7 +45,7 @@ public class BBox {
         this.ur = ur;
     }
 
-    public BBox(String coordinates){
+    public BBox(String coordinates) {
         String[] coordArray = coordinates.split("\\,");
         this.ll = GeojsonPoint.createWithCoordinates(new Double[] {Double.valueOf(coordArray[0]),
                                                                    Double.valueOf(coordArray[1])});
