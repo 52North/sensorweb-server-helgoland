@@ -10,6 +10,15 @@ add new content to existing data structures (which won't break backwards compabi
 
 Also new endpoints may be introduced over time like we did in `v2.0.0`.
 
+### Version Information
+
+The API provides Information about the current Version in a custom HTTP Response Header, returned on the `/` Endpoint.
+```
+[...]
+API-Version: 1.2.3
+[...]
+```
+
 ## Version 2.0.0
 
 ### New Endpoints
