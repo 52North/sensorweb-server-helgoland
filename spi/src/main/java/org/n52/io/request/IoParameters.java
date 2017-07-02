@@ -589,7 +589,12 @@ public class IoParameters implements Parameters {
         BBox bbox;
         // Check if supplied in minx,miny,maxx,maxy format - else assume json
         if (bboxValue.matches("^(\\d*\\.?\\d*\\,){3}(\\d*\\.?\\d*)$")) {
-            bbox = new BBox(bboxValue);
+            String[] coordArray = bboxValue.split("\\,");
+            GeojsonPoint ll = GeojsonPoint.createWithCoordinates(new Double[] {Double.valueOf(coordArray[0]),
+                                                                      Double.valueOf(coordArray[1])});
+            GeojsonPoint ur = GeojsonPoint.createWithCoordinates(new Double[] {Double.valueOf(coordArray[2]),
+                                                                      Double.valueOf(coordArray[3])});
+            bbox = new BBox(ll, ur);
         } else {
             bbox = parseJson(bboxValue, BBox.class);
         }

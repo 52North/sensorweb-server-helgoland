@@ -45,14 +45,6 @@ public class BBox {
         this.ur = ur;
     }
 
-    public BBox(String coordinates) {
-        String[] coordArray = coordinates.split("\\,");
-        this.ll = GeojsonPoint.createWithCoordinates(new Double[] {Double.valueOf(coordArray[0]),
-                                                                   Double.valueOf(coordArray[1])});
-        this.ur = GeojsonPoint.createWithCoordinates(new Double[] {Double.valueOf(coordArray[2]),
-                                                                   Double.valueOf(coordArray[3])});
-    }
-
     public GeojsonPoint getLl() {
         return ll;
     }
