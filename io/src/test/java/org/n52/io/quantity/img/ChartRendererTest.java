@@ -52,7 +52,7 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 
@@ -138,14 +138,14 @@ public class ChartRendererTest {
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
         QuantityDatasetOutput metadata = new QuantityDatasetOutput();
-        SeriesParameters parameters = new SeriesParameters();
+        DatasetParameters parameters = new DatasetParameters();
         parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
         parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
         parameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
         parameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
         parameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
         parameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        metadata.setSeriesParameters(parameters);
+        metadata.setDatasetParameters(parameters);
         metadata.setId("timeseries");
         metadata.setUom("");
 

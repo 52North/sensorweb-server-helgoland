@@ -71,7 +71,7 @@ import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,12 +251,12 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return axis;
     }
 
-    protected String createRangeLabel(DatasetOutput timeseriesMetadata) {
-        SeriesParameters parameters = timeseriesMetadata.getSeriesParameters();
+    protected String createRangeLabel(DatasetOutput output) {
+        DatasetParameters parameters = output.getDatasetParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
         uom.append(phenomenon.getLabel());
-        String uomLabel = timeseriesMetadata.getUom();
+        String uomLabel = output.getUom();
         if (uomLabel != null && !uomLabel.isEmpty()) {
             uom.append(" [")
                .append(uomLabel)
@@ -281,10 +281,10 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private String getTitleForSingle(RequestStyledParameterSet config,
                                      String template) {
-        String[] timeseries = config.getDatasets();
-        if (timeseries != null && timeseries.length > 0) {
-            String timeseriesId = timeseries[0];
-            DatasetOutput metadata = getTimeseriesMetadataOutput(timeseriesId);
+        String[] datasets = config.getDatasets();
+        if (datasets != null && datasets.length > 0) {
+            String datasetId = datasets[0];
+            DatasetOutput metadata = getTimeseriesMetadataOutput(datasetId);
             if (metadata != null) {
                 return formatTitle(metadata, template);
             }
@@ -293,7 +293,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     }
 
     protected String formatTitle(DatasetOutput metadata, String title) {
-        SeriesParameters parameters = metadata.getSeriesParameters();
+        DatasetParameters parameters = metadata.getDatasetParameters();
         Object[] varargs = {
             // index important to reference in config!
             parameters.getPlatform()
@@ -322,26 +322,26 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         }
     }
 
-    private DatasetOutput getTimeseriesMetadataOutput(String timeseriesId) {
-        for (DatasetOutput metadata : getMetadataOutputs()) {
-            if (metadata.getId()
-                        .equals(timeseriesId)) {
-                return metadata;
+    private DatasetOutput getTimeseriesMetadataOutput(String datasetId) {
+        for (DatasetOutput output : getMetadataOutputs()) {
+            if (output.getId()
+                      .equals(datasetId)) {
+                return output;
             }
         }
         return null;
     }
 
     protected List< ? extends DatasetOutput> getMetadataOutputs() {
-        return context.getSeriesMetadatas();
+        return context.getDatasetMetadatas();
     }
 
-    protected StyleProperties getTimeseriesStyleFor(String timeseriesId) {
-        return getChartStyleDefinitions().getStyleOptions(timeseriesId);
+    protected StyleProperties getDatasetStyleFor(String datasetId) {
+        return getChartStyleDefinitions().getStyleOptions(datasetId);
     }
 
-    protected StyleProperties getTimeseriesStyleFor(String timeseriesId, String referenceValueSeriesId) {
-        return getChartStyleDefinitions().getReferenceSeriesStyleOptions(timeseriesId, referenceValueSeriesId);
+    protected StyleProperties getTimeseriesStyleFor(String datasetId, String referenceValueDatasetId) {
+        return getChartStyleDefinitions().getReferenceDatasetStyleOptions(datasetId, referenceValueDatasetId);
     }
 
     protected RequestStyledParameterSet getChartStyleDefinitions() {

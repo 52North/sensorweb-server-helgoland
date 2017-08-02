@@ -59,7 +59,7 @@ public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>
     }
 
     protected List<? extends DatasetOutput> getSeriesMetadatas() {
-        return getContext().getSeriesMetadatas();
+        return getContext().getDatasetMetadatas();
     }
 
 }
