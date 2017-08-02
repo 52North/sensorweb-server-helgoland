@@ -115,7 +115,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         return styleOptions.get(timeseriesId);
     }
 
-    public StyleProperties getReferenceSeriesStyleOptions(String timeseriesId, String referenceSeriesId) {
+    public StyleProperties getReferenceDatasetStyleOptions(String timeseriesId, String referenceSeriesId) {
         if (!styleOptions.containsKey(timeseriesId)) {
             return null;
         }

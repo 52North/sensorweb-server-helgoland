@@ -151,7 +151,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
         String station = null;
-        ParameterOutput platform = metadata.getSeriesParameters()
+        ParameterOutput platform = metadata.getDatasetParameters()
                                            .getPlatform();
         if (platform == null) {
             TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
@@ -160,7 +160,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
         } else {
             station = platform.getLabel();
         }
-        String phenomenon = metadata.getSeriesParameters()
+        String phenomenon = metadata.getDatasetParameters()
                                     .getPhenomenon()
                                     .getLabel();
         String uom = metadata.getUom();
