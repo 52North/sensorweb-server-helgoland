@@ -117,7 +117,7 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput> {
     }
 
     private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(DatasetOutput output) {
-        String id = output.getSeriesParameters().getPhenomenon().getId();
+        String id = output.getDatasetParameters().getPhenomenon().getId();
         return intervalConfig.getPhenomenonIntervals().get(id);
     }
 

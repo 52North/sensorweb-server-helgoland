@@ -35,7 +35,7 @@ import org.n52.io.response.ParameterOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class SeriesParameters {
+public class DatasetParameters {
 
     private ParameterOutput phenomenon;
 

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import java.io.BufferedInputStream;
@@ -41,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +74,10 @@ public abstract class ConfigTypedFactory<T> {
 
     protected static InputStream getDefaultConfigFile(String configLocation) {
         try {
-            Path path = Paths.get(ConfigTypedFactory.class.getResource("/").toURI());
-            File file = path.resolve(configLocation).toFile();
+            Path path = Paths.get(ConfigTypedFactory.class.getResource("/")
+                                                          .toURI());
+            File file = path.resolve(configLocation)
+                            .toFile();
             if (file.exists()) {
                 return new FileInputStream(file);
             } else {
@@ -96,7 +100,7 @@ public abstract class ConfigTypedFactory<T> {
         }
     }
 
-    private InputStream createConfigStream(File file, Class<?> clazz) throws FileNotFoundException {
+    private InputStream createConfigStream(File file, Class< ? > clazz) throws FileNotFoundException {
         if (file != null && file.exists()) {
             LOGGER.debug("loading factory config from '{}'", file.getAbsolutePath());
             return new FileInputStream(file);
@@ -137,7 +141,7 @@ public abstract class ConfigTypedFactory<T> {
         }
         final String clazz = mappings.getProperty(type);
         try {
-            final Class<?> instanceType = Class.forName(clazz);
+            final Class< ? > instanceType = Class.forName(clazz);
             T instance = createInstance(instanceType);
             cache.put(type, instance);
             initInstance(instance);
@@ -149,14 +153,15 @@ public abstract class ConfigTypedFactory<T> {
         }
     }
 
-    private T createInstance(Class<?> clazz) throws InstantiationException, IllegalAccessException {
+    private T createInstance(Class< ? > clazz) throws InstantiationException, IllegalAccessException {
         final Object instance = clazz.newInstance();
         try {
             return (T) instance;
         } catch (ClassCastException e) {
             String targetType = getTargetType().getName();
-            String instanceType = instance.getClass().getName();
-            LOGGER.error("Config entry ('{}') must be assignable to '{}'!" , instanceType, targetType);
+            String instanceType = instance.getClass()
+                                          .getName();
+            LOGGER.error("Config entry ('{}') must be assignable to '{}'!", instanceType, targetType);
             throw e;
         }
     }
@@ -168,10 +173,9 @@ public abstract class ConfigTypedFactory<T> {
         return instance;
     }
 
-    protected abstract Class<?> getTargetType();
+    protected abstract Class< ? > getTargetType();
 
-    private void throwNewNoDatasetsAvailableForTypeException(String type) throws
-            DatasetFactoryException {
+    private void throwNewNoDatasetsAvailableForTypeException(String type) throws DatasetFactoryException {
         throw new DatasetFactoryException("No datasets available for '" + type + "'.");
     }
 

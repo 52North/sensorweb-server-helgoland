@@ -461,7 +461,9 @@ public class IoParameters implements Parameters {
     }
 
     public Set<String> getDatasets() {
-        return getValuesOf(DATASETS);
+        Set<String> values = getSeries();
+        values.addAll(getValuesOf(DATASETS));
+        return values;
     }
 
     public Set<String> getFields() {

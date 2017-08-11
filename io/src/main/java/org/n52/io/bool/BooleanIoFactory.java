@@ -26,40 +26,36 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.quantity.report;
+package org.n52.io.bool;
 
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.IoProcessChain;
-import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestParameterSet;
-import org.n52.io.response.dataset.AbstractValue;
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.MimeType;
+import org.n52.io.response.dataset.bool.BooleanData;
+import org.n52.io.response.dataset.bool.BooleanDatasetOutput;
+import org.n52.io.response.dataset.bool.BooleanValue;
 
-public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
+public class BooleanIoFactory extends IoFactory<BooleanData, BooleanDatasetOutput, BooleanValue> {
 
-    private final IoStyleContext context;
-
-    /**
-     * @param simpleRequest simple parameter set.
-     * @param processChain the process chain.
-     * @param context the rendering context.
-     */
-    public ReportGenerator(RequestParameterSet simpleRequest,
-            IoProcessChain<T> processChain,
-            IoStyleContext context) {
-        super(simpleRequest, processChain);
-        this.context = context;
+    @Override
+    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
+        return MimeType.isKnownMimeType(outputMimeType);
     }
 
-    public IoStyleContext getContext() {
-        return context;
+    @Override
+    public Set<String> getSupportedMimeTypes() {
+        return new HashSet<>();
     }
 
-    protected List<? extends DatasetOutput> getSeriesMetadatas() {
-        return getContext().getDatasetMetadatas();
+    @Override
+    public IoHandler<BooleanData> createHandler(String outputMimeType) {
+        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
+        IllegalArgumentException exception = new IllegalArgumentException(msg);
+        throw exception;
     }
 
 }
