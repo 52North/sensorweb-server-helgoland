@@ -30,6 +30,7 @@ package org.n52.web.ctrl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.I18N;
@@ -117,7 +118,11 @@ public class ResourcesController {
     }
 
     private void addVersionHeader(HttpServletResponse response) {
-        response.addHeader("API-Version", this.getClass().getPackage().getImplementationVersion());
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String version = implementationVersion != null
+                ? implementationVersion
+                : "unknown";
+        response.addHeader("API-Version", version);
     }
 
     public CountingMetadataService getMetadataService() {
