@@ -59,7 +59,7 @@ import org.n52.io.quantity.img.ChartIoHandler;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.SeriesParameters;
+import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
@@ -191,18 +191,18 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 
-    private TimeSeries addTimeseries(DatasetOutput metadata) {
+    private TimeSeries addTimeseries(DatasetOutput output) {
         DocumentStructureType report = document.getDocumentStructure();
         TimeSeries timeseries = report.addNewTimeSeries();
 
-        SeriesParameters parameters = metadata.getSeriesParameters();
+        DatasetParameters parameters = output.getDatasetParameters();
         timeseries.setFeatureOfInterestID(parameters.getFeature().getLabel());
         timeseries.setPhenomenID(parameters.getPhenomenon().getLabel());
         timeseries.setProcedureID(parameters.getProcedure().getLabel());
         return timeseries;
     }
 
-    private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput timeseriesMetadata) {
+    private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput output) {
         MetadataType metadata = timeseries.addNewMetadata();
 
         //  GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
@@ -244,7 +244,7 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
     }
 
     private String createValueTableHeader(TimeseriesMetadataOutput metadata) {
-        SeriesParameters parameters = metadata.getSeriesParameters();
+        DatasetParameters parameters = metadata.getDatasetParameters();
         String phenomenon = parameters.getPhenomenon().getLabel();
         return phenomenon + " (" + metadata.getUom() + ")";
     }

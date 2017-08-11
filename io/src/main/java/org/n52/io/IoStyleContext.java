@@ -41,20 +41,20 @@ public final class IoStyleContext {
 
     private final RequestStyledParameterSet chartStyleDefinitions;
 
-    private final List<? extends DatasetOutput> seriesMetadatas;
+    private final List<? extends DatasetOutput> datasetMetadatas;
 
     public IoStyleContext() {
         this.chartStyleDefinitions = new RequestStyledParameterSet();
-        this.seriesMetadatas = Collections.<DatasetOutput>emptyList();
+        this.datasetMetadatas = Collections.<DatasetOutput>emptyList();
     }
 
     // use static constructors
-    private IoStyleContext(RequestStyledParameterSet timeseriesStyles,
+    private IoStyleContext(RequestStyledParameterSet datasetStyles,
             List<? extends DatasetOutput> metadatas) {
-        this.seriesMetadatas = metadatas.isEmpty()
+        this.datasetMetadatas = metadatas.isEmpty()
                 ? Collections.<DatasetOutput>emptyList()
                 : metadatas;
-        this.chartStyleDefinitions = timeseriesStyles;
+        this.chartStyleDefinitions = datasetStyles;
     }
 
     public static IoStyleContext createEmpty() {
@@ -72,9 +72,9 @@ public final class IoStyleContext {
 
     /**
      * @param styles the style definitions.
-     * @param metadatas the metadata for each timeseries.
+     * @param metadatas the metadata for each dataset.
      * @throws NullPointerException if any of the given arguments is <code>null</code>.
-     * @throws IllegalStateException if amount of timeseries described by the given arguments is not
+     * @throws IllegalStateException if amount of datasets described by the given arguments is not
      * in sync.
      * @return a rendering context to be used by {@link QuantityIoFactory} to create an
      * {@link IoHandler}.
@@ -90,7 +90,7 @@ public final class IoStyleContext {
             int amountMetadatas = metadatas.size();
             StringBuilder sb = new StringBuilder();
             sb.append("Size of designs and metadatas do not match: ");
-            sb.append("#Timeseries: ").append(amountTimeseries).append(" vs. ");
+            sb.append("#Datasets: ").append(amountTimeseries).append(" vs. ");
             sb.append("#Metadatas: ").append(amountMetadatas);
             throw new IllegalStateException(sb.toString());
         }
@@ -113,8 +113,8 @@ public final class IoStyleContext {
         return chartStyleDefinitions;
     }
 
-    public List<? extends DatasetOutput> getSeriesMetadatas() {
-        return seriesMetadatas;
+    public List<? extends DatasetOutput> getDatasetMetadatas() {
+        return datasetMetadatas;
     }
 
 }

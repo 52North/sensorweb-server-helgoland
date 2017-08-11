@@ -82,7 +82,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             DatasetOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
 
             String timeseriesId = timeseriesMetadata.getId();
-            StyleProperties style = getTimeseriesStyleFor(timeseriesId);
+            StyleProperties style = getDatasetStyleFor(timeseriesId);
             QuantityData timeseriesData = allTimeseries.get(timeseriesId);
 
             String chartId = createChartId(timeseriesMetadata);
@@ -121,7 +121,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
     }
 
     private String createChartId(DatasetOutput metadata, String referenceId) {
-        ParameterOutput feature = metadata.getSeriesParameters().getFeature();
+        ParameterOutput feature = metadata.getDatasetParameters().getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
         if (referenceId != null) {

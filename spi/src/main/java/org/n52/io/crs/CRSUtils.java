@@ -28,13 +28,6 @@
  */
 package org.n52.io.crs;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
@@ -49,6 +42,14 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public final class CRSUtils {
 
@@ -168,7 +169,11 @@ public final class CRSUtils {
         return factory.createLineString(coordinates);
     }
 
-    GeometryFactory createGeometryFactory(String srsId) {
+    public GeometryFactory createGeometryFactory() {
+        return createGeometryFactory(null);
+    }
+
+    public GeometryFactory createGeometryFactory(String srsId) {
         PrecisionModel pm = new PrecisionModel(PrecisionModel.FLOATING);
         return srsId == null
                 ? new GeometryFactory(pm)
