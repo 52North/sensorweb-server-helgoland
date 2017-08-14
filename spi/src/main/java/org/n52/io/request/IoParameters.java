@@ -53,7 +53,6 @@ import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.geojson.old.GeojsonPoint;
-import org.n52.io.response.BBox;
 import org.n52.io.response.PlatformType;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
@@ -526,19 +525,18 @@ public class IoParameters implements Parameters {
             return null;
         }
 
-        BBox bboxBounds = createBbox();
+        BoundingBox bboxBounds = createBbox();
         BoundingBox bounds = parseBoundsFromVicinity();
         return mergeBounds(bounds, bboxBounds);
     }
 
-    private BoundingBox mergeBounds(BoundingBox bounds, BBox bboxBounds) {
+    private BoundingBox mergeBounds(BoundingBox bounds, BoundingBox bboxBounds) {
         if (bboxBounds == null) {
             // nothing to merge
             return bounds;
         }
-        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
-        Point lowerLeft = crsUtils.convertToPointFrom(bboxBounds.getLl());
-        Point upperRight = crsUtils.convertToPointFrom(bboxBounds.getUr());
+        Point lowerLeft = bboxBounds.getLowerLeft();
+        Point upperRight = bboxBounds.getUpperRight();
         if (bounds == null) {
             BoundingBox parsed = new BoundingBox(lowerLeft, upperRight, CRSUtils.DEFAULT_CRS);
             LOGGER.debug("Parsed bbox bounds: {}", parsed.toString());
@@ -562,14 +560,12 @@ public class IoParameters implements Parameters {
         if (bbox.contains(point)) {
             return;
         }
-        double llX = Math.min(point.getX(), bbox.getLowerLeft()
-                                                .getX());
-        double llY = Math.max(point.getX(), bbox.getUpperRight()
-                                                .getX());
-        double urX = Math.min(point.getY(), bbox.getLowerLeft()
-                                                .getY());
-        double urY = Math.max(point.getY(), bbox.getUpperRight()
-                                                .getY());
+        Point lowerLeft = bbox.getLowerLeft();
+        Point upperRight = bbox.getUpperRight();
+        double llX = Math.min(point.getX(), lowerLeft.getX());
+        double llY = Math.max(point.getX(), upperRight.getX());
+        double urX = Math.min(point.getY(), lowerLeft.getY());
+        double urY = Math.max(point.getY(), upperRight.getY());
 
         CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
         bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
@@ -583,15 +579,29 @@ public class IoParameters implements Parameters {
      * @throws IoParseException
      *         if a requested {@value #CRS} object could not be created
      */
-    private BBox createBbox() {
+    private BoundingBox createBbox() {
         if (!containsParameter(BBOX)) {
             return null;
         }
         String bboxValue = getAsString(BBOX);
-        BBox bbox = parseJson(bboxValue, BBox.class);
-        bbox.setLl(convertToCrs84(bbox.getLl()));
-        bbox.setUr(convertToCrs84(bbox.getUr()));
-        return bbox;
+        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
+
+        // Check if supplied in minx,miny,maxx,maxy format - else assume json
+        if (bboxValue.matches("^(\\d*\\.?\\d*\\,\\s*){3}(\\d*\\.?\\d*)\\s*$")) {
+            String[] coordArray = bboxValue.split("\\,");
+            Point lowerLeft = crsUtils.createPoint(Double.valueOf(coordArray[0].trim()),
+                                                   Double.valueOf(coordArray[1].trim()),
+                                                   CRSUtils.DEFAULT_CRS);
+            Point upperRight = crsUtils.createPoint(Double.valueOf(coordArray[2].trim()),
+                                                    Double.valueOf(coordArray[3].trim()),
+                                                    CRSUtils.DEFAULT_CRS);
+            return new BoundingBox(lowerLeft, upperRight, CRSUtils.DEFAULT_CRS);
+        } else {
+            BBox bbox = parseJson(bboxValue, BBox.class);
+            return new BoundingBox(crsUtils.convertToPointFrom(bbox.getLl(), CRSUtils.DEFAULT_CRS),
+                                   crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
+                                   CRSUtils.DEFAULT_CRS);
+        }
     }
 
     private BoundingBox parseBoundsFromVicinity() {
