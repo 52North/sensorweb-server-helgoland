@@ -31,6 +31,8 @@ package org.n52.web.ctrl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.I18N;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
@@ -49,7 +51,9 @@ public class ResourcesController {
     private CountingMetadataService metadataService;
 
     @RequestMapping("/")
-    public ModelAndView getResources(@RequestParam(required = false) MultiValueMap<String, String> parameters) {
+    public ModelAndView getResources(HttpServletResponse response,
+                                     @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+        this.addVersionHeader(response);
         IoParameters query = QueryParameters.createFromQuery(parameters);
         query = IoParameters.ensureBackwardsCompatibility(query);
         return new ModelAndView().addObject(createResources(query));
@@ -111,6 +115,14 @@ public class ResourcesController {
         }
 
         return resources;
+    }
+
+    private void addVersionHeader(HttpServletResponse response) {
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String version = implementationVersion != null
+                ? implementationVersion
+                : "unknown";
+        response.addHeader("API-Version", version);
     }
 
     public CountingMetadataService getMetadataService() {
