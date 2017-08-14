@@ -1238,7 +1238,10 @@ parameters:
     type: string
     description: >
       Stations within a given bounding box (in WGS84 by default). Refer to the
-      crs parameter if a  non-default CRS shall be used.
+      crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.
+    
+
+      Alternative 1: json Points
 
 
       ```json 
@@ -1253,6 +1256,14 @@ parameters:
         }
       }
 
+      ```
+
+
+      Alternative 2: GeoJSON bbox
+
+
+      ```json
+      bbox=<minx>,<miny>,<maxx>,<maxy>
       ```
   nearParam:
     name: near
