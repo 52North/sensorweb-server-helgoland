@@ -650,7 +650,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
+
+<p>Alternative 1: json Points</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -663,6 +665,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -1290,7 +1296,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
+
+<p>Alternative 1: json Points</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -1303,6 +1311,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -2051,7 +2063,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
+
+<p>Alternative 1: json Points</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -2064,6 +2078,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -2978,7 +2996,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
+
+<p>Alternative 1: json Points</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -2991,6 +3011,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -3753,7 +3777,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
+
+<p>Alternative 1: json Points</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -3766,6 +3792,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -7064,7 +7094,7 @@ else {
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/2d3c1ace3e80c412beff9e3cc308c3bd695364c7">2d3c1ace3e80c412beff9e3cc308c3bd695364c7</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/79aa0feaa2d1dd8dd5b90eb81813b0dab419f185">79aa0feaa2d1dd8dd5b90eb81813b0dab419f185</a></p>
       
     </div>
   </footer>
