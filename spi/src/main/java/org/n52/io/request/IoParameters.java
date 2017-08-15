@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
@@ -334,6 +336,23 @@ public class IoParameters implements Parameters {
         }
         return validateTimestamp(getAsString(RESULTTIME));
     }
+    
+    public boolean isAllResultTimes() {
+        return csvToLowerCasedSet(getAsString(RESULTTIMES)).contains("all");
+    }
+
+    public Set<String> getResultTimes() {
+        if (!containsParameter(RESULTTIMES)) {
+            return null;
+        }
+        csvToSet(getAsString(RESULTTIMES), this::validateTimestamp);
+        Set<String> resultTimes = csvToSet(getAsString(RESULTTIMES));
+        Instant fromOldParameter = getResultTime();
+        if (fromOldParameter != null) {
+            resultTimes.add(fromOldParameter.toString());
+        }
+        return resultTimes;
+    }
 
     private Instant validateTimestamp(String timestamp) {
         try {
@@ -500,11 +519,22 @@ public class IoParameters implements Parameters {
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
+        return csvToSet(csv, String::toLowerCase);
+    }
+
+    private Set<String> csvToSet(String csv) {
+        return csvToSet(csv, null);
+    }
+
+    private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
         String[] values = csv.split(",");
-        for (int i = 0; i < values.length; i++) {
-            values[i] = values[i].toLowerCase();
+        List<O> outputs = new ArrayList<>();
+        if (c != null) {
+            for (int i = 0; i < values.length; i++) {
+                outputs.add(c.apply(values[i]));
+            }
         }
-        return new HashSet<>(Arrays.asList(values));
+        return new HashSet<>(outputs);
     }
 
     public FilterResolver getFilterResolver() {

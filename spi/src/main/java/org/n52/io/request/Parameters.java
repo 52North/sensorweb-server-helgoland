@@ -109,9 +109,16 @@ public interface Parameters {
     String DEFAULT_OUTPUT_TIMEZONE = "UTC";
 
     /**
-     * Parameter to specify the timeseries data with a result time
+     * Parameter to specify data with a result time
+     * @deprecated use {@link #RESULTTIMES} instead
      */
+    @Deprecated
     String RESULTTIME = "resultTime";
+
+    /**
+     * Parameter to specify data for particular result times
+     */
+    String RESULTTIMES = "resultTimes";
 
     /**
      * The width in px of the image to be rendered.
