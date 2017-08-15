@@ -171,6 +171,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         this.validTime = validTime;
     }
 
+    @JsonIgnore
     public Long getResultTime() {
         return resultTime;
     }
