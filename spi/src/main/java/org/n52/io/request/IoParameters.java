@@ -342,7 +342,8 @@ public class IoParameters implements Parameters {
     }
 
     public boolean isAllResultTimes() {
-        return csvToLowerCasedSet(getAsString(RESULTTIMES)).contains(RESULT_TIMES_VALUE_ALL);
+        Set<String> resultTimes = csvToLowerCasedSet(getAsString(RESULTTIMES));
+        return resultTimes.contains(RESULT_TIMES_VALUE_ALL);
     }
 
     /**

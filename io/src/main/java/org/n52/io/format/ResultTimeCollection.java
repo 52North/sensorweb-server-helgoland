@@ -28,8 +28,9 @@
  */
 package org.n52.io.format;
 
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DataCollection;
 
-public class ResultTimeCollection extends DataCollection<ResultTimeClassifiedData> {
+public class ResultTimeCollection extends DataCollection<ResultTimeClassifiedData<AbstractValue< ? >>> {
 
 }
