@@ -49,7 +49,7 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandlerException;
 import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.format.FormatterFactory;
+import org.n52.io.format.quantity.FormatterFactory;
 import org.n52.io.generalize.quantity.GeneralizingQuantityService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -116,8 +116,10 @@ public class TimeseriesDataController extends BaseController {
             getRawCollectionData(response, locale, query);
             return null;
         }
+
+        IoParameters parameters = IoParameters.createFromQuery(query);
         DataCollection<QuantityData> seriesData = getTimeseriesData(query);
-        DataCollection< ? > formattedDataCollection = format(seriesData, query.getFormat());
+        DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
@@ -148,7 +150,7 @@ public class TimeseriesDataController extends BaseController {
 
         // TODO add paging
         DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
-        DataCollection< ? > formattedDataCollection = format(seriesData, map.getFormat());
+        DataCollection< ? > formattedDataCollection = format(seriesData, map);
         if (map.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
@@ -215,8 +217,8 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private DataCollection< ? > format(DataCollection<QuantityData> timeseriesData, String format) {
-        return FormatterFactory.createFormatterFactory(format)
+    private DataCollection< ? > format(DataCollection<QuantityData> timeseriesData, IoParameters parameters) {
+        return FormatterFactory.createFormatterFactory(parameters)
                                .create()
                                .format(timeseriesData);
     }

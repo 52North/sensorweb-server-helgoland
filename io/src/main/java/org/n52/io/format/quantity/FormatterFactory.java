@@ -26,11 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.format;
+package org.n52.io.format.quantity;
 
-import org.n52.io.format.quantity.FlotFormatter;
-import org.n52.io.format.quantity.HighchartFormatter;
-import org.n52.io.format.quantity.TvpFormatter;
+import org.n52.io.format.DataFormatter;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
 
