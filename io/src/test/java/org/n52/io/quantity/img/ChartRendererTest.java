@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.n52.io.IoStyleContext;
 import org.n52.io.MimeType;
-import org.n52.io.quantity.img.ChartIoHandler;
+import org.n52.io.img.quantity.ChartIoHandler;
 import org.n52.io.request.IoParameters;
 import static org.n52.io.request.IoParameters.createDefaults;
 import org.n52.io.request.RequestSimpleParameterSet;

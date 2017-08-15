@@ -336,7 +336,7 @@ public class IoParameters implements Parameters {
         }
         return validateTimestamp(getAsString(RESULTTIME));
     }
-    
+
     public boolean isAllResultTimes() {
         return csvToLowerCasedSet(getAsString(RESULTTIMES)).contains("all");
     }
