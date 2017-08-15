@@ -119,6 +119,8 @@ public interface Parameters {
      * Parameter to specify data for particular result times
      */
     String RESULTTIMES = "resultTimes";
+    
+    String RESULT_TIMES_VALUE_ALL = "all";
 
     /**
      * The width in px of the image to be rendered.
