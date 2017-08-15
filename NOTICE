@@ -40,7 +40,7 @@ This project includes:
   jackson-databind under The Apache Software License, Version 2.0
   Java implementation of GeographicLib under The MIT License(MIT)
   Java Servlet API under CDDL 1.1 or GPL2 w/ CPE
-  JCL 1.2 implemented over SLF4J under MIT License
+  JCL 1.1.1 implemented over SLF4J under MIT License
   JCommon under GNU Lesser General Public Licence
   JFreeChart under GNU Lesser General Public Licence
   jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)

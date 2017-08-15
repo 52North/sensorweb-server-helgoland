@@ -336,17 +336,29 @@ public class IoParameters implements Parameters {
         }
         return validateTimestamp(getAsString(RESULTTIME));
     }
-    
-    public boolean isAllResultTimes() {
-        return csvToLowerCasedSet(getAsString(RESULTTIMES)).contains("all");
+
+    public boolean shallClassifyByResultTimes() {
+        return isAllResultTimes() || !getResultTimes().isEmpty();
     }
 
+    public boolean isAllResultTimes() {
+        Set<String> resultTimes = csvToLowerCasedSet(getAsString(RESULTTIMES));
+        return resultTimes.contains(RESULT_TIMES_VALUE_ALL);
+    }
+
+    /**
+     * parses csv parameter {@link Parameters#RESULTTIMES} to a set of values. Validates each result time
+     * value after removing special value <tt>all</tt>. Use {@link #isAllResultTimes()} to check if client
+     * requests all result times available.
+     *
+     * @return a (probably empty) set of result times.
+     */
     public Set<String> getResultTimes() {
-        if (!containsParameter(RESULTTIMES)) {
-            return null;
-        }
         csvToSet(getAsString(RESULTTIMES), this::validateTimestamp);
         Set<String> resultTimes = csvToSet(getAsString(RESULTTIMES));
+        if (resultTimes.contains(RESULT_TIMES_VALUE_ALL)) {
+            resultTimes.remove(RESULT_TIMES_VALUE_ALL);
+        }
         Instant fromOldParameter = getResultTime();
         if (fromOldParameter != null) {
             resultTimes.add(fromOldParameter.toString());
@@ -523,11 +535,13 @@ public class IoParameters implements Parameters {
     }
 
     private Set<String> csvToSet(String csv) {
-        return csvToSet(csv, null);
+        return csvToSet(csv, Function.identity());
     }
 
     private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
-        String[] values = csv.split(",");
+        String[] values = csv != null
+                ? csv.split(",")
+                : new String[0];
         List<O> outputs = new ArrayList<>();
         if (c != null) {
             for (int i = 0; i < values.length; i++) {

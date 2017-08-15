@@ -120,6 +120,8 @@ public interface Parameters {
      */
     String RESULTTIMES = "resultTimes";
 
+    String RESULT_TIMES_VALUE_ALL = "all";
+
     /**
      * The width in px of the image to be rendered.
      */

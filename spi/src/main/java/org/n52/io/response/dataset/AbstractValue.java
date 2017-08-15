@@ -58,9 +58,9 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     private Set<Map<String, Object>> parameters;
 
     private ValidTime validTime;
-    
+
     private Long resultTime;
-    
+
     public AbstractValue() {
     }
 
@@ -171,6 +171,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         this.validTime = validTime;
     }
 
+    @JsonIgnore
     public Long getResultTime() {
         return resultTime;
     }

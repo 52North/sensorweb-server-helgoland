@@ -65,7 +65,7 @@ paths:
         - $ref: '#/parameters/geometryTypesParam'
         - $ref: '#/parameters/platformGeometriesParam'
         - $ref: '#/parameters/observedGeometriesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
@@ -266,7 +266,7 @@ paths:
         - $ref: '#/parameters/geometryTypesParam'
         - $ref: '#/parameters/platformGeometriesParam'
         - $ref: '#/parameters/observedGeometriesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
@@ -383,15 +383,21 @@ paths:
         Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
 
 
-        What Mime-Types are supported depends on the `datasetType`. For example `quantity` observations can be drawn as a timeseries chart 
-        (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `datasetType` when querying 
-        `/service/{serviceId}?datasetTypes=all` produces:
+        What Mime-Types are supported depends on the `valueType`. For example `quantity` observations can be drawn as a timeseries chart 
+        (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `valueType` when querying 
+        `/service/{serviceId}?valueTypes=all` produces:
         
           - `application/json`
           - `image/png`
           - `text/csv`
           - `application/pdf`
           - `application/zip`
+
+        
+        Data can be classified into result times if these differ from actual `timestamp`. For example, this is the case
+        for forecast data which might re-calculate (different result times) a given timespan. The `data` can be grouped 
+        by using `resultTimes` parameter. When `resultTimes` parameter is missing, data of the oldest result is being 
+        returned.
 
       parameters:
         - name: datasetId
@@ -400,6 +406,7 @@ paths:
           type: string
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/timespanParam'
+        - $ref: '#/parameters/resultTimesParam'
       responses:
         '200':
           description: Data for a given `timespan` in a requested output format
@@ -437,7 +444,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
@@ -621,7 +628,7 @@ paths:
         - $ref: '#/parameters/localeParam'
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of services
@@ -705,7 +712,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of categories
@@ -786,7 +793,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of phenomena
@@ -867,7 +874,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of procedures
@@ -948,7 +955,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of offerings
@@ -1026,7 +1033,7 @@ paths:
         - $ref: '#/parameters/platformsParam'
         - $ref: '#/parameters/stationsParam'
         - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
       responses:
         '200':
           description: A collection of features
@@ -1115,8 +1122,8 @@ parameters:
       
       
       The default is `stationary,insitu`.
-  datasetTypesParam:
-    name: datasetTypes
+  valueTypesParam:
+    name: valueTypes
     in: query
     type: array
     items:
@@ -1380,6 +1387,16 @@ parameters:
         - dynamic
     description: |
       The platform's observed geometry, either `static` for `remote` platforms observing fixed geometries or `dynamic` otherwise.
+  resultTimesParam:
+    name: resultTimes
+    in: query
+    type: array
+    collectionFormat: csv
+    description: |
+      Filter data which is available for different result times. Query `/extras?fields=resultTimes` beforehand to get
+      a list of result times or add `resultTimes=all` to get all data classified by result time. In case of `resultTime`
+      is missing from Query, those data will be returned which belongs to the oldest result time.
+        
 definitions:
   SimpleDataRequest:
     type: object

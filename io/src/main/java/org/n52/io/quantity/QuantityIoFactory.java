@@ -32,16 +32,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
-import org.n52.io.quantity.csv.QuantityCsvIoHandler;
-import org.n52.io.quantity.format.FormatterFactory;
-import org.n52.io.quantity.generalize.GeneralizingQuantityService;
-import org.n52.io.quantity.img.ChartIoHandler;
-import org.n52.io.quantity.img.MultipleChartsRenderer;
-import org.n52.io.quantity.report.PDFReportGenerator;
+import org.n52.io.csv.quantity.QuantityCsvIoHandler;
+import org.n52.io.format.ResultTimeFormatter;
+import org.n52.io.format.quantity.FormatterFactory;
+import org.n52.io.generalize.quantity.GeneralizingQuantityService;
+import org.n52.io.img.quantity.ChartIoHandler;
+import org.n52.io.img.quantity.MultipleChartsRenderer;
+import org.n52.io.report.quantity.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityData;
@@ -73,8 +75,13 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
             @Override
             public DataCollection<?> getProcessedData() {
-                String format = getParameters().getFormat();
-                return FormatterFactory.createFormatterFactory(format).create().format(getData());
+                return getParameters().shallClassifyByResultTimes()
+                        ? new ResultTimeFormatter<QuantityData>().format(getData())
+                        : createFormatter().create().format(getData());
+            }
+
+            private FormatterFactory createFormatter() {
+                return FormatterFactory.createFormatterFactory(getParameters());
             }
         };
     }
