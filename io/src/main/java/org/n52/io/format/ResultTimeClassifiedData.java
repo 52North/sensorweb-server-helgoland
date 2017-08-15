@@ -57,7 +57,7 @@ public class ResultTimeClassifiedData<T extends AbstractValue< ? >> {
 
     /**
      * Classifies the given value into result time (if present).
-     * 
+     *
      * @param value
      *        the value to classify.
      */

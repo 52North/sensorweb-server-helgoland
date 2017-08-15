@@ -336,7 +336,7 @@ public class IoParameters implements Parameters {
         }
         return validateTimestamp(getAsString(RESULTTIME));
     }
-    
+
     public boolean shallClassifyByResultTimes() {
         return isAllResultTimes() || !getResultTimes().isEmpty();
     }
@@ -350,7 +350,7 @@ public class IoParameters implements Parameters {
      * parses csv parameter {@link Parameters#RESULTTIMES} to a set of values. Validates each result time
      * value after removing special value <tt>all</tt>. Use {@link #isAllResultTimes()} to check if client
      * requests all result times available.
-     * 
+     *
      * @return a (probably empty) set of result times.
      */
     public Set<String> getResultTimes() {

@@ -44,12 +44,12 @@ public class ResultTimeFormatter<I extends Data< ? extends AbstractValue< ? >>>
         for (Entry<String, I> entry : toFormat.getAllSeries()
                                               .entrySet()) {
             String datasetId = entry.getKey();
-            formatted.addNewSeries(datasetId, createResultTimeData(entry.getValue()));
+            formatted.addNewSeries(datasetId, formatData(entry.getValue()));
         }
         return formatted;
     }
 
-    private ResultTimeClassifiedData<AbstractValue< ? >> createResultTimeData(Data< ? extends AbstractValue< ? >> data) {
+    private ResultTimeClassifiedData<AbstractValue< ? >> formatData(Data< ? extends AbstractValue< ? >> data) {
         ResultTimeClassifiedData<AbstractValue< ? >> rtData = new ResultTimeClassifiedData<>();
         for (AbstractValue< ? > value : data.getValues()) {
             rtData.classifyValue(value);

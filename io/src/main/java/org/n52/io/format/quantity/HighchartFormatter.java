@@ -41,7 +41,7 @@ import org.n52.io.response.dataset.quantity.QuantityValue;
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class HighchartFormatter implements DataFormatter<QuantityData, HighchartData> {
-    
+
     @Override
     public HighchartDataCollection format(DataCollection<QuantityData> toFormat) {
         HighchartDataCollection dataCollection = new HighchartDataCollection();
