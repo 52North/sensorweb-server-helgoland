@@ -18,6 +18,7 @@
 - #304 flexible prerendering title config via placeholders
 - #312 support for using `now`, e.g. `timespan=PT4H/now`
 - #370 support for profile observation
+- #403 Support for result time aggregated data output
 
 ### Issues 
 - #286 prerendering config does not allow overriding general settings
