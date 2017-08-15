@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
 
-public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, Serializable {
+public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
@@ -58,7 +58,9 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, 
     private Set<Map<String, Object>> parameters;
 
     private ValidTime validTime;
-
+    
+    private Long resultTime;
+    
     public AbstractValue() {
     }
 
@@ -169,8 +171,16 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<?>>, 
         this.validTime = validTime;
     }
 
+    public Long getResultTime() {
+        return resultTime;
+    }
+
+    public void setResultTime(Long resultTime) {
+        this.resultTime = resultTime;
+    }
+
     @Override
-    public int compareTo(AbstractValue<?> o) {
+    public int compareTo(AbstractValue<T> o) {
         // TODO check odering when `showtimeintervals=true`
         return getTimestamp().compareTo(o.getTimestamp());
     }
