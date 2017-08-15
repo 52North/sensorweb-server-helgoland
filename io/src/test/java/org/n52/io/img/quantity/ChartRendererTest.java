@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.io.quantity.img;
+package org.n52.io.img.quantity;
 
 import java.util.Date;
 import static org.hamcrest.CoreMatchers.is;
