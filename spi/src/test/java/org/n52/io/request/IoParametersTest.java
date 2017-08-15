@@ -87,7 +87,7 @@ public class IoParametersTest {
         Assert.assertTrue(actual.getLowerLeft().equals(ll));
         Assert.assertTrue(actual.getUpperRight().equals(ur));
     }
-    
+
     @Test
     public void when_geoJsonBboxWithTrimmableValues_then_parsingSpatialFilter() throws ParseException {
         Map<String, String> map = Collections.singletonMap("bbox", "6.7, 51.7,  7.9, 51.9");
