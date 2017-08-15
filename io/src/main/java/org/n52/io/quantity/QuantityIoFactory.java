@@ -38,6 +38,7 @@ import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.MimeType;
 import org.n52.io.csv.quantity.QuantityCsvIoHandler;
+import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.format.quantity.FormatterFactory;
 import org.n52.io.generalize.quantity.GeneralizingQuantityService;
 import org.n52.io.img.quantity.ChartIoHandler;
@@ -74,8 +75,13 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
             @Override
             public DataCollection<?> getProcessedData() {
-                String format = getParameters().getFormat();
-                return FormatterFactory.createFormatterFactory(format).create().format(getData());
+                return getParameters().shallClassifyByResultTimes()
+                        ? new ResultTimeFormatter<QuantityData>().format(getData())
+                        : createFormatter().create().format(getData());
+            }
+
+            private FormatterFactory createFormatter() {
+                return FormatterFactory.createFormatterFactory(getParameters());
             }
         };
     }

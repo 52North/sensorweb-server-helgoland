@@ -26,11 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
+
+import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -42,7 +45,7 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ?>, V extends AbstractValue<?>> {
+public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ? >, V extends AbstractValue< ? >> {
 
     private DataService<D> dataService;
 
@@ -99,9 +102,11 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ?>
             }
 
             @Override
-            public DataCollection<?> getProcessedData() {
-                // empty chain
-                return getData();
+            public DataCollection< ? > getProcessedData() {
+                return getParameters().shallClassifyByResultTimes()
+                        ? new ResultTimeFormatter<D>().format(getData())
+                        // empty chain
+                        : getData();
             }
         };
     }
@@ -121,7 +126,8 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ?>
         String[] seriesIds = simpleRequest != null
                 ? simpleRequest.getDatasets()
                 : styledRequest.getDatasets();
-        return datasetService.getParameters(seriesIds, getParameters()).getItems();
+        return datasetService.getParameters(seriesIds, getParameters())
+                             .getItems();
     }
 
     protected IoParameters getParameters() {
