@@ -98,8 +98,7 @@ public class RequestUtils {
         try {
             // e.g. in proxy envs
             String url = new URL(externalUrl).toString();
-            LOGGER.debug("Resolve configured external url '{}'.", url);
-            return url;
+            return removeTrailingSlash(url);
         } catch (MalformedURLException e) {
             LOGGER.error("Invalid external url setting. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
@@ -116,9 +115,7 @@ public class RequestUtils {
             int port = url.getPort();
 
             String path = request.getRequestURI();
-            if (path != null && path.endsWith("/")) {
-                path = path.substring(0, path.length() - 1);
-            }
+            path = removeTrailingSlash(path);
 
             URI uri = new URI(scheme, userInfo, host, port, path, null, null);
             String requestUrl = uri.toString();
@@ -130,6 +127,13 @@ public class RequestUtils {
             return REQUEST_URL_FALLBACK;
         }
 
+    }
+
+    private static String removeTrailingSlash(String path) {
+        if (path != null && path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        return path;
     }
 
 }
