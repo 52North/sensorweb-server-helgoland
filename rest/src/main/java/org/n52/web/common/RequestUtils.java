@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.common;
 
 import java.net.MalformedURLException;
@@ -45,7 +46,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- *
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
@@ -72,15 +72,15 @@ public class RequestUtils {
     /**
      * Get the request {@link URL} without the query parameter
      *
-     * @param externalUrl the external URL.
+     * @param externalUrl
+     *        the external URL.
      * @return Request {@link URL} without query parameter
      */
     public static String resolveQueryLessRequestUrl(String externalUrl) {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         if (LOGGER.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
-            Enumeration<?> headerNames = request.getHeaderNames();
+            Enumeration< ? > headerNames = request.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String headerName = (String) headerNames.nextElement();
                 sb.append(headerName + ": " + request.getHeader(headerName));
@@ -108,10 +108,11 @@ public class RequestUtils {
 
     private static String createRequestUrl(HttpServletRequest request) {
         try {
-            URL url = new URL(request.getRequestURL().toString());
+            URL url = new URL(request.getRequestURL()
+                                     .toString());
             String scheme = url.getProtocol();
             String userInfo = url.getUserInfo();
-            String host  = url.getHost();
+            String host = url.getHost();
 
             int port = url.getPort();
 
@@ -131,10 +132,9 @@ public class RequestUtils {
     }
 
     private static String removeTrailingSlash(String path) {
-        if (path != null && path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-        return path;
+        return path != null && path.endsWith("/")
+                ? path.substring(0, path.length() - 1)
+                : path;
     }
 
 }
