@@ -36,7 +36,6 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.IoParameters;
-
 import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
@@ -56,17 +55,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(method = RequestMethod.GET, produces = {
-    "application/json"
-})
+@RequestMapping(method = RequestMethod.GET)
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
+
+    private static final String APPLICATION_JSON = "application/json";
 
     @Autowired
     @Qualifier("metadataService")
     private CountingMetadataService counter;
 
     @Override
-    @RequestMapping(path = "")
+    @RequestMapping(path = "", produces = APPLICATION_JSON)
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
@@ -85,7 +84,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}")
+    @RequestMapping(value = "/{item}", produces = APPLICATION_JSON)
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
@@ -95,7 +94,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}", params = {
+    @RequestMapping(value = "/{item}", produces = APPLICATION_JSON, params = {
         RawFormats.RAW_FORMAT
     })
     public void getRawData(HttpServletResponse response,
@@ -107,7 +106,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}/extras")
+    @RequestMapping(value = "/{item}/extras", produces = APPLICATION_JSON)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
