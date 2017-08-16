@@ -77,7 +77,7 @@ public class RequestUtils {
     public static String resolveQueryLessRequestUrl(String externalUrl) {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes()).getRequest();
-        if (LOGGER.isDebugEnabled()) {
+        if (LOGGER.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
             Enumeration<?> headerNames = request.getHeaderNames();
             while (headerNames.hasMoreElements()) {
@@ -86,7 +86,7 @@ public class RequestUtils {
                 sb.append("\n");
             }
             sb.append("----- END of HTTP Header -----");
-            LOGGER.debug(sb.toString());
+            LOGGER.trace(sb.toString());
         }
 
         return externalUrl == null || externalUrl.isEmpty()
