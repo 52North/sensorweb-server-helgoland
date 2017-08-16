@@ -72,6 +72,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,7 +104,7 @@ public class DataController extends BaseController {
 
     private PreRenderingJob preRenderingTask;
 
-    // optional
+    @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
     @RequestMapping(value = "/data",
