@@ -32,9 +32,9 @@ package org.n52.io.bool;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.MimeType;
 import org.n52.io.response.dataset.bool.BooleanData;
 import org.n52.io.response.dataset.bool.BooleanDatasetOutput;
 import org.n52.io.response.dataset.bool.BooleanValue;
@@ -43,7 +43,7 @@ public class BooleanIoFactory extends IoFactory<BooleanData, BooleanDatasetOutpu
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return MimeType.isKnownMimeType(outputMimeType);
+        return Constants.MimeType.isKnownMimeType(outputMimeType);
     }
 
     @Override

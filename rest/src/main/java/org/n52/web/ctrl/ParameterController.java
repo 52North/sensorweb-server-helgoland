@@ -57,6 +57,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -69,6 +70,7 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private ParameterService<T> parameterService;
 
+    @Value("${external.url:http://localhost:8080/api}")
     private String externalUrl;
 
     public String getExternalUrl() {
@@ -76,7 +78,6 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     public void setExternalUrl(String externalUrl) {
-        LOGGER.debug("CONFIG: external.url={}", externalUrl);
         this.externalUrl = externalUrl;
     }
 

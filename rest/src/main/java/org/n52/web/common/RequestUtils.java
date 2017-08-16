@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.common;
 
 import java.net.MalformedURLException;
@@ -41,16 +42,17 @@ import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- *
  * @author <a href="mailto:m.rieke@52north.org">Matthes Rieke</a>
  */
 public class RequestUtils {
 
     private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     public static void overrideQueryLocaleWhenSet(String locale, MultiValueMap<String, String> query) {
@@ -71,22 +73,23 @@ public class RequestUtils {
     /**
      * Get the request {@link URL} without the query parameter
      *
-     * @param externalUrl the external URL.
+     * @param externalUrl
+     *        the external URL.
      * @return Request {@link URL} without query parameter
      */
     public static String resolveQueryLessRequestUrl(String externalUrl) {
-        HttpServletRequest request = ((ServletRequestAttributes)
-                RequestContextHolder.currentRequestAttributes()).getRequest();
-        if (LOGGER.isDebugEnabled()) {
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        if (LOGGER.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
-            Enumeration<?> headerNames = request.getHeaderNames();
+            Enumeration< ? > headerNames = request.getHeaderNames();
             while (headerNames.hasMoreElements()) {
                 String headerName = (String) headerNames.nextElement();
                 sb.append(headerName + ": " + request.getHeader(headerName));
                 sb.append("\n");
             }
             sb.append("----- END of HTTP Header -----");
-            LOGGER.debug(sb.toString());
+            LOGGER.trace(sb.toString());
         }
 
         return externalUrl == null || externalUrl.isEmpty()
@@ -98,8 +101,7 @@ public class RequestUtils {
         try {
             // e.g. in proxy envs
             String url = new URL(externalUrl).toString();
-            LOGGER.debug("Resolve configured external url '{}'.", url);
-            return url;
+            return removeTrailingSlash(url);
         } catch (MalformedURLException e) {
             LOGGER.error("Invalid external url setting. Fallback to '{}'", REQUEST_URL_FALLBACK);
             return REQUEST_URL_FALLBACK;
@@ -108,17 +110,16 @@ public class RequestUtils {
 
     private static String createRequestUrl(HttpServletRequest request) {
         try {
-            URL url = new URL(request.getRequestURL().toString());
+            URL url = new URL(request.getRequestURL()
+                                     .toString());
             String scheme = url.getProtocol();
             String userInfo = url.getUserInfo();
-            String host  = url.getHost();
+            String host = url.getHost();
 
             int port = url.getPort();
 
             String path = request.getRequestURI();
-            if (path != null && path.endsWith("/")) {
-                path = path.substring(0, path.length() - 1);
-            }
+            path = removeTrailingSlash(path);
 
             URI uri = new URI(scheme, userInfo, host, port, path, null, null);
             String requestUrl = uri.toString();
@@ -130,6 +131,12 @@ public class RequestUtils {
             return REQUEST_URL_FALLBACK;
         }
 
+    }
+
+    private static String removeTrailingSlash(String path) {
+        return path != null && path.endsWith("/")
+                ? path.substring(0, path.length() - 1)
+                : path;
     }
 
 }

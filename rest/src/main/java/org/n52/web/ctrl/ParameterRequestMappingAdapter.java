@@ -35,8 +35,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.Constants;
 import org.n52.io.request.IoParameters;
-
 import org.n52.io.request.Parameters;
 import org.n52.io.request.QueryParameters;
 import org.n52.io.response.ParameterOutput;
@@ -56,9 +56,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping(method = RequestMethod.GET, produces = {
-    "application/json"
-})
+@RequestMapping(method = RequestMethod.GET)
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
     @Autowired
@@ -66,7 +64,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     private CountingMetadataService counter;
 
     @Override
-    @RequestMapping(path = "")
+    @RequestMapping(path = "", produces = Constants.APPLICATION_JSON)
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
@@ -85,7 +83,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}")
+    @RequestMapping(value = "/{item}", produces = Constants.APPLICATION_JSON)
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
@@ -95,7 +93,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}", params = {
+    @RequestMapping(value = "/{item}", produces = Constants.APPLICATION_JSON, params = {
         RawFormats.RAW_FORMAT
     })
     public void getRawData(HttpServletResponse response,
@@ -107,7 +105,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     @Override
-    @RequestMapping(value = "/{item}/extras")
+    @RequestMapping(value = "/{item}/extras", produces = Constants.APPLICATION_JSON)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
@@ -148,14 +146,16 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
         if (pagination.isPresent()) {
             String header = "Link";
-            String value = "<"
-                    + href
-                    + "?"
-                    + pagination.get()
-                                .toString()
-                    + "> rel=\""
-                    + rel
-                    + "\"";
+            Pagination pageLink = pagination.get();
+            StringBuilder sb = new StringBuilder();
+            String value = sb.append("<")
+                             .append(href)
+                             .append("?")
+                             .append(pageLink.toString())
+                             .append("> rel=\"")
+                             .append(rel)
+                             .append("\"")
+                             .toString();
             response.addHeader(header, value);
         }
     }

@@ -32,9 +32,9 @@ package org.n52.io.profile;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.MimeType;
 import org.n52.io.response.dataset.profile.ProfileData;
 import org.n52.io.response.dataset.profile.ProfileDatasetOutput;
 import org.n52.io.response.dataset.profile.ProfileValue;
@@ -43,7 +43,7 @@ public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutpu
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return MimeType.isKnownMimeType(outputMimeType);
+        return Constants.MimeType.isKnownMimeType(outputMimeType);
     }
 
     @Override

@@ -59,11 +59,11 @@ import org.jfree.ui.VerticalAlignment;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
+import org.n52.io.Constants;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.MimeType;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -90,7 +90,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private final XYPlot xyPlot;
 
-    private MimeType mimeType;
+    private Constants.MimeType mimeType;
 
     private JFreeChart jFreeChart;
 
@@ -143,7 +143,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return context;
     }
 
-    public void setMimeType(MimeType mimeType) {
+    public void setMimeType(Constants.MimeType mimeType) {
         this.mimeType = mimeType;
     }
 

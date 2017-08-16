@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
@@ -36,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
-public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput> {
+public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput< ? , ? >> {
 
     @Override
     public String getCollectionPath(String hrefBase) {

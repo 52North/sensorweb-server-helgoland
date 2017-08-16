@@ -43,12 +43,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoProcessChain;
-import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -72,6 +72,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,12 +104,12 @@ public class DataController extends BaseController {
 
     private PreRenderingJob preRenderingTask;
 
-    // optional
+    @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
     @RequestMapping(value = "/data",
         produces = {
-            "application/json"
+            Constants.APPLICATION_JSON
         },
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
@@ -124,7 +125,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
-            "application/json"
+            Constants.APPLICATION_JSON
         },
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
@@ -154,9 +155,11 @@ public class DataController extends BaseController {
                 : new ModelAndView().addObject(processed.get(seriesId));
     }
 
-    @RequestMapping(value = "/data", produces = {
-        "application/json"
-    }, method = RequestMethod.POST)
+    @RequestMapping(value = "/data",
+        produces = {
+            Constants.APPLICATION_JSON
+        },
+        method = RequestMethod.POST)
     public ModelAndView getCollectionData(HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
@@ -230,7 +233,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/data",
         produces = {
-            "application/pdf"
+            Constants.APPLICATION_PDF
         },
         method = RequestMethod.POST)
     public void getSeriesCollectionReport(HttpServletResponse response,
@@ -246,7 +249,7 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         final String datasetType = parameters.getValueType();
-        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).withStyledRequest(map.mergeToStyledParameterSet(parameters))
                                     .withSimpleRequest(map.mergeToSimpleParameterSet(parameters))
@@ -256,7 +259,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
-            "application/pdf"
+            Constants.APPLICATION_PDF
         },
         method = RequestMethod.GET)
     public void getSeriesReport(HttpServletResponse response,
@@ -274,7 +277,7 @@ public class DataController extends BaseController {
         checkForUnknownDatasetIds(map, seriesId);
 
         final String datasetType = parameters.getValueType();
-        String outputFormat = MimeType.APPLICATION_PDF.toString();
+        String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).withSimpleRequest(parameters)
                                     .createHandler(outputFormat)
@@ -283,7 +286,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
-            "application/zip"
+            Constants.APPLICATION_ZIP
         },
         method = RequestMethod.GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
@@ -301,17 +304,17 @@ public class DataController extends BaseController {
         checkForUnknownDatasetIds(map, seriesId);
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
-        response.setContentType(MimeType.APPLICATION_ZIP.toString());
+        response.setContentType(Constants.APPLICATION_ZIP);
 
         final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withSimpleRequest(parameters)
-                                    .createHandler(MimeType.APPLICATION_ZIP.toString())
+                                    .createHandler(Constants.APPLICATION_ZIP)
                                     .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
-            "text/csv"
+            Constants.TEXT_CSV
         },
         method = RequestMethod.GET)
     public void getSeriesAsCsv(HttpServletResponse response,
@@ -330,20 +333,20 @@ public class DataController extends BaseController {
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         if (Boolean.parseBoolean(map.getOther("zip"))) {
-            response.setContentType(MimeType.APPLICATION_ZIP.toString());
+            response.setContentType(Constants.APPLICATION_ZIP);
         } else {
-            response.setContentType(MimeType.TEXT_CSV.toString());
+            response.setContentType(Constants.TEXT_CSV);
         }
 
         final String datasetType = parameters.getValueType();
         createIoFactory(datasetType).withSimpleRequest(parameters)
-                                    .createHandler(MimeType.TEXT_CSV.toString())
+                                    .createHandler(Constants.TEXT_CSV)
                                     .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/data",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.POST)
     public void getSeriesCollectionChart(HttpServletResponse response,
@@ -358,7 +361,7 @@ public class DataController extends BaseController {
         LOGGER.debug("get data collection chart with query: {}", map);
 
         final String datasetType = parameters.getValueType();
-        String outputFormat = MimeType.IMAGE_PNG.toString();
+        String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).withStyledRequest(parameters)
                                     .createHandler(outputFormat)
@@ -367,7 +370,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
@@ -386,7 +389,7 @@ public class DataController extends BaseController {
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
         RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
-        String outputFormat = MimeType.IMAGE_PNG.toString();
+        String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).withSimpleRequest(parameters)
                                   .createHandler(outputFormat)
@@ -402,8 +405,9 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{datasetId}/images/{fileName}",
         produces = {
-            "image/png"
-        }, method = RequestMethod.GET)
+            Constants.IMAGE_PNG
+        },
+        method = RequestMethod.GET)
     public void getSeriesChartByFilename(HttpServletResponse response,
                                          @PathVariable String datasetId,
                                          @PathVariable String fileName)
@@ -411,7 +415,7 @@ public class DataController extends BaseController {
         assertPrerenderingIsEnabled();
         assertPrerenderedImageIsAvailable(fileName, null);
 
-        response.setContentType(MimeType.IMAGE_PNG.toString());
+        response.setContentType(Constants.IMAGE_PNG);
         LOGGER.debug("get prerendered chart for '{}'", fileName);
         preRenderingTask.writePrerenderedGraphToOutputStream(fileName, response.getOutputStream());
 
@@ -419,7 +423,7 @@ public class DataController extends BaseController {
 
     @RequestMapping(value = "/{seriesId}/{chartQualifier}",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
@@ -429,7 +433,7 @@ public class DataController extends BaseController {
         assertPrerenderingIsEnabled();
         assertPrerenderedImageIsAvailable(seriesId, chartQualifier);
 
-        response.setContentType(MimeType.IMAGE_PNG.toString());
+        response.setContentType(Constants.IMAGE_PNG);
         LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
         preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
     }
@@ -463,12 +467,12 @@ public class DataController extends BaseController {
 
     private IoFactory<Data<AbstractValue< ? >>,
                       DatasetOutput<AbstractValue< ? >, ? >,
-                      AbstractValue< ? >> createIoFactory(final String datasetType)
+                      AbstractValue< ? >> createIoFactory(final String valueType)
                               throws DatasetFactoryException {
-        if (!ioFactoryCreator.isKnown(datasetType)) {
-            throw new ResourceNotFoundException("unknown dataset type: " + datasetType);
+        if (!ioFactoryCreator.isKnown(valueType)) {
+            throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
-        return ioFactoryCreator.create(datasetType)
+        return ioFactoryCreator.create(valueType)
                                // .withBasePath(getRootResource())
                                .withDataService(dataService)
                                .withDatasetService(datasetService);
