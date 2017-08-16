@@ -148,14 +148,16 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
         if (pagination.isPresent()) {
             String header = "Link";
-            String value = "<"
-                    + href
-                    + "?"
-                    + pagination.get()
-                                .toString()
-                    + "> rel=\""
-                    + rel
-                    + "\"";
+            Pagination pageLink = pagination.get();
+            StringBuilder sb = new StringBuilder();
+            String value = sb.append("<")
+                             .append(href)
+                             .append("?")
+                             .append(pageLink.toString())
+                             .append("> rel=\"")
+                             .append(rel)
+                             .append("\"")
+                             .toString();
             response.addHeader(header, value);
         }
     }
