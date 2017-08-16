@@ -28,15 +28,14 @@
  */
 package org.n52.web.ctrl;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.n52.io.MimeType;
+
+import org.n52.io.Constants;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -50,6 +49,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletConfigAware;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * <p>
@@ -82,15 +85,15 @@ public abstract class BaseController implements ServletConfigAware {
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {
-        return MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPdfData(HttpServletRequest request) {
-        return MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPngData(HttpServletRequest request) {
-        return MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
     }
 
     private static String getAcceptHeader(HttpServletRequest request) {
@@ -135,7 +138,7 @@ public abstract class BaseController implements ServletConfigAware {
 
         // TODO consider using a 'suppress_response_codes=true' parameter and always return 200 OK
         response.setStatus(status.value());
-        response.setContentType(MimeType.APPLICATION_JSON.getMimeType());
+        response.setContentType(Constants.MimeType.APPLICATION_JSON.getMimeType());
         ObjectMapper objectMapper = createObjectMapper();
         ObjectWriter writer = objectMapper.writerFor(ExceptionResponse.class);
         ExceptionResponse exceptionResponse = ExceptionResponse.createExceptionResponse(e, status);

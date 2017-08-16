@@ -28,14 +28,16 @@
  */
 package org.n52.io.response;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.n52.io.MimeType;
+
+import org.n52.io.Constants.MimeType;
 import org.n52.io.Utils;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ServiceOutput extends ParameterOutput {
 

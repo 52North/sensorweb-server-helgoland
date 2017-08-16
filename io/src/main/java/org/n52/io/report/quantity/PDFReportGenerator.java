@@ -33,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -42,6 +43,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
@@ -52,9 +54,9 @@ import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
+import org.n52.io.Constants;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
-import org.n52.io.MimeType;
 import org.n52.io.img.quantity.ChartIoHandler;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
@@ -96,7 +98,7 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
         super(simpleRequest, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
-        renderer.setMimeType(MimeType.IMAGE_PNG);
+        renderer.setMimeType(Constants.MimeType.IMAGE_PNG);
         this.renderer = renderer;
     }
 
@@ -146,7 +148,7 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
             FopFactory fopFactory = new FopFactoryBuilder(baseURI)
                     .setConfiguration(cfg)
                     .build();
-            final String mimeType = MimeType.APPLICATION_PDF.getMimeType();
+            final String mimeType = Constants.APPLICATION_PDF;
             Fop fop = fopFactory.newFop(mimeType, stream);
 
             //FopFactory fopFactory = FopFactory.newInstance(cfg);

@@ -42,12 +42,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandlerException;
-import org.n52.io.MimeType;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.format.quantity.FormatterFactory;
 import org.n52.io.generalize.quantity.GeneralizingQuantityService;
@@ -100,11 +100,9 @@ public class TimeseriesDataController extends BaseController {
 
     private String requestIntervalRestriction;
 
-    @RequestMapping(value = "/getData",
-        produces = {
-            "application/json"
-        },
-        method = RequestMethod.POST)
+    @RequestMapping(value = "/getData", produces = {
+        Constants.APPLICATION_JSON
+    }, method = RequestMethod.POST)
     public ModelAndView getCollectionData(HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
@@ -123,11 +121,9 @@ public class TimeseriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
-    @RequestMapping(value = "/{timeseriesId}/getData",
-        produces = {
-            "application/json"
-        },
-        method = RequestMethod.GET)
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = {
+        Constants.APPLICATION_JSON
+    }, method = RequestMethod.GET)
     public ModelAndView getData(HttpServletResponse response,
                                 @PathVariable String timeseriesId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
@@ -225,7 +221,7 @@ public class TimeseriesDataController extends BaseController {
 
     @RequestMapping(value = "/getData",
         produces = {
-            "application/pdf"
+            Constants.APPLICATION_PDF
         },
         method = RequestMethod.POST)
     public void getCollectionReport(HttpServletResponse response,
@@ -242,9 +238,9 @@ public class TimeseriesDataController extends BaseController {
         parameterSet.setGeneralize(map.isGeneralize());
         parameterSet.setExpanded(map.isExpanded());
 
-        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
+        response.setContentType(Constants.APPLICATION_PDF);
         createIoFactory(parameterSet).withStyledRequest(map.mergeToStyledParameterSet(query))
-                                     .createHandler(MimeType.APPLICATION_PDF.getMimeType())
+                                     .createHandler(Constants.APPLICATION_PDF)
                                      .writeBinary(response.getOutputStream());
     }
 
@@ -271,7 +267,7 @@ public class TimeseriesDataController extends BaseController {
 
     @RequestMapping(value = "/{timeseriesId}/getData",
         produces = {
-            "application/pdf"
+            Constants.APPLICATION_PDF
         },
         method = RequestMethod.GET)
     public void getReport(HttpServletResponse response,
@@ -288,14 +284,14 @@ public class TimeseriesDataController extends BaseController {
         parameters.setGeneralize(map.isGeneralize());
         parameters.setExpanded(map.isExpanded());
 
-        response.setContentType(MimeType.APPLICATION_PDF.getMimeType());
-        createIoFactory(parameters).createHandler(MimeType.APPLICATION_PDF.getMimeType())
+        response.setContentType(Constants.APPLICATION_PDF);
+        createIoFactory(parameters).createHandler(Constants.APPLICATION_PDF)
                                    .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
         produces = {
-            "application/zip"
+            Constants.APPLICATION_ZIP
         },
         method = RequestMethod.GET)
     public void getAsZippedCsv(HttpServletResponse response,
@@ -306,14 +302,15 @@ public class TimeseriesDataController extends BaseController {
             throws Exception {
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters map = QueryParameters.createFromQuery(query)
-                                          .extendWith(MimeType.APPLICATION_ZIP.name(), Boolean.TRUE.toString());
-        response.setContentType(MimeType.APPLICATION_ZIP.getMimeType());
+                                          .extendWith(Constants.MimeType.APPLICATION_ZIP.name(),
+                                                      Boolean.TRUE.toString());
+        response.setContentType(Constants.APPLICATION_ZIP);
         getTimeseriesAsCsv(timeseriesId, map, response);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
         produces = {
-            "text/csv"
+            Constants.TEXT_CSV
         },
         method = RequestMethod.GET)
     public void getAsCsv(HttpServletResponse response,
@@ -336,18 +333,18 @@ public class TimeseriesDataController extends BaseController {
         parameters.setExpanded(query.isExpanded());
 
         response.setCharacterEncoding("UTF-8");
-        if (Boolean.parseBoolean(query.getOther(MimeType.APPLICATION_ZIP.name()))) {
-            response.setContentType(MimeType.APPLICATION_ZIP.toString());
+        if (Boolean.parseBoolean(query.getOther(Constants.MimeType.APPLICATION_ZIP.name()))) {
+            response.setContentType(Constants.APPLICATION_ZIP);
         } else {
-            response.setContentType(MimeType.TEXT_CSV.toString());
+            response.setContentType(Constants.TEXT_CSV);
         }
-        createIoFactory(parameters).createHandler(MimeType.TEXT_CSV.toString())
+        createIoFactory(parameters).createHandler(Constants.TEXT_CSV)
                                    .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/getData",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.POST)
     public void getCollectionChart(HttpServletResponse response,
@@ -365,15 +362,15 @@ public class TimeseriesDataController extends BaseController {
         parameterSet.setExpanded(map.isExpanded());
         parameterSet.setBase64(map.isBase64());
 
-        response.setContentType(MimeType.IMAGE_PNG.getMimeType());
+        response.setContentType(Constants.IMAGE_PNG);
         createIoFactory(parameterSet).withStyledRequest(query)
-                                     .createHandler(MimeType.IMAGE_PNG.toString())
+                                     .createHandler(Constants.IMAGE_PNG)
                                      .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getChart(HttpServletResponse response,
@@ -393,15 +390,15 @@ public class TimeseriesDataController extends BaseController {
         parameterSet.setBase64(map.isBase64());
         parameterSet.setExpanded(map.isExpanded());
 
-        response.setContentType(MimeType.IMAGE_PNG.getMimeType());
+        response.setContentType(Constants.IMAGE_PNG);
         createIoFactory(parameterSet).withStyledRequest(styledParameters)
-                                     .createHandler(MimeType.IMAGE_PNG.toString())
+                                     .createHandler(Constants.IMAGE_PNG)
                                      .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{timeseriesId}/{chartQualifier}",
         produces = {
-            "image/png"
+            Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getChartByInterval(HttpServletResponse response,

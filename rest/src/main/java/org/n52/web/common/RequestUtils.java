@@ -51,6 +51,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class RequestUtils {
 
     private static final String REQUEST_URL_FALLBACK = "http://localhost:8080";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     public static void overrideQueryLocaleWhenSet(String locale, MultiValueMap<String, String> query) {

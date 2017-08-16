@@ -33,10 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
-import org.n52.io.MimeType;
 import org.n52.io.csv.quantity.QuantityCsvIoHandler;
 import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.format.quantity.FormatterFactory;
@@ -53,12 +53,12 @@ import org.n52.series.spi.srv.DataService;
 
 public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDatasetOutput, QuantityValue> {
 
-    private static final List<MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
-            new MimeType[] {
-                MimeType.TEXT_CSV,
-                MimeType.IMAGE_PNG,
-                MimeType.APPLICATION_ZIP,
-                MimeType.APPLICATION_PDF,
+    private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
+            new Constants.MimeType[] {
+                Constants.MimeType.TEXT_CSV,
+                Constants.MimeType.IMAGE_PNG,
+                Constants.MimeType.APPLICATION_ZIP,
+                Constants.MimeType.APPLICATION_PDF,
             });
 
     @Override
@@ -88,30 +88,30 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return MimeType.isKnownMimeType(outputMimeType)
-                && supportsMimeType(MimeType.toInstance(outputMimeType));
+        return Constants.MimeType.isKnownMimeType(outputMimeType)
+                && supportsMimeType(Constants.MimeType.toInstance(outputMimeType));
     }
 
     @Override
     public Set<String> getSupportedMimeTypes() {
         HashSet<String> mimeTypes = new HashSet<>();
-        for (MimeType supportedMimeType : SUPPORTED_MIMETYPES) {
+        for (Constants.MimeType supportedMimeType : SUPPORTED_MIMETYPES) {
             mimeTypes.add(supportedMimeType.getMimeType());
         }
         return mimeTypes;
     }
 
-    private static boolean supportsMimeType(MimeType mimeType) {
+    private static boolean supportsMimeType(Constants.MimeType mimeType) {
         return SUPPORTED_MIMETYPES.contains(mimeType);
     }
 
     @Override
     public IoHandler<QuantityData> createHandler(String outputMimeType) {
         IoParameters parameters = getParameters();
-        MimeType mimeType = MimeType.toInstance(outputMimeType);
-        if (mimeType == MimeType.IMAGE_PNG) {
+        Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
+        if (mimeType == Constants.MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        } else if (mimeType == MimeType.APPLICATION_PDF) {
+        } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
                     getRequestParameters(),
@@ -119,15 +119,15 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
                     imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
-        } else if (mimeType == MimeType.TEXT_CSV || mimeType == MimeType.APPLICATION_ZIP) {
+        } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
             QuantityCsvIoHandler handler = new QuantityCsvIoHandler(
                     getRequestParameters(),
                     createProcessChain(),
                     getMetadatas());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
-            boolean zipOutput = parameters.getAsBoolean(MimeType.APPLICATION_ZIP.name());
-            handler.setZipOutput(zipOutput || mimeType == MimeType.APPLICATION_ZIP);
+            boolean zipOutput = parameters.getAsBoolean(Constants.MimeType.APPLICATION_ZIP.name());
+            handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
             handler.setIncludeByteOrderMark(byteOderMark);
             return handler;
@@ -138,7 +138,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
         throw exception;
     }
 
-    private MultipleChartsRenderer createMultiChartRenderer(MimeType mimeType) {
+    private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
                 getRequestParameters(),
                 createProcessChain(),
