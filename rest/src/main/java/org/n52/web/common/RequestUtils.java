@@ -42,6 +42,7 @@ import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -77,7 +78,8 @@ public class RequestUtils {
      * @return Request {@link URL} without query parameter
      */
     public static String resolveQueryLessRequestUrl(String externalUrl) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         if (LOGGER.isTraceEnabled()) {
             StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
             Enumeration< ? > headerNames = request.getHeaderNames();
