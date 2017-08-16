@@ -25,6 +25,7 @@
 - #334 csv-export for endpoint datasets
 - #366 single filters do not work anymore
 - #371 csv export errors
+- #406 response codes are wrong
 
 ## 1.x
 
