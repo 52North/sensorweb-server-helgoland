@@ -388,7 +388,7 @@ public class DataController extends BaseController {
 
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
-        RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).withSimpleRequest(parameters)
