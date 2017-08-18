@@ -28,17 +28,13 @@
  */
 package org.n52.web.exception;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public final class ResourceNotFoundException extends RuntimeException implements WebException {
+public final class ResourceNotFoundException extends WebExceptionAdapter implements WebException {
 
     private static final long serialVersionUID = 7127133546245639752L;
-
-    private List<String> details;
 
     public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
@@ -48,24 +44,4 @@ public final class ResourceNotFoundException extends RuntimeException implements
         super(message);
     }
 
-    @Override
-    public void addHint(String hint) {
-        if (hint == null) {
-            return;
-        }
-        if (getHints() == null) {
-            this.details = new ArrayList<>();
-        }
-        this.details.add(hint);
-    }
-
-    @Override
-    public String[] getHints() {
-        return details == null ? null : details.toArray(new String[0]);
-    }
-
-    @Override
-    public Throwable getThrowable() {
-        return this;
-    }
 }

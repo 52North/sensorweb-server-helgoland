@@ -145,7 +145,7 @@ public class StationsParameterController {
 
     public void setParameterService(ParameterService<StationOutput> stationParameterService) {
         ParameterService<StationOutput> service = new TransformingStationOutputService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
+        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(service));
     }
 
     private void logRequestTime(Stopwatch stopwatch) {

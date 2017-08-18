@@ -190,7 +190,7 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     public void setParameterService(ParameterService<T> parameterService) {
-        ParameterService<T> service = new WebExceptionAdapter<>(parameterService);
+        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);
     }
 
