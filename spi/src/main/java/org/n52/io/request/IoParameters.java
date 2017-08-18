@@ -749,6 +749,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return if status intervals shall be serialized with (timeseries) output
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      * @deprecated since v2.0 covered by extras endpoint
      */
     @Deprecated
@@ -758,6 +760,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return if rendering hints shall be serialized with (timeseries) output
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      * @deprecated since v2.0 covered by extras endpoint
      */
     @Deprecated
@@ -888,9 +892,9 @@ public class IoParameters implements Parameters {
         // TODO check value object
         // TODO keep multi value map
         for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
+            String key = entry.getKey();
+            String lowercasedKey = key.toLowerCase();
             List<JsonNode> values = entry.getValue();
-            String lowercasedKey = entry.getKey()
-                                        .toLowerCase();
             if (values.size() == 1) {
                 parameterSet.setParameter(lowercasedKey, values.get(0));
             } else {
@@ -922,26 +926,21 @@ public class IoParameters implements Parameters {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         newValues.put(key.toLowerCase(), Arrays.asList(values));
 
-        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(
-                                                                                 query);
-        mergedValues.putAll(convertValuesToJsonNodes(newValues));
+        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
+        mergedValues.putAll(convertToJsonNodes(newValues));
         return new IoParameters(mergedValues);
     }
 
-    protected static Map<String, JsonNode> convertValuesToJsonNodes(
-                                                                    Map<String, String> queryParameters) {
+    protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
-            String key = entry.getKey()
-                              .toLowerCase();
-            parameters.put(key, getJsonNodeFrom(entry.getValue()));
+            String key = entry.getKey();
+            parameters.put(key.toLowerCase(), getJsonNodeFrom(entry.getValue()));
         }
         return parameters;
     }
 
-    protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(
-                                                                              MultiValueMap<String,
-                                                                                            String> queryParameters) {
+    protected static MultiValueMap<String, JsonNode> convertToJsonNodes(MultiValueMap<String, String> queryParameters) {
         MultiValueMap<String, JsonNode> parameters = new LinkedMultiValueMap<>();
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
@@ -996,22 +995,19 @@ public class IoParameters implements Parameters {
         return new IoParameters(Collections.<String, JsonNode> emptyMap(), defaultConfig);
     }
 
-    static IoParameters createFromMultiValueMap(
-                                                MultiValueMap<String, String> query) {
+    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
         return createFromMultiValueMap(query, null);
     }
 
-    static IoParameters createFromMultiValueMap(
-                                                MultiValueMap<String, String> query, File defaultConfig) {
-        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
+    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
+        return new IoParameters(convertToJsonNodes(query), defaultConfig);
     }
 
     static IoParameters createFromSingleValueMap(Map<String, String> query) {
         return createFromSingleValueMap(query, null);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query,
-                                                 File defaultConfig) {
+    static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
 
