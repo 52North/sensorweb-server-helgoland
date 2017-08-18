@@ -316,7 +316,7 @@ public class IoParameters implements Parameters {
         return parameterValue.replaceAll("(?i)now", now);
     }
 
-    private IntervalWithTimeZone createDefaultTimespan() {
+    public static IntervalWithTimeZone createDefaultTimespan() {
         DateTime now = new DateTime();
         // TODO make this configurable
         DateTime lastWeek = now.minusWeeks(1);
