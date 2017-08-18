@@ -35,12 +35,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
-import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.RawFormats;
-import org.n52.web.common.RequestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
@@ -73,7 +71,6 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         return super.getItem(id, locale, addHrefBase(query));
     }
 
@@ -95,7 +92,6 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         return super.getExtras(resourceId, locale, addHrefBase(query));
     }
 

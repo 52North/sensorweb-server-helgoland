@@ -90,12 +90,11 @@ public abstract class ParameterController<T extends ParameterOutput>
                            String id,
                            String locale,
                            MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         if (!getParameterService().supportsRawData()) {
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
+        IoParameters queryMap = createUtilizedIoParameters(query, locale);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
         try (InputStream inputStream = getParameterService().getRawDataService()
@@ -111,8 +110,7 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     @Override
     public Map<String, Object> getExtras(String resourceId, String locale, MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
@@ -140,8 +138,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     public ModelAndView getCollection(HttpServletResponse response,
                                       String locale,
                                       MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
+
+        IoParameters queryMap = createUtilizedIoParameters(query, locale);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
         preparePagingHeaders(queryMap, response);
         
@@ -171,8 +169,7 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     @Override
     public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, map);
 
         T item = parameterService.getParameter(id, map);

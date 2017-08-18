@@ -37,11 +37,11 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -55,12 +55,11 @@ public class RequestUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
-    public static void overrideQueryLocaleWhenSet(String locale, MultiValueMap<String, String> query) {
-        if (locale != null) {
-            // override query parameter
-            query.remove(Parameters.LOCALE);
-            query.add(Parameters.LOCALE, locale);
-        }
+    public static IoParameters overrideQueryLocaleWhenSet(String locale, IoParameters query) {
+        return locale != null
+                ? query.removeAllOf(Parameters.LOCALE)
+                       .extendWith(Parameters.LOCALE, locale)
+                : query;
     }
 
     public static void overrideQueryLocaleWhenSet(String locale, RequestParameterSet query) {

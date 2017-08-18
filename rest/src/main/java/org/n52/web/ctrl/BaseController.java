@@ -26,16 +26,23 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.IoParseException;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestParameterSet;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -46,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletConfigAware;
@@ -73,6 +81,40 @@ public abstract class BaseController implements ServletConfigAware {
     private static final String HEADER_ACCEPT = "Accept";
 
     private ServletConfig servletConfig;
+
+    protected BiConsumer<String, IoParseException> getExceptionHandle() {
+        return (parameter, e) -> {
+            BadRequestException ex = new BadRequestException("Invalid '" + parameter + "' parameter.", e);
+            throw ex.addHint("Refer to the API documentation and check parameter value against required syntax!")
+                    .addHint(e.getMessage())
+                    .addHint(e.getHints());
+        };
+    }
+
+    protected IoParameters createUtilizedIoParameters(MultiValueMap<String, String> query) {
+        return createUtilizedIoParameters(query, null);
+    }
+
+    protected IoParameters createUtilizedIoParameters(MultiValueMap<String, String> query, String locale) {
+        return createUtilizedIoParameters(IoParameters.createFromMultiValueMap(query), locale);
+    }
+
+    protected IoParameters createUtilizedIoParameters(Map<String, String> query) {
+        return createUtilizedIoParameters(query, null);
+    }
+
+    protected IoParameters createUtilizedIoParameters(Map<String, String> query, String locale) {
+        return createUtilizedIoParameters(IoParameters.createFromSingleValueMap(query), locale);
+    }
+
+    protected IoParameters createUtilizedIoParameters(RequestParameterSet parameters, String locale) {
+        return createUtilizedIoParameters(IoParameters.createFromQuery(parameters), locale);
+    }
+
+    private IoParameters createUtilizedIoParameters(IoParameters parameters, String locale) {
+        return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
+                           .setParseExceptionHandle(getExceptionHandle());
+    }
 
     @Override
     public void setServletConfig(ServletConfig servletConfig) {

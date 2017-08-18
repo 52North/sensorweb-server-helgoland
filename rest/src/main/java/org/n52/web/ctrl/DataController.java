@@ -52,7 +52,6 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -118,8 +117,7 @@ public class DataController extends BaseController {
                                           required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
 
         IntervalWithTimeZone timespan = map.getTimespan();
@@ -189,8 +187,7 @@ public class DataController extends BaseController {
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                      required = false) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkForUnknownDatasetIds(map, seriesId);
         LOGGER.debug("getSeriesCollection() with query: {}", map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
@@ -225,8 +222,7 @@ public class DataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestStyledParameterSet parameters)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
-        IoParameters map = QueryParameters.createFromQuery(parameters);
+        IoParameters map = createUtilizedIoParameters(parameters, locale);
         LOGGER.debug("get data collection report with query: {}", map);
 
         checkForUnknownSeriesIds(parameters, parameters.getDatasets());
@@ -252,8 +248,7 @@ public class DataController extends BaseController {
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
@@ -279,8 +274,7 @@ public class DataController extends BaseController {
                                          required = false) String locale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
@@ -307,8 +301,7 @@ public class DataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
 
@@ -338,8 +331,7 @@ public class DataController extends BaseController {
                                              required = false) String locale,
                                          @RequestBody RequestStyledParameterSet parameters)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
-        IoParameters map = QueryParameters.createFromQuery(parameters);
+        IoParameters map = createUtilizedIoParameters(parameters, locale);
         checkForUnknownDatasetIds(map, parameters.getDatasets());
 
         LOGGER.debug("get data collection chart with query: {}", map);
@@ -363,8 +355,7 @@ public class DataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
         checkAgainstTimespanRestriction(map.getTimespan()
                                            .toString());

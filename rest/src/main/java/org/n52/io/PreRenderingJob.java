@@ -56,7 +56,6 @@ import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
 import org.n52.io.img.quantity.ChartDimension;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
@@ -155,7 +154,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
-            IoParameters query = QueryParameters.createFromQuery(parameters);
+            IoParameters query = IoParameters.createFromSingleValueMap(parameters);
             for (DatasetOutput< ? , ? > metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
                 renderConfiguredIntervals(timeseriesId, config);
@@ -387,6 +386,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             LOGGER.warn("Invalid rendering style.", e);
         }
 
-        return QueryParameters.createFromQuery(configuration);
+        return IoParameters.createFromSingleValueMap(configuration);
     }
 }

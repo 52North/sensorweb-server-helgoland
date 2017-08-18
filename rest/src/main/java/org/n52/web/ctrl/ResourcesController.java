@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.io.I18N;
 import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,7 +53,7 @@ public class ResourcesController {
     public ModelAndView getResources(HttpServletResponse response,
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = QueryParameters.createFromQuery(parameters);
+        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
         query = IoParameters.ensureBackwardsCompatibility(query);
         return new ModelAndView().addObject(createResources(query));
     }
@@ -66,8 +65,7 @@ public class ResourcesController {
                 .withLabel(label);
     }
 
-    protected List<ResourceCollection> createResources(IoParameters params) {
-        IoParameters parameters = IoParameters.ensureBackwardsCompatibility(params);
+    private List<ResourceCollection> createResources(IoParameters parameters) {
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
 
         ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));

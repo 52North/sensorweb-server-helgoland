@@ -53,7 +53,6 @@ import org.n52.io.format.quantity.FormatterFactory;
 import org.n52.io.generalize.quantity.GeneralizingQuantityService;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
@@ -129,8 +128,7 @@ public class TimeseriesDataController extends BaseController {
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         IntervalWithTimeZone timespan = map.getTimespan();
@@ -140,9 +138,6 @@ public class TimeseriesDataController extends BaseController {
             parameters.setResultTime(map.getResultTime()
                                         .toString());
         }
-
-        parameters.setGeneralize(map.isGeneralize());
-        parameters.setExpanded(map.isExpanded());
 
         // TODO add paging
         DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
@@ -189,8 +184,7 @@ public class TimeseriesDataController extends BaseController {
                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                required = false) String locale,
                            @RequestParam MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, timeseriesId);
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
         processRawDataRequest(response, parameters);
@@ -229,8 +223,7 @@ public class TimeseriesDataController extends BaseController {
                                         required = false) String locale,
                                     @RequestBody RequestStyledParameterSet query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, query.getDatasets());
 
         RequestSimpleParameterSet parameterSet = map.mergeToSimpleParameterSet(query);
@@ -275,8 +268,7 @@ public class TimeseriesDataController extends BaseController {
                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                           @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
@@ -300,10 +292,8 @@ public class TimeseriesDataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query)
-                                          .extendWith(Constants.MimeType.APPLICATION_ZIP.name(),
-                                                      Boolean.TRUE.toString());
+        IoParameters map = createUtilizedIoParameters(query, locale).extendWith(Parameters.ZIP,
+                                                                                Boolean.TRUE.toString());
         response.setContentType(Constants.APPLICATION_ZIP);
         getTimeseriesAsCsv(timeseriesId, map, response);
     }
@@ -318,8 +308,7 @@ public class TimeseriesDataController extends BaseController {
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         getTimeseriesAsCsv(timeseriesId, map, response);
     }
 
@@ -329,8 +318,6 @@ public class TimeseriesDataController extends BaseController {
 
         RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, query);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        parameters.setGeneralize(query.isGeneralize());
-        parameters.setExpanded(query.isExpanded());
 
         response.setCharacterEncoding("UTF-8");
         if (Boolean.parseBoolean(query.getOther(Constants.MimeType.APPLICATION_ZIP.name()))) {
@@ -352,8 +339,7 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestBody RequestStyledParameterSet query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, query.getDatasets());
 
         RequestSimpleParameterSet parameterSet = map.mergeToSimpleParameterSet(query);
@@ -378,8 +364,7 @@ public class TimeseriesDataController extends BaseController {
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         checkIfUnknownTimeseries(map, timeseriesId);
 
         RequestSimpleParameterSet parameterSet = RequestSimpleParameterSet.createForSingleSeries(timeseriesId, map);
@@ -408,7 +393,6 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         if (preRenderingTask == null) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }

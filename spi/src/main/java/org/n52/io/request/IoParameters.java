@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.joda.time.DateTime;
@@ -83,6 +85,9 @@ public class IoParameters implements Parameters {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final MultiValueMap<String, JsonNode> query;
+
+    private BiConsumer<String, IoParseException> parseExceptionHandle;
+
     protected IoParameters(IoParameters other) {
         this.query = other.query;
     }
@@ -142,6 +147,15 @@ public class IoParameters implements Parameters {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
         }
+    }
+
+    public IoParameters setParseExceptionHandle(BiConsumer<String, IoParseException> handle) {
+        this.parseExceptionHandle = handle;
+        return this;
+    }
+
+    private BiConsumer<String, IoParseException> getParseExceptionHandle() {
+        return parseExceptionHandle;
     }
 
     /**
@@ -209,7 +223,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException
      *         if parsing parameter fails.
      */
-    public boolean isGeneralize() throws IoParseException {
+    public boolean isGeneralize() {
         return getAsBoolean(GENERALIZE, DEFAULT_GENERALIZE);
     }
 
@@ -254,17 +268,7 @@ public class IoParameters implements Parameters {
      *         if parsing parameter fails.
      */
     private StyleProperties parseStyleProperties(String style) {
-        try {
-            return style == null
-                    ? StyleProperties.createDefaults()
-                    : new ObjectMapper().readValue(style, StyleProperties.class);
-        } catch (JsonMappingException e) {
-            throw new IoParseException("Could not read style properties: " + style, e);
-        } catch (JsonParseException e) {
-            throw new IoParseException("Could not parse style properties:" + style, e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("An error occured during request handling.", e);
-        }
+        return handleJsonValueParseException(style, StyleProperties.class, this::parseJson);
     }
 
     public String getFormat() {
@@ -323,7 +327,13 @@ public class IoParameters implements Parameters {
     }
 
     private IntervalWithTimeZone validateTimespan(String timespan) {
-        return new IntervalWithTimeZone(timespan);
+        try {
+            return new IntervalWithTimeZone(timespan);
+        } catch (IllegalArgumentException e) {
+            IoParseException ex = new IoParseException(e.getMessage(), e);
+            throw ex.addHint("Valid timespans have to be in ISO8601 period format.")
+                    .addHint("Valid examples: 'PT6H/2013-08-13TZ' or '2013-07-13TZ/2013-08-13TZ'.");
+        }
     }
 
     public String getOutputTimezone() {
@@ -370,12 +380,7 @@ public class IoParameters implements Parameters {
     }
 
     private Instant validateTimestamp(String timestamp) {
-        try {
-            return Instant.parse(timestamp);
-        } catch (Exception e) {
-            String message = "Could not parse result time parameter." + timestamp;
-            throw new IoParseException(message, e);
-        }
+        return handleSimpleValueParseException(timestamp, Instant::parse);
     }
 
     /**
@@ -541,7 +546,7 @@ public class IoParameters implements Parameters {
         return csvToSet(csv, Function.identity());
     }
 
-    private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
+    private <O> Set<O> csvToSet(String csv, Function<String, O> c){
         String[] values = csv != null
                 ? csv.split(",")
                 : new String[0];
@@ -643,12 +648,17 @@ public class IoParameters implements Parameters {
                                                     Double.valueOf(coordArray[3].trim()),
                                                     CRSUtils.DEFAULT_CRS);
             return new BoundingBox(lowerLeft, upperRight, CRSUtils.DEFAULT_CRS);
-        } else {
-            BBox bbox = parseJson(bboxValue, BBox.class);
+        }
+
+        try {
+            BBox bbox = handleJsonValueParseException(bboxValue, BBox.class, this::parseJson);
             return new BoundingBox(crsUtils.convertToPointFrom(bbox.getLl(), CRSUtils.DEFAULT_CRS),
                                    crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
                                    CRSUtils.DEFAULT_CRS);
+        } catch (IoParseException e) {
+            throw e.addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.");
         }
+
     }
 
     private BoundingBox parseBoundsFromVicinity() {
@@ -656,7 +666,7 @@ public class IoParameters implements Parameters {
             return null;
         }
         String vicinityValue = getAsString(NEAR);
-        Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
+        Vicinity vicinity = handleJsonValueParseException(vicinityValue, Vicinity.class, this::parseJson);
         if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
@@ -815,7 +825,7 @@ public class IoParameters implements Parameters {
 
     public int getAsInteger(String parameter, int defaultValue) {
         return containsParameter(parameter)
-                ? getAsInteger(parameter)
+                ? handleSimpleValueParseException(parameter, this::getAsInteger)
                 : defaultValue;
     }
 
@@ -831,14 +841,13 @@ public class IoParameters implements Parameters {
             String value = getAsString(parameter);
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throwIoParseException(parameter, "Must be an integer!", e);
-            return -1;
+            throw createIoParseException(parameter).addHint("Value must be an integer!");
         }
     }
 
     public boolean getAsBoolean(String parameter, boolean defaultValue) {
         return containsParameter(parameter)
-                ? getAsBoolean(parameter)
+                ? handleSimpleValueParseException(parameter, this::getAsBoolean)
                 : defaultValue;
     }
 
@@ -850,19 +859,53 @@ public class IoParameters implements Parameters {
      *         if parsing to <code>boolean</code> fails.
      */
     public boolean getAsBoolean(String parameter) {
-        try {
-            String value = getAsString(parameter);
+        String value = getAsString(parameter);
+        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
-        } catch (NumberFormatException e) {
-            throwIoParseException(parameter, "Must be 'false' or 'true'!", e);
-            return false;
+        } else {
+            throw createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
         }
     }
 
-    private void throwIoParseException(String parameter, String expected, Exception e)
-            throws IoParseException {
-        String msg = "Parameter '" + parameter + "'. ";
-        throw new IoParseException(msg + expected, e);
+    private IoParseException createIoParseException(String parameter) {
+        return createIoParseException(parameter, null);
+    }
+
+    private IoParseException createIoParseException(String parameter, Exception e) {
+        String message = "Parameter '" + parameter + "' is invalid.";
+        if (e != null) {
+            return new IoParseException(message, e);
+        } else {
+            return new IoParseException(message);
+        }
+    }
+
+    private <R> R handleSimpleValueParseException(String parameter, Function<String, R> supplier) {
+        try {
+            return supplier.apply(parameter);
+        } catch (IoParseException e) {
+            if (parseExceptionHandle != null) {
+                parseExceptionHandle.accept(parameter, e);
+                return null;
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private <R, T> R handleJsonValueParseException(String parameter,
+                                                   Class<T> clazz,
+                                                   BiFunction<String, Class<T>, R> supplier) {
+        try {
+            return supplier.apply(parameter, clazz);
+        } catch (IoParseException e) {
+            if (parseExceptionHandle != null) {
+                parseExceptionHandle.accept(parameter, e);
+                return null;
+            } else {
+                throw e;
+            }
+        }
     }
 
     RequestSimpleParameterSet toSimpleParameterSet() {
@@ -916,19 +959,37 @@ public class IoParameters implements Parameters {
         }
     }
 
+    /**
+     * Creates a new instance based on the current one and removes given parameter with the all its values. As
+     * a new instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
+     * 
+     * @param key
+     *        the name of the parameter to remove all its values
+     * @return a new instance with extended key/values
+     */
     public IoParameters removeAllOf(String key) {
         MultiValueMap<String, JsonNode> newValues = new LinkedMultiValueMap<>(query);
         newValues.remove(key.toLowerCase());
-        return new IoParameters(newValues);
+        return new IoParameters(newValues).setParseExceptionHandle(parseExceptionHandle);
     }
 
+    /**
+     * Creates a new instance based on the current one and adds parameter with the given values. As a new
+     * instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
+     * 
+     * @param key
+     *        the parameter name
+     * @param values
+     *        the parameter values
+     * @return a new instance with extended key/values
+     */
     public IoParameters extendWith(String key, String... values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         newValues.put(key.toLowerCase(), Arrays.asList(values));
 
         MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
         mergedValues.putAll(convertToJsonNodes(newValues));
-        return new IoParameters(mergedValues);
+        return new IoParameters(mergedValues).setParseExceptionHandle(parseExceptionHandle);
     }
 
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
@@ -995,7 +1056,7 @@ public class IoParameters implements Parameters {
         return new IoParameters(Collections.<String, JsonNode> emptyMap(), defaultConfig);
     }
 
-    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
+    public static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
         return createFromMultiValueMap(query, null);
     }
 
@@ -1003,7 +1064,7 @@ public class IoParameters implements Parameters {
         return new IoParameters(convertToJsonNodes(query), defaultConfig);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query) {
+    public static IoParameters createFromSingleValueMap(Map<String, String> query) {
         return createFromSingleValueMap(query, null);
     }
 
@@ -1020,7 +1081,7 @@ public class IoParameters implements Parameters {
         return createFromQuery(parameters, null);
     }
 
-    public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
+    private static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (String parameter : parameters.availableParameterNames()) {
             JsonNode value = parameters.getParameterValue(parameter);

@@ -52,7 +52,9 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.crs.BoundingBox;
 import org.springframework.util.LinkedMultiValueMap;
@@ -63,6 +65,20 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class IoParametersTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
+    public void when_ioParseExceptionActionIsRuntimeException_then_exeptionIsThrown() {
+        IoParameters defaults = IoParameters.createDefaults();
+        defaults.setParseExceptionHandle((parameter, e) -> {
+            throw new IllegalArgumentException(parameter, e);
+        });
+        thrown.expect(IllegalArgumentException.class);
+        defaults.extendWith(Parameters.OFFSET, "invalid value")
+                .getOffset();
+    }
 
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/").toURI());

@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.pagination.OffsetBasedPagination;
@@ -66,7 +65,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
     "application/json"
 })
-public class StationsParameterController {
+public class StationsParameterController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
@@ -84,8 +83,7 @@ public class StationsParameterController {
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                         required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = IoParameters.ensureBackwardsCompatibility(createUtilizedIoParameters(query, locale));
         OutputCollection< ? > result;
 
         if (map.isExpanded()) {
@@ -98,12 +96,11 @@ public class StationsParameterController {
             logRequestTime(stopwatch);
         }
 
-        IoParameters queryMap = QueryParameters.createFromQuery(query);
-        queryMap = IoParameters.ensureBackwardsCompatibility(queryMap);
-        if (queryMap.containsParameter("limit") || queryMap.containsParameter("offset")) {
+        // XXX refactor (is redundant here)
+        if (map.containsParameter("limit") || map.containsParameter("offset")) {
             Integer elementcount = this.counter.getStationCount();
             if (elementcount != -1) {
-                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                OffsetBasedPagination obp = new OffsetBasedPagination(map.getOffset(), map.getLimit());
                 Paginated paginated = new Paginated(obp, elementcount.longValue());
                 this.addPagingHeaders(response, paginated);
             }
@@ -125,8 +122,7 @@ public class StationsParameterController {
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
+        IoParameters map = createUtilizedIoParameters(query, locale);
         map = IoParameters.ensureBackwardsCompatibility(map);
 
         // TODO check parameters and throw BAD_REQUEST if invalid

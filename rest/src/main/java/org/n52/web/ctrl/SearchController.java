@@ -31,7 +31,6 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
 import org.n52.series.spi.search.SearchService;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -53,9 +52,8 @@ public class SearchController extends BaseController {
     public ModelAndView searchResources(@RequestParam String q,
                                         @RequestHeader(value = "accept-language") String locale,
                                         @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-        IoParameters map = QueryParameters.createFromQuery(parameters)
-                                          .extendWith(Parameters.SEARCH_TERM, q)
-                                          .extendWith(Parameters.LOCALE, locale);
+        IoParameters map = createUtilizedIoParameters(parameters, locale)
+                                          .extendWith(Parameters.SEARCH_TERM, q);
         IoParameters query = IoParameters.ensureBackwardsCompatibility(map);
         return new ModelAndView().addObject(searchService.searchResources(query));
     }
