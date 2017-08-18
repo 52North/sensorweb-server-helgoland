@@ -37,16 +37,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
+import org.n52.io.response.pagination.OffsetBasedPagination;
+import org.n52.io.response.pagination.Paginated;
+import org.n52.io.response.pagination.Pagination;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
@@ -139,6 +143,8 @@ public abstract class ParameterController<T extends ParameterOutput>
         RequestUtils.overrideQueryLocaleWhenSet(locale, query);
         IoParameters queryMap = QueryParameters.createFromQuery(query);
         LOGGER.debug("getCollection() with query '{}'", queryMap);
+        preparePagingHeaders(queryMap, response);
+        
         OutputCollection<T> result;
 
         if (queryMap.isExpanded()) {
@@ -149,6 +155,18 @@ public abstract class ParameterController<T extends ParameterOutput>
             result = parameterService.getCondensedParameters(queryMap);
         }
         return createModelAndView(result);
+    }
+
+    protected void preparePagingHeaders(IoParameters queryMap, HttpServletResponse response) {
+        if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
+            Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
+                                                                .removeAllOf(Parameters.OFFSET));
+            if (0 >= elementcount) {
+                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
+                this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
+            }
+        }
     }
 
     @Override
@@ -200,5 +218,42 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     public void setMetadataExtensions(List<MetadataExtension<T>> metadataExtensions) {
         this.metadataExtensions = metadataExtensions;
+    }
+
+    /**
+     * @param queryMap
+     *        the query map
+     * @return the number of elements available, or negative number if paging is not supported.
+     */
+    protected abstract int getElementCount(IoParameters queryMap);
+
+    protected String getHrefBase() {
+        return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
+    }
+
+    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
+        addLinkHeader("self", href, paginated.getCurrent(), response);
+        addLinkHeader("previous", href, paginated.getPrevious(), response);
+        addLinkHeader("next", href, paginated.getNext(), response);
+        addLinkHeader("first", href, paginated.getFirst(), response);
+        addLinkHeader("last", href, paginated.getLast(), response);
+        return response;
+    }
+
+    private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
+        if (pagination.isPresent()) {
+            String header = "Link";
+            Pagination pageLink = pagination.get();
+            StringBuilder sb = new StringBuilder();
+            String value = sb.append("<")
+                             .append(href)
+                             .append("?")
+                             .append(pageLink.toString())
+                             .append("> rel=\"")
+                             .append(rel)
+                             .append("\"")
+                             .toString();
+            response.addHeader(header, value);
+        }
     }
 }
