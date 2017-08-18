@@ -45,7 +45,7 @@ import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.RequestUtils;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
-import org.n52.web.exception.WebExceptionAdapter;
+import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

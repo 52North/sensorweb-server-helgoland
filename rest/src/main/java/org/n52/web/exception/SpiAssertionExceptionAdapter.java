@@ -26,9 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.exception;
 
 import java.io.InputStream;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
@@ -37,15 +39,17 @@ import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 
 /**
- * Adapts SPI exceptions to HTTP specified Web exceptions.
+ * Adapts SPI assertions to HTTP Web exceptions.
  *
- * @param <T> the parameter type of the service to adapt execptions for.
+ * @param <T>
+ *        the parameter type of the service.
  */
-public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterService<T> implements RawDataService {
+public class SpiAssertionExceptionAdapter<T extends ParameterOutput> extends ParameterService<T>
+        implements RawDataService {
 
     private final ParameterService<T> composedService;
 
-    public WebExceptionAdapter(ParameterService<T> toCompose) {
+    public SpiAssertionExceptionAdapter(ParameterService<T> toCompose) {
         this.composedService = toCompose;
     }
 
@@ -90,7 +94,8 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     @Override
     public InputStream getRawData(String id, IoParameters query) {
         if (composedService.supportsRawData()) {
-            return composedService.getRawDataService().getRawData(id, query);
+            return composedService.getRawDataService()
+                                  .getRawData(id, query);
         }
         return null;
     }
@@ -98,7 +103,8 @@ public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterSer
     @Override
     public InputStream getRawData(RequestSimpleParameterSet parameters) {
         if (composedService.supportsRawData()) {
-            return composedService.getRawDataService().getRawData(parameters);
+            return composedService.getRawDataService()
+                                  .getRawData(parameters);
         }
         return null;
     }
