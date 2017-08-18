@@ -53,18 +53,14 @@ public class IntervalWithTimeZone {
      *         if timespan is not a valid interval.
      */
     public IntervalWithTimeZone(String timespan) {
-        try {
-            Interval.parse(timespan);
-            this.timespan = timespan;
-        } catch (IllegalArgumentException e) {
-            String message = "Could not parse timespan parameter." + timespan;
-            throw new IoParseException(message, e);
-        }
+        Interval.parse(timespan);
+        this.timespan = timespan;
     }
 
     public DateTimeZone getTimezone() {
         String endTime = timespan.split("/")[1];
-        return DateTime.parse(endTime).getZone();
+        return DateTime.parse(endTime)
+                       .getZone();
     }
 
     public Interval toInterval() {
