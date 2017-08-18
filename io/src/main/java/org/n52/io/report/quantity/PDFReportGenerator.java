@@ -93,8 +93,8 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
     private URI baseURI;
 
     public PDFReportGenerator(RequestParameterSet simpleRequest,
-            IoProcessChain<QuantityData> processChain,
-            ChartIoHandler renderer) {
+                              IoProcessChain<QuantityData> processChain,
+                              ChartIoHandler renderer) {
         super(simpleRequest, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
@@ -120,15 +120,17 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
         File tmpFile = File.createTempFile(TEMP_FILE_PREFIX, "_chart.png");
         try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
             renderer.encodeAndWriteTo(data, stream);
-            document.getDocumentStructure().setDiagramURL(tmpFile.getAbsolutePath());
-            //String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
-            //document.getDocumentStructure().setDiagramURL(absoluteFilePath);
+            document.getDocumentStructure()
+                    .setDiagramURL(tmpFile.getAbsolutePath());
+            // String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
+            // document.getDocumentStructure().setDiagramURL(absoluteFilePath);
             stream.flush();
         }
     }
 
     private String getFoAbsoluteFilepath(File tmpFile) {
-        return tmpFile.toURI().toString();
+        return tmpFile.toURI()
+                      .toString();
     }
 
     private void generateTimeseriesMetadata() {
@@ -146,15 +148,15 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             Configuration cfg = cfgBuilder.build(document.newInputStream());
             FopFactory fopFactory = new FopFactoryBuilder(baseURI)
-                    .setConfiguration(cfg)
-                    .build();
+                                                                  .setConfiguration(cfg)
+                                                                  .build();
             final String mimeType = Constants.APPLICATION_PDF;
             Fop fop = fopFactory.newFop(mimeType, stream);
 
-            //FopFactory fopFactory = FopFactory.newInstance(cfg);
-            //Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-            //FopFactory fopFactory = fopFactoryBuilder.build();
-            //Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+            // FopFactory fopFactory = FopFactory.newInstance(cfg);
+            // Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
+            // FopFactory fopFactory = fopFactoryBuilder.build();
+            // Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
 
             // Create PDF via XSLT transformation
             TransformerFactory transFact = TransformerFactory.newInstance();
@@ -168,7 +170,8 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
                     File tempFile = File.createTempFile(TEMP_FILE_PREFIX, ".xml");
                     StreamResult debugResult = new StreamResult(tempFile);
                     transformer.transform(source, debugResult);
-                    String xslResult = XmlObject.Factory.parse(tempFile).xmlText();
+                    String xslResult = XmlObject.Factory.parse(tempFile)
+                                                        .xmlText();
                     LOGGER.debug("xsl-fo input (locale '{}'): {}", i18n.getTwoDigitsLanguageCode(), xslResult);
                 } catch (IOException | TransformerException | XmlException e) {
                     LOGGER.error("Could not debug XSL result output!", e);
@@ -198,38 +201,41 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
         TimeSeries timeseries = report.addNewTimeSeries();
 
         DatasetParameters parameters = output.getDatasetParameters();
-        timeseries.setFeatureOfInterestID(parameters.getFeature().getLabel());
-        timeseries.setPhenomenID(parameters.getPhenomenon().getLabel());
-        timeseries.setProcedureID(parameters.getProcedure().getLabel());
+        timeseries.setFeatureOfInterestID(parameters.getFeature()
+                                                    .getLabel());
+        timeseries.setPhenomenID(parameters.getPhenomenon()
+                                           .getLabel());
+        timeseries.setProcedureID(parameters.getProcedure()
+                                            .getLabel());
         return timeseries;
     }
 
     private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput output) {
         MetadataType metadata = timeseries.addNewMetadata();
 
-        //  GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
+        // GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
         // if (attributeVal.equals("urn:ogc:identifier:stationName")) {
-        //            name = "Station"; //$NON-NLS-1$
+        // name = "Station"; //$NON-NLS-1$
         // }
         //
         // if (attributeVal.equals("urn:ogc:identifier:operator")) {
-        //            name = "Operator"; //$NON-NLS-1$
+        // name = "Operator"; //$NON-NLS-1$
         // }
         //
         // if (attributeVal.equals("urn:ogc:identifier:stationID")) {
-        //            name = "ID"; //$NON-NLS-1$
+        // name = "ID"; //$NON-NLS-1$
         // }
         //
         // if (attributeVal.equals("urn:ogc:identifier:sensorType")) {
-        //            name = "Sensor"; //$NON-NLS-1$
+        // name = "Sensor"; //$NON-NLS-1$
         // }
 
         return metadata;
     }
 
     private void addDataTable(TimeSeries timeseries,
-            TimeseriesMetadataOutput metadata,
-            TvpDataCollection<QuantityData> dataCollection) {
+                              TimeseriesMetadataOutput metadata,
+                              TvpDataCollection<QuantityData> dataCollection) {
         TableType dataTable = timeseries.addNewTable();
 
         // TODO add language context
@@ -247,7 +253,8 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
 
     private String createValueTableHeader(TimeseriesMetadataOutput metadata) {
         DatasetParameters parameters = metadata.getDatasetParameters();
-        String phenomenon = parameters.getPhenomenon().getLabel();
+        String phenomenon = parameters.getPhenomenon()
+                                      .getLabel();
         return phenomenon + " (" + metadata.getUom() + ")";
     }
 

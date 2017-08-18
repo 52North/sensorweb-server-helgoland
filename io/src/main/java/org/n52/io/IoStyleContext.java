@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import java.util.Collections;
@@ -41,18 +42,18 @@ public final class IoStyleContext {
 
     private final RequestStyledParameterSet chartStyleDefinitions;
 
-    private final List<? extends DatasetOutput> datasetMetadatas;
+    private final List< ? extends DatasetOutput> datasetMetadatas;
 
     public IoStyleContext() {
         this.chartStyleDefinitions = new RequestStyledParameterSet();
-        this.datasetMetadatas = Collections.<DatasetOutput>emptyList();
+        this.datasetMetadatas = Collections.<DatasetOutput> emptyList();
     }
 
     // use static constructors
     private IoStyleContext(RequestStyledParameterSet datasetStyles,
-            List<? extends DatasetOutput> metadatas) {
+                           List< ? extends DatasetOutput> metadatas) {
         this.datasetMetadatas = metadatas.isEmpty()
-                ? Collections.<DatasetOutput>emptyList()
+                ? Collections.<DatasetOutput> emptyList()
                 : metadatas;
         this.chartStyleDefinitions = datasetStyles;
     }
@@ -66,21 +67,23 @@ public final class IoStyleContext {
     }
 
     public static IoStyleContext create(RequestStyledParameterSet request) {
-        List<? extends DatasetOutput> emptyList = Collections.emptyList();
+        List< ? extends DatasetOutput> emptyList = Collections.emptyList();
         return new IoStyleContext(request, emptyList);
     }
 
     /**
-     * @param styles the style definitions.
-     * @param metadatas the metadata for each dataset.
-     * @throws NullPointerException if any of the given arguments is <code>null</code>.
-     * @throws IllegalStateException if amount of datasets described by the given arguments is not
-     * in sync.
-     * @return a rendering context to be used by {@link QuantityIoFactory} to create an
-     * {@link IoHandler}.
+     * @param styles
+     *        the style definitions.
+     * @param metadatas
+     *        the metadata for each dataset.
+     * @throws NullPointerException
+     *         if any of the given arguments is <code>null</code>.
+     * @throws IllegalStateException
+     *         if amount of datasets described by the given arguments is not in sync.
+     * @return a rendering context to be used by {@link QuantityIoFactory} to create an {@link IoHandler}.
      */
     public static IoStyleContext createContextWith(RequestStyledParameterSet styles,
-            List<? extends DatasetOutput> metadatas) {
+                                                   List< ? extends DatasetOutput> metadatas) {
         if (styles == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
@@ -90,15 +93,17 @@ public final class IoStyleContext {
             int amountMetadatas = metadatas.size();
             StringBuilder sb = new StringBuilder();
             sb.append("Size of designs and metadatas do not match: ");
-            sb.append("#Datasets: ").append(amountTimeseries).append(" vs. ");
-            sb.append("#Metadatas: ").append(amountMetadatas);
+            sb.append("#Datasets: ")
+              .append(amountTimeseries)
+              .append(" vs. ");
+            sb.append("#Metadatas: ")
+              .append(amountMetadatas);
             throw new IllegalStateException(sb.toString());
         }
         return new IoStyleContext(styles, metadatas);
     }
 
-    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
-            IoParameters ioConfig) {
+    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata, IoParameters ioConfig) {
         RequestStyledParameterSet parameters = ioConfig.toStyledParameterSet();
         parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
         return createContextWith(parameters, Collections.singletonList(metadata));
@@ -113,7 +118,7 @@ public final class IoStyleContext {
         return chartStyleDefinitions;
     }
 
-    public List<? extends DatasetOutput> getDatasetMetadatas() {
+    public List< ? extends DatasetOutput> getDatasetMetadatas() {
         return datasetMetadatas;
     }
 

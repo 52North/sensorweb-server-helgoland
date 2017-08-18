@@ -56,15 +56,14 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * <p>
- * Serves as central {@link ExceptionHandler} for all Web bindings inheriting
- * from this class. {@link WebException}s indicate an expected workflows while
- * unexpected exceptions are automatically wrapped to
- * {@link InternalServerException}s as fallback.</p>
- *
+ * Serves as central {@link ExceptionHandler} for all Web bindings inheriting from this class.
+ * {@link WebException}s indicate an expected workflows while unexpected exceptions are automatically wrapped
+ * to {@link InternalServerException}s as fallback.
+ * </p>
  * <p>
- * Developers should consider to add hints via
- * {@link WebException#addHint(String)} so that as much information is
- * communicated to the caller as possible.</p>
+ * Developers should consider to add hints via {@link WebException#addHint(String)} so that as much
+ * information is communicated to the caller as possible.
+ * </p>
  */
 @RestController
 public abstract class BaseController implements ServletConfigAware {
@@ -85,22 +84,28 @@ public abstract class BaseController implements ServletConfigAware {
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_JSON.getMimeType()
+                                                  .equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPdfData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_PDF.getMimeType()
+                                                 .equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPngData(HttpServletRequest request) {
-        return Constants.MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.IMAGE_PNG.getMimeType()
+                                           .equals(getAcceptHeader(request));
     }
 
     private static String getAcceptHeader(HttpServletRequest request) {
         return request.getHeader(HEADER_ACCEPT);
     }
 
-    @ExceptionHandler(value = {BadRequestException.class, BadQueryParameterException.class})
+    @ExceptionHandler(value = {
+        BadRequestException.class,
+        BadQueryParameterException.class
+    })
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
         writeExceptionResponse((WebException) e, response, HttpStatus.BAD_REQUEST);
     }
@@ -115,7 +120,11 @@ public abstract class BaseController implements ServletConfigAware {
         writeExceptionResponse((WebException) e, response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = {RuntimeException.class, Exception.class, Throwable.class})
+    @ExceptionHandler(value = {
+        RuntimeException.class,
+        Exception.class,
+        Throwable.class
+    })
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         if (e instanceof HttpMessageNotReadableException) {
             WebException wrappedException = new BadRequestException("The request could not been read.", e);
