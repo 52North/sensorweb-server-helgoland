@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.report.quantity;
 
 import java.io.File;
@@ -55,6 +56,7 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
 import org.n52.io.Constants;
+import org.n52.io.IoHandlerException;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.img.quantity.ChartIoHandler;
@@ -106,12 +108,12 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
         this.baseURI = baseURI;
     }
 
-    public void generateOutput(DataCollection<QuantityData> data) throws IoParseException {
+    public void generateOutput(DataCollection<QuantityData> data) throws IoHandlerException {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
         } catch (IOException e) {
-            throw new IoParseException("Error handling (temp) file!", e);
+            throw new IoHandlerException("Error handling (temp) file!", e);
         }
     }
 
@@ -142,7 +144,7 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<QuantityData> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<QuantityData> data, OutputStream stream) throws IoHandlerException {
         try {
             generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();

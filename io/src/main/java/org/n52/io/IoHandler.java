@@ -31,6 +31,7 @@ package org.n52.io;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.apache.commons.codec.binary.Base64;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestParameterSet;
@@ -61,9 +62,9 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
      *
      * @param data the input data collection to create an output for.
      * @param stream the stream to write on the generated ouput.
-     * @throws IoParseException if writing output to stream fails.
+     * @throws IoException if writing output to stream fails.
      */
-    protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoParseException;
+    protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoHandlerException;
 
     public void writeBinary(OutputStream outputStream) throws IoHandlerException {
         try {
@@ -78,8 +79,8 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
             }
         } catch (IOException e) {
             throw new IoHandlerException("Error handling output stream.", e);
-        } catch (IoParseException e) {
-            throw new IoHandlerException("Could not write binary to stream.", e);
+//        } catch (IoParseException e) {
+//            throw new IoHandlerException("Could not write binary to stream.", e);
         }
     }
 
