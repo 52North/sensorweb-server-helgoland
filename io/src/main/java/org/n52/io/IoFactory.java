@@ -103,7 +103,7 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ? 
 
             @Override
             public DataCollection< ? > getProcessedData() {
-                return getParameters().shallClassifyByResultTimes()
+                return getIoParameters().shallClassifyByResultTimes()
                         ? new ResultTimeFormatter<D>().format(getData())
                         // empty chain
                         : getData();
@@ -126,14 +126,14 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ? 
         String[] seriesIds = simpleRequest != null
                 ? simpleRequest.getDatasets()
                 : styledRequest.getDatasets();
-        return datasetService.getParameters(seriesIds, getParameters())
+        return datasetService.getParameters(seriesIds, getIoParameters())
                              .getItems();
     }
 
-    protected IoParameters getParameters() {
         return simpleRequest != null
                 ? IoParameters.createFromQuery(simpleRequest)
                 : IoParameters.createFromQuery(styledRequest);
+    protected IoParameters getIoParameters() {
     }
 
     protected DataService<D> getDataService() {

@@ -45,6 +45,7 @@ import org.n52.io.img.quantity.ChartIoHandler;
 import org.n52.io.img.quantity.MultipleChartsRenderer;
 import org.n52.io.report.quantity.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
@@ -66,7 +67,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
         return new IoProcessChain<QuantityData>() {
             @Override
             public DataCollection<QuantityData> getData() {
-                final boolean generalize = getParameters().isGeneralize();
+                boolean generalize = getIoParameters().isGeneralize();
                 DataService<QuantityData> dataService = generalize
                         ? new GeneralizingQuantityService(getDataService())
                         : getDataService();
@@ -75,13 +76,13 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
             @Override
             public DataCollection<?> getProcessedData() {
-                return getParameters().shallClassifyByResultTimes()
+                return getIoParameters().shallClassifyByResultTimes()
                         ? new ResultTimeFormatter<QuantityData>().format(getData())
                         : createFormatter().create().format(getData());
             }
 
             private FormatterFactory createFormatter() {
-                return FormatterFactory.createFormatterFactory(getParameters());
+                return FormatterFactory.createFormatterFactory(getIoParameters());
             }
         };
     }
@@ -107,7 +108,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
     @Override
     public IoHandler<QuantityData> createHandler(String outputMimeType) {
-        IoParameters parameters = getParameters();
+        IoParameters parameters = getIoParameters();
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
