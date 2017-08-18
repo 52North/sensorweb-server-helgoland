@@ -83,11 +83,21 @@ public class IoParameters implements Parameters {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final MultiValueMap<String, JsonNode> query;
+    protected IoParameters(IoParameters other) {
+        this.query = other.query;
+    }
 
-    private IoParameters(File defaultConfig) {
-        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
-        config.setAll(readDefaultConfig(defaultConfig));
-        query = mergeToLowerCasedKeys(config);
+    protected IoParameters(Map<String, JsonNode> queryParameters) {
+        this(queryParameters, (File) null);
+    }
+
+    protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
+        this(defaults);
+        query.setAll(mergeToLowerCasedKeys(queryParameters));
+    }
+
+    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
+        this(queryParameters, (File) null);
     }
 
     protected IoParameters(MultiValueMap<String, JsonNode> queryParameters, File defaults) {
@@ -97,17 +107,10 @@ public class IoParameters implements Parameters {
         }
     }
 
-    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
-        this(queryParameters, (File) null);
-    }
-
-    protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
-        this(defaults);
-        query.setAll(mergeToLowerCasedKeys(queryParameters));
-    }
-
-    protected IoParameters(Map<String, JsonNode> queryParameters) {
-        this(queryParameters, (File) null);
+    private IoParameters(File defaultConfig) {
+        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
+        config.setAll(readDefaultConfig(defaultConfig));
+        query = mergeToLowerCasedKeys(config);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
