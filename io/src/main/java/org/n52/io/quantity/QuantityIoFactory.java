@@ -127,7 +127,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
                     getMetadatas());
             handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
 
-            boolean zipOutput = parameters.getAsBoolean(Constants.MimeType.APPLICATION_ZIP.name());
+            boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
             boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
             handler.setIncludeByteOrderMark(byteOderMark);

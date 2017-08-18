@@ -216,6 +216,11 @@ public interface Parameters {
      * Default event causing a rendering task.
      */
     String DEFAULT_RENDERING_TRIGGER = "request";
+    
+    /**
+     * Determines that output shall be zipped (if possible).
+     */
+    String ZIP = "zip";
 
     /**
      * Determines the style parameter
