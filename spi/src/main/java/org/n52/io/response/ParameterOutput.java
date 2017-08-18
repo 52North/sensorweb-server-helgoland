@@ -37,11 +37,21 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.RawFormats;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ParameterOutput implements
         CollatorComparable<ParameterOutput>, RawFormats {
+
+    public static final String ID = "id";
+    public static final String HREF = "href";
+    public static final String HREFBASE = HREF;
+    public static final String DOMAINID = "domainid";
+    public static final String LABEL = "label";
+    public static final String EXTRAS = "extras";
+    public static final String RAWFORMATS = "service";
 
     private String id;
 
@@ -59,6 +69,12 @@ public abstract class ParameterOutput implements
     private List<String> extras;
 
     private Set<String> rawFormats;
+
+    public <T> void setValue(String parameter, T value, IoParameters parameters, Consumer<T> consumer) {
+        if (!parameters.containsParameter("fields") || parameters.getFields().contains(parameter)) {
+            consumer.accept(value);
+        }
+     }
 
     public String getId() {
         return id;
@@ -122,11 +138,10 @@ public abstract class ParameterOutput implements
     }
 
     /**
-     * @return the label or the id if label is not set.
+     * @return the label. Returns null if label is not set.
      */
     public String getLabel() {
-        // ensure that label is never null
-        return label == null ? id : label;
+        return label;
     }
 
     public void setLabel(String label) {
@@ -237,7 +252,12 @@ public abstract class ParameterOutput implements
      * @return a label comparing {@link Comparator}
      */
     public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
-        return (T o1, T o2) -> o1.getLabel().compareTo(o2.getLabel());
+
+
+        return (T o1, T o2) -> Comparator.comparing(ParameterOutput::getLabel,
+                                                    Comparator.nullsFirst(Comparator.naturalOrder()))
+                                            .thenComparing(ParameterOutput::getId)
+                                            .compare(o1, o2);
     }
 
 }

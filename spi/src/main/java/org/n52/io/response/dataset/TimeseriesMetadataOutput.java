@@ -49,6 +49,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Deprecated
 public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
 
+    public static final String STATION = "station";
+
     @Deprecated
     private StyleProperties renderingHints;
 

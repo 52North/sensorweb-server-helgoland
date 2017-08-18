@@ -34,6 +34,8 @@ package org.n52.io.response;
  */
 public class AbstractOutput extends ParameterOutput {
 
+    public static final String SERVICE = "service";
+
     protected ServiceOutput service;
 
     public AbstractOutput() {

@@ -35,6 +35,8 @@ import java.util.Set;
 
 public class OutputWithParameters extends AbstractOutput {
 
+    public static final String PARAMETERS = "parameters";
+
     private Set<Map<String, Object>> parameters;
 
     public void setParameters(Set<Map<String, Object>> parameters) {

@@ -41,6 +41,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ServiceOutput extends ParameterOutput {
 
+    public static final String SERVICEURL = "serviceurl";
+    public static final String VERSION = "version";
+    public static final String TYPE = "type";
+    public static final String FEATURES = "features";
+    public static final String QUANTITIES = "quantities";
+    public static final String SUPPORTSFIRSTLATEST = "supportsfirstlatest";
+    public static final String SUPPORTEDMIMETYPES = "supportedmimetypes";
+
     private String serviceUrl;
 
     private String version;
@@ -117,7 +125,7 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void setSupportsFirstLatest(Boolean supportsFirstLatest) {
-        addFeature("supportsFirstLatest", supportsFirstLatest);
+        addFeature(SUPPORTSFIRSTLATEST, supportsFirstLatest);
         this.supportsFirstLatest = supportsFirstLatest;
     }
 
@@ -133,7 +141,7 @@ public class ServiceOutput extends ParameterOutput {
      * @param countedParameters the parameter count object
      */
     public void setQuantities(ParameterCount countedParameters) {
-        addFeature("quantities", countedParameters);
+        addFeature(QUANTITIES, countedParameters);
         this.quantities = countedParameters;
     }
 

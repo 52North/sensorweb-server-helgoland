@@ -143,7 +143,7 @@ public abstract class ParameterController<T extends ParameterOutput>
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = Stopwatch.startStopwatch();
-            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap), queryMap);
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
         } else {
             result = parameterService.getCondensedParameters(queryMap);
@@ -163,20 +163,22 @@ public abstract class ParameterController<T extends ParameterOutput>
             throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
         }
 
-        T parameter = addExtensionInfos(item);
+        T parameter = addExtensionInfos(item, map);
         return new ModelAndView().addObject(parameter);
     }
 
-    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed) {
+    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
         for (T parameterOutput : toBeProcessed) {
-            addExtensionInfos(parameterOutput);
+            addExtensionInfos(parameterOutput, ioParameters);
         }
         return toBeProcessed;
     }
 
-    protected T addExtensionInfos(T output) {
-        for (MetadataExtension<T> extension : metadataExtensions) {
-            extension.addExtraMetadataFieldNames(output);
+    protected T addExtensionInfos(T output, IoParameters ioParameters) {
+        if (!ioParameters.containsParameter("fields") || ioParameters.getFields().contains("extras")) {
+            for (MetadataExtension<T> extension : metadataExtensions) {
+                extension.addExtraMetadataFieldNames(output);
+            }
         }
         return output;
     }

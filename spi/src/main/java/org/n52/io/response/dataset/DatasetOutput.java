@@ -37,6 +37,14 @@ import org.n52.io.response.ParameterOutput;
 public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
         extends ParameterOutput {
 
+    public static final String VALUETYPE = "valuetype";
+    public static final String PLATFORMTYPE = "platformtype";
+    public static final String DATASETPARAMETERS = "datasetparameters";
+    public static final String REFERENCEVALUES = "referencevalues";
+    public static final String FIRSTVALUE = "firstvalue";
+    public static final String LASTVALUE = "lastvalue";
+    public static final String UOM = "uom";
+
     private String valueType;
 
     private String platformType;
