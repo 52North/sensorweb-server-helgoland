@@ -53,8 +53,8 @@ public class ResourcesController {
     public ModelAndView getResources(HttpServletResponse response,
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
-        query = IoParameters.adjustFilterInCaseOfBackwardsCompatible(query);
+        IoParameters query = IoParameters.createFromMultiValueMap(parameters)
+                                         .respectBackwardsCompatibility();
         return new ModelAndView().addObject(createResources(query));
     }
 
@@ -78,7 +78,7 @@ public class ResourcesController {
         ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
             services.setSize(getMetadataService().getServiceCount(parameters));
-            if (new FilterResolver(parameters).shallBehaveBackwardsCompatible()) {
+            if (parameters.shallBehaveBackwardsCompatible()) {
                 // ensure backwards compatibility
                 stations.setSize(getMetadataService().getStationCount());
                 timeseries.setSize(getMetadataService().getTimeseriesCount());

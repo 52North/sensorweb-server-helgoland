@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -101,6 +102,36 @@ public class TimeseriesDataController extends BaseController {
     private boolean handlingPreRenderingTask;
 
     private String requestIntervalRestriction;
+
+    @Override
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
+        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(Map<String, String> query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
+        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    }
 
     @RequestMapping(value = "/getData", produces = {
         Constants.APPLICATION_JSON
@@ -256,9 +287,9 @@ public class TimeseriesDataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(query, locale).extendWith(Parameters.ZIP, Boolean.TRUE.toString());
+        IoParameters parameters = createParameters(query, locale).extendWith(Parameters.ZIP, Boolean.TRUE.toString());
         response.setContentType(Constants.APPLICATION_ZIP);
-        getTimeseriesAsCsv(timeseriesId, map, response);
+        getTimeseriesAsCsv(timeseriesId, parameters, response);
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData",

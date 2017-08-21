@@ -83,7 +83,7 @@ public class StationsParameterController extends BaseController {
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                         required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = IoParameters.adjustFilterInCaseOfBackwardsCompatible(createParameters(query, locale));
+        IoParameters map = createParameters(query, locale).respectBackwardsCompatibility();
         OutputCollection< ? > result;
 
         if (map.isExpanded()) {
@@ -122,12 +122,11 @@ public class StationsParameterController extends BaseController {
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale);
-        map = IoParameters.adjustFilterInCaseOfBackwardsCompatible(map);
+        IoParameters parameters = createParameters(query, locale);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
         Stopwatch stopwatch = Stopwatch.startStopwatch();
-        Object result = parameterService.getParameter(procedureId, map);
+        Object result = parameterService.getParameter(procedureId, parameters);
         logRequestTime(stopwatch);
 
         if (result == null) {
