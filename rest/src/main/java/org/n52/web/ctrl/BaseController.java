@@ -121,7 +121,7 @@ public abstract class BaseController implements ServletConfigAware {
         return createParameters(parameters, locale);
     }
 
-    protected IoParameters createParameters(IoParameters parameters, String locale) {
+    private IoParameters createParameters(IoParameters parameters, String locale) {
         return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
                            .setParseExceptionHandle(getExceptionHandle());
     }
