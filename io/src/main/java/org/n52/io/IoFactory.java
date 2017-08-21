@@ -56,28 +56,23 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ? 
         this.parameters = IoParameters.createDefaults();
     }
 
-    public IoFactory<D, P, V> withIoParameters(IoParameters parameters) {
+    public IoFactory<D, P, V> setParameters(IoParameters parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public IoFactory<D, P, V> withServletContextRoot(URI contextRoot) {
-        this.basePath = contextRoot;
+    public IoFactory<D, P, V> setBasePath(URI basePath) {
+        this.basePath = basePath;
         return this;
     }
 
-    public IoFactory<D, P, V> withDataService(DataService<D> service) {
-        this.dataService = service;
+    public IoFactory<D, P, V> setDataService(DataService<D> dataService) {
+        this.dataService = dataService;
         return this;
     }
 
-    public IoFactory<D, P, V> withDatasetService(ParameterService<P> service) {
-        this.datasetService = service;
-        return this;
-    }
-
-    public IoFactory<D, P, V> withBasePath(URI path) {
-        this.basePath = path;
+    public IoFactory<D, P, V> setDatasetService(ParameterService<P> datasetService) {
+        this.datasetService = datasetService;
         return this;
     }
 

@@ -154,10 +154,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private XYPlot createChart(IoStyleContext styleContext) {
         String timespan = getTimespan();
-        DateTime end = timespan != null
-                ? new DateTime(timespan.split("/")[1])
-                : new DateTime();
-        // String zoneName = getTimezone().getID();
+        DateTime end = new DateTime(timespan.split("/")[1]);
         String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
         domainAxisLabel.append(" (")

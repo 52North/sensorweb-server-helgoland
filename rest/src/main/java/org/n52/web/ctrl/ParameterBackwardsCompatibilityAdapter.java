@@ -45,27 +45,23 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getExpandedParameters(backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters parameters) {
+        return service.getExpandedParameters(adjustFilterInCaseOfBackwardsCompatible(parameters));
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getCondensedParameters(backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters parameters) {
+        return service.getCondensedParameters(adjustFilterInCaseOfBackwardsCompatible(parameters));
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getParameters(items, backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters parameters) {
+        return service.getParameters(items, adjustFilterInCaseOfBackwardsCompatible(parameters));
     }
 
     @Override
-    public ParameterOutput getParameter(String item, IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getParameter(item, backwardsCompatibleQuery);
+    public ParameterOutput getParameter(String item, IoParameters parameters) {
+        return service.getParameter(item, adjustFilterInCaseOfBackwardsCompatible(parameters));
     }
 
     @Override
@@ -88,8 +84,8 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
         service.setRawDataService(rawDataService);
     }
 
-    private IoParameters ensureBackwardsCompatibility(IoParameters query) {
-        return IoParameters.ensureBackwardsCompatibility(query);
+    private IoParameters adjustFilterInCaseOfBackwardsCompatible(IoParameters query) {
+        return IoParameters.adjustFilterInCaseOfBackwardsCompatible(query);
     }
 
 }

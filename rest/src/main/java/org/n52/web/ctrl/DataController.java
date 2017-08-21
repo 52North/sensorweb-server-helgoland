@@ -126,7 +126,7 @@ public class DataController extends BaseController {
 //        RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId, map);
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
-        IoProcessChain< ? > ioChain = createIoFactory(valueType).withIoParameters(map)
+        IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
         DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
@@ -152,7 +152,7 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
         final String datasetType = getValueType(parameters);
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType).withIoParameters(parameters)
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType).setParameters(parameters)
                                                                   .createProcessChain();
 
         DataCollection< ? > processed = ioChain.getData();
@@ -236,7 +236,7 @@ public class DataController extends BaseController {
         final String datasetType = getValueType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withIoParameters(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
@@ -260,7 +260,7 @@ public class DataController extends BaseController {
         final String datasetType = getValueType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withIoParameters(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
@@ -285,7 +285,7 @@ public class DataController extends BaseController {
         response.setContentType(Constants.APPLICATION_ZIP);
 
         final String datasetType = getValueType(parameters);
-        createIoFactory(datasetType).withIoParameters(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.APPLICATION_ZIP)
                                     .writeBinary(response.getOutputStream());
     }
@@ -314,7 +314,7 @@ public class DataController extends BaseController {
         }
 
         final String datasetType = getValueType(parameters);
-        createIoFactory(datasetType).withIoParameters(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.TEXT_CSV)
                                     .writeBinary(response.getOutputStream());
     }
@@ -336,7 +336,7 @@ public class DataController extends BaseController {
         final String datasetType = getValueType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withIoParameters(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
@@ -361,7 +361,7 @@ public class DataController extends BaseController {
         String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(valueType).withIoParameters(parameters)
+        createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(outputFormat)
                                   .writeBinary(response.getOutputStream());
     }
@@ -444,8 +444,8 @@ public class DataController extends BaseController {
         }
         return ioFactoryCreator.create(valueType)
                                // .withBasePath(getRootResource())
-                               .withDataService(dataService)
-                               .withDatasetService(datasetService);
+                               .setDataService(dataService)
+                               .setDatasetService(datasetService);
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {

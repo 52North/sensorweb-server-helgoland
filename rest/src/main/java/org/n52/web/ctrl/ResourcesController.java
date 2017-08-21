@@ -54,7 +54,7 @@ public class ResourcesController {
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
         IoParameters query = IoParameters.createFromMultiValueMap(parameters);
-        query = IoParameters.ensureBackwardsCompatibility(query);
+        query = IoParameters.adjustFilterInCaseOfBackwardsCompatible(query);
         return new ModelAndView().addObject(createResources(query));
     }
 

@@ -46,6 +46,6 @@ public class PhenomenaParameterController extends ParameterRequestMappingAdapter
 
     @Override
     protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getPhenomenaCount(IoParameters.ensureBackwardsCompatibility(queryMap));
+        return super.getEntityCounter().getPhenomenaCount(IoParameters.adjustFilterInCaseOfBackwardsCompatible(queryMap));
     }
 }

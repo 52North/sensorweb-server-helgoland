@@ -54,7 +54,7 @@ public class SearchController extends BaseController {
                                         @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         IoParameters map = createParameters(parameters, locale)
                                           .extendWith(Parameters.SEARCH_TERM, q);
-        IoParameters query = IoParameters.ensureBackwardsCompatibility(map);
+        IoParameters query = IoParameters.adjustFilterInCaseOfBackwardsCompatible(map);
         return new ModelAndView().addObject(searchService.searchResources(query));
     }
 

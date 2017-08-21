@@ -37,7 +37,7 @@ import org.n52.series.spi.srv.RawFormats;
 public class RequestSimpleParameterSet extends RequestParameterSet {
 
     private String rawFormat;
-    
+
     RequestSimpleParameterSet() {
     }
 

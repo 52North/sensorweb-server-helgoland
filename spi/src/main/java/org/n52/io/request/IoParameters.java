@@ -94,7 +94,7 @@ public final class IoParameters implements Parameters {
     }
 
     protected IoParameters(IoParameters other) {
-        this.query = other.query;
+        this(other.query);
     }
 
     protected IoParameters(Map<String, JsonNode> queryParameters) {
@@ -245,6 +245,8 @@ public final class IoParameters implements Parameters {
     /**
      * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
      *         is returned.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public String getLocale() {
         return getAsString(LOCALE, DEFAULT_LOCALE);
@@ -253,7 +255,7 @@ public final class IoParameters implements Parameters {
     /**
      * @return the value of {@value #STYLE} parameter. If not present, the default styles are returned.
      * @throws IoParseException
-     *         if parsing style parameter failed.
+     *         if parsing parameter fails.
      */
     public StyleProperties getStyle() {
         return containsParameter(STYLE)
@@ -666,7 +668,9 @@ public final class IoParameters implements Parameters {
                                    crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
                                    CRSUtils.DEFAULT_CRS);
         } catch (IoParseException e) {
-            throw e.addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.");
+            throw e.addHint(createInvalidParameterMessage(Parameters.BBOX))
+                   .addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.")
+                   .addHint("(alternate format of 'llLon,llLat,urLon,urLat' couldn't be detected)");
         }
 
     }
@@ -698,13 +702,26 @@ public final class IoParameters implements Parameters {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(jsonString, clazz);
-        } catch (JsonParseException e) {
-            throw new IoParseException("The given parameter is invalid JSON." + jsonString, e);
-        } catch (JsonMappingException e) {
-            throw new IoParseException("The given parameter could not been read: " + jsonString, e);
+        } catch (JsonParseException | JsonMappingException e) {
+            throw createInvalidJsonValueException(jsonString, e);
         } catch (IOException e) {
-            throw new RuntimeException("Could not handle input to parse.", e);
+            throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private <T> T parseJson(String jsonString, TypeReference<T> typeReference) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(jsonString, typeReference);
+        } catch (JsonParseException | JsonMappingException e) {
+            throw createInvalidJsonValueException(jsonString, e);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private IoParseException createInvalidJsonValueException(String jsonString, Exception e) {
+        return new IoParseException("The given JSON value is invalid: " + jsonString, e);
     }
 
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
@@ -883,12 +900,13 @@ public final class IoParameters implements Parameters {
     }
 
     private IoParseException createIoParseException(String parameter, Exception e) {
-        String message = "Parameter '" + parameter + "' is invalid.";
-        if (e != null) {
-            return new IoParseException(message, e);
-        } else {
-            return new IoParseException(message);
-        }
+        return e != null
+                ? new IoParseException(createInvalidParameterMessage(parameter), e)
+                : new IoParseException(createInvalidParameterMessage(parameter));
+    }
+
+    private String createInvalidParameterMessage(String parameter) {
+        return "The parameter '" + parameter + "' is invalid.";
     }
 
     private <R> R handleSimpleValueParseException(String parameter, Function<String, R> supplier) {
@@ -1005,7 +1023,7 @@ public final class IoParameters implements Parameters {
         }
         return parameters;
     }
-    
+
     @Override
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
@@ -1067,7 +1085,7 @@ public final class IoParameters implements Parameters {
     private static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
         return createFromSingleJsonValueMap(convertValuesToJsonNodes(query), defaultConfig);
     }
-    
+
     static IoParameters createFromSingleJsonValueMap(Map<String, JsonNode> query) {
         return new IoParameters(query, null);
     }
@@ -1076,7 +1094,7 @@ public final class IoParameters implements Parameters {
         return new IoParameters(query, defaultConfig);
     }
 
-    public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
+    public static IoParameters adjustFilterInCaseOfBackwardsCompatible(IoParameters parameters) {
         String[] platformTypes = {
             PlatformType.PLATFORM_TYPE_STATIONARY,
             PlatformType.PLATFORM_TYPE_INSITU
