@@ -980,6 +980,10 @@ public final class IoParameters implements Parameters {
         return new IoParameters(mergedValues).setParseExceptionHandle(parseExceptionHandle);
     }
 
+    public IoParameters replaceWith(String key, String... values) {
+        return removeAllOf(key).extendWith(key, values);
+    }
+
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {

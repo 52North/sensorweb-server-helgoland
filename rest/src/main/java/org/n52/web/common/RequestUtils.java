@@ -56,8 +56,7 @@ public class RequestUtils {
 
     public static IoParameters overrideQueryLocaleWhenSet(String locale, IoParameters query) {
         return locale != null
-                ? query.removeAllOf(Parameters.LOCALE)
-                       .extendWith(Parameters.LOCALE, locale)
+                ? query.replaceWith(Parameters.LOCALE, locale)
                 : query;
     }
 

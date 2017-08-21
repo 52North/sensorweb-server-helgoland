@@ -253,8 +253,7 @@ public class TimeseriesDataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(query, locale).extendWith(Parameters.ZIP,
-                                                                                Boolean.TRUE.toString());
+        IoParameters map = createParameters(query, locale).extendWith(Parameters.ZIP, Boolean.TRUE.toString());
         response.setContentType(Constants.APPLICATION_ZIP);
         getTimeseriesAsCsv(timeseriesId, map, response);
     }

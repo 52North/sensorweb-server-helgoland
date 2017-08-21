@@ -110,8 +110,7 @@ public class ChartRendererTest {
     @Test
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
-                                          .removeAllOf("outputTimezone")
-                                          .extendWith("outputTimezone", "America/Los_Angeles");
+                                          .replaceWith("outputTimezone", "America/Los_Angeles");
         String label = new MyChartRenderer(config).getXYPlot()
                                                   .getDomainAxis()
                                                   .getLabel();

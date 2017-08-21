@@ -206,18 +206,15 @@ public class IoParametersTest {
 
     @Test
     public void when_singleFilter_then_filterPresentViaMultipleGetter() {
-        IoParameters parameters = createDefaults()
-                .extendWith(Parameters.PROCEDURE, "foo");
+        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo"));
     }
 
     @Test
     public void when_singleAndMultipleFilter_then_filterGetsMerged() {
-        IoParameters parameters = createDefaults()
-                .extendWith(Parameters.PROCEDURE, "foo")
-                .extendWith(Parameters.PROCEDURES, "foo", "bar");
+        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo")
+                                                  .extendWith(Parameters.PROCEDURES, "foo", "bar");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
     }
-    
 
 }
