@@ -858,7 +858,7 @@ public class IoParameters implements Parameters {
         throw new IoParseException(msg + expected, e);
     }
 
-    public RequestSimpleParameterSet toSimpleParameterSet() {
+    RequestSimpleParameterSet toSimpleParameterSet() {
         RequestSimpleParameterSet parameterSet = new RequestSimpleParameterSet();
         addValuesToParameterSet(parameterSet);
         return parameterSet;

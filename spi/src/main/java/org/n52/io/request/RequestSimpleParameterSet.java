@@ -28,7 +28,6 @@
  */
 package org.n52.io.request;
 
-import org.n52.io.IntervalWithTimeZone;
 import org.n52.series.spi.srv.RawFormats;
 
 public class RequestSimpleParameterSet extends RequestParameterSet {
@@ -102,8 +101,6 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     public static RequestSimpleParameterSet createForSingleSeries(String seriesId, IoParameters parameters) {
         RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
         parameterSet.setDatasets(new String[]{seriesId});
-        IntervalWithTimeZone timespan = parameters.getTimespan();
-        parameterSet.setTimespan(timespan.toString());
         return parameterSet;
     }
 

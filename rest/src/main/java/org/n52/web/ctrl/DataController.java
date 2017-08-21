@@ -107,22 +107,6 @@ public class DataController extends BaseController {
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
-    @RequestMapping(value = "/data",
-        produces = {
-            Constants.APPLICATION_JSON
-        },
-        method = RequestMethod.GET)
-    public ModelAndView getSeriesData(HttpServletResponse response,
-                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                          required = false) String locale,
-                                      @RequestParam(required = false) MultiValueMap<String, String> query)
-            throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters parameters = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data with query: {}", parameters);
-        return getCollectionData(response, locale, parameters.toSimpleParameterSet());
-    }
-
     @RequestMapping(value = "/{seriesId}/data",
         produces = {
             Constants.APPLICATION_JSON
@@ -388,7 +372,7 @@ public class DataController extends BaseController {
 
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
-        RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
+        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).withSimpleRequest(parameters)
