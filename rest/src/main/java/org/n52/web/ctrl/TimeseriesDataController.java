@@ -340,7 +340,7 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        if (preRenderingTask == null && isHandlingPreRenderingTask()) {
+        if (preRenderingTask == null || isHandlingPreRenderingTask()) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
         String datasetId = ValueType.createId(ValueType.DEFAULT_VALUE_TYPE, timeseriesId);

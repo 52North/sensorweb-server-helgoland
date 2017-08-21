@@ -47,9 +47,9 @@ public abstract class WebExceptionAdapter extends RuntimeException implements We
     }
 
     @Override
-    public WebExceptionAdapter addHint(String... details) {
-        if (details != null) {
-            Arrays.asList(details)
+    public WebExceptionAdapter addHint(String... hints) {
+        if (hints != null) {
+            Arrays.asList(hints)
                   .stream()
                   .forEach(d -> addHint(d));
         }

@@ -180,7 +180,6 @@ public class DataController extends BaseController {
             throws Exception {
         IoParameters parameters = createParameters(simpleParameters, locale);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
-        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         writeRawData(parameters, response);
     }
 
@@ -195,13 +194,13 @@ public class DataController extends BaseController {
                                      required = false) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
         IoParameters parameters = createParameters(datasetId, query, locale);
-        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         checkForUnknownDatasetId(parameters, datasetId);
         writeRawData(parameters, response);
     }
 
     private void writeRawData(IoParameters parameters, HttpServletResponse response)
             throws InternalServerException, ResourceNotFoundException, BadRequestException {
+        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         if (!dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported "
                     + "by the underlying service!");
