@@ -41,7 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.io.Constants;
 import org.n52.io.IoParseException;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
@@ -90,28 +92,36 @@ public abstract class BaseController implements ServletConfigAware {
                     .addHint(e.getHints());
         };
     }
-
-    protected IoParameters createUtilizedIoParameters(MultiValueMap<String, String> query) {
-        return createUtilizedIoParameters(query, null);
+    
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
+        return createParameters(query.toParameters(), locale);
     }
 
-    protected IoParameters createUtilizedIoParameters(MultiValueMap<String, String> query, String locale) {
-        return createUtilizedIoParameters(IoParameters.createFromMultiValueMap(query), locale);
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
+        return createParameters(query.toParameters(), locale);
     }
 
-    protected IoParameters createUtilizedIoParameters(Map<String, String> query) {
-        return createUtilizedIoParameters(query, null);
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
+        return createParameters(IoParameters.createFromMultiValueMap(query), locale);
     }
 
-    protected IoParameters createUtilizedIoParameters(Map<String, String> query, String locale) {
-        return createUtilizedIoParameters(IoParameters.createFromSingleValueMap(query), locale);
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
+        IoParameters parameters = IoParameters.createFromMultiValueMap(query)
+                                              .replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale);
     }
 
-    protected IoParameters createUtilizedIoParameters(RequestParameterSet parameters, String locale) {
-        return createUtilizedIoParameters(IoParameters.createFromQuery(parameters), locale);
+    protected IoParameters createParameters(Map<String, String> query, String locale) {
+        return createParameters(IoParameters.createFromSingleValueMap(query), locale);
     }
 
-    private IoParameters createUtilizedIoParameters(IoParameters parameters, String locale) {
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
+        IoParameters parameters = IoParameters.createFromSingleValueMap(query)
+                                              .replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale);
+    }
+
+    protected IoParameters createParameters(IoParameters parameters, String locale) {
         return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
                            .setParseExceptionHandle(getExceptionHandle());
     }

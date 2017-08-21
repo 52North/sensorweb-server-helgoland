@@ -60,7 +60,7 @@ import org.n52.io.IoHandlerException;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.img.quantity.ChartIoHandler;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
@@ -94,10 +94,10 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
 
     private URI baseURI;
 
-    public PDFReportGenerator(RequestParameterSet simpleRequest,
+    public PDFReportGenerator(IoParameters parameters,
                               IoProcessChain<QuantityData> processChain,
                               ChartIoHandler renderer) {
-        super(simpleRequest, processChain, renderer.getRenderingContext());
+        super(parameters, processChain, renderer.getRenderingContext());
         this.document = DocumentStructureDocument.Factory.newInstance();
         this.document.addNewDocumentStructure();
         renderer.setMimeType(Constants.MimeType.IMAGE_PNG);
@@ -136,7 +136,7 @@ public class PDFReportGenerator extends ReportGenerator<QuantityData> {
     }
 
     private void generateTimeseriesMetadata() {
-        for (DatasetOutput metadata : getSeriesMetadatas()) {
+        for (DatasetOutput metadata : getAllDatasetMetadatas()) {
             TimeSeries timeseries = addTimeseries(metadata);
             // addDataTable(timeseries, metadata, data);
             addMetadata(timeseries, metadata);

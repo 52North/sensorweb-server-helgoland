@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -33,10 +34,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 import static org.n52.io.request.IoParameters.createFromMultiValueMap;
-import static org.n52.io.request.IoParameters.createFromQuery;
 import static org.n52.io.request.IoParameters.createFromSingleValueMap;
-import static org.n52.io.request.IoParameters.getJsonNodeFrom;
-import static org.n52.io.request.RequestSimpleParameterSet.createForSingleSeries;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -141,18 +139,6 @@ public class IoParametersTest {
     }
 
     @Test
-    public void when_creationViaRequestParameterSet_then_keysGetLowerCased() {
-        RequestParameterSet request = new RequestSimpleParameterSet();
-        request.setParameter("camelCased", getJsonNodeFrom("value"));
-        request.setParameter("UPPERCASED", getJsonNodeFrom("value"));
-        IoParameters parameters = createFromQuery(request);
-        Assert.assertTrue(parameters.containsParameter("camelCased"));
-        Assert.assertTrue(parameters.containsParameter("camelcased"));
-        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
-        Assert.assertTrue(parameters.containsParameter("uppercased"));
-    }
-
-    @Test
     public void when_defaults_then_valuesFromDefaultConfigFile() {
         IoParameters parameters = createDefaults();
         assertThat(parameters.getWidth(), is(2000));
@@ -167,14 +153,6 @@ public class IoParametersTest {
     @Test
     public void testBooleanValue() {
         IoParameters parameters = createDefaults();
-        Assert.assertTrue(parameters.isGeneralize());
-    }
-
-    @Test
-    public void testAfterConvertedFromParameterSet() {
-        final IoParameters defaults = createDefaults();
-        RequestSimpleParameterSet set = createForSingleSeries("1", defaults);
-        IoParameters parameters = createFromQuery(set);
         Assert.assertTrue(parameters.isGeneralize());
     }
 
@@ -217,13 +195,6 @@ public class IoParametersTest {
     }
 
     @Test
-    public void when_convertingToStyledRequestParameters_then_overridingParametersAllowed() {
-        IoParameters defaults = createDefaults().extendWith("width", "200");
-        RequestStyledParameterSet parameters = defaults.toStyledParameterSet();
-        assertThat(parameters.getWidth(), is(200));
-    }
-
-    @Test
     public void when_timespanWithNow_then_normalizeWithDateString() {
         DateTimeFormatter dateFormat = DateTimeFormat.forPattern("YYYY-MM-dd");
         String now = dateFormat.print(new DateTime());
@@ -247,5 +218,6 @@ public class IoParametersTest {
                 .extendWith(Parameters.PROCEDURES, "foo", "bar");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
     }
+    
 
 }

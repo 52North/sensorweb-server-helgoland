@@ -45,7 +45,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public abstract class RequestParameterSet {
+/**
+ * Serialization POJO for POST requests. All parameters will be passed to an {@link IoParameters} instance.
+ */
+abstract class RequestParameterSet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
 
@@ -332,6 +335,11 @@ public abstract class RequestParameterSet {
         return datasetIds.length > 0
                 ? ValueType.extractType(datasetIds[0], handleAs)
                 : ValueType.DEFAULT_VALUE_TYPE;
+    }
+
+    public IoParameters toParameters() {
+        return IoParameters.createFromSingleJsonValueMap(parameters)
+                           .replaceWith(Parameters.DATASETS, getDatasets());
     }
 
     @Override

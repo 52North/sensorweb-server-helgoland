@@ -67,22 +67,22 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
         return new IoProcessChain<QuantityData>() {
             @Override
             public DataCollection<QuantityData> getData() {
-                boolean generalize = getIoParameters().isGeneralize();
+                boolean generalize = getParameters().isGeneralize();
                 DataService<QuantityData> dataService = generalize
                         ? new GeneralizingQuantityService(getDataService())
                         : getDataService();
-                return dataService.getData(getRequestParameters());
+                return dataService.getData(getParameters());
             }
 
             @Override
             public DataCollection<?> getProcessedData() {
-                return getIoParameters().shallClassifyByResultTimes()
+                return getParameters().shallClassifyByResultTimes()
                         ? new ResultTimeFormatter<QuantityData>().format(getData())
                         : createFormatter().create().format(getData());
             }
 
             private FormatterFactory createFormatter() {
-                return FormatterFactory.createFormatterFactory(getIoParameters());
+                return FormatterFactory.createFormatterFactory(getParameters());
             }
         };
     }
@@ -108,28 +108,28 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
     @Override
     public IoHandler<QuantityData> createHandler(String outputMimeType) {
-        IoParameters parameters = getIoParameters();
+        IoParameters parameters = getParameters();
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
         } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                    getRequestParameters(),
+                    parameters,
                     createProcessChain(),
                     imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
         } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
             QuantityCsvIoHandler handler = new QuantityCsvIoHandler(
-                    getRequestParameters(),
+                    parameters,
                     createProcessChain(),
                     getMetadatas());
-            handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
+            handler.setTokenSeparator(parameters.getOther(Parameters.TOKEN_SEPARATOR));
 
-            boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP);
+            boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
-            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
+            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther(Parameters.BOM));
             handler.setIncludeByteOrderMark(byteOderMark);
             return handler;
         }
@@ -141,7 +141,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
     private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                getRequestParameters(),
+                getParameters(),
                 createProcessChain(),
                 createContext());
 

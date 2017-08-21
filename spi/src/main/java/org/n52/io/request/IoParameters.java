@@ -50,6 +50,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
 import org.n52.io.IntervalWithTimeZone;
@@ -75,7 +76,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
 
-public class IoParameters implements Parameters {
+public final class IoParameters implements Parameters {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
@@ -87,6 +88,10 @@ public class IoParameters implements Parameters {
     private final MultiValueMap<String, JsonNode> query;
 
     private BiConsumer<String, IoParseException> parseExceptionHandle;
+
+    protected IoParameters() {
+        this(Collections.<String, JsonNode> emptyMap());
+    }
 
     protected IoParameters(IoParameters other) {
         this.query = other.query;
@@ -340,7 +345,12 @@ public class IoParameters implements Parameters {
         if (!containsParameter(OUTPUT_TIMEZONE)) {
             return DEFAULT_OUTPUT_TIMEZONE;
         }
-        return getAsString(OUTPUT_TIMEZONE);
+        String timezone = getAsString(OUTPUT_TIMEZONE);
+        Set<String> availableIDs = DateTimeZone.getAvailableIDs();
+        DateTimeZone zone = availableIDs.contains(timezone)
+                ? DateTimeZone.forID(timezone)
+                : DateTimeZone.UTC;
+        return zone.toString();
     }
 
     public Instant getResultTime() {
@@ -546,7 +556,7 @@ public class IoParameters implements Parameters {
         return csvToSet(csv, Function.identity());
     }
 
-    private <O> Set<O> csvToSet(String csv, Function<String, O> c){
+    private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
         String[] values = csv != null
                 ? csv.split(",")
                 : new String[0];
@@ -863,7 +873,8 @@ public class IoParameters implements Parameters {
         if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
         } else {
-            throw createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
+            IoParseException ex = createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
+            return handleIoParseException(parameter, ex);
         }
     }
 
@@ -884,12 +895,7 @@ public class IoParameters implements Parameters {
         try {
             return supplier.apply(parameter);
         } catch (IoParseException e) {
-            if (parseExceptionHandle != null) {
-                parseExceptionHandle.accept(parameter, e);
-                return null;
-            } else {
-                throw e;
-            }
+            return handleIoParseException(parameter, e);
         }
     }
 
@@ -899,52 +905,34 @@ public class IoParameters implements Parameters {
         try {
             return supplier.apply(parameter, clazz);
         } catch (IoParseException e) {
-            if (parseExceptionHandle != null) {
-                parseExceptionHandle.accept(parameter, e);
-                return null;
-            } else {
-                throw e;
-            }
+            return handleIoParseException(parameter, e);
         }
     }
 
-    RequestSimpleParameterSet toSimpleParameterSet() {
-        RequestSimpleParameterSet parameterSet = new RequestSimpleParameterSet();
-        addValuesToParameterSet(parameterSet);
-        return parameterSet;
-    }
-
-    public RequestSimpleParameterSet mergeToSimpleParameterSet(RequestStyledParameterSet designedSet) {
-        RequestSimpleParameterSet parameters = toSimpleParameterSet();
-        parameters.setOutputTimezone(designedSet.getOutputTimezone());
-        parameters.setDatasets(designedSet.getDatasets());
-        parameters.setTimespan(designedSet.getTimespan());
-        return parameters;
-    }
-
-    public RequestStyledParameterSet toStyledParameterSet() {
-        return mergeToStyledParameterSet(new RequestStyledParameterSet());
-    }
-
-    public RequestStyledParameterSet mergeToStyledParameterSet(RequestStyledParameterSet parameterSet) {
-        addValuesToParameterSet(parameterSet);
-        return parameterSet;
-    }
-
-    private RequestParameterSet addValuesToParameterSet(RequestParameterSet parameterSet) {
-        // TODO check value object
-        // TODO keep multi value map
-        for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
-            String key = entry.getKey();
-            String lowercasedKey = key.toLowerCase();
-            List<JsonNode> values = entry.getValue();
-            if (values.size() == 1) {
-                parameterSet.setParameter(lowercasedKey, values.get(0));
-            } else {
-                parameterSet.setParameter(lowercasedKey, getJsonNodeFrom(values));
-            }
+    private <R, T> R handleJsonValueParseException(String parameter,
+                                                   TypeReference<T> reference,
+                                                   BiFunction<String, TypeReference<T>, R> supplier) {
+        try {
+            return supplier.apply(parameter, reference);
+        } catch (IoParseException e) {
+            return handleIoParseException(parameter, e);
         }
-        return parameterSet;
+    }
+
+    /**
+     * @param parameter
+     *        the parameter causing the parse exception.
+     * @param e
+     *        the parse exception to handle
+     * @return nothing, as {@link #parseExceptionHandle} is expected to handle the exception.
+     */
+    private <R> R handleIoParseException(String parameter, IoParseException e) {
+        if (parseExceptionHandle != null) {
+            parseExceptionHandle.accept(parameter, e);
+            return null;
+        } else {
+            throw e;
+        }
     }
 
     public static JsonNode getJsonNodeFrom(Object object) {
@@ -962,7 +950,7 @@ public class IoParameters implements Parameters {
     /**
      * Creates a new instance based on the current one and removes given parameter with the all its values. As
      * a new instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
-     * 
+     *
      * @param key
      *        the name of the parameter to remove all its values
      * @return a new instance with extended key/values
@@ -976,7 +964,7 @@ public class IoParameters implements Parameters {
     /**
      * Creates a new instance based on the current one and adds parameter with the given values. As a new
      * instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
-     * 
+     *
      * @param key
      *        the parameter name
      * @param values
@@ -1013,13 +1001,13 @@ public class IoParameters implements Parameters {
         }
         return parameters;
     }
-
+    
     @Override
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
     }
 
-    private static Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
+    protected Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (Entry<String, JsonNode> entry : parameters.entrySet()) {
             String parameter = entry.getKey();
@@ -1029,7 +1017,7 @@ public class IoParameters implements Parameters {
         return queryParameters;
     }
 
-    private static MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
+    protected MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
         MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
         for (Entry<String, List<JsonNode>> entry : parameters.entrySet()) {
             String parameter = entry.getKey();
@@ -1044,7 +1032,7 @@ public class IoParameters implements Parameters {
         }
         return queryParameters;
     }
-    
+
     /*
      * ********************* FACTORY METHODS ***************************
      */
@@ -1060,34 +1048,28 @@ public class IoParameters implements Parameters {
         return createFromMultiValueMap(query, null);
     }
 
-    static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
-        return new IoParameters(convertToJsonNodes(query), defaultConfig);
+    private static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
+        return createFromMultiJsonValueMap(convertToJsonNodes(query), defaultConfig);
+    }
+
+    private static IoParameters createFromMultiJsonValueMap(MultiValueMap<String, JsonNode> query, File defaultConfig) {
+        return new IoParameters(query, defaultConfig);
     }
 
     public static IoParameters createFromSingleValueMap(Map<String, String> query) {
         return createFromSingleValueMap(query, null);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
-        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
+    private static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
+        return createFromSingleJsonValueMap(convertValuesToJsonNodes(query), defaultConfig);
+    }
+    
+    static IoParameters createFromSingleJsonValueMap(Map<String, JsonNode> query) {
+        return new IoParameters(query, null);
     }
 
-    /**
-     * @param parameters
-     *        the parameters sent via POST payload.
-     * @return a query map for convenient parameter access plus validation.
-     */
-    public static IoParameters createFromQuery(RequestParameterSet parameters) {
-        return createFromQuery(parameters, null);
-    }
-
-    private static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
-        Map<String, JsonNode> queryParameters = new HashMap<>();
-        for (String parameter : parameters.availableParameterNames()) {
-            JsonNode value = parameters.getParameterValue(parameter);
-            queryParameters.put(parameter.toLowerCase(), value);
-        }
-        return new IoParameters(queryParameters, defaultConfig);
+    private static IoParameters createFromSingleJsonValueMap(Map<String, JsonNode> query, File defaultConfig) {
+        return new IoParameters(query, defaultConfig);
     }
 
     public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {

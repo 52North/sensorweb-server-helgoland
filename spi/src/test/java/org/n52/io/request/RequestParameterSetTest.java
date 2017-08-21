@@ -35,8 +35,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Arrays;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -105,18 +103,21 @@ public class RequestParameterSetTest {
 
     @Test
     public void when_datasetsAvailable_then_accessibleViaParameterName() {
-        RequestSimpleParameterSet parameters = IoParameters.createDefaults()
-            .extendWith(Parameters.DATASETS, "foo", "bar")
-            .toSimpleParameterSet();
-        assertThat(Arrays.asList(parameters.getAs(String[].class, "datasets")), contains("foo", "bar"));
+        RequestSimpleParameterSet request = new RequestSimpleParameterSet();
+        request.setParameter(Parameters.DATASETS, jsonFactory.arrayNode()
+                                                             .add("foo")
+                                                             .add("bar"));
+        String[] actualValues = request.getAs(String[].class, "datasets");
+        assertThat(Arrays.asList(actualValues), contains("foo", "bar"));
     }
 
     @Test
     public void when_addingSingleValueStringArray_then_accessibleViaParameterName() {
-        RequestParameterSet parameters = IoParameters.createDefaults()
-                .extendWith(Parameters.DATASETS, "foo")
-                .toSimpleParameterSet();
-        assertThat(Arrays.asList(parameters.getDatasets()), contains("foo"));
+        RequestSimpleParameterSet request = new RequestSimpleParameterSet();
+        request.setParameter(Parameters.DATASETS, jsonFactory.arrayNode()
+                                                             .add("foo"));
+        String[] actualValues = request.getAs(String[].class, "datasets");
+        assertThat(Arrays.asList(actualValues), contains("foo"));
     }
 
     @Test
@@ -129,56 +130,11 @@ public class RequestParameterSetTest {
 
     @Test
     public void when_datasetsAvailable_then_accessibleViaGetter() {
-        RequestSimpleParameterSet parameters = IoParameters.createDefaults()
-            .extendWith(Parameters.DATASETS, "foo", "bar")
-            .toSimpleParameterSet();
-        assertThat(Arrays.asList(parameters.getDatasets()), contains("foo", "bar"));
+        RequestSimpleParameterSet request = new RequestSimpleParameterSet();
+        request.setParameter(Parameters.DATASETS, jsonFactory.arrayNode()
+                                                             .add("foo")
+                                                             .add("bar"));
+        assertThat(Arrays.asList(request.getDatasets()), contains("foo", "bar"));
     }
-
-    @Test
-    public void testJsonObjectInGeneralConfig() {
-        IoParameters parameters = IoParameters.createDefaults();
-        RequestSimpleParameterSet set = parameters.toSimpleParameterSet();
-        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "generalizer");
-        Assert.assertNotNull(config);
-        Assert.assertThat(config.getDefaultGeneralizer(), Matchers.is("lttb"));
-    }
-
-    @Test
-    public void testNotAvailableJsonObjectInGeneralConfig() {
-        IoParameters parameters = IoParameters.createDefaults();
-        RequestSimpleParameterSet set = parameters.toSimpleParameterSet();
-        GeneralizerConfig config = set.getAs(GeneralizerConfig.class, "doesnotexist");
-        Assert.assertNull(config);
-    }
-
-    private static class GeneralizerConfig {
-
-        // json serializing object
-
-        private String defaultGeneralizer;
-        private String noDataGapThreshold;
-
-        public String getDefaultGeneralizer() {
-            return defaultGeneralizer;
-        }
-
-        @SuppressWarnings("unused")
-        public void setDefaultGeneralizer(String defaultGeneralizer) {
-            this.defaultGeneralizer = defaultGeneralizer;
-        }
-
-        @SuppressWarnings("unused")
-        public String getNoDataGapThreshold() {
-            return noDataGapThreshold;
-        }
-
-        @SuppressWarnings("unused")
-        public void setNoDataGapThreshold(String noDataGapThreshold) {
-            this.noDataGapThreshold = noDataGapThreshold;
-        }
-    }
-
-
 
 }

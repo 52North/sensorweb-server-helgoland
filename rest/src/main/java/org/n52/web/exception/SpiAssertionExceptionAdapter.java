@@ -32,7 +32,6 @@ package org.n52.web.exception;
 import java.io.InputStream;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.ParameterService;
@@ -101,7 +100,7 @@ public class SpiAssertionExceptionAdapter<T extends ParameterOutput> extends Par
     }
 
     @Override
-    public InputStream getRawData(RequestSimpleParameterSet parameters) {
+    public InputStream getRawData(IoParameters parameters) {
         if (composedService.supportsRawData()) {
             return composedService.getRawDataService()
                                   .getRawData(parameters);

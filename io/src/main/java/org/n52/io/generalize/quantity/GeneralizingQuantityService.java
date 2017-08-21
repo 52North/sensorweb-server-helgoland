@@ -30,7 +30,6 @@
 package org.n52.io.generalize.quantity;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.series.spi.srv.DataService;
@@ -52,14 +51,12 @@ public class GeneralizingQuantityService implements DataService<QuantityData> {
     }
 
     @Override
-    public DataCollection<QuantityData> getData(RequestParameterSet parameters) {
+    public DataCollection<QuantityData> getData(IoParameters parameters) {
         DataCollection<QuantityData> data = composedService.getData(parameters);
         DataCollection<QuantityData> ungeneralizedData = data;
         try {
-            Generalizer<QuantityData> generalizer = GeneralizerFactory
-                    .createGeneralizer(IoParameters.createFromQuery(parameters));
-            DataCollection<QuantityData> generalizedData = generalizer
-                    .generalize(ungeneralizedData);
+            Generalizer<QuantityData> generalizer = GeneralizerFactory.createGeneralizer(parameters);
+            DataCollection<QuantityData> generalizedData = generalizer.generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
@@ -71,15 +68,20 @@ public class GeneralizingQuantityService implements DataService<QuantityData> {
     }
 
     private void logGeneralizationAmount(
-            DataCollection<QuantityData> ungeneralizedData,
-            DataCollection<QuantityData> generalizedData) {
-        for (String timeseriesId : ungeneralizedData.getAllSeries().keySet()) {
+                                         DataCollection<QuantityData> ungeneralizedData,
+                                         DataCollection<QuantityData> generalizedData) {
+        for (String timeseriesId : ungeneralizedData.getAllSeries()
+                                                    .keySet()) {
             QuantityData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
             QuantityData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
-            int originalAmount = originalTimeseries.getValues().size();
-            int generalizedAmount = generalizedTimeseries.getValues().size();
+            int originalAmount = originalTimeseries.getValues()
+                                                   .size();
+            int generalizedAmount = generalizedTimeseries.getValues()
+                                                         .size();
             LOGGER.debug("Generalized timeseries: {} (#{} --> #{}).",
-                    timeseriesId, originalAmount, generalizedAmount);
+                         timeseriesId,
+                         originalAmount,
+                         generalizedAmount);
         }
     }
 

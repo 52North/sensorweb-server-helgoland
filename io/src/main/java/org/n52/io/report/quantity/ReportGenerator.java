@@ -30,10 +30,11 @@ package org.n52.io.report.quantity;
 
 
 import java.util.List;
+
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -43,14 +44,14 @@ public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>
     private final IoStyleContext context;
 
     /**
-     * @param simpleRequest simple parameter set.
+     * @param parameters simple parameter set.
      * @param processChain the process chain.
      * @param context the rendering context.
      */
-    public ReportGenerator(RequestParameterSet simpleRequest,
+    public ReportGenerator(IoParameters parameters,
             IoProcessChain<T> processChain,
             IoStyleContext context) {
-        super(simpleRequest, processChain);
+        super(parameters, processChain);
         this.context = context;
     }
 
@@ -58,8 +59,8 @@ public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>
         return context;
     }
 
-    protected List<? extends DatasetOutput> getSeriesMetadatas() {
-        return getContext().getDatasetMetadatas();
+    protected List<? extends DatasetOutput> getAllDatasetMetadatas() {
+        return getContext().getAllDatasetMetadatas();
     }
 
 }

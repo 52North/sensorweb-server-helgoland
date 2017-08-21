@@ -28,13 +28,13 @@
  */
 package org.n52.io.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * Represents a parameter object to request a rendered chart output from
- * multiple timeseries.
+ * POST request body used for serialization.
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
 
@@ -47,7 +47,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     /**
      * Creates an instance with non-null default values.
      */
-    public RequestStyledParameterSet() {
+    RequestStyledParameterSet() {
         styleOptions = new HashMap<>();
     }
 

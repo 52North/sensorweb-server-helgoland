@@ -31,9 +31,15 @@ package org.n52.io.request;
 
 import org.n52.series.spi.srv.RawFormats;
 
+/**
+ * POST request body used for serialization.
+ */
 public class RequestSimpleParameterSet extends RequestParameterSet {
 
     private String rawFormat;
+    
+    RequestSimpleParameterSet() {
+    }
 
     /**
      * @return the series ids
@@ -100,12 +106,6 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     public boolean isSetRawFormat() {
         return getRawFormat() != null && !getRawFormat().isEmpty();
-    }
-
-    public static RequestSimpleParameterSet createForSingleSeries(String seriesId, IoParameters parameters) {
-        RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
-        parameterSet.setDatasets(new String[]{seriesId});
-        return parameterSet;
     }
 
 }

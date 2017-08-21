@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestParameterSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestAttributes;
@@ -60,13 +59,6 @@ public class RequestUtils {
                 ? query.removeAllOf(Parameters.LOCALE)
                        .extendWith(Parameters.LOCALE, locale)
                 : query;
-    }
-
-    public static void overrideQueryLocaleWhenSet(String locale, RequestParameterSet query) {
-        if (locale != null) {
-            // override query parameter
-            query.setLocale(locale);
-        }
     }
 
     /**
