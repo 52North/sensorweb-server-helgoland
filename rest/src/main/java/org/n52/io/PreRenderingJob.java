@@ -186,10 +186,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private void renderWithStyle(String datasetId, RenderingConfig renderingConfig, String interval)
             throws IOException, DatasetFactoryException, URISyntaxException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(datasetId, interval);
-        IoParameters parameters = createConfig(timespan.toString(), renderingConfig);
-
-        DatasetOutput< ? , ? > metadata = datasetService.getParameter(datasetId, parameters);
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, parameters);
+        IoParameters parameters = createConfig(datasetId, timespan.toString(), renderingConfig);
 
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(datasetId, interval, chartQualifier);
@@ -351,7 +348,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return outputDirectory;
     }
 
-    private IoParameters createConfig(String interval, RenderingConfig renderingConfig) {
+    private IoParameters createConfig(String datasetId, String interval, RenderingConfig renderingConfig) {
         Map<String, String> configuration = new HashMap<>();
 
         // set defaults
@@ -374,6 +371,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         try {
             ObjectMapper om = new ObjectMapper();
+            configuration.put(Parameters.DATASETS, datasetId);
             configuration.put(Parameters.STYLE, om.writeValueAsString(renderingConfig.getStyle()));
             configuration.put("title", renderingConfig.getTitle());
         } catch (JsonProcessingException e) {

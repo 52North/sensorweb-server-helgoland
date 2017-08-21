@@ -30,6 +30,7 @@
 package org.n52.io;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,8 +72,23 @@ public final class IoStyleContext {
         if (parameters == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
-        final Map<String, StyleProperties> styles = parameters.getStyles();
+
+        final Map<String, StyleProperties> styles = new HashMap<>(parameters.getReferencedStyles());
+        associateBackwardsCompatibleSingleStyle(parameters, metadatas, styles);
         return new IoStyleContext(collectStyleMetadatas(metadatas, styles));
+    }
+
+    private static void associateBackwardsCompatibleSingleStyle(IoParameters parameters,
+                                                                List< ? extends DatasetOutput< ? , ? >> metadatas,
+                                                                Map<String, StyleProperties> styles) {
+        StyleProperties style = parameters.getSingleStyle();
+        if (style != null) {
+            if (metadatas.size() == 0) {
+                throw new IllegalArgumentException("No metadatas found for given style.");
+            }
+            styles.put(metadatas.get(0).getId(), style);
+        }
+
     }
 
     private static Map<String, StyleMetadata> collectStyleMetadatas(List< ? extends DatasetOutput< ? , ? >> metadatas,

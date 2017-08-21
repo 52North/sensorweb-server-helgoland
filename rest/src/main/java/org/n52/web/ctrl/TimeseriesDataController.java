@@ -58,6 +58,7 @@ import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.ValueType;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
@@ -96,6 +97,8 @@ public class TimeseriesDataController extends BaseController {
     private DataService<QuantityData> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
+
+    private boolean handlingPreRenderingTask;
 
     private String requestIntervalRestriction;
 
@@ -337,15 +340,16 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        if (preRenderingTask == null) {
+        if (preRenderingTask == null && isHandlingPreRenderingTask()) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
-        if (!preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
+        String datasetId = ValueType.createId(ValueType.DEFAULT_VALUE_TYPE, timeseriesId);
+        if (!preRenderingTask.hasPrerenderedImage(datasetId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '"
                     + timeseriesId
                     + "'.");
         }
-        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
+        preRenderingTask.writePrerenderedGraphToOutputStream(datasetId, chartQualifier, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
@@ -412,6 +416,14 @@ public class TimeseriesDataController extends BaseController {
 
     public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
+    }
+
+    public boolean isHandlingPreRenderingTask() {
+        return handlingPreRenderingTask;
+    }
+
+    public void setHandlingPreRenderingTask(boolean handlingPreRenderingTask) {
+        this.handlingPreRenderingTask = handlingPreRenderingTask;
     }
 
     public void setPreRenderingTask(PreRenderingJob prerenderingTask) {

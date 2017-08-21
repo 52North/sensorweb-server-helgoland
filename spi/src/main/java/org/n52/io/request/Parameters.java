@@ -216,16 +216,31 @@ public interface Parameters {
      * Default event causing a rendering task.
      */
     String DEFAULT_RENDERING_TRIGGER = "request";
-    
+
     /**
      * Determines that output shall be zipped (if possible).
      */
     String ZIP = "zip";
 
     /**
-     * Determines the style parameter
+     * Flag to indicate if CSV encoding shall start with a Byte-Order-Mark
+     */
+    String BOM = "bom";
+
+    /**
+     * A token separator to separate CSV values
+     */
+    String TOKEN_SEPARATOR = "tokenSeparator";
+
+    /**
+     * Determines the style parameter for a single dataset
      */
     String STYLE = "style";
+
+    /**
+     * Determines the styles parameter for multiple datasets
+     */
+    String STYLES = "styles";
 
     /**
      * Determines the services filter

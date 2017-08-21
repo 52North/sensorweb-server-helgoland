@@ -257,10 +257,29 @@ public final class IoParameters implements Parameters {
      * @throws IoParseException
      *         if parsing parameter fails.
      */
-    public StyleProperties getStyle() {
+    public StyleProperties getSingleStyle() {
         return containsParameter(STYLE)
                 ? parseStyleProperties(getAsString(STYLE))
                 : StyleProperties.createDefaults();
+    }
+
+    /**
+     * @return the value of {@value #STYLES} parameter.
+     * @throws IoParseException
+     *         if parsing parameter fails.
+     */
+    public Map<String, StyleProperties> getReferencedStyles() {
+        return containsParameter(STYLES)
+                ? parseMultipleStyleProperties(getAsString(STYLES))
+                : Collections.emptyMap();
+    }
+
+    /**
+     * @return in case of either <tt>style</tt> for single or <tt>styles</tt> for multiple datasets are
+     *         available.
+     */
+    public boolean hasStyles() {
+        return getSingleStyle() != null || !getReferencedStyles().isEmpty();
     }
 
     /**
@@ -276,6 +295,12 @@ public final class IoParameters implements Parameters {
      */
     private StyleProperties parseStyleProperties(String style) {
         return handleJsonValueParseException(style, StyleProperties.class, this::parseJson);
+    }
+
+    private Map<String, StyleProperties> parseMultipleStyleProperties(String styles) {
+        return handleJsonValueParseException(styles,
+                                             new TypeReference<HashMap<String, StyleProperties>>() {},
+                                             this::parseJson);
     }
 
     public String getFormat() {

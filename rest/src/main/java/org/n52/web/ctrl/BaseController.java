@@ -92,7 +92,7 @@ public abstract class BaseController implements ServletConfigAware {
                     .addHint(e.getHints());
         };
     }
-    
+
     protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
         return createParameters(query.toParameters(), locale);
     }
