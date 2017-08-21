@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.generalize.quantity;
 
 import org.n52.io.request.IoParameters;
@@ -42,8 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GeneralizingQuantityService implements DataService<QuantityData> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-            GeneralizingQuantityService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingQuantityService.class);
 
     private final DataService<QuantityData> composedService;
 

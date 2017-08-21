@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import org.n52.series.spi.srv.RawFormats;
@@ -43,7 +44,8 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param datasets The series ids of interest.
+     * @param datasets
+     *        The series ids of interest.
      */
     void setDatasets(String[] datasets) {
         setParameter(Parameters.DATASETS, IoParameters.getJsonNodeFrom(datasets));
@@ -67,7 +69,8 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param format Which output format the raw data shall have.
+     * @param format
+     *        Which output format the raw data shall have.
      */
     public void setFormat(String format) {
         setParameter(Parameters.FORMAT, IoParameters.getJsonNodeFrom(format));
@@ -85,7 +88,8 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param rawFormat Which raw output format the raw data shall have.
+     * @param rawFormat
+     *        Which raw output format the raw data shall have.
      */
     public void setRawFormat(String rawFormat) {
         this.rawFormat = rawFormat;
