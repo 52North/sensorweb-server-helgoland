@@ -179,9 +179,10 @@ public abstract class BaseController implements ServletConfigAware {
     })
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         if (e instanceof HttpMessageNotReadableException) {
-            WebException wrappedException = new BadRequestException("The request could not been read.", e);
-            wrappedException.addHint("Check the message which has been sent to the server. Probably it is not valid.");
-            writeExceptionResponse(wrappedException, response, HttpStatus.BAD_REQUEST);
+            WebException ex = new BadRequestException("Invalid Request", e)
+                    .addHint("Refer to the API documentation and check parameter value against required syntax!")
+                    .addHint("Check the request body which has been sent to the server. Probably it is not valid.");
+            writeExceptionResponse(ex, response, HttpStatus.BAD_REQUEST);
         } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
             writeExceptionResponse(wrappedException, response, HttpStatus.INTERNAL_SERVER_ERROR);
