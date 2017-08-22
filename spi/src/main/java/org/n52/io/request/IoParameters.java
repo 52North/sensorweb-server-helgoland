@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -274,7 +275,7 @@ public final class IoParameters implements Parameters {
      */
     public StyleProperties getSingleStyle() {
         return containsParameter(STYLE)
-                ? parseStyleProperties(getAsString(STYLE))
+                ? parseStyleProperties()
                 : StyleProperties.createDefaults();
     }
 
@@ -285,7 +286,7 @@ public final class IoParameters implements Parameters {
      */
     public Map<String, StyleProperties> getReferencedStyles() {
         return containsParameter(STYLES)
-                ? parseMultipleStyleProperties(getAsString(STYLES))
+                ? parseMultipleStyleProperties()
                 : Collections.emptyMap();
     }
 
@@ -302,18 +303,16 @@ public final class IoParameters implements Parameters {
      * {@link Style}s. For example use {@link LineStyle#createLineStyle(StyleProperties)} which gives you a
      * style view which can be used for lines.
      *
-     * @param style
-     *        the JSON style parameter to parse.
      * @return a parsed {@link StyleProperties} instance.
      * @throws IoParseException
      *         if parsing parameter fails.
      */
-    private StyleProperties parseStyleProperties(String style) {
-        return handleJsonValueParseException(style, StyleProperties.class, this::parseJson);
+    private StyleProperties parseStyleProperties() {
+        return handleJsonValueParseException(STYLE, StyleProperties.class, this::parseJson);
     }
 
-    private Map<String, StyleProperties> parseMultipleStyleProperties(String styles) {
-        return handleJsonValueParseException(styles,
+    private Map<String, StyleProperties> parseMultipleStyleProperties() {
+        return handleJsonValueParseException(STYLES,
                                              new TypeReference<HashMap<String, StyleProperties>>() {},
                                              this::parseJson);
     }
@@ -703,7 +702,7 @@ public final class IoParameters implements Parameters {
         }
 
         try {
-            BBox bbox = handleJsonValueParseException(bboxValue, BBox.class, this::parseJson);
+            BBox bbox = handleJsonValueParseException(BBOX, BBox.class, this::parseJson);
             return new BoundingBox(crsUtils.convertToPointFrom(bbox.getLl(), CRSUtils.DEFAULT_CRS),
                                    crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
                                    CRSUtils.DEFAULT_CRS);
@@ -719,8 +718,7 @@ public final class IoParameters implements Parameters {
         if (!containsParameter(NEAR)) {
             return null;
         }
-        String vicinityValue = getAsString(NEAR);
-        Vicinity vicinity = handleJsonValueParseException(vicinityValue, Vicinity.class, this::parseJson);
+        Vicinity vicinity = handleJsonValueParseException(NEAR, Vicinity.class, this::parseJson);
         if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
@@ -730,38 +728,51 @@ public final class IoParameters implements Parameters {
     }
 
     /**
-     * @param jsonString
-     *        the JSON string to parse.
+     * @param parameter
+     *        the parameter name.
      * @param clazz
-     *        the type to serialize given JSON string to.
-     * @return a mapped instance parsed from JSON.
+     *        the type to serialize given parameter to.
+     * @return a mapped instance parsed from given paramter's value.
      * @throws IoParseException
-     *         if JSON is invalid or does not map to given type.
+     *         if parameter is invalid JSON or does not map to given type.
      */
-    private <T> T parseJson(String jsonString, Class<T> clazz) {
+    private <T> T parseJson(String parameter, Class<T> clazz) {
         try {
+            String value = getAsString(parameter);
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(jsonString, clazz);
+            return mapper.readValue(value, clazz);
         } catch (JsonParseException | JsonMappingException e) {
-            throw createInvalidJsonValueException(jsonString, e);
+            throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private <T> T parseJson(String jsonString, TypeReference<T> typeReference) {
+    /**
+     * @param parameter
+     *        the parameter name.
+     * @param typeReference
+     *        the type reference to serialize given parameter to.
+     * @return a mapped instance parsed from given paramter's value.
+     * @throws IoParseException
+     *         if parameter is invalid JSON or does not map to given type.
+     */
+    private <T> T parseJson(String parameter, TypeReference<T> typeReference) {
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(jsonString, typeReference);
+            Optional<JsonNode> value = getAsNode(parameter);
+            return value.isPresent()
+                    ? new ObjectMapper().readerFor(typeReference)
+                                        .readValue(value.get())
+                    : null;
         } catch (JsonParseException | JsonMappingException e) {
-            throw createInvalidJsonValueException(jsonString, e);
+            throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private IoParseException createInvalidJsonValueException(String jsonString, Exception e) {
-        return new IoParseException("The given JSON value is invalid: " + jsonString, e);
+    private IoParseException createInvalidJsonValueException(String nodeValue, Exception e) {
+        return new IoParseException("The given JSON value is invalid: " + nodeValue, e);
     }
 
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
@@ -873,10 +884,18 @@ public final class IoParameters implements Parameters {
         if (!containsParameter(parameter)) {
             return null;
         }
-        List<JsonNode> value = query.get(parameter) == null
+        return asCsv(getAsNodes(parameter));
+    }
+
+    private Optional<JsonNode> getAsNode(String parameter) {
+        return getAsNodes(parameter).stream()
+                                    .findFirst();
+    }
+
+    private List<JsonNode> getAsNodes(String parameter) {
+        return query.get(parameter) == null
                 ? query.get(parameter.toLowerCase())
                 : query.get(parameter);
-        return asCsv(value);
     }
 
     private String asCsv(List<JsonNode> list) {
