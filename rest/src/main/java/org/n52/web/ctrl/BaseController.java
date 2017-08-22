@@ -82,7 +82,7 @@ public abstract class BaseController implements ServletConfigAware {
 
     private static final String REFER_TO_API_SYNTAX = "Refer to the API documentation and check parameter "
             + "value against required syntax!";
-    
+
     private static final String INVALID_REQUEST_BODY = "Check the request body which has been sent to the "
             + "server. Probably it is not valid.";
 
