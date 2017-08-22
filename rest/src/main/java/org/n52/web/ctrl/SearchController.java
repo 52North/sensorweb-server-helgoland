@@ -51,11 +51,10 @@ public class SearchController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchResources(@RequestParam String q,
                                         @RequestHeader(value = "accept-language") String locale,
-                                        @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-        IoParameters map = createParameters(parameters, locale)
-                                          .extendWith(Parameters.SEARCH_TERM, q);
-        IoParameters query = IoParameters.adjustFilterInCaseOfBackwardsCompatible(map);
-        return new ModelAndView().addObject(searchService.searchResources(query));
+                                        @RequestParam(required = false) MultiValueMap<String, String> query) {
+        IoParameters parameters = createParameters(query, locale).extendWith(Parameters.SEARCH_TERM, q)
+                                                                 .respectBackwardsCompatibility();
+        return new ModelAndView().addObject(searchService.searchResources(parameters));
     }
 
     public SearchService getSearchService() {

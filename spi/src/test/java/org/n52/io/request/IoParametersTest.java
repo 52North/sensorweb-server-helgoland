@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -79,8 +80,10 @@ public class IoParametersTest {
     }
 
     private File getAlternativeConfigFile() throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/").toURI());
-        return root.resolve("test-config.json").toFile();
+        Path root = Paths.get(getClass().getResource("/")
+                                        .toURI());
+        return root.resolve("test-config.json")
+                   .toFile();
     }
 
     @Test
@@ -92,14 +95,18 @@ public class IoParametersTest {
 
     @Test
     public void when_jsonBbox_then_parsingSpatialFilter() throws ParseException {
-        Map<String, String> map = Collections.singletonMap("bbox", "{\"ll\":{\"type\":\"Point\",\"coordinates\":[6.7,51.7]},\"ur\":{\"type\":\"Point\",\"coordinates\":[7.9,51.9]}}");
+        Map<String,
+            String> map = Collections.singletonMap("bbox",
+                                                   "{\"ll\":{\"type\":\"Point\",\"coordinates\":[6.7,51.7]},\"ur\":{\"type\":\"Point\",\"coordinates\":[7.9,51.9]}}");
         IoParameters parameters = createFromSingleValueMap(map);
         BoundingBox actual = parameters.getSpatialFilter();
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (6.7 51.7)");
         Geometry ur = wktReader.read("POINT(7.9 51.9)");
-        Assert.assertTrue(actual.getLowerLeft().equals(ll));
-        Assert.assertTrue(actual.getUpperRight().equals(ur));
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
     }
 
     @Test
@@ -110,8 +117,10 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (6.7 51.7)");
         Geometry ur = wktReader.read("POINT(7.9 51.9)");
-        Assert.assertTrue(actual.getLowerLeft().equals(ll));
-        Assert.assertTrue(actual.getUpperRight().equals(ur));
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
     }
 
     @Test
@@ -169,7 +178,9 @@ public class IoParametersTest {
     public void when_extendingMultiple_then_availableFromSet() {
         IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value1", "value2");
-        assertThat(extended.getValuesOf("test").size(), is(2));
+        assertThat(extended.getValuesOf("test")
+                           .size(),
+                   is(2));
     }
 
     @Test
@@ -215,6 +226,19 @@ public class IoParametersTest {
         IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo")
                                                   .extendWith(Parameters.PROCEDURES, "foo", "bar");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
+    }
+
+    @Test
+    public void when_backwardsCompatibleParameters_then_indicateBackwardsCompatibility() {
+        IoParameters backwardsCompatibleParameters = IoParameters.createDefaults()
+                                                                 .respectBackwardsCompatibility();
+        MatcherAssert.assertThat(backwardsCompatibleParameters.shallBehaveBackwardsCompatible(), is(true));
+    }
+
+    @Test
+    public void when_backwardsCompatibleParameters_then_extendingParametersWillStayBackwardsCompatible() {
+        IoParameters defaults = IoParameters.createDefaults();
+        MatcherAssert.assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
     }
 
 }

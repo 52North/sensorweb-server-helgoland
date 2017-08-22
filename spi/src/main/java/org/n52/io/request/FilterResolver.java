@@ -26,9 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import java.util.Set;
+
 import org.n52.io.response.PlatformType;
 
 public class FilterResolver {
@@ -39,9 +41,9 @@ public class FilterResolver {
         this.parameters = parameters;
     }
 
-    public boolean shallBehaveBackwardsCompatible() {
+    boolean shallBehaveBackwardsCompatible() {
         return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter());
-        }
+    }
 
     public boolean shallIncludeMobilePlatformTypes() {
         return shallIncludeAllPlatformTypes()
@@ -195,7 +197,8 @@ public class FilterResolver {
     }
 
     private boolean isSetDatasetTypeFilter() {
-        return !parameters.getValueTypes().isEmpty();
+        return !parameters.getValueTypes()
+                          .isEmpty();
     }
 
 }

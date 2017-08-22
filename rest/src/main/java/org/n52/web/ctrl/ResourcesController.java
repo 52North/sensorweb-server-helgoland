@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.I18N;
-import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
@@ -44,7 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = "/", produces = {"application/json"})
+@RequestMapping(value = "/", produces = {
+    "application/json"
+})
 public class ResourcesController {
 
     private CountingMetadataService metadataService;
@@ -53,16 +55,15 @@ public class ResourcesController {
     public ModelAndView getResources(HttpServletResponse response,
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
-        query = IoParameters.adjustFilterInCaseOfBackwardsCompatible(query);
+        IoParameters query = IoParameters.createFromMultiValueMap(parameters)
+                                         .respectBackwardsCompatibility();
         return new ModelAndView().addObject(createResources(query));
     }
 
     private ResourceCollection add(String resource, String label, String description) {
-        return ResourceCollection
-                .createResource(resource)
-                .withDescription(description)
-                .withLabel(label);
+        return ResourceCollection.createResource(resource)
+                                 .withDescription(description)
+                                 .withLabel(label);
     }
 
     private List<ResourceCollection> createResources(IoParameters parameters) {
@@ -78,7 +79,7 @@ public class ResourcesController {
         ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
             services.setSize(getMetadataService().getServiceCount(parameters));
-            if (new FilterResolver(parameters).shallBehaveBackwardsCompatible()) {
+            if (parameters.shallBehaveBackwardsCompatible()) {
                 // ensure backwards compatibility
                 stations.setSize(getMetadataService().getStationCount());
                 timeseries.setSize(getMetadataService().getTimeseriesCount());
@@ -116,7 +117,8 @@ public class ResourcesController {
     }
 
     private void addVersionHeader(HttpServletResponse response) {
-        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String implementationVersion = getClass().getPackage()
+                                                 .getImplementationVersion();
         String version = implementationVersion != null
                 ? implementationVersion
                 : "unknown";

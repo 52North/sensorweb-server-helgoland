@@ -45,7 +45,6 @@ public class ProceduresParameterController extends ParameterRequestMappingAdapte
 
     @Override
     protected int getElementCount(IoParameters parameters) {
-        IoParameters backwardsCompatibleParameters = IoParameters.adjustFilterInCaseOfBackwardsCompatible(parameters);
-        return super.getEntityCounter().getProcedureCount(backwardsCompatibleParameters);
+        return super.getEntityCounter().getProcedureCount(parameters.respectBackwardsCompatibility());
     }
 }

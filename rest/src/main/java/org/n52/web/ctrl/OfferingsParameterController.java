@@ -45,7 +45,6 @@ public class OfferingsParameterController extends ParameterRequestMappingAdapter
 
     @Override
     protected int getElementCount(IoParameters parameters) {
-        IoParameters backwardsCompatibleParameters = IoParameters.adjustFilterInCaseOfBackwardsCompatible(parameters);
-        return super.getEntityCounter().getOfferingCount(backwardsCompatibleParameters);
+        return super.getEntityCounter().getOfferingCount(parameters.respectBackwardsCompatibility());
     }
 }

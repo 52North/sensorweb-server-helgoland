@@ -88,6 +88,10 @@ public final class IoParameters implements Parameters {
 
     private final MultiValueMap<String, JsonNode> query;
 
+    private final FilterResolver filterResolver;
+
+    private boolean behaveBackwardsCompatible;
+
     private BiConsumer<String, IoParseException> parseExceptionHandle;
 
     protected IoParameters() {
@@ -122,6 +126,7 @@ public final class IoParameters implements Parameters {
         MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
         config.setAll(readDefaultConfig(defaultConfig));
         query = mergeToLowerCasedKeys(config);
+        filterResolver = new FilterResolver(this);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
@@ -153,6 +158,15 @@ public final class IoParameters implements Parameters {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
         }
+    }
+
+    public boolean shallBehaveBackwardsCompatible() {
+        return behaveBackwardsCompatible;
+    }
+
+    private IoParameters setBehaveBackwardsCompatible(boolean behaveBackwardsCompatible) {
+        this.behaveBackwardsCompatible = behaveBackwardsCompatible;
+        return this;
     }
 
     public IoParameters setParseExceptionHandle(BiConsumer<String, IoParseException> handle) {
@@ -598,7 +612,7 @@ public final class IoParameters implements Parameters {
     }
 
     public FilterResolver getFilterResolver() {
-        return new FilterResolver(this);
+        return filterResolver;
     }
 
     /**
@@ -1052,7 +1066,7 @@ public final class IoParameters implements Parameters {
 
     @Override
     public String toString() {
-        return "IoParameters{" + "query=" + query + '}';
+        return "IoParameters{ behaveBackwardsCompatible: " + behaveBackwardsCompatible + ", query=" + query + '}';
     }
 
     protected Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
@@ -1120,21 +1134,19 @@ public final class IoParameters implements Parameters {
         return new IoParameters(query, defaultConfig);
     }
 
-    public static IoParameters adjustFilterInCaseOfBackwardsCompatible(IoParameters parameters) {
+    public IoParameters respectBackwardsCompatibility() {
         String[] platformTypes = {
             PlatformType.PLATFORM_TYPE_STATIONARY,
             PlatformType.PLATFORM_TYPE_INSITU
         };
-        return isBackwardsCompatibilityRequest(parameters)
-                ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                            .extendWith(Parameters.FILTER_VALUE_TYPES, ValueType.DEFAULT_VALUE_TYPE)
-                            .removeAllOf(Parameters.HREF_BASE)
-                : parameters;
-    }
 
-    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
-        return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
-                || parameters.containsParameter(Parameters.FILTER_VALUE_TYPES));
+        return filterResolver.shallBehaveBackwardsCompatible()
+                ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
+                                                   .extendWith(Parameters.FILTER_VALUE_TYPES,
+                                                               ValueType.DEFAULT_VALUE_TYPE)
+                                                   // set backwards compatibility at the end
+                                                   .setBehaveBackwardsCompatible(true)
+                : this;
     }
 
     public boolean isPureStationaryInsituQuery() {
