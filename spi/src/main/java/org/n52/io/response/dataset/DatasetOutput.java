@@ -31,8 +31,11 @@ package org.n52.io.response.dataset;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.n52.io.Utils;
 import org.n52.io.response.ParameterOutput;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
         extends ParameterOutput {
@@ -78,6 +81,7 @@ public abstract class DatasetOutput<V extends AbstractValue<?>, R extends Refere
         this.platformType = platformType;
     }
 
+    @JsonProperty("parameters")
     public DatasetParameters getDatasetParameters() {
         return datasetParameters;
     }
