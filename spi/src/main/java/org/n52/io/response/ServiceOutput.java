@@ -46,8 +46,8 @@ public class ServiceOutput extends ParameterOutput {
     public static final String TYPE = "type";
     public static final String FEATURES = "features";
     public static final String QUANTITIES = "quantities";
-    public static final String SUPPORTSFIRSTLATEST = "supportsfirstlatest";
-    public static final String SUPPORTEDMIMETYPES = "supportedmimetypes";
+    public static final String SUPPORTS_FIRST_LATEST = "supportsfirstlatest";
+    public static final String SUPPORTED_MIME_TYPES = "supportedmimetypes";
 
     private String serviceUrl;
 
@@ -125,7 +125,7 @@ public class ServiceOutput extends ParameterOutput {
     }
 
     public void setSupportsFirstLatest(Boolean supportsFirstLatest) {
-        addFeature(SUPPORTSFIRSTLATEST, supportsFirstLatest);
+        addFeature(SUPPORTS_FIRST_LATEST, supportsFirstLatest);
         this.supportsFirstLatest = supportsFirstLatest;
     }
 
