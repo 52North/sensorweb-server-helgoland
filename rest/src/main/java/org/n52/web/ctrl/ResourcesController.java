@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.I18N;
-import org.n52.io.request.FilterResolver;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.util.MultiValueMap;
@@ -44,7 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = "/", produces = {"application/json"})
+@RequestMapping(value = "/", produces = {
+    "application/json"
+})
 public class ResourcesController {
 
     private CountingMetadataService metadataService;
@@ -59,10 +61,9 @@ public class ResourcesController {
     }
 
     private ResourceCollection add(String resource, String label, String description) {
-        return ResourceCollection
-                .createResource(resource)
-                .withDescription(description)
-                .withLabel(label);
+        return ResourceCollection.createResource(resource)
+                                 .withDescription(description)
+                                 .withLabel(label);
     }
 
     private List<ResourceCollection> createResources(IoParameters parameters) {
@@ -116,7 +117,8 @@ public class ResourcesController {
     }
 
     private void addVersionHeader(HttpServletResponse response) {
-        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String implementationVersion = getClass().getPackage()
+                                                 .getImplementationVersion();
         String version = implementationVersion != null
                 ? implementationVersion
                 : "unknown";

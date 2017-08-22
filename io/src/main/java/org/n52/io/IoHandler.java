@@ -62,7 +62,7 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
      *
      * @param data the input data collection to create an output for.
      * @param stream the stream to write on the generated ouput.
-     * @throws IoException if writing output to stream fails.
+     * @throws IoHandlerException if writing output to stream fails.
      */
     protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoHandlerException;
 
