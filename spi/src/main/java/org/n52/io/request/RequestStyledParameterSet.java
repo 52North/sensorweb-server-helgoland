@@ -83,7 +83,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
 
     @Override
     public String[] getDatasets() {
-        Set<String> datasetIds = getStyleOptions().keySet();
+        Set<String> datasetIds = styleOptions.keySet();
         return datasetIds.toArray(new String[0]);
     }
 
@@ -115,11 +115,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     public StyleProperties getStyleProperties(String timeseriesId) {
-        return getStyleOptions().get(timeseriesId);
-    }
-
-    private Map<String, StyleProperties> getStyleOptions() {
-        return toParameters().getReferencedStyles();
+        return styleOptions.get(timeseriesId);
     }
 
     public StyleProperties getReferenceDatasetStyleOptions(String timeseriesId, String referenceSeriesId) {
