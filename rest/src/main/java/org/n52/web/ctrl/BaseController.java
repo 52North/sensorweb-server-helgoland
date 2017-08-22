@@ -80,6 +80,12 @@ public abstract class BaseController implements ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
+    private static final String REFER_TO_API_SYNTAX = "Refer to the API documentation and check parameter "
+            + "value against required syntax!";
+    
+    private static final String INVALID_REQUEST_BODY = "Check the request body which has been sent to the "
+            + "server. Probably it is not valid.";
+
     private static final String HEADER_ACCEPT = "Accept";
 
     private ServletConfig servletConfig;
@@ -87,7 +93,7 @@ public abstract class BaseController implements ServletConfigAware {
     protected BiConsumer<String, IoParseException> getExceptionHandle() {
         return (parameter, e) -> {
             BadRequestException ex = new BadRequestException("Invalid '" + parameter + "' parameter.", e);
-            throw ex.addHint("Refer to the API documentation and check parameter value against required syntax!")
+            throw ex.addHint(REFER_TO_API_SYNTAX)
                     .addHint(e.getMessage())
                     .addHint(e.getHints());
         };
@@ -179,9 +185,8 @@ public abstract class BaseController implements ServletConfigAware {
     })
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         if (e instanceof HttpMessageNotReadableException) {
-            WebException ex = new BadRequestException("Invalid Request", e)
-                    .addHint("Refer to the API documentation and check parameter value against required syntax!")
-                    .addHint("Check the request body which has been sent to the server. Probably it is not valid.");
+            WebException ex = new BadRequestException("Invalid Request", e).addHint(INVALID_REQUEST_BODY)
+                                                                           .addHint(REFER_TO_API_SYNTAX);
             writeExceptionResponse(ex, response, HttpStatus.BAD_REQUEST);
         } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
