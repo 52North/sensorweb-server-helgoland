@@ -35,7 +35,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;import java.util.function.Consumer
+import java.util.Set;
+import java.util.function.Consumer;
 
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.RawFormats;
