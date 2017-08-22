@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/api/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/compatibility</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/development</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_use-timeend-instead-of-timestamp-when-intervals-true/valuetypes</loc>
+</url>
+</urlset>

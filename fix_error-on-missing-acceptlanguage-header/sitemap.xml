@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/api/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/compatibility</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/configuration</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/development</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/fix_error-on-missing-acceptlanguage-header/valuetypes</loc>
+</url>
+</urlset>

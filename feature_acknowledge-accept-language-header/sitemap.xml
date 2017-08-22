@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/compatibility</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/development</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/valuetypes</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_acknowledge-accept-language-header/api/index.html</loc>
+<lastmod>2017-05-16T09:24:17+00:00</lastmod>
+</url>
+</urlset>

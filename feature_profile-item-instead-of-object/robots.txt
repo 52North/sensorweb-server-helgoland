@@ -1,0 +1,1 @@
+Sitemap: /series-rest-api/feature_profile-item-instead-of-object/sitemap.xml

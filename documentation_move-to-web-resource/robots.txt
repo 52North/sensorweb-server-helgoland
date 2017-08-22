@@ -1,0 +1,1 @@
+Sitemap: /series-rest-api/documentation_move-to-web-resource/sitemap.xml

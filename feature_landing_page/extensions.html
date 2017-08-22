@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Extensions – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/series-rest-api/feature_landing_page/assets/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/series-rest-api/feature_landing_page/assets/images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/series-rest-api/feature_landing_page/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/series-rest-api/feature_landing_page/assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/series-rest-api/feature_landing_page/assets/images/favicon-16x16.png">
+    <link rel="manifest" href="/series-rest-api/feature_landing_page/assets/images/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/series-rest-api/feature_landing_page/assets/images/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    
+    <meta name="description" content="Initiative for Geospatial Open Source Software">
+    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    
+    <meta name="author" content="52°North GmbH" />
+
+    
+    <meta property="og:title" content="Extensions" />
+    <meta property="twitter:title" content="Extensions" />
+    
+
+
+<!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<link rel="stylesheet" type="text/css" href="/series-rest-api/feature_landing_page/css/styles.css" />
+</head>
+
+<body>
+
+  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    
+  <div class="n52-container container-fluid">
+  
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
+        <a href="/series-rest-api/feature_landing_page"><img alt="52&deg;North logo"
+          src="/series-rest-api/feature_landing_page/assets/images/52n_logo_full.png" /></a>
+      </div>
+      <div class="container">
+        <div class="pull-right navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://52north.org">52°North</a></li>
+            <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
+            <li><a href="http://blog.52north.org">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <nav class="affix col-lg-2 n52-sidebar">
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/index.html">Home</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/compatibility.html">Compatibility</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/valuetypes.html">Value Types</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/io.html">Input/Output</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/configuration.html">Configuration</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/extensions.html">Extensions</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/api.html">API Reference</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_landing_page/development.html">API Development</a>
+      </p>
+    </nav>
+
+    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+      <div class="pull-right">
+        <p class="affix up-link n52-top">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        </p>
+      </div>
+
+      <article class="page">
+  <h1>Extensions</h1>
+
+  <div class="entry">
+    <p class="n52-callout n52-callout-todo">section under revision/update</p>
+
+<p class="n52-callout n52-callout-todo">Spring configuration</p>
+
+<h2 id="prerendering">Prerendering</h2>
+
+<p>A data provider can configure datasets being pre-/rerendered regularly for given time intervals
+(<code class="highlighter-rouge">lastMonth</code>, <code class="highlighter-rouge">lastWeek</code>, or <code class="highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
+to wait for that kind of fixed time intervals. Also, prerendered charts are easy to integrate via 
+html tags without making requests to render charts dynamically.</p>
+
+<p>On prerendering mode only single series charts are rendered (no chart overlay).</p>
+
+<h3 id="configuration-location">Configuration Location</h3>
+
+<p class="n52-callout n52-callout-todo">reference to JobScheduler configuration</p>
+
+<p>Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
+phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
+configuration section applies to all further config unless overridden (within a <code class="highlighter-rouge">config</code> entry).</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"generalConfig"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"locale"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"grid"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"generalize"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"chartQualifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"with_legend"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"lastMonth"</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="nt">"config"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"legend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#00ffff"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"lastMonth"</span><span class="w">
+            </span><span class="p">],</span><span class="w">
+            </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+for backwards compatibility reasons.</p>
+
+<h3 id="placeholders">Placeholders</h3>
+
+<p>To add fine grained title configuration on a phenomenona group a 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code class="highlighter-rouge">String.format</code> template</a> 
+can be used.</p>
+
+<p>Choose one of the following</p>
+
+<ul>
+  <li><code class="highlighter-rouge">%1$s</code>: Platform label</li>
+  <li><code class="highlighter-rouge">%2$s</code>: Phenomenon label</li>
+  <li><code class="highlighter-rouge">%3$s</code>: Procedure label</li>
+  <li><code class="highlighter-rouge">%4$s</code>: Category label</li>
+  <li><code class="highlighter-rouge">%5$s</code>: Offering label</li>
+  <li><code class="highlighter-rouge">%6$s</code>: Feature label</li>
+  <li><code class="highlighter-rouge">%7$s</code>: Service label</li>
+  <li><code class="highlighter-rouge">%8$s</code>: Unit of Measure</li>
+</ul>
+
+<p>Use the template for the title config within config file config-task-prerendering, e.g. <code class="highlighter-rouge">Platform: %1$s, Phenomenon: %2$s [{ %8$s}]</code>.</p>
+
+<h3 id="accessing-prerendered-charts">Accessing prerendered charts</h3>
+
+<p class="n52-callout n52-callout-todo"><code class="highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
+
+<h2 id="status-intervals">Status Intervals</h2>
+
+<p>The data provider knows best how to interpret available data and can add domain specific information 
+which may help to interpret data values of a particular dataset.Clients are then able to render data 
+values (e.g. when rendering <code class="highlighter-rouge">lastValue</code>s on a map) by comparing against those intervals. This gives a 
+user hints what data values actually mean and helps to avoid misunderstandings.</p>
+
+<p>The status intervals are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+
+<h3 id="configuration-location">Configuration Location</h3>
+
+<p>Status intervals can be configured for datasets having a particular phenomenon or each individually 
+(overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
+limit and some color hint a client may use to render properly.</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"phenomenonIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"90-100 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"80-90 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#1C00E2"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"70-80 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3800C6"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"60-70 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#5500AA"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"50-60 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#71008D"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"40-50 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#8D0071"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"30-40 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#AA0055"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"20-30 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#C60038"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"10-20 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#E2001C"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"0-10 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"datasetIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"&gt;20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"15-20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#BF003F"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"10-15"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#7F007F"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"5-10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3F00BF"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"0-5"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+for backwards compatibility reasons.</p>
+
+<h2 id="rendering-hints">Rendering Hints</h2>
+
+<p>The Series API provides I/O mechanisms to render charts so that clients may directly request
+data via <code class="highlighter-rouge">accept=image/png</code> HTTP header. However, styles are chosen either randomly or by 
+passing the <code class="highlighter-rouge">style=...</code> parameter. As the data provider should know best what style fit best
+to a particular dataset, it can be configured as rendering hints.</p>
+
+<p>The rendering hints are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+
+<h3 id="configuration-location">Configuration Location</h3>
+
+<p>Status intervals can be configured for datasets having a particular phenomenon or each individually 
+(overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
+limit and some color hint a client may use to render properly.</p>
+
+<p>For example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byHour"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"referenceValueStyleProperties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"278"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+for backwards compatibility reasons.</p>
+
+<h2 id="result-time">Result Time</h2>
+
+<p>Next to the actual phenomenon time observation data may have a <code class="highlighter-rouge">resultTime</code> which 
+indicates when the data became available. An example for such cases is forecast data
+which may be (re-)calculated multiple times (optionally based on multiple models). 
+Getting the right data values (belonging to a specific result time) a client can add 
+the <code class="highlighter-rouge">resultTime=...</code> parameter when querying <code class="highlighter-rouge">datasets/&lt;id&gt;/data</code>.</p>
+
+<p>In case of existing result times (which have to be different to the actual phenomenon 
+time) are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+
+<p>Once activated no specific configuration is neccessary.</p>
+
+<h2 id="database-metadata">Database metadata</h2>
+
+<p>Next to the actual phenomenon time observation data may have a <code class="highlighter-rouge">resultTime</code> which 
+indicates when the data became available. An example for such cases is forecast data
+which may be (re-)calculated multiple times (optionally based on multiple models). 
+Getting the right data values (belonging to a specific result time) a client can add 
+the <code class="highlighter-rouge">resultTime=...</code> parameter when querying <code class="highlighter-rouge">datasets/&lt;id&gt;/data</code>.</p>
+
+<p>In case of existing result times (which have to be different to the actual phenomenon 
+time) are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+
+<h3 id="requirements">Requirements</h3>
+
+<p>The extension is part of the <a href="https://github.com/52North/dao-series-api">database backend</a>.
+Therefore it requires a database (the DBMS shouldn’t matter as connection is done via 
+<a href="http://hibernate.org/">Hibernate</a>) which has been extended by a metadata table. Also the
+<code class="highlighter-rouge">metadata</code> mapping files have to be configured.</p>
+
+<h3 id="installation-steps">Installation steps</h3>
+<ol>
+  <li>create <code class="highlighter-rouge">metadata</code> table by executing <code class="highlighter-rouge">src/extension/metadata/create_metadata_table.sql</code></li>
+  <li>add <code class="highlighter-rouge">hbm/sos/metadata/*.hbm.xml</code> to the <code class="highlighter-rouge">application.properties</code> in use, e.g.
+    <div class="highlighter-rouge"><pre class="highlight"><code>series.database.mappings=\
+  classpath*:/hbm/sos/v44/*.hbm.xml, \
+  classpath*:/hbm/sos/metadata/*.hbm.xml
+</code></pre>
+    </div>
+  </li>
+  <li>add metadata data for your dataset, e.g. with id <code class="highlighter-rouge">10</code>
+    <div class="highlighter-rouge"><pre class="highlight"><code>﻿INSERT INTO series_metadata VALUES (1, 10, 'integrationPeriod', 'string', 'PT1M') ;
+</code></pre>
+    </div>
+  </li>
+</ol>
+
+<p class="n52-callout n52-callout-todo"><code class="highlighter-rouge">json</code> metadata is not serialized properly at the moment.</p>
+
+
+  </div>
+</article>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    
+    <div class="col-lg-5">
+      <ul>
+        <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
+        <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+        <li><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
+                        href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+      </ul>
+    </div>
+    <div class="col-lg-5 pull-right">
+      <ul class="footer-links">
+          <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+      </ul>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/e9bfbeec63f39e008c9b4ae7338b3657c48cb7f1">e9bfbeec63f39e008c9b4ae7338b3657c48cb7f1</a></p>
+      
+    </div>
+  </footer>
+
+</body>
+</html>

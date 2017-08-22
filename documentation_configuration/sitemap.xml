@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/documentation_configuration/api</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/compatibility</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/configuration</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/development</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/documentation_configuration/valuetypes</loc>
+</url>
+</urlset>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rendering Hints Extension – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/series-rest-api/feature_result-time-filter/assets/images/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/series-rest-api/feature_result-time-filter/assets/images/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/series-rest-api/feature_result-time-filter/assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/series-rest-api/feature_result-time-filter/assets/images/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/series-rest-api/feature_result-time-filter/assets/images/favicon-16x16.png">
+    <link rel="manifest" href="/series-rest-api/feature_result-time-filter/assets/images/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/series-rest-api/feature_result-time-filter/assets/images/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    
+    <meta name="description" content="Rendering Hints
+
+" />
+    <meta property="og:description" content="Rendering Hints
+
+" />
+    
+    <meta name="author" content="52°North GmbH" />
+
+    
+    <meta property="og:title" content="Rendering Hints Extension" />
+    <meta property="twitter:title" content="Rendering Hints Extension" />
+    
+
+
+<!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+<link rel="stylesheet" type="text/css" href="/series-rest-api/feature_result-time-filter/css/styles.css" />
+</head>
+
+<body>
+
+  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+    
+  <div class="n52-container container-fluid">
+  
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
+        <a href="/series-rest-api/feature_result-time-filter"><img alt="52&deg;North logo"
+          src="/series-rest-api/feature_result-time-filter/assets/images/52n_logo_full.png" /></a>
+      </div>
+      <div class="container">
+        <div class="pull-right navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="http://52north.org">52°North</a></li>
+            <li><a href="http://github.com/ridoo/series-rest-api">Sources</a></li>
+            <li><a href="http://blog.52north.org">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <nav class="affix col-lg-2 n52-sidebar">
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/index.html">Home</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/compatibility.html">Compatibility</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/valuetypes.html">Value Types</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/io.html">Input/Output</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/configuration.html">Configuration</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/paging.html">Paging</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/extensions.html">Extensions</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/api.html">API Reference</a>
+      </p>
+      <p class="header">
+        <a href="/series-rest-api/feature_result-time-filter/development.html">API Development</a>
+      </p>
+    </nav>
+
+    <div role="main" id="content" class="col-lg-9 n52-content pull-right">
+      <div class="pull-right">
+        <p class="affix up-link n52-top">
+          <a href="#"><i class="glyphicon glyphicon-chevron-up" title="top"></i></a>
+        </p>
+      </div>
+
+      <article class="page">
+  <h1>Rendering Hints Extension</h1>
+
+  <div class="entry">
+    <h2 id="rendering-hints">Rendering Hints</h2>
+
+<p>The Series API provides I/O mechanisms to render charts so that clients may directly request
+data via <code class="highlighter-rouge">accept=image/png</code> HTTP header. However, styles are chosen either randomly or by 
+passing the <code class="highlighter-rouge">style=...</code> parameter. As the data provider should know best what style fit best
+to a particular dataset, it can be configured as rendering hints.</p>
+
+<p>The rendering hints are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+
+<h3 id="configuration-location">Configuration Location</h3>
+
+<p>Status intervals can be configured for datasets having a particular phenomenon or each individually 
+(overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
+limit and some color hint a client may use to render properly.</p>
+
+<p>For example:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byHour"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"referenceValueStyleProperties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"278"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+              </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+for backwards compatibility reasons.</p>
+
+  </div>
+</article>
+    </div>
+  </div>
+
+
+  <footer class="footer">
+    
+    <div class="col-lg-5">
+      <ul>
+        <li>Design and Content by <a href="http://52north.org/" target="_blank">52&deg;North</a></li>
+        <li>Content licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+        <li><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a
+                        href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></li>
+      </ul>
+    </div>
+    <div class="col-lg-5 pull-right">
+      <ul class="footer-links">
+          <li><a href="http://52north.org/swe">Sensor Web Community</a></li>
+          <li class="muted">&middot;</li>
+          <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
+      </ul>
+      <p>Last Rev.: <a href="http://github.com/ridoo/series-rest-api/tree/e502631e96112c27fd293534bf19fe8ce4eaef9c">e502631e96112c27fd293534bf19fe8ce4eaef9c</a></p>
+      
+    </div>
+  </footer>
+
+</body>
+</html>

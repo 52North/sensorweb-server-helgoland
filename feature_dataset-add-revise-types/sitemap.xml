@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/config</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/datatypes</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/extensions</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/io</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/platforms</loc>
+</url>
+<url>
+<loc>/series-rest-api/feature_dataset-add-revise-types/api/index.html</loc>
+<lastmod>2017-04-24T15:01:17+00:00</lastmod>
+</url>
+</urlset>
