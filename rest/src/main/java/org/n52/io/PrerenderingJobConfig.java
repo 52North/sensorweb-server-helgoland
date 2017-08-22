@@ -71,12 +71,12 @@ public class PrerenderingJobConfig {
     }
 
     /**
-     * @param styles the styles to set
+     * @param timeseriesStyles the styles to set
      * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
      */
     @Deprecated
-    public void setTimeseriesStyles(List<RenderingConfig> styles) {
-        this.datasetStyles = styles;
+    public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
+        addStyles(timeseriesStyles);
     }
 
     /**
@@ -89,12 +89,12 @@ public class PrerenderingJobConfig {
     }
 
     /**
-     * @param styles the styles to set
+     * @param seriesStyles the styles to set
      * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
      */
     @Deprecated
-    public void setSeriesStyles(List<RenderingConfig> styles) {
-        this.datasetStyles = styles;
+    public void setSeriesStyles(List<RenderingConfig> seriesStyles) {
+        addStyles(seriesStyles);
     }
 
     public List<RenderingConfig> getDatasetStyles() {
@@ -102,7 +102,14 @@ public class PrerenderingJobConfig {
     }
 
     public void setDatasetStyles(List<RenderingConfig> datasetStyles) {
-        this.datasetStyles = datasetStyles;
+        addStyles(datasetStyles);
+    }
+
+    private void addStyles(List<RenderingConfig> styles) {
+        if (datasetStyles == null) {
+            datasetStyles = new ArrayList<>();
+        }
+        this.datasetStyles.addAll(styles);
     }
 
     public static class RenderingConfig {

@@ -28,16 +28,16 @@
  */
 package org.n52.series.spi.srv;
 
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
 /**
- * Provides access to the actual series data via {@link RequestParameterSet}.
+ * Provides access to the actual series data via {@link IoParameters}.
  * @param <T> the data type
  */
 public interface DataService<T extends Data<?>> extends RawDataInfo {
 
-    DataCollection<T> getData(RequestParameterSet parameters);
+    DataCollection<T> getData(IoParameters parameters);
 
 }

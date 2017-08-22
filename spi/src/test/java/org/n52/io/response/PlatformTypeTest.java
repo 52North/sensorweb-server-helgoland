@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import org.hamcrest.Matchers;
@@ -33,7 +34,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.io.response.PlatformType;
 
 public class PlatformTypeTest {
 
@@ -65,6 +65,35 @@ public class PlatformTypeTest {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("no type for 'does not exist'.");
         PlatformType.toInstance("does not exist");
+    }
+
+    @Test
+    public void when_idWithUnknownType_then_throwException() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("no type for 'does_not_exist_42'.");
+        PlatformType.extractType("does_not_exist_42");
+    }
+
+    @Test
+    public void when_extractingMobileInsitu_then_correctPlatformType() {
+        Assert.assertThat(PlatformType.extractType("mobile_insitu_foobar"), Matchers.is(PlatformType.MOBILE_INSITU));
+    }
+
+    @Test
+    public void when_extractingMobileRemote_then_correctPlatformType() {
+        Assert.assertThat(PlatformType.extractType("mobile_remote_foobar"), Matchers.is(PlatformType.MOBILE_REMOTE));
+    }
+
+    @Test
+    public void when_extractingStationaryInsitu_then_correctPlatformType() {
+        Assert.assertThat(PlatformType.extractType("stationary_insitu_foobar"),
+                          Matchers.is(PlatformType.STATIONARY_INSITU));
+    }
+
+    @Test
+    public void when_extractingStationaryRemote_then_correctPlatformType() {
+        Assert.assertThat(PlatformType.extractType("stationary_remote_foobar"),
+                          Matchers.is(PlatformType.STATIONARY_REMOTE));
     }
 
     @Test

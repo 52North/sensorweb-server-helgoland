@@ -31,9 +31,10 @@ package org.n52.io;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.apache.commons.codec.binary.Base64;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -46,13 +47,13 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
 
     private final IoProcessChain<T> processChain;
 
-    private final RequestParameterSet request;
+    private final IoParameters parameters;
 
-    public IoHandler(RequestParameterSet request, IoProcessChain<T> processChain) {
+    public IoHandler(IoParameters parameters, IoProcessChain<T> processChain) {
         this.processChain = processChain;
-        this.request = request;
-        i18n = request.containsParameter(Parameters.LOCALE)
-                ? I18N.getMessageLocalizer(request.getLocale())
+        this.parameters = parameters;
+        i18n = parameters.containsParameter(Parameters.LOCALE)
+                ? I18N.getMessageLocalizer(parameters.getLocale())
                 : I18N.getDefaultLocalizer();
     }
 
@@ -61,13 +62,13 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
      *
      * @param data the input data collection to create an output for.
      * @param stream the stream to write on the generated ouput.
-     * @throws IoParseException if writing output to stream fails.
+     * @throws IoHandlerException if writing output to stream fails.
      */
-    protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoParseException;
+    protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoHandlerException;
 
     public void writeBinary(OutputStream outputStream) throws IoHandlerException {
         try {
-            if (request.isBase64()) {
+            if (parameters.isBase64()) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 encodeAndWriteTo(processChain.getData(), baos);
                 byte[] data = baos.toByteArray();
@@ -78,9 +79,13 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
             }
         } catch (IOException e) {
             throw new IoHandlerException("Error handling output stream.", e);
-        } catch (IoParseException e) {
-            throw new IoHandlerException("Could not write binary to stream.", e);
+//        } catch (IoParseException e) {
+//            throw new IoHandlerException("Could not write binary to stream.", e);
         }
+    }
+
+    protected IoParameters getParameters() {
+        return parameters;
     }
 
 }

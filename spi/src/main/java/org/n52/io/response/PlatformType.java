@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 /**
@@ -60,16 +61,12 @@ public enum PlatformType {
         return name().toLowerCase();
     }
 
-    private String getIdPrefix() {
-        return name().toLowerCase();
-    }
-
     public String createId(Long id) {
-        return getIdPrefix() + "_" + Long.toString(id);
+        return getPlatformType() + "_" + Long.toString(id);
     }
 
     public String createId(String id) {
-        return getIdPrefix() + "_" + id;
+        return getPlatformType() + "_" + id;
     }
 
     public boolean isStationary() {
@@ -80,6 +77,29 @@ public enum PlatformType {
     public boolean isMobile() {
         return this == PlatformType.MOBILE_INSITU
                 || this == MOBILE_REMOTE;
+    }
+
+    /**
+     * @param id
+     *        the id id to extract the type prefix from
+     * @return the platform type
+     * @throws IllegalArgumentException
+     *         if prefix is unknown
+     */
+    public static PlatformType extractType(String id) {
+        if (isStationaryId(id)) {
+            return isInsitu(id)
+                    ? STATIONARY_INSITU
+                    : STATIONARY_REMOTE;
+        }
+        if (isMobileId(id)) {
+            return isInsitu(id)
+                    ? MOBILE_INSITU
+                    : MOBILE_REMOTE;
+        }
+
+        throwUnknownTypeException(id);
+        return null;
     }
 
     public static String extractId(String id) {
@@ -97,7 +117,9 @@ public enum PlatformType {
     }
 
     private static String extractId(PlatformType type, String id) {
-        final int maxLength = type.getIdPrefix().length() + 1;
+        final int maxLength = type.getPlatformType()
+                                  .length()
+                + 1;
         return id.length() >= maxLength
                 ? id.substring(maxLength)
                 : id;
@@ -116,7 +138,8 @@ public enum PlatformType {
         if (!isKnownType(idPrefix)) {
             return false;
         }
-        return id.toLowerCase().startsWith(prefix);
+        return id.toLowerCase()
+                 .startsWith(prefix);
     }
 
     public static boolean isRemoteId(String id) {
@@ -133,22 +156,29 @@ public enum PlatformType {
             return false;
         }
         final PlatformType geometryType = toInstance(idPrefix);
-        return geometryType.getPlatformType().endsWith(suffix);
+        return geometryType.getPlatformType()
+                           .endsWith(suffix);
     }
 
     public static boolean isKnownType(String typeName) {
         for (PlatformType type : values()) {
-            if (type.getPlatformType().equalsIgnoreCase(typeName)) {
+            if (type.getPlatformType()
+                    .equalsIgnoreCase(typeName)) {
                 return true;
             }
         }
         return false;
     }
 
+    public static boolean isOfKnownType(String id) {
+        return isKnownType(extractPrefix(id));
+    }
+
     private static String extractPrefix(String id) {
         for (PlatformType type : PlatformType.values()) {
             final String prefix = type.getPlatformType();
-            if (id != null && id.toLowerCase().startsWith(prefix)) {
+            if (id != null && id.toLowerCase()
+                                .startsWith(prefix)) {
                 return prefix;
             }
         }
@@ -157,14 +187,13 @@ public enum PlatformType {
 
     public static PlatformType toInstance(String typeName) {
         for (PlatformType type : values()) {
-            if (type.getIdPrefix().equalsIgnoreCase(typeName)) {
-                return type;
-            }
-            if (type.getPlatformType().equalsIgnoreCase(typeName)) {
+            if (type.getPlatformType()
+                    .equalsIgnoreCase(typeName)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException("no type for '" + typeName + "'.");
+        throwUnknownTypeException(typeName);
+        return null;
     }
 
     public static PlatformType toInstance(boolean mobile, boolean insitu) {
@@ -177,6 +206,10 @@ public enum PlatformType {
                     ? STATIONARY_INSITU
                     : STATIONARY_REMOTE;
         }
+    }
+
+    private static void throwUnknownTypeException(String id) {
+        throw new IllegalArgumentException("no type for '" + id + "'.");
     }
 
 }

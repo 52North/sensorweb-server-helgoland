@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OfferingOutput;
@@ -100,8 +100,7 @@ public class ChartRendererTest {
 
     @Test
     public void shouldPrintDefaultOutputTimezoneInDomainAxisLabel() {
-        IoParameters config = IoParameters.createDefaults();
-        IoStyleContext context = IoStyleContext.create(config);
+        IoStyleContext context = IoStyleContext.createEmpty();
         String label = new MyChartRenderer(context).getXYPlot()
                                                    .getDomainAxis()
                                                    .getLabel();
@@ -111,21 +110,18 @@ public class ChartRendererTest {
     @Test
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
-                                          .removeAllOf("outputTimezone")
-                                          .extendWith("outputTimezone", "America/Los_Angeles");
-        IoStyleContext context = IoStyleContext.create(config);
-        String label = new MyChartRenderer(context).getXYPlot()
-                                                   .getDomainAxis()
-                                                   .getLabel();
+                                          .replaceWith("outputTimezone", "America/Los_Angeles");
+        String label = new MyChartRenderer(config).getXYPlot()
+                                                  .getDomainAxis()
+                                                  .getLabel();
         assertThat(label, is("Time (PDT)"));
     }
 
     @Test
     public void shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        IoStyleContext context = IoStyleContext.createEmpty();
-        context.getChartStyleDefinitions()
-               .setTimespan(VALID_ISO8601_ABSOLUTE_START);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+        IoParameters parameters = IoParameters.createDefaults()
+                                              .extendWith(Parameters.TIMESPAN, VALID_ISO8601_ABSOLUTE_START);
+        MyChartRenderer chartRenderer = new MyChartRenderer(parameters);
         String label = chartRenderer.getXYPlot()
                                     .getDomainAxis()
                                     .getLabel();
@@ -181,7 +177,7 @@ public class ChartRendererTest {
 
         IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
         IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, ioConfig);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+        MyChartRenderer chartRenderer = new MyChartRenderer(ioConfig, context);
         // String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
         String actual = chartRenderer.formatTitle(metadata, template);
@@ -197,12 +193,20 @@ public class ChartRendererTest {
 
     static class MyChartRenderer extends ChartIoHandler {
 
-        public MyChartRenderer(IoStyleContext context) {
-            super(new RequestSimpleParameterSet(), null, context);
+        public MyChartRenderer() {
+            this(IoParameters.createDefaults(), IoStyleContext.createEmpty());
         }
 
-        public MyChartRenderer() {
-            super(new RequestSimpleParameterSet(), null, null);
+        public MyChartRenderer(IoParameters parameters) {
+            this(parameters, IoStyleContext.createEmpty());
+        }
+
+        public MyChartRenderer(IoStyleContext context) {
+            this(IoParameters.createDefaults(), context);
+        }
+
+        public MyChartRenderer(IoParameters parameters, IoStyleContext context) {
+            super(parameters, null, context);
         }
 
         @Override

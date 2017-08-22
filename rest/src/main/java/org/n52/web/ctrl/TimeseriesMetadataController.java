@@ -28,8 +28,13 @@
  */
 package org.n52.web.ctrl;
 
+import java.util.Map;
+
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +42,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
+
+    @Override
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
+        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(Map<String, String> query, String locale) {
+        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    }
+
+    @Override
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
+        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    }
 
     @Override
     public String getCollectionPath(String hrefBase) {

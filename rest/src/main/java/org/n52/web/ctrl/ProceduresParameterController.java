@@ -44,7 +44,7 @@ public class ProceduresParameterController extends ParameterRequestMappingAdapte
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getProcedureCount(IoParameters.ensureBackwardsCompatibility(queryMap));
+    protected int getElementCount(IoParameters parameters) {
+        return super.getEntityCounter().getProcedureCount(parameters.respectBackwardsCompatibility());
     }
 }

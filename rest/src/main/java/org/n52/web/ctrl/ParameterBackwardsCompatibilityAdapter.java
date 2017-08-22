@@ -45,27 +45,23 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getExpandedParameters(backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters parameters) {
+        return service.getExpandedParameters(parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getCondensedParameters(backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters parameters) {
+        return service.getCondensedParameters(parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getParameters(items, backwardsCompatibleQuery);
+    public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters parameters) {
+        return service.getParameters(items, parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public ParameterOutput getParameter(String item, IoParameters query) {
-        IoParameters backwardsCompatibleQuery = ensureBackwardsCompatibility(query);
-        return service.getParameter(item, backwardsCompatibleQuery);
+    public ParameterOutput getParameter(String item, IoParameters parameters) {
+        return service.getParameter(item, parameters.respectBackwardsCompatibility());
     }
 
     @Override
@@ -86,10 +82,6 @@ public class ParameterBackwardsCompatibilityAdapter extends ParameterService<Par
     @Override
     public void setRawDataService(RawDataService rawDataService) {
         service.setRawDataService(rawDataService);
-    }
-
-    private IoParameters ensureBackwardsCompatibility(IoParameters query) {
-        return IoParameters.ensureBackwardsCompatibility(query);
     }
 
 }

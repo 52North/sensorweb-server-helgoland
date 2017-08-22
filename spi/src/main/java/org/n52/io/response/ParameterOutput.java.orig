@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.response;
 
 import java.text.Collator;
@@ -35,16 +34,21 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;import java.util.function.Consumer
-
+import java.util.Set;
+<<<<<<< HEAD
+import java.util.function.Consumer;
 import org.n52.io.request.IoParameters;
+=======
+
+>>>>>>> develop
 import org.n52.series.spi.srv.RawFormats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ParameterOutput implements CollatorComparable<ParameterOutput>, RawFormats {
+public abstract class ParameterOutput implements
+        CollatorComparable<ParameterOutput>, RawFormats {
 
     public static final String ID = "id";
     public static final String HREF = "href";
@@ -72,11 +76,10 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     private Set<String> rawFormats;
 
     public <T> void setValue(String parameter, T value, IoParameters parameters, Consumer<T> consumer) {
-        if (!parameters.containsParameter("fields") || parameters.getFields()
-                                                                 .contains(parameter)) {
+        if (!parameters.containsParameter("fields") || parameters.getFields().contains(parameter)) {
             consumer.accept(value);
         }
-    }
+     }
 
     public String getId() {
         return id;
@@ -109,8 +112,8 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * Returns the domain id of the parameter, e.g. a natural id (not arbitrarily generated) or the original
-     * id actually being used by proxied data sources.
+     * Returns the domain id of the parameter, e.g. a natural id (not arbitrarily generated) or the
+     * original id actually being used by proxied data sources.
      *
      * @return the domain id.
      */
@@ -119,11 +122,10 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * Sets the domain id of the parameter, e.g. a natural (not arbitrarily generated) id or the original id
-     * actually being used by proxied data sources.
+     * Sets the domain id of the parameter, e.g. a natural (not arbitrarily generated) id or the
+     * original id actually being used by proxied data sources.
      *
-     * @param domainId
-     *        the domain id of the parameter.
+     * @param domainId the domain id of the parameter.
      */
     public void setDomainId(String domainId) {
         this.domainId = domainId;
@@ -211,24 +213,17 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     @Override
     public int compare(Collator collator, ParameterOutput o) {
         return collator.compare(getLabel()
-                                          .toLowerCase(),
-                                o.getLabel()
-                                 .toLowerCase());
+                .toLowerCase(), o.getLabel()
+                .toLowerCase());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null)
-                ? 0
-                : id.hashCode());
-        result = prime * result + ((domainId == null)
-                ? 0
-                : domainId.hashCode());
-        result = prime * result + ((label == null)
-                ? 0
-                : label.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((domainId == null) ? 0 : domainId.hashCode());
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
         return result;
     }
 
@@ -241,21 +236,15 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
             return false;
         }
         final ParameterOutput other = (ParameterOutput) obj;
-        if ((this.id == null)
-                ? (other.id != null)
-                : !this.id.equals(other.id)) {
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }
-        if ((this.domainId == null)
-                ? (other.domainId != null)
-                : !this.domainId
-                                .equals(other.domainId)) {
+        if ((this.domainId == null) ? (other.domainId != null) : !this.domainId
+                .equals(other.domainId)) {
             return false;
         }
-        if ((this.label == null)
-                ? (other.label != null)
-                : !this.label.equals(
-                                     other.label)) {
+        if ((this.label == null) ? (other.label != null) : !this.label.equals(
+                other.label)) {
             return false;
         }
         return true;
@@ -264,15 +253,16 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     /**
      * Takes the labels to compare.
      *
-     * @param <T>
-     *        the actual type.
+     * @param <T> the actual type.
      * @return a label comparing {@link Comparator}
      */
     public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+
+
         return (T o1, T o2) -> Comparator.comparing(ParameterOutput::getLabel,
                                                     Comparator.nullsFirst(Comparator.naturalOrder()))
-                                         .thenComparing(ParameterOutput::getId)
-                                         .compare(o1, o2);
+                                            .thenComparing(ParameterOutput::getId)
+                                            .compare(o1, o2);
     }
 
 }

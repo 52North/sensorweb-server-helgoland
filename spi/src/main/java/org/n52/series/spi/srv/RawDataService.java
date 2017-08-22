@@ -26,11 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.spi.srv;
 
 import java.io.InputStream;
+
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
 
 /**
  * Interface for raw data output
@@ -42,18 +43,21 @@ public interface RawDataService {
     /**
      * Get raw data for
      *
-     * @param id Resource id
-     * @param query Requested parameter
+     * @param id
+     *        Resource id
+     * @param parameters
+     *        the request parameters
      * @return Raw data output as {@link InputStream}
      */
-    InputStream getRawData(String id, IoParameters query);
+    InputStream getRawData(String id, IoParameters parameters);
 
     /**
      * Get raw data for
      *
-     * @param parameters Requested parameter
+     * @param parameters
+     *        the request parameters
      * @return Raw data output as {@link InputStream}
      */
-    InputStream getRawData(RequestSimpleParameterSet parameters);
+    InputStream getRawData(IoParameters parameters);
 
 }

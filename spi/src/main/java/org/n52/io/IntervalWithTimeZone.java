@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import org.joda.time.DateTime;
@@ -34,37 +35,32 @@ import org.joda.time.Interval;
 
 /**
  * <p>
- * Wraps a JodaTime Interval to retain timezone information. The API needs the
- * given timezone information as a best guess to respond timeseries data in a
- * proper manner. JodaTime stores time instants (having no timezone per se)
- * along the interval, so timezone information is available once the timespan
- * string has been parsed.
+ * Wraps a JodaTime Interval to retain timezone information. The API needs the given timezone information as a
+ * best guess to respond timeseries data in a proper manner. JodaTime stores time instants (having no timezone
+ * per se) along the interval, so timezone information is available once the timespan string has been parsed.
  * </p>
  *
- * @see
- * <a href="http://stackoverflow.com/questions/18404433/joda-interval-losing-timezone-information"></a>
+ * @see <a href="http://stackoverflow.com/questions/18404433/joda-interval-losing-timezone-information"></a>
  */
 public class IntervalWithTimeZone {
 
     private String timespan;
 
     /**
-     * @param timespan the time interval in ISO8601 notation.
-     * @throws IoParseException if timespan is not a valid interval.
+     * @param timespan
+     *        the time interval in ISO8601 notation.
+     * @throws IllegalArgumentException
+     *         if timespan is not a valid interval.
      */
     public IntervalWithTimeZone(String timespan) {
-        try {
-            Interval.parse(timespan);
-            this.timespan = timespan;
-        } catch (IllegalArgumentException e) {
-            String message = "Could not parse timespan parameter." + timespan;
-            throw new IoParseException(message, e);
-        }
+        Interval.parse(timespan);
+        this.timespan = timespan;
     }
 
     public DateTimeZone getTimezone() {
         String endTime = timespan.split("/")[1];
-        return DateTime.parse(endTime).getZone();
+        return DateTime.parse(endTime)
+                       .getZone();
     }
 
     public Interval toInterval() {
