@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/feature_support-for-profile-observation/sitemap.xml

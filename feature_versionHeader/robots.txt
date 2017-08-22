@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/feature_versionHeader/sitemap.xml

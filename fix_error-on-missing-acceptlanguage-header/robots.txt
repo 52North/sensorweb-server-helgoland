@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/fix_error-on-missing-acceptlanguage-header/sitemap.xml

@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/fix_missing-href-in-parameter-collection/sitemap.xml

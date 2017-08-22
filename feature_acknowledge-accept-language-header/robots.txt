@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/feature_acknowledge-accept-language-header/sitemap.xml

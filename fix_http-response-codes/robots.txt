@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/fix_http-response-codes/sitemap.xml

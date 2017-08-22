@@ -1,1 +1,0 @@
-Sitemap: /series-rest-api/feature_backwards-compatible-versioning/sitemap.xml
