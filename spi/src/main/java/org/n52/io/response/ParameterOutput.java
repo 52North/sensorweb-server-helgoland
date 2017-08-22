@@ -28,8 +28,6 @@
  */
 package org.n52.io.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +35,11 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.n52.series.spi.srv.RawFormats;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ParameterOutput implements

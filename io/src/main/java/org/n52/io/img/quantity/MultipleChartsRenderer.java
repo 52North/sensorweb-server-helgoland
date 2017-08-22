@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.time.Day;
@@ -44,7 +45,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
@@ -59,10 +60,10 @@ import org.n52.io.style.Style;
 
 public class MultipleChartsRenderer extends ChartIoHandler {
 
-    public MultipleChartsRenderer(RequestParameterSet request,
+    public MultipleChartsRenderer(IoParameters parameters,
             IoProcessChain<QuantityData> processChain,
             IoStyleContext context) {
-        super(request, processChain, context);
+        super(parameters, processChain, context);
     }
 
     @Override

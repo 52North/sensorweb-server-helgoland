@@ -26,11 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IoParseException extends RuntimeException {
 
     private static final long serialVersionUID = -3627963628985404024L;
+
+    private List<String> details;
 
     public IoParseException(String message, Throwable cause) {
         super(message, cause);
@@ -38,6 +44,23 @@ public class IoParseException extends RuntimeException {
 
     public IoParseException(String message) {
         super(message);
+    }
+
+    public IoParseException addHint(String hint) {
+        if (hint == null) {
+            return this;
+        }
+        if (getHints() == null) {
+            this.details = new ArrayList<>();
+        }
+        this.details.add(hint);
+        return this;
+    }
+
+    public String[] getHints() {
+        return details != null
+                ? details.toArray(new String[0])
+                : null;
     }
 
 }

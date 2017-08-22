@@ -28,95 +28,54 @@
  */
 package org.n52.web.exception;
 
-import java.io.InputStream;
-import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.series.spi.srv.RawDataService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * Adapts SPI exceptions to HTTP specified Web exceptions.
- *
- * @param <T> the parameter type of the service to adapt execptions for.
- */
-public class WebExceptionAdapter<T extends ParameterOutput> extends ParameterService<T> implements RawDataService {
+public abstract class WebExceptionAdapter extends RuntimeException implements WebException {
 
-    private final ParameterService<T> composedService;
+    private static final long serialVersionUID = 8960179333452332350L;
 
-    public WebExceptionAdapter(ParameterService<T> toCompose) {
-        this.composedService = toCompose;
+    private List<String> details;
+
+    public WebExceptionAdapter(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WebExceptionAdapter(String message) {
+        super(message);
     }
 
     @Override
-    public OutputCollection<T> getExpandedParameters(IoParameters query) {
-        OutputCollection<T> parameters = composedService.getExpandedParameters(query);
-        assertValidSpiImplementation(parameters);
-        return parameters;
-    }
-
-    @Override
-    public OutputCollection<T> getCondensedParameters(IoParameters query) {
-        OutputCollection<T> parameters = composedService.getCondensedParameters(query);
-        assertValidSpiImplementation(parameters);
-        return parameters;
-    }
-
-    @Override
-    public OutputCollection<T> getParameters(String[] items, IoParameters query) {
-        OutputCollection<T> parameters = composedService.getParameters(items, query);
-        assertValidSpiImplementation(parameters);
-        return parameters;
-    }
-
-    @Override
-    public T getParameter(String item, IoParameters query) {
-        assertItemExists(item, query);
-        return composedService.getParameter(item, query);
-    }
-
-    private void assertItemExists(String item, IoParameters parameters) {
-        if (!exists(item, parameters)) {
-            throw new ResourceNotFoundException("Resource with id '" + item + "' was not found.");
+    public WebExceptionAdapter addHint(String... hints) {
+        if (hints != null) {
+            Arrays.asList(hints)
+                  .stream()
+                  .forEach(d -> addHint(d));
         }
+        return this;
     }
 
     @Override
-    public boolean exists(String id, IoParameters parameters) {
-        return composedService.exists(id, parameters);
-    }
-
-    @Override
-    public InputStream getRawData(String id, IoParameters query) {
-        if (composedService.supportsRawData()) {
-            return composedService.getRawDataService().getRawData(id, query);
+    public WebExceptionAdapter addHint(String hint) {
+        if (hint == null) {
+            return this;
         }
-        return null;
-    }
-
-    @Override
-    public InputStream getRawData(RequestSimpleParameterSet parameters) {
-        if (composedService.supportsRawData()) {
-            return composedService.getRawDataService().getRawData(parameters);
+        if (getHints() == null) {
+            this.details = new ArrayList<>();
         }
-        return null;
+        this.details.add(hint);
+        return this;
     }
 
     @Override
-    public RawDataService getRawDataService() {
-        return composedService.getRawDataService();
+    public String[] getHints() {
+        return details == null ? null : details.toArray(new String[0]);
     }
 
     @Override
-    public boolean supportsRawData() {
-        return composedService.supportsRawData();
-    }
-
-    private void assertValidSpiImplementation(OutputCollection<T> parameters) throws InternalServerException {
-        if (parameters == null) {
-            throw new InternalServerException("SPI implementation did return null value!");
-        }
+    public Throwable getThrowable() {
+        return this;
     }
 
 }

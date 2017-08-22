@@ -29,22 +29,26 @@
 
 package org.n52.io.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.joda.time.DateTime;
+
 import org.joda.time.DateTimeZone;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.response.dataset.ValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class RequestParameterSet {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+/**
+ * Serialization POJO for POST requests. All parameters will be passed to an {@link IoParameters} instance.
+ */
+abstract class RequestParameterSet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestParameterSet.class);
 
@@ -58,17 +62,8 @@ public abstract class RequestParameterSet {
 
     protected RequestParameterSet() {
         parameters = new HashMap<>();
-        parameters.put(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(createDefaultTimespan()));
-    }
-
-    private String createDefaultTimespan() {
-        DateTime now = new DateTime();
-        DateTime lastWeek = now.minusWeeks(1);
-        String interval = lastWeek
-                                  .toString()
-                                  .concat("/")
-                                  .concat(now.toString());
-        return new IntervalWithTimeZone(interval).toString();
+        IntervalWithTimeZone defaultTimespan = IoParameters.createDefaultTimespan();
+        parameters.put(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(defaultTimespan));
     }
 
     public String getOutputTimezone() {
@@ -115,10 +110,10 @@ public abstract class RequestParameterSet {
      *        the timespan to set.
      */
     public void setTimespan(String timespan) {
-        String nonNullTimespan = timespan != null
-                ? validateTimespan(timespan)
-                : createDefaultTimespan();
-        setParameter(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(nonNullTimespan));
+        IntervalWithTimeZone nonNullTimespan = timespan == null
+                ? IoParameters.createDefaultTimespan()
+                : validateTimespan(timespan);
+        setParameter(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(nonNullTimespan.toString()));
     }
 
     /**
@@ -210,8 +205,8 @@ public abstract class RequestParameterSet {
         }
     }
 
-    private String validateTimespan(String timespan) {
-        return new IntervalWithTimeZone(timespan).toString();
+    private IntervalWithTimeZone validateTimespan(String timespan) {
+        return new IntervalWithTimeZone(timespan);
     }
 
     public Set<String> availableParameterNames() {
@@ -340,6 +335,11 @@ public abstract class RequestParameterSet {
         return datasetIds.length > 0
                 ? ValueType.extractType(datasetIds[0], handleAs)
                 : ValueType.DEFAULT_VALUE_TYPE;
+    }
+
+    public IoParameters toParameters() {
+        return IoParameters.createFromSingleJsonValueMap(parameters)
+                           .replaceWith(Parameters.DATASETS, getDatasets());
     }
 
     @Override

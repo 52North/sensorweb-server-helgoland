@@ -243,8 +243,7 @@ public class FilterResolverTest {
 
     @Test
     public void when_setRemote_then_allRemotesFilterActive() {
-        FilterResolver resolver = createResolver(createDefaults()
-                                                                 .extendWith(Parameters.FILTER_PLATFORM_TYPES,
+        FilterResolver resolver = createResolver(createDefaults().extendWith(Parameters.FILTER_PLATFORM_TYPES,
                                                                              "remote"));
         Assert.assertTrue(resolver.shallIncludeRemotePlatformTypes());
         Assert.assertTrue(resolver.shallIncludeMobilePlatformTypes());

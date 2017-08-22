@@ -45,9 +45,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
 import org.n52.io.IntervalWithTimeZone;
@@ -67,13 +70,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.vividsolutions.jts.geom.Point;
 
-public class IoParameters implements Parameters {
+public final class IoParameters implements Parameters {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
@@ -84,10 +88,31 @@ public class IoParameters implements Parameters {
 
     private final MultiValueMap<String, JsonNode> query;
 
-    private IoParameters(File defaultConfig) {
-        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
-        config.setAll(readDefaultConfig(defaultConfig));
-        query = mergeToLowerCasedKeys(config);
+    private final FilterResolver filterResolver;
+
+    private boolean behaveBackwardsCompatible;
+
+    private BiConsumer<String, IoParseException> parseExceptionHandle;
+
+    protected IoParameters() {
+        this(Collections.<String, JsonNode> emptyMap());
+    }
+
+    protected IoParameters(IoParameters other) {
+        this(other.query);
+    }
+
+    protected IoParameters(Map<String, JsonNode> queryParameters) {
+        this(queryParameters, (File) null);
+    }
+
+    protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
+        this(defaults);
+        query.setAll(mergeToLowerCasedKeys(queryParameters));
+    }
+
+    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
+        this(queryParameters, (File) null);
     }
 
     protected IoParameters(MultiValueMap<String, JsonNode> queryParameters, File defaults) {
@@ -97,17 +122,11 @@ public class IoParameters implements Parameters {
         }
     }
 
-    protected IoParameters(MultiValueMap<String, JsonNode> queryParameters) {
-        this(queryParameters, (File) null);
-    }
-
-    protected IoParameters(Map<String, JsonNode> queryParameters, File defaults) {
-        this(defaults);
-        query.setAll(mergeToLowerCasedKeys(queryParameters));
-    }
-
-    protected IoParameters(Map<String, JsonNode> queryParameters) {
-        this(queryParameters, (File) null);
+    private IoParameters(File defaultConfig) {
+        MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
+        config.setAll(readDefaultConfig(defaultConfig));
+        query = mergeToLowerCasedKeys(config);
+        filterResolver = new FilterResolver(this);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
@@ -139,6 +158,24 @@ public class IoParameters implements Parameters {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
         }
+    }
+
+    public boolean shallBehaveBackwardsCompatible() {
+        return behaveBackwardsCompatible;
+    }
+
+    private IoParameters setBehaveBackwardsCompatible(boolean behaveBackwardsCompatible) {
+        this.behaveBackwardsCompatible = behaveBackwardsCompatible;
+        return this;
+    }
+
+    public IoParameters setParseExceptionHandle(BiConsumer<String, IoParseException> handle) {
+        this.parseExceptionHandle = handle;
+        return this;
+    }
+
+    private BiConsumer<String, IoParseException> getParseExceptionHandle() {
+        return parseExceptionHandle;
     }
 
     /**
@@ -206,7 +243,7 @@ public class IoParameters implements Parameters {
      * @throws IoParseException
      *         if parsing parameter fails.
      */
-    public boolean isGeneralize() throws IoParseException {
+    public boolean isGeneralize() {
         return getAsBoolean(GENERALIZE, DEFAULT_GENERALIZE);
     }
 
@@ -223,6 +260,8 @@ public class IoParameters implements Parameters {
     /**
      * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
      *         is returned.
+     * @throws IoParseException
+     *         if parsing parameter fails.
      */
     public String getLocale() {
         return getAsString(LOCALE, DEFAULT_LOCALE);
@@ -231,12 +270,31 @@ public class IoParameters implements Parameters {
     /**
      * @return the value of {@value #STYLE} parameter. If not present, the default styles are returned.
      * @throws IoParseException
-     *         if parsing style parameter failed.
+     *         if parsing parameter fails.
      */
-    public StyleProperties getStyle() {
+    public StyleProperties getSingleStyle() {
         return containsParameter(STYLE)
                 ? parseStyleProperties(getAsString(STYLE))
                 : StyleProperties.createDefaults();
+    }
+
+    /**
+     * @return the value of {@value #STYLES} parameter.
+     * @throws IoParseException
+     *         if parsing parameter fails.
+     */
+    public Map<String, StyleProperties> getReferencedStyles() {
+        return containsParameter(STYLES)
+                ? parseMultipleStyleProperties(getAsString(STYLES))
+                : Collections.emptyMap();
+    }
+
+    /**
+     * @return in case of either <tt>style</tt> for single or <tt>styles</tt> for multiple datasets are
+     *         available.
+     */
+    public boolean hasStyles() {
+        return getSingleStyle() != null || !getReferencedStyles().isEmpty();
     }
 
     /**
@@ -251,17 +309,13 @@ public class IoParameters implements Parameters {
      *         if parsing parameter fails.
      */
     private StyleProperties parseStyleProperties(String style) {
-        try {
-            return style == null
-                    ? StyleProperties.createDefaults()
-                    : new ObjectMapper().readValue(style, StyleProperties.class);
-        } catch (JsonMappingException e) {
-            throw new IoParseException("Could not read style properties: " + style, e);
-        } catch (JsonParseException e) {
-            throw new IoParseException("Could not parse style properties:" + style, e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("An error occured during request handling.", e);
-        }
+        return handleJsonValueParseException(style, StyleProperties.class, this::parseJson);
+    }
+
+    private Map<String, StyleProperties> parseMultipleStyleProperties(String styles) {
+        return handleJsonValueParseException(styles,
+                                             new TypeReference<HashMap<String, StyleProperties>>() {},
+                                             this::parseJson);
     }
 
     public String getFormat() {
@@ -309,7 +363,7 @@ public class IoParameters implements Parameters {
         return parameterValue.replaceAll("(?i)now", now);
     }
 
-    private IntervalWithTimeZone createDefaultTimespan() {
+    public static IntervalWithTimeZone createDefaultTimespan() {
         DateTime now = new DateTime();
         // TODO make this configurable
         DateTime lastWeek = now.minusWeeks(1);
@@ -320,14 +374,25 @@ public class IoParameters implements Parameters {
     }
 
     private IntervalWithTimeZone validateTimespan(String timespan) {
-        return new IntervalWithTimeZone(timespan);
+        try {
+            return new IntervalWithTimeZone(timespan);
+        } catch (IllegalArgumentException e) {
+            IoParseException ex = new IoParseException(e.getMessage(), e);
+            throw ex.addHint("Valid timespans have to be in ISO8601 period format.")
+                    .addHint("Valid examples: 'PT6H/2013-08-13TZ' or '2013-07-13TZ/2013-08-13TZ'.");
+        }
     }
 
     public String getOutputTimezone() {
         if (!containsParameter(OUTPUT_TIMEZONE)) {
             return DEFAULT_OUTPUT_TIMEZONE;
         }
-        return getAsString(OUTPUT_TIMEZONE);
+        String timezone = getAsString(OUTPUT_TIMEZONE);
+        Set<String> availableIDs = DateTimeZone.getAvailableIDs();
+        DateTimeZone zone = availableIDs.contains(timezone)
+                ? DateTimeZone.forID(timezone)
+                : DateTimeZone.UTC;
+        return zone.toString();
     }
 
     public Instant getResultTime() {
@@ -367,12 +432,7 @@ public class IoParameters implements Parameters {
     }
 
     private Instant validateTimestamp(String timestamp) {
-        try {
-            return Instant.parse(timestamp);
-        } catch (Exception e) {
-            String message = "Could not parse result time parameter." + timestamp;
-            throw new IoParseException(message, e);
-        }
+        return handleSimpleValueParseException(timestamp, Instant::parse);
     }
 
     /**
@@ -552,7 +612,7 @@ public class IoParameters implements Parameters {
     }
 
     public FilterResolver getFilterResolver() {
-        return new FilterResolver(this);
+        return filterResolver;
     }
 
     /**
@@ -640,12 +700,19 @@ public class IoParameters implements Parameters {
                                                     Double.valueOf(coordArray[3].trim()),
                                                     CRSUtils.DEFAULT_CRS);
             return new BoundingBox(lowerLeft, upperRight, CRSUtils.DEFAULT_CRS);
-        } else {
-            BBox bbox = parseJson(bboxValue, BBox.class);
+        }
+
+        try {
+            BBox bbox = handleJsonValueParseException(bboxValue, BBox.class, this::parseJson);
             return new BoundingBox(crsUtils.convertToPointFrom(bbox.getLl(), CRSUtils.DEFAULT_CRS),
                                    crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
                                    CRSUtils.DEFAULT_CRS);
+        } catch (IoParseException e) {
+            throw e.addHint(createInvalidParameterMessage(Parameters.BBOX))
+                   .addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.")
+                   .addHint("(alternate format of 'llLon,llLat,urLon,urLat' couldn't be detected)");
         }
+
     }
 
     private BoundingBox parseBoundsFromVicinity() {
@@ -653,7 +720,7 @@ public class IoParameters implements Parameters {
             return null;
         }
         String vicinityValue = getAsString(NEAR);
-        Vicinity vicinity = parseJson(vicinityValue, Vicinity.class);
+        Vicinity vicinity = handleJsonValueParseException(vicinityValue, Vicinity.class, this::parseJson);
         if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
@@ -675,13 +742,26 @@ public class IoParameters implements Parameters {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(jsonString, clazz);
-        } catch (JsonParseException e) {
-            throw new IoParseException("The given parameter is invalid JSON." + jsonString, e);
-        } catch (JsonMappingException e) {
-            throw new IoParseException("The given parameter could not been read: " + jsonString, e);
+        } catch (JsonParseException | JsonMappingException e) {
+            throw createInvalidJsonValueException(jsonString, e);
         } catch (IOException e) {
-            throw new RuntimeException("Could not handle input to parse.", e);
+            throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private <T> T parseJson(String jsonString, TypeReference<T> typeReference) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(jsonString, typeReference);
+        } catch (JsonParseException | JsonMappingException e) {
+            throw createInvalidJsonValueException(jsonString, e);
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private IoParseException createInvalidJsonValueException(String jsonString, Exception e) {
+        return new IoParseException("The given JSON value is invalid: " + jsonString, e);
     }
 
     private GeojsonPoint convertToCrs84(GeojsonPoint point) {
@@ -746,6 +826,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return if status intervals shall be serialized with (timeseries) output
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      * @deprecated since v2.0 covered by extras endpoint
      */
     @Deprecated
@@ -755,6 +837,8 @@ public class IoParameters implements Parameters {
 
     /**
      * @return if rendering hints shall be serialized with (timeseries) output
+     * @throws IoParseException
+     *         if parameter could not be parsed.
      * @deprecated since v2.0 covered by extras endpoint
      */
     @Deprecated
@@ -808,7 +892,7 @@ public class IoParameters implements Parameters {
 
     public int getAsInteger(String parameter, int defaultValue) {
         return containsParameter(parameter)
-                ? getAsInteger(parameter)
+                ? handleSimpleValueParseException(parameter, this::getAsInteger)
                 : defaultValue;
     }
 
@@ -824,14 +908,13 @@ public class IoParameters implements Parameters {
             String value = getAsString(parameter);
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throwIoParseException(parameter, "Must be an integer!", e);
-            return -1;
+            throw createIoParseException(parameter).addHint("Value must be an integer!");
         }
     }
 
     public boolean getAsBoolean(String parameter, boolean defaultValue) {
         return containsParameter(parameter)
-                ? getAsBoolean(parameter)
+                ? handleSimpleValueParseException(parameter, this::getAsBoolean)
                 : defaultValue;
     }
 
@@ -843,58 +926,71 @@ public class IoParameters implements Parameters {
      *         if parsing to <code>boolean</code> fails.
      */
     public boolean getAsBoolean(String parameter) {
-        try {
-            String value = getAsString(parameter);
+        String value = getAsString(parameter);
+        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
-        } catch (NumberFormatException e) {
-            throwIoParseException(parameter, "Must be 'false' or 'true'!", e);
-            return false;
+        } else {
+            IoParseException ex = createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
+            return handleIoParseException(parameter, ex);
         }
     }
 
-    private void throwIoParseException(String parameter, String expected, Exception e)
-            throws IoParseException {
-        String msg = "Parameter '" + parameter + "'. ";
-        throw new IoParseException(msg + expected, e);
+    private IoParseException createIoParseException(String parameter) {
+        return createIoParseException(parameter, null);
     }
 
-    RequestSimpleParameterSet toSimpleParameterSet() {
-        RequestSimpleParameterSet parameterSet = new RequestSimpleParameterSet();
-        addValuesToParameterSet(parameterSet);
-        return parameterSet;
+    private IoParseException createIoParseException(String parameter, Exception e) {
+        return e != null
+                ? new IoParseException(createInvalidParameterMessage(parameter), e)
+                : new IoParseException(createInvalidParameterMessage(parameter));
     }
 
-    public RequestSimpleParameterSet mergeToSimpleParameterSet(RequestStyledParameterSet designedSet) {
-        RequestSimpleParameterSet parameters = toSimpleParameterSet();
-        parameters.setOutputTimezone(designedSet.getOutputTimezone());
-        parameters.setDatasets(designedSet.getDatasets());
-        parameters.setTimespan(designedSet.getTimespan());
-        return parameters;
+    private String createInvalidParameterMessage(String parameter) {
+        return "The parameter '" + parameter + "' is invalid.";
     }
 
-    public RequestStyledParameterSet toStyledParameterSet() {
-        return mergeToStyledParameterSet(new RequestStyledParameterSet());
-    }
-
-    public RequestStyledParameterSet mergeToStyledParameterSet(RequestStyledParameterSet parameterSet) {
-        addValuesToParameterSet(parameterSet);
-        return parameterSet;
-    }
-
-    private RequestParameterSet addValuesToParameterSet(RequestParameterSet parameterSet) {
-        // TODO check value object
-        // TODO keep multi value map
-        for (Entry<String, List<JsonNode>> entry : query.entrySet()) {
-            List<JsonNode> values = entry.getValue();
-            String lowercasedKey = entry.getKey()
-                                        .toLowerCase();
-            if (values.size() == 1) {
-                parameterSet.setParameter(lowercasedKey, values.get(0));
-            } else {
-                parameterSet.setParameter(lowercasedKey, getJsonNodeFrom(values));
-            }
+    private <R> R handleSimpleValueParseException(String parameter, Function<String, R> supplier) {
+        try {
+            return supplier.apply(parameter);
+        } catch (IoParseException e) {
+            return handleIoParseException(parameter, e);
         }
-        return parameterSet;
+    }
+
+    private <R, T> R handleJsonValueParseException(String parameter,
+                                                   Class<T> clazz,
+                                                   BiFunction<String, Class<T>, R> supplier) {
+        try {
+            return supplier.apply(parameter, clazz);
+        } catch (IoParseException e) {
+            return handleIoParseException(parameter, e);
+        }
+    }
+
+    private <R, T> R handleJsonValueParseException(String parameter,
+                                                   TypeReference<T> reference,
+                                                   BiFunction<String, TypeReference<T>, R> supplier) {
+        try {
+            return supplier.apply(parameter, reference);
+        } catch (IoParseException e) {
+            return handleIoParseException(parameter, e);
+        }
+    }
+
+    /**
+     * @param parameter
+     *        the parameter causing the parse exception.
+     * @param e
+     *        the parse exception to handle
+     * @return nothing, as {@link #parseExceptionHandle} is expected to handle the exception.
+     */
+    private <R> R handleIoParseException(String parameter, IoParseException e) {
+        if (parseExceptionHandle != null) {
+            parseExceptionHandle.accept(parameter, e);
+            return null;
+        } else {
+            throw e;
+        }
     }
 
     public static JsonNode getJsonNodeFrom(Object object) {
@@ -909,36 +1005,53 @@ public class IoParameters implements Parameters {
         }
     }
 
+    /**
+     * Creates a new instance based on the current one and removes given parameter with the all its values. As
+     * a new instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
+     *
+     * @param key
+     *        the name of the parameter to remove all its values
+     * @return a new instance with extended key/values
+     */
     public IoParameters removeAllOf(String key) {
         MultiValueMap<String, JsonNode> newValues = new LinkedMultiValueMap<>(query);
         newValues.remove(key.toLowerCase());
-        return new IoParameters(newValues);
+        return new IoParameters(newValues).setParseExceptionHandle(parseExceptionHandle);
     }
 
+    /**
+     * Creates a new instance based on the current one and adds parameter with the given values. As a new
+     * instance is created the current one stays unchanged (unmutable instance) and can be reused as is.
+     *
+     * @param key
+     *        the parameter name
+     * @param values
+     *        the parameter values
+     * @return a new instance with extended key/values
+     */
     public IoParameters extendWith(String key, String... values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         newValues.put(key.toLowerCase(), Arrays.asList(values));
 
-        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(
-                                                                                 query);
-        mergedValues.putAll(convertValuesToJsonNodes(newValues));
-        return new IoParameters(mergedValues);
+        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
+        mergedValues.putAll(convertToJsonNodes(newValues));
+        return new IoParameters(mergedValues).setParseExceptionHandle(parseExceptionHandle);
     }
 
-    protected static Map<String, JsonNode> convertValuesToJsonNodes(
-                                                                    Map<String, String> queryParameters) {
+    public IoParameters replaceWith(String key, String... values) {
+        return removeAllOf(key).extendWith(key, values);
+    }
+
+    protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
-            String key = entry.getKey()
-                              .toLowerCase();
-            parameters.put(key, getJsonNodeFrom(entry.getValue()));
+            String key = entry.getKey();
+            parameters.put(key.toLowerCase(), getJsonNodeFrom(entry.getValue()));
         }
         return parameters;
     }
 
-    protected static MultiValueMap<String, JsonNode> convertValuesToJsonNodes(
-                                                                              MultiValueMap<String,
-                                                                                            String> queryParameters) {
+    protected static MultiValueMap<String, JsonNode> convertToJsonNodes(MultiValueMap<String, String> queryParameters) {
         MultiValueMap<String, JsonNode> parameters = new LinkedMultiValueMap<>();
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
@@ -953,10 +1066,10 @@ public class IoParameters implements Parameters {
 
     @Override
     public String toString() {
-        return "IoParameters{" + "query=" + query + '}';
+        return "IoParameters{ behaveBackwardsCompatible: " + behaveBackwardsCompatible + ", query=" + query + '}';
     }
 
-    private static Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
+    protected Map<String, JsonNode> mergeToLowerCasedKeys(Map<String, JsonNode> parameters) {
         Map<String, JsonNode> queryParameters = new HashMap<>();
         for (Entry<String, JsonNode> entry : parameters.entrySet()) {
             String parameter = entry.getKey();
@@ -966,7 +1079,7 @@ public class IoParameters implements Parameters {
         return queryParameters;
     }
 
-    private static MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
+    protected MultiValueMap<String, JsonNode> mergeToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
         MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
         for (Entry<String, List<JsonNode>> entry : parameters.entrySet()) {
             String parameter = entry.getKey();
@@ -993,58 +1106,47 @@ public class IoParameters implements Parameters {
         return new IoParameters(Collections.<String, JsonNode> emptyMap(), defaultConfig);
     }
 
-    static IoParameters createFromMultiValueMap(
-                                                MultiValueMap<String, String> query) {
+    public static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query) {
         return createFromMultiValueMap(query, null);
     }
 
-    static IoParameters createFromMultiValueMap(
-                                                MultiValueMap<String, String> query, File defaultConfig) {
-        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
+    private static IoParameters createFromMultiValueMap(MultiValueMap<String, String> query, File defaultConfig) {
+        return createFromMultiJsonValueMap(convertToJsonNodes(query), defaultConfig);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query) {
+    private static IoParameters createFromMultiJsonValueMap(MultiValueMap<String, JsonNode> query, File defaultConfig) {
+        return new IoParameters(query, defaultConfig);
+    }
+
+    public static IoParameters createFromSingleValueMap(Map<String, String> query) {
         return createFromSingleValueMap(query, null);
     }
 
-    static IoParameters createFromSingleValueMap(Map<String, String> query,
-                                                 File defaultConfig) {
-        return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
+    private static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
+        return createFromSingleJsonValueMap(convertValuesToJsonNodes(query), defaultConfig);
     }
 
-    /**
-     * @param parameters
-     *        the parameters sent via POST payload.
-     * @return a query map for convenient parameter access plus validation.
-     */
-    public static IoParameters createFromQuery(RequestParameterSet parameters) {
-        return createFromQuery(parameters, null);
+    static IoParameters createFromSingleJsonValueMap(Map<String, JsonNode> query) {
+        return new IoParameters(query, null);
     }
 
-    public static IoParameters createFromQuery(RequestParameterSet parameters, File defaultConfig) {
-        Map<String, JsonNode> queryParameters = new HashMap<>();
-        for (String parameter : parameters.availableParameterNames()) {
-            JsonNode value = parameters.getParameterValue(parameter);
-            queryParameters.put(parameter.toLowerCase(), value);
-        }
-        return new IoParameters(queryParameters, defaultConfig);
+    private static IoParameters createFromSingleJsonValueMap(Map<String, JsonNode> query, File defaultConfig) {
+        return new IoParameters(query, defaultConfig);
     }
 
-    public static IoParameters ensureBackwardsCompatibility(IoParameters parameters) {
+    public IoParameters respectBackwardsCompatibility() {
         String[] platformTypes = {
             PlatformType.PLATFORM_TYPE_STATIONARY,
             PlatformType.PLATFORM_TYPE_INSITU
         };
-        return isBackwardsCompatibilityRequest(parameters)
-                ? parameters.extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                            .extendWith(Parameters.FILTER_VALUE_TYPES, ValueType.DEFAULT_VALUE_TYPE)
-                            .removeAllOf(Parameters.HREF_BASE)
-                : parameters;
-    }
 
-    private static boolean isBackwardsCompatibilityRequest(IoParameters parameters) {
-        return !(parameters.containsParameter(Parameters.FILTER_PLATFORM_TYPES)
-                || parameters.containsParameter(Parameters.FILTER_VALUE_TYPES));
+        return filterResolver.shallBehaveBackwardsCompatible()
+                ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
+                                                   .extendWith(Parameters.FILTER_VALUE_TYPES,
+                                                               ValueType.DEFAULT_VALUE_TYPE)
+                                                   // set backwards compatibility at the end
+                                                   .setBehaveBackwardsCompatible(true)
+                : this;
     }
 
     public boolean isPureStationaryInsituQuery() {

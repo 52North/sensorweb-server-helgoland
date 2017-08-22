@@ -45,7 +45,7 @@ public class CategoriesParameterController extends ParameterRequestMappingAdapte
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getCategoryCount(IoParameters.ensureBackwardsCompatibility(queryMap));
+    protected int getElementCount(IoParameters parameters) {
+        return super.getEntityCounter().getCategoryCount(parameters.respectBackwardsCompatibility());
     }
 }

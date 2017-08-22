@@ -26,15 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.exception;
 
 /**
- * Serves as common Web exception to be wrapped by the actual
- * {@link ExceptionResponse} which is serialized and returned to the user.
+ * Serves as common Web exception to be wrapped by the actual {@link ExceptionResponse} which is serialized
+ * and returned to the user.
  */
 public interface WebException {
 
-    void addHint(String details);
+    WebException addHint(String details);
+
+    WebException addHint(String... details);
 
     String[] getHints();
 
