@@ -418,11 +418,11 @@ public final class IoParameters implements Parameters {
      * @return a (probably empty) set of result times.
      */
     public Set<String> getResultTimes() {
-        csvToSet(getAsString(RESULTTIMES), this::validateTimestamp);
         Set<String> resultTimes = csvToSet(getAsString(RESULTTIMES));
         if (resultTimes.contains(RESULT_TIMES_VALUE_ALL)) {
             resultTimes.remove(RESULT_TIMES_VALUE_ALL);
         }
+        resultTimes.stream().forEach(this::validateTimestamp);
         Instant fromOldParameter = getResultTime();
         if (fromOldParameter != null) {
             resultTimes.add(fromOldParameter.toString());
