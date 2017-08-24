@@ -30,6 +30,7 @@
 package org.n52.io.response;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.n52.io.Utils;
 
@@ -138,48 +139,20 @@ public class ServiceOutput extends ParameterOutput {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+        return Objects.hash(serviceUrl, version, type);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
+        if (obj == null || !(obj instanceof ServiceOutput)) {
             return false;
+        } else {
+            ServiceOutput other = (ServiceOutput) obj;
+            return Objects.equals(serviceUrl, other.serviceUrl)
+                    && Objects.equals(version, other.version)
+                    && Objects.equals(type, other.type)
+                    && super.equals(other);
         }
-        if (!(obj instanceof ServiceOutput)) {
-            return false;
-        }
-        ServiceOutput other = (ServiceOutput) obj;
-        if (serviceUrl == null) {
-            if (other.serviceUrl != null) {
-                return false;
-            }
-        } else if (!serviceUrl.equals(other.serviceUrl)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!version.equals(other.version)) {
-            return false;
-        }
-        return true;
     }
 
     public static class ParameterCount {

@@ -30,34 +30,4 @@ package org.n52.io.response;
 
 public class FeatureOutput extends OutputWithParameters {
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof FeatureOutput)) {
-            return false;
-        }
-        FeatureOutput other = (FeatureOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        } else if (!service.equals(other.service)) {
-            return false;
-        }
-        return true;
-    }
-
 }

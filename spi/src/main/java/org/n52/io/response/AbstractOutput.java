@@ -26,7 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
+
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk J&uuml;rrens</a>
@@ -53,32 +56,17 @@ public class AbstractOutput extends ParameterOutput {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((service == null) ? 0 : service.hashCode());
-        return result;
+        return Objects.hash(service, super.hashCode());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(this.getClass().isAssignableFrom(obj.getClass()))) {
+        if (obj == null || !(obj instanceof AbstractOutput)) {
             return false;
         }
         AbstractOutput other = (AbstractOutput) obj;
-        if (service == null) {
-            if (other.service != null) {
-                return false;
-            }
-        } else if (!service.equals(other.service)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(service, other.service)
+                && super.equals(obj);
     }
 
 }
