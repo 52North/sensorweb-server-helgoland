@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import java.util.HashMap;
@@ -46,19 +47,25 @@ import com.vividsolutions.jts.geom.Geometry;
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
-    private Geometry geometry;
+    public static final String PLATFORM = "platform";
 
-    private PlatformOutput platform;
+    public static final String GEOMETRY_TYPE = "geometryType";
 
-    private final GeometryType geometyCategory;
+    private OptionalOutput<GeometryType> geometryType;
 
-    public GeometryInfo(GeometryType category) {
-        this.geometyCategory = category;
-    }
+    private OptionalOutput<PlatformOutput> platform;
+
+    private OptionalOutput<Geometry> geometry;
 
     @Override
-    public void setId(String id) {
-        super.setId(geometyCategory.createId(id));
+    public String getId() {
+        GeometryType type = getIfSet(geometryType, true);
+        return type.createId(super.getId());
+    }
+
+    public GeometryInfo setGeometryType(OptionalOutput<GeometryType> geometryType) {
+        this.geometryType = geometryType;
+        return this;
     }
 
     @Override
@@ -77,21 +84,27 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
     }
 
     public PlatformOutput getPlatform() {
-        return platform;
+        return getIfSerialized(platform);
     }
 
-    public void setPlatform(PlatformOutput platform) {
+    public GeometryInfo setPlatform(OptionalOutput<PlatformOutput> platform) {
         this.platform = platform;
+        return this;
     }
 
     @Override
     public Geometry getGeometry() {
-        return geometry;
+        return getIfSerialized(geometry);
     }
 
     @Override
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(OptionalOutput<Geometry> geometry) {
         this.geometry = geometry;
+    }
+
+    @Override
+    public boolean isSetGeometry() {
+        return getGeometry() != null && !getGeometry().isEmpty();
     }
 
     @Override
@@ -103,31 +116,26 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
                 : base;
     }
 
+    public GeometryType getType() {
+        return getIfSerialized(geometryType);
+    }
+
     private String getUrlIdPrefix() {
         return getType().getGeometryType();
     }
 
-    public GeometryType getType() {
-        return geometyCategory;
-    }
-
-    public String getGeometyCategory() {
-        return geometyCategory.getGeometryType();
+    public String getGeometyType() {
+        return getType().getGeometryType();
     }
 
     @Override
     public Map<String, Object> getProperties() {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put("geometryType", getGeometyCategory());
-        properties.put("platform", platform);
-        properties.put("href", getHref());
-        properties.put("id", getId());
+        properties.put(GEOMETRY_TYPE, getGeometyType());
+        properties.put(PLATFORM, getPlatform());
+        properties.put(HREF, getHref());
+        properties.put(ID, getId());
         return properties;
-    }
-
-    @Override
-    public boolean isSetGeometry() {
-        return getGeometry() != null && !getGeometry().isEmpty();
     }
 
 }

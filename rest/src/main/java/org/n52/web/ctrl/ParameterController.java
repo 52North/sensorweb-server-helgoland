@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -189,12 +190,12 @@ public abstract class ParameterController<T extends ParameterOutput>
         return toBeProcessed;
     }
 
-    protected T addExtensionInfos(T output, IoParameters ioParameters) {
-        if (!ioParameters.containsParameter("fields") || ioParameters.getFields().contains("extras")) {
-            for (MetadataExtension<T> extension : metadataExtensions) {
-                extension.addExtraMetadataFieldNames(output);
-            }
-        }
+    protected T addExtensionInfos(T output, IoParameters parameters) {
+        Collection<String> extras = metadataExtensions.stream()
+                          .map(e -> e.getExtraMetadataFieldNames(output))
+                          .flatMap(c -> c.stream())
+                          .collect(Collectors.toList());
+        output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
         return output;
     }
 

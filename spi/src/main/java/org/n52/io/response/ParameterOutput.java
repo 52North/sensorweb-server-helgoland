@@ -30,11 +30,9 @@
 package org.n52.io.response;
 
 import java.text.Collator;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -49,74 +47,115 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     public static final String ID = "id";
     public static final String HREF = "href";
-    public static final String HREFBASE = HREF;
-    public static final String DOMAINID = "domainid";
+    public static final String HREF_BASE = HREF;
+    public static final String DOMAIN_ID = "domainid";
     public static final String LABEL = "label";
     public static final String EXTRAS = "extras";
     public static final String RAWFORMATS = "service";
 
     private String id;
 
-    private String href;
+    private OptionalOutput<String> href;
 
-    private String hrefBase;
+    private OptionalOutput<String> hrefBase;
 
-    private String domainId;
+    private OptionalOutput<String> domainId;
 
-    private String label;
+    private OptionalOutput<String> label;
 
     @Deprecated
-    private String license;
+    private OptionalOutput<String> license;
 
-    private List<String> extras;
+    private OptionalOutput<Collection<String>> extras;
 
-    private Set<String> rawFormats;
+    private OptionalOutput<Set<String>> rawFormats;
 
-    public <T> void setValue(String parameter, T value, IoParameters parameters, Consumer<T> consumer) {
-        if (!parameters.containsParameter("fields") || parameters.getFields()
-                                                                 .contains(parameter)) {
-            consumer.accept(value);
-        }
+    public <T> void setValue(String parameter,
+                             T value,
+                             IoParameters parameters,
+                             Consumer<OptionalOutput<T>> consumer) {
+        Set<String> fields = parameters.getFields();
+        boolean serialize = fields.isEmpty() || fields.contains(parameter);
+        consumer.accept(OptionalOutput.of(value, serialize));
+    }
+
+    protected <T> T getIfSerialized(OptionalOutput<T> optional) {
+        return getIfSet(optional, false);
+    }
+
+    protected <T extends Collection<E>, E> T getIfSerializedCollection(OptionalOutput<T> optional) {
+        return getIfSetCollection(optional, false);
+    }
+
+    protected <K, T> Map<K, T> getIfSerializedMap(OptionalOutput<Map<K, T>> optional) {
+        return getIfSetMap(optional, false);
+    }
+
+    protected <T> T getIfSet(OptionalOutput<T> optional, boolean forced) {
+        return isSet(optional)
+                ? optional.getValue(forced)
+                : null;
+    }
+
+    protected <T extends Collection<E>, E> T getIfSetCollection(OptionalOutput<T> optional, boolean forced) {
+        return isSet(optional) && !optional.getValue()
+                                           .isEmpty()
+                                                   ? optional.getValue(forced)
+                                                   : null;
+    }
+
+    protected <K, T> Map<K, T> getIfSetMap(OptionalOutput<Map<K, T>> optional, boolean forced) {
+        return isSet(optional) && !optional.getValue()
+                                           .isEmpty()
+                                                   ? optional.getValue(forced)
+                                                   : null;
+    }
+
+    protected <T> boolean isSet(OptionalOutput<T> optional) {
+        return optional != null && optional.isPresent();
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public ParameterOutput setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getHref() {
         if (getHrefBase() == null && href == null) {
             return null;
         }
-        return href == null && getHrefBase() != null
+        return !isSet(href) && getHrefBase() != null
                 ? getHrefBase() + "/" + getId()
-                : href;
+                : href.getValue();
     }
 
-    public void setHref(String href) {
+    public ParameterOutput setHref(OptionalOutput<String> href) {
         this.href = href;
-    }
-
-    public void setHrefBase(String hrefBase) {
-        this.hrefBase = hrefBase;
+        return this;
     }
 
     @JsonIgnore
     public String getHrefBase() {
-        return hrefBase;
+        return getIfSerialized(hrefBase);
+    }
+
+    public ParameterOutput setHrefBase(OptionalOutput<String> hrefBase) {
+        this.hrefBase = hrefBase;
+        return this;
     }
 
     /**
      * Returns the domain id of the parameter, e.g. a natural id (not arbitrarily generated) or the original
      * id actually being used by proxied data sources.
      *
-     * @return the domain id.
+     * @return the domain id
      */
     public String getDomainId() {
-        return domainId;
+        return getIfSerialized(domainId);
     }
 
     /**
@@ -124,97 +163,65 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * actually being used by proxied data sources.
      *
      * @param domainId
-     *        the domain id of the parameter.
+     *        the domain id of the parameter
+     * @return the instance to enable chaining
      */
-    public void setDomainId(String domainId) {
+    public ParameterOutput setDomainId(OptionalOutput<String> domainId) {
         this.domainId = domainId;
-    }
-
-    /**
-     * Check if the domainId is set and not empty
-     *
-     * @return <code>true</code> if domainId is set and not empty
-     */
-    @JsonIgnore
-    public boolean isSetDomainId() {
-        return getDomainId() != null
-                && !getDomainId().isEmpty();
+        return this;
     }
 
     /**
      * @return the label. Returns null if label is not set.
      */
     public String getLabel() {
-        return label;
+        return getIfSerialized(label);
     }
 
-    public void setLabel(String label) {
+    public ParameterOutput setLabel(OptionalOutput<String> label) {
         this.label = label;
+        return this;
     }
 
     @Deprecated
     public String getLicense() {
-        return license;
+        return getIfSerialized(license);
     }
 
     @Deprecated
-    public void setLicense(String license) {
+    public ParameterOutput setLicense(OptionalOutput<String> license) {
         this.license = license;
+        return this;
     }
 
     /**
-     * @return a list of extra identifiers available via /&lt;resource&gt;/extras
+     * @return a list of extra identifiers available via <tt>/{resource}/extras</tt>
      */
-    public String[] getExtras() {
-        if (extras != null) {
-            return extras.toArray(new String[0]);
-        }
-        return null;
+    public Collection<String> getExtras() {
+        return getIfSerializedCollection(extras);
     }
 
-    public void addExtra(String extra) {
-        if (extras == null) {
-            extras = new ArrayList<>();
-        }
-        extras.add(extra);
+    public ParameterOutput setExtras(OptionalOutput<Collection<String>> extras) {
+        this.extras = extras;
+        return this;
     }
 
     @Override
-    public void addRawFormat(String format) {
-        if (format != null && !format.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            }
-            rawFormats.add(format);
-        }
+    public Set<String> getRawFormats() {
+        return getIfSerializedCollection(rawFormats);
     }
 
     @Override
-    public String[] getRawFormats() {
-        if (rawFormats != null) {
-            return rawFormats.toArray(new String[0]);
-        }
-        return null;
-    }
-
-    @Override
-    public void setRawFormats(Collection<String> formats) {
-        if (formats != null && !formats.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            } else {
-                rawFormats.clear();
-            }
-            this.rawFormats.addAll(formats);
-        }
+    public ParameterOutput setRawFormats(OptionalOutput<Set<String>> formats) {
+        this.rawFormats = formats;
+        return this;
     }
 
     @Override
     public int compare(Collator collator, ParameterOutput o) {
-        return collator.compare(getLabel()
-                                          .toLowerCase(),
-                                o.getLabel()
-                                 .toLowerCase());
+        String thisLabel = getLabel();
+        String otherLabel = o.getLabel();
+        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
     }
 
     @Override
@@ -270,10 +277,13 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
      * @return a label comparing {@link Comparator}
      */
     public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
-        return (T o1, T o2) -> Comparator.comparing(ParameterOutput::getLabel,
-                                                    Comparator.nullsFirst(Comparator.naturalOrder()))
-                                         .thenComparing(ParameterOutput::getId)
-                                         .compare(o1, o2);
+        return (T o1, T o2) -> {
+            // some outputs don't have labels, e.g. GeometryInfo
+            Comparator<String> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
+            return Comparator.comparing(ParameterOutput::getLabel, nullsFirst)
+                             .thenComparing(ParameterOutput::getId)
+                             .compare(o1, o2);
+        };
     }
 
 }

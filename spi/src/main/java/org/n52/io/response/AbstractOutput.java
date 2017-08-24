@@ -36,18 +36,19 @@ public class AbstractOutput extends ParameterOutput {
 
     public static final String SERVICE = "service";
 
-    protected ServiceOutput service;
+    protected OptionalOutput<ServiceOutput> service;
 
     public AbstractOutput() {
         super();
     }
 
     public ServiceOutput getService() {
-        return service;
+        return getIfSerialized(service);
     }
 
-    public void setService(ServiceOutput service) {
+    public AbstractOutput setService(OptionalOutput<ServiceOutput> service) {
         this.service = service;
+        return this;
     }
 
     @Override

@@ -412,7 +412,7 @@ public class TimeseriesDataController extends BaseController {
                       QuantityDatasetOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityDatasetOutput.VALUE_TYPE)
+        return createDefaultIoFactory().create(QuantityValue.TYPE)
                                        .setParameters(parameters)
                                        .setBasePath(getRootResource())
                                        .setDataService(timeseriesDataService)

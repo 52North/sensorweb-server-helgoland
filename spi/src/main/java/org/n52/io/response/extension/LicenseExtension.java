@@ -38,6 +38,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Scanner;
+
 import org.apache.commons.io.FileUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
@@ -104,12 +105,7 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
         return hasExtrasToReturn(output, parameters)
                 ? wrapSingleIntoMap(licenseText)
-                : Collections.<String, Object>emptyMap();
-    }
-
-    @Override
-    public void addExtraMetadataFieldNames(ParameterOutput output) {
-        output.addExtra(EXTENSION_NAME);
+                : Collections.emptyMap();
     }
 
 }

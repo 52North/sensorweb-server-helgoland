@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.spi.geo;
 
 import org.n52.io.request.IoParameters;
@@ -67,7 +68,7 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
 
     @Override
     public GeometryInfo getParameter(String item, IoParameters query) {
-        return transform(query, composedService.getParameter(item, query));
+        return transform(composedService.getParameter(item, query), query);
     }
 
     @Override
@@ -78,20 +79,20 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
     private OutputCollection<GeometryInfo> transform(IoParameters query, OutputCollection<GeometryInfo> infos) {
         if (infos != null) {
             for (GeometryInfo info : infos) {
-                transformInline(query, info);
+                transformInline(info, query);
             }
         }
         return infos;
     }
 
-    private GeometryInfo transform(IoParameters query, GeometryInfo info) {
-        transformInline(query, info);
+    private GeometryInfo transform(GeometryInfo info, IoParameters parameters) {
+        transformInline(info, parameters);
         return info;
     }
 
-    private void transformInline(IoParameters query, GeometryInfo info) {
-        Geometry geometry = info.getGeometry();
-        info.setGeometry(transformationService.transform(geometry, query));
+    private void transformInline(GeometryInfo info, IoParameters parameters) {
+        Geometry geometry = transformationService.transform(info.getGeometry(), parameters);
+        info.setValue(GeometryInfo.GEOMETRY, geometry, parameters, info::setGeometry);
     }
 
 }

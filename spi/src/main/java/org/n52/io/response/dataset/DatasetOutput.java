@@ -26,137 +26,123 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import org.n52.io.Utils;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class DatasetOutput<V extends AbstractValue<?>, R extends ReferenceValueOutput<?>>
-        extends ParameterOutput {
+public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValueOutput< ? >> extends ParameterOutput {
 
-    public static final String VALUETYPE = "valuetype";
-    public static final String PLATFORMTYPE = "platformtype";
-    public static final String DATASETPARAMETERS = "datasetparameters";
-    public static final String REFERENCEVALUES = "referencevalues";
-    public static final String FIRSTVALUE = "firstvalue";
-    public static final String LASTVALUE = "lastvalue";
+    public static final String VALUE_TYPE = "valuetype";
+    public static final String PLATFORM_TYPE = "platformtype";
+    public static final String DATASET_PARAMETERS = "datasetparameters";
+    public static final String REFERENCE_VALUES = "referencevalues";
+    public static final String FIRST_VALUE = "firstvalue";
+    public static final String LAST_VALUE = "lastvalue";
     public static final String UOM = "uom";
 
-    private String valueType;
+    private OptionalOutput<String> valueType;
 
-    private String platformType;
+    private OptionalOutput<String> platformType;
 
-    private DatasetParameters datasetParameters;
+    private OptionalOutput<DatasetParameters> datasetParameters;
 
-    private Set<String> rawFormats;
+    private OptionalOutput<List<R>> referenceValues;
 
-    private R[] referenceValues;
+    private OptionalOutput<V> firstValue;
 
-    private V firstValue;
+    private OptionalOutput<V> lastValue;
 
-    private V lastValue;
+    private OptionalOutput<String> uom;
 
-    private String uom;
-
-    public DatasetOutput(String valueType) {
-        this.valueType = valueType;
+    public static <V extends AbstractValue< ? >, 
+                   R extends ReferenceValueOutput< ? >> DatasetOutput<V, R> create(String type, IoParameters params) {
+        DatasetOutput<V, R> output = new DatasetOutput<>();
+        output.setValue(VALUE_TYPE, type, params, output::setValueType);
+        return output;
+    }
+    
+    protected DatasetOutput() {
+        // use static constructor method
     }
 
     @Override
-    public void setId(String id) {
-        super.setId(ValueType.createId(valueType, id));
+    public DatasetOutput<V, R> setId(String id) {
+        String type = getIfSet(valueType, true);
+        super.setId(ValueType.createId(type, id));
+        return this;
     }
 
     public String getValueType() {
-        return valueType;
+        return getIfSerialized(valueType);
     }
 
-    public void setValueType(String valueType) {
+    protected void setValueType(OptionalOutput<String> valueType) {
         this.valueType = valueType;
     }
 
     public String getPlatformType() {
-        return platformType;
+        return getIfSerialized(platformType);
     }
 
-    public void setPlatformType(String platformType) {
+    public DatasetOutput<V, R> setPlatformType(OptionalOutput<String> platformType) {
         this.platformType = platformType;
+        return this;
     }
 
     @JsonProperty("parameters")
     public DatasetParameters getDatasetParameters() {
-        return datasetParameters;
+        return getDatasetParameters(false);
     }
 
-    public void setDatasetParameters(DatasetParameters parameters) {
+    public DatasetParameters getDatasetParameters(boolean forced) {
+        return getIfSet(datasetParameters, forced);
+    }
+
+    public DatasetOutput<V, R> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
         this.datasetParameters = parameters;
+        return this;
     }
 
     public String getUom() {
-        return uom;
+        return getIfSerialized(uom);
     }
 
-    public void setUom(String uom) {
+    public DatasetOutput<V, R> setUom(OptionalOutput<String> uom) {
         this.uom = uom;
-    }
-
-    @Override
-    public String[] getRawFormats() {
-        if (rawFormats != null) {
-            return rawFormats.toArray(new String[0]);
-        }
-        return null;
-    }
-
-    @Override
-    public void addRawFormat(String format) {
-        if (format != null && !format.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            }
-            rawFormats.add(format);
-        }
-    }
-
-    @Override
-    public void setRawFormats(Collection<String> formats) {
-        if (formats != null && !formats.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            } else {
-                rawFormats.clear();
-            }
-            this.rawFormats.addAll(formats);
-        }
+        return this;
     }
 
     public V getFirstValue() {
-        return firstValue;
+        return getIfSerialized(firstValue);
     }
 
-    public void setFirstValue(V firstValue) {
+    public DatasetOutput<V, R> setFirstValue(OptionalOutput<V> firstValue) {
         this.firstValue = firstValue;
+        return this;
     }
 
     public V getLastValue() {
-        return lastValue;
+        return getIfSerialized(lastValue);
     }
 
-    public void setLastValue(V lastValue) {
+    public DatasetOutput<V, R> setLastValue(OptionalOutput<V> lastValue) {
         this.lastValue = lastValue;
+        return this;
     }
 
-    public R[] getReferenceValues() {
-        return Utils.copy(referenceValues);
+    public List<R> getReferenceValues() {
+        return getIfSerializedCollection(referenceValues);
     }
 
-    public void setReferenceValues(R[] referenceValues) {
-        this.referenceValues = Utils.copy(referenceValues);
+    public DatasetOutput<V, R> setReferenceValues(OptionalOutput<List<R>> referenceValues) {
+        this.referenceValues = referenceValues;
+        return this;
     }
 }

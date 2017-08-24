@@ -32,10 +32,5 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 public class BooleanDatasetOutput extends DatasetOutput<BooleanValue, BooleanObservationReferenceValueOutput> {
 
-    public static final String VALUE_TYPE = "text";
-
-    public BooleanDatasetOutput() {
-        super(VALUE_TYPE);
-    }
-
+    // hide generics clutter
 }

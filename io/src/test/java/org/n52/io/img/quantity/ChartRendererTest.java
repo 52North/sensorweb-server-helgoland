@@ -46,6 +46,7 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
@@ -53,9 +54,10 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public class ChartRendererTest {
 
@@ -134,44 +136,46 @@ public class ChartRendererTest {
     @Test
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
-        QuantityDatasetOutput metadata = new QuantityDatasetOutput();
-        DatasetParameters parameters = new DatasetParameters();
-        parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
-        parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
-        parameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
-        parameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
-        parameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
-        parameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        metadata.setDatasetParameters(parameters);
-        metadata.setId("timeseries");
-        metadata.setUom("");
+        DatasetParameters datasetParameters = new DatasetParameters();
+        datasetParameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
+        datasetParameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
+        datasetParameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
+        datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
+        datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
+        datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
+        String valueType = QuantityValue.TYPE;
+        IoParameters parameters = IoParameters.createDefaults();
+        DatasetOutput<?, ?> metadata = DatasetOutput.create(valueType, parameters);
+        metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
+                .setUom(OptionalOutput.of(""))
+                .setId("timeseries");
 
         PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
         platformOutput.setId("sta_1");
-        platformOutput.setLabel("station");
-        parameters.setPlatform(platformOutput);
+        platformOutput.setLabel(OptionalOutput.of("station"));
+        datasetParameters.setPlatform(platformOutput);
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        expected.append(parameters.getPlatform()
-                                  .getLabel());
+        expected.append(datasetParameters.getPlatform()
+                                         .getLabel());
         expected.append(" ")
-                .append(parameters.getPhenomenon()
-                                  .getLabel());
+                .append(datasetParameters.getPhenomenon()
+                                         .getLabel());
         expected.append(" ")
-                .append(parameters.getProcedure()
-                                  .getLabel());
+                .append(datasetParameters.getProcedure()
+                                         .getLabel());
         // expected.append(" ").append(parameters.getCategory().getLabel());
         expected.append(" (4 opted-out)");
         expected.append(" ")
-                .append(parameters.getOffering()
-                                  .getLabel());
+                .append(datasetParameters.getOffering()
+                                         .getLabel());
         expected.append(" ")
-                .append(parameters.getFeature()
-                                  .getLabel());
+                .append(datasetParameters.getFeature()
+                                         .getLabel());
         expected.append(" ")
-                .append(parameters.getService()
-                                  .getLabel());
+                .append(datasetParameters.getService()
+                                         .getLabel());
         expected.append(" ")
                 .append(metadata.getUom());
 
@@ -186,8 +190,8 @@ public class ChartRendererTest {
     }
 
     private <T extends ParameterOutput> T createParameter(T output, String id, String label) {
-        output.setId(id);
-        output.setLabel(label);
+        output.setId(id)
+              .setLabel(OptionalOutput.of(label));
         return output;
     }
 

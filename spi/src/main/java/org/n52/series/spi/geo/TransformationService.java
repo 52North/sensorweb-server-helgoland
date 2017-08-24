@@ -28,14 +28,15 @@
  */
 package org.n52.series.spi.geo;
 
-import com.vividsolutions.jts.geom.Geometry;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.StationOutput;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public class TransformationService {
 
@@ -51,19 +52,17 @@ public class TransformationService {
     }
 
     /**
-     * @param feature the feature to transform.
-     * @param query the query containing CRS and how to handle axes order.
+     * @param station the station to transform.
+     * @param parameters the query containing CRS and how to handle axes order.
      */
-    protected void transformInline(GeoJSONFeature feature, IoParameters query) {
-        String crs = query.getCrs();
+    protected void transformInline(StationOutput station, IoParameters parameters) {
+        String crs = parameters.getCrs();
         if (CRSUtils.DEFAULT_CRS.equals(crs)) {
              // no need to transform
             return;
         }
-        Geometry geometry = transform(feature.getGeometry(), query);
-        if (geometry != null) {
-            feature.setGeometry(geometry);
-        }
+        Geometry geometry = transform(station.getGeometry(), parameters);
+        station.setValue(StationOutput.GEOMETRY, geometry, parameters, station::setGeometry);
     }
 
     private Geometry transformGeometry(IoParameters query, Geometry geometry,
