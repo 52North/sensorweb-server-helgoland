@@ -61,13 +61,13 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
 
     private OptionalOutput<String> uom;
 
-    public static <V extends AbstractValue< ? >, 
+    public static <V extends AbstractValue< ? >,
                    R extends ReferenceValueOutput< ? >> DatasetOutput<V, R> create(String type, IoParameters params) {
         DatasetOutput<V, R> output = new DatasetOutput<>();
         output.setValue(VALUE_TYPE, type, params, output::setValueType);
         return output;
     }
-    
+
     protected DatasetOutput() {
         // use static constructor method
     }

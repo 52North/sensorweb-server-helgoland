@@ -61,7 +61,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     void setTimeseries(String[] timeseries) {
         setDatasets(timeseries);
     }
-    
+
     @Deprecated
     void setTimeseriesIds(String[] timeseriesIds) {
         setDatasets(timeseriesIds);
@@ -71,7 +71,7 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     void setSeries(String[] series) {
         setDatasets(series);
     }
-    
+
     @Deprecated
     void setSeriesIds(String[] seriesIds) {
         setDatasets(seriesIds);
