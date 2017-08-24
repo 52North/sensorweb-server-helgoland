@@ -54,7 +54,7 @@ public class OptionalOutputTest {
     }
 
     @Test
-    public void when_createdWithFalseSerlization_then_valueIsPresent() {
+    public void when_createdWithFalseSerialization_then_valueIsPresent() {
         OptionalOutput<String> optional = OptionalOutput.of("42", false);
         MatcherAssert.assertThat(optional.isPresent(), Matchers.is(true));
     }
@@ -76,4 +76,5 @@ public class OptionalOutputTest {
         OptionalOutput<String> optional = OptionalOutput.of("42", false);
         MatcherAssert.assertThat(optional.getValue(), Matchers.is(CoreMatchers.nullValue()));
     }
+    
 }

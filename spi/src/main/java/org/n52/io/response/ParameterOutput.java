@@ -99,21 +99,25 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     protected <T extends Collection<E>, E> T getIfSetCollection(OptionalOutput<T> optional, boolean forced) {
-        return isSet(optional) && !optional.getValue()
-                                           .isEmpty()
-                                                   ? optional.getValue(forced)
-                                                   : null;
+        return resolvesToNonNullValue(optional) && !optional.getValue()
+                                                            .isEmpty()
+                                                                    ? optional.getValue(forced)
+                                                                    : null;
     }
 
     protected <K, T> Map<K, T> getIfSetMap(OptionalOutput<Map<K, T>> optional, boolean forced) {
-        return isSet(optional) && !optional.getValue()
-                                           .isEmpty()
-                                                   ? optional.getValue(forced)
-                                                   : null;
+        return resolvesToNonNullValue(optional) && !optional.getValue()
+                                                            .isEmpty()
+                                                                    ? optional.getValue(forced)
+                                                                    : null;
     }
 
     protected <T> boolean isSet(OptionalOutput<T> optional) {
         return optional != null && optional.isPresent();
+    }
+
+    protected <T> boolean resolvesToNonNullValue(OptionalOutput<T> optional) {
+        return isSet(optional) && optional.isSerialize();
     }
 
     public String getId() {
