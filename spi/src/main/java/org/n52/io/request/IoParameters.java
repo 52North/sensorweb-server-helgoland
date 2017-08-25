@@ -690,7 +690,7 @@ public final class IoParameters implements Parameters {
         CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
 
         // Check if supplied in minx,miny,maxx,maxy format - else assume json
-        if (bboxValue.matches("^(\\d*\\.?\\d*\\,\\s*){3}(\\d*\\.?\\d*)\\s*$")) {
+        if (bboxValue.matches("^(-?\\d*\\.?\\d*\\,\\s*){3}(-?\\d*\\.?\\d*)\\s*$")) {
             String[] coordArray = bboxValue.split("\\,");
             Point lowerLeft = crsUtils.createPoint(Double.valueOf(coordArray[0].trim()),
                                                    Double.valueOf(coordArray[1].trim()),
