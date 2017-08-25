@@ -76,5 +76,5 @@ public class OptionalOutputTest {
         OptionalOutput<String> optional = OptionalOutput.of("42", false);
         MatcherAssert.assertThat(optional.getValue(), Matchers.is(CoreMatchers.nullValue()));
     }
-    
+
 }
