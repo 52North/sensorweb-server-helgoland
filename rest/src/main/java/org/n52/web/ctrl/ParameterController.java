@@ -135,25 +135,27 @@ public abstract class ParameterController<T extends ParameterOutput>
         return overridableKeys;
     }
 
+    protected ModelAndView createModelAndView(OutputCollection<T> items, IoParameters parameters) {
+        return new ModelAndView().addObject(items.getItems());
+    }
+
+    protected ModelAndView createModelAndView(T item, IoParameters parameters) {
+        return new ModelAndView().addObject(item);
+    }
+
     @Override
     public ModelAndView getCollection(HttpServletResponse response,
                                       String locale,
                                       MultiValueMap<String, String> query) {
-
-        IoParameters queryMap = createParameters(query, locale);
-        LOGGER.debug("getCollection() with query '{}'", queryMap);
-        preparePagingHeaders(queryMap, response);
-
-        OutputCollection<T> result;
-
-        if (queryMap.isExpanded()) {
-            Stopwatch stopwatch = Stopwatch.startStopwatch();
-            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap), queryMap);
+        Stopwatch stopwatch = Stopwatch.startStopwatch();
+        IoParameters parameters = createParameters(query, locale);
+        try {
+            LOGGER.debug("getCollection() with query '{}'", parameters);
+            preparePagingHeaders(parameters, response);
+            return createModelAndView(getCollection(parameters), parameters);
+        } finally {
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-        } else {
-            result = parameterService.getCondensedParameters(queryMap);
         }
-        return createModelAndView(result);
     }
 
     private void preparePagingHeaders(IoParameters parameters, HttpServletResponse response) {
@@ -170,39 +172,41 @@ public abstract class ParameterController<T extends ParameterOutput>
         }
     }
 
-    @Override
-    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale);
-        LOGGER.debug("getItem() with id '{}' and query '{}'", id, map);
-
-        T item = parameterService.getParameter(id, map);
-
-        if (item == null) {
-            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
-        }
-
-        T parameter = addExtensionInfos(item, map);
-        return new ModelAndView().addObject(parameter);
+    private OutputCollection<T> getCollection(IoParameters parameters) {
+        return parameters.isExpanded()
+                ? addExtensionInfos(parameterService.getExpandedParameters(parameters), parameters)
+                : parameterService.getCondensedParameters(parameters);
     }
 
-    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
+    private OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
         for (T parameterOutput : toBeProcessed) {
             addExtensionInfos(parameterOutput, ioParameters);
         }
         return toBeProcessed;
     }
 
-    protected T addExtensionInfos(T output, IoParameters parameters) {
-        Collection<String> extras = metadataExtensions.stream()
-                          .map(e -> e.getExtraMetadataFieldNames(output))
-                          .flatMap(c -> c.stream())
-                          .collect(Collectors.toList());
-        output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
-        return output;
+    @Override
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
+        IoParameters parameters = createParameters(query, locale);
+        LOGGER.debug("getItem() with id '{}' and query '{}'", id, parameters);
+        return createModelAndView(getItem(id, parameters), parameters);
     }
 
-    protected ModelAndView createModelAndView(OutputCollection<T> items) {
-        return new ModelAndView().addObject(items.getItems());
+    private T getItem(String id, IoParameters parameters) {
+        T item = parameterService.getParameter(id, parameters);
+        if (item == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
+        }
+        return addExtensionInfos(item, parameters);
+    }
+
+    protected T addExtensionInfos(T output, IoParameters parameters) {
+        Collection<String> extras = metadataExtensions.stream()
+                                                      .map(e -> e.getExtraMetadataFieldNames(output))
+                                                      .flatMap(c -> c.stream())
+                                                      .collect(Collectors.toList());
+        output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
+        return output;
     }
 
     public ParameterService<T> getParameterService() {
