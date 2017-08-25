@@ -156,12 +156,14 @@ public abstract class ParameterController<T extends ParameterOutput>
         return createModelAndView(result);
     }
 
-    protected void preparePagingHeaders(IoParameters queryMap, HttpServletResponse response) {
-        if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
-            Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
-                                                                .removeAllOf(Parameters.OFFSET));
+    private void preparePagingHeaders(IoParameters parameters, HttpServletResponse response) {
+        if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
+            Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
+                                                                  .removeAllOf(Parameters.OFFSET));
             if (0 >= elementcount) {
-                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                int limit = parameters.getLimit();
+                int offset = parameters.getOffset();
+                OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);
                 Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
