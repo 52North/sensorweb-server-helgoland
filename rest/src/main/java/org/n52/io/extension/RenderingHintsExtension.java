@@ -38,7 +38,6 @@ import java.util.Map;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,13 +101,9 @@ public class RenderingHintsExtension extends MetadataExtension<DatasetOutput< ? 
         }
 
         if (hasSeriesConfiguration(output)) {
-            final StyleProperties style = createStyle(getSeriesStyle(output));
-            checkForBackwardCompatiblity(output, style, parameters);
-            return wrapSingleIntoMap(style);
+            return wrapSingleIntoMap(createStyle(getSeriesStyle(output)));
         } else if (hasPhenomenonConfiguration(output)) {
-            final StyleProperties style = createStyle(getPhenomenonStyle(output));
-            checkForBackwardCompatiblity(output, style, parameters);
-            return wrapSingleIntoMap(style);
+            return wrapSingleIntoMap(createStyle(getPhenomenonStyle(output)));
         }
 
         LOGGER.error("No rendering style found for {} (id={})", output, output.getId());
@@ -135,16 +130,6 @@ public class RenderingHintsExtension extends MetadataExtension<DatasetOutput< ? 
 
     private StyleProperties createStyle(RenderingHintsExtensionConfig.ConfiguredStyle configuredStyle) {
         return configuredStyle.getStyle();
-    }
-
-    private void checkForBackwardCompatiblity(DatasetOutput< ? , ? > output,
-                                              StyleProperties style,
-                                              IoParameters parameters) {
-        if (output instanceof TimeseriesMetadataOutput) {
-            String parameterName = TimeseriesMetadataOutput.RENDERING_HINTS;
-            TimeseriesMetadataOutput timeseriesOutput = (TimeseriesMetadataOutput) output;
-            timeseriesOutput.setValue(parameterName, style, parameters, timeseriesOutput::setRenderingHints);
-        }
     }
 
 }

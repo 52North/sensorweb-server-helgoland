@@ -39,7 +39,6 @@ import org.n52.io.extension.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,13 +99,9 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ?
         }
 
         if (hasSeriesConfiguration(output)) {
-            Collection<StatusInterval> intervals = createIntervals(getSeriesIntervals(output));
-            checkForBackwardCompatiblity(output, intervals, parameters);
-            return wrapSingleIntoMap(intervals);
+            return wrapSingleIntoMap(createIntervals(getSeriesIntervals(output)));
         } else if (hasPhenomenonConfiguration(output)) {
-            Collection<StatusInterval> intervals = createIntervals(getPhenomenonIntervals(output));
-            checkForBackwardCompatiblity(output, intervals, parameters);
-            return wrapSingleIntoMap(intervals);
+            return wrapSingleIntoMap(createIntervals(getPhenomenonIntervals(output)));
         }
         LOGGER.error("No status intervals found for {} (id={})", output, output.getId());
         return Collections.emptyMap();
@@ -137,17 +132,6 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ?
             value.setName(entry.getKey());
         }
         return statusIntervals.values();
-    }
-
-    private void checkForBackwardCompatiblity(DatasetOutput< ? , ? > output,
-                                              Collection<StatusInterval> intervals,
-                                              IoParameters parameters) {
-        if (output instanceof TimeseriesMetadataOutput) {
-            String parameterName = TimeseriesMetadataOutput.STATUS_INTERVALS;
-            TimeseriesMetadataOutput timeseriesOutput = (TimeseriesMetadataOutput) output;
-            timeseriesOutput.setValue(parameterName, intervals, parameters, timeseriesOutput::setStatusIntervals);
-        }
-
     }
 
 }
