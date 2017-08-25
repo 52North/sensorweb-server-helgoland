@@ -33,6 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -135,48 +136,50 @@ public class ChartRendererTest {
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
         QuantityDatasetOutput metadata = new QuantityDatasetOutput();
-        DatasetParameters parameters = new DatasetParameters();
-        parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
-        parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
-        parameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
-        parameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
-        parameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
-        parameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        metadata.setDatasetParameters(parameters);
+        DatasetParameters datasetParameters = new DatasetParameters();
+        datasetParameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
+        datasetParameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
+        datasetParameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
+        datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
+        datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
+        datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
+        metadata.setDatasetParameters(datasetParameters);
         metadata.setId("timeseries");
         metadata.setUom("");
 
         PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
         platformOutput.setId("sta_1");
         platformOutput.setLabel("station");
-        parameters.setPlatform(platformOutput);
+        datasetParameters.setPlatform(platformOutput);
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        expected.append(parameters.getPlatform()
-                                  .getLabel());
+        ParameterOutput platform = datasetParameters.getPlatform();
+        expected.append(platform.getLabel());
+        ParameterOutput phenomenon = datasetParameters.getPhenomenon();
+        ParameterOutput procedure = datasetParameters.getProcedure();
+        ParameterOutput offering = datasetParameters.getOffering();
+        ParameterOutput feature = datasetParameters.getFeature();
+        ParameterOutput service = datasetParameters.getService();
+        ParameterOutput category = datasetParameters.getCategory();
         expected.append(" ")
-                .append(parameters.getPhenomenon()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getProcedure()
-                                  .getLabel());
-        // expected.append(" ").append(parameters.getCategory().getLabel());
-        expected.append(" (4 opted-out)");
-        expected.append(" ")
-                .append(parameters.getOffering()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getFeature()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getService()
-                                  .getLabel());
-        expected.append(" ")
+                .append(phenomenon.getLabel())
+                .append(" ")
+                .append(procedure.getLabel())
+                // .append(" ")
+                // .append(category.getLabel())
+                .append(" (4 opted-out)")
+                .append(" ")
+                .append(offering.getLabel())
+                .append(" ")
+                .append(feature.getLabel())
+                .append(" ")
+                .append(service.getLabel())
+                .append(" ")
                 .append(metadata.getUom());
 
         IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, ioConfig);
+        IoStyleContext context = IoStyleContext.createContextWith(ioConfig, Collections.singletonList(metadata));
         MyChartRenderer chartRenderer = new MyChartRenderer(ioConfig, context);
         // String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
