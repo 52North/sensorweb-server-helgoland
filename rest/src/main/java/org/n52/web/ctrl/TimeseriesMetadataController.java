@@ -26,22 +26,77 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
+import java.util.Collection;
 import java.util.Map;
 
+import org.n52.io.extension.RenderingHintsExtension;
+import org.n52.io.extension.StatusIntervalsExtension;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.request.StyleProperties;
+import org.n52.io.response.OutputCollection;
+import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @Deprecated
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
+
+    @Autowired
+    private RenderingHintsExtension renderingHintsExtension;
+
+    @Autowired
+    private StatusIntervalsExtension statusIntervalsExtension;
+
+    @Override
+    protected ModelAndView createModelAndView(OutputCollection<TimeseriesMetadataOutput> items,
+                                              IoParameters parameters) {
+        items.stream()
+             .forEach(e -> {
+                 addRenderingHints(e, parameters);
+                 addStatusIntervals(e, parameters);
+             });
+        return super.createModelAndView(items, parameters);
+    }
+
+    @Override
+    protected ModelAndView createModelAndView(TimeseriesMetadataOutput item, IoParameters parameters) {
+        addRenderingHints(item, parameters);
+        addStatusIntervals(item, parameters);
+        return super.createModelAndView(item, parameters);
+    }
+
+    private TimeseriesMetadataOutput addRenderingHints(TimeseriesMetadataOutput output, IoParameters parameters) {
+        if (parameters.isRenderingHintsRequests() && renderingHintsExtension != null) {
+            Map<String, Object> extras = renderingHintsExtension.getExtras(output, parameters);
+            output.setValue(TimeseriesMetadataOutput.RENDERING_HINTS,
+                            (StyleProperties) extras.get(TimeseriesMetadataOutput.RENDERING_HINTS),
+                            parameters,
+                            output::setRenderingHints);
+        }
+        return output;
+    }
+    
+    private TimeseriesMetadataOutput addStatusIntervals(TimeseriesMetadataOutput output, IoParameters parameters) {
+        if (parameters.isStatusIntervalsRequests() && statusIntervalsExtension != null) {
+            Map<String, Object> extras = statusIntervalsExtension.getExtras(output, parameters);
+            output.setValue(TimeseriesMetadataOutput.STATUS_INTERVALS,
+                            (Collection<StatusInterval>) extras.get(TimeseriesMetadataOutput.STATUS_INTERVALS),
+                            parameters,
+                            output::setStatusIntervals);
+        }
+        return output;
+    }
 
     @Override
     protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
@@ -83,5 +138,4 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     protected int getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().getTimeseriesCount();
     }
-    // resource controller for timeseries metadata
 }
