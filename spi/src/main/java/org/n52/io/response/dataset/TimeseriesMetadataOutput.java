@@ -110,11 +110,10 @@ public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue, Quant
     @Override
     @JsonProperty("parameters")
     public DatasetParameters getDatasetParameters() {
-
-        // XXX will be empty (instead of null) when missing in ?fields=
-
-        DatasetParameters parameters = super.getDatasetParameters();
-        return new AdaptedSeriesParameters(parameters);
+        DatasetParameters datasetParameters = super.getDatasetParameters();
+        return datasetParameters != null
+                ? new AdaptedSeriesParameters(datasetParameters)
+                : null;
     }
 
     private static class AdaptedSeriesParameters extends DatasetParameters {
