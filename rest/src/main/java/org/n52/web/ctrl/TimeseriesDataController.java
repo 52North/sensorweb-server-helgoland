@@ -161,7 +161,7 @@ public class TimeseriesDataController extends BaseController {
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> request) {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
@@ -210,7 +210,7 @@ public class TimeseriesDataController extends BaseController {
                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                required = false) String locale,
                            @RequestParam MultiValueMap<String, String> request) {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale);
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
         processRawDataRequest(response, parameters);
     }
@@ -267,7 +267,7 @@ public class TimeseriesDataController extends BaseController {
                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                           @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale);
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
@@ -287,7 +287,8 @@ public class TimeseriesDataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(query, locale).extendWith(Parameters.ZIP, Boolean.TRUE.toString());
+        IoParameters parameters = createParameters(timeseriesId, query, locale);
+        parameters = parameters.extendWith(Parameters.ZIP, Boolean.TRUE.toString());
         response.setContentType(Constants.APPLICATION_ZIP);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
     }
@@ -302,7 +303,7 @@ public class TimeseriesDataController extends BaseController {
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
     }
 
@@ -350,7 +351,7 @@ public class TimeseriesDataController extends BaseController {
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(query, locale);
+        IoParameters parameters = createParameters(timeseriesId, query, locale);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
