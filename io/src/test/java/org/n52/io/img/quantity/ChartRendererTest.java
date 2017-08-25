@@ -33,6 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -145,7 +146,7 @@ public class ChartRendererTest {
         datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
         String valueType = QuantityValue.TYPE;
         IoParameters parameters = IoParameters.createDefaults();
-        DatasetOutput<?, ?> metadata = DatasetOutput.create(valueType, parameters);
+        DatasetOutput< ? , ? > metadata = DatasetOutput.create(valueType, parameters);
         metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
                 .setUom(OptionalOutput.of(""))
                 .setId("timeseries");
@@ -157,30 +158,32 @@ public class ChartRendererTest {
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        expected.append(datasetParameters.getPlatform()
-                                         .getLabel());
+        ParameterOutput platform = datasetParameters.getPlatform();
+        expected.append(platform.getLabel());
+        ParameterOutput phenomenon = datasetParameters.getPhenomenon();
+        ParameterOutput procedure = datasetParameters.getProcedure();
+        ParameterOutput offering = datasetParameters.getOffering();
+        ParameterOutput feature = datasetParameters.getFeature();
+        ParameterOutput service = datasetParameters.getService();
+        ParameterOutput category = datasetParameters.getCategory();
         expected.append(" ")
-                .append(datasetParameters.getPhenomenon()
-                                         .getLabel());
-        expected.append(" ")
-                .append(datasetParameters.getProcedure()
-                                         .getLabel());
-        // expected.append(" ").append(parameters.getCategory().getLabel());
-        expected.append(" (4 opted-out)");
-        expected.append(" ")
-                .append(datasetParameters.getOffering()
-                                         .getLabel());
-        expected.append(" ")
-                .append(datasetParameters.getFeature()
-                                         .getLabel());
-        expected.append(" ")
-                .append(datasetParameters.getService()
-                                         .getLabel());
-        expected.append(" ")
+                .append(phenomenon.getLabel())
+                .append(" ")
+                .append(procedure.getLabel())
+                // .append(" ")
+                // .append(category.getLabel())
+                .append(" (4 opted-out)")
+                .append(" ")
+                .append(offering.getLabel())
+                .append(" ")
+                .append(feature.getLabel())
+                .append(" ")
+                .append(service.getLabel())
+                .append(" ")
                 .append(metadata.getUom());
 
         IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, ioConfig);
+        IoStyleContext context = IoStyleContext.createContextWith(ioConfig, Collections.singletonList(metadata));
         MyChartRenderer chartRenderer = new MyChartRenderer(ioConfig, context);
         // String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";

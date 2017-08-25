@@ -81,30 +81,23 @@ public final class IoStyleContext {
     private static void associateBackwardsCompatibleSingleStyle(IoParameters parameters,
                                                                 List< ? extends DatasetOutput< ? , ? >> metadatas,
                                                                 Map<String, StyleProperties> styles) {
-        StyleProperties style = parameters.getSingleStyle();
-        if (style != null) {
-            if (metadatas.size() == 0) {
-                throw new IllegalArgumentException("No metadatas found for given style.");
-            }
-            styles.put(metadatas.get(0).getId(), style);
+        if (styles.isEmpty() && metadatas.size() == 1) {
+            // no referenced styles are given so associate
+            // backwards compatible single style
+            DatasetOutput< ? , ? > metadata = metadatas.get(0);
+            styles.put(metadata.getId(), parameters.getSingleStyle());
         }
-
     }
 
     private static Map<String, StyleMetadata> collectStyleMetadatas(List< ? extends DatasetOutput< ? , ? >> metadatas,
                                                                     final Map<String, StyleProperties> styles) {
         return metadatas.stream()
-                        .<StyleMetadata> map(e -> {
+                        .map(e -> {
                             return new StyleMetadata().setDatasetMetadata(e)
                                                       .setDatasetId(e.getId())
                                                       .setStyleProperties(styles.get(e.getId()));
                         })
                         .collect(Collectors.toMap(StyleMetadata::getDatasetId, Function.identity()));
-    }
-
-    public static IoStyleContext createContextForSingleSeries(DatasetOutput< ? , ? > metadata,
-                                                              IoParameters parameters) {
-        return createContextWith(parameters, Collections.singletonList(metadata));
     }
 
     public List<DatasetOutput< ? , ? >> getAllDatasetMetadatas() {
