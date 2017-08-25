@@ -122,6 +122,21 @@ public class IoParametersTest {
         Assert.assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
+    
+
+    @Test
+    public void when_geoJsonBboxNegativeValues_then_parsingSpatialFilter() throws ParseException {
+        Map<String, String> map = Collections.singletonMap("bbox", "-180,-90,180,90");
+        IoParameters parameters = createFromSingleValueMap(map);
+        BoundingBox actual = parameters.getSpatialFilter();
+        WKTReader wktReader = new WKTReader();
+        Geometry ll = wktReader.read("POINT (-180 -90)");
+        Geometry ur = wktReader.read("POINT(180 90)");
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
+    }
 
     @Test
     public void when_creationViaFromSingleValuedMap_then_keysGetLowerCased() {
