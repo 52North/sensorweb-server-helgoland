@@ -45,14 +45,20 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public abstract class ConfigTypedFactory<T> {
+public abstract class ConfigTypedFactory<T> implements
+        ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigTypedFactory.class);
 
     protected final Map<String, T> cache = new HashMap<>();
 
     protected Properties mappings;
+
+    private transient AutowireCapableBeanFactory beanFactory;
 
     protected ConfigTypedFactory(File configFile) {
         this.mappings = new Properties();
@@ -70,6 +76,11 @@ public abstract class ConfigTypedFactory<T> {
 
     protected ConfigTypedFactory(String defaultConfig) {
         this(getDefaultConfigFile(defaultConfig));
+    }
+
+    @Override
+    public void setApplicationContext(final ApplicationContext context) {
+        beanFactory = context.getAutowireCapableBeanFactory();
     }
 
     protected static InputStream getDefaultConfigFile(String configLocation) {
@@ -168,8 +179,11 @@ public abstract class ConfigTypedFactory<T> {
 
     protected abstract String getFallbackConfigResource();
 
+    // override if needed
     protected T initInstance(T instance) {
-        // override if needed
+        if (beanFactory != null) {
+            beanFactory.autowireBean(instance);
+        }
         return instance;
     }
 
