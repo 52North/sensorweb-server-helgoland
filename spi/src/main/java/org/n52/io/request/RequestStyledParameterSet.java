@@ -26,29 +26,30 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a parameter object to request a rendered chart output from
- * multiple timeseries.
+ * POST request body used for serialization.
  */
 public class RequestStyledParameterSet extends RequestParameterSet {
 
     /**
      * Style options for each timeseriesId of interest.
      */
-    @JsonProperty(required = true)
     private Map<String, StyleProperties> styleOptions;
 
     /**
      * Creates an instance with non-null default values.
      */
-    public RequestStyledParameterSet() {
-        styleOptions = new HashMap<>();
+    RequestStyledParameterSet(@JsonProperty(value = "styleOptions",
+        required = true) Map<String, StyleProperties> styleOptions) {
+        this.styleOptions = styleOptions;
     }
 
     public int getWidth() {
@@ -56,10 +57,13 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param width the image width to set.
+     * @param width
+     *        the image width to set.
      */
     public void setWidth(int width) {
-        int w = width < 0 ? Parameters.DEFAULT_WIDTH : width;
+        int w = width < 0
+                ? Parameters.DEFAULT_WIDTH
+                : width;
         setParameter(Parameters.WIDTH, w);
     }
 
@@ -71,18 +75,21 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     }
 
     public void setHeight(int height) {
-        int h = height < 0 ? Parameters.DEFAULT_HEIGHT : height;
+        int h = height < 0
+                ? Parameters.DEFAULT_HEIGHT
+                : height;
         setParameter(Parameters.HEIGHT, h);
-}
+    }
 
     @Override
     public String[] getDatasets() {
-        return styleOptions.keySet().toArray(new String[0]);
+        Set<String> datasetIds = styleOptions.keySet();
+        return datasetIds.toArray(new String[0]);
     }
 
     /**
-     * @param grid <code>true</code> if charts shall be rendered on a grid,
-     * <code>false</code> otherwise.
+     * @param grid
+     *        <code>true</code> if charts shall be rendered on a grid, <code>false</code> otherwise.
      */
     public void setGrid(boolean grid) {
         setParameter(Parameters.GRID, grid);
@@ -107,11 +114,7 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         return getAsString(Parameters.TIME_FORMAT, Parameters.DEFAULT_TIME_FORMAT);
     }
 
-    public void setStyleOptions(Map<String, StyleProperties> renderingOptions) {
-        this.styleOptions = renderingOptions;
-    }
-
-    public StyleProperties getStyleOptions(String timeseriesId) {
+    public StyleProperties getStyleProperties(String timeseriesId) {
         return styleOptions.get(timeseriesId);
     }
 
@@ -119,15 +122,17 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         if (!styleOptions.containsKey(timeseriesId)) {
             return null;
         }
-        StyleProperties styleProperties = styleOptions.get(timeseriesId);
+        StyleProperties styleProperties = getStyleProperties(timeseriesId);
         Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
         return properties.containsKey(referenceSeriesId)
                 ? properties.get(referenceSeriesId)
                 : null;
     }
 
-    public void addSeriesWithStyleOptions(String timeseriesId, StyleProperties options) {
-        this.styleOptions.put(timeseriesId, options);
+    @Override
+    public IoParameters toParameters() {
+        setParameter(Parameters.STYLES, styleOptions);
+        return super.toParameters();
     }
 
 }

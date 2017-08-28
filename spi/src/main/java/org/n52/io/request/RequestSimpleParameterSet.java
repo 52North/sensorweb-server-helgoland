@@ -26,14 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
-import org.n52.io.IntervalWithTimeZone;
 import org.n52.series.spi.srv.RawFormats;
 
+/**
+ * POST request body used for serialization.
+ */
 public class RequestSimpleParameterSet extends RequestParameterSet {
 
     private String rawFormat;
+
+    RequestSimpleParameterSet() {
+    }
 
     /**
      * @return the series ids
@@ -44,15 +50,26 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param datasets The series ids of interest.
+     * @param datasets
+     *        The series ids of interest.
      */
     void setDatasets(String[] datasets) {
         setParameter(Parameters.DATASETS, IoParameters.getJsonNodeFrom(datasets));
     }
 
     @Deprecated
+    void setTimeseries(String[] timeseries) {
+        setDatasets(timeseries);
+    }
+
+    @Deprecated
     void setTimeseriesIds(String[] timeseriesIds) {
         setDatasets(timeseriesIds);
+    }
+
+    @Deprecated
+    void setSeries(String[] series) {
+        setDatasets(series);
     }
 
     @Deprecated
@@ -68,7 +85,8 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param format Which output format the raw data shall have.
+     * @param format
+     *        Which output format the raw data shall have.
      */
     public void setFormat(String format) {
         setParameter(Parameters.FORMAT, IoParameters.getJsonNodeFrom(format));
@@ -86,7 +104,8 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     /**
-     * @param rawFormat Which raw output format the raw data shall have.
+     * @param rawFormat
+     *        Which raw output format the raw data shall have.
      */
     public void setRawFormat(String rawFormat) {
         this.rawFormat = rawFormat;
@@ -97,14 +116,6 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
      */
     public boolean isSetRawFormat() {
         return getRawFormat() != null && !getRawFormat().isEmpty();
-    }
-
-    public static RequestSimpleParameterSet createForSingleSeries(String seriesId, IoParameters parameters) {
-        RequestSimpleParameterSet parameterSet = parameters.toSimpleParameterSet();
-        parameterSet.setDatasets(new String[]{seriesId});
-        IntervalWithTimeZone timespan = parameters.getTimespan();
-        parameterSet.setTimespan(timespan.toString());
-        return parameterSet;
     }
 
 }

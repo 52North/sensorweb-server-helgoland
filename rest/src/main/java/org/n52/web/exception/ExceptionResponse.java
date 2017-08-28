@@ -46,7 +46,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 public final class ExceptionResponse {
 
-    // TODO add documentation url for details
     // TODO make stack tracing configurable
     private Throwable exception;
 

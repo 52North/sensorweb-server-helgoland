@@ -37,9 +37,6 @@ import org.n52.io.response.dataset.DatasetOutput;
  */
 public class ProfileDatasetOutput extends DatasetOutput<ProfileValue< ? >, ProfileReferenceValueOutput> {
 
-    public static final String VALUE_TYPE = "profile";
+    // hide generics clutter
 
-    public ProfileDatasetOutput() {
-        super(VALUE_TYPE);
-    }
 }

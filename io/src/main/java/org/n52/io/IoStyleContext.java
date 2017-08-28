@@ -26,95 +26,137 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.n52.io.img.quantity.ChartDimension;
 import org.n52.io.quantity.QuantityIoFactory;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetOutput;
 
 public final class IoStyleContext {
 
-    private final RequestStyledParameterSet chartStyleDefinitions;
+    private final Map<String, StyleMetadata> styleMetadatas;
 
-    private final List<? extends DatasetOutput> datasetMetadatas;
-
-    public IoStyleContext() {
-        this.chartStyleDefinitions = new RequestStyledParameterSet();
-        this.datasetMetadatas = Collections.<DatasetOutput>emptyList();
-    }
-
-    // use static constructors
-    private IoStyleContext(RequestStyledParameterSet datasetStyles,
-            List<? extends DatasetOutput> metadatas) {
-        this.datasetMetadatas = metadatas.isEmpty()
-                ? Collections.<DatasetOutput>emptyList()
+    private IoStyleContext(Map<String, StyleMetadata> metadatas) {
+        this.styleMetadatas = metadatas == null
+                ? Collections.emptyMap()
                 : metadatas;
-        this.chartStyleDefinitions = datasetStyles;
     }
 
     public static IoStyleContext createEmpty() {
-        return create(IoParameters.createDefaults());
-    }
-
-    public static IoStyleContext create(IoParameters config) {
-        return create(config.toStyledParameterSet());
-    }
-
-    public static IoStyleContext create(RequestStyledParameterSet request) {
-        List<? extends DatasetOutput> emptyList = Collections.emptyList();
-        return new IoStyleContext(request, emptyList);
+        return new IoStyleContext(Collections.emptyMap());
     }
 
     /**
-     * @param styles the style definitions.
-     * @param metadatas the metadata for each dataset.
-     * @throws NullPointerException if any of the given arguments is <code>null</code>.
-     * @throws IllegalStateException if amount of datasets described by the given arguments is not
-     * in sync.
-     * @return a rendering context to be used by {@link QuantityIoFactory} to create an
-     * {@link IoHandler}.
+     * @param parameters
+     *        the style definitions.
+     * @param metadatas
+     *        the metadata for each dataset.
+     * @throws NullPointerException
+     *         if any of the given arguments is <code>null</code>.
+     * @throws IllegalStateException
+     *         if amount of datasets described by the given arguments is not in sync.
+     * @return a rendering context to be used by {@link QuantityIoFactory} to create an {@link IoHandler}.
      */
-    public static IoStyleContext createContextWith(RequestStyledParameterSet styles,
-            List<? extends DatasetOutput> metadatas) {
-        if (styles == null || metadatas == null) {
+    public static IoStyleContext createContextWith(IoParameters parameters,
+                                                   List< ? extends DatasetOutput< ? , ? >> metadatas) {
+        if (parameters == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
-        String[] seriesIds = styles.getDatasets();
-        if (seriesIds.length != metadatas.size()) {
-            int amountTimeseries = seriesIds.length;
-            int amountMetadatas = metadatas.size();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Size of designs and metadatas do not match: ");
-            sb.append("#Datasets: ").append(amountTimeseries).append(" vs. ");
-            sb.append("#Metadatas: ").append(amountMetadatas);
-            throw new IllegalStateException(sb.toString());
+
+        final Map<String, StyleProperties> styles = new HashMap<>(parameters.getReferencedStyles());
+        associateBackwardsCompatibleSingleStyle(parameters, metadatas, styles);
+        return new IoStyleContext(collectStyleMetadatas(metadatas, styles));
+    }
+
+    private static void associateBackwardsCompatibleSingleStyle(IoParameters parameters,
+                                                                List< ? extends DatasetOutput< ? , ? >> metadatas,
+                                                                Map<String, StyleProperties> styles) {
+        if (styles.isEmpty() && metadatas.size() == 1) {
+            // no referenced styles are given so associate
+            // backwards compatible single style
+            DatasetOutput< ? , ? > metadata = metadatas.get(0);
+            styles.put(metadata.getId(), parameters.getSingleStyle());
         }
-        return new IoStyleContext(styles, metadatas);
     }
 
-    public static IoStyleContext createContextForSingleSeries(DatasetOutput metadata,
-            IoParameters ioConfig) {
-        RequestStyledParameterSet parameters = ioConfig.toStyledParameterSet();
-        parameters.addSeriesWithStyleOptions(metadata.getId(), ioConfig.getStyle());
-        return createContextWith(parameters, Collections.singletonList(metadata));
+    private static Map<String, StyleMetadata> collectStyleMetadatas(List< ? extends DatasetOutput< ? , ? >> metadatas,
+                                                                    final Map<String, StyleProperties> styles) {
+        return metadatas.stream()
+                        .map(e -> {
+                            return new StyleMetadata().setDatasetMetadata(e)
+                                                      .setDatasetId(e.getId())
+                                                      .setStyleProperties(styles.get(e.getId()));
+                        })
+                        .collect(Collectors.toMap(StyleMetadata::getDatasetId, Function.identity()));
     }
 
-    public void setDimensions(ChartDimension dimension) {
-        chartStyleDefinitions.setWidth(dimension.getWidth());
-        chartStyleDefinitions.setHeight(dimension.getHeight());
+    public List<DatasetOutput< ? , ? >> getAllDatasetMetadatas() {
+        return styleMetadatas.values()
+                             .stream()
+                             .map(e -> e.getDatasetMetadata())
+                             .collect(Collectors.toList());
     }
 
-    public RequestStyledParameterSet getChartStyleDefinitions() {
-        return chartStyleDefinitions;
+    public Optional<StyleMetadata> getStyleMetadataFor(String datasetId) {
+        return Optional.of(styleMetadatas.get(datasetId));
     }
 
-    public List<? extends DatasetOutput> getDatasetMetadatas() {
-        return datasetMetadatas;
+    public StyleProperties getReferenceDatasetStyleOptions(String datasetId, String referenceDatasetId) {
+        Optional<StyleMetadata> styleMetadata = getStyleMetadataFor(datasetId);
+        return styleMetadata.isPresent()
+                ? getReferenceDatasetStyleOptions(styleMetadata.get(), referenceDatasetId)
+                : null;
+    }
+
+    private StyleProperties getReferenceDatasetStyleOptions(StyleMetadata styleMetadata, String referenceDatasetId) {
+        StyleProperties styleProperties = styleMetadata.getStyleProperties();
+        Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
+        return properties.containsKey(referenceDatasetId)
+                ? properties.get(referenceDatasetId)
+                : null;
+    }
+
+    public static class StyleMetadata {
+        private String datasetId;
+        private DatasetOutput< ? , ? > datasetMetadata;
+        private StyleProperties styleProperties;
+
+        public String getDatasetId() {
+            return datasetId;
+        }
+
+        public StyleMetadata setDatasetId(String datasetId) {
+            this.datasetId = datasetId;
+            return this;
+        }
+
+        public DatasetOutput< ? , ? > getDatasetMetadata() {
+            return datasetMetadata;
+        }
+
+        public StyleMetadata setDatasetMetadata(DatasetOutput< ? , ? > datasetMetadata) {
+            this.datasetMetadata = datasetMetadata;
+            return this;
+        }
+
+        public StyleProperties getStyleProperties() {
+            return styleProperties;
+        }
+
+        public StyleMetadata setStyleProperties(StyleProperties styleProperties) {
+            this.styleProperties = styleProperties;
+            return this;
+        }
     }
 
 }

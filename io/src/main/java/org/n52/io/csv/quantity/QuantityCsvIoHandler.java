@@ -43,7 +43,7 @@ import org.joda.time.DateTime;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.csv.CsvIoHandler;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -70,10 +70,10 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
 
     private boolean zipOutput;
 
-    public QuantityCsvIoHandler(RequestParameterSet simpleRequest,
+    public QuantityCsvIoHandler(IoParameters parameters,
                                 IoProcessChain<QuantityData> processChain,
                                 List< ? extends DatasetOutput> seriesMetadatas) {
-        super(simpleRequest, processChain);
+        super(parameters, processChain);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
         this.seriesMetadatas = seriesMetadatas;
     }
@@ -145,7 +145,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     private void writeData(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
             QuantityData series = data.getSeries(metadata.getId());
-            writeData(metadata, (QuantityData) series, stream);
+            writeData(metadata, series, stream);
         }
     }
 

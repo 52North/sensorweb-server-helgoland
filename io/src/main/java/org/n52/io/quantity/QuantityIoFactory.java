@@ -45,6 +45,7 @@ import org.n52.io.img.quantity.ChartIoHandler;
 import org.n52.io.img.quantity.MultipleChartsRenderer;
 import org.n52.io.report.quantity.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
@@ -66,11 +67,11 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
         return new IoProcessChain<QuantityData>() {
             @Override
             public DataCollection<QuantityData> getData() {
-                final boolean generalize = getParameters().isGeneralize();
+                boolean generalize = getParameters().isGeneralize();
                 DataService<QuantityData> dataService = generalize
                         ? new GeneralizingQuantityService(getDataService())
                         : getDataService();
-                return dataService.getData(getRequestParameters());
+                return dataService.getData(getParameters());
             }
 
             @Override
@@ -114,21 +115,21 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
         } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                    getRequestParameters(),
+                    parameters,
                     createProcessChain(),
                     imgRenderer);
             reportGenerator.setBaseURI(getBasePath());
             return reportGenerator;
         } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
             QuantityCsvIoHandler handler = new QuantityCsvIoHandler(
-                    getRequestParameters(),
+                    parameters,
                     createProcessChain(),
                     getMetadatas());
-            handler.setTokenSeparator(parameters.getOther("tokenSeparator"));
+            handler.setTokenSeparator(parameters.getOther(Parameters.TOKEN_SEPARATOR));
 
-            boolean zipOutput = parameters.getAsBoolean(Constants.MimeType.APPLICATION_ZIP.name());
+            boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
-            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther("bom"));
+            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther(Parameters.BOM));
             handler.setIncludeByteOrderMark(byteOderMark);
             return handler;
         }
@@ -140,7 +141,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
 
     private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                getRequestParameters(),
+                getParameters(),
                 createProcessChain(),
                 createContext());
 

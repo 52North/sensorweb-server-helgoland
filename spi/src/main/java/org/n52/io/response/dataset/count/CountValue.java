@@ -32,6 +32,8 @@ import org.n52.io.response.dataset.AbstractValue;
 
 public class CountValue extends AbstractValue<Integer> {
 
+    public static final String TYPE = "count";
+
     private static final long serialVersionUID = 635165564503748527L;
 
     public CountValue() {

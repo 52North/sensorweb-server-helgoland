@@ -30,14 +30,14 @@ package org.n52.io.csv;
 
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 
 public abstract class CsvIoHandler<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
 
-    public CsvIoHandler(RequestParameterSet request, IoProcessChain<T> processChain) {
-        super(request, processChain);
+    public CsvIoHandler(IoParameters parameters, IoProcessChain<T> processChain) {
+        super(parameters, processChain);
     }
 
     // TODO

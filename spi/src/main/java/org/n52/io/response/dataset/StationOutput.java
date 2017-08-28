@@ -36,6 +36,7 @@ import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
+import org.n52.io.response.OptionalOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
@@ -51,35 +52,38 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
     public static final String TIMESERIES = "timeseries";
     public static final String GEOMETRY = "geometry";
 
-    private Map<String, DatasetParameters> timeseries;
+    private OptionalOutput<Map<String, DatasetParameters>> timeseries;
 
-    private Geometry geometry;
+    private OptionalOutput<Geometry> geometry;
 
     public Map<String, DatasetParameters> getTimeseries() {
-        return timeseries;
+        return getIfSerialized(timeseries);
     }
 
-    public void setTimeseries(Map<String, DatasetParameters> timeseries) {
+    public void setTimeseries(OptionalOutput<Map<String, DatasetParameters>> timeseries) {
         this.timeseries = timeseries;
     }
 
     @Override
     public Geometry getGeometry() {
-        return geometry;
+        return getIfSerialized(geometry);
     }
 
     @Override
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(OptionalOutput<Geometry> geometry) {
         this.geometry = geometry;
     }
 
     @Override
     public boolean isSetGeometry() {
-        return geometry != null && !geometry.isEmpty();
+        return isSet(geometry) && geometry.isSerialize();
     }
 
     @Override
     public Map<String, Object> getProperties() {
+
+        // XXX how to apply OptionalOutput here?
+
         Map<String, Object> properties = new HashMap<>();
         nullSafePut("id", getId(), properties);
         nullSafePut("label", getLabel(), properties);

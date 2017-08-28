@@ -79,16 +79,18 @@ public class PlatformOutput extends OutputWithParameters {
     }
 
     @Override
-    public void setId(String id) {
+    public PlatformOutput setId(String id) {
         super.setId(getType().createId(id));
+        return this;
     }
 
     public Collection<DatasetOutput> getDatasets() {
         return datasets;
     }
 
-    public void setDatasets(List<DatasetOutput> series) {
+    public PlatformOutput setDatasets(List<DatasetOutput> series) {
         this.datasets = series;
+        return this;
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
@@ -96,8 +98,9 @@ public class PlatformOutput extends OutputWithParameters {
         return geometry;
     }
 
-    public void setGeometry(Geometry geometry) {
+    public PlatformOutput setGeometry(Geometry geometry) {
         this.geometry = geometry;
+        return this;
     }
 
 }

@@ -1,19 +1,20 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 before_install: gem install bundler jekyll html-proofer
 script: mvn -fae -U -B clean install -P check
-#script: mvn process-resources 
+after_success: 
+- chmod +x .travis/deploy-docs.sh && .travis/deploy-docs.sh
+- curl -Ls https://git.io/deploy-maven-snapshot | bash
 env:
   global:
-    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # gh-pages: speeds up installation of html-proofer
-    - secure: "Q7Ry1dyB/6+0TEJN3fyBiCC1HlEK2pTQzWxywRmMgIxnJVXHq33y1sU9i78v6Skb9KozyfD4Uyu8Y8k+6dRf4dqWrT5+bYJIMXrTt4MLnkCtri3sd6G/oEkIZfgPJKGZdPnxBS4LvSfpNnbnlppDBmYd3pXU1cNVZHR4Mn4uzaE="
-after_success: chmod +x .travis/on_success.sh && .travis/on_success.sh
+  - SNAPSHOT_BRANCH: "develop"
+  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # gh-pages: speeds up installation of html-proofer
 cache:
   directories
-    - $HOME/.m2
+  - $HOME/.m2
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#52north"
+    - "chat.freenode.net#52north"
     on_failure: always

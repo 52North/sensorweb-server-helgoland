@@ -13,10 +13,47 @@ html tags without making requests to render charts dynamically.
 
 On prerendering mode only single series charts are rendered (no chart overlay).
 
-### Configuration Location
+### Job Configuration
+A prerendering job can run at a given rate (as 
+<a href="http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06">Cron Expression</a>, 
+e.g. every Sunday at 04:00 in the morning). Such job can be configured and added to the Job scheduler 
+available by default, for example via Spring:
 
-{:.n52-callout .n52-callout-todo}
-reference to JobScheduler configuration
+```xml
+<bean id="jobScheduler" class="org.n52.io.task.JobScheduler" init-method="init" destroy-method="shutdown">
+  <property name="scheduler">
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+      <property name="jobFactory">
+        <bean class="org.n52.io.task.AutowiringSpringBeanJobFactory" />
+      </property>
+    </bean>
+  </property>
+  <property name="enabled" value="true" />
+  <property name="startupDelayInSeconds" value="5" />
+  <property name="scheduledJobs">
+    <list>
+      <ref bean="preRenderingJob" />
+    </list>
+  </property>
+</bean>
+
+<bean id="preRenderingJob" class="org.n52.io.PreRenderingJob">
+    <!-- start with '/' for config files lying under WEB-INF/classes folder -->
+    <property name="configFile" value="/config-task-prerendering.json" />
+
+    <property name="jobName" value="Prerendering Job" />
+    <property name="jobDescription" value="Job prerendering charts." />
+    <property name="triggerName" value="preRenderingV1_dailyAt_03:00am" />
+    <!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 -->
+    <property name="cronExpression" value="0 0 03 * * ?" />
+    <property name="triggerAtStartup" value="true" />
+    <property name="enabled" value="true" />
+
+</bean>
+```
+
+
+### Configuration Location
 
 Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 

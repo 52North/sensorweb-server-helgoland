@@ -39,8 +39,11 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
@@ -60,13 +63,14 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.n52.io.Constants;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
+import org.n52.io.IoStyleContext.StyleMetadata;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.RequestParameterSet;
-import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
@@ -94,10 +98,10 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private JFreeChart jFreeChart;
 
-    public ChartIoHandler(RequestParameterSet request,
+    public ChartIoHandler(IoParameters parameters,
                           IoProcessChain<QuantityData> processChain,
                           IoStyleContext context) {
-        super(request, processChain);
+        super(parameters, processChain);
         this.context = context;
         this.xyPlot = createChart(context);
     }
@@ -118,8 +122,9 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     }
 
     private BufferedImage createImage() {
-        int width = getChartStyleDefinitions().getWidth();
-        int height = getChartStyleDefinitions().getHeight();
+        IoParameters parameters = getParameters();
+        int width = parameters.getWidth();
+        int height = parameters.getHeight();
         BufferedImage chartImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D chartGraphics = chartImage.createGraphics();
         chartGraphics.fillRect(0, 0, width, height);
@@ -149,16 +154,15 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
 
     private XYPlot createChart(IoStyleContext styleContext) {
         String timespan = getTimespan();
-        DateTime end = timespan != null
-                ? new DateTime(timespan.split("/")[1])
-                : new DateTime();
-        // String zoneName = getTimezone().getID();
+        DateTime end = new DateTime(timespan.split("/")[1]);
         String zoneName = getTimezone().getShortName(end.getMillis(), i18n.getLocale());
         StringBuilder domainAxisLabel = new StringBuilder(i18n.get("msg.io.chart.time"));
         domainAxisLabel.append(" (")
                        .append(zoneName)
                        .append(")");
-        boolean showLegend = getChartStyleDefinitions().isLegend();
+
+        IoParameters parameters = getParameters();
+        boolean showLegend = parameters.isLegend();
         jFreeChart = ChartFactory.createTimeSeriesChart(null,
                                                         domainAxisLabel.toString(),
                                                         i18n.get("msg.io.chart.value"),
@@ -213,8 +217,8 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     }
 
     private void showGridlinesOnChart(XYPlot plot) {
-        boolean showGrid = getChartStyleDefinitions()
-                                                     .isGrid();
+        IoParameters parameters = getParameters();
+        boolean showGrid = parameters.isGrid();
         plot.setDomainGridlinesVisible(showGrid);
         plot.setRangeGridlinesVisible(showGrid);
     }
@@ -226,7 +230,8 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         timeAxis.setRange(start, end);
 
         final Locale locale = i18n.getLocale();
-        String timeformat = getChartStyleDefinitions().getTimeFormat();
+        IoParameters parameters = getParameters();
+        String timeformat = parameters.getTimeFormat();
         DateFormat requestTimeFormat = new SimpleDateFormat(timeformat, locale);
         final DateTimeZone timezone = getTimezone();
         requestTimeFormat.setTimeZone(timezone.toTimeZone());
@@ -235,11 +240,14 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     }
 
     private String getTimespan() {
-        return getChartStyleDefinitions().getTimespan();
+        IoParameters parameters = getParameters();
+        IntervalWithTimeZone timespan = parameters.getTimespan();
+        return timespan.toString();
     }
 
     private DateTimeZone getTimezone() {
-        return DateTimeZone.forID(getChartStyleDefinitions().getOutputTimezone());
+        IoParameters parameters = getParameters();
+        return DateTimeZone.forID(parameters.getOutputTimezone());
     }
 
     public ValueAxis createRangeAxis(DatasetOutput metadata) {
@@ -266,25 +274,24 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     }
 
     private void configureTitle(JFreeChart chart) {
-        RequestStyledParameterSet config = getChartStyleDefinitions();
-        if (config.containsParameter(PARAMETER_PRERENDERING_TITLE)) {
-            String title = config.getAsString(PARAMETER_PRERENDERING_TITLE);
-            if (config.containsParameter(Parameters.RENDERING_TRIGGER)) {
-                String trigger = config.getAsString(Parameters.RENDERING_TRIGGER);
+        IoParameters parameters = getParameters();
+        if (parameters.containsParameter(PARAMETER_PRERENDERING_TITLE)) {
+            String title = parameters.getAsString(PARAMETER_PRERENDERING_TITLE);
+            if (parameters.containsParameter(Parameters.RENDERING_TRIGGER)) {
+                String trigger = parameters.getAsString(Parameters.RENDERING_TRIGGER);
                 title = RENDERING_TRIGGER_PRERENDERING.equalsIgnoreCase(trigger)
-                        ? getTitleForSingle(config, title)
+                        ? getTitleForSingle(parameters, title)
                         : title;
             }
             chart.setTitle(title);
         }
     }
 
-    private String getTitleForSingle(RequestStyledParameterSet config,
-                                     String template) {
-        String[] datasets = config.getDatasets();
-        if (datasets != null && datasets.length > 0) {
-            String datasetId = datasets[0];
-            DatasetOutput metadata = getTimeseriesMetadataOutput(datasetId);
+    private String getTitleForSingle(IoParameters parameters, String template) {
+        Set<String> datasets = parameters.getDatasets();
+        if (!datasets.isEmpty()) {
+            Iterator<String> iterator = datasets.iterator();
+            DatasetOutput metadata = getTimeseriesMetadataOutput(iterator.next());
             if (metadata != null) {
                 return formatTitle(metadata, template);
             }
@@ -332,20 +339,18 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return null;
     }
 
-    protected List< ? extends DatasetOutput> getMetadataOutputs() {
-        return context.getDatasetMetadatas();
+    protected List< ? extends DatasetOutput<?, ?>> getMetadataOutputs() {
+        return context.getAllDatasetMetadatas();
     }
 
     protected StyleProperties getDatasetStyleFor(String datasetId) {
-        return getChartStyleDefinitions().getStyleOptions(datasetId);
+        Optional<StyleMetadata> optional = context.getStyleMetadataFor(datasetId);
+        StyleMetadata styleMetadata = optional.get();
+        return styleMetadata.getStyleProperties();
     }
 
     protected StyleProperties getTimeseriesStyleFor(String datasetId, String referenceValueDatasetId) {
-        return getChartStyleDefinitions().getReferenceDatasetStyleOptions(datasetId, referenceValueDatasetId);
-    }
-
-    protected RequestStyledParameterSet getChartStyleDefinitions() {
-        return context.getChartStyleDefinitions();
+        return context.getReferenceDatasetStyleOptions(datasetId, referenceValueDatasetId);
     }
 
     protected boolean isLineStyle(StyleProperties properties) {

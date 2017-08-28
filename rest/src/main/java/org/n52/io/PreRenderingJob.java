@@ -54,15 +54,12 @@ import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
-import org.n52.io.img.quantity.ChartDimension;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.QueryParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
-import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -151,11 +148,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         webappFolder = jobDataMap.getString(JOB_DATA_WEBAPP_FOLDER);
 
         List<RenderingConfig> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
-        List<RenderingConfig> styles = taskConfigPrerendering.getSeriesStyles();
+        List<RenderingConfig> styles = taskConfigPrerendering.getDatasetStyles();
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
-            IoParameters query = QueryParameters.createFromQuery(parameters);
+            IoParameters query = IoParameters.createFromSingleValueMap(parameters);
             for (DatasetOutput< ? , ? > metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
                 renderConfiguredIntervals(timeseriesId, config);
@@ -189,14 +186,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private void renderWithStyle(String datasetId, RenderingConfig renderingConfig, String interval)
             throws IOException, DatasetFactoryException, URISyntaxException {
         IntervalWithTimeZone timespan = createTimespanFromInterval(datasetId, interval);
-        IoParameters config = createConfig(timespan.toString(), renderingConfig);
-
-        DatasetOutput< ? , ? > metadata = datasetService.getParameter(datasetId, config);
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, config);
-        RequestStyledParameterSet styleDefinition = context.getChartStyleDefinitions();
-        context.setDimensions(new ChartDimension(styleDefinition.getWidth(), styleDefinition.getHeight()));
-
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(datasetId, config);
+        IoParameters parameters = createConfig(datasetId, timespan.toString(), renderingConfig);
 
         String chartQualifier = renderingConfig.getChartQualifier();
         FileOutputStream fos = createFile(datasetId, interval, chartQualifier);
@@ -212,12 +202,12 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private IoFactory<Data<AbstractValue< ? >>,
                       DatasetOutput<AbstractValue< ? >, ? >,
-                      AbstractValue< ? >> createIoFactory(RequestSimpleParameterSet parameters)
+                      AbstractValue< ? >> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityDatasetOutput.VALUE_TYPE)
-                                       .withSimpleRequest(parameters)
-                                       .withDataService(dataService)
-                                       .withDatasetService(datasetService);
+        return createDefaultIoFactory().create(QuantityValue.TYPE)
+                                       .setParameters(parameters)
+                                       .setDataService(dataService)
+                                       .setDatasetService(datasetService);
     }
 
     private DefaultIoFactory<Data<AbstractValue< ? >>,
@@ -358,7 +348,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return outputDirectory;
     }
 
-    private IoParameters createConfig(String interval, RenderingConfig renderingConfig) {
+    private IoParameters createConfig(String datasetId, String interval, RenderingConfig renderingConfig) {
         Map<String, String> configuration = new HashMap<>();
 
         // set defaults
@@ -381,12 +371,13 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         try {
             ObjectMapper om = new ObjectMapper();
-            configuration.put("style", om.writeValueAsString(renderingConfig.getStyle()));
+            configuration.put(Parameters.DATASETS, datasetId);
+            configuration.put(Parameters.STYLE, om.writeValueAsString(renderingConfig.getStyle()));
             configuration.put("title", renderingConfig.getTitle());
         } catch (JsonProcessingException e) {
             LOGGER.warn("Invalid rendering style.", e);
         }
 
-        return QueryParameters.createFromQuery(configuration);
+        return IoParameters.createFromSingleValueMap(configuration);
     }
 }

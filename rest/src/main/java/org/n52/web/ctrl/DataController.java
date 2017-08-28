@@ -34,7 +34,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,8 +55,6 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.request.QueryParameters;
-import org.n52.io.request.RequestParameterSet;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
@@ -65,7 +66,6 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawFormats;
-import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
@@ -107,52 +107,33 @@ public class DataController extends BaseController {
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
-    @RequestMapping(value = "/data",
+    @RequestMapping(value = "/{datasetId}/data",
         produces = {
             Constants.APPLICATION_JSON
         },
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletResponse response,
+                                      @PathVariable String datasetId,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters parameters = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data with query: {}", parameters);
-        return getCollectionData(response, locale, parameters.toSimpleParameterSet());
-    }
+        IoParameters map = createParameters(datasetId, query, locale);
+        LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
+        checkAgainstTimespanRestriction(map.getTimespan());
+        checkForUnknownDatasetId(map, datasetId);
 
-    @RequestMapping(value = "/{seriesId}/data",
-        produces = {
-            Constants.APPLICATION_JSON
-        },
-        method = RequestMethod.GET)
-    public ModelAndView getSeriesData(HttpServletResponse response,
-                                      @PathVariable String seriesId,
-                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                          required = false) String locale,
-                                      @RequestParam(required = false) MultiValueMap<String, String> query)
-            throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data for item '{}' with query: {}", seriesId, map);
-
-        IntervalWithTimeZone timespan = map.getTimespan();
-        checkAgainstTimespanRestriction(timespan.toString());
-        checkForUnknownDatasetIds(map, seriesId);
-
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
+//        RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId, map);
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
-        IoProcessChain< ? > ioChain = createIoFactory(valueType).withSimpleRequest(parameters)
+        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
         DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
         final Map<String, ? > processed = formattedDataCollection.getAllSeries();
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
-                : new ModelAndView().addObject(processed.get(seriesId));
+                : new ModelAndView().addObject(processed.get(datasetId));
     }
 
     @RequestMapping(value = "/data",
@@ -163,21 +144,29 @@ public class DataController extends BaseController {
     public ModelAndView getCollectionData(HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
-                                          @RequestBody RequestSimpleParameterSet parameters)
+                                          @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
+        IoParameters parameters = createParameters(simpleParameters, locale);
         LOGGER.debug("get data collection with parameter set: {}", parameters);
-
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+        checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getValueType();
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType).withSimpleRequest(parameters)
+        final String datasetType = getValueType(parameters);
+        IoProcessChain< ? > ioChain = createIoFactory(datasetType).setParameters(parameters)
                                                                   .createProcessChain();
 
         DataCollection< ? > processed = ioChain.getData();
         return new ModelAndView().addObject(processed.getAllSeries());
     }
+
+    private String getValueType(IoParameters parameters) {
+      String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
+      Set<String> datasetIds = parameters.getDatasets();
+      Iterator<String> iterator = datasetIds.iterator();
+      return iterator.hasNext()
+              ? ValueType.extractType(iterator.next(), handleAs)
+              : ValueType.DEFAULT_VALUE_TYPE;
+  }
 
     @RequestMapping(value = "/data",
         params = {
@@ -187,34 +176,31 @@ public class DataController extends BaseController {
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                                required = false) String locale,
-                                           @RequestBody RequestSimpleParameterSet parameters)
+                                           @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
-        LOGGER.debug("get raw data collection with parameters: {}", parameters);
+        IoParameters parameters = createParameters(simpleParameters, locale);
+        checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         writeRawData(parameters, response);
     }
 
-    @RequestMapping(value = "/{seriesId}/data",
+    @RequestMapping(value = "/{datasetId}/data",
         method = RequestMethod.GET,
         params = {
             RawFormats.RAW_FORMAT
         })
     public void getRawSeriesData(HttpServletResponse response,
-                                 @PathVariable String seriesId,
+                                 @PathVariable String datasetId,
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                      required = false) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        checkForUnknownDatasetIds(map, seriesId);
-        LOGGER.debug("getSeriesCollection() with query: {}", map);
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
+        IoParameters parameters = createParameters(datasetId, query, locale);
+        checkForUnknownDatasetId(parameters, datasetId);
         writeRawData(parameters, response);
     }
 
-    private void writeRawData(RequestSimpleParameterSet parameters, HttpServletResponse response)
+    private void writeRawData(IoParameters parameters, HttpServletResponse response)
             throws InternalServerException, ResourceNotFoundException, BadRequestException {
+        LOGGER.debug("get raw data collection with parameters: {}", parameters);
         if (!dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported "
                     + "by the underlying service!");
@@ -239,107 +225,95 @@ public class DataController extends BaseController {
     public void getSeriesCollectionReport(HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
-                                          @RequestBody RequestStyledParameterSet parameters)
+                                          @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
-        IoParameters map = QueryParameters.createFromQuery(parameters);
-        LOGGER.debug("get data collection report with query: {}", map);
-
-        checkForUnknownSeriesIds(parameters, parameters.getDatasets());
+        IoParameters parameters = createParameters(request, locale);
+        LOGGER.debug("get data collection report with query: {}", parameters);
+        checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = parameters.getValueType();
+        final String datasetType = getValueType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withStyledRequest(map.mergeToStyledParameterSet(parameters))
-                                    .withSimpleRequest(map.mergeToSimpleParameterSet(parameters))
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data",
+    @RequestMapping(value = "/{datasetId}/data",
         produces = {
             Constants.APPLICATION_PDF
         },
         method = RequestMethod.GET)
     public void getSeriesReport(HttpServletResponse response,
-                                @PathVariable String seriesId,
+                                @PathVariable String datasetId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection report for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
-
+        IoParameters parameters = createParameters(datasetId, query, locale);
+        LOGGER.debug("get data collection report for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownDatasetIds(map, seriesId);
+        checkForUnknownDatasetId(parameters, datasetId);
 
-        final String datasetType = parameters.getValueType();
+        final String datasetType = getValueType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withSimpleRequest(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data",
+    @RequestMapping(value = "/{datasetId}/data",
         produces = {
             Constants.APPLICATION_ZIP
         },
         method = RequestMethod.GET)
     public void getSeriesAsZippedCsv(HttpServletResponse response,
-                                     @PathVariable String seriesId,
+                                     @PathVariable String datasetId,
                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                          required = false) String locale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection zip for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
-
+        IoParameters parameters = createParameters(datasetId, query, locale);
+        LOGGER.debug("get data collection zip for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownDatasetIds(map, seriesId);
+        checkForUnknownDatasetId(parameters, datasetId);
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_ZIP);
 
-        final String datasetType = parameters.getValueType();
-        createIoFactory(datasetType).withSimpleRequest(parameters)
+        final String datasetType = getValueType(parameters);
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.APPLICATION_ZIP)
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data",
+    @RequestMapping(value = "/{datasetId}/data",
         produces = {
             Constants.TEXT_CSV
         },
         method = RequestMethod.GET)
     public void getSeriesAsCsv(HttpServletResponse response,
-                               @PathVariable String seriesId,
+                               @PathVariable String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection csv for '{}' with query: {}", seriesId, map);
-        RequestSimpleParameterSet parameters = RequestSimpleParameterSet.createForSingleSeries(seriesId, map);
-
+        IoParameters parameters = createParameters(datasetId, query, locale);
+        LOGGER.debug("get data collection csv for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownDatasetIds(map, seriesId);
+        checkForUnknownDatasetId(parameters, datasetId);
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
-        if (Boolean.parseBoolean(map.getOther("zip"))) {
+        if (Boolean.parseBoolean(parameters.getOther("zip"))) {
             response.setContentType(Constants.APPLICATION_ZIP);
         } else {
             response.setContentType(Constants.TEXT_CSV);
         }
 
-        final String datasetType = parameters.getValueType();
-        createIoFactory(datasetType).withSimpleRequest(parameters)
+        final String datasetType = getValueType(parameters);
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.TEXT_CSV)
                                     .writeBinary(response.getOutputStream());
     }
@@ -352,46 +326,41 @@ public class DataController extends BaseController {
     public void getSeriesCollectionChart(HttpServletResponse response,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
-                                         @RequestBody RequestStyledParameterSet parameters)
+                                         @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, parameters);
-        IoParameters map = QueryParameters.createFromQuery(parameters);
-        checkForUnknownDatasetIds(map, parameters.getDatasets());
+        IoParameters parameters = createParameters(request, locale);
+        LOGGER.debug("get data collection chart with query: {}", parameters);
+        checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
-        LOGGER.debug("get data collection chart with query: {}", map);
-
-        final String datasetType = parameters.getValueType();
+        final String datasetType = getValueType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).withStyledRequest(parameters)
+        createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{seriesId}/data",
+    @RequestMapping(value = "/{datasetId}/data",
         produces = {
             Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletResponse response,
-                               @PathVariable String seriesId,
+                               @PathVariable String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        RequestUtils.overrideQueryLocaleWhenSet(locale, query);
-        IoParameters map = QueryParameters.createFromQuery(query);
-        LOGGER.debug("get data collection chart for '{}' with query: {}", seriesId, map);
-        checkAgainstTimespanRestriction(map.getTimespan()
-                                           .toString());
-        checkForUnknownDatasetIds(map, seriesId);
+        IoParameters parameters = createParameters(datasetId, query, locale);
+        LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, parameters);
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        checkForUnknownDatasetId(parameters, datasetId);
 
-        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(seriesId, handleAsValueTypeFallback);
-        RequestSimpleParameterSet parameters = map.toSimpleParameterSet();
+        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(valueType).withSimpleRequest(parameters)
+        createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(outputFormat)
                                   .writeBinary(response.getOutputStream());
     }
@@ -421,28 +390,28 @@ public class DataController extends BaseController {
 
     }
 
-    @RequestMapping(value = "/{seriesId}/{chartQualifier}",
+    @RequestMapping(value = "/{datasetId}/{chartQualifier}",
         produces = {
             Constants.IMAGE_PNG
         },
         method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
-                                         @PathVariable String seriesId,
+                                         @PathVariable String datasetId,
                                          @PathVariable String chartQualifier)
             throws Exception {
         assertPrerenderingIsEnabled();
-        assertPrerenderedImageIsAvailable(seriesId, chartQualifier);
+        assertPrerenderedImageIsAvailable(datasetId, chartQualifier);
 
         response.setContentType(Constants.IMAGE_PNG);
-        LOGGER.debug("get prerendered chart for '{}' ({})", seriesId, chartQualifier);
-        preRenderingTask.writePrerenderedGraphToOutputStream(seriesId, chartQualifier, response.getOutputStream());
+        LOGGER.debug("get prerendered chart for '{}' ({})", datasetId, chartQualifier);
+        preRenderingTask.writePrerenderedGraphToOutputStream(datasetId, chartQualifier, response.getOutputStream());
     }
 
-    private void checkAgainstTimespanRestriction(String timespan) {
+    private void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
         if (requestIntervalRestriction != null) {
             Duration duration = Period.parse(requestIntervalRestriction)
                                       .toDurationFrom(new DateTime());
-            if (duration.getMillis() < Interval.parse(timespan)
+            if (duration.getMillis() < Interval.parse(timespan.toString())
                                                .toDurationMillis()) {
                 throw new BadRequestException("Timespan too long, please use a period shorter than '"
                         + requestIntervalRestriction
@@ -451,11 +420,11 @@ public class DataController extends BaseController {
         }
     }
 
-    private void checkForUnknownSeriesIds(RequestParameterSet parameters, String... seriesIds) {
-        checkForUnknownDatasetIds(IoParameters.createFromQuery(parameters), seriesIds);
+    private void checkForUnknownDatasetId(IoParameters parameters, String seriesId) {
+        checkForUnknownDatasetIds(parameters, Collections.singleton(seriesId));
     }
 
-    private void checkForUnknownDatasetIds(IoParameters parameters, String... seriesIds) {
+    private void checkForUnknownDatasetIds(IoParameters parameters, Set<String> seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
                 if (!datasetService.exists(id, parameters)) {
@@ -474,8 +443,8 @@ public class DataController extends BaseController {
         }
         return ioFactoryCreator.create(valueType)
                                // .withBasePath(getRootResource())
-                               .withDataService(dataService)
-                               .withDatasetService(datasetService);
+                               .setDataService(dataService)
+                               .setDatasetService(datasetService);
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {

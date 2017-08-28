@@ -26,12 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.img.quantity;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.general.DatasetGroup;
 import org.jfree.data.time.Day;
@@ -44,7 +46,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
-import org.n52.io.request.RequestParameterSet;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.dataset.DataCollection;
@@ -59,27 +61,26 @@ import org.n52.io.style.Style;
 
 public class MultipleChartsRenderer extends ChartIoHandler {
 
-    public MultipleChartsRenderer(RequestParameterSet request,
-            IoProcessChain<QuantityData> processChain,
-            IoStyleContext context) {
-        super(request, processChain, context);
+    public MultipleChartsRenderer(IoParameters parameters,
+                                  IoProcessChain<QuantityData> processChain,
+                                  IoStyleContext context) {
+        super(parameters, processChain, context);
     }
 
     @Override
     public void writeDataToChart(DataCollection<QuantityData> data) {
         Map<String, QuantityData> allTimeseries = data.getAllSeries();
-        List<? extends DatasetOutput> timeseriesMetadatas = getMetadataOutputs();
+        List< ? extends DatasetOutput< ? , ? >> timeseriesMetadatas = getMetadataOutputs();
 
         int rendererCount = timeseriesMetadatas.size();
         for (int rendererIndex = 0; rendererIndex < timeseriesMetadatas.size(); rendererIndex++) {
 
             /*
-             * For each index put data and its renderer configured to a particular style.
-             *
-             * As each timeseries may define its custom styling and different chart types we have to loop over
-             * all timeseries to configure chart rendering.
+             * For each index put data and its renderer configured to a particular style. As each timeseries
+             * may define its custom styling and different chart types we have to loop over all timeseries to
+             * configure chart rendering.
              */
-            DatasetOutput timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
+            DatasetOutput< ? , ? > timeseriesMetadata = timeseriesMetadatas.get(rendererIndex);
 
             String timeseriesId = timeseriesMetadata.getId();
             StyleProperties style = getDatasetStyleFor(timeseriesId);
@@ -101,12 +102,13 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                 Map<String, QuantityData> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, QuantityData> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();
-                    ReferenceValueOutput referenceOutput = getReferenceValue(referenceTimeseriesId, timeseriesMetadata);
+                    ReferenceValueOutput< ? > referenceOutput = getReferenceValue(referenceTimeseriesId,
+                                                                                  timeseriesMetadata);
                     String referenceChartId = createChartId(timeseriesMetadata, referenceOutput.getLabel());
 
                     QuantityData referenceData = referenceValues.get(referenceTimeseriesId);
                     ChartIndexConfiguration referenceConfiguration = new ChartIndexConfiguration(referenceChartId,
-                            referenceIndex);
+                                                                                                 referenceIndex);
                     StyleProperties referenceStyle = getTimeseriesStyleFor(timeseriesId, referenceTimeseriesId);
                     referenceConfiguration.setReferenceData(referenceData, timeseriesMetadata, referenceStyle);
                     referenceConfiguration.setRenderer(createRenderer(referenceStyle));
@@ -116,18 +118,22 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         }
     }
 
-    private String createChartId(DatasetOutput metadata) {
+    private String createChartId(DatasetOutput< ? , ? > metadata) {
         return createChartId(metadata, null);
     }
 
-    private String createChartId(DatasetOutput metadata, String referenceId) {
-        ParameterOutput feature = metadata.getDatasetParameters().getFeature();
+    private String createChartId(DatasetOutput< ? , ? > metadata, String referenceId) {
+        ParameterOutput feature = metadata.getDatasetParameters()
+                                          .getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
         if (referenceId != null) {
-            timeseriesLabel.append(", ").append(referenceId);
+            timeseriesLabel.append(", ")
+                           .append(referenceId);
         }
-        timeseriesLabel.append(" (").append(createRangeLabel(metadata)).append(")");
+        timeseriesLabel.append(" (")
+                       .append(createRangeLabel(metadata))
+                       .append(")");
         return timeseriesLabel.toString();
     }
 
@@ -142,9 +148,10 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         return LineRenderer.createStyledLineRenderer(lineStyle);
     }
 
-    private ReferenceValueOutput getReferenceValue(String id, DatasetOutput metadata) {
-        for (ReferenceValueOutput referenceOutput : metadata.getReferenceValues()) {
-            if (referenceOutput.getReferenceValueId().equals(id)) {
+    private ReferenceValueOutput< ? > getReferenceValue(String id, DatasetOutput< ? , ? > metadata) {
+        for (ReferenceValueOutput< ? > referenceOutput : metadata.getReferenceValues()) {
+            if (referenceOutput.getReferenceValueId()
+                               .equals(id)) {
                 return referenceOutput;
             }
         }
@@ -167,18 +174,18 @@ public class MultipleChartsRenderer extends ChartIoHandler {
 
         public void setRenderer(Renderer renderer) {
             getXYPlot().setRenderer(timeseriesIndex, renderer.getXYRenderer());
-            //renderer.setColorForSeries(timeseriesIndex);
+            // renderer.setColorForSeries(timeseriesIndex);
             renderer.setColorForSeries();
         }
 
-        public void setData(QuantityData data, DatasetOutput timeMetadata, StyleProperties style) {
+        public void setData(QuantityData data, DatasetOutput< ? , ? > timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
             ValueAxis rangeAxis = createRangeAxis(timeMetadata);
             getXYPlot().setRangeAxis(timeseriesIndex, rangeAxis);
             getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
-        public void setReferenceData(QuantityData data, DatasetOutput timeMetadata, StyleProperties style) {
+        public void setReferenceData(QuantityData data, DatasetOutput< ? , ? > timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
         }
 
@@ -193,7 +200,8 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             TimeSeries timeseries = new TimeSeries(chartId);
             if (hasValues(timeseriesData)) {
                 if (isBarStyle(style)) {
-                    QuantityValue timeseriesValue = timeseriesData.getValues().get(0);
+                    QuantityValue timeseriesValue = timeseriesData.getValues()
+                                                                  .get(0);
                     Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
@@ -218,12 +226,15 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         }
 
         private boolean hasValues(QuantityData timeseriesData) {
-            return timeseriesData.getValues().size() > 0;
+            return timeseriesData.getValues()
+                                 .size() > 0;
         }
 
         private RegularTimePeriod determineTimeInterval(Date date, StyleProperties styleProperties) {
-            if (styleProperties.getProperties().containsKey(Style.PARAMETER_INTERVAL)) {
-                String interval = styleProperties.getProperties().get(Style.PARAMETER_INTERVAL);
+            if (styleProperties.getProperties()
+                               .containsKey(Style.PARAMETER_INTERVAL)) {
+                String interval = styleProperties.getProperties()
+                                                 .get(Style.PARAMETER_INTERVAL);
                 if (interval.equals(Style.VALUE_INTERVAL_BY_HOUR)) {
                     return new Hour(date);
                 } else if (interval.equals(Style.VALUE_INTERVAL_BY_DAY)) {
@@ -236,20 +247,22 @@ public class MultipleChartsRenderer extends ChartIoHandler {
         }
 
         /**
-         * @param interval the interval to check.
-         * @return <code>true</code> if timestamp is within the given interval,
-         * otherwise <code>false</code> is returned. If passed interval was
-         * <code>null</code> false will be returned.
-         * @throws IllegalArgumentException if passed in value is
-         * <code>null</code>.
+         * @param interval
+         *        the interval to check.
+         * @return <code>true</code> if timestamp is within the given interval, otherwise <code>false</code>
+         *         is returned. If passed interval was <code>null</code> false will be returned.
+         * @throws IllegalArgumentException
+         *         if passed in value is <code>null</code>.
          */
         private boolean isValueInInterval(QuantityValue value, RegularTimePeriod interval) {
             if (value == null) {
                 throw new IllegalArgumentException("TimeseriesValue must not be null.");
             }
             return interval == null
-                    || interval.getStart().getTime() <= value.getTimestamp()
-                    && value.getTimestamp() < interval.getEnd().getTime();
+                    || interval.getStart()
+                               .getTime() <= value.getTimestamp()
+                            && value.getTimestamp() < interval.getEnd()
+                                                              .getTime();
         }
 
     }

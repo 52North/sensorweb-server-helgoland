@@ -26,16 +26,25 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.IoParseException;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.web.common.RequestUtils;
 import org.n52.web.exception.BadQueryParameterException;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.ExceptionResponse;
@@ -46,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletConfigAware;
@@ -56,24 +66,71 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * <p>
- * Serves as central {@link ExceptionHandler} for all Web bindings inheriting
- * from this class. {@link WebException}s indicate an expected workflows while
- * unexpected exceptions are automatically wrapped to
- * {@link InternalServerException}s as fallback.</p>
- *
+ * Serves as central {@link ExceptionHandler} for all Web bindings inheriting from this class.
+ * {@link WebException}s indicate an expected workflows while unexpected exceptions are automatically wrapped
+ * to {@link InternalServerException}s as fallback.
+ * </p>
  * <p>
- * Developers should consider to add hints via
- * {@link WebException#addHint(String)} so that as much information is
- * communicated to the caller as possible.</p>
+ * Developers should consider to add hints via {@link WebException#addHint(String)} so that as much
+ * information is communicated to the caller as possible.
+ * </p>
  */
 @RestController
 public abstract class BaseController implements ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
+    private static final String REFER_TO_API_SYNTAX = "Refer to the API documentation and check parameter "
+            + "value against required syntax!";
+
+    private static final String INVALID_REQUEST_BODY = "Check the request body which has been sent to the "
+            + "server. Probably it is not valid.";
+
     private static final String HEADER_ACCEPT = "Accept";
 
     private ServletConfig servletConfig;
+
+    protected BiConsumer<String, IoParseException> getExceptionHandle() {
+        return (parameter, e) -> {
+            BadRequestException ex = new BadRequestException("Invalid '" + parameter + "' parameter.", e);
+            throw ex.addHint(REFER_TO_API_SYNTAX)
+                    .addHint(e.getMessage())
+                    .addHint(e.getHints());
+        };
+    }
+
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
+        return createParameters(query.toParameters(), locale);
+    }
+
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
+        return createParameters(query.toParameters(), locale);
+    }
+
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
+        return createParameters(IoParameters.createFromMultiValueMap(query), locale);
+    }
+
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
+        IoParameters parameters = IoParameters.createFromMultiValueMap(query)
+                                              .replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale);
+    }
+
+    protected IoParameters createParameters(Map<String, String> query, String locale) {
+        return createParameters(IoParameters.createFromSingleValueMap(query), locale);
+    }
+
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
+        IoParameters parameters = IoParameters.createFromSingleValueMap(query)
+                                              .replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale);
+    }
+
+    private IoParameters createParameters(IoParameters parameters, String locale) {
+        return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
+                           .setParseExceptionHandle(getExceptionHandle());
+    }
 
     @Override
     public void setServletConfig(ServletConfig servletConfig) {
@@ -85,22 +142,28 @@ public abstract class BaseController implements ServletConfigAware {
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_JSON.getMimeType()
+                                                  .equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPdfData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_PDF.getMimeType()
+                                                 .equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPngData(HttpServletRequest request) {
-        return Constants.MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
+        return Constants.MimeType.IMAGE_PNG.getMimeType()
+                                           .equals(getAcceptHeader(request));
     }
 
     private static String getAcceptHeader(HttpServletRequest request) {
         return request.getHeader(HEADER_ACCEPT);
     }
 
-    @ExceptionHandler(value = {BadRequestException.class, BadQueryParameterException.class})
+    @ExceptionHandler(value = {
+        BadRequestException.class,
+        BadQueryParameterException.class
+    })
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
         writeExceptionResponse((WebException) e, response, HttpStatus.BAD_REQUEST);
     }
@@ -115,12 +178,16 @@ public abstract class BaseController implements ServletConfigAware {
         writeExceptionResponse((WebException) e, response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = {RuntimeException.class, Exception.class, Throwable.class})
+    @ExceptionHandler(value = {
+        RuntimeException.class,
+        Exception.class,
+        Throwable.class
+    })
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         if (e instanceof HttpMessageNotReadableException) {
-            WebException wrappedException = new BadRequestException("The request could not been read.", e);
-            wrappedException.addHint("Check the message which has been sent to the server. Probably it is not valid.");
-            writeExceptionResponse(wrappedException, response, HttpStatus.BAD_REQUEST);
+            WebException ex = new BadRequestException("Invalid Request", e).addHint(INVALID_REQUEST_BODY)
+                                                                           .addHint(REFER_TO_API_SYNTAX);
+            writeExceptionResponse(ex, response, HttpStatus.BAD_REQUEST);
         } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
             writeExceptionResponse(wrappedException, response, HttpStatus.INTERNAL_SERVER_ERROR);

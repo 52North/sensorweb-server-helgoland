@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.extension;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +57,9 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
      */
     public abstract Map<String, Object> getExtras(T output, IoParameters parameters);
 
-    public abstract void addExtraMetadataFieldNames(T output);
+    public Collection<String> getExtraMetadataFieldNames(T output) {
+        return Collections.singletonList(getExtensionName());
+    }
 
     protected boolean hasExtrasToReturn(ParameterOutput output, IoParameters parameters) {
         return parameters.getFields().isEmpty()

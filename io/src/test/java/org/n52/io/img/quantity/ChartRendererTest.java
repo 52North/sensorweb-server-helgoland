@@ -33,6 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 
+import java.util.Collections;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -42,10 +43,11 @@ import org.junit.Test;
 import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.RequestSimpleParameterSet;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
@@ -53,9 +55,10 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public class ChartRendererTest {
 
@@ -100,8 +103,7 @@ public class ChartRendererTest {
 
     @Test
     public void shouldPrintDefaultOutputTimezoneInDomainAxisLabel() {
-        IoParameters config = IoParameters.createDefaults();
-        IoStyleContext context = IoStyleContext.create(config);
+        IoStyleContext context = IoStyleContext.createEmpty();
         String label = new MyChartRenderer(context).getXYPlot()
                                                    .getDomainAxis()
                                                    .getLabel();
@@ -111,21 +113,18 @@ public class ChartRendererTest {
     @Test
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
-                                          .removeAllOf("outputTimezone")
-                                          .extendWith("outputTimezone", "America/Los_Angeles");
-        IoStyleContext context = IoStyleContext.create(config);
-        String label = new MyChartRenderer(context).getXYPlot()
-                                                   .getDomainAxis()
-                                                   .getLabel();
+                                          .replaceWith("outputTimezone", "America/Los_Angeles");
+        String label = new MyChartRenderer(config).getXYPlot()
+                                                  .getDomainAxis()
+                                                  .getLabel();
         assertThat(label, is("Time (PDT)"));
     }
 
     @Test
     public void shouldHaveUTCTimezoneIncludedInDomainAxisLabel() {
-        IoStyleContext context = IoStyleContext.createEmpty();
-        context.getChartStyleDefinitions()
-               .setTimespan(VALID_ISO8601_ABSOLUTE_START);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+        IoParameters parameters = IoParameters.createDefaults()
+                                              .extendWith(Parameters.TIMESPAN, VALID_ISO8601_ABSOLUTE_START);
+        MyChartRenderer chartRenderer = new MyChartRenderer(parameters);
         String label = chartRenderer.getXYPlot()
                                     .getDomainAxis()
                                     .getLabel();
@@ -138,50 +137,54 @@ public class ChartRendererTest {
     @Test
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
-        QuantityDatasetOutput metadata = new QuantityDatasetOutput();
-        DatasetParameters parameters = new DatasetParameters();
-        parameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
-        parameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
-        parameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
-        parameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
-        parameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
-        parameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        metadata.setDatasetParameters(parameters);
-        metadata.setId("timeseries");
-        metadata.setUom("");
+        DatasetParameters datasetParameters = new DatasetParameters();
+        datasetParameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
+        datasetParameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
+        datasetParameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
+        datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
+        datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
+        datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
+        String valueType = QuantityValue.TYPE;
+        IoParameters parameters = IoParameters.createDefaults();
+        DatasetOutput< ? , ? > metadata = DatasetOutput.create(valueType, parameters);
+        metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
+                .setUom(OptionalOutput.of(""))
+                .setId("timeseries");
 
         PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
         platformOutput.setId("sta_1");
-        platformOutput.setLabel("station");
-        parameters.setPlatform(platformOutput);
+        platformOutput.setLabel(OptionalOutput.of("station"));
+        datasetParameters.setPlatform(platformOutput);
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        expected.append(parameters.getPlatform()
-                                  .getLabel());
+        ParameterOutput platform = datasetParameters.getPlatform();
+        expected.append(platform.getLabel());
+        ParameterOutput phenomenon = datasetParameters.getPhenomenon();
+        ParameterOutput procedure = datasetParameters.getProcedure();
+        ParameterOutput offering = datasetParameters.getOffering();
+        ParameterOutput feature = datasetParameters.getFeature();
+        ParameterOutput service = datasetParameters.getService();
+        ParameterOutput category = datasetParameters.getCategory();
         expected.append(" ")
-                .append(parameters.getPhenomenon()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getProcedure()
-                                  .getLabel());
-        // expected.append(" ").append(parameters.getCategory().getLabel());
-        expected.append(" (4 opted-out)");
-        expected.append(" ")
-                .append(parameters.getOffering()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getFeature()
-                                  .getLabel());
-        expected.append(" ")
-                .append(parameters.getService()
-                                  .getLabel());
-        expected.append(" ")
+                .append(phenomenon.getLabel())
+                .append(" ")
+                .append(procedure.getLabel())
+                // .append(" ")
+                // .append(category.getLabel())
+                .append(" (4 opted-out)")
+                .append(" ")
+                .append(offering.getLabel())
+                .append(" ")
+                .append(feature.getLabel())
+                .append(" ")
+                .append(service.getLabel())
+                .append(" ")
                 .append(metadata.getUom());
 
         IoParameters ioConfig = createDefaults().extendWith("rendering_trigger", "prerendering");
-        IoStyleContext context = IoStyleContext.createContextForSingleSeries(metadata, ioConfig);
-        MyChartRenderer chartRenderer = new MyChartRenderer(context);
+        IoStyleContext context = IoStyleContext.createContextWith(ioConfig, Collections.singletonList(metadata));
+        MyChartRenderer chartRenderer = new MyChartRenderer(ioConfig, context);
         // String template = "%1$s %2$s %3$s %4$s %5$s %6$s %7$s %8$s";
         String template = "%1$s %2$s %3$s (4 opted-out) %5$s %6$s %7$s %8$s";
         String actual = chartRenderer.formatTitle(metadata, template);
@@ -190,19 +193,27 @@ public class ChartRendererTest {
     }
 
     private <T extends ParameterOutput> T createParameter(T output, String id, String label) {
-        output.setId(id);
-        output.setLabel(label);
+        output.setId(id)
+              .setLabel(OptionalOutput.of(label));
         return output;
     }
 
     static class MyChartRenderer extends ChartIoHandler {
 
-        public MyChartRenderer(IoStyleContext context) {
-            super(new RequestSimpleParameterSet(), null, context);
+        public MyChartRenderer() {
+            this(IoParameters.createDefaults(), IoStyleContext.createEmpty());
         }
 
-        public MyChartRenderer() {
-            super(new RequestSimpleParameterSet(), null, null);
+        public MyChartRenderer(IoParameters parameters) {
+            this(parameters, IoStyleContext.createEmpty());
+        }
+
+        public MyChartRenderer(IoStyleContext context) {
+            this(IoParameters.createDefaults(), context);
+        }
+
+        public MyChartRenderer(IoParameters parameters, IoStyleContext context) {
+            super(parameters, null, context);
         }
 
         @Override

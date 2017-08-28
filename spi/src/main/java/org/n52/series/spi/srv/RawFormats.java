@@ -26,9 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.spi.srv;
 
-import java.util.Collection;
+import java.util.Set;
+
+import org.n52.io.response.OptionalOutput;
+import org.n52.io.response.ParameterOutput;
 
 public interface RawFormats {
 
@@ -37,16 +41,13 @@ public interface RawFormats {
     /**
      * @return the rawFormats
      */
-    String[] getRawFormats();
+    Set<String> getRawFormats();
 
     /**
-     * @param rawFormat the rawFormat to add
+     * @param rawFormats
+     *        the rawFormats to set
+     * @return the instance to enable chaining
      */
-    void addRawFormat(String rawFormat);
-
-    /**
-     * @param rawFormats the rawFormats to set
-     */
-    void setRawFormats(Collection<String> rawFormats);
+    ParameterOutput setRawFormats(OptionalOutput<Set<String>> rawFormats);
 
 }

@@ -44,7 +44,7 @@ public class ServicesParameterController extends ParameterRequestMappingAdapter<
     }
 
     @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getServiceCount(IoParameters.ensureBackwardsCompatibility(queryMap));
+    protected int getElementCount(IoParameters parameters) {
+        return super.getEntityCounter().getServiceCount(parameters.respectBackwardsCompatibility());
     }
 }
