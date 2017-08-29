@@ -86,7 +86,7 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
         }
         return output;
     }
-    
+
     private TimeseriesMetadataOutput addStatusIntervals(TimeseriesMetadataOutput output, IoParameters parameters) {
         if (parameters.isStatusIntervalsRequests() && statusIntervalsExtension != null) {
             Map<String, Object> extras = statusIntervalsExtension.getExtras(output, parameters);

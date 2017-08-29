@@ -64,9 +64,9 @@ public class RenderingHintsExtensionConfig {
 
     @Deprecated
     public void setSeriesStyles(Map<String, ConfiguredStyle> seriesStyles) {
-        setDatasetStyles(seriesStyles);;
+        setDatasetStyles(seriesStyles);
     }
-    
+
     public Map<String, ConfiguredStyle> getDatasetStyles() {
         return datasetStyles;
     }
