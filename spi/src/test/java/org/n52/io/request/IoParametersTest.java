@@ -122,7 +122,7 @@ public class IoParametersTest {
         Assert.assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
-    
+
 
     @Test
     public void when_geoJsonBboxNegativeValues_then_parsingSpatialFilter() throws ParseException {
