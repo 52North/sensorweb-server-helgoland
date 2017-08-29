@@ -50,7 +50,8 @@ public class SearchController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchResources(@RequestParam String q,
-                                        @RequestHeader(value = "accept-language") String locale,
+                                        @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                            required = false) String locale,
                                         @RequestParam(required = false) MultiValueMap<String, String> query) {
         IoParameters parameters = createParameters(query, locale).extendWith(Parameters.SEARCH_TERM, q)
                                                                  .respectBackwardsCompatibility();

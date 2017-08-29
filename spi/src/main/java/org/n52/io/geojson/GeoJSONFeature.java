@@ -30,6 +30,8 @@ package org.n52.io.geojson;
 
 import java.util.Map;
 
+import org.n52.io.response.OptionalOutput;
+
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
@@ -39,13 +41,17 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public interface GeoJSONFeature {
 
+    String GEOMETRY = "geometry";
+
+    String PROPERTIES = "properties";
+
     String getId();
 
     boolean isSetGeometry();
 
     Geometry getGeometry();
 
-    void setGeometry(Geometry geometry);
+    void setGeometry(OptionalOutput<Geometry> geometry);
 
     Map<String, Object> getProperties();
 }

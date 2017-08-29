@@ -26,161 +26,131 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
-import org.n52.io.Constants.MimeType;
 import org.n52.io.Utils;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ServiceOutput extends ParameterOutput {
 
-    private String serviceUrl;
+    public static final String SERVICE_URL = "serviceurl";
+    public static final String VERSION = "version";
+    public static final String TYPE = "type";
+    public static final String FEATURES = "features";
+    public static final String QUANTITIES = "quantities";
+    public static final String SUPPORTS_FIRST_LATEST = "supportsfirstlatest";
+    public static final String SUPPORTED_MIME_TYPES = "supportedmimetypes";
 
-    private String version;
+    private OptionalOutput<String> serviceUrl;
 
-    private String type;
+    private OptionalOutput<String> version;
 
-    private Map<String, Object> features;
+    private OptionalOutput<String> type;
 
-    private ParameterCount quantities;
+    private OptionalOutput<Map<String, Object>> features;
+
+    private OptionalOutput<ParameterCount> quantities;
 
     /**
      * @deprecated since 2.0.0
      */
     @Deprecated
-    private Boolean supportsFirstLatest;
+    private OptionalOutput<Boolean> supportsFirstLatest;
 
     public String getServiceUrl() {
-        return serviceUrl;
+        return getIfSerialized(serviceUrl);
     }
 
-    public void setServiceUrl(String serviceUrl) {
+    public void setServiceUrl(OptionalOutput<String> serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
 
     public String getVersion() {
-        return version;
+        return getIfSerialized(version);
     }
 
-    public void setVersion(String version) {
+    public void setVersion(OptionalOutput<String> version) {
         this.version = version;
     }
 
     public String getType() {
-        return type;
+        return getIfSerialized(type);
     }
 
-    public void setType(String type) {
+    public void setType(OptionalOutput<String> type) {
         this.type = type;
     }
 
-    public void addSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
-        for (Set<String> supportedMimeTypes : mimeTypesByDatasetTypes.values()) {
-            supportedMimeTypes.add(MimeType.APPLICATION_JSON.getMimeType());
-        }
-        addFeature("supportedMimeTypes", mimeTypesByDatasetTypes);
-    }
+    // public void setSupportedDatasets(Map<String, Set<String>> mimeTypesByDatasetTypes) {
+    // for (Set<String> supportedMimeTypes : mimeTypesByDatasetTypes.values()) {
+    // supportedMimeTypes.add(MimeType.APPLICATION_JSON.getMimeType());
+    // }
+    // addFeature("supportedMimeTypes", mimeTypesByDatasetTypes);
+    // }
 
-    @JsonAnyGetter
+//    @JsonAnyGetter
     public Map<String, Object> getFeatures() {
-        return features != null
-                ? Collections.unmodifiableMap(features)
-                : null;
+        return getIfSerializedMap(features);
     }
 
-    public void setFeatures(Map<String, Object> features) {
+    public void setFeatures(OptionalOutput<Map<String, Object>> features) {
         this.features = features;
     }
 
-    public void addFeature(String featureName, Object featureInfo) {
-        if (features == null) {
-            features = new HashMap<>();
-        }
-        features.put(featureName, featureInfo);
+    @Deprecated
+    public Boolean isSupportsFirstLatest() {
+        return getIfSerialized(supportsFirstLatest);
     }
 
     /**
-     * @return if service supports first and latest values
-     * @deprecated since 2.0.0, {@link #features} get serialized instead
+     * @param supportsFirstLatest
+     *        if first/latest data request are supported
+     * @deprecated since 2.0.0, added to {@link #features} instead
      */
-    @JsonIgnore
     @Deprecated
-    public Boolean isSupportsFirstLatest() {
-        return supportsFirstLatest;
-    }
-
-    public void setSupportsFirstLatest(Boolean supportsFirstLatest) {
-        addFeature("supportsFirstLatest", supportsFirstLatest);
+    public void setSupportsFirstLatest(OptionalOutput<Boolean> supportsFirstLatest) {
+        // addFeature(SUPPORTS_FIRST_LATEST, supportsFirstLatest.getValue());
         this.supportsFirstLatest = supportsFirstLatest;
     }
 
     /**
-     * @return the parameter count
+     * @param quantities
+     *        parameter count
+     * @deprecated since 2.0.0, added to {@link #features} instead
      */
-    @JsonIgnore
-    public ParameterCount getQuantities() {
-        return quantities;
+    @Deprecated
+    public void setQuantities(OptionalOutput<ParameterCount> quantities) {
+        this.quantities = quantities;
     }
 
     /**
-     * @param countedParameters the parameter count object
+     * @return the parameter count
+     * @deprecated since 2.0.0, added to {@link #features} instead
      */
-    public void setQuantities(ParameterCount countedParameters) {
-        addFeature("quantities", countedParameters);
-        this.quantities = countedParameters;
+    @Deprecated
+    public ParameterCount getQuantities() {
+        return getIfSerialized(quantities);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((serviceUrl == null) ? 0 : serviceUrl.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+        return Objects.hash(serviceUrl, version, type);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
+        if (obj == null || !(obj instanceof ServiceOutput)) {
             return false;
+        } else {
+            ServiceOutput other = (ServiceOutput) obj;
+            return Objects.equals(serviceUrl, other.serviceUrl)
+                    && Objects.equals(version, other.version)
+                    && Objects.equals(type, other.type)
+                    && super.equals(other);
         }
-        if (!(obj instanceof ServiceOutput)) {
-            return false;
-        }
-        ServiceOutput other = (ServiceOutput) obj;
-        if (serviceUrl == null) {
-            if (other.serviceUrl != null) {
-                return false;
-            }
-        } else if (!serviceUrl.equals(other.serviceUrl)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        if (version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!version.equals(other.version)) {
-            return false;
-        }
-        return true;
     }
 
     public static class ParameterCount {
@@ -202,13 +172,13 @@ public class ServiceOutput extends ParameterOutput {
         private Integer amountDatasets;
 
         /**
-         * @deprecated  since 2.0.0
+         * @deprecated since 2.0.0
          */
         @Deprecated
         private Integer amountStations;
 
         /**
-         * @deprecated  since 2.0.0
+         * @deprecated since 2.0.0
          */
         @Deprecated
         private Integer amountTimeseries;

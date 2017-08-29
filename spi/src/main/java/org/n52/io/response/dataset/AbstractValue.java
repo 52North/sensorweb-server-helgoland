@@ -48,7 +48,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private Long timestart;
 
-     // serves also as timeend
+    // serves also as timeend
     private Long timestamp;
 
     private T value;

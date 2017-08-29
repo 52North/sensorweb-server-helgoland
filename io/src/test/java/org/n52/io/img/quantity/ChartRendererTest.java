@@ -47,6 +47,7 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
@@ -54,9 +55,10 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public class ChartRendererTest {
 
@@ -135,7 +137,6 @@ public class ChartRendererTest {
     @Test
     public void shouldFormatTitleTemplateWhenPrerenderingTriggerIsActive() {
 
-        QuantityDatasetOutput metadata = new QuantityDatasetOutput();
         DatasetParameters datasetParameters = new DatasetParameters();
         datasetParameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
         datasetParameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
@@ -143,13 +144,16 @@ public class ChartRendererTest {
         datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
         datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
         datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        metadata.setDatasetParameters(datasetParameters);
-        metadata.setId("timeseries");
-        metadata.setUom("");
+        String valueType = QuantityValue.TYPE;
+        IoParameters parameters = IoParameters.createDefaults();
+        DatasetOutput< ? , ? > metadata = DatasetOutput.create(valueType, parameters);
+        metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
+                .setUom(OptionalOutput.of(""))
+                .setId("timeseries");
 
         PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
         platformOutput.setId("sta_1");
-        platformOutput.setLabel("station");
+        platformOutput.setLabel(OptionalOutput.of("station"));
         datasetParameters.setPlatform(platformOutput);
 
         // build expected title
@@ -189,8 +193,8 @@ public class ChartRendererTest {
     }
 
     private <T extends ParameterOutput> T createParameter(T output, String id, String label) {
-        output.setId(id);
-        output.setLabel(label);
+        output.setId(id)
+              .setLabel(OptionalOutput.of(label));
         return output;
     }
 

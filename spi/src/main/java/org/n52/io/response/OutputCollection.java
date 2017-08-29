@@ -28,7 +28,6 @@
  */
 package org.n52.io.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +36,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class OutputCollection<T> implements Iterable<T> {
 
@@ -132,6 +134,10 @@ public abstract class OutputCollection<T> implements Iterable<T> {
 
     public boolean containsItem(T item) {
         return items.contains(item);
+    }
+
+    public Stream<T> stream() {
+        return items.stream();
     }
 
     @Override

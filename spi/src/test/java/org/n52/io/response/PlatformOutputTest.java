@@ -32,15 +32,13 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.n52.io.response.PlatformOutput;
-import org.n52.io.response.PlatformType;
 
 public class PlatformOutputTest {
 
     @Test
     public void when_createdMobileRemote_then_hrefIncludesPrefix() {
         PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_REMOTE);
-        platform.setHrefBase("http://localhost/context");
+        platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
         assertThat(platform.getHref(), is("http://localhost/context/mobile_remote_12"));
@@ -49,7 +47,7 @@ public class PlatformOutputTest {
     @Test
     public void when_createdStationaryRemote_then_hrefIncludesPrefix() {
         PlatformOutput platform = new PlatformOutput(PlatformType.STATIONARY_REMOTE);
-        platform.setHrefBase("http://localhost/context");
+        platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
         assertThat(platform.getHref(), is("http://localhost/context/stationary_remote_12"));
@@ -58,7 +56,7 @@ public class PlatformOutputTest {
     @Test
     public void when_createdStationaryInsitu_then_hrefIncludesPrefix() {
         PlatformOutput platform = new PlatformOutput(PlatformType.STATIONARY_INSITU);
-        platform.setHrefBase("http://localhost/context");
+        platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
         assertThat(platform.getHref(), is("http://localhost/context/stationary_insitu_12"));
@@ -67,7 +65,7 @@ public class PlatformOutputTest {
     @Test
     public void when_createdMobileInsitu_then_hrefIncludesPrefix() {
         PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_INSITU);
-        platform.setHrefBase("http://localhost/context");
+        platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
         assertThat(platform.getHref(), is("http://localhost/context/mobile_insitu_12"));
@@ -76,8 +74,8 @@ public class PlatformOutputTest {
     @Test
     public void when_havingExplicitHref_then_hrefNotIncludingHrefBase() {
         PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_INSITU);
-        platform.setHref("http://localhost/otherContext/12");
-        platform.setHrefBase("http://localhost/context");
+        platform.setHref(OptionalOutput.of("http://localhost/otherContext/12"));
+        platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
         assertThat(platform.getHref(), is("http://localhost/otherContext/12"));

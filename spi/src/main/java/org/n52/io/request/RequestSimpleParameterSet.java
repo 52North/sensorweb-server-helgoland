@@ -63,8 +63,18 @@ public class RequestSimpleParameterSet extends RequestParameterSet {
     }
 
     @Deprecated
+    void setTimeseriesIds(String[] timeseriesIds) {
+        setDatasets(timeseriesIds);
+    }
+
+    @Deprecated
     void setSeries(String[] series) {
         setDatasets(series);
+    }
+
+    @Deprecated
+    void setSeriesIds(String[] seriesIds) {
+        setDatasets(seriesIds);
     }
 
     /**

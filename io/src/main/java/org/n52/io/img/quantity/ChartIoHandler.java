@@ -339,7 +339,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return null;
     }
 
-    protected List< ? extends DatasetOutput> getMetadataOutputs() {
+    protected List< ? extends DatasetOutput<?, ?>> getMetadataOutputs() {
         return context.getAllDatasetMetadatas();
     }
 

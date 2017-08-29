@@ -26,23 +26,27 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.extension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.n52.io.extension.StatusIntervalsExtensionConfig.ConfigInterval;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput> {
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@SuppressWarnings("deprecation")
+public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ? , ? >> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 
@@ -68,73 +72,66 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput> {
     }
 
     @Override
-    public void addExtraMetadataFieldNames(DatasetOutput output) {
-        if (hasStatusIntervals(output)) {
-            output.addExtra(EXTENSION_NAME);
-        }
+    public Collection<String> getExtraMetadataFieldNames(DatasetOutput< ? , ? > output) {
+        return hasStatusIntervals(output)
+                ? Collections.singleton(EXTENSION_NAME)
+                : Collections.emptySet();
     }
 
-    private boolean hasStatusIntervals(DatasetOutput output) {
+    private boolean hasStatusIntervals(DatasetOutput< ? , ? > output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(DatasetOutput output) {
-        String id = output.getId();
-        return intervalConfig.getTimeseriesIntervals().containsKey(id);
+    private boolean hasSeriesConfiguration(DatasetOutput< ? , ? > output) {
+        Map<String, ConfigInterval> intervals = intervalConfig.getTimeseriesIntervals();
+        return intervals.containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(DatasetOutput output) {
-        String id = output.getId();
-        return intervalConfig.getPhenomenonIntervals().containsKey(id);
+    private boolean hasPhenomenonConfiguration(DatasetOutput< ? , ? > output) {
+        Map<String, ConfigInterval> intervals = intervalConfig.getPhenomenonIntervals();
+        return intervals.containsKey(output.getId());
     }
 
     @Override
-    public Map<String, Object> getExtras(DatasetOutput output, IoParameters parameters) {
+    public Map<String, Object> getExtras(DatasetOutput< ? , ? > output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
 
         if (hasSeriesConfiguration(output)) {
-            final StatusInterval[] intervals = createIntervals(getSeriesIntervals(output));
-            checkForBackwardCompatiblity(output, intervals);
-            return wrapSingleIntoMap(intervals);
+            return wrapSingleIntoMap(createIntervals(getSeriesIntervals(output)));
         } else if (hasPhenomenonConfiguration(output)) {
-            final StatusInterval[] intervals = createIntervals(getPhenomenonIntervals(output));
-            checkForBackwardCompatiblity(output, intervals);
-            return wrapSingleIntoMap(intervals);
+            return wrapSingleIntoMap(createIntervals(getPhenomenonIntervals(output)));
         }
         LOGGER.error("No status intervals found for {} (id={})", output, output.getId());
         return Collections.emptyMap();
     }
 
-    private boolean hasExtrasToReturn(DatasetOutput output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(DatasetOutput< ? , ? > output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasStatusIntervals(output);
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(DatasetOutput output) {
-        return intervalConfig.getTimeseriesIntervals().get(output.getId());
+    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(DatasetOutput< ? , ? > output) {
+        return intervalConfig.getTimeseriesIntervals()
+                             .get(output.getId());
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(DatasetOutput output) {
-        String id = output.getDatasetParameters().getPhenomenon().getId();
-        return intervalConfig.getPhenomenonIntervals().get(id);
+    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(DatasetOutput< ? , ? > output) {
+        String id = output.getDatasetParameters(true)
+                          .getPhenomenon()
+                          .getId();
+        return intervalConfig.getPhenomenonIntervals()
+                             .get(id);
     }
 
-    private StatusInterval[] createIntervals(ConfigInterval configInterval) {
+    private Collection<StatusInterval> createIntervals(ConfigInterval configInterval) {
         Map<String, StatusInterval> statusIntervals = configInterval.getStatusIntervals();
         for (Entry<String, StatusInterval> entry : statusIntervals.entrySet()) {
             StatusInterval value = entry.getValue();
             value.setName(entry.getKey());
         }
-        return statusIntervals.values().toArray(new StatusInterval[0]);
-    }
-
-    private void checkForBackwardCompatiblity(DatasetOutput output, StatusInterval[] intervals) {
-        if (output instanceof TimeseriesMetadataOutput) {
-            ((TimeseriesMetadataOutput) output).setStatusIntervals(intervals);
-        }
-
+        return statusIntervals.values();
     }
 
 }

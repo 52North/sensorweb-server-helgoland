@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -134,70 +135,78 @@ public abstract class ParameterController<T extends ParameterOutput>
         return overridableKeys;
     }
 
+    protected ModelAndView createModelAndView(OutputCollection<T> items, IoParameters parameters) {
+        return new ModelAndView().addObject(items.getItems());
+    }
+
+    protected ModelAndView createModelAndView(T item, IoParameters parameters) {
+        return new ModelAndView().addObject(item);
+    }
+
     @Override
     public ModelAndView getCollection(HttpServletResponse response,
                                       String locale,
                                       MultiValueMap<String, String> query) {
-
-        IoParameters queryMap = createParameters(query, locale);
-        LOGGER.debug("getCollection() with query '{}'", queryMap);
-        preparePagingHeaders(queryMap, response);
-
-        OutputCollection<T> result;
-
-        if (queryMap.isExpanded()) {
-            Stopwatch stopwatch = Stopwatch.startStopwatch();
-            result = addExtensionInfos(parameterService.getExpandedParameters(queryMap));
+        Stopwatch stopwatch = Stopwatch.startStopwatch();
+        IoParameters parameters = createParameters(query, locale);
+        try {
+            LOGGER.debug("getCollection() with query '{}'", parameters);
+            preparePagingHeaders(parameters, response);
+            return createModelAndView(getCollection(parameters), parameters);
+        } finally {
             LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
-        } else {
-            result = parameterService.getCondensedParameters(queryMap);
         }
-        return createModelAndView(result);
     }
 
-    protected void preparePagingHeaders(IoParameters queryMap, HttpServletResponse response) {
-        if (queryMap.containsParameter(Parameters.LIMIT) || queryMap.containsParameter(Parameters.OFFSET)) {
-            Integer elementcount = this.getElementCount(queryMap.removeAllOf(Parameters.LIMIT)
-                                                                .removeAllOf(Parameters.OFFSET));
+    private void preparePagingHeaders(IoParameters parameters, HttpServletResponse response) {
+        if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
+            Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
+                                                                  .removeAllOf(Parameters.OFFSET));
             if (0 >= elementcount) {
-                OffsetBasedPagination obp = new OffsetBasedPagination(queryMap.getOffset(), queryMap.getLimit());
+                int limit = parameters.getLimit();
+                int offset = parameters.getOffset();
+                OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);
                 Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
         }
     }
 
-    @Override
-    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale);
-        LOGGER.debug("getItem() with id '{}' and query '{}'", id, map);
-
-        T item = parameterService.getParameter(id, map);
-
-        if (item == null) {
-            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
-        }
-
-        T parameter = addExtensionInfos(item);
-        return new ModelAndView().addObject(parameter);
+    private OutputCollection<T> getCollection(IoParameters parameters) {
+        return parameters.isExpanded()
+                ? addExtensionInfos(parameterService.getExpandedParameters(parameters), parameters)
+                : parameterService.getCondensedParameters(parameters);
     }
 
-    protected OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed) {
+    private OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
         for (T parameterOutput : toBeProcessed) {
-            addExtensionInfos(parameterOutput);
+            addExtensionInfos(parameterOutput, ioParameters);
         }
         return toBeProcessed;
     }
 
-    protected T addExtensionInfos(T output) {
-        for (MetadataExtension<T> extension : metadataExtensions) {
-            extension.addExtraMetadataFieldNames(output);
-        }
-        return output;
+    @Override
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
+        IoParameters parameters = createParameters(query, locale);
+        LOGGER.debug("getItem() with id '{}' and query '{}'", id, parameters);
+        return createModelAndView(getItem(id, parameters), parameters);
     }
 
-    protected ModelAndView createModelAndView(OutputCollection<T> items) {
-        return new ModelAndView().addObject(items.getItems());
+    private T getItem(String id, IoParameters parameters) {
+        T item = parameterService.getParameter(id, parameters);
+        if (item == null) {
+            throw new ResourceNotFoundException("Resource with id '" + id + "' not found.");
+        }
+        return addExtensionInfos(item, parameters);
+    }
+
+    protected T addExtensionInfos(T output, IoParameters parameters) {
+        Collection<String> extras = metadataExtensions.stream()
+                                                      .map(e -> e.getExtraMetadataFieldNames(output))
+                                                      .flatMap(c -> c.stream())
+                                                      .collect(Collectors.toList());
+        output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
+        return output;
     }
 
     public ParameterService<T> getParameterService() {

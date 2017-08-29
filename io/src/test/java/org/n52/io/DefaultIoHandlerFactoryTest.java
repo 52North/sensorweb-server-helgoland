@@ -40,7 +40,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.quantity.QuantityIoFactory;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {
@@ -58,9 +58,9 @@ public class DefaultIoHandlerFactoryTest {
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        ConfigTypedFactory<IoFactory> m = new DefaultIoFactory();
-        assertTrue(m.isKnown("text"));
-        assertTrue(m.create(QuantityDatasetOutput.VALUE_TYPE).getClass() == QuantityIoFactory.class);
+        ConfigTypedFactory<IoFactory> factory = new DefaultIoFactory();
+        assertTrue(factory.isKnown("text"));
+        assertTrue(factory.create(QuantityValue.TYPE).getClass() == QuantityIoFactory.class);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class DefaultIoHandlerFactoryTest {
 
     @Test
     public void when_mapToText_then_returnMeasurementDataRepository() throws DatasetFactoryException {
-        assertTrue(factory.create(QuantityDatasetOutput.VALUE_TYPE).getClass() == QuantityIoFactory.class);
+        assertTrue(factory.create(QuantityValue.TYPE).getClass() == QuantityIoFactory.class);
     }
 
     private File getConfigFile(String name) throws URISyntaxException {

@@ -32,10 +32,6 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 public class CountDatasetOutput extends DatasetOutput<CountValue, CountReferenceValueOutput> {
 
-    public static final String VALUE_TYPE = "count";
-
-    public CountDatasetOutput() {
-        super(VALUE_TYPE);
-    }
+    // hide generics clutter
 
 }

@@ -59,7 +59,7 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.task.ScheduledJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -148,7 +148,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         webappFolder = jobDataMap.getString(JOB_DATA_WEBAPP_FOLDER);
 
         List<RenderingConfig> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
-        List<RenderingConfig> styles = taskConfigPrerendering.getSeriesStyles();
+        List<RenderingConfig> styles = taskConfigPrerendering.getDatasetStyles();
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
@@ -204,7 +204,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                       DatasetOutput<AbstractValue< ? >, ? >,
                       AbstractValue< ? >> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityDatasetOutput.VALUE_TYPE)
+        return createDefaultIoFactory().create(QuantityValue.TYPE)
                                        .setParameters(parameters)
                                        .setDataService(dataService)
                                        .setDatasetService(datasetService);

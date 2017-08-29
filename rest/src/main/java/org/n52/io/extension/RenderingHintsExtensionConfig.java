@@ -37,7 +37,7 @@ public class RenderingHintsExtensionConfig {
 
     private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();
 
-    private Map<String, ConfiguredStyle> timeseriesStyles = new HashMap<>();
+    private Map<String, ConfiguredStyle> datasetStyles = new HashMap<>();
 
     public Map<String, ConfiguredStyle> getPhenomenonStyles() {
         return phenomenonStyles;
@@ -47,13 +47,35 @@ public class RenderingHintsExtensionConfig {
         this.phenomenonStyles = phenomenonStyles;
     }
 
+    @Deprecated
     public Map<String, ConfiguredStyle> getTimeseriesStyles() {
-        return timeseriesStyles;
+        return datasetStyles;
     }
 
+    @Deprecated
     public void setTimeseriesStyles(Map<String, ConfiguredStyle> timeseriesStyles) {
-        this.timeseriesStyles = timeseriesStyles;
+        this.datasetStyles = timeseriesStyles;
     }
+
+    @Deprecated
+    public Map<String, ConfiguredStyle> getSeriesStyles() {
+        return getDatasetStyles();
+    }
+
+    @Deprecated
+    public void setSeriesStyles(Map<String, ConfiguredStyle> seriesStyles) {
+        setDatasetStyles(seriesStyles);
+    }
+
+    public Map<String, ConfiguredStyle> getDatasetStyles() {
+        return datasetStyles;
+    }
+
+    public void setDatasetStyles(Map<String, ConfiguredStyle> datasetStyles) {
+        this.datasetStyles = datasetStyles;
+    }
+
+
 
     public static class ConfiguredStyle {
 

@@ -288,7 +288,7 @@ public class TimeseriesDataController extends BaseController {
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         IoParameters parameters = createParameters(timeseriesId, query, locale);
-        parameters.extendWith(Parameters.ZIP, Boolean.TRUE.toString());
+        parameters = parameters.extendWith(Parameters.ZIP, Boolean.TRUE.toString());
         response.setContentType(Constants.APPLICATION_ZIP);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
     }
@@ -413,7 +413,7 @@ public class TimeseriesDataController extends BaseController {
                       QuantityDatasetOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityDatasetOutput.VALUE_TYPE)
+        return createDefaultIoFactory().create(QuantityValue.TYPE)
                                        .setParameters(parameters)
                                        .setBasePath(getRootResource())
                                        .setDataService(timeseriesDataService)

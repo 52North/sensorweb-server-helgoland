@@ -29,14 +29,15 @@
 package org.n52.io.response.dataset;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.n52.io.Utils;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityReferenceValueOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,17 +48,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @deprecated since 2.0.0. use {@link QuantityDatasetOutput} instead.
  */
 @Deprecated
-public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
+public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue, QuantityReferenceValueOutput> {
+
+    public static final String STATION = "station";
+
+    public static final String RENDERING_HINTS = "renderingHints";
+
+    public static final String STATUS_INTERVALS = "statusIntervals";
+
+    private OptionalOutput<StationOutput> station;
 
     @Deprecated
-    private StyleProperties renderingHints;
+    private OptionalOutput<StyleProperties> renderingHints;
 
     @Deprecated
-    private StatusInterval[] statusIntervals;
+    private OptionalOutput<Collection<StatusInterval>> statusIntervals;
 
-    private StationOutput station;
-
-    private Set<String> rawFormats;
+    public TimeseriesMetadataOutput(IoParameters parameters) {
+        setValue(VALUE_TYPE, QuantityValue.TYPE, parameters, this::setValueType);
+    }
 
     @Override
     @JsonIgnore
@@ -71,61 +80,31 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
     }
 
     public StationOutput getStation() {
-        return station;
+        return getIfSerialized(station);
     }
 
-    public void setStation(StationOutput station) {
+    public void setStation(OptionalOutput<StationOutput> station) {
         this.station = station;
-    }
-
-    @Override
-    public String[] getRawFormats() {
-        if (rawFormats != null) {
-            return rawFormats.toArray(new String[0]);
-        }
-        return null;
-    }
-
-    @Override
-    public void addRawFormat(String format) {
-        if (format != null && !format.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            }
-            rawFormats.add(format);
-        }
-    }
-
-    @Override
-    public void setRawFormats(Collection<String> formats) {
-        if (formats != null && !formats.isEmpty()) {
-            if (rawFormats == null) {
-                rawFormats = new HashSet<>();
-            } else {
-                rawFormats.clear();
-            }
-            this.rawFormats.addAll(formats);
-        }
     }
 
     @Deprecated
     public StyleProperties getRenderingHints() {
-        return this.renderingHints;
+        return getIfSerialized(renderingHints);
     }
 
     @Deprecated
-    public void setRenderingHints(StyleProperties renderingHints) {
+    public void setRenderingHints(OptionalOutput<StyleProperties> renderingHints) {
         this.renderingHints = renderingHints;
     }
 
     @Deprecated
-    public StatusInterval[] getStatusIntervals() {
-        return Utils.copy(statusIntervals);
+    public Collection<StatusInterval> getStatusIntervals() {
+        return getIfSerializedCollection(statusIntervals);
     }
 
     @Deprecated
-    public void setStatusIntervals(StatusInterval[] statusIntervals) {
-        this.statusIntervals = Utils.copy(statusIntervals);
+    public void setStatusIntervals(OptionalOutput<Collection<StatusInterval>> statusIntervals) {
+        this.statusIntervals = statusIntervals;
     }
 
     @Override
@@ -219,4 +198,5 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
         }
 
     }
+
 }
