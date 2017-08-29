@@ -90,7 +90,7 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
         nullSafePut("domainId", getDomainId(), properties);
         nullSafePut("href", getHref(), properties);
         nullSafePut("rawFormats", getRawFormats(), properties);
-        nullSafePut(TIMESERIES, timeseries, properties);
+        nullSafePut(TIMESERIES, getTimeseries(), properties);
         return properties;
     }
 
