@@ -10,6 +10,7 @@
 - separated impl projects (fotoquest and dwd) to own repositories
 - pluralized filter parameters
 - output includes href property
+- filterable output members via `fields=<members>` parameter
 
 ### Features
 - #129 provides paging headers if backend supports counting
