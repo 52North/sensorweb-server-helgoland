@@ -1,15 +1,19 @@
 language: java
 jdk:
 - oraclejdk8
-before_install: gem install bundler jekyll html-proofer
 script: mvn -fae -U -B clean install -P check
 after_success: 
 - chmod +x .travis/deploy-docs.sh && .travis/deploy-docs.sh
 - curl -Ls https://git.io/deploy-maven-snapshot | bash
+# start dependend builds
+- SCRIPT=$(mktemp)
+- curl -Ls https://git.io/trigger-build -o "$SCRIPT"
+- bash "${SCRIPT}" 52North/dao-series-api develop
+- bash "${SCRIPT}" 52North/dao-series-api "version/v3.x"
+- bash "${SCRIPT}" 52North/ckan-data-harvester
 env:
   global:
   - SNAPSHOT_BRANCH: "develop"
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # gh-pages: speeds up installation of html-proofer
 cache:
   directories
   - $HOME/.m2
