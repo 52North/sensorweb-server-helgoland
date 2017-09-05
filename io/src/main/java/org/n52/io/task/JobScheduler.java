@@ -31,6 +31,7 @@ package org.n52.io.task;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -96,9 +97,9 @@ public class JobScheduler {
      */
     public void shutdown() {
         try {
-            scheduler.shutdown(true);
+            scheduler.shutdown(false);
         } catch (SchedulerException e) {
-            LOGGER.error("Could not scheduler.", e);
+            LOGGER.error("Could not shutdown scheduler.", e);
         }
     }
 
