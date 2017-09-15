@@ -34,8 +34,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.vividsolutions.jts.geom.Geometry;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,33 +44,20 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
     @Override
     public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers)
             throws IOException, JsonProcessingException {
-        if (value.isSetGeometry()) {
             writeFeature(value, gen);
-        } else {
-            writeGeometryLessFeature(value, gen);
-        }
     }
 
     private void writeFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField("type", "Feature");
         gen.writeStringField("id", value.getId());
-        gen.writeObjectField("properties", value.getProperties());
-        gen.writeObjectField("geometry", encodeGeometry(value));
-        gen.writeEndObject();
-    }
-
-    private void writeGeometryLessFeature(GeoJSONFeature value,
-            JsonGenerator gen) throws IOException {
-        gen.writeStartObject();
-        writeMap(value.getProperties(), gen);
-        gen.writeEndObject();
-    }
-
-    private void writeMap(Map<String, Object> map, JsonGenerator gen) throws IOException {
-        for (Entry<String, Object> entry : map.entrySet()) {
-            gen.writeObjectField(entry.getKey(), entry.getValue());
+        if (value.getProperties() != null) {
+            gen.writeObjectField("properties", value.getProperties());
         }
+        if (value.isSetGeometry()) {
+            gen.writeStringField("type", "Feature");
+            gen.writeObjectField("geometry", encodeGeometry(value));
+        }
+        gen.writeEndObject();
     }
 
     private Object encodeGeometry(GeoJSONFeature value) {
