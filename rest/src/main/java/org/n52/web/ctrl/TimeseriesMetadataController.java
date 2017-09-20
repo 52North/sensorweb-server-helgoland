@@ -140,9 +140,8 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends ParameterOutput> Optional<Map<String, Object>> getMetadataExtensionExtras(T output,
-                                                                                                   IoParameters parameters,
-                                                                                                   Class<? extends MetadataExtension<T>> clazz) {
+    protected <T extends ParameterOutput> Optional<Map<String, Object>> getMetadataExtensionExtras(
+            T output, IoParameters parameters, Class<? extends MetadataExtension<T>> clazz) {
         return getMetadataExtensions().stream()
                 .map(x -> (MetadataExtension<?>) x)
                 .filter(x -> clazz.isInstance(x))
