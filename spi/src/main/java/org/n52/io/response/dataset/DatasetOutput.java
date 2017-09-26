@@ -41,7 +41,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
 
     public static final String VALUE_TYPE = "valuetype";
     public static final String PLATFORM_TYPE = "platformtype";
-    public static final String DATASET_PARAMETERS = "datasetparameters";
+    public static final String DATASET_PARAMETERS = "parameters";
     public static final String REFERENCE_VALUES = "referencevalues";
     public static final String FIRST_VALUE = "firstvalue";
     public static final String LAST_VALUE = "lastvalue";

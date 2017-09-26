@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.vividsolutions.jts.geom.Geometry;
 import java.io.IOException;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +51,9 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
     private void writeFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("id", value.getId());
-        if (value.getProperties() != null) {
-            gen.writeObjectField("properties", value.getProperties());
+        Map<String, Object> properties = value.getProperties();
+        if (!properties.isEmpty()) {
+            gen.writeObjectField("properties", properties);
         }
         if (value.isSetGeometry()) {
             gen.writeStringField("type", "Feature");
