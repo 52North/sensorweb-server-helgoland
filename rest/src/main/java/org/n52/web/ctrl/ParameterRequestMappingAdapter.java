@@ -62,7 +62,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(null, locale, addHrefBase(query));
+        return super.getCollection(response, locale, addHrefBase(query));
     }
 
     @Override
