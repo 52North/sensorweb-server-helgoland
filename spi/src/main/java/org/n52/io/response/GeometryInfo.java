@@ -47,9 +47,11 @@ import com.vividsolutions.jts.geom.Geometry;
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
-    public static final String PLATFORM = "platform";
+    public static final String PROPERTIES = "properties";
 
     public static final String GEOMETRY_TYPE = "geometryType";
+
+    private static final String PLATFORM = "platform";
 
     private OptionalOutput<GeometryType> geometryType;
 
@@ -94,7 +96,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     @Override
     public Geometry getGeometry() {
-        return getIfSerialized(geometry);
+        return getIfSet(geometry, true);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     @Override
     public boolean isSetGeometry() {
-        return getGeometry() != null && !getGeometry().isEmpty();
+        return getIfSerialized(geometry) != null && !getGeometry().isEmpty();
     }
 
     @Override
@@ -121,21 +123,30 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
     }
 
     private String getUrlIdPrefix() {
-        return getType().getGeometryType();
+        return getIfSet(geometryType, true).getGeometryType();
     }
 
-    public String getGeometyType() {
-        return getType().getGeometryType();
+    public String getGeometryType() {
+        if (getIfSerialized(geometryType) != null) {
+            return getType().getGeometryType();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Map<String, Object> getProperties() {
         HashMap<String, Object> properties = new HashMap<>();
-        properties.put(GEOMETRY_TYPE, getGeometyType());
-        properties.put(PLATFORM, getPlatform());
-        properties.put(HREF, getHref());
-        properties.put(ID, getId());
+        nullSafePut(GEOMETRY_TYPE, getGeometryType(), properties);
+        nullSafePut(PLATFORM, getPlatform(), properties);
+        nullSafePut(HREF, getHref(), properties);
         return properties;
+    }
+
+        private void nullSafePut(String key, Object value, Map<String, Object> container) {
+        if (value != null) {
+            container.put(key, value);
+        }
     }
 
 }
