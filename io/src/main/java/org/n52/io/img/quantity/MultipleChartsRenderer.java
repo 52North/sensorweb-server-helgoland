@@ -54,7 +54,6 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.ReferenceValueOutput;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
@@ -63,14 +62,14 @@ import org.n52.io.style.Style;
 public class MultipleChartsRenderer extends ChartIoHandler {
 
     public MultipleChartsRenderer(IoParameters parameters,
-                                  IoProcessChain<QuantityData> processChain,
+                                  IoProcessChain<Data<QuantityValue>> processChain,
                                   IoStyleContext context) {
         super(parameters, processChain, context);
     }
 
     @Override
-    public void writeDataToChart(DataCollection<QuantityData> data) {
-        Map<String, QuantityData> allTimeseries = data.getAllSeries();
+    public void writeDataToChart(DataCollection<Data<QuantityValue>> data) {
+        Map<String, Data<QuantityValue>> allTimeseries = data.getAllSeries();
         List< ? extends DatasetOutput< ? >> timeseriesMetadatas = getMetadataOutputs();
 
         int rendererCount = timeseriesMetadatas.size();
@@ -85,7 +84,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
 
             String timeseriesId = timeseriesMetadata.getId();
             StyleProperties style = getDatasetStyleFor(timeseriesId);
-            QuantityData timeseriesData = allTimeseries.get(timeseriesId);
+            Data<QuantityValue> timeseriesData = allTimeseries.get(timeseriesId);
 
             String chartId = createChartId(timeseriesMetadata);
             ChartIndexConfiguration configuration = new ChartIndexConfiguration(chartId, rendererIndex);
@@ -179,7 +178,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             renderer.setColorForSeries();
         }
 
-        public void setData(QuantityData data, DatasetOutput< ? > timeMetadata, StyleProperties style) {
+        public void setData(Data<QuantityValue> data, DatasetOutput< ? > timeMetadata, StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
             ValueAxis rangeAxis = createRangeAxis(timeMetadata);
             getXYPlot().setRangeAxis(timeseriesIndex, rangeAxis);

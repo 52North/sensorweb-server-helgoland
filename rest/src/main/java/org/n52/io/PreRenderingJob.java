@@ -200,8 +200,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<Data<AbstractValue< ? >>,
-                      DatasetOutput<AbstractValue< ? >>,
+    private IoFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
@@ -210,11 +209,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                                        .setDatasetService(datasetService);
     }
 
-    private DefaultIoFactory<Data<AbstractValue< ? >>,
-                             DatasetOutput<AbstractValue< ? >>,
+    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> createDefaultIoFactory() {
-        return new DefaultIoFactory<Data<AbstractValue< ? >>,
-                                    DatasetOutput<AbstractValue< ? >>,
+        return new DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                                     AbstractValue< ? >>();
     }
 

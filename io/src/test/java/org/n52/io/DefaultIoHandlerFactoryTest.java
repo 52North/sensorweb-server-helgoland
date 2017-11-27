@@ -40,6 +40,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.text.TextIoFactory;
 
@@ -58,7 +59,7 @@ public class DefaultIoHandlerFactoryTest {
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        ConfigTypedFactory<IoFactory> factory = new DefaultIoFactory();
+        ConfigTypedFactory<IoFactory<QuantityDatasetOutput, QuantityValue>> factory = new DefaultIoFactory<>();
         assertTrue(factory.isKnown("text"));
         assertTrue(factory.create(QuantityValue.TYPE).getClass() == QuantityIoFactory.class);
     }

@@ -35,11 +35,11 @@ import java.util.Set;
 import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.response.dataset.text.TextData;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.text.TextDatasetOutput;
 import org.n52.io.response.dataset.text.TextValue;
 
-public class TextIoFactory extends IoFactory<TextData, TextDatasetOutput, TextValue> {
+public class TextIoFactory extends IoFactory<TextDatasetOutput, TextValue> {
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
@@ -52,7 +52,7 @@ public class TextIoFactory extends IoFactory<TextData, TextDatasetOutput, TextVa
     }
 
     @Override
-    public IoHandler<TextData> createHandler(String outputMimeType) {
+    public IoHandler<Data<TextValue>> createHandler(String outputMimeType) {
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;

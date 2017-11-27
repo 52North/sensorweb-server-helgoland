@@ -39,7 +39,7 @@ public class DatasetMetadata<T extends Data<?>> {
         return referenceValues != null
                 && !referenceValues.isEmpty();
     }
-    
+
     public Map<String, T> getReferenceValues() {
         return referenceValues;
     }

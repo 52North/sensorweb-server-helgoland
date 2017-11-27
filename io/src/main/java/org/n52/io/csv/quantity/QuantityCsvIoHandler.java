@@ -45,15 +45,15 @@ import org.n52.io.IoProcessChain;
 import org.n52.io.csv.CsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 // TODO extract non quantity specifics to csvhandler
 
-public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
+public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -71,7 +71,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     private boolean zipOutput;
 
     public QuantityCsvIoHandler(IoParameters parameters,
-                                IoProcessChain<QuantityData> processChain,
+                                IoProcessChain<Data<QuantityValue>> processChain,
                                 List< ? extends DatasetOutput> seriesMetadatas) {
         super(parameters, processChain);
         this.numberformat = DecimalFormat.getInstance(i18n.getLocale());
@@ -105,7 +105,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<QuantityData> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IoParseException {
         try {
             if (zipOutput) {
                 writeAsZipStream(data, stream);
@@ -117,14 +117,14 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
         }
     }
 
-    private void writeAsPlainCsv(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
+    private void writeAsPlainCsv(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         BufferedOutputStream bos = new BufferedOutputStream(stream);
         writeHeader(bos);
         writeData(data, bos);
         bos.flush();
     }
 
-    private void writeAsZipStream(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
+    private void writeAsZipStream(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
             zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
             writeHeader(zipStream);
@@ -142,14 +142,14 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityData> {
         writeCsvLine(csvLine, stream);
     }
 
-    private void writeData(DataCollection<QuantityData> data, OutputStream stream) throws IOException {
+    private void writeData(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         for (DatasetOutput metadata : seriesMetadatas) {
-            QuantityData series = data.getSeries(metadata.getId());
+            Data<QuantityValue> series = data.getSeries(metadata.getId());
             writeData(metadata, series, stream);
         }
     }
 
-    private void writeData(DatasetOutput metadata, QuantityData series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
         String station = null;
         ParameterOutput platform = metadata.getDatasetParameters()
                                            .getPlatform();

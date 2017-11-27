@@ -36,25 +36,24 @@ import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class FlotFormatter implements DataFormatter<QuantityData, FlotData> {
+public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotData> {
 
     @Override
-    public FlotDataCollection format(DataCollection<QuantityData> toFormat) {
+    public FlotDataCollection format(DataCollection<Data<QuantityValue>> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            QuantityData seriesToFormat = toFormat.getSeries(timeseriesId);
+            Data<QuantityValue> seriesToFormat = toFormat.getSeries(timeseriesId);
             FlotData series = createFlotSeries(seriesToFormat);
             flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotData createFlotSeries(QuantityData seriesToFormat) {
+    private FlotData createFlotSeries(Data<QuantityValue> seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
         DatasetMetadata<Data<QuantityValue>> metadata = seriesToFormat.getMetadata();

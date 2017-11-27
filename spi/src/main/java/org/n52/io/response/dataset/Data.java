@@ -37,14 +37,14 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class Data<T extends AbstractValue<?>> implements Serializable {
+public class Data<T extends AbstractValue<?>> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
     private List<T> values = new ArrayList<>();
 
     private DatasetMetadata<Data<T>> metadata;
-    
+
     public void addValues(T... toAdd) {
         if (toAdd != null && toAdd.length > 0) {
             this.values.addAll(Arrays.asList(toAdd));
@@ -74,7 +74,7 @@ public abstract class Data<T extends AbstractValue<?>> implements Serializable {
     public boolean hasReferenceValues() {
         return getMetadata().hasReferenceValues();
     }
-    
+
     public void setMetadata(DatasetMetadata<Data<T>> metadata) {
         this.metadata = metadata;
     }

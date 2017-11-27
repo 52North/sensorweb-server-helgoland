@@ -42,11 +42,11 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V>, V extends AbstractValue< ? >> {
+public abstract class IoFactory<P extends DatasetOutput<V>, V extends AbstractValue< ? >> {
 
     private IoParameters parameters;
 
-    private DataService<D> dataService;
+    private DataService<Data<V>> dataService;
 
     private ParameterService<P> datasetService;
 
@@ -56,44 +56,44 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V>, V
         this.parameters = IoParameters.createDefaults();
     }
 
-    public IoFactory<D, P, V> setParameters(IoParameters parameters) {
+    public IoFactory<P, V> setParameters(IoParameters parameters) {
         this.parameters = parameters;
         return this;
     }
 
-    public IoFactory<D, P, V> setBasePath(URI basePath) {
+    public IoFactory<P, V> setBasePath(URI basePath) {
         this.basePath = basePath;
         return this;
     }
 
-    public IoFactory<D, P, V> setDataService(DataService<D> dataService) {
+    public IoFactory<P, V> setDataService(DataService<Data<V>> dataService) {
         this.dataService = dataService;
         return this;
     }
 
-    public IoFactory<D, P, V> setDatasetService(ParameterService<P> datasetService) {
+    public IoFactory<P, V> setDatasetService(ParameterService<P> datasetService) {
         this.datasetService = datasetService;
         return this;
     }
 
-    public IoHandler<D> createHandler(String outputMimeType) {
+    public IoHandler<Data<V>> createHandler(String outputMimeType) {
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
     }
 
-    public IoProcessChain<D> createProcessChain() {
-        return new IoProcessChain<D>() {
+    public IoProcessChain<Data<V>> createProcessChain() {
+        return new IoProcessChain<Data<V>>() {
 
             @Override
-            public DataCollection<D> getData() {
+            public DataCollection<Data<V>> getData() {
                 return getDataService().getData(parameters);
             }
 
             @Override
             public DataCollection< ? > getProcessedData() {
                 return parameters.shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<D>().format(getData())
+                        ? new ResultTimeFormatter<Data<V>>().format(getData())
                         // empty chain
                         : getData();
             }
@@ -121,7 +121,7 @@ public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V>, V
         return parameters;
     }
 
-    protected DataService<D> getDataService() {
+    protected DataService<Data<V>> getDataService() {
         return dataService;
     }
 

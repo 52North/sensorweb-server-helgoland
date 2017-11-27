@@ -54,10 +54,10 @@ import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public class ChartRendererTest {
@@ -222,7 +222,7 @@ public class ChartRendererTest {
         }
 
         @Override
-        public void writeDataToChart(DataCollection<QuantityData> data) {
+        public void writeDataToChart(DataCollection<Data<QuantityValue>> data) {
             throw new UnsupportedOperationException();
         }
 

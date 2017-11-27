@@ -46,13 +46,13 @@ import org.n52.io.img.quantity.MultipleChartsRenderer;
 import org.n52.io.report.quantity.PDFReportGenerator;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
 
-public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDatasetOutput, QuantityValue> {
+public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, QuantityValue> {
 
     private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
             new Constants.MimeType[] {
@@ -63,12 +63,12 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
             });
 
     @Override
-    public IoProcessChain<QuantityData> createProcessChain() {
-        return new IoProcessChain<QuantityData>() {
+    public IoProcessChain<Data<QuantityValue>> createProcessChain() {
+        return new IoProcessChain<Data<QuantityValue>>() {
             @Override
-            public DataCollection<QuantityData> getData() {
+            public DataCollection<Data<QuantityValue>> getData() {
                 boolean generalize = getParameters().isGeneralize();
-                DataService<QuantityData> dataService = generalize
+                DataService<Data<QuantityValue>> dataService = generalize
                         ? new GeneralizingQuantityService(getDataService())
                         : getDataService();
                 return dataService.getData(getParameters());
@@ -77,7 +77,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
             @Override
             public DataCollection<?> getProcessedData() {
                 return getParameters().shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<QuantityData>().format(getData())
+                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
                         : createFormatter().create().format(getData());
             }
 
@@ -107,7 +107,7 @@ public final class QuantityIoFactory extends IoFactory<QuantityData, QuantityDat
     }
 
     @Override
-    public IoHandler<QuantityData> createHandler(String outputMimeType) {
+    public IoHandler<Data<QuantityValue>> createHandler(String outputMimeType) {
         IoParameters parameters = getParameters();
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {

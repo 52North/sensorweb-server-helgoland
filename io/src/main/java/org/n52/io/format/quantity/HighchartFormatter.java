@@ -36,18 +36,17 @@ import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public class HighchartFormatter implements DataFormatter<QuantityData, HighchartData> {
+public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, HighchartData> {
 
     @Override
-    public HighchartDataCollection format(DataCollection<QuantityData> toFormat) {
+    public HighchartDataCollection format(DataCollection<Data<QuantityValue>> toFormat) {
         HighchartDataCollection dataCollection = new HighchartDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            QuantityData seriesToFormat = toFormat.getSeries(timeseriesId);
+            Data<QuantityValue> seriesToFormat = toFormat.getSeries(timeseriesId);
             HighchartData series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewSeries(timeseriesId, series);
 
