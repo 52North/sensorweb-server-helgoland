@@ -113,6 +113,8 @@ public class ChartRendererTest {
     @Test
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
+                                          // time in summer to get PDT (-> DST)
+                                          .replaceWith("timespan", "PT24H/2017-07-01TZ")
                                           .replaceWith("outputTimezone", "America/Los_Angeles");
         String label = new MyChartRenderer(config).getXYPlot()
                                                   .getDomainAxis()
