@@ -95,12 +95,12 @@ public class DataController extends BaseController {
 
     @Autowired
     private DefaultIoFactory<Data<AbstractValue< ? >>,
-                             DatasetOutput<AbstractValue< ? >, ? >,
+                             DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> ioFactoryCreator;
 
     private DataService<Data<AbstractValue< ? >>> dataService;
 
-    private ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService;
+    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -435,7 +435,7 @@ public class DataController extends BaseController {
     }
 
     private IoFactory<Data<AbstractValue< ? >>,
-                      DatasetOutput<AbstractValue< ? >, ? >,
+                      DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(final String valueType)
                               throws DatasetFactoryException {
         if (!ioFactoryCreator.isKnown(valueType)) {
@@ -482,11 +482,11 @@ public class DataController extends BaseController {
         this.dataService = dataService;
     }
 
-    public ParameterService<DatasetOutput<AbstractValue< ? >, ? >> getDatasetService() {
+    public ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
         return datasetService;
     }
 
-    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService) {
+    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService) {
         this.datasetService = datasetService;
     }
 

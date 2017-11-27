@@ -68,7 +68,7 @@ public final class IoStyleContext {
      * @return a rendering context to be used by {@link QuantityIoFactory} to create an {@link IoHandler}.
      */
     public static IoStyleContext createContextWith(IoParameters parameters,
-                                                   List< ? extends DatasetOutput< ? , ? >> metadatas) {
+                                                   List< ? extends DatasetOutput< ?>> metadatas) {
         if (parameters == null || metadatas == null) {
             throw new NullPointerException("Designs and metadatas cannot be null.!");
         }
@@ -79,17 +79,17 @@ public final class IoStyleContext {
     }
 
     private static void associateBackwardsCompatibleSingleStyle(IoParameters parameters,
-                                                                List< ? extends DatasetOutput< ? , ? >> metadatas,
+                                                                List< ? extends DatasetOutput< ? >> metadatas,
                                                                 Map<String, StyleProperties> styles) {
         if (styles.isEmpty() && metadatas.size() == 1) {
             // no referenced styles are given so associate
             // backwards compatible single style
-            DatasetOutput< ? , ? > metadata = metadatas.get(0);
+            DatasetOutput< ? > metadata = metadatas.get(0);
             styles.put(metadata.getId(), parameters.getSingleStyle());
         }
     }
 
-    private static Map<String, StyleMetadata> collectStyleMetadatas(List< ? extends DatasetOutput< ? , ? >> metadatas,
+    private static Map<String, StyleMetadata> collectStyleMetadatas(List< ? extends DatasetOutput< ? >> metadatas,
                                                                     final Map<String, StyleProperties> styles) {
         return metadatas.stream()
                         .map(e -> {
@@ -100,7 +100,7 @@ public final class IoStyleContext {
                         .collect(Collectors.toMap(StyleMetadata::getDatasetId, Function.identity()));
     }
 
-    public List<DatasetOutput< ? , ? >> getAllDatasetMetadatas() {
+    public List<DatasetOutput< ? >> getAllDatasetMetadatas() {
         return styleMetadatas.values()
                              .stream()
                              .map(e -> e.getDatasetMetadata())
@@ -128,7 +128,7 @@ public final class IoStyleContext {
 
     public static class StyleMetadata {
         private String datasetId;
-        private DatasetOutput< ? , ? > datasetMetadata;
+        private DatasetOutput< ? > datasetMetadata;
         private StyleProperties styleProperties;
 
         public String getDatasetId() {
@@ -140,11 +140,11 @@ public final class IoStyleContext {
             return this;
         }
 
-        public DatasetOutput< ? , ? > getDatasetMetadata() {
+        public DatasetOutput< ? > getDatasetMetadata() {
             return datasetMetadata;
         }
 
-        public StyleMetadata setDatasetMetadata(DatasetOutput< ? , ? > datasetMetadata) {
+        public StyleMetadata setDatasetMetadata(DatasetOutput< ? > datasetMetadata) {
             this.datasetMetadata = datasetMetadata;
             return this;
         }

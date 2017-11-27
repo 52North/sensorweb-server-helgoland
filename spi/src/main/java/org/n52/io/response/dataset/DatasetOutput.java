@@ -37,7 +37,7 @@ import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValueOutput< ? >> extends ParameterOutput {
+public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
     public static final String VALUE_TYPE = "valuetype";
     public static final String PLATFORM_TYPE = "platformtype";
@@ -53,7 +53,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
 
     private OptionalOutput<DatasetParameters> datasetParameters;
 
-    private OptionalOutput<List<R>> referenceValues;
+    private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
 
     private OptionalOutput<V> firstValue;
 
@@ -65,15 +65,14 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         // use static constructor method
     }
 
-    public static <V extends AbstractValue< ? >,
-                   R extends ReferenceValueOutput< ? >> DatasetOutput<V, R> create(String type, IoParameters params) {
-        DatasetOutput<V, R> output = new DatasetOutput<>();
+    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(String type, IoParameters params) {
+        DatasetOutput<V> output = new DatasetOutput<>();
         output.setValue(VALUE_TYPE, type, params, output::setValueType);
         return output;
     }
 
     @Override
-    public DatasetOutput<V, R> setId(String id) {
+    public DatasetOutput<V> setId(String id) {
         String type = getIfSet(valueType, true);
         super.setId(ValueType.createId(type, id));
         return this;
@@ -91,7 +90,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         return getIfSerialized(platformType);
     }
 
-    public DatasetOutput<V, R> setPlatformType(OptionalOutput<String> platformType) {
+    public DatasetOutput<V> setPlatformType(OptionalOutput<String> platformType) {
         this.platformType = platformType;
         return this;
     }
@@ -105,7 +104,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         return getIfSet(datasetParameters, forced);
     }
 
-    public DatasetOutput<V, R> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
+    public DatasetOutput<V> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
         this.datasetParameters = parameters;
         return this;
     }
@@ -114,7 +113,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         return getIfSerialized(uom);
     }
 
-    public DatasetOutput<V, R> setUom(OptionalOutput<String> uom) {
+    public DatasetOutput<V> setUom(OptionalOutput<String> uom) {
         this.uom = uom;
         return this;
     }
@@ -123,7 +122,7 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         return getIfSerialized(firstValue);
     }
 
-    public DatasetOutput<V, R> setFirstValue(OptionalOutput<V> firstValue) {
+    public DatasetOutput<V> setFirstValue(OptionalOutput<V> firstValue) {
         this.firstValue = firstValue;
         return this;
     }
@@ -132,16 +131,16 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         return getIfSerialized(lastValue);
     }
 
-    public DatasetOutput<V, R> setLastValue(OptionalOutput<V> lastValue) {
+    public DatasetOutput<V> setLastValue(OptionalOutput<V> lastValue) {
         this.lastValue = lastValue;
         return this;
     }
 
-    public List<R> getReferenceValues() {
+    public List<ReferenceValueOutput<V>> getReferenceValues() {
         return getIfSerializedCollection(referenceValues);
     }
 
-    public DatasetOutput<V, R> setReferenceValues(OptionalOutput<List<R>> referenceValues) {
+    public DatasetOutput<V> setReferenceValues(OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues) {
         this.referenceValues = referenceValues;
         return this;
     }

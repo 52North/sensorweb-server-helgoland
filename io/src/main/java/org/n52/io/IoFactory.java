@@ -42,7 +42,7 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
-public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V, ? >, V extends AbstractValue< ? >> {
+public abstract class IoFactory<D extends Data<V>, P extends DatasetOutput<V>, V extends AbstractValue< ? >> {
 
     private IoParameters parameters;
 

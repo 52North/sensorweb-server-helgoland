@@ -35,7 +35,7 @@ import org.n52.io.response.dataset.DatasetOutput;
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
-public class QuantityDatasetOutput extends DatasetOutput<QuantityValue, QuantityReferenceValueOutput> {
+public class QuantityDatasetOutput extends DatasetOutput<QuantityValue> {
 
     // hide generics clutter
 

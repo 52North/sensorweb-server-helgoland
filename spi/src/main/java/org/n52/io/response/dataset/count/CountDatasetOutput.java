@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.count;
 
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class CountDatasetOutput extends DatasetOutput<CountValue, CountReferenceValueOutput> {
+public class CountDatasetOutput extends DatasetOutput<CountValue> {
 
     // hide generics clutter
 

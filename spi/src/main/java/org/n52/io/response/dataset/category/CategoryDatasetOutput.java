@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.category;
 
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class CategoryDatasetOutput extends DatasetOutput<CategoryValue, CategoryReferenceValueOutput> {
+public class CategoryDatasetOutput extends DatasetOutput<CategoryValue> {
 
     // hide generics clutter
 

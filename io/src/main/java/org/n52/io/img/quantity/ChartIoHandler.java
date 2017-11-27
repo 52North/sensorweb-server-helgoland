@@ -329,8 +329,8 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         }
     }
 
-    private DatasetOutput getTimeseriesMetadataOutput(String datasetId) {
-        for (DatasetOutput output : getMetadataOutputs()) {
+    private DatasetOutput< ? > getTimeseriesMetadataOutput(String datasetId) {
+        for (DatasetOutput< ? > output : getMetadataOutputs()) {
             if (output.getId()
                       .equals(datasetId)) {
                 return output;
@@ -339,7 +339,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return null;
     }
 
-    protected List< ? extends DatasetOutput<?, ?>> getMetadataOutputs() {
+    protected List< ? extends DatasetOutput< ? >> getMetadataOutputs() {
         return context.getAllDatasetMetadatas();
     }
 

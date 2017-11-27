@@ -146,7 +146,7 @@ public class ChartRendererTest {
         datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
         String valueType = QuantityValue.TYPE;
         IoParameters parameters = IoParameters.createDefaults();
-        DatasetOutput< ? , ? > metadata = DatasetOutput.create(valueType, parameters);
+        DatasetOutput< ? > metadata = DatasetOutput.create(valueType, parameters);
         metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
                 .setUom(OptionalOutput.of(""))
                 .setId("timeseries");

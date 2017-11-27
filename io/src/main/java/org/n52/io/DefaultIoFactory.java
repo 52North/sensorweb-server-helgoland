@@ -29,11 +29,12 @@
 package org.n52.io;
 
 import java.io.File;
+
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class DefaultIoFactory<D extends Data<V>, O extends DatasetOutput<V, ?>, V extends AbstractValue<?>>
+public class DefaultIoFactory<D extends Data<V>, O extends DatasetOutput<V>, V extends AbstractValue<?>>
         extends ConfigTypedFactory<IoFactory<D, O, V>> {
 
     private static final String DEFAULT_CONFIG_FILE = "dataset-io-factory.properties";
@@ -48,14 +49,14 @@ public class DefaultIoFactory<D extends Data<V>, O extends DatasetOutput<V, ?>, 
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static DefaultIoFactory<Data<AbstractValue<?>>,
-                DatasetOutput<AbstractValue<?>, ?>,
+                DatasetOutput<AbstractValue<?>>,
                 AbstractValue< ?>> create() {
         return new DefaultIoFactory();
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static DefaultIoFactory<Data<AbstractValue< ?>>,
-                DatasetOutput<AbstractValue< ?>, ?>,
+                DatasetOutput<AbstractValue< ?>>,
                 AbstractValue< ?>> create(
             File configFile) {
         return new DefaultIoFactory(configFile);
