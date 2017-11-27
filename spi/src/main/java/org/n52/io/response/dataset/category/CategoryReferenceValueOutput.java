@@ -26,28 +26,45 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.quantity;
+package org.n52.io.response.dataset.category;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import org.n52.io.response.dataset.ReferenceValueOutput;
 
-import org.n52.io.response.dataset.DatasetMetadata;
+public class CategoryReferenceValueOutput implements ReferenceValueOutput<CategoryValue> {
 
-public class QuantityDatasetMetadata implements DatasetMetadata<Map<String, QuantityData>>, Serializable {
+    private String referenceValueId;
 
-    private static final long serialVersionUID = 7422416308386483575L;
+    private String label;
 
-    private Map<String, QuantityData> referenceValues = new HashMap<>();
+    private CategoryValue lastValue;
 
     @Override
-    public Map<String, QuantityData> getReferenceValues() {
-        return referenceValues;
+    public String getReferenceValueId() {
+        return referenceValueId;
     }
 
     @Override
-    public void setReferenceValues(Map<String, QuantityData> referenceValues) {
-        this.referenceValues = referenceValues;
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
     }
 
+    @Override
+    public String getLabel() {
+        return label;
+    }
+
+    @Override
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @Override
+    public CategoryValue getLastValue() {
+        return lastValue;
+    }
+
+    @Override
+    public void setLastValue(CategoryValue lastValue) {
+        this.lastValue = lastValue;
+    }
 }

@@ -35,21 +35,10 @@ public class TextData extends Data<TextValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private TextDatasetMetadata metadata;
-
     public static TextData newTextObservationData(TextValue... values) {
         TextData timeseries = new TextData();
         timeseries.addValues(values);
         return timeseries;
-    }
-
-    @Override
-    public TextDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(TextDatasetMetadata metadata) {
-        this.metadata = metadata;
     }
 
 }

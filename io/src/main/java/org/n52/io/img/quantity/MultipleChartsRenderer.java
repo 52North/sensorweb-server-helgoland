@@ -49,11 +49,12 @@ import org.n52.io.IoStyleContext;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.ReferenceValueOutput;
 import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetMetadata;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.style.BarStyle;
 import org.n52.io.style.LineStyle;
@@ -98,15 +99,15 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                  * Configure timeseries reference value renderers with the same metadata and add it at the end
                  * of the plot's renderer list.
                  */
-                QuantityDatasetMetadata metadata = timeseriesData.getMetadata();
-                Map<String, QuantityData> referenceValues = metadata.getReferenceValues();
-                for (Entry<String, QuantityData> referencedTimeseries : referenceValues.entrySet()) {
+                DatasetMetadata<Data<QuantityValue>> metadata = timeseriesData.getMetadata();
+                Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
+                for (Entry<String, Data<QuantityValue>> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();
                     ReferenceValueOutput< ? > referenceOutput = getReferenceValue(referenceTimeseriesId,
                                                                                   timeseriesMetadata);
                     String referenceChartId = createChartId(timeseriesMetadata, referenceOutput.getLabel());
 
-                    QuantityData referenceData = referenceValues.get(referenceTimeseriesId);
+                    Data<QuantityValue> referenceData = referenceValues.get(referenceTimeseriesId);
                     ChartIndexConfiguration referenceConfiguration = new ChartIndexConfiguration(referenceChartId,
                                                                                                  referenceIndex);
                     StyleProperties referenceStyle = getTimeseriesStyleFor(timeseriesId, referenceTimeseriesId);
@@ -185,28 +186,28 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
-        public void setReferenceData(QuantityData data, DatasetOutput< ? , ? > timeMetadata, StyleProperties style) {
-            getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(data, style));
+        public void setReferenceData(Data<QuantityValue> referenceData, DatasetOutput< ? , ? > timeMetadata, StyleProperties style) {
+            getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(referenceData, style));
         }
 
-        private TimeSeriesCollection createTimeseriesCollection(QuantityData data, StyleProperties style) {
+        private TimeSeriesCollection createTimeseriesCollection(Data<QuantityValue> referenceData, StyleProperties style) {
             TimeSeriesCollection timeseriesCollection = new TimeSeriesCollection();
-            timeseriesCollection.addSeries(createDiscreteTimeseries(data, style));
+            timeseriesCollection.addSeries(createDiscreteTimeseries(referenceData, style));
             timeseriesCollection.setGroup(new DatasetGroup(chartId));
             return timeseriesCollection;
         }
 
-        private TimeSeries createDiscreteTimeseries(QuantityData timeseriesData, StyleProperties style) {
+        private TimeSeries createDiscreteTimeseries(Data<QuantityValue> referenceData, StyleProperties style) {
             TimeSeries timeseries = new TimeSeries(chartId);
-            if (hasValues(timeseriesData)) {
+            if (hasValues(referenceData)) {
                 if (isBarStyle(style)) {
-                    QuantityValue timeseriesValue = timeseriesData.getValues()
+                    QuantityValue timeseriesValue = referenceData.getValues()
                                                                   .get(0);
                     Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
                     double intervalSum = 0.0;
-                    for (QuantityValue value : timeseriesData.getValues()) {
+                    for (QuantityValue value : referenceData.getValues()) {
                         if (isValueInInterval(value, timeinterval)) {
                             intervalSum += value.getValue();
                         } else {
@@ -216,7 +217,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                         }
                     }
                 } else if (isLineStyle(style)) {
-                    for (QuantityValue value : timeseriesData.getValues()) {
+                    for (QuantityValue value : referenceData.getValues()) {
                         Second second = new Second(new Date(value.getTimestamp()));
                         timeseries.addOrUpdate(second, value.getValue());
                     }
@@ -225,7 +226,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             return timeseries;
         }
 
-        private boolean hasValues(QuantityData timeseriesData) {
+        private boolean hasValues(Data<QuantityValue> timeseriesData) {
             return timeseriesData.getValues()
                                  .size() > 0;
         }

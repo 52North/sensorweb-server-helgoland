@@ -28,9 +28,24 @@
  */
 package org.n52.io.response.dataset;
 
-public interface DatasetMetadata<T> {
+import java.util.HashMap;
+import java.util.Map;
 
-    T getReferenceValues();
+public class DatasetMetadata<T extends Data<?>> {
 
-    void setReferenceValues(T referenceValues);
+    private Map<String, T> referenceValues = new HashMap<>();
+
+    public boolean hasReferenceValues() {
+        return referenceValues != null
+                && !referenceValues.isEmpty();
+    }
+    
+    public Map<String, T> getReferenceValues() {
+        return referenceValues;
+    }
+
+    public void setReferenceValues(Map<String, T> referenceValues) {
+        this.referenceValues = referenceValues;
+    }
+
 }

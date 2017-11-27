@@ -35,21 +35,10 @@ public class CountData extends Data<CountValue> {
 
     private static final long serialVersionUID = -3990317208637642482L;
 
-    private CountDatasetMetadata metadata;
-
     public static CountData newCountObservationData(CountValue... values) {
         CountData timeseries = new CountData();
         timeseries.addValues(values);
         return timeseries;
-    }
-
-    @Override
-    public CountDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(CountDatasetMetadata metadata) {
-        this.metadata = metadata;
     }
 
 }

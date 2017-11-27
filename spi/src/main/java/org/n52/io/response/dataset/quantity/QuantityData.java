@@ -35,22 +35,10 @@ public class QuantityData extends Data<QuantityValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private QuantityDatasetMetadata metadata;
-
     public static QuantityData newMeasurementData(QuantityValue... values) {
         QuantityData timeseries = new QuantityData();
         timeseries.addValues(values);
         return timeseries;
     }
-
-    @Override
-    public QuantityDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(QuantityDatasetMetadata metadata) {
-        this.metadata = metadata;
-    }
-
 
 }

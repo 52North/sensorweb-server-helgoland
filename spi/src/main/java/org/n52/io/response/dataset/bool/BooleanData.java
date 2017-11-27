@@ -35,21 +35,10 @@ public class BooleanData extends Data<BooleanValue> {
 
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private BooleanDatasetMetadata metadata;
-
     public static BooleanData newTextObservationData(BooleanValue... values) {
         BooleanData timeseries = new BooleanData();
         timeseries.addValues(values);
         return timeseries;
-    }
-
-    @Override
-    public BooleanDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(BooleanDatasetMetadata metadata) {
-        this.metadata = metadata;
     }
 
 }
