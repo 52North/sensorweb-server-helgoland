@@ -28,10 +28,13 @@
  */
 package org.n52.io.response.dataset;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DatasetMetadata<T extends Data<?>> {
+public class DatasetMetadata<T extends Data<?>> implements Serializable {
+
+    private static final long serialVersionUID = -2670379436251511249L;
 
     private Map<String, T> referenceValues = new HashMap<>();
 

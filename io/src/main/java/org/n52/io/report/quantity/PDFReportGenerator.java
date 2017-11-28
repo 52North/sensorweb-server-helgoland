@@ -144,7 +144,8 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IoHandlerException {
+    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data, OutputStream stream)
+            throws IoHandlerException {
         try {
             generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();

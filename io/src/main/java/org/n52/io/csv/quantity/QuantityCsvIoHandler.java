@@ -105,7 +105,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
     }
 
     @Override
-    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IoParseException {
+    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data, OutputStream stream)
+            throws IoParseException {
         try {
             if (zipOutput) {
                 writeAsZipStream(data, stream);

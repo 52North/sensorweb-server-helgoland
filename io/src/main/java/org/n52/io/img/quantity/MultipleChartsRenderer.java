@@ -185,11 +185,14 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             getXYPlot().mapDatasetToRangeAxis(timeseriesIndex, timeseriesIndex);
         }
 
-        public void setReferenceData(Data<QuantityValue> referenceData, DatasetOutput< ? > timeMetadata, StyleProperties style) {
+        public void setReferenceData(Data<QuantityValue> referenceData,
+                                     DatasetOutput< ? > timeMetadata,
+                                     StyleProperties style) {
             getXYPlot().setDataset(timeseriesIndex, createTimeseriesCollection(referenceData, style));
         }
 
-        private TimeSeriesCollection createTimeseriesCollection(Data<QuantityValue> referenceData, StyleProperties style) {
+        private TimeSeriesCollection createTimeseriesCollection(Data<QuantityValue> referenceData,
+                                                                StyleProperties style) {
             TimeSeriesCollection timeseriesCollection = new TimeSeriesCollection();
             timeseriesCollection.addSeries(createDiscreteTimeseries(referenceData, style));
             timeseriesCollection.setGroup(new DatasetGroup(chartId));
@@ -201,7 +204,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             if (hasValues(referenceData)) {
                 if (isBarStyle(style)) {
                     QuantityValue timeseriesValue = referenceData.getValues()
-                                                                  .get(0);
+                                                                 .get(0);
                     Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
