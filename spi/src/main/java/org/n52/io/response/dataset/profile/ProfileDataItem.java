@@ -35,6 +35,10 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private Double vertical;
 
+    private Double verticalFrom;
+
+    private Double verticalTo;
+
     private T value;
 
     public String getVerticalUnit() {
@@ -53,6 +57,22 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.vertical = vertical;
     }
 
+    public Double getVerticalFrom() {
+        return verticalFrom;
+    }
+
+    public void setVerticalFrom(Double verticalFrom) {
+        this.verticalFrom = verticalFrom;
+    }
+
+    public Double getVerticalTo() {
+        return verticalTo;
+    }
+
+    public void setVerticalTo(Double verticalTo) {
+        this.verticalTo = verticalTo;
+    }
+
     public T getValue() {
         return value;
     }
@@ -63,7 +83,15 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int compareTo(ProfileDataItem<T> o) {
-        return Double.compare(getVertical(), o.getVertical());
+        if (getVertical() != null && o.getVertical() != null) {
+            return Double.compare(getVertical(), o.getVertical());
+        } else if (getVerticalFrom() != null && o.getVerticalFrom() != null && getVerticalTo() != null
+                && o.getVerticalTo() != null) {
+            int from = Double.compare(getVerticalFrom(), o.getVerticalFrom());
+            int to = Double.compare(getVerticalTo(), o.getVerticalTo());
+            return from == to ? from : -1;
+        }
+        return 0;
     }
 
     @Override
@@ -76,6 +104,12 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         result = prime * result + ((vertical == null)
                 ? 0
                 : vertical.hashCode());
+        result = prime * result + ((verticalFrom == null)
+                ? 0
+                : verticalFrom.hashCode());
+        result = prime * result + ((verticalTo == null)
+                ? 0
+                : verticalTo.hashCode());
         result = prime * result + ((verticalUnit == null)
                 ? 0
                 : verticalUnit.hashCode());
@@ -106,6 +140,10 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
                 return false;
             }
         } else if (!vertical.equals(other.vertical)) {
+            return false;
+        } else if (!verticalFrom.equals(other.verticalFrom)) {
+            return false;
+        } else if (!verticalTo.equals(other.verticalTo)) {
             return false;
         }
         if (verticalUnit == null) {
