@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.category;
 
 import org.n52.io.response.dataset.AbstractValue;
 
-public class CategoryValue extends AbstractValue<Integer> {
+public class CategoryValue extends AbstractValue<String> {
 
     public static final String TYPE = "category";
 
@@ -40,11 +40,11 @@ public class CategoryValue extends AbstractValue<Integer> {
         // for serialization
     }
 
-    public CategoryValue(Long timestart, Long timeend, Integer value) {
+    public CategoryValue(Long timestart, Long timeend, String value) {
         super(timestart, timeend, value);
     }
 
-    public CategoryValue(Long timestamp, Integer value) {
+    public CategoryValue(Long timestamp, String value) {
         super(timestamp, value);
     }
 
