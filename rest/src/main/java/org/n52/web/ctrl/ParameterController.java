@@ -161,7 +161,7 @@ public abstract class ParameterController<T extends ParameterOutput>
         if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
                                                                   .removeAllOf(Parameters.OFFSET));
-            if (0 >= elementcount) {
+            if (elementcount > 0) {
                 int limit = parameters.getLimit();
                 int offset = parameters.getOffset();
                 OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);

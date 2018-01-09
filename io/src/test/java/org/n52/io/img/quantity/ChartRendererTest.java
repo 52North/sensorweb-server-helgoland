@@ -152,7 +152,8 @@ public class ChartRendererTest {
                 .setUom(OptionalOutput.of(""))
                 .setId("timeseries");
 
-        PlatformOutput platformOutput = new PlatformOutput(PlatformType.STATIONARY_INSITU);
+        PlatformOutput platformOutput = new PlatformOutput();
+        platformOutput.setPlatformType(OptionalOutput.of(PlatformType.STATIONARY_INSITU));
         platformOutput.setId("sta_1");
         platformOutput.setLabel(OptionalOutput.of("station"));
         datasetParameters.setPlatform(platformOutput);
