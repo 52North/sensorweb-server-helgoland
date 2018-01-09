@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,8 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.request;
+
+import static java.util.stream.Collectors.toSet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +37,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +54,13 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
@@ -63,12 +70,9 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.n52.shetland.ogc.filter.Filter;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.odata.ODataFesParser;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -586,7 +590,7 @@ public final class IoParameters implements Parameters {
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : new HashSet<String>();
+                : new HashSet<>(0);
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
@@ -598,16 +602,10 @@ public final class IoParameters implements Parameters {
     }
 
     private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
-        String[] values = csv != null
-                ? csv.split(",")
-                : new String[0];
-        List<O> outputs = new ArrayList<>();
-        if (c != null) {
-            for (int i = 0; i < values.length; i++) {
-                outputs.add(c.apply(values[i]));
-            }
-        }
-        return new HashSet<>(outputs);
+        return Optional.ofNullable(csv)
+                .map(str -> str.split(","))
+                .flatMap(values -> Optional.ofNullable(c).map(f -> Arrays.stream(values).map(f).collect(toSet())))
+                .orElseGet(HashSet::new);
     }
 
     public FilterResolver getFilterResolver() {
@@ -1075,8 +1073,7 @@ public final class IoParameters implements Parameters {
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
             for (String value : entry.getValue()) {
-                final String key = entry.getKey()
-                                        .toLowerCase();
+                final String key = entry.getKey().toLowerCase();
                 parameters.add(key, getJsonNodeFrom(value));
             }
         }

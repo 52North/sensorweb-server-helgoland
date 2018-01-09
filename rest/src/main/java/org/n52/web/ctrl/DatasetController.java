@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,14 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.DatasetOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DatasetOutput;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
