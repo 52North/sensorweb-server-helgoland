@@ -50,7 +50,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
 
     public static final String GEOMETRY_TYPE = "geometryType";
 
-    private static final String PLATFORM = "platform";
+    public static final String PLATFORM = "platform";
 
     private OptionalOutput<GeometryType> geometryType;
 
