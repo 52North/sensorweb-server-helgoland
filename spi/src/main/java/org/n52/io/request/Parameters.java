@@ -363,6 +363,12 @@ public interface Parameters {
      */
     String COMPLEX_PARENT = "internal.complex.parent";
 
+
+    /**
+     * The OData filter parameter: {@value}.
+     */
+    String ODATA_FILTER = "$filter";
+
     /*
      *############### DEPRECATED CONSTANTS
      */

@@ -91,6 +91,8 @@ public final class IoParameters implements Parameters {
     // TODO use global object mapper
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
+
     private final MultiValueMap<String, JsonNode> query;
 
     private final FilterResolver filterResolver;
@@ -438,6 +440,20 @@ public final class IoParameters implements Parameters {
         return handleSimpleValueParseException(timestamp, Instant::parse);
     }
 
+
+    public Optional<Filter<?>> getODataFilter() {
+        if (!containsParameter(ODATA_FILTER)) {
+            return Optional.empty();
+        }
+        String parameter = getAsString(ODATA_FILTER);
+        try {
+            return Optional.of(ODATA_PARSER.decode(parameter));
+        } catch (DecodingException ex) {
+            handleIoParseException(ODATA_FILTER, createIoParseException(ODATA_FILTER, ex));
+            return Optional.empty();
+        }
+    }
+
     /**
      * @return the category filter
      * @deprecated use {@link #getCategories()}
@@ -658,19 +674,7 @@ public final class IoParameters implements Parameters {
      *        the point in CRS:84 which shall extend the bounding box.
      */
     private void extendBy(Point point, BoundingBox bbox) {
-        if (bbox.contains(point)) {
-            return;
-        }
-        Point lowerLeft = bbox.getLowerLeft();
-        Point upperRight = bbox.getUpperRight();
-        double llX = Math.min(point.getX(), lowerLeft.getX());
-        double llY = Math.max(point.getX(), upperRight.getX());
-        double urX = Math.min(point.getY(), lowerLeft.getY());
-        double urY = Math.max(point.getY(), upperRight.getY());
-
-        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
-        bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
-        bbox.setUr(crsUtils.createPoint(urX, urY, bbox.getSrs()));
+        bbox.extendBy(point);
     }
 
     /**

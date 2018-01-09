@@ -87,5 +87,10 @@
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.n52.arctic-sea</groupId>
+            <artifactId>svalbard-odata</artifactId>
+            <version>3.1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

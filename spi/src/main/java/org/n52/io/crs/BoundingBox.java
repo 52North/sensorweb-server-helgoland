@@ -66,7 +66,27 @@ public class BoundingBox implements Serializable {
      * @return if this instance contains the given coordiantes.
      */
     public boolean contains(Point point) {
-        return isWithinXRange(point.getX()) && isWithinYRange(point.getY());
+        return isWithinXRange(point.getX()) &&
+               isWithinYRange(point.getY());
+    }
+
+    /**
+     * Extends the bounding box with the given point. If point is contained by this instance nothing is
+     * changed.
+     *
+     * @param point
+     *        the point in CRS:84 which shall extend the bounding box.
+     */
+    public void extendBy(Point point) {
+        if (!contains(point)) {
+            CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
+            this.ll = crsUtils.createPoint(Math.min(point.getX(), this.ll.getX()),
+                                           Math.max(point.getX(), this.ur.getX()),
+                                           this.srs);
+            this.ur = crsUtils.createPoint(Math.min(point.getY(), this.ll.getY()),
+                                           Math.max(point.getY(), this.ur.getY()),
+                                           this.srs);
+        }
     }
 
     private boolean isWithinXRange(double x) {
