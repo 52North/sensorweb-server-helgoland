@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.img.quantity;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -113,6 +112,8 @@ public class ChartRendererTest {
     @Test
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
+                                          // time in summer to get PDT (-> DST)
+                                          .replaceWith("timespan", "PT24H/2017-07-01TZ")
                                           .replaceWith("outputTimezone", "America/Los_Angeles");
         String label = new MyChartRenderer(config).getXYPlot()
                                                   .getDomainAxis()
