@@ -48,6 +48,7 @@ import com.vividsolutions.jts.geom.Geometry;
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
 public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
+    public static final String TIMESERIES = "timeseries";
     public static final String PROPERTIES = "properties";
     public static final String GEOMETRY = "geometry";
 
@@ -85,7 +86,7 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
         nullSafePut("domainId", getDomainId(), properties);
         nullSafePut("href", getHref(), properties);
         nullSafePut("rawFormats", getRawFormats(), properties);
-        nullSafePut("timeseries", getTimeseries(), properties);
+        nullSafePut(TIMESERIES, getTimeseries(), properties);
         return properties;
     }
 
