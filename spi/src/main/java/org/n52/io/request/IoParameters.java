@@ -446,8 +446,11 @@ public final class IoParameters implements Parameters {
             return Optional.empty();
         }
         String parameter = getAsString(ODATA_FILTER);
+        if (parameter.trim().isEmpty()) {
+            return Optional.empty();
+        }
         try {
-            return Optional.of(ODATA_PARSER.decode(parameter));
+            return Optional.ofNullable(ODATA_PARSER.decode(parameter));
         } catch (DecodingException ex) {
             handleIoParseException(ODATA_FILTER, createIoParseException(ODATA_FILTER, ex));
             return Optional.empty();
