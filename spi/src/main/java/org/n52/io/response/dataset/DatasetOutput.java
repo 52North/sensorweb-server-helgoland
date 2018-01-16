@@ -36,7 +36,7 @@ import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValueOutput< ? >> extends ParameterOutput {
+public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValueOutput<V>> extends ParameterOutput {
 
     public static final String VALUE_TYPE = "valuetype";
     public static final String PLATFORM_TYPE = "platformtype";
@@ -64,8 +64,8 @@ public class DatasetOutput<V extends AbstractValue< ? >, R extends ReferenceValu
         // use static constructor method
     }
 
-    public static <V extends AbstractValue< ? >,
-                   R extends ReferenceValueOutput< ? >> DatasetOutput<V, R> create(String type, IoParameters params) {
+    public static <V extends AbstractValue<V>,
+                   R extends ReferenceValueOutput<V>> DatasetOutput<V, R> create(String type, IoParameters params) {
         DatasetOutput<V, R> output = new DatasetOutput<>();
         output.setValue(VALUE_TYPE, type, params, output::setValueType);
         return output;
