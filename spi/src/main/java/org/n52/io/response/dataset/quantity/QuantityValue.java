@@ -28,9 +28,11 @@
  */
 package org.n52.io.response.dataset.quantity;
 
+import java.math.BigDecimal;
+
 import org.n52.io.response.dataset.AbstractValue;
 
-public class QuantityValue extends AbstractValue<Double> {
+public class QuantityValue extends AbstractValue<BigDecimal> {
 
     public static final String TYPE = "quantity";
 
@@ -40,11 +42,11 @@ public class QuantityValue extends AbstractValue<Double> {
         // for serialization
     }
 
-    public QuantityValue(Long timestart, Long timeend, Double value) {
+    public QuantityValue(Long timestart, Long timeend, BigDecimal value) {
         super(timestart, timeend, value);
     }
 
-    public QuantityValue(Long timestamp, Double value) {
+    public QuantityValue(Long timestamp, BigDecimal value) {
         super(timestamp, value);
     }
 

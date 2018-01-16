@@ -28,6 +28,7 @@
  */
 package org.n52.io.img.quantity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Week;
+
 import org.n52.io.IoProcessChain;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.IoParameters;
@@ -207,10 +209,10 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                     Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
-                    double intervalSum = 0.0;
+                    BigDecimal intervalSum = BigDecimal.ZERO;
                     for (QuantityValue value : referenceData.getValues()) {
                         if (isValueInInterval(value, timeinterval)) {
-                            intervalSum += value.getValue();
+                            intervalSum = intervalSum.add(value.getValue());
                         } else {
                             timeseries.add(timeinterval, intervalSum);
                             timeinterval = determineTimeInterval(new Date(value.getTimestamp()), style);

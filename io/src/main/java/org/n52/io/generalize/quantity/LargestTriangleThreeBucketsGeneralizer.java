@@ -28,6 +28,8 @@
  */
 package org.n52.io.generalize.quantity;
 
+import java.math.BigDecimal;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -195,13 +197,13 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
 
     private static double calcTriangleArea(QuantityValue left,
             BucketAverage right, QuantityValue middle) {
-        Double middleValue = middle.getValue();
-        final Double leftValue = left.getValue();
-        final Double rightValue = right.value;
+        BigDecimal middleValue = middle.getValue();
+        final BigDecimal leftValue = left.getValue();
+        final BigDecimal rightValue = right.value;
         return Math.abs((left.getTimestamp() - right.timestamp)
-                * (middleValue - leftValue)
+                * (middleValue.subtract(leftValue).doubleValue())
                 - (left.getTimestamp() - middle.getTimestamp())
-                * (rightValue - leftValue)) * 0.5;
+                * (rightValue.subtract(leftValue).doubleValue())) * 0.5;
     }
 
     private BucketAverage calculateBucketAverage(int bucketIndex,
@@ -213,8 +215,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
         double avgRangeLength = avgRangeEnd - avgRangeStart;
 
-        Double avgValue = 0d;
         Double avgTimestamp = 0d;
+        BigDecimal avgValue = BigDecimal.ZERO;
         int amountOfNodataValues = 0;
         boolean noDataThresholdExceeded = false;
         for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
@@ -230,21 +232,21 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
                     noDataThresholdExceeded = true;
                 }
             } else {
-                avgValue += current.getValue();
+                avgValue = avgValue.add(current.getValue());
             }
         }
 
         avgTimestamp /= avgRangeLength;
-        avgValue /= avgRangeLength;
+        avgValue = avgValue.divide(new BigDecimal(avgRangeLength));
         return new BucketAverage(avgTimestamp, avgValue);
     }
 
     private static class BucketAverage {
 
         private Double timestamp;
-        private Double value;
+        private BigDecimal value;
 
-        BucketAverage(Double timestamp, Double value) {
+        BucketAverage(Double timestamp, BigDecimal value) {
             this.timestamp = timestamp;
             this.value = value;
         }

@@ -30,6 +30,7 @@ package org.n52.io.generalize.quantity;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.n52.io.request.IoParameters;
@@ -211,19 +212,19 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
     private Point2D.Double createPoint(QuantityValue timeseriesValue) {
         Long timestamp = timeseriesValue.getTimestamp();
-        double value = timeseriesValue.getValue();
+        BigDecimal value = timeseriesValue.getValue();
 
         Point2D.Double p = new Point2D.Double();
-        p.setLocation(timestamp, value);
+        p.setLocation(timestamp, value.doubleValue());
         return p;
     }
 
     private Line2D.Double createTendencyLine(QuantityValue start, QuantityValue end) {
         Long startTime = start.getTimestamp();
-        double startValue = start.getValue();
+        BigDecimal startValue = start.getValue();
         Long endTime = end.getTimestamp();
-        double endValue = end.getValue();
-        return new Line2D.Double(startTime, startValue, endTime, endValue);
+        BigDecimal endValue = end.getValue();
+        return new Line2D.Double(startTime, startValue.doubleValue(), endTime, endValue.doubleValue());
     }
 
     private QuantityValue getFirstValue(Data<QuantityValue> timeseries) {

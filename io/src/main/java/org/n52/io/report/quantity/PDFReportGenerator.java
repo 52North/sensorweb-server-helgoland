@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 
 import javax.xml.transform.Result;
@@ -249,7 +250,8 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             Entry entry = dataTable.addNewEntry();
             // TODO update TableType schema to allow start/end time
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());
-            entry.setValue(Double.toString(valueEntry.getValue()));
+            BigDecimal value = valueEntry.getValue();
+            entry.setValue(value != null ? value.toString() : null);
         }
     }
 
