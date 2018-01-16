@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -89,9 +89,12 @@ public class TransformingPlatformOutputService extends ParameterService<Platform
         return platform;
     }
 
-    private void transformInline(IoParameters query, PlatformOutput platform) {
+    private void transformInline(IoParameters parameters, PlatformOutput platform) {
         Geometry geometry = platform.getGeometry();
-        platform.setGeometry(transformationService.transform(geometry, query));
+        platform.setValue(PlatformOutput.GEOMETRY,
+                transformationService.transform(geometry, parameters),
+                parameters,
+                platform::setGeometry);
     }
 
 }

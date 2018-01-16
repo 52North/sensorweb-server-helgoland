@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,8 @@ public class PlatformOutputTest {
 
     @Test
     public void when_createdMobileRemote_then_hrefIncludesPrefix() {
-        PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_REMOTE);
+        PlatformOutput platform = new PlatformOutput();
+        platform.setPlatformType(OptionalOutput.of(PlatformType.MOBILE_REMOTE));
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
@@ -46,7 +47,8 @@ public class PlatformOutputTest {
 
     @Test
     public void when_createdStationaryRemote_then_hrefIncludesPrefix() {
-        PlatformOutput platform = new PlatformOutput(PlatformType.STATIONARY_REMOTE);
+        PlatformOutput platform = new PlatformOutput();
+        platform.setPlatformType(OptionalOutput.of(PlatformType.STATIONARY_REMOTE));
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
@@ -55,7 +57,8 @@ public class PlatformOutputTest {
 
     @Test
     public void when_createdStationaryInsitu_then_hrefIncludesPrefix() {
-        PlatformOutput platform = new PlatformOutput(PlatformType.STATIONARY_INSITU);
+        PlatformOutput platform = new PlatformOutput();
+        platform.setPlatformType(OptionalOutput.of(PlatformType.STATIONARY_INSITU));
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
@@ -64,7 +67,8 @@ public class PlatformOutputTest {
 
     @Test
     public void when_createdMobileInsitu_then_hrefIncludesPrefix() {
-        PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_INSITU);
+        PlatformOutput platform = new PlatformOutput();
+        platform.setPlatformType(OptionalOutput.of(PlatformType.MOBILE_INSITU));
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
@@ -73,7 +77,8 @@ public class PlatformOutputTest {
 
     @Test
     public void when_havingExplicitHref_then_hrefNotIncludingHrefBase() {
-        PlatformOutput platform = new PlatformOutput(PlatformType.MOBILE_INSITU);
+        PlatformOutput platform = new PlatformOutput();
+        platform.setPlatformType(OptionalOutput.of(PlatformType.MOBILE_INSITU));
         platform.setHref(OptionalOutput.of("http://localhost/otherContext/12"));
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,13 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.report.quantity;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 
 import javax.xml.transform.Result;
@@ -250,7 +250,8 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             Entry entry = dataTable.addNewEntry();
             // TODO update TableType schema to allow start/end time
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());
-            entry.setValue(Double.toString(valueEntry.getValue()));
+            BigDecimal value = valueEntry.getValue();
+            entry.setValue(value != null ? value.toString() : null);
         }
     }
 

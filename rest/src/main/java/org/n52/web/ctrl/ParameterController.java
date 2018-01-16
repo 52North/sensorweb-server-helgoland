@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2017 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
 import java.io.IOException;
@@ -162,7 +161,7 @@ public abstract class ParameterController<T extends ParameterOutput>
         if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
                                                                   .removeAllOf(Parameters.OFFSET));
-            if (0 >= elementcount) {
+            if (elementcount > 0) {
                 int limit = parameters.getLimit();
                 int offset = parameters.getOffset();
                 OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);
